@@ -26,6 +26,6 @@ active: true                        # optional, default true
 
 ## Rules
 
-- **`targetValue` must be ≥ 1.** A `0` would complete every day and mint free XP; the schema forbids it. (Sanity's own validation doesn't run on programmatic writes, so this schema is the only guard.)
-- `resetType` is `daily` or `multi_day`. Note: the current daily-quest RPC computes its period from `type`, not from `resetType`, so `resetType` is carried for the client but has no behavioral effect yet — wiring or dropping it is tracked as a separate app change.
+- **`targetValue` must be ≥ 1.** A `0` would complete every day and hand out free XP, so it's rejected.
+- `resetType` is `daily` or `multi_day`. (It's carried through but not fully wired into reset timing yet.)
 - `active: false` hides a quest without deleting it.

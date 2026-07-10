@@ -24,15 +24,15 @@ Exit code 0 means zero errors. `notice` and `warning` lines never fail the build
 
 ## The rules CI enforces
 
-**Ids are permanent.** `course-…`, `lesson-…`, `achievement-…`, `path-…`, `quest-…`, `instructor-…`, all `kebab-case`. Course and achievement ids become on-chain PDA seeds and are capped at **32 bytes**. Changing an id after it ships is rejected — it would orphan every learner's progress.
+**Ids are permanent.** `course-…`, `lesson-…`, `achievement-…`, `path-…`, `quest-…`, `instructor-…`, all `kebab-case`. Course and achievement ids are capped at **32 characters**. Renaming an id after a course ships is rejected — it would lose the progress of everyone who's taken it.
 
-**`slots.lock.json` is machine-owned.** Never edit it by hand. CI regenerates and compares.
+**`slots.lock.json` is generated, not edited.** Never change it by hand; the checks regenerate and compare it.
 
-**XP has a hard ceiling.** `xpPerLesson × lessonCount ≤ 10000`. Above it, `finalize_course` reverts forever: no learner could ever complete the course, no credential, no creator reward. `xpPerLesson` is 1–100.
+**XP has a ceiling.** `xpPerLesson × lessonCount ≤ 10000` — go over it and the course can't be completed. `xpPerLesson` is 1–100.
 
-**Code blocks are executed.** For a TypeScript `standard` block, CI runs your `solution.ts` against `tests.json` — it must pass every case — and runs your `starter.ts`, which **must fail** at least one. A starter that already passes is a bug. Rust and `buildable` blocks are **not** graded in CI or at sync (a compiling scaffold can't satisfy "starter must fail" on a compile check, and the build server is off) — they're graded at **runtime**, fail-closed: a learner can't complete them until their executor is available. Their files still have to exist.
+**Challenges are executed.** For a TypeScript challenge, the checks run your `solution.ts` against `tests.json` — it must pass every case — and run your `starter.ts`, which **must fail** at least one. A starter that already passes has nothing to solve. Rust challenges are checked when a learner runs them, not on your PR — but their `starter`, `solution`, and `tests` files still have to be present.
 
-**Every course needs an instructor with a wallet.** `course.instructor` must point at an [instructor](./instructors/README.md) file whose `wallet` is a real on-curve Solana address — that wallet becomes the course's on-chain creator (the creator-XP recipient). A course with no instructor, or an invalid wallet, fails the sync.
+**Every course needs an instructor with a wallet.** `course.instructor` must point at an [instructor](./instructors/README.md) file whose `wallet` is a real Solana address — that's how the instructor gets credited (and rewarded) for the course. A course with no instructor, or an invalid wallet, is rejected.
 
 **Capabilities are ordered.** A block that `consumes: [deployed-program]` must appear after a block that produces it, anywhere earlier in the course. Only a `wallet-funding` block can produce `funded-wallet`; only a `deployable` `code` block can produce `deployed-program`.
 

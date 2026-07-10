@@ -1,74 +1,62 @@
 # Superteam Academy — Courses
 
-The **source of truth** for every course, lesson, achievement, quest, learning path, and instructor on [Superteam Academy](https://superteam-academy-web.vercel.app).
+This repository holds every course on [Superteam Academy](https://superteam-academy-web.vercel.app) — the lessons, challenges, quizzes, quests, and achievements. It's all plain text: YAML, Markdown, and code files.
 
-Content lives here as plain YAML, Markdown, and source files. Teachers contribute by opening a pull request. Once merged, an admin runs the content sync, which projects this repo into Sanity and then on-chain.
+**Anyone can contribute.** Add a course, add a lesson, fix a typo, improve a challenge — open a pull request. Automated checks validate your changes, a maintainer reviews them, and once merged your content goes live on the platform.
 
-```
-courses-academy (git)
-      │  teacher opens a PR
-      ▼
-   CI validates the whole tree  ──►  merge to main
-      │
-      ▼
-   admin runs the content sync
-      │  createOrReplace, idempotent
-      ▼
-   Sanity (a rebuildable projection)  ──►  the app (GROQ)  +  on-chain (course/achievement PDAs)
-```
+New here? Jump to **[Add a course](#add-a-course-in-five-steps)** or read the full **[contributor guide](./CONTRIBUTING.md)**.
 
-**Nothing is authored in Sanity Studio.** Sanity is a cache of this repo and can be rebuilt from it at any time.
+## How content is organized
 
-## Where things live
-
-| Folder | What's in it | Docs |
+| Folder | What's in it | Guide |
 |---|---|---|
-| `courses/<slug>/` | a course: `course.yaml`, `slots.lock.json`, `lessons/` | [courses/README.md](./courses/README.md) |
-| `achievements/*.yaml` | earnable credentials + their unlock conditions | [achievements/README.md](./achievements/README.md) |
-| `quests/*.yaml` | global daily / multi-day XP challenges | [quests/README.md](./quests/README.md) |
-| `paths/*.yaml` | ordered shelves of courses | [paths/README.md](./paths/README.md) |
-| `instructors/*.yaml` | teaching personas + the wallet that receives creator XP | [instructors/README.md](./instructors/README.md) |
-| `courses/_template/` | a complete, valid example to copy — linted, never published | [courses/_template/README.md](./courses/_template/README.md) |
-| `schema/*.json` | generated JSON Schema — powers editor autocomplete + CI | — |
-| `teachers.yaml` | maintainer-controlled teacher registry (informational for now) | — |
+| `courses/<slug>/` | a course: its details, modules, and lessons | [courses/README.md](./courses/README.md) |
+| `achievements/*.yaml` | badges learners earn, and how they're unlocked | [achievements/README.md](./achievements/README.md) |
+| `quests/*.yaml` | daily / streak challenges that award XP | [quests/README.md](./quests/README.md) |
+| `paths/*.yaml` | ordered collections of courses | [paths/README.md](./paths/README.md) |
+| `instructors/*.yaml` | the people who teach the courses | [instructors/README.md](./instructors/README.md) |
+| `courses/_template/` | a complete example to copy when starting a course | [courses/_template/README.md](./courses/_template/README.md) |
 
-## Lessons are made of blocks
+## A lesson is a list of blocks
 
-A lesson is metadata plus an **ordered list of typed blocks**. Adding a new kind of activity means adding a block type — it never reshapes a course or a lesson.
+Every lesson is a title plus an ordered list of **blocks**. You mix and match them to build the lesson:
 
-| Block | Graded? | Purpose |
-|---|---|---|
-| `prose` | no | Markdown, from a `.md` file |
-| `video` | no | YouTube / Vimeo embed |
-| `code` | **yes** | Editor + tests, graded by execution |
-| `quiz` | **yes** | Multiple choice, one or many correct |
-| `openEnded` | no (required) | A reflection: one learner message, one AI reply, feedback only. **Never mints XP.** |
-| `wallet-funding` | no | Fund a devnet wallet |
-| `program-explorer` | no | Call a deployed program from an IDL |
-| `deployed-program-card` | no | Show the learner's deployed program |
+| Block | What it is |
+|---|---|
+| `prose` | Markdown text |
+| `video` | a YouTube / Vimeo embed |
+| `code` | a coding challenge — editor, starter code, and tests |
+| `quiz` | multiple choice, one or many correct answers |
+| `openEnded` | a reflection prompt; the learner writes, the AI replies once |
+| `wallet-funding` | a button to fund a devnet wallet |
+| `program-explorer` | an interface to call a deployed program |
+| `deployed-program-card` | shows the learner's deployed program |
 
-## The golden rules
+## A few rules worth knowing up front
 
-These are the ones that bite. CI enforces all of them.
+The automated checks enforce these — they're mostly about not breaking things for learners who've already started a course.
 
-- **Ids are permanent and some are on-chain PDA seeds.** `course-*` and `achievement-*` are capped at 32 UTF-8 bytes; the rest at 128. Never rename an id that's live — it orphans learner progress.
-- **`slots.lock.json` is machine-owned.** It pins on-chain bitmap positions. Never hand-edit it; CI regenerates and fails on a diff. This is what makes reordering, regrouping, and inserting lessons safe for enrolled learners.
-- **`xpPerLesson × lessonCount ≤ 10000`.** Above it, `finalize_course` reverts forever and nobody can complete the course.
-- **A `code` block's `solution` must pass its `tests`, and its `starter` must fail.** CI executes TypeScript blocks; rust and buildable are graded at runtime (fail-closed).
-- **Answer keys are public by design.** `solution` files and test cases live in this public repo. Grading is by sandboxed execution, not secrecy — don't write a lesson whose value depends on hiding the answer.
-- **A course's creator is its instructor.** `course.instructor → instructor.wallet` becomes the on-chain `Course.creator` (the creator-XP recipient). See [instructors/README.md](./instructors/README.md).
+- **Once a course is live, don't rename its `id` (or a lesson's).** Learners' progress is tied to those ids, so renaming one loses their history. Add and reorder freely; just don't rename.
+- **Don't hand-edit `slots.lock.json`.** It's generated automatically. Editing it by hand can corrupt learner progress; the checks will stop you.
+- **A challenge's reference solution must pass its own tests, and its starter must fail them** — a starter that already passes has nothing to solve.
+- **Answers are public.** Solution files and tests live right here in the open. Challenges are graded by running the learner's code, not by hiding the answer — so don't write a lesson that only works if the answer is secret.
+- **Every course needs an instructor.** Point `course.instructor` at an [instructor](./instructors/README.md) file. Their wallet is how they receive credit (and rewards) for the course.
+
+Each folder's README has the exact fields and a worked example.
 
 ## Add a course in five steps
 
-1. `cp -r courses/_template courses/<your-slug>`
-2. Edit `course.yaml` — set `id`, `slug`, `title`, `instructor`, and the `modules → lessons` structure.
-3. Write your lessons under `lessons/<slug>/` (blocks, markdown, starter/solution/tests).
-4. Make sure an [instructor](./instructors/README.md) file exists with your on-curve wallet, and `course.instructor` points at it.
-5. Validate locally (below), then open a PR. Don't touch `slots.lock.json`.
+1. Copy the template: `cp -r courses/_template courses/<your-slug>`
+2. Edit `course.yaml` — the title, difficulty, instructor, and the modules-and-lessons outline.
+3. Write your lessons under `lessons/<slug>/` (text, challenges, quizzes).
+4. Make sure there's an [instructor](./instructors/README.md) file for you, and `course.instructor` points at it.
+5. Check your work locally (below), then open a pull request.
 
-## Validate locally
+## Check your work
 
-Your editor validates as you type if you have the Red Hat **YAML** extension (`.vscode/settings.json` wires each file to its schema). To run the full linter:
+If you use VSCode or Cursor with the [Red Hat YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml), your files are validated **as you type** — you'll see errors before you even commit.
+
+To run the full check yourself:
 
 ```bash
 git clone https://github.com/solanabr/superteam-academy
@@ -76,6 +64,6 @@ cd superteam-academy && pnpm install
 pnpm --filter @superteam-lms/content-lint exec tsx src/cli.ts /path/to/courses-academy
 ```
 
-Exit 0 means zero errors; `notice`/`warning` never fail the build.
+Exit code `0` means you're good. (You don't have to run it — the same check runs automatically on your pull request.)
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full rule set.
+Full details, including quizzes and reflections, are in **[CONTRIBUTING.md](./CONTRIBUTING.md)**.

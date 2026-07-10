@@ -3,7 +3,7 @@
 One YAML file per achievement. An achievement is a soulbound credential a learner earns by meeting an **award** condition.
 
 ```yaml
-id: achievement-first-steps         # achievement-<kebab>, ≤ 32 UTF-8 bytes (PDA seed)
+id: achievement-first-steps         # achievement-<kebab>, ≤ 32 characters, permanent
 name: First Steps
 description: Complete your first lesson.   # optional
 icon: rocket                        # optional icon identifier
@@ -18,7 +18,7 @@ award: { kind: lessons-completed, gte: 1 }   # REQUIRED — see below
 
 ## The `award` — how it's earned
 
-`award` is **required**: an achievement with no award kind can never be unlocked. The `kind` is a closed set; the app has exactly one predicate per kind, so a kind with no predicate is a build error. Pick one:
+`award` is **required**: an achievement with no award kind can never be unlocked. Pick one `kind` from this fixed set:
 
 | `kind` | Extra fields | Unlocks when… |
 |---|---|---|
@@ -46,6 +46,6 @@ award: { kind: streak, days: 7 }
 
 ### Notes
 
-- `course` and `path` in an award must be real ids — but note CI does **not** currently verify those references, so double-check them by hand.
-- `id` is a PDA seed: `achievement-<kebab>`, ≤ 32 bytes, permanent. Never rename.
-- Only kinds backed by real signal are earnable. There is intentionally no "first-try" or "speed" kind, so achievements that would need those don't exist.
+- `course` and `path` in an award must be real ids — the checks don't currently verify those references, so double-check them by hand.
+- `id` is permanent (`achievement-<kebab>`, ≤ 32 characters). Never rename it once live.
+- Only the kinds above exist. There's intentionally no "first-try" or "speed" kind, so don't design an achievement that would need one.
