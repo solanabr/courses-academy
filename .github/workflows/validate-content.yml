@@ -28,16 +28,23 @@ jobs:
           ref: main
           path: tooling
 
+      # The pnpm version comes from `packageManager` in the TOOLING package.json —
+      # this repo has none, which is why the default lookup fails.
       - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: tooling/package.json
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "20"
           cache: pnpm
           cache-dependency-path: tooling/pnpm-lock.yaml
 
+      # Only content-lint and its workspace deps (content-schema,
+      # challenge-executor, types) — not apps/web, which needs env vars to build.
       - name: Install tooling
         working-directory: tooling
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --filter "@superteam-lms/content-lint..."
 
       # GITHUB_BASE_REF is set by GitHub on pull_request events; content-lint
       # reads it directly and rewrites the bare branch name to `origin/<name>`.
