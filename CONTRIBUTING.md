@@ -6,7 +6,9 @@
 2. Copy `courses/_template/` to `courses/<your-slug>/` and edit it.
 3. Open a pull request. CI runs the full validator.
 
-Your editor will autocomplete and validate as you type — `.vscode/settings.json` maps every file to its JSON Schema in `schema/`.
+Your editor will autocomplete and validate as you type — `.vscode/settings.json` maps every file to its JSON Schema in `schema/`. In VSCode / Cursor this needs the **[Red Hat YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)** (`redhat.vscode-yaml`); the schema files themselves are generated, so don't hand-edit `schema/`.
+
+Each folder has its own `README.md` with the fields, the controlled vocabulary, and a worked example — read the one for what you're editing ([courses](./courses/README.md), [achievements](./achievements/README.md), [quests](./quests/README.md), [paths](./paths/README.md), [instructors](./instructors/README.md)).
 
 ## Running the validator locally
 
@@ -28,7 +30,9 @@ Exit code 0 means zero errors. `notice` and `warning` lines never fail the build
 
 **XP has a hard ceiling.** `xpPerLesson × lessonCount ≤ 10000`. Above it, `finalize_course` reverts forever: no learner could ever complete the course, no credential, no creator reward. `xpPerLesson` is 1–100.
 
-**Code blocks are executed.** For a TypeScript `standard` block, CI runs your `solution.ts` against `tests.json` — it must pass every case — and runs your `starter.ts`, which **must fail** at least one. A starter that already passes is a bug. Rust and `buildable` blocks are graded at sync time instead, and CI reports them as a `notice`.
+**Code blocks are executed.** For a TypeScript `standard` block, CI runs your `solution.ts` against `tests.json` — it must pass every case — and runs your `starter.ts`, which **must fail** at least one. A starter that already passes is a bug. Rust and `buildable` blocks are **not** graded in CI or at sync (a compiling scaffold can't satisfy "starter must fail" on a compile check, and the build server is off) — they're graded at **runtime**, fail-closed: a learner can't complete them until their executor is available. Their files still have to exist.
+
+**Every course needs an instructor with a wallet.** `course.instructor` must point at an [instructor](./instructors/README.md) file whose `wallet` is a real on-curve Solana address — that wallet becomes the course's on-chain creator (the creator-XP recipient). A course with no instructor, or an invalid wallet, fails the sync.
 
 **Capabilities are ordered.** A block that `consumes: [deployed-program]` must appear after a block that produces it, anywhere earlier in the course. Only a `wallet-funding` block can produce `funded-wallet`; only a `deployable` `code` block can produce `deployed-program`.
 
