@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Returns all swap result fields",
+    "input": "1000, 100000, 10, 0.003",
+    "expectedOutput": "'outputAmount' in result && 'newReserveIn' in result && 'newReserveOut' in result && 'priceImpact' in result"
+  },
+  {
+    "id": "t2",
+    "description": "Produces a positive output amount",
+    "input": "1000, 100000, 10, 0.003",
+    "expectedOutput": "typeof result.outputAmount === 'number' && result.outputAmount > 0"
+  },
+  {
+    "id": "t3",
+    "description": "Reserves move in the correct direction",
+    "input": "1000, 100000, 10, 0.003",
+    "expectedOutput": "result.newReserveIn > 1000 && result.newReserveOut < 100000"
+  },
+  {
+    "id": "t4",
+    "description": "Reserves update correctly for a different pool",
+    "input": "2000, 50000, 20, 0.003",
+    "expectedOutput": "result.newReserveIn > 2000 && result.newReserveOut < 50000 && result.outputAmount > 0"
+  }
+]

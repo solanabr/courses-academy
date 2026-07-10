@@ -1,0 +1,20 @@
+[
+  {
+    "id": "test-1",
+    "description": "All PDAs should be off-curve (even hashes)",
+    "input": "\"alice\", \"prog1\"",
+    "expectedOutput": "__result__.0 % 2 == 0 && __result__.1 % 2 == 0 && __result__.2 % 2 == 0"
+  },
+  {
+    "id": "test-2",
+    "description": "All three PDAs should be different",
+    "input": "\"alice\", \"prog1\"",
+    "expectedOutput": "__result__.0 != __result__.1 && __result__.1 != __result__.2"
+  },
+  {
+    "id": "test-3",
+    "description": "Different users should produce different PDAs",
+    "input": "\"bob\", \"prog1\"",
+    "expectedOutput": "__result__.0 != derive_user_pdas(\"alice\", \"prog1\").0"
+  }
+]

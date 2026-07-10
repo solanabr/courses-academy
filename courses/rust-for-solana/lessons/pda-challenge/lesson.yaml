@@ -1,0 +1,17 @@
+id: lesson-pda-challenge
+slug: pda-challenge
+title: "Challenge: Derive PDAs"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: exercise
+    type: code
+    language: rust
+    starter: exercise/starter.rs
+    solution: exercise/solution.rs
+    tests: exercise/tests.json
+    hints:
+      - Use for bump in (0..=255u8).rev() to iterate from 255 down to 0.
+      - Call hash_with_bump(seeds, bump, program_id) inside the loop. Check if hash % 2 == 0.
+      - When the condition is met, return (hash, bump). After the loop, panic!("No valid bump found").

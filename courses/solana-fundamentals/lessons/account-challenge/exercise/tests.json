@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Returns an object with all account fields",
+    "input": "owner, 1000000, data, true",
+    "expectedOutput": "'publicKey' in result && 'owner' in result && 'lamports' in result && 'data' in result && 'executable' in result && 'rentEpoch' in result"
+  },
+  {
+    "id": "t2",
+    "description": "lamports reflects the input",
+    "input": "owner, 500000, data, false",
+    "expectedOutput": "typeof result.lamports === 'number' && result.lamports === 500000"
+  },
+  {
+    "id": "t3",
+    "description": "executable reflects the input and rentEpoch is numeric",
+    "input": "owner, 1000000, data, true",
+    "expectedOutput": "result.executable === true && typeof result.rentEpoch === 'number'"
+  },
+  {
+    "id": "t4",
+    "description": "executable and lamports reflect a different input",
+    "input": "owner, 250000, data, false",
+    "expectedOutput": "result.executable === false && result.lamports === 250000"
+  }
+]

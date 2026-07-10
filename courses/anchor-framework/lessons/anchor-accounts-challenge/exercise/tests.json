@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "description": "Valid account passes",
+    "input": "\"programA\", \"programA\", true, true, true, true",
+    "expectedOutput": "__result__.is_ok()"
+  },
+  {
+    "id": "t2",
+    "description": "Wrong owner is rejected",
+    "input": "\"programA\", \"programB\", true, true, true, true",
+    "expectedOutput": "__result__ == Err(\"IncorrectProgramId\".to_string())"
+  },
+  {
+    "id": "t3",
+    "description": "Missing required signer is rejected",
+    "input": "\"programA\", \"programA\", false, true, true, true",
+    "expectedOutput": "__result__ == Err(\"MissingRequiredSignature\".to_string())"
+  },
+  {
+    "id": "t4",
+    "description": "Non-writable when writable is required is rejected",
+    "input": "\"programA\", \"programA\", true, true, false, true",
+    "expectedOutput": "__result__ == Err(\"AccountNotWritable\".to_string())"
+  },
+  {
+    "id": "t5",
+    "description": "Passes when no signer/writable requirements",
+    "input": "\"progX\", \"progX\", true, false, true, false",
+    "expectedOutput": "__result__.is_ok()"
+  }
+]

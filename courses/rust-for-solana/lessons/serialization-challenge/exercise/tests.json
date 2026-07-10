@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Serialized length for a 5-char owner",
+    "input": "\"Alice\", 1000, false",
+    "expectedOutput": "__result__.len() == 18"
+  },
+  {
+    "id": "t2",
+    "description": "Serialized length for a 3-char owner",
+    "input": "\"Bob\", 42, true",
+    "expectedOutput": "__result__.len() == 16"
+  },
+  {
+    "id": "t3",
+    "description": "Owner bytes start at offset 4",
+    "input": "\"Alice\", 1000, false",
+    "expectedOutput": "__result__[4] == b'A'"
+  },
+  {
+    "id": "t4",
+    "description": "Correct layout for a different input (len prefix, owner, frozen flag)",
+    "input": "\"Sol\", 7, true",
+    "expectedOutput": "__result__[0] == 3 && __result__[4] == b'S' && __result__[15] == 1"
+  }
+]

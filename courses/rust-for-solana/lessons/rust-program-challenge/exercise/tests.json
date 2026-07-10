@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Deducts amount + fee, credits recipient",
+    "input": "1000, 500, 200, 5",
+    "expectedOutput": "Ok((795, 700))"
+  },
+  {
+    "id": "t2",
+    "description": "Insufficient balance fails",
+    "input": "100, 0, 100, 5",
+    "expectedOutput": "__result__.is_err()"
+  },
+  {
+    "id": "t3",
+    "description": "Handles zero fee and exact drain",
+    "input": "500, 200, 500, 0",
+    "expectedOutput": "Ok((0, 700))"
+  },
+  {
+    "id": "t4",
+    "description": "Correct balances for a different transfer",
+    "input": "2000, 1000, 300, 50",
+    "expectedOutput": "Ok((1650, 1300))"
+  }
+]

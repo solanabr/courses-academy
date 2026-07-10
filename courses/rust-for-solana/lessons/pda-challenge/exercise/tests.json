@@ -1,0 +1,20 @@
+[
+  {
+    "id": "test-1",
+    "description": "Derived address should be off-curve (even hash)",
+    "input": "&[\"user\", \"alice\"], \"program1\"",
+    "expectedOutput": "__result__.0 % 2 == 0"
+  },
+  {
+    "id": "test-2",
+    "description": "Different seeds should produce different addresses",
+    "input": "&[\"vault\", \"alice\"], \"program1\"",
+    "expectedOutput": "__result__.0 != find_program_address(&[\"user\", \"alice\"], \"program1\").0"
+  },
+  {
+    "id": "test-3",
+    "description": "Different users should produce different addresses",
+    "input": "&[\"user\", \"bob\"], \"program1\"",
+    "expectedOutput": "__result__.0 != find_program_address(&[\"user\", \"alice\"], \"program1\").0"
+  }
+]

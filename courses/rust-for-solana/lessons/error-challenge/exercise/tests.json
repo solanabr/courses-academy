@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "description": "Valid transfer succeeds",
+    "input": "\"alice\", \"bob\", 100, 500",
+    "expectedOutput": "__result__.is_ok()"
+  },
+  {
+    "id": "t2",
+    "description": "Empty recipient is rejected",
+    "input": "\"alice\", \"\", 100, 500",
+    "expectedOutput": "__result__ == Err(\"INVALID_RECIPIENT\".to_string())"
+  },
+  {
+    "id": "t3",
+    "description": "Zero amount is rejected",
+    "input": "\"alice\", \"bob\", 0, 500",
+    "expectedOutput": "__result__ == Err(\"ZERO_AMOUNT\".to_string())"
+  },
+  {
+    "id": "t4",
+    "description": "Insufficient balance is rejected",
+    "input": "\"alice\", \"bob\", 600, 500",
+    "expectedOutput": "__result__ == Err(\"INSUFFICIENT_BALANCE\".to_string())"
+  },
+  {
+    "id": "t5",
+    "description": "Sender equal to recipient is rejected",
+    "input": "\"alice\", \"alice\", 100, 500",
+    "expectedOutput": "__result__ == Err(\"SAME_ACCOUNT\".to_string())"
+  }
+]

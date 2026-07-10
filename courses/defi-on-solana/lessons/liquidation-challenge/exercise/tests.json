@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Returns an object with isLiquidatable",
+    "input": "100, 50, 1.5",
+    "expectedOutput": "typeof result === 'object' && 'isLiquidatable' in result"
+  },
+  {
+    "id": "t2",
+    "description": "Under-collateralized position is liquidatable",
+    "input": "100, 80, 1.5",
+    "expectedOutput": "result.isLiquidatable === true"
+  },
+  {
+    "id": "t3",
+    "description": "Healthy position is not liquidatable",
+    "input": "100, 50, 1.5",
+    "expectedOutput": "result.isLiquidatable === false"
+  },
+  {
+    "id": "t4",
+    "description": "Correctly flags a different liquidatable position",
+    "input": "100, 100, 2.0",
+    "expectedOutput": "result.isLiquidatable === true"
+  }
+]

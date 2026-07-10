@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Sufficient balance succeeds",
+    "input": "\"alice\", 1000, 500, 200",
+    "expectedOutput": "__result__.is_ok()"
+  },
+  {
+    "id": "t2",
+    "description": "Insufficient balance fails",
+    "input": "\"alice\", 100, 500, 200",
+    "expectedOutput": "__result__.is_err()"
+  },
+  {
+    "id": "t3",
+    "description": "Balances update correctly",
+    "input": "\"alice\", 1000, 500, 200",
+    "expectedOutput": "{ let r = __result__.unwrap(); r.0 == 800 && r.1 == 700 }"
+  },
+  {
+    "id": "t4",
+    "description": "Balances update correctly for a different transfer",
+    "input": "\"bob\", 5000, 1000, 1500",
+    "expectedOutput": "{ let r = __result__.unwrap(); r.0 == 3500 && r.1 == 2500 }"
+  }
+]

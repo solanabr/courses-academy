@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "description": "Returns a SIWS message string containing the domain",
+    "input": "'academy.courses', sender, 'nonce123', 'Sign in'",
+    "expectedOutput": "typeof result === 'string' && result.includes('academy.courses')"
+  },
+  {
+    "id": "t2",
+    "description": "Includes the version header and reflects the nonce",
+    "input": "'academy.courses', sender, 'nonce123', 'Sign in'",
+    "expectedOutput": "result.includes('Version: 1') && result.includes('Nonce: nonce123')"
+  },
+  {
+    "id": "t3",
+    "description": "Includes the URI (built from the domain) and an Issued At timestamp",
+    "input": "'academy.courses', sender, 'nonce123', 'Sign in'",
+    "expectedOutput": "result.includes('URI: https://academy.courses') && result.includes('Issued At:')"
+  },
+  {
+    "id": "t4",
+    "description": "Reflects a different domain and nonce (not hardcoded)",
+    "input": "'app.example.com', sender, 'abc456', 'Log in'",
+    "expectedOutput": "result.includes('Nonce: abc456') && result.includes('URI: https://app.example.com')"
+  }
+]

@@ -1,0 +1,17 @@
+id: lesson-serialization-challenge
+slug: serialization-challenge
+title: "Challenge: Serialize Account Data"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: exercise
+    type: code
+    language: rust
+    starter: exercise/starter.rs
+    solution: exercise/solution.rs
+    tests: exercise/tests.json
+    hints:
+      - Start with let mut buf = Vec::new(); then use buf.extend_from_slice(&(owner.len() as u32).to_le_bytes()) for the 4-byte length prefix.
+      - Append the owner bytes with buf.extend_from_slice(owner.as_bytes()), then the balance with buf.extend_from_slice(&balance.to_le_bytes()).
+      - "Finally push the frozen flag: buf.push(if frozen { 1 } else { 0 }); and return buf."

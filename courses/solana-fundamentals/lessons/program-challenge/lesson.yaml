@@ -1,0 +1,17 @@
+id: lesson-program-challenge
+slug: program-challenge
+title: "Challenge: Build a Custom Instruction"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: exercise
+    type: code
+    language: typescript
+    starter: exercise/starter.ts
+    solution: exercise/solution.ts
+    tests: exercise/tests.json
+    hints:
+      - Create an 8-byte Uint8Array and use DataView to write the amount as a little-endian u64
+      - "The keys array should have payer first (isSigner: true, isWritable: true), then dataAccount (isSigner: false, isWritable: true)"
+      - Use new DataView(buffer).setBigUint64(0, BigInt(amount), true) where true means little-endian

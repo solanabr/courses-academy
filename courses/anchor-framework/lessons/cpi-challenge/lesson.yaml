@@ -1,0 +1,17 @@
+id: lesson-cpi-challenge
+slug: cpi-challenge
+title: "Challenge: Simulate a CPI Vault Transfer"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: exercise
+    type: code
+    language: rust
+    starter: exercise/starter.rs
+    solution: exercise/solution.rs
+    tests: exercise/tests.json
+    hints:
+      - 'First derive the PDA: let (_, bump) = find_pda(&["vault", user], "system");'
+      - 'Then check: if vault_balance < amount { return Err("INSUFFICIENT_VAULT_BALANCE".to_string()); }'
+      - Return Ok((vault_balance - amount, recipient_balance + amount, bump)).
