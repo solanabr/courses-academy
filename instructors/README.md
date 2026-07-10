@@ -1,6 +1,6 @@
 # Instructors
 
-One YAML file per instructor. An instructor is the teaching persona shown on a course **and** the person who receives its on-chain creator reward.
+One YAML file per instructor. An instructor is the person shown as teaching a course — and the one who gets credited and rewarded for it.
 
 ```yaml
 id: instructor-ana-santos           # instructor-<kebab>, permanent
