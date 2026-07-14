@@ -29,12 +29,12 @@ difficulty: beginner                # beginner | intermediate | advanced
 duration: 10                        # hours (display only)
 xpPerLesson: 10                     # 1–100; XP for completing each lesson
 xpReward: 600                       # XP shown on the course card; ≤ 5000
-creatorRewardXp: 500                # optional; XP to the instructor per completion; ≤ 5000, default 0
+creatorRewardXp: 500                # optional; XP to the creator per completion; ≤ 5000, default 0
 minCompletionsForReward: 10         # optional; completions before creator reward pays; default 0
 trackId: 1                          # optional grouping; default 0
 trackLevel: 1                       # optional position in track; default 0
 tags: [solana, blockchain, beginner]
-instructor: instructor-ana-santos   # the course's instructor (see instructors/README.md)
+creator: B7o8NfV81HzjuZFWQTTx3Xdvh77Dqoajwib3kWEnvzJF   # the course creator's Solana wallet (Course.creator on-chain)
 prerequisiteCourse: course-…        # optional; must be another real course id, not itself
 modules:
   - key: getting-started            # kebab, unique within the course
