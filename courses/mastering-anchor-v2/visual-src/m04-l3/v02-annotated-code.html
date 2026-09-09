@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: has_one to address, the mechanical rename
+     purpose: anchor the caller check as a callback to the m03-l2 constraint catalog, not a new concept
+     data: before: #[account(has_one = maker)]  pub escrow: Account<Escrow> - meaning: escrow.maker == maker.address() - status in V2: deprecated, compiles with a warning after:  #[account(mut, address = escrow.player)]  pub player: Signer - meaning: player.address() == escrow.player  (any expression allowed) - status in V2: idiomatic, no warning note: the compiler underlines the deprecated form for you; this is a guided migration
+     prompt: Two stacked code cards, "before (V2 deprecated)" and "after (V2 idiomatic)". Under each, a one-line plain-language meaning. Draw a curved arrow from the has_one field to the address field labeled "same check, expression-based". Add a small warning-underline motif under the has_one line to show the compiler flags it.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:455px;height:507px;top:-243px;right:-243px;border-radius:36% 40% 51% 63% / 36% 57% 46% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:458px;height:412px;bottom:-222px;left:-222px;border-radius:54% 46% 46% 62% / 62% 63% 64% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:494px;height:478px;bottom:-268px;left:433px;border-radius:36% 57% 44% 59% / 44% 59% 56% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .blk { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); padding:16px; }
+  .hd { display:flex; align-items:center; justify-content:space-between; padding:0 6px 12px; }
+  .hd .lbl { flex:0 0 auto; white-space:nowrap; font-family:var(--font-display); font-weight:900; font-size:20px;
+             color:var(--text-primary); letter-spacing:-.01em; }
+  .st { flex:0 0 auto; white-space:nowrap; font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.06em;
+        padding:6px 12px; border-radius:var(--radius-pill); }
+  .st.old { background:var(--surface-card); border:2px solid #c0392b; color:#c0392b; }
+  .st.new { background:var(--surface-accent); border:2px solid var(--stbr-yellow-600);
+            color:var(--stbr-dark); }
+  .code { background:var(--surface-inverse); border-radius:var(--radius-lg); padding:20px 26px; }
+  .code .ln { font-family:var(--font-mono); font-size:23px; line-height:1.5;
+              color:var(--stbr-cream); white-space:nowrap; }
+  .code .dim { color:var(--stbr-ink-300); }
+  .flag { border-bottom:3px dashed #e0705f; padding-bottom:2px; }
+  .hi { color:var(--stbr-yellow); font-weight:700; }
+  .mean { display:flex; align-items:center; gap:14px; padding:13px 8px 2px; }
+  .mean .kk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.14em;
+              text-transform:uppercase; color:var(--text-muted); flex:0 0 78px; }
+  .mean .vv { font-family:var(--font-body); font-size:17px; color:var(--text-secondary); }
+  .mean .vv code { font-family:var(--font-mono); font-size:16px; color:var(--text-primary);
+                   font-weight:600; }
+  .conn { position:relative; height:92px; }
+  .conn .cl { position:absolute; left:470px; top:27px; font-family:var(--font-body);
+              font-weight:800; font-size:16px;
+              color:var(--stbr-dark); background:var(--surface-accent);
+              border-radius:var(--radius-pill); padding:9px 20px; }
+  .foot { margin-top:16px; height:70px; box-sizing:border-box; background:var(--surface-brand);
+          border-radius:var(--radius-lg); display:flex; align-items:center; padding:0 30px; gap:18px; }
+  .foot .w { font-family:var(--font-display); font-weight:900; font-size:14px; letter-spacing:.14em;
+             text-transform:uppercase; color:var(--stbr-cream); opacity:.85; flex:0 0 118px; }
+  .foot .t { font-family:var(--font-body); font-size:18px; font-weight:600; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">m03-l2 callback · constraint catalog</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 12px;">has_one → address: a rename, not a new idea</h2>
+
+  <div class="blk">
+    <div class="hd">
+      <div class="lbl">before — V2 deprecated</div>
+      <div class="st old">compiles, with a warning</div>
+    </div>
+    <div class="code">
+      <div class="ln">#[account(<span class="flag">has_one = maker</span>)]</div>
+      <div class="ln">pub escrow: Account&lt;Escrow&gt;<span class="dim">,</span></div>
+    </div>
+    <div class="mean">
+      <div class="kk">means</div>
+      <div class="vv"><code>escrow.maker == maker.address()</code> — one fixed shape: field name matches account name.</div>
+    </div>
+  </div>
+
+  <div class="conn">
+    <svg width="1456" height="92" viewBox="0 0 1456 92" style="position:absolute;left:0;top:0;">
+      <path d="M 293 0 C 293 44, 420 46, 420 70" fill="none" stroke="#1B231D" stroke-width="3"/>
+      <polygon points="420,92 409,69 431,69" fill="#1B231D"/>
+    </svg>
+    <div class="cl">same check, expression-based</div>
+  </div>
+
+  <div class="blk">
+    <div class="hd">
+      <div class="lbl">after — V2 idiomatic</div>
+      <div class="st new">no warning</div>
+    </div>
+    <div class="code">
+      <div class="ln">#[account(mut, <span class="hi">address = escrow.player</span>)]</div>
+      <div class="ln">pub player: Signer<span class="dim">,</span></div>
+    </div>
+    <div class="mean">
+      <div class="kk">means</div>
+      <div class="vv"><code>player.address() == escrow.player</code> — any expression allowed on the right.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="w">migration</div>
+    <div class="t">the compiler underlines the deprecated form for you — this is a guided rename, not a redesign.</div>
+  </div>
+</div>
+</body></html>

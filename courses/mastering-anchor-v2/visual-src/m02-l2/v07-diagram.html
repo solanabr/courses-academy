@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One event, two wire encodings, one decode rule
+     purpose: show that both variants share sol_log_data but the payload bytes differ, so the reader must match
+     data: emit!(HighScorePosted { .. }) -> #[event]           : wincode/borsh-wire serialize -> sol_log_data -> logs   (project claims 3-10x fewer CU than v1 borsh events) -> #[event(bytemuck)] : raw memcpy of struct bytes    -> sol_log_data -> logs   (no serializer at all; measure the gap yourself) reader side: borsh-decoder  + bytemuck bytes  = garbage bytemuck-decoder + borsh bytes   = garbage rule: the consumer MUST decode with the SAME variant the program emitted
+     prompt: A diagram with one source node "emit!" splitting into two encoding paths that both funnel into a single "sol_log_data -> transaction logs" node. Label the top path wincode/borsh with a "3-10x fewer CU than v1 borsh events (project claim)" tag, the bottom path memcpy with a "no serializer at all" tag. On the right, two reader boxes with red X's for the mismatched pairings and one green check for matched. The takeaway line "decode with the variant you emitted" sits under the logs node.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:608px;height:567px;top:-337px;right:-337px;border-radius:43% 47% 46% 42% / 65% 40% 39% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:444px;height:386px;left:-249px;top:244px;border-radius:44% 50% 42% 45% / 42% 48% 51% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:565px;height:506px;bottom:-321px;right:-321px;border-radius:39% 41% 37% 61% / 64% 43% 51% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:flex; gap:26px; align-items:flex-start; }
+  .left { width:880px; flex:none; }
+  .right { flex:1; }
+
+  .src { height:74px; border-radius:var(--radius-lg); background:var(--surface-inverse);
+    color:var(--text-on-dark); display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-size:22px; font-weight:700; }
+  .dn { height:26px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; }
+  .dn .ln { width:3px; height:12px; background:var(--stbr-ink-500); display:block; }
+  .dn .tri { display:block; border-left:8px solid transparent;
+    border-right:8px solid transparent; border-top:11px solid var(--stbr-ink-500); }
+  .dn.split { flex-direction:row; gap:20px; }
+  .dn.split .g { flex:1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; }
+
+  .paths { display:flex; gap:20px; }
+  .path { flex:1; height:210px; border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); background:var(--surface-card); overflow:hidden; }
+  .path .ph { height:56px; padding:0 20px; display:flex; align-items:center;
+    background:var(--surface-brand); color:var(--text-on-brand);
+    font-family:var(--font-mono); font-size:19px; font-weight:700; }
+  .path.b .ph { background:var(--surface-brand-deep); }
+  .path .pb { padding:16px 20px; }
+  .path .step { font-family:var(--font-body); font-size:17px; line-height:1.35;
+    color:var(--text-primary); font-weight:600; }
+  .path .tag { margin-top:12px; display:inline-block; border-radius:var(--radius-pill);
+    padding:8px 14px; background:var(--surface-paper);
+    border:1.5px solid var(--border-subtle); font-family:var(--font-body);
+    font-size:13.5px; font-weight:700; color:var(--text-secondary); }
+
+  .logs { height:78px; border-radius:var(--radius-lg); background:var(--surface-brand);
+    color:var(--text-on-brand); display:flex; align-items:center; justify-content:center;
+    gap:14px; }
+  .logs .m { font-family:var(--font-mono); font-size:21px; font-weight:700; }
+  .logs .a { font-family:var(--font-body); font-size:19px; }
+  .rule { margin-top:16px; height:66px; border-radius:var(--radius-lg);
+    background:var(--surface-accent); border:2px solid var(--stbr-yellow-700);
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-family:var(--font-display); font-weight:900; font-size:23px;
+    color:var(--stbr-dark); }
+
+  .rhd { font-family:var(--font-display); font-weight:900; font-size:13px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted);
+    margin-bottom:12px; }
+  .rd { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+    background:var(--surface-card); padding:16px 18px; margin-bottom:14px;
+    display:flex; gap:14px; align-items:flex-start; height:120px; }
+  .rd .mk { width:38px; height:38px; flex:none; border-radius:50%; display:flex;
+    align-items:center; justify-content:center; font-family:var(--font-display);
+    font-weight:900; font-size:21px; }
+  .rd.bad .mk { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .rd.ok  { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .rd.ok .mk { background:var(--stbr-cream); color:var(--stbr-emerald); }
+  .rd .pair { font-family:var(--font-mono); font-size:15.5px; font-weight:700;
+    line-height:1.35; color:var(--text-primary); }
+  .rd .res { margin-top:8px; font-family:var(--font-body); font-size:15px;
+    font-weight:800; color:var(--text-secondary); }
+  .rd.ok .pair, .rd.ok .res { color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">one event, two wire encodings</div>
+  <h2 class="viz-title">same syscall, different bytes</h2>
+  <div class="wrap">
+    <div class="left">
+      <div class="src">emit!(HighScorePosted { .. })</div>
+      <div class="dn split"><span class="g"><span class="ln"></span><span class="tri"></span></span><span class="g"><span class="ln"></span><span class="tri"></span></span></div>
+      <div class="paths">
+        <div class="path a">
+          <div class="ph">#[event]</div>
+          <div class="pb">
+            <div class="step">wincode / borsh-wire serialize</div>
+            <div class="tag">3&ndash;10&times; fewer CU than v1 borsh events (project claim)</div>
+          </div>
+        </div>
+        <div class="path b">
+          <div class="ph">#[event(bytemuck)]</div>
+          <div class="pb">
+            <div class="step">raw memcpy of the struct bytes</div>
+            <div class="tag">no serializer at all &mdash; measure the gap yourself</div>
+          </div>
+        </div>
+      </div>
+      <div class="dn split"><span class="g"><span class="ln"></span><span class="tri"></span></span><span class="g"><span class="ln"></span><span class="tri"></span></span></div>
+      <div class="logs"><span class="m">sol_log_data</span><span class="a">&rarr;</span><span class="a">transaction logs</span></div>
+      <div class="rule">decode with the variant you emitted</div>
+    </div>
+    <div class="right">
+      <div class="rhd">reader side</div>
+      <div class="rd bad">
+        <div class="mk">&times;</div>
+        <div class="bod"><div class="pair">borsh-decoder<br>+ bytemuck bytes</div>
+        <div class="res">garbage</div></div>
+      </div>
+      <div class="rd bad">
+        <div class="mk">&times;</div>
+        <div class="bod"><div class="pair">bytemuck-decoder<br>+ borsh bytes</div>
+        <div class="res">garbage</div></div>
+      </div>
+      <div class="rd ok">
+        <div class="mk">&#10003;</div>
+        <div class="bod"><div class="pair">decoder matches<br>the emitted variant</div>
+        <div class="res">decodes correctly</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

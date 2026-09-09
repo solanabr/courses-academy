@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The V2 headline numbers corrected in public
+     purpose: show the 9.9x-to-8.8x self-correction as the reason no multiplier is frozen
+     data: issue #4390: "zero-copy by default" filed -> Account<T> named the slow path and the number-one performance complaint from Anchor developers early V2 benchmarks: ~95% less bytecode, ~9.9x average CU (headline figures) PR #4914 (merged 2026-08-13): revised DOWN -> ~94% less bytecode, ~8.8x average CU standing caveat: average across a benchmark family; alpha values may move; tiny programs see minimal gains
+     prompt: A left-to-right timeline with four labeled nodes in order: "#4390 filed", "early benchmarks 95% / 9.9x", "#4914 revised 94% / 8.8x", "caveat: moving average". Draw a downward arrow between the second and third nodes to emphasize the numbers went DOWN. Keep it plain, no celebratory styling.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:497px;height:436px;top:-232px;right:-232px;border-radius:40% 56% 62% 40% / 58% 42% 56% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:421px;left:-337px;top:347px;border-radius:40% 53% 58% 46% / 49% 36% 47% 45%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:361px;height:500px;bottom:-266px;left:511px;border-radius:49% 58% 49% 54% / 46% 36% 52% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { display:flex; align-items:stretch; margin-top:12px; }
+  .col { flex:1 1 0; display:flex; flex-direction:column; padding:0 11px; }
+  .col.conn { flex:0 0 178px; padding:0; }
+
+  .lab { height:62px; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:8px; }
+  .lab .t { font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.1;
+            color:var(--text-primary); }
+  .lab .d { font-family:var(--font-body); font-weight:700; font-size:12.5px; letter-spacing:.06em;
+            text-transform:uppercase; color:var(--text-muted); margin-top:5px; }
+
+  .axis { height:22px; display:flex; align-items:center; }
+  .ln { flex:1 1 0; height:3px; background:var(--stbr-emerald); }
+  .ln.void { background:transparent; }
+  .dot { flex:0 0 auto; display:block; }
+  .axis.hot .ln { height:7px; background:var(--stbr-yellow); }
+
+  .card { flex:1 1 auto; margin-top:16px; border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); background:var(--surface-card); padding:20px 22px;
+          display:flex; flex-direction:column; }
+  .card.acc { border-color:var(--stbr-yellow-700); }
+  .card .body { font-family:var(--font-body); font-size:15px; line-height:1.42; color:var(--text-secondary); }
+  .card .body b { color:var(--text-primary); font-weight:700; }
+  .stat { border-top:1.5px solid var(--border-subtle); padding-top:12px; margin-top:12px; }
+  .stat:first-child { border-top:0; padding-top:0; margin-top:0; }
+  .stat .v { font-family:var(--font-mono); font-weight:800; font-size:30px; line-height:1.05;
+             color:var(--text-primary); }
+  .stat .k { font-family:var(--font-body); font-weight:700; font-size:12.5px; letter-spacing:.08em;
+             text-transform:uppercase; color:var(--text-muted); margin-top:6px; }
+  .tagline { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.08em;
+             text-transform:uppercase; color:var(--text-muted); margin-top:14px;
+             border-top:1.5px solid var(--border-subtle); padding-top:11px; }
+
+  .down { margin-top:16px; display:flex; flex-direction:column; align-items:center; }
+  .down svg { display:block; }
+  .down .chip { margin-top:10px; padding:7px 16px; border-radius:var(--radius-pill);
+                background:var(--surface-accent); color:var(--text-on-accent);
+                font-family:var(--font-body); font-weight:800; font-size:13px;
+                letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+  .foot { margin-top:22px; font-family:var(--font-body); font-size:15px; color:var(--text-secondary); }
+  .foot b { color:var(--text-primary); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">the headline numbers, corrected in public</div>
+  <h2 class="viz-title">no multiplier is frozen</h2>
+
+  <div class="tl">
+
+    <div class="col">
+      <div class="lab"><span class="t">#4390 filed</span><span class="d">the ask</span></div>
+      <div class="axis"><span class="ln void"></span><svg class="dot" width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7.75" fill="#ffffff" stroke="#008b4c" stroke-width="3.5"/></svg><span class="ln"></span></div>
+      <div class="card">
+        <div class="body">issue <b>#4390</b>, &ldquo;zero-copy by default&rdquo;, named <b>Account&lt;T&gt;</b> as the slow path &mdash; and the <b>number-one performance complaint</b> from Anchor developers.</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="lab"><span class="t">early benchmarks</span><span class="d">headline figures</span></div>
+      <div class="axis"><span class="ln"></span><svg class="dot" width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7.75" fill="#ffffff" stroke="#008b4c" stroke-width="3.5"/></svg><span class="ln"></span></div>
+      <div class="card">
+        <div class="stat"><div class="v">~95%</div><div class="k">less bytecode</div></div>
+        <div class="stat"><div class="v">~9.9&times;</div><div class="k">average CU</div></div>
+        <div class="tagline">first published numbers</div>
+      </div>
+    </div>
+
+    <div class="col conn">
+      <div class="lab"></div>
+      <div class="axis hot"><span class="ln"></span></div>
+      <div class="down">
+        <svg width="26" height="58"><line x1="13" y1="0" x2="13" y2="45" stroke="#1b231d" stroke-width="3"/><polygon points="13,58 5,43 21,43" fill="#1b231d"/></svg>
+        <span class="chip">revised down</span>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="lab"><span class="t">#4914 merged</span><span class="d">2026-08-13</span></div>
+      <div class="axis"><span class="ln"></span><svg class="dot" width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7.75" fill="#ffffff" stroke="#008b4c" stroke-width="3.5"/></svg><span class="ln"></span></div>
+      <div class="card acc">
+        <div class="stat"><div class="v">~94%</div><div class="k">less bytecode</div></div>
+        <div class="stat"><div class="v">~8.8&times;</div><div class="k">average CU</div></div>
+        <div class="tagline">the same PR revised them</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="lab"><span class="t">standing caveat</span><span class="d">still moving</span></div>
+      <div class="axis"><span class="ln"></span><svg class="dot" width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7.75" fill="#ffffff" stroke="#008b4c" stroke-width="3.5"/></svg><span class="ln void"></span></div>
+      <div class="card">
+        <div class="body">an <b>average across a benchmark family</b>. Alpha values may move again, and <b>tiny programs see minimal gains</b>.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="foot">Quote the mechanism, not the multiplier: <b>the numbers moved once already, in the project's own PR.</b></div>
+</div>
+</body></html>

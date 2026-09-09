@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The derive attributes, and the hand-written lines that replace them
+     purpose: show that each derive attribute expands to explicit runtime code you now own
+     data: Anchor V2 attribute            -> Native pinocchio line you write        -> Bug it blocks if omitted Account<Vault> (owner)         -> if !config.is_owned_by(&crate::ID)     -> foreign account passed as vault Account<Vault> (disc)          -> if cfg[0] != VAULT_DISCRIMINATOR       -> type cosplay (wrong account type) Account<Vault> (len)           -> if cfg.len() != CONFIG_LEN             -> out-of-bounds read on short data constraint = vault.authority   -> if &cfg[1..33] != authority.key()      -> withdraw from someone else's vault Signer authority               -> if !authority.is_signer()              -> unsigned withdraw
+     prompt: Three-column comparison table. Left column the Anchor V2 attribute, middle the exact native Rust line, right the vulnerability if the line is missing. Group the three Account<Vault> rows visually to show one attribute expands to three checks. Emphasis on the right column as the stakes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:580px;height:558px;top:-316px;right:-316px;border-radius:54% 46% 58% 54% / 44% 58% 47% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:582px;height:567px;bottom:-327px;left:-327px;border-radius:52% 55% 47% 61% / 59% 44% 62% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:450px;height:486px;bottom:-256px;left:546px;border-radius:61% 46% 43% 59% / 40% 48% 59% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden;
+         background:var(--surface-card); margin-top:2px; }
+  .hd { display:flex; align-items:stretch; background:var(--surface-inverse); }
+  .hd .h { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.13em;
+           text-transform:uppercase; color:rgba(245,232,202,0.72); padding:13px 20px; }
+  .hd .h.stakes { background:var(--surface-accent); color:var(--text-on-accent); }
+  .a { flex:0 0 300px; }
+  .b { flex:1 1 0; min-width:0; border-left:1.5px solid var(--border-subtle); }
+  .c { flex:0 0 400px; border-left:1.5px solid var(--border-subtle); }
+  .hd .b, .hd .c { border-left-color:rgba(245,232,202,0.16); }
+  .grp { display:flex; align-items:stretch; border-top:1.5px solid var(--border-subtle); }
+  .gl { flex:0 0 300px; background:rgba(0,139,76,0.09); padding:14px 20px;
+        display:flex; flex-direction:column; justify-content:center; }
+  .gname { font-family:var(--font-mono); font-weight:700; font-size:16px; line-height:1.2;
+           color:var(--stbr-emerald-800); }
+  .gnote { font-family:var(--font-body); font-size:12.5px; line-height:1.35;
+           color:var(--text-secondary); margin-top:6px; }
+  .grows { flex:1 1 0; min-width:0; display:flex; flex-direction:column; }
+  .r { display:flex; align-items:stretch; flex:1 1 0; }
+  .r + .r { border-top:1.5px solid var(--border-subtle); }
+  .grp + .grp .grows > .r:first-child { border-top:0; }
+  .cell { padding:15px 20px; display:flex; flex-direction:column; justify-content:center; }
+  .sub { flex:0 0 108px; }
+  .code { flex:1 1 0; min-width:0; border-left:1.5px solid var(--border-subtle); }
+  .risk { flex:0 0 400px; border-left:1.5px solid var(--border-subtle);
+          background:rgba(255,210,63,0.16); }
+  .plain { flex:0 0 300px; }
+  .kicker { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+            text-transform:uppercase; color:var(--stbr-emerald); }
+  .attr { font-family:var(--font-mono); font-weight:700; font-size:15px; line-height:1.25;
+          color:var(--text-primary); }
+  .mono { font-family:var(--font-mono); font-size:14.5px; line-height:1.35; color:var(--text-primary); }
+  .mono b { color:var(--stbr-emerald-800); font-weight:700; }
+  .bug { font-family:var(--font-body); font-size:14.5px; line-height:1.38; color:var(--text-on-accent); }
+  .bug b { font-weight:800; }
+  .verdict { margin-top:16px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:17px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.12;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">what the macro was doing for you</div>
+  <h2 class="viz-title">every derive attribute is a line you now owe</h2>
+
+  <div class="tbl">
+    <div class="hd">
+      <div class="h a">anchor v2 attribute</div>
+      <div class="h b">the native pinocchio line you write</div>
+      <div class="h c stakes">bug it blocks if omitted</div>
+    </div>
+
+    <div class="grp">
+      <div class="gl">
+        <div class="gname">Account&lt;Vault&gt;</div>
+        <div class="gnote">one attribute &rarr; <b>three</b> separate runtime checks</div>
+      </div>
+      <div class="grows">
+        <div class="r">
+          <div class="cell sub"><span class="kicker">owner</span></div>
+          <div class="cell code"><span class="mono">if !config.<b>is_owned_by</b>(&amp;crate::ID)</span></div>
+          <div class="cell risk"><span class="bug"><b>foreign account</b> passed as vault</span></div>
+        </div>
+        <div class="r">
+          <div class="cell sub"><span class="kicker">disc</span></div>
+          <div class="cell code"><span class="mono">if cfg[0] != <b>VAULT_DISCRIMINATOR</b></span></div>
+          <div class="cell risk"><span class="bug"><b>type cosplay</b> &mdash; wrong account type</span></div>
+        </div>
+        <div class="r">
+          <div class="cell sub"><span class="kicker">len</span></div>
+          <div class="cell code"><span class="mono">if cfg.len() != <b>CONFIG_LEN</b></span></div>
+          <div class="cell risk"><span class="bug"><b>out-of-bounds read</b> on short data</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="gl" style="background:var(--surface-card)">
+        <div class="gname" style="color:var(--text-primary)">constraint =<br>vault.authority</div>
+      </div>
+      <div class="grows">
+        <div class="r">
+          <div class="cell sub"><span class="kicker">match</span></div>
+          <div class="cell code"><span class="mono">if &amp;cfg[<b>1..33</b>] != authority.key()</span></div>
+          <div class="cell risk"><span class="bug">withdraw from <b>someone else's vault</b></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="gl" style="background:var(--surface-card)">
+        <div class="gname" style="color:var(--text-primary)">Signer authority</div>
+      </div>
+      <div class="grows">
+        <div class="r">
+          <div class="cell sub"><span class="kicker">signer</span></div>
+          <div class="cell code"><span class="mono">if !authority.<b>is_signer</b>()</span></div>
+          <div class="cell risk"><span class="bug"><b>unsigned withdraw</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the trade</span>
+    <span class="vt">Three attributes become five explicit lines &mdash; and the yellow column is what a missing one costs.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: UncheckedAccount with only mut versus a pinned identity
+     purpose: show that mut asserts writability but nothing about which account it is, and what each guard pins
+     data: Spelling                                   | What it asserts | Substitution possible? #[account(mut)] UncheckedAccount           | writable only   | YES: any account, attacker's included #[account(mut, address = escrow.maker)]    | exact address   | NO: must equal the recorded maker #[account(owner = quarter_vault::ID)] Un.. | owning program  | NO for wrong-owner; YES within same owner #[account(constraint = a.address() == expected)] | arbitrary rule | NO if the rule pins identity
+     prompt: Four-row comparison table. Column headers: spelling, what it asserts, substitution possible. Red-flag the first row (mut only, substitution YES). Green the address and constraint rows. Caption: "mut is about writability, not identity".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:488px;top:-267px;right:-267px;border-radius:56% 35% 50% 47% / 41% 51% 46% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:580px;height:393px;left:-331px;top:396px;border-radius:46% 57% 58% 54% / 52% 60% 63% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:466px;height:554px;bottom:-304px;left:374px;border-radius:65% 50% 46% 44% / 65% 51% 42% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; margin: 4px 0 22px; }
+  /* no italic face is available to the renderer: carry emphasis with colour */
+  em { font-style:normal; }
+  .verdict .vt em { color:var(--stbr-yellow); }
+  .tbl { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .hd { display:flex; align-items:center; height:44px; padding:0 24px;
+        background:var(--surface-inverse); }
+  .hd span { font-family:var(--font-display); font-weight:800; font-size:12.5px;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream); }
+  .r { display:flex; align-items:center; min-height:98px; padding:16px 24px;
+       border-bottom:1px solid var(--border-subtle); }
+  .r:last-child { border-bottom:0; }
+  .c1 { width:600px; padding-right:24px; }
+  .c2 { width:250px; padding-right:20px; }
+  .c3 { width:534px; }
+  .sp { font-family:var(--font-mono); font-size:16px; line-height:1.35;
+        color:var(--text-primary); font-weight:600; }
+  .as { font-family:var(--font-display); font-weight:800; font-size:17px;
+        line-height:1.2; color:var(--text-primary); }
+  .sub { font-family:var(--font-body); font-size:14.5px; line-height:1.4;
+         color:var(--text-secondary); }
+  .yes, .no { font-family:var(--font-display); font-weight:900; font-size:16px;
+              letter-spacing:.06em; margin-right:8px; }
+  .no { color:var(--stbr-emerald-800); }
+  .yes { color:#c0392b; }
+  .flag { background:var(--surface-accent); }
+  .flag .sp, .flag .as, .flag .sub { color:var(--text-on-accent); }
+  .flag .yes { color:#a02b1e; }
+  .flag .chip { display:inline-block; margin-top:9px; background:var(--stbr-dark);
+                color:var(--stbr-cream); font-family:var(--font-body); font-weight:700;
+                font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+                padding:4px 10px; border-radius:var(--radius-pill); }
+  .verdict { margin-top:16px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:20px 30px; display:flex;
+             align-items:center; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:12px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.78; width:130px; flex:0 0 130px; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:26px;
+                 line-height:1.15; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">class 2 · unchecked account substitution</div>
+  <h2 class="viz-title">mut is about writability, not identity</h2>
+
+  <div class="tbl">
+    <div class="hd"><span class="c1">spelling</span><span class="c2">what it asserts</span><span class="c3">substitution possible?</span></div>
+
+    <div class="r flag">
+      <div class="c1"><div class="sp">#[account(mut)]<br>pub vault: UncheckedAccount,</div></div>
+      <div class="c2"><div class="as">writable only</div></div>
+      <div class="c3">
+        <div class="sub"><span class="yes">YES</span>any account the caller hands you — the attacker's included</div>
+        <div class="chip">the substitutable spelling</div>
+      </div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><div class="sp">#[account(mut, address = escrow.maker)]<br>pub maker: UncheckedAccount,</div></div>
+      <div class="c2"><div class="as">exact address</div></div>
+      <div class="c3"><div class="sub"><span class="no">NO</span>must equal the maker this escrow recorded</div></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><div class="sp">#[account(owner = quarter_vault::ID)]<br>pub vault: UncheckedAccount,</div></div>
+      <div class="c2"><div class="as">owning program</div></div>
+      <div class="c3"><div class="sub"><span class="no">NO</span>for a wrong-owner account &mdash; but <b>YES within the same owner</b>: any vault of that program still passes</div></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><div class="sp">#[account(constraint = a.address() == expected)]<br>pub a: UncheckedAccount,</div></div>
+      <div class="c2"><div class="as">arbitrary rule</div></div>
+      <div class="c3"><div class="sub"><span class="no">NO</span>if the rule you wrote actually pins identity</div></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the rule</span>
+    <span class="vt">mut says &ldquo;I may write here&rdquo;. Only address / owner / constraint say <em>which account this is</em>.</span>
+  </div>
+</div>
+</body></html>

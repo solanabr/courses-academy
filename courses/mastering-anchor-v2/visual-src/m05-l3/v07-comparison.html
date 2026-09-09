@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The line this lesson holds
+     purpose: make the mechanics-here / standards-there boundary explicit so nobody expects hook authoring
+     data: Taught here (program-seat mechanics): - read the extension-aware account length live - detect a TransferHook extension and read its programId - reason about whether a transfer must forward extra accounts Not here (Digital Assets course owns it): - designing extensions - writing a transfer-hook program - the transfer-hook account-resolution interface, end to end - metadata and compression standards
+     prompt: Two-column comparison. Left "Master Anchor V2 (this lesson)" lists the three mechanics rows. Right "Digital Assets course" lists the four standards rows. Put a small arrow from the right header pointing outward to signal "go there for this." Neutral, no value judgement; the point is scope, not better/worse.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:535px;height:495px;top:-245px;right:-245px;border-radius:35% 63% 58% 47% / 62% 42% 39% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:533px;height:463px;bottom:-248px;left:-248px;border-radius:41% 49% 41% 64% / 36% 49% 42% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:505px;height:447px;bottom:-242px;left:668px;border-radius:47% 50% 54% 56% / 43% 64% 58% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { display:flex; align-items:flex-start; width:1420px; margin:0 auto; }
+  .col { width:686px; flex:0 0 686px; height:470px; background:var(--surface-card);
+         border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+         overflow:hidden; }
+  .divcell { width:40px; flex:0 0 40px; height:470px; display:flex; justify-content:center; }
+  .divcell .rule { width:2px; height:470px; background:var(--stbr-ink-300); }
+  .ch { height:78px; padding:0 26px; display:flex; align-items:center; }
+  .ch.g { background:var(--surface-brand); }
+  .ch.y { background:var(--surface-accent); }
+  .ch .ct { flex:1; font-family:var(--font-display); font-weight:900; font-size:24px;
+            line-height:1.12; }
+  .ch.g .ct { color:var(--text-on-brand); }
+  .ch.y .ct { color:var(--text-on-accent); }
+  .ch .sub { font-family:var(--font-body); font-weight:700; font-size:12px;
+             letter-spacing:.12em; text-transform:uppercase; margin-top:5px; }
+  .ch.g .sub { color:var(--stbr-cream); opacity:.75; }
+  .ch.y .sub { color:var(--stbr-dark); opacity:.7; }
+  .cb { padding:22px 26px; }
+  .r { border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+       background:var(--surface-paper); padding:0 18px; display:flex; align-items:center; }
+  .r + .r { margin-top:12px; }
+  .rL { height:108px; }
+  .rR { height:78px; }
+  .num { width:34px; flex:0 0 34px; font-family:var(--font-display); font-weight:900;
+         font-size:20px; color:var(--text-muted); }
+  .rL .num { color:var(--stbr-emerald); }
+  .tx .n { font-family:var(--font-display); font-weight:800; font-size:19px;
+           line-height:1.2; color:var(--text-primary); }
+  .tx .s { font-family:var(--font-body); font-size:13px; line-height:1.35;
+           color:var(--text-secondary); margin-top:6px; }
+  .foot { width:1420px; margin:20px auto 0; height:60px; display:flex; align-items:center;
+          justify-content:center; border-top:2px solid var(--stbr-ink-300); }
+  .foot .t { font-family:var(--font-body); font-size:15px; line-height:1.4;
+             color:var(--text-secondary); padding-top:14px; }
+  .foot .t b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">scope · where each piece is taught</div>
+  <h2 class="viz-title">the line this lesson holds</h2>
+
+  <div class="cmp">
+    <div class="col">
+      <div class="ch g">
+        <div class="ct">Master Anchor V2
+          <div class="sub">this lesson · program-seat mechanics</div>
+        </div>
+      </div>
+      <div class="cb">
+        <div class="r rL">
+          <div class="num">01</div>
+          <div class="tx">
+            <div class="n">read the extension-aware account length live</div>
+            <div class="s">never assume the classic 82 / 165 constants</div>
+          </div>
+        </div>
+        <div class="r rL">
+          <div class="num">02</div>
+          <div class="tx">
+            <div class="n">detect a TransferHook extension and read its programId</div>
+            <div class="s">set address, or the all-zero default?</div>
+          </div>
+        </div>
+        <div class="r rL">
+          <div class="num">03</div>
+          <div class="tx">
+            <div class="n">reason about whether a transfer must forward extra accounts</div>
+            <div class="s">the branch that changes your instruction</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divcell"><div class="rule"></div></div>
+
+    <div class="col">
+      <div class="ch y">
+        <div class="ct">Digital Assets course
+          <div class="sub">go there for this · standards</div>
+        </div>
+        <svg width="58" height="26" viewBox="0 0 58 26" style="flex:0 0 58px;margin-left:14px;">
+          <line x1="0" y1="13" x2="40" y2="13" stroke="#1b231d" stroke-width="4"/>
+          <polygon points="40,3 58,13 40,23" fill="#1b231d"/>
+        </svg>
+      </div>
+      <div class="cb">
+        <div class="r rR">
+          <div class="num">01</div>
+          <div class="tx"><div class="n">designing extensions</div></div>
+        </div>
+        <div class="r rR">
+          <div class="num">02</div>
+          <div class="tx"><div class="n">writing a transfer-hook program</div></div>
+        </div>
+        <div class="r rR">
+          <div class="num">03</div>
+          <div class="tx"><div class="n">the transfer-hook account-resolution interface, end to end</div></div>
+        </div>
+        <div class="r rR">
+          <div class="num">04</div>
+          <div class="tx"><div class="n">metadata and compression standards</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="t">This is a <b>scope</b> line, not a ranking — here you learn to read what a mint declares; there you learn to author the standard it declares.</div>
+  </div>
+</div>
+</body></html>

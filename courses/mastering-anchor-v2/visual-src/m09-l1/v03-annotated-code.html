@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The config account, byte by byte
+     purpose: make the [disc][data] layout concrete with exact offsets
+     data: offset 0       : discriminator  u8    (1 byte)   value = VAULT_DISCRIMINATOR = 1 offset 1..33   : authority      [u8;32] (32 bytes) the owner this vault answers to offset 33      : vault_bump     u8    (1 byte)   canonical bump of the SOL vault PDA total          : CONFIG_LEN = 34 bytes
+     prompt: Horizontal byte-strip diagram of a 34-byte buffer. Segment it into three labelled regions: byte 0 (discriminator), bytes 1-32 (authority pubkey), byte 33 (vault_bump). Show the offset ruler above and the field name/type/purpose below each segment.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:441px;height:488px;top:-225px;right:-225px;border-radius:42% 37% 56% 48% / 50% 48% 52% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:494px;height:513px;left:-245px;top:257px;border-radius:50% 59% 56% 62% / 57% 46% 63% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:517px;height:495px;bottom:-270px;left:574px;border-radius:35% 64% 36% 45% / 37% 51% 59% 64%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-xl); padding:26px 30px 30px;
+           margin-top:2px; }
+  .inner { width:1396px; }
+  .ruler { position:relative; height:30px; }
+  .ruler .o { position:absolute; top:0; margin-left:-30px; width:60px; text-align:center;
+              font-family:var(--font-mono); font-size:13px; color:rgba(245,232,202,0.55); }
+  .ruler .t { position:absolute; top:20px; margin-left:-1px; width:2px; height:10px;
+              background:rgba(245,232,202,0.35); }
+  .ruler .o.hot { color:var(--stbr-yellow); font-weight:700; }
+
+  .strip { display:flex; height:80px; border-radius:var(--radius-sm); overflow:hidden; }
+  .seg { display:flex; align-items:center; justify-content:center; }
+  .seg.disc { flex:1 1 0; background:var(--stbr-yellow); }
+  .seg.auth { flex:32 1 0; background:var(--surface-brand);
+              border-left:2px solid var(--surface-inverse); border-right:2px solid var(--surface-inverse); }
+  .seg.bump { flex:1 1 0; background:var(--stbr-green); }
+  .seg .sl { font-family:var(--font-mono); font-weight:700; font-size:19px; color:var(--text-on-brand); }
+  .seg .sl small { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.12em;
+                   text-transform:uppercase; color:rgba(245,232,202,0.66); margin-left:14px; }
+
+  .leaders { height:46px; }
+  .cardrow { display:flex; gap:20px; }
+  .lc { background:rgba(245,232,202,0.07); border:1.5px solid rgba(245,232,202,0.20);
+        border-radius:var(--radius-md); padding:13px 18px; }
+  .lc.one { flex:0 0 380px; border-color:var(--stbr-yellow); background:rgba(255,210,63,0.13); }
+  .lc.two { flex:1 1 0; min-width:0; }
+  .lc.three { flex:0 0 380px; }
+  .lname { font-family:var(--font-mono); font-weight:700; font-size:18px; color:var(--text-on-dark); }
+  .lc.one .lname { color:var(--stbr-yellow); }
+  .ltype { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+           text-transform:uppercase; color:rgba(245,232,202,0.55); margin-top:5px; }
+  .lpurp { font-family:var(--font-body); font-size:14px; line-height:1.4; color:rgba(245,232,202,0.86);
+           margin-top:8px; padding-top:8px; border-top:1.5px solid rgba(245,232,202,0.16); }
+  .lpurp code { font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--stbr-cream-300); }
+
+  .foot { margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:17px 28px; display:flex; align-items:center; gap:22px; }
+  .fk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .ft { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.12;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">[disc][data], with real offsets</div>
+  <h2 class="viz-title">the config account, byte by byte</h2>
+
+  <div class="panel">
+    <div class="inner">
+
+      <div class="ruler">
+        <span class="o hot" style="left:0">0</span><span class="t" style="left:0"></span>
+        <span class="o" style="left:41px">1</span><span class="t" style="left:41px"></span>
+        <span class="o" style="left:1355px">33</span><span class="t" style="left:1355px"></span>
+        <span class="o" style="left:1396px">34</span><span class="t" style="left:1396px"></span>
+      </div>
+
+      <div class="strip">
+        <div class="seg disc"></div>
+        <div class="seg auth"><span class="sl">authority<small>32 bytes</small></span></div>
+        <div class="seg bump"></div>
+      </div>
+
+      <div class="leaders">
+        <svg width="1396" height="46" viewBox="0 0 1396 46">
+          <polyline points="21,0 21,16 190,30 190,46" fill="none" stroke="#ffd23f" stroke-width="2.5"/>
+          <polyline points="698,0 698,46" fill="none" stroke="#f5e8ca" stroke-width="2.5" opacity="0.7"/>
+          <polyline points="1375,0 1375,16 1206,30 1206,46" fill="none" stroke="#f5e8ca" stroke-width="2.5" opacity="0.7"/>
+        </svg>
+      </div>
+
+      <div class="cardrow">
+        <div class="lc one">
+          <div class="lname">discriminator</div>
+          <div class="ltype">u8 &middot; 1 byte &middot; offset 0</div>
+          <div class="lpurp">value = <code>VAULT_DISCRIMINATOR = 1</code> &mdash; the type tag every load reads first</div>
+        </div>
+        <div class="lc two">
+          <div class="lname">authority</div>
+          <div class="ltype">[u8;32] &middot; 32 bytes &middot; offset 1..33</div>
+          <div class="lpurp">the owner this vault answers to &mdash; compared against <code>authority.key()</code> on withdraw</div>
+        </div>
+        <div class="lc three">
+          <div class="lname">vault_bump</div>
+          <div class="ltype">u8 &middot; 1 byte &middot; offset 33</div>
+          <div class="lpurp">canonical bump of the SOL vault PDA, stored at init</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">total</span>
+    <span class="ft">CONFIG_LEN = 34 bytes &mdash; any other length fails the check before a single field is read.</span>
+  </div>
+</div>
+</body></html>

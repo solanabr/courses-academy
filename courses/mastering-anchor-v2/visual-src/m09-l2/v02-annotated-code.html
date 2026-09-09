@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The generated try_accounts, annotated against your native TryFrom
+     purpose: show that the derive's load phase is the same owner + discriminator + signer checks you hand-wrote
+     data: // trimmed shape of what `cargo expand` prints for Withdraw::try_accounts fn try_accounts(program_id, accounts..) -> Result<Self> { // field 1: authority let authority: Signer = Signer::try_from(next_account)?;   // <- your check 1: is_signer() // field 2: state let state: Account<Vault> = Account::try_from(next_account)?; //   inside Account::try_from: owner == program_id?         // <- your check 2: is_owned_by(crate::ID) //   inside Account::try_from: data[..8] == Vault::DISC?     // <- your check 4: cfg[0] == VAULT_DISCRIMINATOR //   deserialize needs len >= size_of::<Vault>()            // <- your check 3, roughly: //     yours was exact equality, so an OVER-long account fails natively and loads here // constraints for state run AFTER all fields load: //   seeds + bump = state.bump  -> PDA re-derive matches?    // constraint hook //   constraint = state.owner   -> state.owner == authority address? // constraint hook // ... sol_vault, system_program ... check_duplicate_mutables(&[state.address(), sol_vault.address()])?; // <- MUT_MASK walk: NO native twin Ok(Withdraw { authority, state, sol_vault, system_program }) }
+     prompt: Left: the trimmed generated try_accounts as pseudo-code. Right: callout lines mapping each generated line to the hand-written native check it replaces (checks 1-4), and one callout marking check_duplicate_mutables as having NO native equivalent. Group the loads (phase 1) visually apart from the constraints (phase 2) and the dup walk.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:583px;height:503px;top:-322px;right:-322px;border-radius:47% 51% 61% 46% / 51% 45% 50% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:521px;height:423px;left:-295px;top:191px;border-radius:36% 39% 46% 51% / 39% 64% 61% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:453px;bottom:-274px;left:514px;border-radius:41% 53% 53% 48% / 35% 46% 36% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-xl);
+           padding:22px 26px 24px; }
+  .ln { display:flex; align-items:center; min-height:26px; }
+  .ln.chp { min-height:31px; }
+  .ln.chp2 { min-height:56px; }
+  .code { flex:0 0 900px; width:900px; font-family:var(--font-mono); font-size:14px;
+          line-height:1.32; color:var(--stbr-cream); white-space:pre; }
+  .code.cm { color:var(--stbr-ink-300); }
+  .code .kw { color:var(--stbr-yellow); }
+  .side { flex:1 1 auto; display:flex; justify-content:flex-end; padding-left:16px; }
+  .chip { font-family:var(--font-body); font-size:12px; line-height:1.2;
+          font-weight:600; padding:5px 12px; margin:2px 0; border-radius:var(--radius-pill);
+          background:var(--surface-brand); color:var(--stbr-cream); }
+  .chip b { font-family:var(--font-mono); font-weight:700; }
+  .chip.wide { display:block; border-radius:var(--radius-md);
+               line-height:1.4; padding:8px 14px; }
+  .chip.none { background:var(--stbr-yellow); color:var(--text-on-accent);
+               font-weight:700; }
+  .phase { display:flex; align-items:center; margin:10px 0 6px; }
+  .phase .pl { font-family:var(--font-display); font-weight:800; font-size:12px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-yellow);
+               flex:0 0 auto; padding-right:14px; }
+  .phase .pl.dim { color:var(--stbr-ink-300); }
+  .phase .pr { flex:1 1 auto; height:1px; background:rgba(245,232,202,0.20); }
+  .foot { margin-top:16px; display:flex; align-items:center;
+          background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:16px 26px; }
+  .foot .fk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+              opacity:.75; flex:0 0 200px; }
+  .foot .ft { font-family:var(--font-display); font-weight:900; font-size:20px;
+              line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">cargo expand · Withdraw::try_accounts</div>
+  <h2 class="viz-title">the generated load phase is your gauntlet, in order</h2>
+
+  <div class="panel">
+    <div class="ln"><div class="code">fn try_accounts(program_id, accounts..) -&gt; Result&lt;Self&gt; {</div><div class="side"></div></div>
+
+    <div class="phase"><div class="pl dim">phase 1 · loads</div><div class="pr"></div></div>
+
+    <div class="ln"><div class="code cm">  // field 1: authority</div><div class="side"></div></div>
+    <div class="ln chp"><div class="code">  let authority: Signer = Signer::try_from(next_account)?;</div>
+      <div class="side"><span class="chip">your check 1 &middot; <b>is_signer()</b></span></div></div>
+    <div class="ln"><div class="code cm">  // field 2: state</div><div class="side"></div></div>
+    <div class="ln"><div class="code">  let state: Account&lt;Vault&gt; = Account::try_from(next_account)?;</div><div class="side"></div></div>
+    <div class="ln chp"><div class="code cm">  //   inside Account::try_from: owner == program_id?</div>
+      <div class="side"><span class="chip">your check 2 &middot; <b>is_owned_by(crate::ID)</b></span></div></div>
+    <div class="ln chp"><div class="code cm">  //   inside Account::try_from: data[..8] == Vault::DISC?</div>
+      <div class="side"><span class="chip">your check 4 &middot; <b>cfg[0] == VAULT_DISCRIMINATOR</b></span></div></div>
+    <div class="ln chp2"><div class="code cm">  //   deserialize needs len &gt;= size_of::&lt;Vault&gt;()</div>
+      <div class="side"><span class="chip wide">your check 3, roughly &mdash; yours was <b>exact equality</b>,<br>so an OVER-long account fails natively and loads here</span></div></div>
+    <div class="ln"><div class="code cm">  // ... sol_vault, system_program ...</div><div class="side"></div></div>
+
+    <div class="phase"><div class="pl dim">phase 2 · constraints, after ALL fields load</div><div class="pr"></div></div>
+
+    <div class="ln chp"><div class="code cm">  //   seeds + bump = state.bump  -&gt; PDA re-derive matches?</div>
+      <div class="side"><span class="chip">constraint hook</span></div></div>
+    <div class="ln chp"><div class="code cm">  //   constraint = state.owner -&gt; == authority address?</div>
+      <div class="side"><span class="chip">constraint hook</span></div></div>
+
+    <div class="phase"><div class="pl">phase 3 · duplicate-mutable walk</div><div class="pr"></div></div>
+
+    <div class="ln chp"><div class="code">  check_duplicate_mutables(&amp;[state.address(), sol_vault.address()])?;</div>
+      <div class="side"><span class="chip none">MUT_MASK walk &middot; NO native twin</span></div></div>
+    <div class="ln"><div class="code">  Ok(Withdraw { authority, state, sol_vault, system_program })</div><div class="side"></div></div>
+    <div class="ln"><div class="code">}</div><div class="side"></div></div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">same checks, ordered</span>
+    <span class="ft">loads run first, constraints run second — the phases you fused into one hand-written gauntlet</span>
+  </div>
+</div>
+</body></html>

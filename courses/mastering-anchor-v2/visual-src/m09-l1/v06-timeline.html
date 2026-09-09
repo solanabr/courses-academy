@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Why rebuilding by hand rhymes with V2's own design
+     purpose: place your hand-rebuild in the lineage of Anchor V2's no_std rewrite
+     data: Account<T> flagged: issue #4390 names it "the slow path" and "the #1 performance complaint from Anchor developers" pinocchio emerges: no_std, zero-copy, no dependencies; becomes the lean foundation Anchor V2 (anchor-next, 2.0.0-rc.1): ground-up no_std rewrite built on pinocchio + pinocchio-system 0.6 this lesson: you hand-write native-quarter-vault on the same pinocchio stack (0.9 line), the exact layer V2 generates
+     prompt: Left-to-right timeline, four milestones. First the #4390 complaint, then pinocchio as foundation, then Anchor V2 as the no_std rewrite on top, then a highlighted final node "you, by hand" pointing at the same foundation. Emphasize that the last node touches the same base as the V2 node.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:551px;height:503px;top:-283px;right:-283px;border-radius:59% 52% 63% 39% / 37% 51% 64% 52%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:494px;height:358px;left:-295px;top:233px;border-radius:59% 54% 40% 59% / 60% 59% 49% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:551px;height:520px;bottom:-330px;right:-330px;border-radius:49% 58% 63% 38% / 59% 54% 65% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { position:relative; margin-top:6px; }
+  .rail { position:absolute; left:173px; width:1110px; top:50px; height:6px; border-radius:3px;
+          background:linear-gradient(90deg, #b8bdb6 0%, #008b4c 42%, #306c40 72%, #ffd23f 100%); }
+  .stops { position:relative; display:flex; gap:24px; }
+  .stop { flex:1 1 0; min-width:0; }
+  .era { height:34px; display:flex; align-items:center; justify-content:center;
+         font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+         text-transform:uppercase; }
+  .era.e1 { color:var(--text-muted); }
+  .era.e2, .era.e3 { color:var(--stbr-emerald); }
+  .era.e4 { color:var(--stbr-green-800); }
+  .dotrow { height:38px; display:flex; align-items:center; justify-content:center; }
+  .card { margin-top:8px; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); overflow:hidden; }
+  .card.c1 { background:var(--surface-paper); }
+  .card.c4 { border-color:var(--stbr-yellow-700); }
+  .cbar { padding:13px 20px; min-height:74px; display:flex; align-items:center; }
+  .cbar.b1 { background:var(--stbr-ink-100); }
+  .cbar.b2 { background:var(--surface-brand); }
+  .cbar.b3 { background:var(--surface-brand-deep); }
+  .cbar.b4 { background:var(--surface-accent); }
+  .ctt { font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.1; }
+  .cbar.b1 .ctt { color:var(--text-secondary); }
+  .cbar.b2 .ctt, .cbar.b3 .ctt { color:var(--text-on-brand); }
+  .cbar.b4 .ctt { color:var(--text-on-accent); }
+  .ctt small { display:block; font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+               letter-spacing:0; text-transform:none; margin-top:5px; opacity:.78; }
+  .cbody { padding:15px 20px 17px; font-family:var(--font-body); font-size:14.5px; line-height:1.45;
+           color:var(--text-primary); min-height:132px; }
+  .c1 .cbody { color:var(--text-secondary); }
+  .cbody code { font-family:var(--font-mono); font-size:13px; font-weight:700;
+                color:var(--stbr-emerald-800); }
+  .quote { display:block; margin-top:9px; padding-top:9px; border-top:1.5px solid var(--border-subtle);
+           font-size:13px; color:var(--text-muted); }
+
+  .links { display:flex; gap:24px; height:36px; }
+  .lk { flex:1 1 0; min-width:0; display:flex; align-items:flex-start; justify-content:center; }
+
+  .baserow { display:flex; gap:24px; }
+  .spacer { flex:1 1 0; min-width:0; }
+  .base { flex:3 1 0; min-width:0; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:16px 26px; display:flex; align-items:center; gap:20px; }
+  .bk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.72); white-space:nowrap; }
+  .bt { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.1;
+        color:var(--text-on-brand); }
+  .bchip { margin-left:auto; background:var(--surface-accent); color:var(--text-on-accent);
+           border-radius:var(--radius-pill); padding:6px 16px; font-family:var(--font-body);
+           font-weight:800; font-size:13px; white-space:nowrap; }
+</style>
+  <div class="stbr-eyebrow">the same foundation, twice</div>
+  <h2 class="viz-title">why rebuilding by hand rhymes with V2</h2>
+
+  <div class="tl">
+    <div class="rail"></div>
+    <div class="stops">
+
+      <div class="stop">
+        <div class="era e1">the complaint</div>
+        <div class="dotrow"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#767f73" stroke="#f5e8ca" stroke-width="4"/></svg></div>
+        <div class="card c1">
+          <div class="cbar b1"><div class="ctt">Account&lt;T&gt; flagged<small>anchor issue #4390</small></div></div>
+          <div class="cbody">The issue names it <b>&ldquo;the slow path&rdquo;</b>.
+            <span class="quote">&ldquo;the #1 performance complaint from Anchor developers.&rdquo;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="era e2">the foundation</div>
+        <div class="dotrow"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#008b4c" stroke="#f5e8ca" stroke-width="4"/></svg></div>
+        <div class="card">
+          <div class="cbar b2"><div class="ctt">pinocchio emerges<small>no_std &middot; zero-copy</small></div></div>
+          <div class="cbody">No dependencies, no allocator, raw byte access to accounts.
+            <span class="quote">it becomes the lean foundation everything else builds on.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="era e3">the rewrite</div>
+        <div class="dotrow"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#306c40" stroke="#f5e8ca" stroke-width="4"/></svg></div>
+        <div class="card">
+          <div class="cbar b3"><div class="ctt">Anchor V2<small>anchor-next &middot; 2.0.0-rc.1</small></div></div>
+          <div class="cbody">A ground-up <b>no_std</b> rewrite &mdash; not a patch.
+            <span class="quote">built on <code>pinocchio</code> + <code>pinocchio-system 0.6</code>.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="era e4">you, now</div>
+        <div class="dotrow"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#ffd23f" stroke="#1b231d" stroke-width="4"/></svg></div>
+        <div class="card c4">
+          <div class="cbar b4"><div class="ctt">you, by hand<small>native-quarter-vault</small></div></div>
+          <div class="cbody">The same stack, one line newer &mdash; <code>pinocchio 0.9</code>.
+            <span class="quote">you write the exact layer V2 generates for you.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="links">
+      <div class="lk"></div>
+      <div class="lk"><svg width="18" height="34" viewBox="0 0 18 34"><line x1="9" y1="0" x2="9" y2="22" stroke="#008b4c" stroke-width="3.5"/><polygon points="9,34 1,21 17,21" fill="#008b4c"/></svg></div>
+      <div class="lk"><svg width="18" height="34" viewBox="0 0 18 34"><line x1="9" y1="0" x2="9" y2="22" stroke="#306c40" stroke-width="3.5"/><polygon points="9,34 1,21 17,21" fill="#306c40"/></svg></div>
+      <div class="lk"><svg width="18" height="34" viewBox="0 0 18 34"><line x1="9" y1="0" x2="9" y2="22" stroke="#d9a608" stroke-width="3.5"/><polygon points="9,34 1,21 17,21" fill="#d9a608"/></svg></div>
+    </div>
+
+    <div class="baserow">
+      <div class="spacer"></div>
+      <div class="base">
+        <span class="bk">the shared base</span>
+        <span class="bt">pinocchio &mdash; no_std, zero-copy, no dependencies</span>
+        <span class="bchip">V2 and you land on the same layer</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The mixed account, split along the tier boundary
+     purpose: show the design skill: isolate the one unbounded field and keep everything else on the cast
+     data: #[account]                          // Tier 1: Pod, zero-copy pub struct CabinetCore { pub machine_key: [u8; 32],      // fixed length  -> Pod pub board: PodVec<Score, 10>,   // bounded MAX=10 -> Pod } #[account(borsh)]                   // Tier 2: the ONE unbounded field pub struct CabinetDescription { pub text: String,               // unbounded -> borsh, deserialize on read } // handler bumping only the board: touches `core`, never `description` //   -> zero deserialize cost, hot path stays on the cast
+     prompt: Annotated Rust with two struct definitions and a trailing comment. Visually group CabinetCore as "Tier 1 / stays on the cast" and CabinetDescription as "Tier 2 / the isolated exception". Annotate machine_key and board as the fixed+bounded fields, text as the one unbounded field, and the handler comment as the scoped-cost payoff. The composition should read as "isolate, don't demote the whole account".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:469px;top:-267px;right:-267px;border-radius:35% 39% 62% 58% / 35% 65% 46% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:494px;height:489px;bottom:-230px;left:-230px;border-radius:51% 41% 38% 63% / 39% 57% 40% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:545px;height:490px;bottom:-295px;right:-295px;border-radius:39% 56% 60% 41% / 46% 56% 51% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .a8-title { font-size:46px; }
+  .a8-cols { display:flex; gap:32px; align-items:flex-start; }
+  .a8-col { flex:1 1 0; min-width:0; }
+  .a8-hd { height:46px; display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .a8-hd .num { font-family:var(--font-display); font-weight:900; font-size:13.5px;
+                letter-spacing:.12em; text-transform:uppercase; background:var(--surface-brand);
+                color:var(--stbr-cream); padding:7px 15px; border-radius:var(--radius-pill);
+                white-space:nowrap; }
+  .a8-col.two .a8-hd .num { background:var(--surface-accent); color:var(--stbr-dark); }
+  .a8-hd .ttl { font-family:var(--font-mono); font-weight:700; font-size:23px;
+                line-height:1.1; color:var(--text-primary); }
+  .a8-panel { background:var(--surface-inverse); border-radius:var(--radius-lg);
+              padding:22px 24px; height:214px; }
+  .a8-col.two .a8-panel { border:2px dashed var(--stbr-yellow-700); padding:20px 22px; }
+  .a8-panel pre { margin:0; font-family:var(--font-mono); font-size:16.5px; line-height:1.62;
+                  color:var(--stbr-cream); white-space:pre; }
+  .a8-panel .cm { color:#8fae95; }
+  .a8-pod { display:block; background:rgba(0,139,76,0.26); border-left:3px solid #23b36c;
+            margin:4px -12px; padding:3px 12px 3px 9px; color:#d6ecdc; }
+  .a8-un  { display:block; background:rgba(255,210,63,0.20); border-left:3px solid var(--stbr-yellow);
+            margin:4px -12px; padding:3px 12px 3px 9px; color:var(--stbr-yellow); }
+  .a8-note { margin-top:18px; height:130px; box-sizing:border-box; border-radius:var(--radius-md);
+             padding:16px 20px; display:flex; gap:14px; align-items:flex-start;
+             background:#eef6f0; border:2px solid var(--surface-brand); }
+  .a8-col.two .a8-note { background:#fffbee; border-color:var(--stbr-yellow-700); }
+  .a8-note .pin { font-family:var(--font-display); font-weight:900; font-size:12.5px;
+                  letter-spacing:.11em; text-transform:uppercase; background:var(--surface-brand);
+                  color:var(--stbr-cream); padding:5px 11px; border-radius:var(--radius-pill);
+                  white-space:nowrap; }
+  .a8-col.two .a8-note .pin { background:var(--surface-accent); color:var(--stbr-dark); }
+  .a8-note .tx { font-family:var(--font-body); font-size:16.5px; line-height:1.4;
+                 color:var(--text-primary); }
+  .a8-note .tx b { font-weight:800; }
+  .a8-note .tx code { font-family:var(--font-mono); font-size:15.5px; }
+  .a8-foot { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:20px 30px; display:flex; align-items:center; gap:24px; }
+  .a8-foot .fk { font-family:var(--font-display); font-weight:900; font-size:13.5px;
+                 letter-spacing:.13em; text-transform:uppercase; color:rgba(245,232,202,0.75);
+                 white-space:nowrap; }
+  .a8-foot .ft { font-family:var(--font-display); font-weight:900; font-size:23px;
+                 line-height:1.18; color:var(--stbr-cream); }
+  .a8-foot .ft b { color:var(--stbr-yellow); }
+  .a8-foot .ft code { font-family:var(--font-mono); font-weight:700; font-size:21px; }
+</style>
+  <div class="stbr-eyebrow">isolate the field, don&rsquo;t demote the account</div>
+  <h2 class="viz-title a8-title">The mixed account, split along the tier boundary</h2>
+  <div class="a8-cols">
+    <div class="a8-col one">
+      <div class="a8-hd"><span class="num">tier 1 &middot; stays on the cast</span><span class="ttl">CabinetCore</span></div>
+      <div class="a8-panel"><pre>#[account]           <span class="cm">// Pod, zero-copy</span>
+pub struct CabinetCore {<span class="a8-pod">    pub machine_key: [u8; 32],    <span class="cm">// fixed  -&gt; Pod</span></span><span class="a8-pod">    pub board: PodVec&lt;Score, 10&gt;, <span class="cm">// MAX=10 -&gt; Pod</span></span>}</pre></div>
+      <div class="a8-note"><span class="pin">fixed + bounded</span><span class="tx">Both lengths are known at compile time &mdash; <code>[u8; 32]</code> is fixed, <code>PodVec</code> is capped at <b>MAX = 10</b>. Read by direct cast, no deserialize.</span></div>
+    </div>
+    <div class="a8-col two">
+      <div class="a8-hd"><span class="num">tier 2 &middot; the isolated exception</span><span class="ttl">CabinetDescription</span></div>
+      <div class="a8-panel"><pre>#[account(borsh)]    <span class="cm">// the escape hatch</span>
+pub struct CabinetDescription {<span class="a8-un">    pub text: String,   <span class="cm">// unbounded -&gt; borsh,</span></span><span class="a8-un">                        <span class="cm">//   deserialize on read</span></span>}</pre></div>
+      <div class="a8-note"><span class="pin">the one unbounded field</span><span class="tx"><code>String</code> has no compile-time length, so it &mdash; and <b>only</b> it &mdash; leaves tier 1. The exception is one field wide, not one account wide.</span></div>
+    </div>
+  </div>
+  <div class="a8-foot">
+    <span class="fk">the payoff</span>
+    <span class="ft">A handler that bumps only the board touches <code>core</code>, never <code>description</code> &mdash; <b>zero deserialize cost</b>, the hot path stays on the cast.</span>
+  </div>
+</div>
+</body></html>

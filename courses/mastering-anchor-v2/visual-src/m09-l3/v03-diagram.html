@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Invocation stack depth on the two-hop settle
+     purpose: show that settle_prize nests registry -> escrow -> vault -> token program, and count it against the depth cap
+     data: stack (top-level = depth 0): depth 0: transaction calls floor-registry.settle_prize depth 1: floor-registry CPIs prize-escrow.redeem depth 2: prize-escrow CPIs quarter-vault.withdraw / release depth 3: quarter-vault CPIs the token program (transfer_checked) cap: max invocation stack height = 5 (SIMD-0268 accepted, gate not active on mainnet as of 2026-08-22; re-probe at build) headroom: stack height 4 of 5 (3 nested CPIs of the 4 the cap allows); one nested call left
+     prompt: A vertical stack diagram, four boxes stacked, each labelled with its depth and the program running at that level (floor-registry, prize-escrow, quarter-vault, token program). To the right, a gauge or ruler marking the cap at 5 and shading the 4 stack heights used. Make the point that the two-hop settle is the deepest path on the floor, with exactly one nested call of headroom left.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:543px;top:-331px;right:-331px;border-radius:56% 53% 60% 42% / 51% 55% 58% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:498px;left:-317px;top:79px;border-radius:40% 47% 37% 40% / 49% 61% 44% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:403px;height:530px;bottom:-317px;left:464px;border-radius:46% 61% 35% 61% / 53% 37% 49% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 14px; }
+  .frame { display: flex; align-items: flex-start; }
+  .stack { flex: 1 1 0; min-width: 0; }
+  .lvl { display: flex; align-items: stretch; height: 108px; margin-bottom: 12px;
+         background: var(--surface-card); border: 2px solid var(--border-subtle);
+         border-radius: var(--radius-lg); overflow: hidden; }
+  .d1 { margin-left: 40px; }
+  .d2 { margin-left: 80px; }
+  .d3 { margin-left: 120px; }
+  .lvl:last-child { margin-bottom: 0; }
+  .dbadge { flex: 0 0 104px; background: var(--surface-brand); color: var(--text-on-brand);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .lvl.top .dbadge { background: var(--surface-inverse); }
+  .dk { font-family: var(--font-body); font-weight: 800; font-size: 9.5px;
+        letter-spacing: .14em; text-transform: uppercase; opacity: .7; }
+  .dv { font-family: var(--font-display); font-weight: 900; font-size: 34px; line-height: 1; }
+  .lbody { flex: 1 1 0; min-width: 0; padding: 14px 22px;
+           display: flex; flex-direction: column; justify-content: center; }
+  .lprog { font-family: var(--font-mono); font-weight: 700; font-size: 20px;
+           color: var(--text-primary); }
+  .lhow { font-family: var(--font-body); font-size: 13.5px; line-height: 1.35;
+          color: var(--text-secondary); margin-top: 5px; }
+  .lhow code { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+               color: var(--stbr-emerald-800); }
+  .gauge { flex: 0 0 330px; margin-left: 34px; background: var(--surface-card);
+           border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+           padding: 18px 20px; }
+  .gk { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+        letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+  .gt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.1;
+        color: var(--text-primary); margin: 4px 0 12px; }
+  .slot { height: 52px; border-radius: var(--radius-sm); margin-bottom: 8px;
+          display: flex; align-items: center; padding: 0 14px;
+          background: var(--surface-brand); }
+  .slot.free { background: var(--surface-accent); }
+  .sn { flex: 0 0 26px; font-family: var(--font-display); font-weight: 900; font-size: 17px;
+        color: rgba(245,232,202,0.72); }
+  .slot.free .sn { color: rgba(27,35,29,0.55); }
+  .sl { font-family: var(--font-body); font-weight: 700; font-size: 12.5px; line-height: 1.25;
+        color: var(--text-on-brand); }
+  .slot.free .sl { color: var(--text-on-accent); font-weight: 800; }
+  .gfoot { border-top: 1.5px solid var(--border-subtle); margin-top: 12px; padding-top: 10px;
+           font-family: var(--font-body); font-size: 11.5px; line-height: 1.35;
+           color: var(--text-secondary); }
+  .verdict { margin-top: 16px; background: var(--surface-brand-deep);
+             border-radius: var(--radius-lg); padding: 13px 26px;
+             display: flex; align-items: center; }
+  .vk { flex: 0 0 auto; font-family: var(--font-body); font-weight: 800; font-size: 11.5px;
+        letter-spacing: .13em; text-transform: uppercase; color: rgba(245,232,202,0.72); }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-dark); margin-left: 22px; }
+</style>
+  <div class="stbr-eyebrow">the deepest path on the floor</div>
+  <h2 class="viz-title"><code style="font-family:var(--font-mono);font-size:40px">settle_prize</code> nests four levels deep</h2>
+
+  <div class="frame">
+    <div class="stack">
+      <div class="lvl top">
+        <div class="dbadge"><span class="dk">depth</span><span class="dv">0</span></div>
+        <div class="lbody">
+          <div class="lprog">floor-registry</div>
+          <div class="lhow">the transaction calls <code>settle_prize</code> &mdash; top level, no CPI yet</div>
+        </div>
+      </div>
+      <div class="lvl d1">
+        <div class="dbadge"><span class="dk">depth</span><span class="dv">1</span></div>
+        <div class="lbody">
+          <div class="lprog">prize-escrow</div>
+          <div class="lhow">floor-registry CPIs <code>redeem</code></div>
+        </div>
+      </div>
+      <div class="lvl d2">
+        <div class="dbadge"><span class="dk">depth</span><span class="dv">2</span></div>
+        <div class="lbody">
+          <div class="lprog">quarter-vault</div>
+          <div class="lhow">prize-escrow CPIs <code>withdraw</code> / <code>release</code></div>
+        </div>
+      </div>
+      <div class="lvl d3">
+        <div class="dbadge"><span class="dk">depth</span><span class="dv">3</span></div>
+        <div class="lbody">
+          <div class="lprog">token program</div>
+          <div class="lhow">quarter-vault CPIs <code>transfer_checked</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gauge">
+      <div class="gk">runtime cap &mdash; invocation stack</div>
+      <div class="gt">max stack height = 5</div>
+      <div class="slot"><span class="sn">1</span><span class="sl">floor-registry &mdash; used</span></div>
+      <div class="slot"><span class="sn">2</span><span class="sl">prize-escrow &mdash; used</span></div>
+      <div class="slot"><span class="sn">3</span><span class="sl">quarter-vault &mdash; used</span></div>
+      <div class="slot"><span class="sn">4</span><span class="sl">token program &mdash; used</span></div>
+      <div class="slot free"><span class="sn">5</span><span class="sl">headroom: one nested call left</span></div>
+      <div class="gfoot">SIMD-0268 accepted; the gate was not active on mainnet as of 2026-08-22 &mdash; re-probe at build time.</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">4 of 5 &middot; 3 nested CPIs of the 4 allowed</span>
+    <div class="vt">The two-hop settle is the deepest path on the floor. Add one more nested call anywhere under it and you hit the cap.</div>
+  </div>
+</div>
+</body></html>

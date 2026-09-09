@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Three lenses on one run, plus one that stands alone
+     purpose: show which instruments reuse the existing swap tests and which one costs a second fixture
+     data: center: your existing LiteSVM swap tests (mint, fund, build the swap ix) lens 1: anchor test --profile  -> flamegraph SVG (where) lens 2: anchor debugger        -> stepped registers (what, when broken) lens 3: anchor coverage        -> LCOV report (what never ran) separate: Mollusk CU test      -> CU integer + pass/fail (how many) note: the three Anchor tools reuse the SAME test run; Mollusk is its own fixture and its own dev-dependencies, and that second stand-up is what a CU-precise number costs
+     prompt: A hub-and-spoke diagram. Center hub is the shared LiteSVM fixture. Four spokes to the four instruments, each labeled with its one-word question (where / what / never-ran / how-many). Emphasize the hub with a "written once" tag. Instrument names in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:556px;height:526px;top:-321px;right:-321px;border-radius:44% 36% 64% 41% / 53% 42% 63% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:473px;height:426px;left:-292px;top:168px;border-radius:57% 55% 43% 57% / 63% 48% 54% 51%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:478px;height:537px;bottom:-300px;left:500px;border-radius:36% 37% 54% 36% / 48% 50% 58% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .zones { display:flex; align-items:stretch; gap:30px; margin-top:2px; }
+  .zoneA { flex:0 0 950px; }
+  .sep { flex:0 0 2px; border-left:2.5px dashed var(--stbr-ink-300); }
+  .zoneB { flex:1 1 auto; display:flex; flex-direction:column; }
+  .zlabel { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+            text-transform:uppercase; color:var(--text-secondary); margin-bottom:10px; }
+  .hub { background:var(--surface-inverse); border-radius:var(--radius-lg); padding:18px 26px;
+         display:flex; align-items:center; gap:24px; }
+  .hub .ht { font-family:var(--font-display); font-weight:900; font-size:26px; line-height:1.1;
+             color:var(--text-on-dark); }
+  .hub .hs { font-family:var(--font-mono); font-size:14.5px; line-height:1.3;
+             color:rgba(245,232,202,0.72); margin-top:6px; }
+  .hub .htag { flex:0 0 auto; padding:8px 16px; border-radius:var(--radius-pill);
+               border:2px solid rgba(245,232,202,0.55); color:var(--stbr-cream);
+               font-family:var(--font-body); font-weight:800; font-size:13px;
+               letter-spacing:.06em; text-transform:uppercase; }
+  .spokes { display:flex; gap:16px; }
+  .spokes .sp { flex:1 1 0; height:26px; display:flex; align-items:center; justify-content:center; }
+  .lenses { display:flex; gap:16px; align-items:stretch; }
+  .lens { flex:1 1 0; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:16px 18px; }
+  .lens .lq { display:inline-block; padding:5px 12px; border-radius:var(--radius-pill);
+              background:rgba(0,139,76,0.12); color:var(--stbr-emerald-800);
+              font-family:var(--font-body); font-weight:800; font-size:12.5px;
+              letter-spacing:.08em; text-transform:uppercase; }
+  .lens .ln { font-family:var(--font-mono); font-weight:700; font-size:16px; line-height:1.25;
+              color:var(--text-primary); margin-top:11px; }
+  .lens .lo { font-family:var(--font-body); font-size:14.5px; line-height:1.32;
+              color:var(--text-secondary); margin-top:8px; }
+  .moll { flex:1 1 auto; background:var(--surface-accent); border-radius:var(--radius-lg);
+          padding:20px 22px; display:flex; flex-direction:column; }
+  .moll .lq { display:inline-block; align-self:flex-start; padding:5px 12px;
+              border-radius:var(--radius-pill); background:rgba(27,35,29,0.14);
+              color:var(--text-on-accent); font-family:var(--font-body); font-weight:800;
+              font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; }
+  .moll .ln { font-family:var(--font-mono); font-weight:700; font-size:17px; line-height:1.25;
+              color:var(--text-on-accent); margin-top:12px; }
+  .moll .lo { font-family:var(--font-body); font-size:14.5px; line-height:1.32;
+              color:var(--text-on-accent); opacity:.82; margin-top:8px; }
+  .moll .cost { margin-top:auto; border-top:2px solid rgba(27,35,29,0.22); padding-top:12px;
+                font-family:var(--font-display); font-weight:900; font-size:17px; line-height:1.2;
+                color:var(--text-on-accent); }
+  .note { margin-top:24px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:18px 28px; display:flex; align-items:center; gap:24px; }
+  .note .nk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+              text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .note .nt { font-family:var(--font-body); font-size:17.5px; line-height:1.34;
+              color:var(--text-on-brand); font-weight:500; }
+  .note .nt b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">three lenses on one run, plus one that stands alone</div>
+  <h2 class="viz-title">which instruments reuse your tests &mdash; and which one costs a second fixture</h2>
+  <div class="zones">
+    <div class="zoneA">
+      <div class="zlabel">one shared run</div>
+      <div class="hub">
+        <div>
+          <div class="ht">your existing LiteSVM swap tests</div>
+          <div class="hs">mint &middot; fund &middot; build the swap ix</div>
+        </div>
+        <div class="htag">written once</div>
+      </div>
+      <div class="spokes">
+        <div class="sp"><svg width="16" height="26"><line x1="8" y1="0" x2="8" y2="17" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,26 2,15 14,15" fill="#1b231d"/></svg></div>
+        <div class="sp"><svg width="16" height="26"><line x1="8" y1="0" x2="8" y2="17" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,26 2,15 14,15" fill="#1b231d"/></svg></div>
+        <div class="sp"><svg width="16" height="26"><line x1="8" y1="0" x2="8" y2="17" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,26 2,15 14,15" fill="#1b231d"/></svg></div>
+      </div>
+      <div class="lenses">
+        <div class="lens">
+          <span class="lq">where</span>
+          <div class="ln">anchor test --profile</div>
+          <div class="lo">flamegraph SVG</div>
+        </div>
+        <div class="lens">
+          <span class="lq">what</span>
+          <div class="ln">anchor debugger</div>
+          <div class="lo">stepped registers, when it is broken</div>
+        </div>
+        <div class="lens">
+          <span class="lq">never-ran</span>
+          <div class="ln">anchor coverage</div>
+          <div class="lo">LCOV report</div>
+        </div>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="zoneB">
+      <div class="zlabel">its own run</div>
+      <div class="moll">
+        <span class="lq">how-many</span>
+        <div class="ln">Mollusk CU test</div>
+        <div class="lo">CU integer + pass/fail</div>
+        <div class="cost">A second fixture and its own dev-dependencies &mdash; that stand-up is what a CU-precise number costs.</div>
+      </div>
+    </div>
+  </div>
+  <div class="note">
+    <span class="nk">read it this way</span>
+    <span class="nt">The three Anchor tools all read the <b>same test run</b>. Mollusk does not &mdash; it is a separate fixture you write and maintain.</span>
+  </div>
+</div>
+</body></html>

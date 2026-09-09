@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Why you cannot re-create .reload() in V2
+     purpose: show the compile error that replaces the runtime footgun, tied to the CpiHandle borrow
+     data: // v1, legal, and a footgun: let bal = ctx.accounts.vault.amount;      // in-memory copy transfer(cpi_ctx, amount)?;               // CPI mutates vault on-chain // bal is now STALE. v1 makes you remember: ctx.accounts.vault.reload()?;             // re-read to fix // // V2, the stale window is unrepresentable: let cpi = CpiContext::new(ctx.accounts.token_program.address(), TransferChecked { from: ctx.accounts.vault.cpi_handle_mut().. }); let bal = ctx.accounts.vault.amount;      // COMPILE ERROR: ctx.accounts is borrowed by `cpi` transfer_checked(cpi, amount, decimals)?; // the borrow lives until this line consumes it // there is no stale copy to reload, the borrow checker rejected the read
+     prompt: Two stacked code panels, "v1 (footgun)" and "V2 (unrepresentable)". In the v1 panel, annotate the line after the CPI with a red "stale" marker and the reload() line with "manual patch". In the V2 panel, annotate the typed-access line with a red "compile error: ctx.accounts borrowed by the CpiContext" callout pointing at the borrow. Monospace throughout.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:496px;top:-233px;right:-233px;border-radius:47% 61% 64% 44% / 57% 42% 45% 43%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:443px;height:371px;left:-253px;top:135px;border-radius:45% 55% 48% 60% / 45% 55% 35% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:526px;height:502px;bottom:-320px;right:-320px;border-radius:54% 64% 52% 43% / 58% 44% 62% 64%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .plab { display:flex; align-items:baseline; margin:0 0 8px 4px; }
+  .plab .pk { font-family:var(--font-display); font-weight:900; font-size:19px;
+              color:var(--text-primary); margin-right:12px; }
+  .plab .ps { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-lg);
+           padding:20px 26px 22px; }
+  .panel.v2 { border:2px solid var(--stbr-yellow); }
+  .cl { display:flex; align-items:flex-start; min-height:30px; }
+  .code { flex:1; font-family:var(--font-mono); font-size:14.5px; line-height:1.55;
+          color:var(--stbr-cream); white-space:pre; padding-top:2px; }
+  .cm { color:var(--stbr-cream); opacity:.5; }
+  .kw { color:var(--stbr-yellow); }
+  .ann { width:370px; flex:0 0 370px; padding-left:20px; }
+  .chip { display:inline-block; border-radius:var(--radius-pill); padding:4px 13px;
+          font-family:var(--font-body); font-size:12px; font-weight:700;
+          line-height:1.35; }
+  .chip.ghost { border:1.5px solid rgba(245,232,202,0.45); color:var(--stbr-cream); }
+  .chip.hot { background:var(--stbr-yellow); color:var(--text-on-accent);
+              border-radius:var(--radius-md); }
+  .gap { height:20px; }
+</style>
+  <div class="stbr-eyebrow">the borrow checker replaces the footgun</div>
+  <h2 class="viz-title">why you cannot re-create .reload() in V2</h2>
+
+  <div class="plab"><span class="pk">v1</span><span class="ps">legal — and a footgun you have to remember</span></div>
+  <div class="panel">
+    <div class="cl">
+      <div class="code">let bal = ctx.accounts.vault.amount;   <span class="cm">// in-memory copy</span></div>
+      <div class="ann"></div>
+    </div>
+    <div class="cl">
+      <div class="code">transfer(cpi_ctx, amount)?;            <span class="cm">// CPI mutates vault on-chain</span></div>
+      <div class="ann"></div>
+    </div>
+    <div class="cl">
+      <div class="code"><span class="cm">// bal is now STALE — v1 makes you remember:</span></div>
+      <div class="ann"><span class="chip ghost">`bal` still holds the pre-CPI number</span></div>
+    </div>
+    <div class="cl">
+      <div class="code">ctx.accounts.vault.reload()?;          <span class="cm">// re-read to fix</span></div>
+      <div class="ann"><span class="chip ghost">manual patch — forget it and you ship the bug</span></div>
+    </div>
+  </div>
+
+  <div class="gap"></div>
+
+  <div class="plab"><span class="pk">V2</span><span class="ps">the stale window is unrepresentable</span></div>
+  <div class="panel v2">
+    <div class="cl">
+      <div class="code">let cpi = CpiContext::new(ctx.accounts.token_program.address(),</div>
+      <div class="ann"></div>
+    </div>
+    <div class="cl">
+      <div class="code">    TransferChecked { from: ctx.accounts.vault.cpi_handle_mut(), .. });</div>
+      <div class="ann"><span class="chip ghost">the handle borrows `ctx.accounts`</span></div>
+    </div>
+    <div class="cl">
+      <div class="code">let bal = ctx.accounts.vault.amount;</div>
+      <div class="ann"><span class="chip hot">COMPILE ERROR — `ctx.accounts` is borrowed by `cpi`</span></div>
+    </div>
+    <div class="cl">
+      <div class="code">transfer_checked(cpi, amount, decimals)?;</div>
+      <div class="ann"><span class="chip ghost">the borrow lives until this line consumes it</span></div>
+    </div>
+    <div class="cl">
+      <div class="code"><span class="cm">// there is no stale copy to reload — the read never compiled</span></div>
+      <div class="ann"></div>
+    </div>
+  </div>
+</div>
+</body></html>

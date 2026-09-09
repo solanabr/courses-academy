@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How invoke_signed proves the PDA authorized the transfer
+     purpose: trace seeds + stored bump to a confirmed signer, contrasting store-vs-rederive cost
+     data: step 1: read vault_bump from config[33]  (stored at init, ~0 CU) step 2: build seeds = ["vault", authority_pubkey, [vault_bump]] step 3: wrap as Signer, pass to Transfer.invoke_signed step 4: runtime runs create_program_address(seeds) -> derived address step 5: derived address == vault account key ? -> System Program executes the transfer : -> InvalidSeeds error contrast: re-running find_program_address in-instruction = ~1500 CU per call, defeats stored-bump design
+     prompt: Vertical flowchart, five steps top to bottom, ending in a diamond decision (derived address == vault key). Yes branch: transfer executes. No branch: InvalidSeeds. Add a side annotation box showing the rejected alternative (re-derive each call, ~1500 CU).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:535px;height:458px;top:-261px;right:-261px;border-radius:53% 36% 36% 42% / 59% 49% 62% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:499px;left:-305px;top:138px;border-radius:35% 42% 52% 38% / 46% 44% 55% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:569px;height:492px;bottom:-309px;right:-309px;border-radius:49% 57% 61% 38% / 55% 49% 36% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:flex; gap:32px; align-items:flex-start; margin-top:2px; }
+  .flow { flex:1 1 0; min-width:0; position:relative; }
+  .rail { position:absolute; left:19px; top:28px; height:242px; width:4px; border-radius:2px;
+          background:var(--stbr-emerald); }
+  .row { position:relative; display:flex; align-items:stretch; gap:16px; margin-bottom:10px; }
+  .num { flex:0 0 42px; height:42px; align-self:center; border-radius:50%;
+         background:var(--surface-brand); border:3px solid var(--surface-page);
+         display:flex; align-items:center; justify-content:center;
+         font-family:var(--font-display); font-weight:900; font-size:18px; color:var(--text-on-brand); }
+  .box { flex:1 1 0; min-width:0; background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-md); padding:11px 20px; display:flex; flex-direction:column;
+         justify-content:center; }
+  .bt { font-family:var(--font-body); font-weight:700; font-size:15px; line-height:1.32;
+        color:var(--text-primary); }
+  .bm { font-family:var(--font-mono); font-size:13.5px; line-height:1.35; color:var(--text-secondary);
+        margin-top:4px; }
+  .bm b { color:var(--stbr-emerald-800); font-weight:700; }
+
+  .down { display:flex; justify-content:center; padding:2px 0 6px; }
+  .dec { display:flex; align-items:center; gap:18px; background:var(--surface-card);
+         border:3px solid var(--stbr-dark); border-radius:var(--radius-md); padding:13px 22px; }
+  .dect { font-family:var(--font-mono); font-weight:700; font-size:17px; line-height:1.25;
+          color:var(--text-primary); }
+  .decn { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+          text-transform:uppercase; color:var(--text-muted); margin-left:auto; white-space:nowrap; }
+
+  .split { height:40px; }
+  .branches { display:flex; gap:24px; align-items:stretch; }
+  .br { flex:1 1 0; min-width:0; border-radius:var(--radius-md); padding:12px 20px;
+        display:flex; align-items:center; gap:14px; }
+  .br.ok { background:var(--surface-brand); }
+  .br.no { background:var(--surface-inverse); }
+  .tag { flex:0 0 auto; font-family:var(--font-display); font-weight:900; font-size:16px;
+         padding:3px 12px; border-radius:var(--radius-pill); }
+  .br.ok .tag { background:rgba(245,232,202,0.92); color:var(--stbr-emerald-800); }
+  .br.no .tag { background:#c0392b; color:#f5e8ca; }
+  .brt { font-family:var(--font-body); font-weight:700; font-size:15px; line-height:1.3; }
+  .br.ok .brt { color:var(--text-on-brand); }
+  .br.no .brt { color:var(--text-on-dark); }
+  .brt code { font-family:var(--font-mono); font-weight:700; }
+
+  .side { flex:0 0 396px; background:var(--surface-accent); border-radius:var(--radius-lg);
+          padding:22px 26px 24px; }
+  .sk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(27,35,29,0.62); }
+  .st { font-family:var(--font-display); font-weight:900; font-size:26px; line-height:1.1;
+        color:var(--text-on-accent); margin-top:8px; }
+  .sm { font-family:var(--font-mono); font-size:14px; line-height:1.4; color:rgba(27,35,29,0.82);
+        margin-top:10px; }
+  .cmp { margin-top:16px; border-top:2px solid rgba(27,35,29,0.22); }
+  .cr { display:flex; align-items:baseline; gap:12px; padding:11px 0; }
+  .cr + .cr { border-top:1.5px solid rgba(27,35,29,0.18); }
+  .cu { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1;
+        color:var(--text-on-accent); flex:0 0 118px; white-space:nowrap; }
+  .cd { font-family:var(--font-body); font-size:13.5px; line-height:1.35; color:rgba(27,35,29,0.82); }
+  .cd b { font-weight:800; color:var(--text-on-accent); }
+  .verdict { margin-top:16px; padding-top:14px; border-top:2px solid rgba(27,35,29,0.22);
+             font-family:var(--font-body); font-weight:700; font-size:14px; line-height:1.38;
+             color:var(--text-on-accent); }
+</style>
+  <div class="stbr-eyebrow">seeds + stored bump &rarr; a real signature</div>
+  <h2 class="viz-title">how invoke_signed proves the PDA said yes</h2>
+
+  <div class="wrap">
+    <div class="flow">
+      <div class="rail"></div>
+
+      <div class="row">
+        <div class="num">1</div>
+        <div class="box">
+          <div class="bt">read the bump you already stored</div>
+          <div class="bm"><b>vault_bump = config[33]</b> &nbsp;&middot;&nbsp; written at init, costs ~0 CU</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="num">2</div>
+        <div class="box">
+          <div class="bt">build the seed set</div>
+          <div class="bm">seeds = [<b>"vault"</b>, authority_pubkey, [<b>vault_bump</b>]]</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="num">3</div>
+        <div class="box">
+          <div class="bt">wrap it as a Signer and hand it to the CPI</div>
+          <div class="bm"><b>Transfer { .. }.invoke_signed(&amp;signers)</b></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="num">4</div>
+        <div class="box">
+          <div class="bt">the runtime re-derives the address itself</div>
+          <div class="bm"><b>create_program_address(seeds)</b> &rarr; derived address</div>
+        </div>
+      </div>
+
+      <div class="down">
+        <svg width="18" height="26" viewBox="0 0 18 26"><line x1="9" y1="0" x2="9" y2="16" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,26 2,14 16,14" fill="#1b231d"/></svg>
+      </div>
+
+      <div class="dec">
+        <svg width="34" height="34" viewBox="0 0 34 34"><polygon points="17,2 32,17 17,32 2,17" fill="none" stroke="#1b231d" stroke-width="2.5"/></svg>
+        <span class="dect">derived address == vault account key ?</span>
+        <span class="decn">step 5</span>
+      </div>
+
+      <div class="split">
+        <!-- .flow is 976px wide; the two .br columns are (976-24)/2 = 476 each,
+             so their centres are 238 and 738. Keep the svg width == 976 (a wider
+             svg overflows and lands the right arm off its box). -->
+        <svg width="976" height="40" viewBox="0 0 976 40" preserveAspectRatio="none">
+          <line x1="488" y1="0" x2="488" y2="12" stroke="#1b231d" stroke-width="2.5"/>
+          <line x1="238" y1="12" x2="738" y2="12" stroke="#1b231d" stroke-width="2.5"/>
+          <line x1="238" y1="12" x2="238" y2="28" stroke="#1b231d" stroke-width="2.5"/>
+          <line x1="738" y1="12" x2="738" y2="28" stroke="#1b231d" stroke-width="2.5"/>
+          <polygon points="238,40 230,26 246,26" fill="#1b231d"/>
+          <polygon points="738,40 730,26 746,26" fill="#1b231d"/>
+        </svg>
+      </div>
+
+      <div class="branches">
+        <div class="br ok">
+          <span class="tag">yes</span>
+          <span class="brt">the System Program executes the transfer</span>
+        </div>
+        <div class="br no">
+          <span class="tag">no</span>
+          <span class="brt"><code>InvalidSeeds</code> &mdash; nothing moves</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="sk">the rejected alternative</div>
+      <div class="st">re-deriving in the instruction</div>
+      <div class="sm">find_program_address(seeds, &amp;ID)</div>
+      <div class="cmp">
+        <div class="cr">
+          <span class="cu">~0 CU</span>
+          <span class="cd"><b>step 1, stored</b> &mdash; one byte read out of config</span>
+        </div>
+        <div class="cr">
+          <span class="cu">~1500 CU</span>
+          <span class="cd"><b>per call, re-derived</b> &mdash; the runtime grinds bumps down from 255</span>
+        </div>
+      </div>
+      <div class="verdict">Calling it inside the instruction throws away the entire reason you stored the bump at init.</div>
+    </div>
+  </div>
+</div>
+</body></html>

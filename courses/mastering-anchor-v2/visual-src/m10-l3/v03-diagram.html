@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: v1 reload-after-CPI vs V2 borrow-tracked CpiHandle
+     purpose: show that V2 deletes the stale copy outright (zero-copy view) and forbids the remaining window
+     data: v1 timeline: [read typed field into a local] -> [CPI runs, mutates account data] -> [that copy now STALE] -> [.reload()? re-reads] -> [read fresh] v1 risk: forget .reload() -> silent stale read (runtime bug) V2 timeline: [a loaded typed account holds the account's DATA BORROW: the default Account<T> is a zero-copy view; BorshAccount<T> decodes but keeps the guard] -> [hand an account to the CPI with cpi_handle_mut(): THAT account's typed reads are excluded until the call consumes it] -> [read after the CPI completes] -> [nothing changed underneath it] V2 property: nothing can go stale behind a loaded account, and the one dangerous window will not compile
+     prompt: Two parallel horizontal timelines stacked vertically, labeled "v1" and "V2". The v1 track shows a borrow read into a local before the CPI box, with a red "STALE" flag on that local after the CPI and a .reload() patch restoring it. The V2 track shows the CPI box marked "the accounts handed over are borrowed (CpiHandleMut)", a red X on an arrow that tries to carry a typed borrow of one of THOSE accounts through it labeled "compile error", and a clean green borrow taken after the box. Emphasize: v1 patches at runtime, V2 forbids at compile time.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:512px;height:490px;top:-248px;right:-248px;border-radius:52% 60% 61% 51% / 53% 54% 53% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:571px;height:480px;bottom:-287px;left:-287px;border-radius:65% 47% 62% 47% / 55% 48% 62% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:519px;height:486px;bottom:-293px;right:-293px;border-radius:47% 47% 42% 37% / 65% 42% 61% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .track { display:flex; align-items:stretch; gap:16px; }
+  .tlab { width:96px; flex:0 0 96px; border-radius:var(--radius-lg);
+          display:flex; flex-direction:column; align-items:center; justify-content:center;
+          font-family:var(--font-display); font-weight:900; }
+  .tlab .big { font-size:34px; line-height:1; }
+  .tlab .sm  { font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+               margin-top:6px; opacity:.7; }
+  .tlab.a { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .tlab.b { background:var(--surface-brand); color:var(--text-on-brand); }
+  .steps { flex:1; display:flex; align-items:stretch; }
+  .conn { flex:0 0 30px; display:flex; align-items:center; justify-content:center; }
+  .step { flex:1; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:14px 15px; min-height:118px; }
+  .step .k { font-family:var(--font-display); font-weight:900; font-size:10.5px;
+             letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted);
+             margin-bottom:6px; }
+  .step .h { font-family:var(--font-display); font-weight:900; font-size:17px;
+             line-height:1.15; color:var(--text-primary); }
+  .step .m { font-family:var(--font-mono); font-size:12px; line-height:1.35;
+             color:var(--text-secondary); margin-top:6px; }
+  .step.dark { background:var(--surface-inverse); border-color:var(--stbr-dark); }
+  .step.dark .k { color:var(--stbr-cream); opacity:.55; }
+  .step.dark .h { color:var(--text-on-dark); }
+  .step.dark .m { color:var(--stbr-cream); opacity:.72; }
+  .step.stale { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); }
+  .step.stale .k { color:var(--stbr-dark); opacity:.65; }
+  .step.stale .h { color:var(--stbr-dark); font-size:22px; }
+  .step.stale .m { color:var(--stbr-dark); opacity:.8; }
+  .step.fix { border:2px solid var(--stbr-emerald); }
+  .step.fix .k { color:var(--stbr-emerald); }
+  .xmark { display:flex; align-items:center; gap:8px; margin-top:7px; }
+  .strip { margin:8px 0 0 112px; border-radius:var(--radius-md); padding:9px 18px;
+           font-family:var(--font-body); font-size:14px; line-height:1.35; }
+  .strip b { font-family:var(--font-display); font-weight:900; }
+  .strip code { font-family:var(--font-mono); font-size:13px; }
+  .strip.risk { background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+                border-left:6px solid var(--stbr-dark); color:var(--text-secondary); }
+  .strip.prop { background:var(--surface-brand); color:var(--text-on-brand); }
+  .gapper { height:22px; }
+  .cap { margin-top:14px; text-align:center; font-family:var(--font-display);
+         font-weight:900; font-size:16px; color:var(--text-secondary);
+         letter-spacing:.02em; }
+</style>
+  <div class="stbr-eyebrow">runtime patch &rarr; nothing left to patch</div>
+  <h2 class="viz-title">reload-after-CPI, and what replaced it</h2>
+
+  <div class="track">
+    <div class="tlab a"><div class="big">v1</div><div class="sm">patch it</div></div>
+    <div class="steps">
+      <div class="step">
+        <div class="k">step 1</div>
+        <div class="h">read a typed field into a local</div>
+        <div class="m">let before = state.total;</div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#1b231d"/></svg></div>
+      <div class="step dark">
+        <div class="k">step 2</div>
+        <div class="h">the CPI runs</div>
+        <div class="m">it mutates the account data on chain</div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#1b231d"/></svg></div>
+      <div class="step stale">
+        <div class="k">step 3</div>
+        <div class="h">that copy is now STALE</div>
+        <div class="m">before still holds the pre-CPI value</div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#1b231d"/></svg></div>
+      <div class="step fix">
+        <div class="k">step 4 &middot; the patch</div>
+        <div class="h">.reload()? re-reads</div>
+        <div class="m">you must remember to write it</div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#1b231d"/></svg></div>
+      <div class="step">
+        <div class="k">step 5</div>
+        <div class="h">read fresh</div>
+        <div class="m">correct &mdash; only because of step 4</div>
+      </div>
+    </div>
+  </div>
+  <div class="strip risk"><b>the risk:</b> forget <code>.reload()</code> and you get a silent stale read &mdash; it compiles, it tests green, and it is a runtime bug.</div>
+
+  <div class="gapper"></div>
+
+  <div class="track">
+    <div class="tlab b"><div class="big">V2</div><div class="sm">forbid it</div></div>
+    <div class="steps">
+      <div class="step">
+        <div class="k">step 1</div>
+        <div class="h">a loaded typed account holds the data borrow</div>
+        <div class="m">nothing can rewrite those bytes behind it</div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#008b4c"/></svg></div>
+      <div class="step dark">
+        <div class="k">step 2 &middot; hand it to the CPI</div>
+        <div class="h">a typed read of THAT account = compile error</div>
+        <div class="xmark">
+          <svg width="20" height="20" viewBox="0 0 20 20"><line x1="4" y1="4" x2="16" y2="16" stroke="#f5e8ca" stroke-width="2.8"/><line x1="16" y1="4" x2="4" y2="16" stroke="#f5e8ca" stroke-width="2.8"/></svg>
+          <span class="m" style="margin-top:0">its cpi_handle_mut() borrow cannot cross the call</span>
+        </div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#008b4c"/></svg></div>
+      <div class="step fix">
+        <div class="k">step 3</div>
+        <div class="h">read after the CPI completes</div>
+        <div class="m">the handle is consumed; the borrow is over</div>
+      </div>
+      <div class="conn"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="17,1 30,8 17,15" fill="#008b4c"/></svg></div>
+      <div class="step">
+        <div class="k">step 4</div>
+        <div class="h">nothing changed underneath it</div>
+        <div class="m">no step you can forget</div>
+      </div>
+    </div>
+  </div>
+  <div class="strip prop"><b>the property:</b> nothing goes stale behind a loaded account, and the one dangerous window will not compile.</div>
+
+  <div class="cap">v1 patches a stale copy &middot; V2 never lets one form</div>
+</div>
+</body></html>

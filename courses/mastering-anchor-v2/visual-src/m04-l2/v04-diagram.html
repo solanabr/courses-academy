@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The CpiHandle owns the borrow for its whole scope
+     purpose: show that typed access to the CPI'd account is locked out for the exact span its handle is alive, returns when it drops, and never touches accounts outside the CPI
+     data: Timeline of one instruction, top to bottom: [ handle NOT yet created ]  -> typed access ALLOWED (reading the account you are about to hand the CPI is legal) let cpi = CpiContext::new(&sys, Transfer { from: vault.cpi_handle_mut().. }) [ handle LIVE, borrow held ] -> typed access EXCLUDED for the CPI'd account (reading THAT account = compile error; accounts outside the CPI stay readable) transfer(cpi, amount)?   // cpi is consumed here -> handle drops [ handle dropped, borrow released ] -> typed access ALLOWED AGAIN (reads the LIVE account)
+     prompt: A vertical timeline bar for one instruction. Three bands: a top green band "typed access allowed", a middle yellow band "handle live: the CPI'd account's typed access excluded (everything else stays readable)" spanning from CpiContext::new to the transfer call, and a bottom green band "handle dropped: access allowed, reads live data". Mark the CpiContext::new line as the borrow-start and the transfer call as the borrow-end.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:511px;height:539px;top:-302px;right:-302px;border-radius:44% 55% 54% 45% / 49% 48% 60% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:530px;height:431px;bottom:-245px;left:-245px;border-radius:41% 63% 61% 41% / 58% 57% 58% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:496px;bottom:-253px;right:-253px;border-radius:49% 49% 52% 48% / 55% 51% 59% 60%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+        overflow:hidden; background:var(--surface-card); }
+  .tl .r { display:grid; grid-template-columns:26px 258px 1fr; align-items:stretch; }
+  .rail { width:26px; }
+  .rail.on  { background:var(--stbr-emerald); }
+  .rail.off { background:var(--stbr-yellow); }
+  .rail.mark { background:var(--stbr-dark); }
+  .state { padding:22px 24px; display:flex; flex-direction:column; justify-content:center;
+    border-right:1.5px solid var(--border-subtle); }
+  .state .k { font-family:var(--font-display); font-weight:900; font-size:19px;
+    line-height:1.12; color:var(--text-primary); }
+  .state .s { font-family:var(--font-body); font-size:14px; font-weight:600;
+    color:var(--text-muted); margin-top:6px; line-height:1.25; }
+  .desc { padding:22px 30px; display:flex; flex-direction:column; justify-content:center; }
+  .desc .v { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1; }
+  .desc .d { font-size:17px; line-height:1.35; margin-top:8px; color:var(--text-secondary); }
+  .desc code { font-family:var(--font-mono); font-weight:700; font-size:16px; }
+  .allow { background:rgba(0,139,76,.07); }
+  .allow .v { color:var(--stbr-emerald-800); }
+  .excl { background:rgba(255,210,63,.20); }
+  .excl .v { color:var(--text-primary); }
+  .excl .d { color:var(--text-primary); }
+  .bound { background:var(--surface-inverse); }
+  .bound .state { border-right:1.5px solid rgba(245,232,202,.2); }
+  .bound .state .k { color:var(--stbr-yellow); font-size:15px; letter-spacing:.08em;
+    text-transform:uppercase; }
+  .bound .state .s { color:rgba(245,232,202,.6); }
+  .bound .desc { padding:18px 30px; }
+  .bound .desc pre { margin:0; font-family:var(--font-mono); font-size:16px;
+    line-height:1.4; color:var(--stbr-cream); white-space:pre; }
+  .bound .desc .cm { color:#8fae95; }
+</style>
+  <div class="stbr-eyebrow">one instruction, top to bottom</div>
+  <h2 class="viz-title">the CpiHandle owns the borrow for its whole scope</h2>
+  <div class="tl">
+    <div class="r allow">
+      <div class="rail on"></div>
+      <div class="state"><div class="k">handle NOT yet created</div><div class="s">no borrow outstanding</div></div>
+      <div class="desc"><div class="v">typed access ALLOWED</div>
+        <div class="d">Reading the account you are about to hand the CPI is legal — no borrow exists yet.</div></div>
+    </div>
+    <div class="r bound">
+      <div class="rail mark"></div>
+      <div class="state"><div class="k">borrow starts</div><div class="s">the handle is created</div></div>
+      <div class="desc"><pre>let cpi = CpiContext::new(&amp;sys, Transfer { from: vault.cpi_handle_mut(), .. });</pre></div>
+    </div>
+    <div class="r excl">
+      <div class="rail off"></div>
+      <div class="state"><div class="k">handle LIVE, borrow held</div><div class="s">the exclusion window</div></div>
+      <div class="desc"><div class="v">typed access EXCLUDED — for the CPI&rsquo;d account</div>
+        <div class="d">Reading <code>vault</code> here is a compile error. Accounts you did not hand the CPI stay readable.</div></div>
+    </div>
+    <div class="r bound">
+      <div class="rail mark"></div>
+      <div class="state"><div class="k">borrow ends</div><div class="s">the handle drops</div></div>
+      <div class="desc"><pre>transfer(cpi, amount)?;   <span class="cm">// cpi is consumed here -&gt; handle drops</span></pre></div>
+    </div>
+    <div class="r allow">
+      <div class="rail on"></div>
+      <div class="state"><div class="k">handle dropped</div><div class="s">borrow released</div></div>
+      <div class="desc"><div class="v">typed access ALLOWED AGAIN</div>
+        <div class="d">And the read now returns the <b>LIVE</b> account — nothing to reload.</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

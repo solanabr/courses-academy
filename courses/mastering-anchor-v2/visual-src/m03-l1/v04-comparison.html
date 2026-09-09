@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Reading the canonical bump, pre-0.29 versus today
+     purpose: contrast the pre-0.29 runtime string lookup with the typed field every line since 0.29 uses — this is a 0.29 change, NOT a V2 delta; do not relabel the columns v1/V2
+     data: axis: how you get the bump | 0.28 and earlier | 0.29 onward (1.x and V2 alike) syntax        | ctx.bumps.get("vault").unwrap() | ctx.bumps.vault bump derivation | runtime, during validation      | runtime, during validation (unchanged for runtime-keyed seeds) name->slot resolution | runtime map lookup by string | macro-expansion time (typed field) key type      | string ("vault")                | struct field (vault) failure mode  | typo compiles, panics at runtime| typo fails to compile fallibility   | returns Option, you unwrap      | infallible field access
+     prompt: Two-column comparison card, "0.28 and earlier" on the left in muted tone, "0.29 onward" on the right emphasized. Label the right column so it is unmistakably NOT "V2" — this landed two majors before V2 and 1.x reads it the same way. Five labeled rows as above. Draw a small arrow from "runtime map lookup" to "macro-expansion time (typed field)" to signal the shift left in the pipeline.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:561px;height:541px;top:-277px;right:-277px;border-radius:65% 39% 53% 53% / 65% 35% 58% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:578px;height:576px;bottom:-311px;left:-311px;border-radius:58% 47% 53% 54% / 54% 52% 57% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:390px;height:479px;bottom:-241px;left:599px;border-radius:52% 38% 57% 58% / 36% 58% 45% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { margin-top:18px; border-radius:var(--radius-xl); overflow:hidden;
+    border:2px solid var(--border-subtle); }
+  .g { display:grid; grid-template-columns:290px 1fr 1fr; }
+  .hd { background:var(--surface-inverse); padding:18px 26px; }
+  .hd .n { font-family:var(--font-display); font-weight:900; font-size:22px; }
+  .hd .c { display:block; font-family:var(--font-mono); font-size:15px; margin-top:6px;
+    color:var(--stbr-ink-300); }
+  .hd.axis { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--stbr-ink-300); display:flex; align-items:flex-end; }
+  .hd.v1 .n { color:var(--stbr-ink-300); }
+  .hd.v2 .n { color:var(--stbr-emerald); }
+  .ax { padding:17px 26px; background:var(--surface-paper); border-top:1.5px solid var(--border-subtle);
+    font-family:var(--font-body); font-weight:800; font-size:16px; color:var(--text-primary);
+    display:flex; align-items:center; line-height:1.25; }
+  .td { padding:17px 26px; background:var(--surface-card); border-top:1.5px solid var(--border-subtle);
+    border-left:1.5px solid var(--border-subtle); font-family:var(--font-body); font-size:17px;
+    line-height:1.35; color:var(--text-secondary); display:flex; align-items:center; gap:12px; }
+  .td .t { flex:1 1 auto; }
+  .td.old { color:var(--text-muted); }
+  .td code { font-family:var(--font-mono); font-weight:700; font-size:16.5px; color:var(--text-primary); }
+  .td.old code { color:var(--text-muted); }
+  .shift .td { background:rgba(255,210,63,0.20); }
+  .shift .ax { background:rgba(255,210,63,0.30); }
+  .shift .td.new { font-weight:800; color:var(--text-primary); }
+  .movetag { display:flex; align-items:center; gap:9px; flex:0 0 auto;
+    font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--stbr-emerald); }
+  .bad { color:#a5281c; font-weight:700; }
+  .good { color:var(--stbr-emerald-800); font-weight:700; }
+  .verdict { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:22px 30px; font-size:20px; font-weight:500; line-height:1.4; }
+  .verdict b { color:var(--stbr-yellow); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">the derivation did not move &mdash; the lookup did</div>
+  <h2 class="viz-title">reading the canonical bump, before and since 0.29</h2>
+  <div class="cmp">
+    <div class="g">
+      <div class="hd axis">how you get the bump</div>
+      <div class="hd v1"><span class="n">pre-0.29</span><span class="c">ctx.bumps.get("vault").unwrap()</span></div>
+      <div class="hd v2" style="border-left:1.5px solid var(--border-on-dark);"><span class="n">0.29 &rarr; V2</span><span class="c">ctx.bumps.vault</span></div>
+
+      <div class="ax">bump derivation</div>
+      <div class="td old"><span class="t">runtime, during validation</span></div>
+      <div class="td"><span class="t">runtime, during validation &mdash; <b>unchanged</b></span></div>
+    </div>
+    <div class="g shift">
+      <div class="ax">name &rarr; slot resolution</div>
+      <div class="td old"><span class="t">runtime map lookup, by string</span>
+        <span class="movetag">
+          <svg width="46" height="16" viewBox="0 0 46 16"><path d="M1 8 H33" stroke="#008b4c" stroke-width="2.4" stroke-linecap="round"/><polygon points="44,8 31,2 31,14" fill="#008b4c"/></svg>
+          moves
+        </span>
+      </div>
+      <div class="td new"><span class="t">macro-expansion time &mdash; a typed field</span></div>
+    </div>
+    <div class="g">
+      <div class="ax">key type</div>
+      <div class="td old"><span class="t">a string, <code>"vault"</code></span></div>
+      <div class="td"><span class="t">a struct field, <code>vault</code></span></div>
+
+      <div class="ax">failure mode</div>
+      <div class="td old"><span class="t">a typo <span class="bad">compiles, then panics at runtime</span></span></div>
+      <div class="td"><span class="t">a typo <span class="good">fails to compile</span></span></div>
+
+      <div class="ax">fallibility</div>
+      <div class="td old"><span class="t">returns <code>Option</code> &mdash; you <code>unwrap()</code></span></div>
+      <div class="td"><span class="t">infallible field access</span></div>
+    </div>
+  </div>
+  <div class="verdict">The bump is still searched for at validation time. What 0.29 removed, and V2 keeps out, is the <b>string lookup</b> &mdash; the macro knows the field's shape at expansion, so a misspelled seed name is a compile error, not a panic.</div>
+</div>
+</body></html>

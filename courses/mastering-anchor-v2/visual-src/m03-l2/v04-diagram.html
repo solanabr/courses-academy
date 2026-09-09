@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What close = player does, atomically
+     purpose: show rent return plus invalidation as one macro-guarded step
+     data: before: vault account { lamports: rent_reserve, data: {owner, credit, bump}, discriminator: Vault } the close constraint (on success): 1. move ALL lamports (rent_reserve) -> player 2. zero the account data 3. wipe the discriminator (no silent revival) after: vault account { lamports: 0, data: [], discriminator: none } -> runtime reclaims it player balance: up by rent_reserve
+     prompt: Left-to-right before/after diagram. Left: a full vault account box with lamports and fields. A center arrow labeled "close = player" fans into three numbered actions. Right: an empty, greyed-out account box marked "invalidated" and a player wallet chip with an up-arrow and "+ rent reserve". Keep it calm and mechanical, no decorative icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:449px;height:471px;top:-230px;right:-230px;border-radius:41% 48% 44% 53% / 35% 50% 39% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:487px;height:434px;bottom:-252px;left:-252px;border-radius:37% 45% 56% 61% / 61% 42% 44% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:360px;height:451px;bottom:-260px;left:801px;border-radius:57% 53% 64% 46% / 45% 46% 51% 40%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:44px; margin:4px 0 20px; }
+
+  .d4-labs, .d4-cols { display:flex; align-items:stretch; }
+  .d4-labs { align-items:flex-end; margin-bottom:10px; }
+  .d4-cols { align-items:center; }
+  .w1 { flex:0 0 404px; }
+  .wa { flex:0 0 62px; }
+  .w2 { flex:0 0 468px; }
+  .w3 { flex:1; }
+
+  .d4-lab { font-family:var(--font-display); font-weight:900; font-size:17px;
+            letter-spacing:0.14em; text-transform:uppercase; color:var(--text-secondary); }
+  .d4-lab.hi { color:var(--stbr-emerald-800); }
+
+  .d4-box { border-radius:var(--radius-lg); overflow:hidden;
+            border:2px solid var(--stbr-dark); background:var(--surface-card); }
+  .d4-box.dead { border-color:var(--stbr-ink-300); background:var(--stbr-cream-200); }
+  .d4-bh { height:50px; padding:0 18px; display:flex; align-items:center;
+           background:var(--surface-inverse); }
+  .d4-box.dead .d4-bh { background:var(--stbr-ink-300); }
+  .d4-bh .n { font-family:var(--font-mono); font-size:20px; font-weight:800;
+              color:var(--stbr-cream); }
+  .d4-box.dead .d4-bh .n { color:var(--stbr-ink-700); }
+  .d4-bh .st { margin-left:auto; font-family:var(--font-body); font-size:13px;
+               font-weight:800; letter-spacing:0.12em; text-transform:uppercase;
+               color:var(--stbr-ink-700); background:var(--stbr-cream-200);
+               border-radius:var(--radius-pill); padding:3px 11px; }
+  .d4-bb { padding:14px 18px; }
+  .d4-f { padding:12px 0; border-bottom:1.5px solid var(--border-subtle); }
+  .d4-f.last { border-bottom:0; }
+  .d4-f .k { font-family:var(--font-body); font-size:13px; font-weight:800;
+             letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); }
+  .d4-f .v { display:block; margin-top:3px; font-family:var(--font-mono); font-size:21px;
+             font-weight:700; color:var(--text-primary); }
+  .d4-box.dead .d4-f .v { color:var(--stbr-ink-500); }
+
+  .d4-close { height:64px; display:flex; align-items:center; justify-content:center;
+              border-radius:var(--radius-md); background:var(--surface-accent);
+              border:2px solid var(--stbr-yellow-700); }
+  .d4-close .c { font-family:var(--font-mono); font-size:28px; font-weight:800;
+                 color:var(--stbr-dark); }
+  .d4-tick { height:18px; display:flex; justify-content:center; align-items:flex-start; }
+
+  /* The row is flex-centred, which put this arrowhead in the seam between action
+     cards 1 and 2. Drop it 42px so it lands on the middle card. */
+  .wa-in svg { position:relative; top:42px; }
+
+  .d4-act { display:flex; align-items:center; height:68px; margin-bottom:10px;
+            background:var(--surface-card); border:1.5px solid var(--border-subtle);
+            border-left:5px solid var(--stbr-emerald); border-radius:var(--radius-md);
+            padding:0 16px; }
+  .d4-act.last { margin-bottom:0; }
+  .d4-act .n { flex:0 0 32px; height:32px; border-radius:50%;
+               background:var(--surface-brand); color:var(--stbr-cream);
+               font-family:var(--font-display); font-weight:900; font-size:18px;
+               text-align:center; line-height:32px; margin-right:14px; }
+  .d4-act .t { flex:1; font-family:var(--font-body); font-size:19px; line-height:1.25;
+               color:var(--text-primary); }
+  .d4-act .t code { font-family:var(--font-mono); font-size:17px; font-weight:700;
+                    color:var(--stbr-emerald-800); }
+  .d4-act .t em { font-style:normal; font-weight:800; }
+
+  .d4-after-note { margin-top:11px; font-family:var(--font-body); font-size:17px;
+                   font-weight:700; color:var(--text-secondary); }
+  .d4-wallet { margin-top:13px; height:70px; display:flex; align-items:center;
+               padding:0 18px; border-radius:var(--radius-md);
+               background:var(--surface-brand); }
+  .d4-wallet .up { flex:0 0 26px; }
+  .d4-wallet .txt { flex:1; padding-left:12px; font-family:var(--font-body);
+                    font-size:18px; font-weight:700; color:var(--stbr-cream);
+                    line-height:1.2; }
+  .d4-wallet .txt code { font-family:var(--font-mono); font-size:18px; font-weight:800;
+                         color:var(--stbr-cream); }
+
+  .d4-foot { margin-top:22px; font-family:var(--font-body); font-size:19px;
+             color:var(--text-secondary); }
+  .d4-foot b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">rent return + invalidation, one step</div>
+  <h2 class="viz-title">What close = player does, atomically</h2>
+
+  <div class="d4-labs">
+    <div class="w1"><div class="d4-lab">before</div></div>
+    <div class="wa"></div>
+    <div class="w2"><div class="d4-lab hi">the close constraint, on success</div></div>
+    <div class="wa"></div>
+    <div class="w3"><div class="d4-lab">after</div></div>
+  </div>
+
+  <div class="d4-cols">
+    <div class="w1">
+      <div class="d4-box">
+        <div class="d4-bh"><span class="n">vault account</span></div>
+        <div class="d4-bb">
+          <div class="d4-f"><span class="k">lamports</span><span class="v">rent_reserve</span></div>
+          <div class="d4-f"><span class="k">data</span><span class="v">owner, credit, bump</span></div>
+          <div class="d4-f last"><span class="k">discriminator</span><span class="v">Vault</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wa wa-in"><svg width="62" height="16"><line x1="0" y1="8" x2="47" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="62,8 46,2 46,14" fill="#1b231d"/></svg></div>
+
+    <div class="w2">
+      <div class="d4-close"><span class="c">close = player</span></div>
+      <div class="d4-tick"><svg width="16" height="18"><line x1="8" y1="0" x2="8" y2="10" stroke="#d9a608" stroke-width="2.5"/><polygon points="8,18 2,9 14,9" fill="#d9a608"/></svg></div>
+      <div class="d4-act"><div class="n">1</div><div class="t">move <em>ALL</em> lamports (<code>rent_reserve</code>) to the player</div></div>
+      <div class="d4-act"><div class="n">2</div><div class="t">zero the account data</div></div>
+      <div class="d4-act last"><div class="n">3</div><div class="t">wipe the discriminator &mdash; no silent revival</div></div>
+    </div>
+
+    <div class="wa"><svg width="62" height="16"><line x1="0" y1="8" x2="47" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="62,8 46,2 46,14" fill="#1b231d"/></svg></div>
+
+    <div class="w3">
+      <div class="d4-box dead">
+        <div class="d4-bh"><span class="n">vault account</span><span class="st">invalidated</span></div>
+        <div class="d4-bb">
+          <div class="d4-f"><span class="k">lamports</span><span class="v">0</span></div>
+          <div class="d4-f"><span class="k">data</span><span class="v">[]</span></div>
+          <div class="d4-f last"><span class="k">discriminator</span><span class="v">none</span></div>
+        </div>
+      </div>
+      <div class="d4-wallet">
+        <div class="up"><svg width="26" height="30"><line x1="13" y1="30" x2="13" y2="11" stroke="#f5e8ca" stroke-width="3"/><polygon points="13,0 4,13 22,13" fill="#f5e8ca"/></svg></div>
+        <div class="txt">player balance up by <code>rent_reserve</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d4-foot">All three actions are one macro-guarded step: either the handler succeeds and the account is <b>gone</b>, or nothing moved at all &mdash; the runtime then reclaims the address.</div>
+</div>
+</body></html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The swap handler, step by step
+     purpose: show the fixed order of reads, quote, guard, and the two CPIs
+     data: 1. read reserve_in = reserve_arcade.amount(), reserve_out = reserve_ticket.amount() (before any handle) 2. out = swap_out(reserve_in, reserve_out, amount_in); require out > 0 3. GUARD: require out >= min_out, else revert SlippageExceeded 4. CPI pull: trader_arcade -> reserve_arcade, amount_in, trader signs 5. CPI push: reserve_ticket -> trader_ticket, out, pool PDA signs (with_signer) 6. Ok(()) Ordering rules: reads must precede any cpi_handle_mut; guard must precede both CPIs.
+     prompt: Vertical flowchart, six boxes top to bottom in the order above. Mark box 1 with a side note "typed reads only legal here". Mark box 3 as a decision diamond ("out >= min_out?") with a "no -> revert" branch off the side. Mark boxes 4 and 5 as CPI steps, tagging the signer on each ("trader" / "pool PDA"). Keep it a clean single column with the one revert branch.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:472px;height:456px;top:-234px;right:-234px;border-radius:35% 48% 52% 61% / 58% 62% 63% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:389px;left:-256px;top:327px;border-radius:64% 61% 60% 45% / 37% 65% 52% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:464px;height:498px;bottom:-293px;left:718px;border-radius:48% 42% 36% 49% / 57% 40% 61% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .f5-title { font-size:44px; }
+  .f5-card { background:var(--surface-card); border:2px solid var(--border-subtle);
+             border-radius:var(--radius-2xl); padding:24px 30px; }
+  .f5-stage { display:flex; justify-content:center; align-items:flex-start; }
+  .f5-l { width:270px; flex:0 0 270px; }
+  .f5-c { width:700px; flex:0 0 700px; }
+  .f5-r { width:350px; flex:0 0 350px; }
+
+  .f5-box { height:62px; box-sizing:border-box; display:flex; align-items:center; gap:14px;
+            padding:0 18px; background:var(--surface-card);
+            border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg); }
+  .f5-box .num { width:28px; flex:0 0 28px; height:28px; border-radius:var(--radius-pill);
+                 background:var(--surface-brand); color:var(--stbr-cream);
+                 font-family:var(--font-display); font-weight:900; font-size:15px;
+                 line-height:28px; text-align:center; }
+  .f5-box .n { display:block; font-family:var(--font-body); font-weight:800; font-size:17px;
+               line-height:1.2; color:var(--text-primary); }
+  .f5-box .m { display:block; font-family:var(--font-mono); font-size:14px; line-height:1.25;
+               color:var(--text-secondary); margin-top:3px; }
+  .f5-box.guard { background:var(--surface-accent); border:3px solid var(--stbr-yellow-700);
+                  border-radius:var(--radius-pill); }
+  .f5-box.guard .num { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .f5-box.guard .n { font-family:var(--font-display); font-weight:900; font-size:19px;
+                     color:var(--stbr-dark); }
+  .f5-box.guard .m { color:rgba(27,35,29,0.70); }
+  .f5-box.done { border-color:var(--stbr-green); background:#f2f7f3; }
+
+  .f5-a { height:18px; display:flex; align-items:center; justify-content:center; }
+  .f5-sp160 { height:160px; }
+  .f5-sp18  { height:18px; }
+
+  .f5-side { height:62px; display:flex; align-items:center; }
+  .f5-side .arw { width:56px; flex:0 0 56px; display:flex; align-items:center; }
+  .f5-revert { width:294px; flex:0 0 294px; box-sizing:border-box; height:62px;
+               background:var(--surface-inverse); border-radius:var(--radius-lg);
+               padding:12px 18px; display:block; }
+  .f5-revert .k { display:block; font-family:var(--font-body); font-weight:800; font-size:11px;
+                  letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .f5-revert .t { display:block; font-family:var(--font-mono); font-size:15px; color:var(--stbr-cream);
+                  margin-top:3px; }
+  .f5-tag { width:294px; flex:0 0 294px; box-sizing:border-box; height:62px;
+            background:var(--surface-paper); border:2px solid var(--border-subtle);
+            border-left:5px solid var(--stbr-green); border-radius:var(--radius-md);
+            padding:11px 18px; display:block; }
+  .f5-tag .k { display:block; font-family:var(--font-body); font-weight:800; font-size:11px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .f5-tag .t { display:block; font-family:var(--font-mono); font-size:14px; color:var(--text-primary);
+               margin-top:3px; }
+
+  .f5-note { height:62px; display:flex; align-items:center; }
+  .f5-note .tx { width:214px; flex:0 0 214px; box-sizing:border-box; text-align:right;
+                 padding-right:12px; font-family:var(--font-body); font-size:14.5px;
+                 line-height:1.28; color:var(--text-secondary); }
+  .f5-note .tx b { font-weight:800; color:var(--text-primary); display:block; }
+  .f5-note .arw { width:56px; flex:0 0 56px; display:flex; align-items:center; }
+
+  .f5-band { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 30px; display:flex; align-items:center; gap:26px; }
+  .f5-band .bk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                 letter-spacing:.14em; text-transform:uppercase;
+                 color:rgba(245,232,202,0.75); white-space:nowrap; }
+  .f5-band .bt { font-family:var(--font-display); font-weight:900; font-size:22px;
+                 line-height:1.18; color:var(--stbr-cream); }
+  .f5-band .bt b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">read &rarr; quote &rarr; guard &rarr; two CPIs</div>
+  <h2 class="viz-title f5-title">The swap handler, step by step</h2>
+  <div class="f5-card">
+    <div class="f5-stage">
+      <div class="f5-l">
+        <div class="f5-note">
+          <span class="tx"><b>typed reads only legal here</b>before any cpi_handle_mut is live</span>
+          <span class="arw"><svg width="56" height="14" viewBox="0 0 56 14"><line x1="0" y1="7" x2="44" y2="7" stroke="#767f73" stroke-width="2" stroke-dasharray="6 5"/><polygon points="56,7 43,1 43,13" fill="#767f73"/></svg></span>
+        </div>
+      </div>
+
+      <div class="f5-c">
+        <div class="f5-box">
+          <span class="num">1</span>
+          <span><span class="n">read both reserves</span><span class="m">reserve_in = reserve_arcade.amount() &middot; reserve_out = reserve_ticket.amount()</span></span>
+        </div>
+        <div class="f5-a"><svg width="14" height="18" viewBox="0 0 14 18"><line x1="7" y1="0" x2="7" y2="10" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,9 14,9 7,18" fill="#1b231d"/></svg></div>
+        <div class="f5-box">
+          <span class="num">2</span>
+          <span><span class="n">quote</span><span class="m">out = swap_out(reserve_in, reserve_out, amount_in) &middot; require out &gt; 0</span></span>
+        </div>
+        <div class="f5-a"><svg width="14" height="18" viewBox="0 0 14 18"><line x1="7" y1="0" x2="7" y2="10" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,9 14,9 7,18" fill="#1b231d"/></svg></div>
+        <div class="f5-box guard">
+          <span class="num">3</span>
+          <span><span class="n">GUARD &mdash; out &gt;= min_out ?</span><span class="m">the last point where nothing has moved yet</span></span>
+        </div>
+        <div class="f5-a"><svg width="14" height="18" viewBox="0 0 14 18"><line x1="7" y1="0" x2="7" y2="10" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,9 14,9 7,18" fill="#1b231d"/></svg></div>
+        <div class="f5-box">
+          <span class="num">4</span>
+          <span><span class="n">CPI pull</span><span class="m">trader_arcade &rarr; reserve_arcade, amount_in</span></span>
+        </div>
+        <div class="f5-a"><svg width="14" height="18" viewBox="0 0 14 18"><line x1="7" y1="0" x2="7" y2="10" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,9 14,9 7,18" fill="#1b231d"/></svg></div>
+        <div class="f5-box">
+          <span class="num">5</span>
+          <span><span class="n">CPI push</span><span class="m">reserve_ticket &rarr; trader_ticket, out</span></span>
+        </div>
+        <div class="f5-a"><svg width="14" height="18" viewBox="0 0 14 18"><line x1="7" y1="0" x2="7" y2="10" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,9 14,9 7,18" fill="#1b231d"/></svg></div>
+        <div class="f5-box done">
+          <span class="num">6</span>
+          <span><span class="n">Ok(())</span><span class="m">both legs settled inside one instruction</span></span>
+        </div>
+      </div>
+
+      <div class="f5-r">
+        <div class="f5-sp160"></div>
+        <div class="f5-side">
+          <span class="arw"><svg width="56" height="14" viewBox="0 0 56 14"><line x1="0" y1="7" x2="44" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="56,7 43,1 43,13" fill="#1b231d"/></svg></span>
+          <span class="f5-revert"><span class="k">no</span><span class="t">revert SlippageExceeded</span></span>
+        </div>
+        <div class="f5-sp18"></div>
+        <div class="f5-side">
+          <span class="arw"><svg width="56" height="12" viewBox="0 0 56 12"><line x1="0" y1="6" x2="46" y2="6" stroke="#b8bdb6" stroke-width="2" stroke-dasharray="5 5"/><circle cx="50" cy="6" r="4" fill="#b8bdb6"/></svg></span>
+          <span class="f5-tag"><span class="k">signer</span><span class="t">the trader</span></span>
+        </div>
+        <div class="f5-sp18"></div>
+        <div class="f5-side">
+          <span class="arw"><svg width="56" height="12" viewBox="0 0 56 12"><line x1="0" y1="6" x2="46" y2="6" stroke="#b8bdb6" stroke-width="2" stroke-dasharray="5 5"/><circle cx="50" cy="6" r="4" fill="#b8bdb6"/></svg></span>
+          <span class="f5-tag"><span class="k">signer</span><span class="t">pool PDA &mdash; with_signer(seeds)</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="f5-band">
+    <span class="bk">ordering rules</span>
+    <span class="bt">Reads must precede any cpi_handle_mut, and <b>the guard must precede both CPIs</b> &mdash; a revert after leg one is not a revert you can rely on.</span>
+  </div>
+</div>
+</body></html>

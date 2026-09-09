@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "input": "100, 0, 40",
+    "expectedOutput": "(100, 60)",
+    "description": "A plain settlement: the receipt opens at 100 and closes at 60, so the two numbers must be read on opposite sides of the transfer."
+  },
+  {
+    "id": "t2",
+    "input": "250, 10, 250",
+    "expectedOutput": "(250, 0)",
+    "description": "A full drain: closing is 0. Any implementation that reports the same balance twice fails here."
+  },
+  {
+    "id": "t3",
+    "input": "500, 5, 0",
+    "expectedOutput": "(500, 500)",
+    "description": "A zero-amount settlement, where a stale read happens to be right: opening and closing coincide, so this is the one case a misplaced read still passes. That is the v1 footgun's whole disguise."
+  },
+  {
+    "id": "t4",
+    "input": "1000000, 0, 1",
+    "expectedOutput": "(1000000, 999999)",
+    "description": "One token unit off a million: the two reads differ by the smallest possible margin, so a receipt that reports one number twice is still wrong here."
+  },
+  {
+    "id": "t5",
+    "input": "7, 999999, 7",
+    "expectedOutput": "(7, 0)",
+    "description": "The vault empties into an already-large recipient: closing is read from the vault, never from the recipient."
+  }
+]

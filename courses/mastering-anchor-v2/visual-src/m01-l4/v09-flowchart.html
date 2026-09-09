@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Where the dup rejection happens in the dispatch path
+     purpose: place the runtime guard on the actual invocation timeline
+     data: client sends tx with instruction tag global:tally_two + accounts [marquee, marquee] -> dispatcher reads 8-byte instruction discriminator, routes to tally_two -> WALK: dispatcher walks the account views, flags the repeat in a bitvec -> DUP CHECK: bitvec & MUT_MASK, both slots are mut -> a bit survives -> REJECT: ConstraintDuplicateMutableAccount (runtime, in dispatcher) -> try_accounts never loads a field; handler body never runs
+     prompt: Left-to-right flowchart of one invocation. Nodes: instruction tag -> route -> walk views -> dup check -> reject. Draw try_accounts and the handler body as greyed-out nodes past the reject point with a red X, labeled "never run". Put a red marker on the DUP CHECK node reading "runtime bitvec AND-ed with the compile-time mask".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:487px;top:-282px;right:-282px;border-radius:52% 60% 43% 59% / 45% 47% 42% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:387px;left:-270px;top:178px;border-radius:58% 48% 65% 42% / 43% 62% 63% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:579px;height:543px;bottom:-307px;right:-307px;border-radius:45% 35% 35% 45% / 44% 63% 41% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p9-flow  { display:flex; align-items:stretch; }
+  .p9-node  { flex:1; height:238px; display:flex; flex-direction:column;
+              border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+              background:var(--surface-card); overflow:hidden; }
+  .p9-hd    { background:var(--surface-brand); color:var(--stbr-cream); padding:9px 14px;
+              font-family:var(--font-display); font-weight:900; font-size:14px;
+              letter-spacing:0.13em; text-transform:uppercase; }
+  .p9-bd    { flex:1; padding:13px 15px; font-family:var(--font-body); font-size:16px;
+              line-height:1.34; color:var(--text-secondary); }
+  .p9-bd code { font-family:var(--font-mono); font-weight:700; font-size:15px;
+                color:var(--stbr-emerald-800); }
+  .p9-arr   { flex:0 0 46px; display:flex; align-items:center; justify-content:center; }
+  .p9-dup   { border-color:var(--stbr-yellow-700); }
+  .p9-dup .p9-hd { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .p9-dup .p9-bd { background:#fff6d6; color:var(--stbr-dark); }
+  .p9-dup .p9-bd code { color:var(--stbr-dark); }
+  .p9-mark  { margin-top:10px; border-top:1.5px solid var(--stbr-yellow-700); padding-top:8px;
+              font-family:var(--font-body); font-weight:700; font-size:14px; line-height:1.28;
+              color:var(--stbr-dark); }
+  .p9-rej   { border-color:var(--surface-inverse); }
+  .p9-rej .p9-hd { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .p9-rej .p9-bd { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .p9-err   { font-family:var(--font-mono); font-weight:700; font-size:16px; line-height:1.3;
+              color:var(--stbr-yellow); }
+  .p9-sub   { margin-top:9px; font-size:15px; color:#b8c6bb; }
+  .p9-down  { display:flex; }
+  .p9-cell  { flex:1; display:flex; justify-content:center; }
+  .p9-spacer{ flex:0 0 46px; }
+  .p9-dead  { display:flex; align-items:stretch; gap:16px; margin-top:2px; }
+  .p9-chip  { flex:0 0 250px; display:flex; flex-direction:column; justify-content:center;
+              border:2px dashed var(--stbr-ink-300); border-radius:var(--radius-lg);
+              background:var(--surface-paper); padding:12px 18px; }
+  .p9-chip .t { font-family:var(--font-display); font-weight:900; font-size:20px;
+                color:var(--stbr-ink-500); text-transform:uppercase; letter-spacing:0.08em; }
+  .p9-chip .s { font-family:var(--font-body); font-size:15px; line-height:1.3;
+                color:var(--stbr-ink-500); margin-top:3px; }
+  .p9-grey  { flex:1; display:flex; align-items:center; gap:14px;
+              border:2px dashed var(--stbr-ink-300); border-radius:var(--radius-lg);
+              background:var(--surface-paper); padding:14px 18px; }
+  .p9-grey .nm { font-family:var(--font-mono); font-weight:700; font-size:19px;
+                 color:var(--stbr-ink-500); }
+  .p9-grey .ds { font-family:var(--font-body); font-size:15px; line-height:1.3;
+                 color:var(--stbr-ink-500); margin-top:3px; }
+</style>
+  <div class="stbr-eyebrow">one invocation, from tag to rejection</div>
+  <h2 class="viz-title">Where the dup rejection happens</h2>
+
+  <div class="p9-flow">
+    <div class="p9-node">
+      <div class="p9-hd">1 · Client</div>
+      <div class="p9-bd">Sends a tx with instruction tag <code>global:tally_two</code> and accounts <code>[marquee,&nbsp;marquee]</code> — the same account twice.</div>
+    </div>
+    <div class="p9-arr">
+      <svg width="38" height="16" viewBox="0 0 38 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="38,8 26,2 26,14" fill="#1b231d"/></svg>
+    </div>
+
+    <div class="p9-node">
+      <div class="p9-hd">2 · Route</div>
+      <div class="p9-bd">Dispatcher reads the 8-byte instruction discriminator and routes to <code>tally_two</code>.</div>
+    </div>
+    <div class="p9-arr">
+      <svg width="38" height="16" viewBox="0 0 38 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="38,8 26,2 26,14" fill="#1b231d"/></svg>
+    </div>
+
+    <div class="p9-node">
+      <div class="p9-hd">3 · Walk</div>
+      <div class="p9-bd">Dispatcher walks the account views and flags the repeat in a bitvec.</div>
+    </div>
+    <div class="p9-arr">
+      <svg width="38" height="16" viewBox="0 0 38 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="38,8 26,2 26,14" fill="#1b231d"/></svg>
+    </div>
+
+    <div class="p9-node p9-dup">
+      <div class="p9-hd">4 · Dup check</div>
+      <div class="p9-bd"><code>bitvec &amp; MUT_MASK</code> — both slots are <code>mut</code>, so a bit survives.
+        <div class="p9-mark">Runtime bitvec AND-ed with the compile-time mask.</div>
+      </div>
+    </div>
+    <div class="p9-arr">
+      <svg width="38" height="16" viewBox="0 0 38 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="38,8 26,2 26,14" fill="#1b231d"/></svg>
+    </div>
+
+    <div class="p9-node p9-rej">
+      <div class="p9-hd">5 · Reject</div>
+      <div class="p9-bd">
+        <div class="p9-err">ConstraintDuplicate<br>MutableAccount</div>
+        <div class="p9-sub">Raised at runtime, inside the dispatcher — before any typed load.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p9-down">
+    <div class="p9-cell"></div><div class="p9-spacer"></div>
+    <div class="p9-cell"></div><div class="p9-spacer"></div>
+    <div class="p9-cell"></div><div class="p9-spacer"></div>
+    <div class="p9-cell"></div><div class="p9-spacer"></div>
+    <div class="p9-cell">
+      <svg width="16" height="44" viewBox="0 0 16 44"><line x1="8" y1="0" x2="8" y2="33" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,44 2,31 14,31" fill="#1b231d"/></svg>
+    </div>
+  </div>
+
+  <div class="p9-dead">
+    <div class="p9-chip">
+      <div class="t">Never run</div>
+      <div class="s">Everything past the reject point.</div>
+    </div>
+    <div class="p9-grey">
+      <svg width="30" height="30" viewBox="0 0 30 30"><line x1="6" y1="6" x2="24" y2="24" stroke="#b8bdb6" stroke-width="3.5"/><line x1="24" y1="6" x2="6" y2="24" stroke="#b8bdb6" stroke-width="3.5"/></svg>
+      <div>
+        <div class="nm">try_accounts</div>
+        <div class="ds">Never loads a single field.</div>
+      </div>
+    </div>
+    <div class="p9-grey">
+      <svg width="30" height="30" viewBox="0 0 30 30"><line x1="6" y1="6" x2="24" y2="24" stroke="#b8bdb6" stroke-width="3.5"/><line x1="24" y1="6" x2="6" y2="24" stroke="#b8bdb6" stroke-width="3.5"/></svg>
+      <div>
+        <div class="nm">handler body</div>
+        <div class="ds">Never runs.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

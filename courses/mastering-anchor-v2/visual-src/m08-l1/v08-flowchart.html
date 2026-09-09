@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The kit send pipe, step by step
+     purpose: show the fixed order a kit transaction is built, signed, and confirmed
+     data: createTransactionMessage({ version: 0 }) -> setTransactionMessageFeePayerSigner(trader)      // WHO pays -> setTransactionMessageLifetimeUsingBlockhash(bh)  // WHEN it expires -> appendTransactionMessageInstruction(swapIx)      // WHAT it does -> signTransactionMessageWithSigners                // sign -> assertIsTransactionWithBlockhashLifetime         // typed guard -> sendAndConfirmTransactionFactory({rpc, rpcSubs}) // land + confirm -> getSignatureFromTransaction                      // the receipt
+     prompt: Vertical flowchart, seven nodes in the order above, one arrow between each. Group the first three (feePayer, lifetime, instruction) inside a dashed box labeled "the pipe: who / when / what". Mark the assert node as a small diamond guard. Clean, monospace node labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:453px;top:-251px;right:-251px;border-radius:65% 58% 59% 50% / 58% 64% 53% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:452px;height:516px;left:-244px;top:269px;border-radius:55% 54% 52% 53% / 40% 35% 38% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:485px;bottom:-238px;right:-238px;border-radius:37% 43% 63% 53% / 52% 42% 47% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 18px; }
+  .cols { display: flex; align-items: flex-start; }
+  .colA { flex: 1 1 0; min-width: 0; }
+  .colB { flex: 1 1 0; min-width: 0; padding-top: 28px; }
+  .bridge { flex: 0 0 130px; position: relative; }
+  .bconn { position: absolute; top: 57px; left: 0; }
+
+  .n { height: 72px; border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md);
+       background: var(--surface-card); padding: 0 16px; display: flex; align-items: center;
+       gap: 13px; }
+  .n.guard { background: var(--surface-accent); border: none; }
+  .num { flex: 0 0 26px; height: 26px; border-radius: var(--radius-pill);
+         background: var(--surface-inverse); color: var(--stbr-cream);
+         font-family: var(--font-body); font-weight: 800; font-size: 12.5px;
+         display: flex; align-items: center; justify-content: center; }
+  .n.guard .num { background: var(--surface-inverse); }
+  .nb { flex: 1 1 0; min-width: 0; }
+  .nn { display: block; font-family: var(--font-mono); font-weight: 700; font-size: 14.5px;
+        line-height: 1.2; color: var(--text-primary); }
+  .nz { display: block; font-family: var(--font-body); font-weight: 700; font-size: 10.5px;
+        letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted);
+        margin-top: 5px; }
+  .n.guard .nz { color: rgba(27,35,29,0.62); }
+
+  .a { height: 24px; display: flex; align-items: center; padding-left: 29px; }
+
+  .grp { border: 2px dashed var(--stbr-emerald); border-radius: var(--radius-lg);
+         padding: 10px 12px 12px; margin-top: 0; }
+  .glab { font-family: var(--font-body); font-weight: 800; font-size: 10.5px;
+          letter-spacing: .12em; text-transform: uppercase; color: var(--stbr-emerald-800);
+          margin-bottom: 9px; padding-left: 3px; }
+  .grp .a { padding-left: 26px; }
+
+  .bchip { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .1em;
+           text-transform: uppercase; color: var(--stbr-green-800);
+           background: rgba(0,139,76,0.14); border-radius: var(--radius-pill);
+           padding: 6px 8px; text-align: center; line-height: 1.3;
+           position: absolute; top: 26px; left: 32px; width: 94px; }
+
+  .band { margin-top: 20px; background: var(--surface-brand); border-radius: var(--radius-lg);
+          padding: 15px 26px; display: flex; align-items: center; gap: 24px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">@solana/kit &middot; fixed order</div>
+  <h2 class="viz-title">the kit send pipe, step by step</h2>
+
+  <div class="cols">
+    <div class="colA">
+      <div class="n">
+        <span class="num">1</span>
+        <span class="nb"><span class="nn">createTransactionMessage({ version: 0 })</span><span class="nz">an empty v0 message</span></span>
+      </div>
+      <div class="a"><svg width="14" height="24" viewBox="0 0 14 24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.4"/><polygon points="7,24 2,14 12,14" fill="#1b231d"/></svg></div>
+
+      <div class="grp">
+        <div class="glab">the pipe &mdash; who / when / what</div>
+        <div class="n">
+          <span class="num">2</span>
+          <span class="nb"><span class="nn">setTransactionMessageFeePayerSigner(trader)</span><span class="nz">who pays</span></span>
+        </div>
+        <div class="a"><svg width="14" height="24" viewBox="0 0 14 24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.4"/><polygon points="7,24 2,14 12,14" fill="#1b231d"/></svg></div>
+        <div class="n">
+          <span class="num">3</span>
+          <span class="nb"><span class="nn">setTransactionMessageLifetimeUsingBlockhash(bh)</span><span class="nz">when it expires</span></span>
+        </div>
+        <div class="a"><svg width="14" height="24" viewBox="0 0 14 24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.4"/><polygon points="7,24 2,14 12,14" fill="#1b231d"/></svg></div>
+        <div class="n">
+          <span class="num">4</span>
+          <span class="nb"><span class="nn">appendTransactionMessageInstruction(swapIx)</span><span class="nz">what it does</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bridge">
+      <svg class="bconn" width="130" height="311" viewBox="0 0 130 311"><polyline points="0,304 22,304 22,7 117,7" fill="none" stroke="#1b231d" stroke-width="2.4" stroke-linejoin="miter"/><polygon points="130,7 117,2 117,12" fill="#1b231d"/></svg>
+      <div class="bchip">message complete</div>
+    </div>
+
+    <div class="colB">
+      <div class="n">
+        <span class="num">5</span>
+        <span class="nb"><span class="nn">signTransactionMessageWithSigners</span><span class="nz">sign</span></span>
+      </div>
+      <div class="a"><svg width="14" height="24" viewBox="0 0 14 24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.4"/><polygon points="7,24 2,14 12,14" fill="#1b231d"/></svg></div>
+
+      <div class="n guard">
+        <span class="num">6</span>
+        <span class="nb"><span class="nn">assertIsTransactionWithBlockhashLifetime</span><span class="nz">typed guard</span></span>
+        <svg width="26" height="26" viewBox="0 0 26 26"><polygon points="13,2 24,13 13,24 2,13" fill="none" stroke="#1b231d" stroke-width="2.2"/></svg>
+      </div>
+      <div class="a"><svg width="14" height="24" viewBox="0 0 14 24"><line x1="7" y1="0" x2="7" y2="15" stroke="#d9a608" stroke-width="2.8"/><polygon points="7,24 2,14 12,14" fill="#d9a608"/></svg></div>
+
+      <div class="n">
+        <span class="num">7</span>
+        <span class="nb"><span class="nn">sendAndConfirmTransactionFactory({ rpc, rpcSubs })</span><span class="nz">land + confirm</span></span>
+      </div>
+      <div class="a"><svg width="14" height="24" viewBox="0 0 14 24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.4"/><polygon points="7,24 2,14 12,14" fill="#1b231d"/></svg></div>
+
+      <div class="n">
+        <span class="num">8</span>
+        <span class="nb"><span class="nn">getSignatureFromTransaction</span><span class="nz">the receipt</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="vk">order is not a style choice</span>
+    <span class="vt">Each call narrows the type of the message &mdash; the guard at step 6 is where that becomes a promise.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The accounts struct diff, lamport vault to SPL vault
+     purpose: show exactly which account lines are added and which stay, so the delta is visible at a glance
+     data: KEPT (identity): - pub vault: Account<Vault>   with seeds [b"vault", authority] + stored bump - #[account(address = vault.owner)] on the signer  (the has_one replacement) REMOVED (lamport custody): - pub sol_vault: SystemAccount  with seeds [b"sol", owner] and bump = state.sol_bump - the stored sol_bump that signed for it; no token accounts existed ADDED (SPL custody): - pub mint: InterfaceAccount<Mint> - pub vault_token_account: InterfaceAccount<TokenAccount> associated_token::mint = mint associated_token::authority = vault associated_token::token_program = token_program - pub authority_token_account: InterfaceAccount<TokenAccount>   (the recipient on withdraw) - pub token_program: Interface<'static, TokenInterface> - pub associated_token_program + system_program  (for init)
+     prompt: Single code panel styled as a diff. Kept lines in neutral text. A removed note at top in red strikethrough ("- vault held lamports directly"). Added lines prefixed "+" in green, grouped under a subtle "custody layer" bracket on the right margin. Monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:568px;height:553px;top:-313px;right:-313px;border-radius:65% 39% 36% 35% / 39% 53% 60% 62%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:498px;height:501px;left:-263px;top:292px;border-radius:63% 61% 40% 65% / 47% 47% 48% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:459px;height:484px;bottom:-254px;right:-254px;border-radius:46% 39% 42% 57% / 61% 36% 59% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-xl);
+           padding:24px 30px 26px; margin-top:4px; }
+  .glab { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.14em;
+          text-transform:uppercase; display:inline-block; padding:5px 12px;
+          border-radius:var(--radius-pill); margin-bottom:10px; }
+  .glab.keep { background:rgba(245,232,202,0.14); color:rgba(245,232,202,0.86); }
+  .glab.rem  { background:rgba(224,142,131,0.18); color:#e8a49a; }
+  .glab.add  { background:var(--surface-accent); color:var(--text-on-accent); }
+  .grp { margin-bottom:16px; }
+  .grp.last { margin-bottom:0; }
+  .row { display:flex; align-items:baseline; gap:12px; padding:2px 0; }
+  .g { flex:0 0 12px; font-family:var(--font-mono); font-weight:700; font-size:16px; }
+  .g.k { color:rgba(245,232,202,0.34); }
+  .g.r { color:#e8a49a; }
+  .g.a { color:var(--stbr-yellow); }
+  .t { font-family:var(--font-mono); font-size:16px; line-height:1.5; color:var(--text-on-dark); }
+  .row.rem .t { color:#e8a49a; text-decoration:line-through; }
+  .sub { font-family:var(--font-body); font-size:13.5px; line-height:1.4; padding:1px 0 3px 24px;
+         color:rgba(245,232,202,0.52); }
+  .row.rem + .sub { color:rgba(232,164,154,0.72); }
+  .addwrap { display:flex; align-items:stretch; gap:20px; }
+  .addlines { flex:1 1 auto; }
+  .bracket { flex:0 0 178px; display:flex; align-items:center; gap:14px; }
+  .bbar { flex:0 0 5px; align-self:stretch; border-radius:3px; background:var(--stbr-yellow); }
+  .btxt { font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.1;
+          color:var(--stbr-yellow); }
+  .btxt small { display:block; font-family:var(--font-body); font-weight:600; font-size:12.5px;
+                letter-spacing:.08em; text-transform:uppercase; color:rgba(245,232,202,0.55);
+                margin-top:6px; }
+  .rule { height:1.5px; background:rgba(245,232,202,0.14); margin:14px 0 16px; }
+</style>
+  <div class="stbr-eyebrow">lamport vault &rarr; spl vault</div>
+  <h2 class="viz-title">the accounts struct, line by line</h2>
+  <div class="panel">
+
+    <div class="grp">
+      <div class="glab keep">kept &middot; identity</div>
+      <div class="row"><span class="g k">&nbsp;</span><span class="t">pub vault: Account&lt;Vault&gt;</span></div>
+      <div class="sub">seeds = [b"vault", authority] + stored bump</div>
+      <div class="row"><span class="g k">&nbsp;</span><span class="t">#[account(address = vault.owner)] &nbsp;on the signer</span></div>
+      <div class="sub">the has_one replacement</div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="grp">
+      <div class="glab rem">removed &middot; lamport custody</div>
+      <div class="row rem"><span class="g r">&minus;</span><span class="t">pub sol_vault: SystemAccount&nbsp;&nbsp;seeds [b"sol", owner], bump = state.sol_bump</span></div>
+      <div class="row rem"><span class="g r">&minus;</span><span class="t">the stored sol_bump that signed for it &mdash; no token accounts existed</span></div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="grp last">
+      <div class="glab add">added &middot; spl custody</div>
+      <div class="addwrap">
+        <div class="addlines">
+          <div class="row"><span class="g a">+</span><span class="t">pub mint: InterfaceAccount&lt;Mint&gt;</span></div>
+          <div class="row"><span class="g a">+</span><span class="t">pub vault_token_account: InterfaceAccount&lt;TokenAccount&gt;</span></div>
+          <div class="sub">associated_token::mint = mint &nbsp;&middot;&nbsp; associated_token::authority = vault &nbsp;&middot;&nbsp; associated_token::token_program = token_program</div>
+          <div class="row"><span class="g a">+</span><span class="t">pub authority_token_account: InterfaceAccount&lt;TokenAccount&gt;</span></div>
+          <div class="sub">the recipient on withdraw</div>
+          <div class="row"><span class="g a">+</span><span class="t">pub token_program: Interface&lt;'static, TokenInterface&gt;</span></div>
+          <div class="row"><span class="g a">+</span><span class="t">pub associated_token_program, pub system_program</span></div>
+          <div class="sub">for init</div>
+        </div>
+        <div class="bracket">
+          <div class="bbar"></div>
+          <div class="btxt">the custody layer<small>the whole diff</small></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body></html>

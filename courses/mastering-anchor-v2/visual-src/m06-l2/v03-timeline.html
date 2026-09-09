@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: const-rent's fine print is a governance clock
+     purpose: show why a compile-time constant is only safe until the formula it froze changes
+     data: 2024-11-13: SIMD-0194 "Deprecate Rent Exemption Threshold" filed (authors Dean Little, L0STE, febo/Anza) status as verified 2026-08-23: Accepted (Core/Standard), no activation date set const-rent (Anchor V2): folds the rent constant in at compile time, saving ~85-90 CU per account-creation CPI the risk: IF the rent formula changes (SIMD-0194 activates), the folded constant goes stale the discipline: const-rent is not fire-and-forget; it carries a re-verify note, not a permanent win
+     prompt: A horizontal timeline with three or four markers. Marker 1: SIMD-0194 filed 2024-11-13. Marker 2: status "Accepted" (label it "verified 2026-08-23, no activation date"). Then a fork showing const-rent's folded constant staying valid UNTIL the formula changes, at which point it drifts (dashed, warning color). End caption: "a feature flag whose fine print is protocol governance." Keep SIMD-0194 and const-rent in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:555px;height:597px;top:-334px;right:-334px;border-radius:45% 43% 48% 60% / 54% 48% 40% 60%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:492px;height:410px;left:-288px;top:216px;border-radius:42% 63% 45% 37% / 36% 62% 41% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:551px;height:462px;bottom:-271px;right:-271px;border-radius:64% 56% 61% 44% / 47% 61% 61% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { position:relative; width:1456px; height:420px; }
+  .lay { position:absolute; top:0; left:0; z-index:0; }
+  .mk { position:absolute; box-sizing:border-box; background:var(--surface-card);
+        border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+        padding:18px 22px; z-index:1; }
+  .mk .ey { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+            letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .mk .ti { font-family:var(--font-display); font-weight:900; font-size:24px;
+            line-height:1.12; color:var(--text-primary); margin-top:9px; }
+  .mk .bo { font-family:var(--font-body); font-size:14px; line-height:1.4;
+            color:var(--text-secondary); margin-top:10px; }
+  .mk code { font-family:var(--font-mono); font-size:0.95em; }
+  .mk .ti code { color:var(--stbr-emerald-800); }
+  .mk.risk { background:var(--surface-accent); border:2px solid var(--stbr-dark); }
+  .mk.risk .ey { color:var(--stbr-green-800); }
+  .mk.risk .bo { color:var(--stbr-dark); }
+  .band { margin-top:20px; height:84px; box-sizing:border-box;
+          background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:0 30px; display:flex; align-items:center; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+              opacity:.75; width:150px; flex:0 0 150px; line-height:1.3; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:25px;
+              line-height:1.16; color:var(--text-on-brand); }
+  .band .bt small { display:block; font-family:var(--font-body); font-weight:500;
+                    font-size:14px; color:var(--stbr-cream); opacity:.8; margin-top:5px; }
+</style>
+  <div class="stbr-eyebrow">const-rent · the fine print</div>
+  <h2 class="viz-title">a saving that lives on a governance clock</h2>
+
+  <div class="stage">
+    <svg class="lay" width="1456" height="420" viewBox="0 0 1456 420">
+      <line x1="60" y1="220" x2="1080" y2="220" stroke="#008b4c" stroke-width="5"/>
+      <line x1="1080" y1="220" x2="1392" y2="220" stroke="#d9a608" stroke-width="5"
+            stroke-dasharray="14 11"/>
+      <polygon points="1392,210 1414,220 1392,230" fill="#d9a608"/>
+      <line x1="190" y1="170" x2="190" y2="206" stroke="#306c40" stroke-width="2"/>
+      <line x1="1080" y1="170" x2="1080" y2="206" stroke="#306c40" stroke-width="2"/>
+      <line x1="640" y1="234" x2="640" y2="250" stroke="#306c40" stroke-width="2"/>
+      <line x1="1240" y1="228" x2="1240" y2="250" stroke="#d9a608" stroke-width="3"
+            stroke-dasharray="6 5"/>
+      <circle cx="190" cy="220" r="13" fill="#008b4c"/>
+      <circle cx="190" cy="220" r="5" fill="#f5e8ca"/>
+      <circle cx="640" cy="220" r="13" fill="#008b4c"/>
+      <circle cx="640" cy="220" r="5" fill="#f5e8ca"/>
+      <circle cx="1080" cy="220" r="13" fill="#1b231d"/>
+      <circle cx="1080" cy="220" r="5" fill="#f5e8ca"/>
+    </svg>
+
+    <div class="mk" style="left:60px; top:0; width:410px; height:170px;">
+      <div class="ey">2024-11-13 &nbsp;·&nbsp; filed</div>
+      <div class="ti"><code>SIMD-0194</code></div>
+      <div class="bo">&#8220;Deprecate Rent Exemption Threshold&#8221; &#8212; authors Dean Little, L0STE, febo/Anza</div>
+    </div>
+
+    <div class="mk" style="left:430px; top:250px; width:440px; height:170px;">
+      <div class="ey">status, verified 2026-08-23</div>
+      <div class="ti">Accepted (Core / Standard)</div>
+      <div class="bo">No activation date set. The formula still holds &#8212; for now.</div>
+    </div>
+
+    <div class="mk" style="left:950px; top:0; width:450px; height:170px;">
+      <div class="ey">anchor v2, today</div>
+      <div class="ti"><code>const-rent</code> folds it in</div>
+      <div class="bo">The rent constant is folded at compile time: ~85 to 90 CU back per account-creation CPI.</div>
+    </div>
+
+    <div class="mk risk" style="left:1000px; top:250px; width:456px; height:170px;">
+      <div class="ey">the risk, if the clock ticks</div>
+      <div class="ti">the folded constant goes stale</div>
+      <div class="bo">If the rent formula changes (<code>SIMD-0194</code> activates), the number you froze no longer matches the chain.</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="bk">the discipline</span>
+    <span class="bt">a feature flag whose fine print is protocol governance
+      <small><code>const-rent</code> is not fire-and-forget &#8212; it carries a re-verify note, not a permanent win</small>
+    </span>
+  </div>
+</div>
+</body></html>

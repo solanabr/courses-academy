@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What the borrow model guards, and what is still yours
+     purpose: fix the precise boundary of the compile-time guarantee so it is neither under nor over-trusted — it covers typed reads of the accounts handed to the CPI, and nothing wider
+     data: Read pattern                                   | Guarded by the borrow model? ctx.accounts.vault_ta.amount() (typed, handed to this CPI) | YES: excluded while THAT account's handle is live ctx.accounts.state.credit (typed, not in this CPI)   | N/A: no handle borrows it, and this CPI cannot write it raw AccountInfo lamports (**account.lamports)  | NO: your responsibility, as in v1 manual byte reads from the data buffer         | NO: your responsibility, as in v1 reading typed data AFTER the handle drops      | Allowed, and reads the LIVE account (no reload)
+     prompt: Two-column table. Left: read pattern. Right: guarded yes/no. Use green for the typed YES row, the not-in-the-CPI row and the final "allowed, live" row; use a caution color for the two raw NO rows. Header: "what the lock covers, and what is still yours".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:614px;height:543px;top:-330px;right:-330px;border-radius:49% 61% 63% 38% / 54% 60% 41% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:545px;height:520px;bottom:-273px;left:-273px;border-radius:64% 65% 61% 48% / 61% 65% 45% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:503px;height:477px;bottom:-253px;left:611px;border-radius:48% 53% 59% 65% / 45% 63% 51% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-card); }
+  .tbl .r { display:grid; grid-template-columns:1fr 640px; align-items:stretch; }
+  .tbl .body .r { border-top:1.5px solid var(--border-subtle); }
+  .tbl .hd div { background:var(--surface-inverse); color:var(--text-on-dark);
+    font-family:var(--font-display); font-weight:900; font-size:14px; letter-spacing:.09em;
+    text-transform:uppercase; padding:18px 28px; display:flex; align-items:center; }
+  .tbl .hd div + div { border-left:1.5px solid rgba(245,232,202,.2); }
+  .pat { padding:20px 28px; display:flex; align-items:center; gap:14px; font-size:18px;
+    color:var(--text-primary); }
+  .pat code { font-family:var(--font-mono); font-weight:700; font-size:17px; }
+  .pat .kind { flex:0 0 78px; font-family:var(--font-body); font-size:11px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; text-align:center; padding:5px 0;
+    border-radius:999px; }
+  .pat .kind.t { background:rgba(0,139,76,.12); color:var(--stbr-emerald-800); }
+  .pat .kind.raw { background:rgba(27,35,29,.10); color:var(--text-secondary); }
+  .ver { padding:20px 28px; display:flex; align-items:center; gap:14px; font-size:17px;
+    line-height:1.3; border-left:1.5px solid var(--border-subtle); }
+  .ver .tag { flex:0 0 auto; font-family:var(--font-display); font-weight:900; font-size:14px;
+    letter-spacing:.08em; padding:6px 13px; border-radius:var(--radius-sm); }
+  .ver.yes { background:rgba(0,139,76,.07); color:var(--stbr-emerald-800); }
+  .ver.yes .tag { background:var(--surface-brand); color:#fff; }
+  .ver.no { background:var(--stbr-yellow); color:var(--text-on-accent); font-weight:700; }
+  .ver.no .tag { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .ver.free { background:rgba(0,139,76,.14); color:var(--stbr-emerald-800); font-weight:700; }
+  .ver.free .tag { background:var(--stbr-emerald-800); color:#fff; }
+  .verdict { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:20px 34px; font-size:21px; line-height:1.35; }
+  .verdict b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">the exact edge of the guarantee</div>
+  <h2 class="viz-title">what the lock covers, and what is still yours</h2>
+  <div class="tbl">
+    <div class="r hd"><div>read pattern</div><div>guarded by the borrow model?</div></div>
+    <div class="body">
+      <div class="r">
+        <div class="pat"><span class="kind t">typed</span><code>ctx.accounts.vault_ta.amount()</code> — handed to this CPI</div>
+        <div class="ver yes"><span class="tag">YES</span><span>excluded while <b>that account's</b> handle is live</span></div>
+      </div>
+      <div class="r">
+        <div class="pat"><span class="kind t">typed</span><code>ctx.accounts.state.credit</code> — not in this CPI</div>
+        <div class="ver free"><span class="tag">N/A</span>no handle borrows it, and this CPI cannot write it</div>
+      </div>
+      <div class="r">
+        <div class="pat"><span class="kind raw">raw</span><code>**account.lamports</code> (AccountInfo)</div>
+        <div class="ver no"><span class="tag">NO</span>your responsibility, exactly as in v1</div>
+      </div>
+      <div class="r">
+        <div class="pat"><span class="kind raw">raw</span>manual byte reads from the data buffer</div>
+        <div class="ver no"><span class="tag">NO</span>your responsibility, exactly as in v1</div>
+      </div>
+      <div class="r">
+        <div class="pat"><span class="kind t">typed</span>reading typed data AFTER the handle drops</div>
+        <div class="ver free"><span class="tag">ALLOWED</span>and it reads the LIVE account — no reload</div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">The compiler covers typed fields of the accounts a live handle borrows —
+    those accounts, and nothing wider. Step outside the type system into raw bytes or lamports
+    and you are <b>back on v1 rules</b>.</div>
+</div>
+</body></html>

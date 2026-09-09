@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The admit-and-evict decision for one posted score
+     purpose: give the reader the exact branch structure they implement in step 3 and the challenge
+     data: start: a score is posted decision 1: is len < capacity (MAX)? yes -> push the score into the tail -> go to sort no  -> decision 2: is score strictly greater than the cutoff (lowest live)? yes -> overwrite the cutoff slot in place -> go to sort no  -> board unchanged (score rejected; ties land here too) -> go to end note: EVERY path reaches end. A rejected score still emits, with the cutoff unchanged. sort: sort the live tail descending; slot 0 is the top; sync header high_score end: cutoff = lowest live score; emit HighScorePosted
+     prompt: A top-down flowchart. One start node, a first diamond "len < MAX?", a second diamond "score > cutoff?" on the no-branch, terminal actions "push", "overwrite cutoff slot", and "reject (unchanged)". All admitting paths converge on a "sort descending + sync high_score" node, then an "emit event with cutoff" end node. Label the reject path clearly as where ties land (strictly greater required).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:531px;height:507px;top:-260px;right:-260px;border-radius:53% 61% 58% 58% / 43% 54% 44% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:532px;height:484px;left:-331px;top:273px;border-radius:56% 59% 56% 53% / 65% 39% 46% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:561px;height:502px;bottom:-292px;right:-292px;border-radius:56% 54% 60% 44% / 53% 38% 54% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .fc { display:flex; flex-direction:column; position:relative; }
+  /* the reject branch bypasses the sort and still reaches the emit node (spec:
+     "no -> board unchanged -> go to end"). Drawn as one absolutely-positioned SVG
+     layer with endpoints computed from the real, fully-explicit node geometry:
+     rejected node bottom = y354 @ x1209; end node top = y468; the 64px .gutter
+     beside the sort row keeps the vertical leg (x1424) clear of the sort node. */
+  .bypass { position:absolute; top:0; left:0; }
+  .sortrow { display:flex; flex:none; }
+  .sortmain { flex:1; display:flex; flex-direction:column; }
+  .gutter { width:64px; flex:none; }
+  .node { border-radius:var(--radius-lg); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    background:var(--surface-card); border:2px solid var(--border-subtle);
+    font-family:var(--font-body); color:var(--text-primary); flex:none; }
+  .node .sub { margin-top:7px; font-family:var(--font-body); font-size:13.5px;
+    font-weight:600; color:var(--text-muted); line-height:1.3; }
+  .node code { font-family:var(--font-mono); font-weight:700; }
+
+  .start { height:54px; font-size:19px; font-weight:700;
+    background:var(--surface-paper); }
+  .dec { height:70px; font-family:var(--font-display); font-weight:900; font-size:24px;
+    background:var(--surface-inverse); border-color:var(--surface-inverse);
+    color:var(--stbr-cream); }
+  .dec.sm { height:62px; font-size:21px; }
+  .act { font-size:19px; font-weight:700; background:var(--surface-brand);
+    border-color:var(--surface-brand); color:var(--text-on-brand); }
+  .act .sub { color:var(--stbr-cream-300); }
+  .drop { background:var(--surface-accent); border-color:var(--stbr-yellow-700);
+    font-size:18px; font-weight:800; color:var(--stbr-dark); }
+  .drop .sub { color:var(--stbr-dark); font-weight:600; }
+
+  .dn { height:22px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; flex:none; }
+  .dn .ln { width:3px; height:10px; background:var(--stbr-ink-500); display:block; }
+  .dn .tri { display:block; border-left:8px solid transparent;
+    border-right:8px solid transparent; border-top:10px solid var(--stbr-ink-500); }
+
+  .edge { height:26px; display:flex; align-items:center; justify-content:center;
+    gap:9px; flex:none; }
+  .edge .k { font-family:var(--font-display); font-weight:900; font-size:13px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .edge.alt .k { color:var(--text-muted); }
+  .edge .tri { display:block; border-left:7px solid transparent;
+    border-right:7px solid transparent; border-top:9px solid var(--stbr-ink-500); }
+
+  .branch { display:flex; gap:20px; height:208px; flex:none; }
+  .col { display:flex; flex-direction:column; }
+  .col.yes { width:430px; flex:none; }
+  .col.no { flex:1; }
+  .col.yes .act { height:182px; }
+  .sub2 { display:flex; gap:18px; flex:1; }
+  .scol { flex:1; display:flex; flex-direction:column; }
+  .scol .act, .scol .drop { height:94px; padding:0 16px; }
+
+  .dn.conv { flex-direction:row; gap:20px; align-items:center; }
+  .dn.conv .g { display:flex; flex-direction:column; align-items:center; }
+  .dn.conv .g.yes { width:430px; flex:none; }
+  .dn.conv .gno { flex:1; display:flex; gap:18px; }
+  .dn.conv .gno .g { flex:1; }
+
+  .sort { height:70px; font-size:20px; font-weight:700;
+    background:var(--surface-brand-deep); border-color:var(--surface-brand-deep);
+    color:var(--text-on-brand); }
+  .end { height:70px; font-size:20px; font-weight:800;
+    background:var(--surface-inverse); border-color:var(--surface-inverse);
+    color:var(--stbr-cream); }
+  .end code { color:var(--stbr-yellow); }
+  .note { margin-top:18px; border-radius:var(--radius-lg); padding:16px 26px;
+    background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-left:8px solid var(--stbr-yellow); font-family:var(--font-body);
+    font-size:18px; line-height:1.35; color:var(--text-secondary); }
+  .note b { color:var(--text-primary); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">one posted score, one branch</div>
+  <h2 class="viz-title">admit, evict, or reject</h2>
+  <div class="fc">
+    <div class="node start">a score is posted</div>
+    <div class="dn"><span class="ln"></span><span class="tri"></span></div>
+    <div class="node dec">len &lt; capacity (MAX)?</div>
+    <div class="branch">
+      <div class="col yes">
+        <div class="edge"><span class="k">yes</span><span class="tri"></span></div>
+        <div class="node act">push the score into the tail
+          <span class="sub">there is a free slot &mdash; nothing is evicted</span></div>
+      </div>
+      <div class="col no">
+        <div class="edge alt"><span class="k">no &mdash; the board is full</span><span class="tri"></span></div>
+        <div class="node dec sm">score strictly &gt; cutoff (lowest live)?</div>
+        <div class="sub2">
+          <div class="scol">
+            <div class="edge"><span class="k">yes</span><span class="tri"></span></div>
+            <div class="node act">overwrite the cutoff slot in place</div>
+          </div>
+          <div class="scol">
+            <div class="edge alt"><span class="k">no</span><span class="tri"></span></div>
+            <div class="node drop">board unchanged &mdash; rejected
+              <span class="sub">ties land here: strictly greater required</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dn conv">
+      <span class="g yes"><span class="ln"></span><span class="tri"></span></span>
+      <span class="gno">
+        <span class="g"><span class="ln"></span><span class="tri"></span></span>
+        <span class="g"></span>
+      </span>
+    </div>
+    <div class="sortrow">
+      <div class="sortmain">
+        <div class="node sort">sort the live tail descending &rarr; slot 0 is the top &rarr; sync header <code>high_score</code></div>
+        <div class="dn"><span class="ln"></span><span class="tri"></span></div>
+      </div>
+      <div class="gutter"></div>
+    </div>
+    <div class="node end">cutoff = lowest live score &rarr; emit <code>HighScorePosted</code></div>
+    <svg class="bypass" width="1456" height="538" viewBox="0 0 1456 538" aria-hidden="true">
+      <polyline points="1209,354 1209,366 1424,366 1424,458" fill="none"
+                stroke="#767f73" stroke-width="3"/>
+      <polygon points="1416,458 1432,458 1424,468" fill="#767f73"/>
+    </svg>
+  </div>
+  <div class="note">Every path reaches the end. A <b>rejected</b> score skips the sort and still <b>emits</b>, with the cutoff unchanged.</div>
+</div>
+</body></html>

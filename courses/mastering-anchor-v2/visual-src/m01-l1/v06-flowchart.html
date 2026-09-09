@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How you read a CU number out of a transaction log
+     purpose: make the measurement mechanical so the reader knows exactly what to grep for
+     data: export the signature (pinned in Lab step 1) -> solana confirm -v <sig> --url devnet -> logs stream out -> find line "Program <id> consumed X of Y compute units" -> X is the CU spent by that program on that call do this twice: once for the v1 twin, once for the v2 twin
+     prompt: A four-step horizontal flowchart: "export sig" -> "solana confirm -v" -> "read logs" -> "grep 'consumed ... compute units'". Under the last node, show a sample log line 'Program <id> consumed 1714 of 200000 compute units' with the number '1714' circled and labeled "the meter reading (X)". Add a loop-back annotation "run once per twin".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:467px;top:-254px;right:-254px;border-radius:57% 50% 41% 64% / 41% 54% 64% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:552px;height:573px;bottom:-340px;left:-340px;border-radius:44% 61% 58% 46% / 46% 50% 59% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:497px;height:472px;bottom:-271px;right:-271px;border-radius:50% 63% 39% 52% / 41% 52% 59% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .steps { display:flex; align-items:center; }
+  .st { width:311px; height:192px; background:var(--surface-card);
+        border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+        padding:18px 22px; }
+  .st .num { width:32px; height:32px; border-radius:var(--radius-pill);
+             background:var(--surface-brand); color:var(--text-on-brand);
+             font-family:var(--font-display); font-weight:900; font-size:17px;
+             line-height:32px; text-align:center; }
+  .st .sn { font-family:var(--font-display); font-weight:900; font-size:22px;
+            line-height:1.15; color:var(--text-primary); margin-top:12px; height:56px; }
+  .st .sn.cmd { font-family:var(--font-mono); font-weight:700; font-size:19px;
+                line-height:1.3; }
+  .st .ss { font-family:var(--font-mono); font-size:14px; line-height:1.4;
+            color:var(--text-secondary); }
+  .sarrow { width:70px; flex:0 0 70px; text-align:center; }
+
+  .loop { position:relative; height:64px; }
+  .loopchip { position:absolute; top:6px; left:558px; width:340px; text-align:center;
+              background:var(--surface-page); border:2px solid var(--stbr-green);
+              border-radius:var(--radius-pill); padding:9px 18px;
+              font-family:var(--font-body); font-weight:700; font-size:16px;
+              color:var(--text-primary); }
+
+  .log { margin-top:12px; background:var(--surface-inverse); border-radius:var(--radius-xl);
+         padding:26px 40px 24px; }
+  .log .lk { font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+             opacity:.6; }
+  .logline { display:flex; align-items:center; margin-top:14px; }
+  .lt { font-family:var(--font-mono); font-size:25px; line-height:1.2;
+        color:var(--stbr-cream); }
+  .pill { font-family:var(--font-mono); font-weight:700; font-size:25px; line-height:1.2;
+          background:var(--stbr-yellow); color:var(--stbr-dark);
+          border-radius:var(--radius-pill); padding:4px 18px; margin:0 12px; }
+  .logunder { display:flex; align-items:flex-start; margin-top:8px; }
+  .spacer { visibility:hidden; }
+  .callout { display:flex; align-items:center; margin-left:12px; }
+  .callout .ct { font-family:var(--font-body); font-weight:700; font-size:17px;
+                 color:var(--stbr-yellow); margin-left:10px; }
+</style>
+  <div class="stbr-eyebrow">reading the meter</div>
+  <h2 class="viz-title">where the CU number actually comes from</h2>
+
+  <div class="steps">
+    <div class="st">
+      <div class="num">1</div>
+      <div class="sn">export the signature</div>
+      <div class="ss">the sig for the twin call,<br>pinned in Lab step 1</div>
+    </div>
+    <div class="sarrow">
+      <svg width="70" height="20" viewBox="0 0 70 20">
+        <line x1="0" y1="10" x2="52" y2="10" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="52,2 70,10 52,18" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="st">
+      <div class="num">2</div>
+      <div class="sn cmd">solana confirm -v<br>&lt;sig&gt;</div>
+      <div class="ss">--url devnet</div>
+    </div>
+    <div class="sarrow">
+      <svg width="70" height="20" viewBox="0 0 70 20">
+        <line x1="0" y1="10" x2="52" y2="10" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="52,2 70,10 52,18" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="st">
+      <div class="num">3</div>
+      <div class="sn">read the logs</div>
+      <div class="ss">the whole log stream<br>prints to the terminal</div>
+    </div>
+    <div class="sarrow">
+      <svg width="70" height="20" viewBox="0 0 70 20">
+        <line x1="0" y1="10" x2="52" y2="10" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="52,2 70,10 52,18" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="st">
+      <div class="num">4</div>
+      <div class="sn">find the one line</div>
+      <div class="ss">grep &quot;consumed&nbsp;&hellip;<br>compute units&quot;</div>
+    </div>
+  </div>
+
+  <div class="loop">
+    <svg width="1456" height="64" viewBox="0 0 1456 64">
+      <path d="M155 19 L155 34 L1298 34 L1298 0" fill="none" stroke="#306c40"
+            stroke-width="3" stroke-dasharray="8 6"/>
+      <polygon points="141,20 169,20 155,2" fill="#306c40"/>
+    </svg>
+    <div class="loopchip">run once per twin &mdash; v1, then V2</div>
+  </div>
+
+  <div class="log">
+    <div class="lk">the line you are grepping for</div>
+    <div class="logline">
+      <span class="lt">Program &lt;id&gt; consumed</span>
+      <span class="pill">1714</span>
+      <span class="lt">of 200000 compute units</span>
+    </div>
+    <div class="logunder">
+      <span class="lt spacer">Program &lt;id&gt; consumed</span>
+      <span class="callout">
+        <svg width="30" height="22" viewBox="0 0 30 22">
+          <polygon points="15,0 29,20 1,20" fill="#ffd23f"/>
+        </svg>
+        <span class="ct">the meter reading &mdash; CU spent by that program on that call</span>
+      </span>
+    </div>
+  </div>
+</div>
+</body></html>

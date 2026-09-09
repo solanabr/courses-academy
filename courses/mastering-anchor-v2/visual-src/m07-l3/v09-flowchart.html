@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The crash-then-clean loop
+     purpose: give the reader the full loop as one picture they can run against
+     data: seed bug (raw u64 multiply) -> write invariant (k_now >= k_before) -> anchor fuzz run token_ticket_swap constant_product_holds --release --stateful -> CRASH artifact produced (this is the win) -> anchor fuzz show token_ticket_swap <crash> --replay  (replay the exact sequence) -> patch (checked u128 multiply) -> anchor fuzz run token_ticket_swap constant_product_holds --release --stateful  (re-run) -> CLEAN (no crash) -> anchor fuzz run ... --coverage --lcov-out  (LCOV report) loop-back note: a clean run only means "not found yet"; add actions/invariants and go again
+     prompt: Left-to-right flowchart with the nodes above as boxes. Color the "CRASH artifact produced" node green with a small trophy/check to reinforce "the crash is the win". Color "CLEAN" a neutral calm color, not green, and attach the loop-back note as a dashed arrow returning to "write invariant". Monospace command labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:547px;height:551px;top:-318px;right:-318px;border-radius:56% 50% 48% 62% / 55% 59% 52% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:535px;height:350px;left:-314px;top:141px;border-radius:40% 63% 62% 50% / 53% 50% 48% 42%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:458px;height:533px;bottom:-326px;left:418px;border-radius:47% 47% 63% 48% / 65% 57% 62% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 18px; }
+  .row { display: flex; align-items: stretch; }
+  /* WeasyPrint adds padding+border on top of flex-basis, so 221 + 32 + 4 = 257 outer */
+  .n { flex: 0 0 221px; width: 221px; min-width: 0; overflow-wrap: anywhere;
+       height: 158px; border-radius: var(--radius-lg);
+       background: var(--surface-card); border: 2px solid var(--border-subtle);
+       padding: 14px 16px; display: flex; flex-direction: column; }
+  .n.win { background: var(--surface-accent); border: 3px solid var(--stbr-yellow-700); }
+  .n.clean { background: var(--surface-paper); border: 2px dashed var(--stbr-ink-300); }
+  .nk { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .13em;
+        text-transform: uppercase; color: var(--text-muted); }
+  .n.win .nk { color: rgba(27,35,29,0.62); }
+  .nt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.08;
+        color: var(--text-primary); margin-top: 5px; display: flex; align-items: center; gap: 8px; }
+  .ns { font-family: var(--font-body); font-size: 12.5px; line-height: 1.34;
+        color: var(--text-secondary); margin-top: 6px; }
+  .n.win .ns { color: var(--text-on-accent); font-weight: 600; }
+  .nc { font-family: var(--font-mono); font-size: 11px; line-height: 1.42;
+        color: var(--stbr-emerald-800); margin-top: 7px; word-break: break-word; }
+  .a { flex: 0 0 40px; display: flex; align-items: center; justify-content: center; }
+  .wrapc { height: 40px; }
+  .loop { margin-top: 18px; border: 2px dashed var(--stbr-green); border-radius: var(--radius-lg);
+          background: var(--surface-card); padding: 13px 22px; display: flex;
+          align-items: center; gap: 16px; }
+  .lk2 { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+         text-transform: uppercase; color: var(--stbr-green-800); white-space: nowrap; }
+  .lt3 { font-family: var(--font-body); font-size: 14.5px; line-height: 1.35;
+         color: var(--text-primary); }
+  .lt3 b { font-weight: 700; }
+</style>
+  <div class="stbr-eyebrow">nine steps, one loop</div>
+  <h2 class="viz-title">the crash-then-clean loop</h2>
+
+  <div class="row">
+    <div class="n">
+      <div class="nk">step 1</div>
+      <div class="nt">seed the bug</div>
+      <div class="ns">a raw <code style="font-family:var(--font-mono);font-size:12px">u64</code> multiply in the swap math</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="34,7 22,2 22,12" fill="#1b231d"/></svg></div>
+
+    <div class="n">
+      <div class="nk">step 2</div>
+      <div class="nt">write the invariant</div>
+      <div class="nc">k_now &gt;= k_before</div>
+      <div class="ns">the only thing the fuzzer can actually check</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="34,7 22,2 22,12" fill="#1b231d"/></svg></div>
+
+    <div class="n">
+      <div class="nk">step 3</div>
+      <div class="nt">fuzz</div>
+      <div class="nc">anchor fuzz run token_ticket_swap constant_product_holds --release --stateful</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="34,7 22,2 22,12" fill="#1b231d"/></svg></div>
+
+    <div class="n win">
+      <div class="nk">step 4</div>
+      <div class="nt">
+        <svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.6" fill="none" stroke="#1b231d" stroke-width="2.4"/><polyline points="6.5,12.4 10.5,17 17.5,7.6" fill="none" stroke="#1b231d" stroke-width="2.8"/></svg>
+        CRASH artifact
+      </div>
+      <div class="ns">produced and saved &mdash; this is the win, not the failure</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#d9a608" stroke-width="3"/><polygon points="34,7 22,2 22,12" fill="#d9a608"/></svg></div>
+
+    <div class="n">
+      <div class="nk">step 5</div>
+      <div class="nt">replay</div>
+      <div class="nc">anchor fuzz show token_ticket_swap &lt;crash&gt; --replay</div>
+      <div class="ns">the exact sequence, step for step</div>
+    </div>
+  </div>
+
+  <div class="wrapc">
+    <svg width="1456" height="40" viewBox="0 0 1456 40">
+      <polyline points="1318,0 1318,20 128,20 128,26" fill="none" stroke="#1b231d" stroke-width="2.4"/>
+      <polygon points="128,40 122,25 134,25" fill="#1b231d"/>
+    </svg>
+  </div>
+
+  <div class="row">
+    <div class="n">
+      <div class="nk">step 6</div>
+      <div class="nt">patch</div>
+      <div class="nc">checked_mul on u128</div>
+      <div class="ns">fix the arithmetic the replay pinned down</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="34,7 22,2 22,12" fill="#1b231d"/></svg></div>
+
+    <div class="n">
+      <div class="nk">step 7</div>
+      <div class="nt">re-run</div>
+      <div class="nc">anchor fuzz run token_ticket_swap constant_product_holds --release --stateful</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="34,7 22,2 22,12" fill="#1b231d"/></svg></div>
+
+    <div class="n clean">
+      <div class="nk">step 8</div>
+      <div class="nt">CLEAN</div>
+      <div class="ns">no crash &mdash; the same campaign, now silent</div>
+    </div>
+    <div class="a"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#767f73" stroke-width="2.4"/><polygon points="34,7 22,2 22,12" fill="#767f73"/></svg></div>
+
+    <div class="n">
+      <div class="nk">step 9</div>
+      <div class="nt">coverage</div>
+      <div class="nc">anchor fuzz run ... --coverage --lcov-out</div>
+      <div class="ns">an LCOV report proving it reached the swap math</div>
+    </div>
+  </div>
+
+  <div class="loop">
+    <svg width="30" height="14" viewBox="0 0 30 14"><line x1="30" y1="7" x2="9" y2="7" stroke="#306c40" stroke-width="2.6" stroke-dasharray="6 4"/><polygon points="0,7 12,2 12,12" fill="#306c40"/></svg>
+    <span class="lk2">back to step 2</span>
+    <span class="lt3">A clean run only means <b>not found yet</b>. Add actions and invariants, then go again.</span>
+  </div>
+</div>
+</body></html>

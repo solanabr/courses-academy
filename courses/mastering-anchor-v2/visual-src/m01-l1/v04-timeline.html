@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The framework line, and the gap this course fills
+     purpose: place V2 on the 0.3x-to-2.0 arc and show the official on-ramp went stale
+     data: Anchor 0.3x era: the archived Solana Foundation developer-courses content, frozen 2025-01-24 Anchor 1.0 line: the toolchain on many machines today, 1.1.2, probably the one on yours Anchor V2 2.0.0-rc.1 (2026-08-12, git branch anchor-next): zero-copy Account<T> by default, no_std on pinocchio Gap: as of 2026-08, no dedicated V2 course or long-form guide found, this course fills it
+     prompt: A horizontal timeline with three era markers left-to-right: "0.3x (archived courses, frozen 2025-01-24)", "1.0 line (today's default toolchain)", "V2 2.0.0-rc.1 (2026-08-12, RC/alpha)". Under the 0.3x marker draw a small tombstone icon labeled "official on-ramp: frozen". Under V2 draw a flag labeled "zero-copy by default". Add a dashed bracket spanning from 1.0 to V2 labeled "no dedicated course found (2026-08), this one".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:549px;height:538px;top:-310px;right:-310px;border-radius:64% 36% 49% 44% / 50% 58% 40% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:547px;height:579px;bottom:-315px;left:-315px;border-radius:55% 44% 38% 48% / 49% 65% 54% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:550px;height:525px;bottom:-279px;right:-279px;border-radius:42% 52% 42% 56% / 44% 45% 59% 41%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .eras { display:flex; gap:23px; }
+  .era { width:470px; height:214px; border-radius:var(--radius-xl); padding:22px 26px;
+         background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .era.now { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .era .ek { font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted);
+             height:18px; }
+  .era.now .ek { color:var(--stbr-dark-700); }
+  .era .en { font-family:var(--font-display); font-weight:900; font-size:34px;
+             line-height:1.05; color:var(--text-primary); margin-top:8px; }
+  .era .ed { font-family:var(--font-mono); font-size:14px; color:var(--stbr-emerald-800);
+             margin-top:8px; }
+  .era.now .ed { color:var(--stbr-dark); font-weight:700; }
+  .era .eb { font-family:var(--font-body); font-size:16px; line-height:1.4;
+             color:var(--text-secondary); margin-top:12px; }
+  .era.now .eb { color:var(--stbr-dark); }
+
+  .rail { position:relative; height:40px; margin-top:18px; }
+  .railline { position:absolute; top:18px; left:120px; width:1216px; height:4px;
+              background:var(--stbr-green); }
+  .dot { position:absolute; top:8px; width:24px; height:24px; border-radius:var(--radius-pill);
+         background:var(--stbr-green); border:4px solid var(--surface-page); }
+  .dot.hi { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); }
+
+  .bracketrow { position:relative; height:86px; }
+  .blabel { position:absolute; top:34px; left:678px; width:596px;
+            background:var(--surface-brand); border-radius:var(--radius-pill);
+            padding:11px 22px; text-align:center; font-family:var(--font-body);
+            font-weight:700; font-size:16px; color:var(--text-on-brand); }
+
+  .unders { display:flex; gap:23px; margin-top:6px; }
+  .ucell { width:470px; display:flex; justify-content:center; }
+  .tomb { width:392px; height:126px; background:var(--surface-paper);
+          border:2px solid var(--border-strong);
+          border-radius:110px 110px var(--radius-sm) var(--radius-sm);
+          padding:20px 24px 0; text-align:center; }
+  .tomb .tk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .tomb .tt { font-family:var(--font-display); font-weight:900; font-size:22px;
+              line-height:1.15; color:var(--text-primary); margin-top:8px; }
+  .flag { width:392px; height:126px; background:var(--surface-card);
+          border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+          padding:18px 22px; display:flex; align-items:center; }
+  .flag .ft { font-family:var(--font-display); font-weight:900; font-size:22px;
+              line-height:1.15; color:var(--text-primary); }
+  .flag .fs { font-family:var(--font-body); font-size:14px; color:var(--text-secondary);
+              margin-top:6px; }
+  .flagicon { width:56px; flex:0 0 56px; }
+</style>
+  <div class="stbr-eyebrow">where V2 sits on the line</div>
+  <h2 class="viz-title">the official on-ramp stops two versions back</h2>
+
+  <div class="eras">
+    <div class="era">
+      <div class="ek">era one</div>
+      <div class="en">Anchor 0.3x</div>
+      <div class="ed">frozen 2025-01-24</div>
+      <div class="eb">the archived Solana Foundation developer-courses content</div>
+    </div>
+    <div class="era">
+      <div class="ek">era two</div>
+      <div class="en">Anchor 1.0 line</div>
+      <div class="ed">1.1.2</div>
+      <div class="eb">the toolchain on many machines today &mdash; probably the one on yours</div>
+    </div>
+    <div class="era now">
+      <div class="ek">era three &middot; rc / alpha</div>
+      <div class="en">Anchor V2 &middot; 2.0.0-rc.1</div>
+      <div class="ed">2026-08-12 &middot; branch anchor-next</div>
+      <div class="eb">zero-copy Account&lt;T&gt; by default, no_std on pinocchio</div>
+    </div>
+  </div>
+
+  <div class="rail">
+    <div class="railline"></div>
+    <div class="dot" style="left:223px;"></div>
+    <div class="dot" style="left:716px;"></div>
+    <div class="dot hi" style="left:1209px;"></div>
+  </div>
+
+  <div class="bracketrow">
+    <svg width="1456" height="86" viewBox="0 0 1456 86">
+      <path d="M728 4 L728 26 L1221 26 L1221 4" fill="none" stroke="#008b4c"
+            stroke-width="3" stroke-dasharray="9 7"/>
+      <line x1="974" y1="26" x2="974" y2="34" stroke="#008b4c" stroke-width="3"/>
+    </svg>
+    <div class="blabel">no dedicated V2 course found (2026-08) &mdash; this one</div>
+  </div>
+
+  <div class="unders">
+    <div class="ucell">
+      <div class="tomb">
+        <div class="tk">official on-ramp</div>
+        <div class="tt">frozen &mdash;<br>no V2 here</div>
+      </div>
+    </div>
+    <div class="ucell"></div>
+    <div class="ucell">
+      <div class="flag">
+        <div class="flagicon">
+          <svg width="44" height="60" viewBox="0 0 44 60">
+            <line x1="6" y1="2" x2="6" y2="60" stroke="#1b231d" stroke-width="4"/>
+            <polygon points="8,4 42,15 8,26" fill="#ffd23f" stroke="#d9a608" stroke-width="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ft">zero-copy by default</div>
+          <div class="fs">the fast path is no longer opt-in</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

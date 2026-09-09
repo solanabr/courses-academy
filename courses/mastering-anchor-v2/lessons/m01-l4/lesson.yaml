@@ -1,0 +1,119 @@
+id: lesson-mav2-m01-l4
+slug: m01-l4
+title: "#[derive(Accounts)], dispatch, discriminators & errors"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+skills:
+  - anchor
+  - account-model
+  - error-handling
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: discriminator-preimage
+    type: code
+    language: rust
+    starter: discriminator-preimage/starter.rs
+    solution: discriminator-preimage/solution.rs
+    tests: discriminator-preimage/tests.json
+    hints:
+      - "An instruction handler is NOT hashed from \"instruction:\" — Anchor uses the \"global:\" namespace."
+      - "Fill in `namespace`: it is a `const fn`, and `match` cannot compare `&str` there (string equality is a trait call), so match on `item_kind.as_bytes()` with byte-string patterns like `b\"instruction\"`. `discriminator_preimage` already does the concatenation."
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l4-q1
+        prompt: "You pass the same account twice into one instruction, both marked mut, without unsafe(dup). What happens in V2, and where?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Rejected inside try_accounts, at the point the second field's load finds its address already seen"
+            correct: false
+            feedback: "Right that it is a runtime rejection and right that it lands before your handler, wrong about which floor it happens on. try_accounts loads and constrains fields one at a time and never sees the whole account list; the duplicate walk runs ahead of it in the dispatcher, so no field has loaded when the rejection fires."
+          - id: a
+            label: "Rejected at runtime by the dispatcher's duplicate walk, before try_accounts loads any field"
+            correct: true
+            feedback: "The two halves run on different clocks: writability is fixed when the struct compiles, addresses only become comparable when a call arrives. Nothing is deserialized before the walk says no."
+          - id: b
+            label: "It compiles and runs, and the second serialize-on-exit silently clobbers the first write"
+            correct: false
+            feedback: "That silent clobber is exactly the aliasing bug V2 closes: duplicate mutables are disallowed by default, so the call is rejected rather than letting the second write win."
+          - id: c
+            label: "It is a compile error: MUT_MASK detects that two fields of the same type are both marked mut"
+            correct: false
+            feedback: "MUT_MASK only encodes shape — which slots are mut — and two mut fields of the same type are perfectly legal to declare. The compile error in V2 is about writing plain dup instead of unsafe(dup), not about a collision."
+        explanation: "MUT_MASK is a compile-time associated const, but the duplicate collision is walked and rejected at runtime in the dispatcher; the compile error is specifically about writing dup instead of unsafe(dup). Mechanically: the dispatcher walks the incoming account views, sets a bit for every slot whose address it has already seen, and ANDs that bitvec against the struct's 256-bit MUT_MASK in one four-word test. Any surviving bit returns ConstraintDuplicateMutableAccount from the dispatcher — before try_accounts loads a single field and long before your handler body runs."
+      - id: m01-l4-q2
+        prompt: "Your program's custom #[error_code] enum's third variant fires (no offset override). What on-wire code do clients see?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "6003 — the custom band starts at 6000 and numbers variants from 1"
+            correct: false
+            feedback: "The base itself is the first variant: index 0 is 6000, so the third variant is 6002. Nothing counts from 1 unless you shift the base with #[error_code(offset = N)]."
+          - id: b
+            label: "6002 — the custom band starts at 6000 and is zero-indexed by variant"
+            correct: true
+            feedback: "Counting starts at the base: variant one is 6000 flat, and nothing shifts unless you set an explicit offset. Four thousand below sits the framework's own constraint band."
+          - id: e
+            label: "3 - the on-wire code is the variant index; 6000 is a display offset"
+            correct: false
+            feedback: "It would be tidy if the base were only a rendering detail, and decoded errors really do get pretty-printed by clients. The base is part of the number that crosses the wire, which is precisely what keeps your codes from colliding with the framework's."
+          - id: d
+            label: "6100 - the custom band starts at 6000 and steps by 100 per variant"
+            correct: false
+            feedback: "Error classes do step in round numbers, which is where this comes from: 100 for instruction errors, 2000 for constraints, 6000 for yours. Inside the custom band the step is one, so variant zero is 6000, variant one 6001, variant two 6002."
+          - id: a
+            label: "2003 — custom #[error_code] variants land in the 2000s constraint band"
+            correct: false
+            feedback: "The 2000s are the framework's own constraint band (ConstraintHasOne = 2001, ConstraintDuplicateMutableAccount lives there too). Your declared errors never land there; they start at 6000."
+        explanation: "Framework constraint errors sit in the 2000s; custom #[error_code] starts at 6000, so the third variant (zero-based index 2) is 6002 unless offset is overridden."
+      - id: m01-l4-q3
+        prompt: "You just completed the discriminator-preimage challenge. Anchor hashes an INSTRUCTION handler's discriminator from which preimage namespace?"
+        multiSelect: false
+        options:
+          - id: e
+            label: "\"program:\" - e.g. sha256(\"program:increment\")"
+            correct: false
+            feedback: "The handler does live inside the #[program] module, so naming its namespace after that module is a fair inference. The three are account:, event: and global:, and the handler one is global: for a historical reason rather than a structural one."
+          - id: a
+            label: "\"instruction:\" — e.g. sha256(\"instruction:increment\")"
+            correct: false
+            feedback: "This is the trap the challenge targets — Anchor uses the \"global:\" namespace for instruction handlers, not \"instruction:\"."
+          - id: c
+            label: "\"global:\" — e.g. sha256(\"global:increment\")[..8]"
+            correct: true
+            feedback: "Three preimage namespaces exist and each is keyed to a different kind of declaration. The handler one surprises people because that word never appears anywhere in the source you actually wrote."
+          - id: d
+            label: "\"ix:\" - e.g. sha256(\"ix:increment\")[..8]"
+            correct: false
+            feedback: "ix is the ecosystem's own shorthand for an instruction, so it reads like the obvious namespace to pick. Three namespaces exist and this is not among them; a handler hashes from global:."
+          - id: b
+            label: "\"handler:\" — e.g. sha256(\"handler:increment\")"
+            correct: false
+            feedback: "There is no \"handler:\" namespace; instruction handlers hash from \"global:\"."
+        explanation: "Accounts hash from account:, events from event:, and instruction handlers from global: — the global namespace is the one that surprises people."
+      - id: m01-l4-q4
+        prompt: "You consider enabling #[discrim = N] compact discriminators to shrink your instruction tags. What is the honest trade-off?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "It is per-instruction opt-in, so you can freely mix compact and default 8-byte discriminators in one program"
+            correct: false
+            feedback: "Compaction is a program-wide switch: every handler's tag is compacted and prefix-ambiguity-validated together, so there is no per-instruction mix of compact and 8-byte sha256 tags."
+          - id: d
+            label: "Compaction is on by default in V2, and #[discrim = N] is usually how you opt back into 8-byte tags"
+            correct: false
+            feedback: "V2 flipped enough defaults that assuming it flipped this one too is a reasonable bet. It did not: the 8-byte sha256 tag stays the default precisely because it keeps v1 wire-compatibility for free, and #[discrim = N] is the opt-in that trades that away."
+          - id: c
+            label: "It keeps the 8-byte width but swaps sha256 for a cheaper hash, so client-built tags stop matching"
+            correct: false
+            feedback: "The compaction is not about the hash function: #[discrim = N] replaces the 8-byte sha256 prefix with a small literal integer tag — no hashing at all — so it is the width that changes, not the algorithm."
+          - id: b
+            label: "It is all-or-nothing per program: you save instruction bytes and CU, but drop default v1 wire-compatibility"
+            correct: true
+            feedback: "Small integer tags can alias by prefix, so the whole program's tag set has to be validated at once — a hazard fixed-width hashes never had, which is why nothing checks for it until you opt in."
+        explanation: "Discriminators are v1-compatible by default; #[discrim = N] is an all-or-nothing-per-program compaction with prefix-ambiguity validation, trading v1 wire-compat for smaller instruction tags. That extra validation exists because variable-width integer tags could otherwise alias each other by prefix, which fixed 8-byte sha256 tags never can."

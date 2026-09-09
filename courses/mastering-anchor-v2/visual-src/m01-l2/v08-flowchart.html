@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The pin re-verification loop on a moving RC
+     purpose: turn the abstract "re-verify on a schedule" advice into a concrete loop the reader can run
+     data: trigger A: a build behaves differently than yesterday -> re-run anchor --version trigger B: anchor-next release notes or a broken build say the branch moved -> rebuild the RC observe: read the actual value, do not trust the date already in PINS.md stamp: write today's date in the verified column even if the value did not change meaning: a fresh date on an unchanged value still records that a human looked fallback: no cryptographic cut release behind the RC, just a branch, so the dated human check is the defense
+     prompt: A cycle diagram. Two trigger nodes ("build acts different" and "anchor-next moved") feed into an "observe the real value" node, which flows to "stamp today's date in PINS.md", which loops back to the triggers. A side note off "stamp" reads "fresh date = someone looked". Keep it a closed loop to signal this repeats for the life of the RC.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:489px;height:452px;top:-257px;right:-257px;border-radius:49% 37% 46% 45% / 53% 53% 55% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:456px;bottom:-262px;left:-262px;border-radius:49% 42% 42% 64% / 43% 38% 38% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:392px;height:530px;bottom:-289px;left:747px;border-radius:63% 45% 61% 49% / 44% 48% 53% 42%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:46px; }
+  .f8-stage { position:relative; width:1456px; height:480px; }
+  .f8-wires { position:absolute; left:0; top:0; z-index:0; }
+  .f8-n { position:absolute; z-index:1; border-radius:var(--radius-xl); padding:16px 22px; }
+  .f8-trig { background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .f8-k { font-family:var(--font-body); font-size:14px; font-weight:800; letter-spacing:0.13em;
+          text-transform:uppercase; color:var(--text-muted); }
+  .f8-trig .h { font-family:var(--font-body); font-size:19px; font-weight:700;
+                color:var(--text-primary); line-height:1.28; margin-top:7px; }
+  .f8-trig .c { font-family:var(--font-mono); font-size:17px; font-weight:800;
+                color:var(--stbr-emerald-800); margin-top:9px; }
+  .f8-trig .c em { font-style:normal; color:var(--text-muted); font-weight:700; }
+
+  .f8-obs { background:var(--surface-brand); border:2px solid var(--stbr-emerald-800); }
+  .f8-obs .k { font-family:var(--font-body); font-size:14px; font-weight:800; letter-spacing:0.13em;
+               text-transform:uppercase; color:rgba(245,232,202,0.7); }
+  .f8-obs .h { font-family:var(--font-display); font-weight:900; font-size:27px;
+               color:var(--stbr-cream); line-height:1.1; margin-top:8px; }
+  .f8-obs .s { font-family:var(--font-body); font-size:17px; color:rgba(245,232,202,0.9);
+               line-height:1.32; margin-top:10px; }
+
+  .f8-stamp { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); }
+  .f8-stamp .k { font-family:var(--font-body); font-size:14px; font-weight:800; letter-spacing:0.13em;
+                 text-transform:uppercase; color:rgba(27,35,29,0.62); }
+  .f8-stamp .h { font-family:var(--font-display); font-weight:900; font-size:27px;
+                 color:var(--stbr-dark); line-height:1.1; margin-top:8px; }
+  .f8-stamp .s { font-family:var(--font-body); font-size:17px; font-weight:600;
+                 color:rgba(27,35,29,0.82); line-height:1.32; margin-top:10px; }
+
+  .f8-note { background:var(--surface-card); border:2px solid var(--border-subtle);
+             border-left:6px solid var(--stbr-yellow-600); }
+  .f8-note .t { font-family:var(--font-body); font-size:18px; font-weight:600;
+                color:var(--text-primary); line-height:1.3; }
+  .f8-note .t b { font-weight:800; color:var(--stbr-emerald-800); }
+
+  .f8-chip { position:absolute; z-index:2; left:498px; top:420px; width:420px; height:40px;
+             background:var(--surface-card); border:2px solid var(--stbr-emerald);
+             border-radius:var(--radius-pill); text-align:center;
+             font-family:var(--font-body); font-size:16px; font-weight:800;
+             letter-spacing:0.09em; text-transform:uppercase; color:var(--stbr-emerald-800);
+             line-height:36px; }
+
+  .f8-foot { margin-top:14px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+             padding:16px 26px; font-family:var(--font-body); font-size:19px; line-height:1.35;
+             color:var(--stbr-cream); }
+  .f8-foot b { color:var(--stbr-yellow); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">re-verify on a schedule</div>
+  <h2 class="viz-title">The pin re-verification loop on a moving RC</h2>
+
+  <div class="f8-stage">
+    <svg class="f8-wires" width="1456" height="480">
+      <!-- trigger A -> observe -->
+      <line x1="446" y1="95" x2="505" y2="95" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="505" y1="95" x2="505" y2="150" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="505" y1="150" x2="550" y2="150" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="562,150 549,143 549,157" fill="#1b231d"/>
+      <!-- trigger B -> observe -->
+      <line x1="446" y1="265" x2="505" y2="265" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="505" y1="265" x2="505" y2="215" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="505" y1="215" x2="550" y2="215" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="562,215 549,208 549,222" fill="#1b231d"/>
+      <!-- observe -> stamp -->
+      <line x1="938" y1="185" x2="1030" y2="185" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1042,185 1029,178 1029,192" fill="#1b231d"/>
+      <!-- stamp -> side note -->
+      <line x1="1226" y1="270" x2="1226" y2="296" stroke="#d9a608" stroke-width="2.5"/>
+      <polygon points="1226,306 1219,295 1233,295" fill="#d9a608"/>
+      <!-- loop back: stamp -> right -> bottom rail -> left rail -> both triggers -->
+      <line x1="1410" y1="185" x2="1432" y2="185" stroke="#008b4c" stroke-width="3"/>
+      <line x1="1432" y1="185" x2="1432" y2="440" stroke="#008b4c" stroke-width="3"/>
+      <line x1="1432" y1="440" x2="24" y2="440" stroke="#008b4c" stroke-width="3"/>
+      <line x1="24" y1="440" x2="24" y2="95" stroke="#008b4c" stroke-width="3"/>
+      <line x1="24" y1="265" x2="50" y2="265" stroke="#008b4c" stroke-width="3"/>
+      <polygon points="62,265 49,258 49,272" fill="#008b4c"/>
+      <line x1="24" y1="95" x2="50" y2="95" stroke="#008b4c" stroke-width="3"/>
+      <polygon points="62,95 49,88 49,102" fill="#008b4c"/>
+    </svg>
+
+    <div class="f8-n f8-trig" style="left:62px; top:26px; width:384px; height:138px;">
+      <div class="f8-k">trigger a</div>
+      <div class="h">a build behaves differently than yesterday</div>
+      <div class="c">re-run <em>anchor --version</em></div>
+    </div>
+
+    <div class="f8-n f8-trig" style="left:62px; top:196px; width:384px; height:138px;">
+      <div class="f8-k">trigger b</div>
+      <div class="h">release notes or a broken build say <em style="font-style:normal;font-family:var(--font-mono);font-size:18px;">anchor-next</em> moved</div>
+      <div class="c">rebuild the RC</div>
+    </div>
+
+    <div class="f8-n f8-obs" style="left:562px; top:100px; width:376px; height:170px;">
+      <div class="k">step 1</div>
+      <div class="h">observe the real value</div>
+      <div class="s">read the actual value — do not trust the date already in PINS.md</div>
+    </div>
+
+    <div class="f8-n f8-stamp" style="left:1042px; top:100px; width:368px; height:170px;">
+      <div class="k">step 2</div>
+      <div class="h">stamp today's date</div>
+      <div class="s">write it in the verified column — even if the value did not change</div>
+    </div>
+
+    <div class="f8-n f8-note" style="left:1042px; top:306px; width:368px; height:84px; padding:14px 20px;">
+      <div class="t">a fresh date on an unchanged value <b>still records that a human looked</b></div>
+    </div>
+
+    <div class="f8-chip">repeats for the life of the RC</div>
+  </div>
+
+  <div class="f8-foot">There is <b>no cut release</b> behind the RC, just a branch — the dated human check is the defense.</div>
+</div>
+</body></html>

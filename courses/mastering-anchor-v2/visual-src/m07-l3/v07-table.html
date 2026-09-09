@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The `anchor fuzz` command family
+     purpose: give the reader the full subcommand map so run and show are not the only tools they know
+     data: columns: Command | What it does | Where it lands in the loop row: anchor fuzz init <program> | scaffold a fuzz workspace at fuzz/<program>/ | once, at the start row: anchor fuzz run <program> <test> --release [--stateful] [--coverage] | run one fuzz test; the test name is required | the main loop row: anchor fuzz list [program] | list the fuzz tests it discovered | when you forget a test name row: anchor fuzz show <program> | list the saved crash files for that program | first, after a crash row: anchor fuzz show <program> <crash> --replay | view metadata, then replay one saved crash | right after a crash, before you patch row: anchor fuzz cmin <program> <test> | minimize the corpus | housekeeping between runs row: anchor fuzz tmin <program> <test> <crash> | minimize a crash to its smallest failing input | to shrink a messy crash before you debug it note: anchor coverage is a separate command over anchor test traces; fuzz coverage comes from `run --coverage`
+     prompt: Clean three-column reference table with the columns and rows above. Group the rows visually by "where it lands in the loop" using a subtle left-edge accent. Put the note in a small caption band below the table. Monospace for the command column.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:544px;height:442px;top:-262px;right:-262px;border-radius:63% 40% 47% 42% / 45% 58% 47% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:459px;bottom:-274px;left:-274px;border-radius:52% 43% 46% 37% / 35% 35% 55% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:567px;height:534px;bottom:-338px;right:-338px;border-radius:51% 64% 35% 62% / 43% 53% 56% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .wrap { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+          overflow: hidden; background: var(--surface-card); }
+  table.t { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .t th { background: var(--surface-inverse); padding: 13px 18px; text-align: left; }
+  .hl2 { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+         text-transform: uppercase; color: var(--text-on-dark); }
+  .t td { padding: 11px 18px; vertical-align: middle;
+          border-top: 1.5px solid var(--border-subtle); }
+  td.ph { font-family: var(--font-display); font-weight: 900; font-size: 15px; line-height: 1.14;
+          color: var(--text-on-dark); text-align: center; vertical-align: middle;
+          border-top: 1.5px solid rgba(245,232,202,0.2); }
+  td.ph.p1 { background: var(--stbr-green-800); }
+  td.ph.p2 { background: var(--stbr-emerald); }
+  td.ph.p3 { background: var(--stbr-green); }
+  td.ph.p4 { background: var(--stbr-ink-700); }
+  .cmd { font-family: var(--font-mono); font-size: 13.5px; font-weight: 700; line-height: 1.35;
+         color: var(--text-primary); }
+  .cmd .opt { color: var(--stbr-emerald-800); font-weight: 600; }
+  .does { font-family: var(--font-body); font-size: 13.5px; line-height: 1.36;
+          color: var(--text-primary); }
+  .lands { font-family: var(--font-body); font-size: 13px; line-height: 1.36;
+           color: var(--text-secondary); }
+  tr.hot td.cmdcell, tr.hot td.doescell, tr.hot td.landscell { background: rgba(255,210,63,0.34); }
+  tr.hot .cmd { color: var(--text-primary); }
+  tr.hot .lands { color: var(--stbr-green-800); font-weight: 700; }
+  .caption { margin-top: 16px; background: var(--surface-brand-deep);
+             border-radius: var(--radius-lg); padding: 13px 26px; display: flex;
+             align-items: center; gap: 20px; }
+  .ck { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.72); white-space: nowrap; }
+  .ct { font-family: var(--font-body); font-size: 15px; line-height: 1.35;
+        color: var(--text-on-dark); }
+  .ct code { font-family: var(--font-mono); font-weight: 700; color: var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">seven subcommands, four phases</div>
+  <h2 class="viz-title">the <code style="font-family:var(--font-mono);font-size:40px">anchor fuzz</code> command family</h2>
+
+  <div class="wrap">
+    <table class="t">
+      <tr>
+        <th style="width:11%"><span class="hl2">phase</span></th>
+        <th style="width:38%"><span class="hl2">command</span></th>
+        <th style="width:27%"><span class="hl2">what it does</span></th>
+        <th style="width:24%"><span class="hl2">where it lands in the loop</span></th>
+      </tr>
+
+      <tr>
+        <td class="ph p1">setup</td>
+        <td class="cmdcell"><div class="cmd">anchor fuzz init &lt;program&gt;</div></td>
+        <td class="doescell"><div class="does">scaffold a fuzz workspace at <code style="font-family:var(--font-mono);font-size:12.5px">fuzz/&lt;program&gt;/</code></div></td>
+        <td class="landscell"><div class="lands">once, at the start</div></td>
+      </tr>
+
+      <tr class="hot">
+        <td class="ph p2" rowspan="2">the loop</td>
+        <td class="cmdcell"><div class="cmd">anchor fuzz run &lt;program&gt; &lt;test&gt;<br><span class="opt">--release [--stateful] [--coverage]</span></div></td>
+        <td class="doescell"><div class="does">run one fuzz test &mdash; the test name is required</div></td>
+        <td class="landscell"><div class="lands">the main loop</div></td>
+      </tr>
+      <tr>
+        <td class="cmdcell"><div class="cmd">anchor fuzz list [program]</div></td>
+        <td class="doescell"><div class="does">list the fuzz tests it discovered</div></td>
+        <td class="landscell"><div class="lands">when you forget a test name</div></td>
+      </tr>
+
+      <tr>
+        <td class="ph p3" rowspan="3">after a<br>crash</td>
+        <td class="cmdcell"><div class="cmd">anchor fuzz show &lt;program&gt;</div></td>
+        <td class="doescell"><div class="does">list the saved crash files for that program</div></td>
+        <td class="landscell"><div class="lands">first, after a crash</div></td>
+      </tr>
+      <tr>
+        <td class="cmdcell"><div class="cmd">anchor fuzz show &lt;program&gt; &lt;crash&gt;<br><span class="opt">--replay</span></div></td>
+        <td class="doescell"><div class="does">view metadata, then replay one saved crash</div></td>
+        <td class="landscell"><div class="lands">right after a crash, before you patch</div></td>
+      </tr>
+      <tr>
+        <td class="cmdcell"><div class="cmd">anchor fuzz tmin &lt;program&gt; &lt;test&gt; &lt;crash&gt;</div></td>
+        <td class="doescell"><div class="does">minimize a crash to its smallest failing input</div></td>
+        <td class="landscell"><div class="lands">to shrink a messy crash before you debug it</div></td>
+      </tr>
+
+      <tr>
+        <td class="ph p4">upkeep</td>
+        <td class="cmdcell"><div class="cmd">anchor fuzz cmin &lt;program&gt; &lt;test&gt;</div></td>
+        <td class="doescell"><div class="does">minimize the corpus</div></td>
+        <td class="landscell"><div class="lands">housekeeping between runs</div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="caption">
+    <span class="ck">do not confuse the two</span>
+    <span class="ct"><code>anchor coverage</code> is a separate command over <code>anchor test</code> traces &mdash; fuzz coverage comes from <code>run --coverage</code>.</span>
+  </div>
+</div>
+</body></html>

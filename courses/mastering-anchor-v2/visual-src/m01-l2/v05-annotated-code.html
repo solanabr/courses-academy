@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Reading the RC install command flag by flag
+     purpose: make each flag legible so the reader understands what the git install actually pins, not just copies it
+     data: command: CARGO_PROFILE_RELEASE_LTO=off cargo install --git https://github.com/otter-sec/anchor.git --branch anchor-next anchor-cli --locked --force annotations: - CARGO_PROFILE_RELEASE_LTO=off : macOS-only; disables link-time optimization so the RC build finishes - --git <url>                   : build from source at this repo, not from crates.io - --branch anchor-next          : pin source to the frontier branch specifically - anchor-cli                    : the crate inside the repo to install as a binary - --locked                      : honor the committed Cargo.lock (reproducible; RC-critical) - --force                       : overwrite any existing anchor-cli in ~/.cargo/bin
+     prompt: Annotated code block. Render the full command on one wrapped line at the top, then below it a call-out list where each flag/token is shown on the left and its plain-language purpose on the right, aligned. Visually connect each annotation to its token (leader lines or matching color highlight on the token in the command). Emphasize --locked and --branch anchor-next as the two that matter most on an RC.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:464px;top:-262px;right:-262px;border-radius:59% 62% 52% 58% / 46% 55% 44% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:445px;height:498px;left:-244px;top:236px;border-radius:59% 52% 42% 60% / 39% 41% 51% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:495px;height:457px;bottom:-243px;right:-243px;border-radius:44% 45% 56% 53% / 46% 38% 45% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; }
+  .a5-panel { background:var(--surface-inverse); border-radius:var(--radius-lg);
+              padding:22px 28px; font-family:var(--font-mono); font-size:24px;
+              font-weight:700; line-height:1.6; color:rgba(245,232,202,0.62); }
+  .a5-panel .tk { color:var(--stbr-cream); background:rgba(0,139,76,0.42);
+                  border-radius:5px; padding:2px 7px; white-space:nowrap; }
+  .a5-panel .key { color:var(--stbr-yellow); background:rgba(255,210,63,0.16);
+                   border-radius:5px; padding:2px 7px; white-space:nowrap; }
+  .a5-cap { font-family:var(--font-body); font-size:17px; font-weight:700;
+            color:var(--text-secondary); margin:12px 0 14px; }
+  .a5-cap i { font-style:normal; color:var(--stbr-dark); background:var(--stbr-yellow);
+              border-radius:var(--radius-pill); padding:2px 12px; font-weight:800; }
+
+  .a5-row { display:flex; align-items:center; gap:22px; margin-bottom:8px; }
+  .a5-tk { flex:0 0 486px; font-family:var(--font-mono); font-size:19px; font-weight:800;
+           padding:9px 16px; border-radius:var(--radius-sm);
+           background:rgba(0,139,76,0.10); color:var(--stbr-emerald-800);
+           border:1.5px solid rgba(0,139,76,0.35); }
+  .a5-row.key .a5-tk { background:var(--stbr-yellow); color:var(--stbr-dark);
+                       border-color:var(--stbr-yellow-700); }
+  .a5-lead { flex:0 0 26px; }
+  .a5-de { flex:1; font-family:var(--font-body); font-size:19px; color:var(--text-primary);
+           line-height:1.3; }
+  .a5-row.key .a5-de { font-weight:700; }
+  .a5-de code { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                color:var(--stbr-emerald-800); }
+</style>
+  <div class="stbr-eyebrow">what the install actually pins</div>
+  <h2 class="viz-title">Reading the RC install command flag by flag</h2>
+
+  <div class="a5-panel"><span class="tk">CARGO_PROFILE_RELEASE_LTO=off</span> cargo install <span class="tk">--git https://github.com/otter-sec/anchor.git</span> <span class="key">--branch anchor-next</span> <span class="tk">anchor-cli</span> <span class="key">--locked</span> <span class="tk">--force</span></div>
+
+  <div class="a5-cap">Each token below is highlighted in the command above. <i>--branch anchor-next</i> and <i>--locked</i> are the two that matter most on an RC.</div>
+
+  <div class="a5-row">
+    <div class="a5-tk">CARGO_PROFILE_RELEASE_LTO=off</div>
+    <div class="a5-lead"><svg width="26" height="12"><line x1="0" y1="6" x2="19" y2="6" stroke="#008b4c" stroke-width="2"/><polygon points="26,6 18,2 18,10" fill="#008b4c"/></svg></div>
+    <div class="a5-de">macOS-only; disables link-time optimization so the RC build finishes</div>
+  </div>
+  <div class="a5-row">
+    <div class="a5-tk">--git &lt;url&gt;</div>
+    <div class="a5-lead"><svg width="26" height="12"><line x1="0" y1="6" x2="19" y2="6" stroke="#008b4c" stroke-width="2"/><polygon points="26,6 18,2 18,10" fill="#008b4c"/></svg></div>
+    <div class="a5-de">build from source at this repo, not from crates.io</div>
+  </div>
+  <div class="a5-row key">
+    <div class="a5-tk">--branch anchor-next</div>
+    <div class="a5-lead"><svg width="26" height="12"><line x1="0" y1="6" x2="19" y2="6" stroke="#d9a608" stroke-width="2.5"/><polygon points="26,6 18,2 18,10" fill="#d9a608"/></svg></div>
+    <div class="a5-de">pin source to the frontier branch specifically</div>
+  </div>
+  <div class="a5-row">
+    <div class="a5-tk">anchor-cli</div>
+    <div class="a5-lead"><svg width="26" height="12"><line x1="0" y1="6" x2="19" y2="6" stroke="#008b4c" stroke-width="2"/><polygon points="26,6 18,2 18,10" fill="#008b4c"/></svg></div>
+    <div class="a5-de">the crate inside the repo to install as a binary</div>
+  </div>
+  <div class="a5-row key">
+    <div class="a5-tk">--locked</div>
+    <div class="a5-lead"><svg width="26" height="12"><line x1="0" y1="6" x2="19" y2="6" stroke="#d9a608" stroke-width="2.5"/><polygon points="26,6 18,2 18,10" fill="#d9a608"/></svg></div>
+    <div class="a5-de">honor the committed <code>Cargo.lock</code> — reproducible, and RC-critical</div>
+  </div>
+  <div class="a5-row">
+    <div class="a5-tk">--force</div>
+    <div class="a5-lead"><svg width="26" height="12"><line x1="0" y1="6" x2="19" y2="6" stroke="#008b4c" stroke-width="2"/><polygon points="26,6 18,2 18,10" fill="#008b4c"/></svg></div>
+    <div class="a5-de">overwrite any existing <code>anchor-cli</code> in <code>~/.cargo/bin</code></div>
+  </div>
+</div>
+</body></html>

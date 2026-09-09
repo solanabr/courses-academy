@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The two halves of the Anchor security taxonomy against V2
+     purpose: separate the classes last lesson retired at compile time from the seven this lesson must patch by hand
+     data: Class                         | V2 default catches it?        | Where it is caught type cosplay                  | YES (last lesson)             | compile error (Pod typing) duplicate-mutable             | YES (last lesson)             | compile error (unsafe(dup)) + load check CpiHandle aliasing / stale    | YES (last lesson)             | compile error (borrow model) bump recalculation            | NO, but inert                 | compiles; the framework signs with the macro const, so there is no seam signer / owner missing        | NO                            | you write the assertion UncheckedAccount substitution | NO (survives every framework) | you write address/owner/constraint owner-error footgun           | partial, wrong error surfaced | you use UncheckedAccount + explicit check init_if_needed reuse-of-state | partial (space/owner/disc)    | you validate business intent arbitrary CPI                 | NO                            | you validate the target program id close-and-revival             | NO if you close by hand       | you zero + guard (or use close =) arithmetic overflow           | NO                            | you use checked_sub / checked math
+     prompt: Two-block comparison. Top block "handled last lesson" with the four rows: three green compile-error rows and the bump row in a neutral tone tagged "compiles, no seam". Bottom block "surviving classes (this lesson)" with the seven rows in a caution tone. Emphasize the "UncheckedAccount substitution" row with a "survives every framework" flag. Columns: class, caught by default, where caught.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:546px;height:519px;top:-334px;right:-334px;border-radius:39% 60% 52% 41% / 39% 64% 44% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:417px;bottom:-237px;left:-237px;border-radius:46% 56% 60% 38% / 47% 65% 48% 51%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:476px;height:502px;bottom:-254px;left:697px;border-radius:53% 45% 59% 35% / 49% 41% 46% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 42px; margin: 4px 0 14px; }
+  .blk { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .blk + .blk { margin-top:14px; }
+  .band { display:flex; align-items:center; height:38px; padding:0 22px; }
+  .band-y { background:var(--surface-brand); }
+  .band-n { background:var(--surface-inverse); }
+  .band .bl { font-family:var(--font-display); font-weight:900; font-size:16px;
+              letter-spacing:.08em; text-transform:uppercase; color:var(--stbr-cream); }
+  .band .bc { font-family:var(--font-body); font-weight:600; font-size:13px;
+              color:var(--stbr-cream); opacity:.78; margin-left:14px; }
+  .hd { display:flex; height:26px; align-items:center; padding:0 22px;
+        background:var(--surface-paper); border-bottom:1px solid var(--border-subtle); }
+  .hd span { font-family:var(--font-body); font-weight:700; font-size:11px;
+             letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .row { display:flex; align-items:center; height:42px; padding:0 22px;
+         border-bottom:1px solid var(--border-subtle); }
+  .row:last-child { border-bottom:0; }
+  .c1 { width:360px; } .c2 { width:250px; } .c3 { width:798px; }
+  .cl { font-family:var(--font-mono); font-weight:600; font-size:15px;
+        color:var(--text-primary); line-height:1.2; }
+  .cv { font-family:var(--font-body); font-weight:700; font-size:13px; line-height:1.2; }
+  .cv-y { color:var(--stbr-emerald-800); }
+  .cv-n { color:var(--status-danger); }
+  .cv-p { color:var(--text-secondary); }
+  .cw { font-family:var(--font-body); font-size:13px; line-height:1.3;
+        color:var(--text-secondary); padding-right:8px; }
+  .hi { background:var(--surface-accent); }
+  .hi .cl, .hi .cv, .hi .cw { color:var(--text-on-accent); }
+  .flag { display:inline-block; margin-left:10px; background:var(--stbr-dark);
+          color:var(--stbr-cream); font-family:var(--font-body); font-weight:700;
+          font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+          padding:3px 9px; border-radius:var(--radius-pill); }
+</style>
+  <div class="stbr-eyebrow">the anchor security taxonomy · v2</div>
+  <h2 class="viz-title">four classes the compiler retired, seven you still patch by hand</h2>
+
+  <div class="blk">
+    <div class="band band-y">
+      <span class="bl">handled last lesson</span>
+      <span class="bc">V2 kills these before the program ever runs</span>
+    </div>
+    <div class="hd"><span class="c1">class</span><span class="c2">caught by default?</span><span class="c3">where it is caught</span></div>
+    <div class="row">
+      <div class="c1 cl">type cosplay</div>
+      <div class="c2 cv cv-y">YES (last lesson)</div>
+      <div class="c3 cw">compile error (Pod typing)</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">duplicate-mutable</div>
+      <div class="c2 cv cv-y">YES (last lesson)</div>
+      <div class="c3 cw">compile error (unsafe(dup)) + load check</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">CpiHandle aliasing / stale</div>
+      <div class="c2 cv cv-y">YES (last lesson)</div>
+      <div class="c3 cw">compile error (borrow model)</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">bump recalculation</div>
+      <div class="c2 cv cv-p">NO, but inert</div>
+      <div class="c3 cw">compiles; the framework signs with the macro const, so there is no seam</div>
+    </div>
+  </div>
+
+  <div class="blk">
+    <div class="band band-n">
+      <span class="bl">surviving classes — this lesson</span>
+      <span class="bc">no compiler help; every one is an assertion you write</span>
+    </div>
+    <div class="hd"><span class="c1">class</span><span class="c2">caught by default?</span><span class="c3">where it is caught</span></div>
+    <div class="row">
+      <div class="c1 cl">signer / owner missing</div>
+      <div class="c2 cv cv-n">NO</div>
+      <div class="c3 cw">you write the assertion</div>
+    </div>
+    <div class="row hi">
+      <div class="c1 cl">UncheckedAccount substitution</div>
+      <div class="c2 cv">NO <span class="flag">survives every framework</span></div>
+      <div class="c3 cw">you write address / owner / constraint</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">owner-error footgun</div>
+      <div class="c2 cv cv-p">partial, wrong error surfaced</div>
+      <div class="c3 cw">you use UncheckedAccount + explicit check</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">init_if_needed reuse-of-state</div>
+      <div class="c2 cv cv-p">partial (space/owner/disc)</div>
+      <div class="c3 cw">you validate business intent</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">arbitrary CPI</div>
+      <div class="c2 cv cv-n">NO</div>
+      <div class="c3 cw">you validate the target program id</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">close-and-revival</div>
+      <div class="c2 cv cv-n">NO if you close by hand</div>
+      <div class="c3 cw">you zero + guard (or use close =)</div>
+    </div>
+    <div class="row">
+      <div class="c1 cl">arithmetic overflow</div>
+      <div class="c2 cv cv-n">NO</div>
+      <div class="c3 cw">you use checked_sub / checked math</div>
+    </div>
+  </div>
+</div>
+</body></html>

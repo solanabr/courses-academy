@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The capstone gate: the done ledger
+     purpose: give the reader the exact acceptance criteria to self-check against
+     data: columns: stage | passing looks like rows: - unit suite | cargo test -p floor-registry green: four LiteSVM edge tests plus at least one Mollusk CU test - fuzz | anchor fuzz returns one green Crucible case against a registry target - harden | the per-instruction checklist walked; account-substitution across each CPI ruled out - CU profile | settle_prize CU printed by your Mollusk test before and after one measured optimization (your real numbers) - localnet integration | anchor test prints "floor-registry ... passing" against the surfpool floor - devnet deploy | anchor deploy succeeds; program id recorded - verify | solana-verify verify-from-repo -u devnet matches your local build hash to the on-chain program note: the localnet run is the gate before devnet; the verify is the gate that ends the ladder
+     prompt: A two-column checklist-style table, stage on the left and the concrete passing signal on the right. Render as a checklist the reader can tick. Emphasize the last two rows (deploy, verify) as the terminal gate.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:510px;height:456px;top:-271px;right:-271px;border-radius:43% 50% 53% 65% / 58% 48% 61% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:500px;left:-273px;top:81px;border-radius:48% 43% 61% 47% / 60% 49% 50% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:449px;bottom:-261px;right:-261px;border-radius:43% 54% 55% 49% / 65% 53% 60% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz, .viz * { box-sizing: border-box; }
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .tbl { background: var(--surface-card); border: 2px solid var(--border-subtle);
+         border-radius: var(--radius-lg); overflow: hidden; }
+  .tr { display: flex; align-items: stretch; height: 70px;
+        border-top: 1.5px solid var(--border-subtle); }
+  .tr.head { border-top: 0; height: 54px; background: var(--surface-inverse); }
+  .tr.tall { height: 78px; }
+  .c1 { flex: 0 0 372px; padding: 10px 20px; background: var(--surface-paper);
+        border-right: 1.5px solid var(--border-subtle);
+        display: flex; align-items: center; }
+  .c2 { flex: 1 1 0; min-width: 0; padding: 10px 24px;
+        display: flex; flex-direction: column; justify-content: center; }
+  .head .c1 { background: var(--stbr-dark-900); border-right-color: rgba(245,232,202,0.18); }
+  .hk { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+        letter-spacing: .14em; text-transform: uppercase; color: rgba(245,232,202,0.55); }
+  .ht { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.1;
+        color: var(--text-on-dark); }
+  .head .c2 { justify-content: center; }
+
+  .box { flex: 0 0 auto; margin-right: 14px; }
+  .stage { min-width: 0; }
+  .sname { font-family: var(--font-display); font-weight: 900; font-size: 20px;
+           line-height: 1.1; color: var(--text-primary); }
+  .schip { display: inline-block; border-radius: var(--radius-pill); padding: 2px 10px;
+           font-family: var(--font-body); font-weight: 800; font-size: 9.5px;
+           letter-spacing: .12em; text-transform: uppercase; margin-top: 6px; }
+  .schip.gate { background: var(--surface-brand); color: var(--text-on-brand); }
+  .schip.end  { background: var(--stbr-dark); color: var(--stbr-yellow); }
+
+  .sig { font-family: var(--font-mono); font-size: 14px; line-height: 1.38;
+         color: var(--text-primary); }
+  .sig b { font-weight: 700; color: var(--stbr-emerald-800); }
+  .sig .p { font-family: var(--font-body); color: var(--text-secondary); }
+
+  .tr.term { background: #fff8e0; }
+  .tr.term .c1 { background: var(--surface-accent); border-right-color: var(--stbr-yellow-700); }
+  .tr.term-first { border-top: 3px solid var(--stbr-yellow-700); }
+
+  .verdict { margin-top: 18px; background: var(--surface-brand-deep);
+             border-radius: var(--radius-lg); padding: 14px 26px;
+             display: flex; align-items: center; }
+  .vk { flex: 0 0 auto; font-family: var(--font-body); font-weight: 800; font-size: 11.5px;
+        letter-spacing: .13em; text-transform: uppercase; color: rgba(245,232,202,0.72); }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-dark); margin-left: 22px; }
+</style>
+  <div class="stbr-eyebrow">the capstone gate</div>
+  <h2 class="viz-title">the done ledger &mdash; tick every row before you call it shipped</h2>
+
+  <div class="tbl">
+    <div class="tr head">
+      <div class="c1"><div><div class="hk">tick it off</div><div class="ht">stage</div></div></div>
+      <div class="c2"><div class="hk">acceptance criteria</div><div class="ht">passing looks like</div></div>
+    </div>
+
+    <div class="tr">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">unit suite</div></div></div>
+      <div class="c2"><div class="sig"><b>cargo test -p floor-registry</b> green <span class="p">&mdash; four LiteSVM edge tests plus at least one Mollusk CU test</span></div></div>
+    </div>
+
+    <div class="tr">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">fuzz</div></div></div>
+      <div class="c2"><div class="sig"><b>anchor fuzz</b> <span class="p">returns one green Crucible case against a registry target</span></div></div>
+    </div>
+
+    <div class="tr">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">harden</div></div></div>
+      <div class="c2"><div class="sig"><span class="p">The per-instruction checklist walked; account-substitution across each CPI ruled out.</span></div></div>
+    </div>
+
+    <div class="tr tall">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">CU profile</div></div></div>
+      <div class="c2"><div class="sig"><b>settle_prize</b> CU printed by your Mollusk test <span class="p">before and after one measured optimization &mdash; your real numbers, not a quoted figure.</span></div></div>
+    </div>
+
+    <div class="tr tall">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">localnet integration</div><span class="schip gate">gate before devnet</span></div></div>
+      <div class="c2"><div class="sig"><b>anchor test</b> prints <b>"floor-registry &hellip; passing"</b> <span class="p">against the surfpool floor</span></div></div>
+    </div>
+
+    <div class="tr term term-first">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">devnet deploy</div></div></div>
+      <div class="c2"><div class="sig"><b>anchor deploy</b> succeeds <span class="p">&mdash; program id recorded</span></div></div>
+    </div>
+
+    <div class="tr term tall">
+      <div class="c1"><svg class="box" width="24" height="24" viewBox="0 0 24 24"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="#ffffff" stroke="#1b231d" stroke-width="2"/></svg><div class="stage"><div class="sname">verify</div><span class="schip end">ends the ladder</span></div></div>
+      <div class="c2"><div class="sig"><b>solana-verify verify-from-repo -u devnet</b> <span class="p">matches your local build hash to the on-chain program.</span></div></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">two gates, in order</span>
+    <div class="vt">Localnet is the gate before devnet. Verify is the gate that ends the ladder &mdash; the yellow rows are the terminal pair.</div>
+  </div>
+</div>
+</body></html>

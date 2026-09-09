@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The read path, both tiers side by side
+     purpose: make the deserialize step visible as the concrete cost you're opting into
+     data: Account<T> (Pod): account bytes [discriminator | fixed body] --(cast at data[8..])-> typed view (no copy) BorshAccount<T> (borsh): account bytes [discriminator | serialized body] --(read)-> deserialize -> heap value (String, Vec...) on write: heap value -> serialize -> account bytes
+     prompt: Two horizontal pipelines stacked. Top: "Account<T> (Pod)", account-bytes box, one arrow labeled "cast at data[8..]" into a "typed view (no copy)" box. Bottom: "BorshAccount<T> (borsh)", account-bytes box, arrow "read", then a distinct "deserialize" processing node, then a "heap value" box; add a return arrow labeled "serialize" on write. Visually emphasize that the bottom pipeline has an extra processing node the top one does not.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:513px;top:-248px;right:-248px;border-radius:51% 38% 49% 61% / 59% 54% 63% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:455px;height:493px;left:-274px;top:277px;border-radius:59% 47% 64% 42% / 60% 41% 62% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:463px;height:492px;bottom:-250px;right:-250px;border-radius:47% 61% 60% 52% / 40% 43% 63% 54%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .d2-title { font-size:48px; }
+  .d2-lane { background:var(--surface-card); border:2px solid var(--border-subtle);
+             border-radius:var(--radius-xl); padding:24px 28px; display:flex;
+             align-items:center; gap:24px; }
+  .d2-lane + .d2-lane { margin-top:22px; }
+  .d2-lane.hot { border-color:var(--stbr-yellow-700); background:#fffbee; }
+  .d2-name { width:236px; flex:0 0 236px; }
+  .d2-name .n { font-family:var(--font-display); font-weight:900; font-size:25px;
+                line-height:1.06; color:var(--text-primary); }
+  .d2-name .sub { font-family:var(--font-body); font-size:17px; color:var(--text-secondary);
+                  margin-top:6px; line-height:1.3; }
+  .d2-flow { flex:1 1 auto; }
+  .d2-row { display:flex; align-items:center; gap:10px; }
+  .d2-box { border-radius:var(--radius-md); padding:16px 18px; border:2px solid var(--stbr-emerald);
+            background:rgba(0,139,76,0.08); }
+  .d2-box .t { font-family:var(--font-body); font-weight:800; font-size:19px;
+               color:var(--stbr-emerald-800); line-height:1.2; }
+  .d2-box .m { font-family:var(--font-mono); font-size:15px; color:var(--text-secondary);
+               margin-top:6px; }
+  .d2-bytes { width:260px; flex:0 0 260px; }
+  .d2-out { width:224px; flex:0 0 224px; }
+  .d2-proc { width:176px; flex:0 0 176px; background:var(--surface-accent);
+             border-color:var(--stbr-yellow-700); text-align:center; }
+  .d2-proc .t { color:var(--stbr-dark); font-family:var(--font-display); font-weight:900;
+                font-size:22px; }
+  .d2-proc .m { color:rgba(27,35,29,0.68); font-family:var(--font-body); font-weight:600; }
+  .d2-arrow { width:150px; flex:0 0 150px; display:flex; flex-direction:column;
+              align-items:center; gap:5px; }
+  .d2-arrow .lb { font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);
+                  white-space:nowrap; }
+  .d2-ret { position:relative; height:50px; width:1120px; margin-top:6px; }
+  .d2-ret svg { position:absolute; left:0; top:26px; }
+  .d2-ret .chip { position:absolute; left:376px; top:0; background:var(--surface-card);
+                  border:1.5px solid var(--stbr-yellow-700); border-radius:var(--radius-pill);
+                  padding:6px 16px; font-family:var(--font-mono); font-size:14px;
+                  color:var(--text-primary); }
+  .d2-cap { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+            padding:18px 30px; font-family:var(--font-display); font-weight:900; font-size:24px;
+            color:var(--stbr-cream); }
+  .d2-cap b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">the read path, both tiers</div>
+  <h2 class="viz-title d2-title">Where the deserialize step actually is</h2>
+
+  <div class="d2-lane">
+    <div class="d2-name">
+      <div class="n">Account&lt;T&gt;</div>
+      <div class="sub">Pod &mdash; tier 1</div>
+    </div>
+    <div class="d2-flow">
+      <div class="d2-row">
+        <div class="d2-box d2-bytes"><div class="t">account bytes</div><div class="m">[ discriminator | fixed body ]</div></div>
+        <div class="d2-arrow">
+          <span class="lb">cast at data[8..]</span>
+          <svg width="150" height="16" viewBox="0 0 150 16"><line x1="0" y1="8" x2="140" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="150,8 138,2 138,14" fill="#008b4c"/></svg>
+        </div>
+        <div class="d2-box d2-out"><div class="t">typed view</div><div class="m">no copy, no allocation</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d2-lane hot">
+    <div class="d2-name">
+      <div class="n">BorshAccount&lt;T&gt;</div>
+      <div class="sub">borsh &mdash; tier 2</div>
+    </div>
+    <div class="d2-flow">
+      <div class="d2-row">
+        <div class="d2-box d2-bytes"><div class="t">account bytes</div><div class="m">[ discriminator | serialized body ]</div></div>
+        <div class="d2-arrow">
+          <span class="lb">read</span>
+          <svg width="150" height="16" viewBox="0 0 150 16"><line x1="0" y1="8" x2="140" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="150,8 138,2 138,14" fill="#008b4c"/></svg>
+        </div>
+        <div class="d2-box d2-proc"><div class="t">deserialize</div><div class="m">the extra node</div></div>
+        <div class="d2-arrow">
+          <svg width="150" height="16" viewBox="0 0 150 16"><line x1="0" y1="8" x2="140" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="150,8 138,2 138,14" fill="#008b4c"/></svg>
+        </div>
+        <div class="d2-box d2-out"><div class="t">heap value</div><div class="m">String, Vec&lt;T&gt;, &hellip;</div></div>
+      </div>
+      <div class="d2-ret">
+        <svg width="1120" height="16" viewBox="0 0 1120 16"><line x1="1110" y1="8" x2="12" y2="8" stroke="#d9a608" stroke-width="2.5"/><polygon points="0,8 12,2 12,14" fill="#d9a608"/></svg>
+        <span class="chip">on write: serialize the whole value back</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="d2-cap">Tier 2 runs <b>one processing node tier 1 does not have</b> &mdash; on every read, and again on every write.</div>
+</div>
+</body></html>

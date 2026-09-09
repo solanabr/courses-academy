@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What verify-from-repo actually compares
+     purpose: make the two-independent-hashes mechanic concrete so the reader sees why no third party is needed
+     data: LEFT source (public code): repo URL + commit -> pinned Docker rebuild -> binary -> hash_repo RIGHT source (live chain): cluster (-u devnet) -> fetch deployed program account -> bytes -> hash_chain COMPARE (local, on your machine): hash_repo == hash_chain  ->  VERIFIED (provenance proven) hash_repo != hash_chain  ->  MISMATCH (bytes did not come from this source) note: both hashes are produced locally by you; nothing is trusted in between
+     prompt: A converging diagram: two independent pipelines (left = repo through Docker, right = cluster fetch) each terminating in a hash, meeting at a central comparison node that outputs green VERIFIED or red MISMATCH. Label the whole comparison box "runs locally, trustless". Keep the two source pipelines visually symmetric.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:575px;height:497px;top:-297px;right:-297px;border-radius:48% 53% 51% 51% / 38% 57% 54% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:497px;height:413px;left:-307px;top:237px;border-radius:49% 60% 56% 55% / 63% 43% 46% 35%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:552px;height:525px;bottom:-314px;right:-314px;border-radius:48% 54% 55% 65% / 49% 65% 62% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 22px; }
+  .pipes { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .pipe { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+          background: var(--surface-card); padding: 15px 18px 17px; }
+  .ph { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .pk { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .13em;
+        text-transform: uppercase; padding: 4px 10px 5px; border-radius: var(--radius-pill);
+        background: var(--surface-brand); color: var(--text-on-brand); }
+  .pt { font-family: var(--font-display); font-weight: 900; font-size: 19px;
+        color: var(--text-primary); }
+  .steps { display: grid; grid-template-columns: 1fr 46px 1fr 46px 1fr; align-items: center; }
+  .st { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md);
+        background: var(--surface-paper); padding: 10px 12px 11px; height: 76px;
+        display: flex; flex-direction: column; justify-content: center; }
+  .sk { font-family: var(--font-body); font-weight: 800; font-size: 9.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: var(--text-muted); }
+  .sv { font-family: var(--font-body); font-weight: 700; font-size: 13.5px; line-height: 1.28;
+        color: var(--text-primary); margin-top: 3px; }
+  .sv code { font-family: var(--font-mono); font-size: 12.5px; color: var(--stbr-emerald-800); }
+  .ar { display: flex; justify-content: center; }
+  .out { margin-top: 13px; border-radius: var(--radius-md); background: var(--surface-inverse);
+         padding: 10px 16px 11px; display: flex; align-items: center; gap: 14px; }
+  .ok { font-family: var(--font-body); font-weight: 800; font-size: 9.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.5); }
+  .ov { font-family: var(--font-mono); font-weight: 700; font-size: 19px; color: var(--text-on-dark); }
+  .funnel { height: 44px; }
+  .cmp { border-radius: var(--radius-lg); background: var(--surface-accent);
+         padding: 16px 26px 18px; display: flex; align-items: center; gap: 26px; }
+  .ck { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(27,35,29,0.62); white-space: nowrap; }
+  .cq { font-family: var(--font-display); font-weight: 900; font-size: 26px; line-height: 1.1;
+        color: var(--text-on-accent); }
+  .cn { font-family: var(--font-body); font-size: 13.5px; line-height: 1.35;
+        color: rgba(27,35,29,0.78); margin-left: auto; max-width: 430px; text-align: right; }
+  .outs { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 16px; }
+  .res { border-radius: var(--radius-md); padding: 13px 20px 14px; display: flex;
+         align-items: center; gap: 16px; }
+  .res.yes { background: var(--surface-brand); }
+  .res.no { background: var(--surface-inverse); }
+  .rc { font-family: var(--font-mono); font-weight: 700; font-size: 15px;
+        color: rgba(245,232,202,0.72); white-space: nowrap; }
+  .rt { font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.1; }
+  .res.yes .rt { color: var(--text-on-brand); }
+  .res.no .rt { color: var(--text-on-dark); }
+  .rs { font-family: var(--font-body); font-weight: 500; font-size: 12.5px; line-height: 1.3;
+        color: rgba(245,232,202,0.72); display: block; margin-top: 2px; }
+</style>
+  <div class="stbr-eyebrow">two hashes, one machine &mdash; yours</div>
+  <h2 class="viz-title">what <code style="font-family:var(--font-mono);font-size:40px">verify-from-repo</code> actually compares</h2>
+
+  <div class="pipes">
+    <div class="pipe">
+      <div class="ph"><span class="pk">source A &mdash; public code</span><span class="pt">rebuild the repo</span></div>
+      <div class="steps">
+        <div class="st"><div class="sk">input</div><div class="sv">repo URL + commit</div></div>
+        <div class="ar"><svg width="46" height="16" viewBox="0 0 46 16"><line x1="0" y1="8" x2="33" y2="8" stroke="#008b4c" stroke-width="2.4"/><polygon points="33,2 46,8 33,14" fill="#008b4c"/></svg></div>
+        <div class="st"><div class="sk">pinned docker</div><div class="sv">rebuild &rarr; binary</div></div>
+        <div class="ar"><svg width="46" height="16" viewBox="0 0 46 16"><line x1="0" y1="8" x2="33" y2="8" stroke="#008b4c" stroke-width="2.4"/><polygon points="33,2 46,8 33,14" fill="#008b4c"/></svg></div>
+        <div class="st"><div class="sk">sha256 of</div><div class="sv">the rebuilt bytes</div></div>
+      </div>
+      <div class="out"><span class="ok">result</span><span class="ov">hash_repo</span></div>
+    </div>
+
+    <div class="pipe">
+      <div class="ph"><span class="pk">source B &mdash; live chain</span><span class="pt">fetch what is deployed</span></div>
+      <div class="steps">
+        <div class="st"><div class="sk">input</div><div class="sv">cluster <code>-u devnet</code></div></div>
+        <div class="ar"><svg width="46" height="16" viewBox="0 0 46 16"><line x1="0" y1="8" x2="33" y2="8" stroke="#008b4c" stroke-width="2.4"/><polygon points="33,2 46,8 33,14" fill="#008b4c"/></svg></div>
+        <div class="st"><div class="sk">rpc fetch</div><div class="sv">deployed program account</div></div>
+        <div class="ar"><svg width="46" height="16" viewBox="0 0 46 16"><line x1="0" y1="8" x2="33" y2="8" stroke="#008b4c" stroke-width="2.4"/><polygon points="33,2 46,8 33,14" fill="#008b4c"/></svg></div>
+        <div class="st"><div class="sk">sha256 of</div><div class="sv">the on-chain bytes</div></div>
+      </div>
+      <div class="out"><span class="ok">result</span><span class="ov">hash_chain</span></div>
+    </div>
+  </div>
+
+  <div class="funnel">
+    <svg width="1456" height="44" viewBox="0 0 1456 44">
+      <path d="M 364 0 L 364 20 L 716 20 L 716 40" fill="none" stroke="#1b231d" stroke-width="2.6"/>
+      <path d="M 1092 0 L 1092 20 L 740 20 L 740 40" fill="none" stroke="#1b231d" stroke-width="2.6"/>
+      <polygon points="710,34 722,34 716,44" fill="#1b231d"/>
+      <polygon points="734,34 746,34 740,44" fill="#1b231d"/>
+    </svg>
+  </div>
+
+  <div class="cmp">
+    <span class="ck">runs locally<br>&mdash; trustless</span>
+    <span class="cq">hash_repo  ==  hash_chain  ?</span>
+    <span class="cn">Both hashes are produced on your machine. Nothing in between is trusted &mdash; no registry, no third party, no signature.</span>
+  </div>
+
+  <div class="outs">
+    <div class="res yes">
+      <span class="rc">equal &rarr;</span>
+      <span><span class="rt">VERIFIED</span><span class="rs">provenance proven: these bytes came from this source</span></span>
+    </div>
+    <div class="res no">
+      <span class="rc">unequal &rarr;</span>
+      <span><span class="rt">MISMATCH</span><span class="rs">the deployed bytes did not come from this source</span></span>
+    </div>
+  </div>
+</div>
+</body></html>

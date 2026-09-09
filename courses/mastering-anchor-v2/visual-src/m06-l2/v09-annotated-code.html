@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What cu_swap_regression actually asserts
+     purpose: show that the test encodes an at-or-below budget, not an exact match, so it catches regressions without flapping
+     data: Line: const TRADE_CU_BUDGET: u64 = your AFTER + small headroom Meaning: the budget is the number you EARNED, not a guess; headroom absorbs ordinary noise. Line: process_and_validate_instruction(..., &[Check::success()]) Meaning: first prove the swap still WORKS. An optimization that breaks behavior is not a win. Line: result.compute_units_consumed <= TRADE_CU_BUDGET Meaning: at-or-below, not equality; a future change that gets cheaper passes, one that regresses fails. Line: assert!(..., "trade regressed: {} CU ...") Meaning: the failure message prints both numbers so the next dev sees the regression, not a bare panic.
+     prompt: Annotated code panel. Left column: the four load-bearing lines in monospace. Right column: one plain-language note per line connected by a thin leader. Highlight the "<= TRADE_CU_BUDGET" line as the core assertion (accent color). Keep it scannable.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:565px;height:537px;top:-331px;right:-331px;border-radius:37% 49% 36% 49% / 44% 51% 54% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:491px;bottom:-256px;left:-256px;border-radius:48% 46% 53% 35% / 38% 65% 40% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:520px;height:541px;bottom:-279px;right:-279px;border-radius:55% 40% 58% 62% / 38% 50% 44% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { position:relative; width:1456px; height:564px; }
+  .code { position:absolute; left:0; top:0; width:720px; height:564px; box-sizing:border-box;
+          background:var(--surface-inverse); border-radius:var(--radius-xl); padding:24px; }
+  .ln { height:120px; box-sizing:border-box; border-radius:var(--radius-sm);
+        padding:14px 16px; background:var(--stbr-dark-900);
+        border-left:6px solid var(--stbr-emerald); }
+  .ln + .ln { margin-top:12px; }
+  .ln .no { font-family:var(--font-body); font-weight:800; font-size:11px;
+            letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+            opacity:.45; }
+  .ln .cd { font-family:var(--font-mono); font-size:16px; line-height:1.45;
+            color:var(--stbr-cream); margin-top:9px; word-wrap:break-word; }
+  .ln .cd .kw { color:#7fd6a4; }
+  .ln.hot { border-left:6px solid var(--stbr-yellow); background:#2b352c; }
+  .ln.hot .no { color:var(--stbr-yellow); opacity:1; }
+  .ln.hot .cd .hi { color:var(--stbr-yellow); font-weight:700; }
+  .lead { position:absolute; left:720px; top:0; width:44px; height:564px; }
+  .notes { position:absolute; left:764px; top:0; width:692px; padding-top:24px; box-sizing:border-box; }
+  .nc { height:120px; box-sizing:border-box; border-radius:var(--radius-md);
+        padding:14px 20px; background:var(--surface-card);
+        border:2px solid var(--border-subtle);
+        display:flex; flex-direction:column; justify-content:center; }
+  .nc + .nc { margin-top:12px; }
+  .nc .nk { font-family:var(--font-body); font-weight:800; font-size:11px;
+            letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .nc .nb { font-family:var(--font-body); font-size:16px; line-height:1.35;
+            color:var(--text-secondary); margin-top:8px; }
+  .nc .nb b { color:var(--text-primary); font-weight:700; }
+  .nc.hot { background:var(--surface-accent); border:3px solid var(--stbr-dark); }
+  .nc.hot .nk { color:var(--stbr-green-800); }
+  .nc.hot .nb { color:var(--stbr-dark); }
+  .nc.hot .nb b { color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">cu_swap_regression · what it asserts</div>
+  <h2 class="viz-title">a budget you earned, not a number you guessed</h2>
+
+  <div class="wrap">
+    <div class="code">
+      <div class="ln">
+        <div class="no">1 &nbsp;·&nbsp; the budget</div>
+        <div class="cd"><span class="kw">const</span> TRADE_CU_BUDGET: u64 = &lt;your AFTER&gt; + &lt;headroom&gt;;</div>
+      </div>
+      <div class="ln">
+        <div class="no">2 &nbsp;·&nbsp; behaviour first</div>
+        <div class="cd">process_and_validate_instruction(.., &amp;[Check::success()]);</div>
+      </div>
+      <div class="ln hot">
+        <div class="no">3 &nbsp;·&nbsp; the core assertion</div>
+        <div class="cd">result.compute_units_consumed <span class="hi">&lt;=</span> <span class="hi">TRADE_CU_BUDGET</span></div>
+      </div>
+      <div class="ln">
+        <div class="no">4 &nbsp;·&nbsp; the message</div>
+        <div class="cd"><span class="kw">assert!</span>(.., <span style="color:#e8c98a;">"trade regressed: {} CU .."</span>);</div>
+      </div>
+    </div>
+
+    <div class="lead">
+      <svg width="44" height="564" viewBox="0 0 44 564">
+        <line x1="0" y1="84"  x2="34" y2="84"  stroke="#306c40" stroke-width="2"/>
+        <circle cx="38" cy="84" r="4" fill="#306c40"/>
+        <line x1="0" y1="216" x2="34" y2="216" stroke="#306c40" stroke-width="2"/>
+        <circle cx="38" cy="216" r="4" fill="#306c40"/>
+        <line x1="0" y1="348" x2="34" y2="348" stroke="#d9a608" stroke-width="4"/>
+        <circle cx="38" cy="348" r="5" fill="#d9a608"/>
+        <line x1="0" y1="480" x2="34" y2="480" stroke="#306c40" stroke-width="2"/>
+        <circle cx="38" cy="480" r="4" fill="#306c40"/>
+      </svg>
+    </div>
+
+    <div class="notes">
+      <div class="nc">
+        <div class="nk">the budget</div>
+        <div class="nb">The budget is the number you <b>earned</b>, not a guess &#8212; the headroom absorbs ordinary noise.</div>
+      </div>
+      <div class="nc">
+        <div class="nk">behaviour first</div>
+        <div class="nb">First prove the swap still <b>works</b>. An optimization that breaks behaviour is not a win.</div>
+      </div>
+      <div class="nc hot">
+        <div class="nk">the core assertion</div>
+        <div class="nb"><b>At-or-below, not equality.</b> A future change that gets cheaper passes; one that regresses fails.</div>
+      </div>
+      <div class="nc">
+        <div class="nk">the message</div>
+        <div class="nb">The failure prints <b>both numbers</b>, so the next dev sees the regression &#8212; not a bare panic.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

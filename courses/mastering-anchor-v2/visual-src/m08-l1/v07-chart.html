@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The week kit closed on web3.js (and shipped an 8.0.0 you cannot use yet)
+     purpose: show that "latest" and "what your peers want" diverged on the same day
+     data: Weekly npm downloads on 2026-08-21: @solana/web3.js    : 1,882,726 @solana/kit        : 1,738,844 Same day: @solana/kit 8.0.0 published (npm latest). Ecosystem peer standard the same day: @solana-program/* peer @solana/kit ^7.0.0.
+     prompt: Two-bar horizontal bar chart of the two exact download numbers above, web3.js on top, kit below, web3.js bar slightly longer. Add a caption band: "8.0.0 published this day; @solana-program/* still peer ^7". Do not invent any values beyond the two given. Restrained palette, value labels on the bars.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:525px;height:516px;top:-268px;right:-268px;border-radius:39% 59% 52% 41% / 36% 46% 60% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:398px;left:-332px;top:302px;border-radius:37% 59% 41% 62% / 39% 36% 49% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:554px;height:532px;bottom:-271px;right:-271px;border-radius:40% 47% 60% 63% / 53% 64% 40% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 20px; }
+  .card { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-xl);
+          background: var(--surface-card); padding: 30px 32px 24px; }
+  .axk { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .14em;
+         text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+  .brow { display: flex; align-items: center; margin-bottom: 22px; }
+  .brow:last-of-type { margin-bottom: 0; }
+  .blab { flex: 0 0 auto; width: 278px; padding-right: 20px; }
+  .bn { font-family: var(--font-mono); font-weight: 700; font-size: 18px; line-height: 1.2;
+        color: var(--text-primary); }
+  .bs { font-family: var(--font-body); font-size: 11.5px; line-height: 1.35;
+        color: var(--text-muted); margin-top: 5px; }
+  .btrack { flex: 1 1 0; min-width: 0; }
+  .bar { height: 96px; border-radius: 0 var(--radius-md) var(--radius-md) 0;
+         display: flex; align-items: center; justify-content: flex-end; padding-right: 22px; }
+  .bar.a { width: 1000px; background: var(--surface-brand); }
+  .bar.b { width: 924px; background: var(--surface-accent); }
+  .bv { font-family: var(--font-display); font-weight: 900; font-size: 30px;
+        letter-spacing: -0.01em; }
+  .bar.a .bv { color: var(--text-on-brand); }
+  .bar.b .bv { color: var(--text-on-accent); }
+  .ruler { margin-top: 18px; padding-left: 278px; }
+  .rl { border-top: 1.5px solid var(--border-subtle); padding-top: 8px;
+        font-family: var(--font-body); font-size: 11.5px; color: var(--text-muted); }
+
+  .band { margin-top: 20px; background: var(--surface-inverse); border-radius: var(--radius-lg);
+          padding: 16px 26px; display: flex; align-items: center; gap: 26px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.55); white-space: nowrap; }
+  .facts { display: flex; gap: 30px; align-items: center; }
+  .f { font-family: var(--font-body); font-size: 14.5px; line-height: 1.34;
+       color: var(--text-on-dark); white-space: nowrap; }
+  .f code { font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+            color: var(--stbr-yellow); }
+  .sep { width: 1.5px; height: 34px; background: rgba(245,232,202,0.20); }
+</style>
+  <div class="stbr-eyebrow">weekly npm downloads &middot; 2026-08-21</div>
+  <h2 class="viz-title">the week kit closed on web3.js</h2>
+
+  <div class="card">
+    <div class="axk">weekly downloads, same day</div>
+
+    <div class="brow">
+      <div class="blab">
+        <div class="bn">@solana/web3.js</div>
+        <div class="bs">the line you are leaving</div>
+      </div>
+      <div class="btrack"><div class="bar a"><span class="bv">1,882,726</span></div></div>
+    </div>
+
+    <div class="brow">
+      <div class="blab">
+        <div class="bn">@solana/kit</div>
+        <div class="bs">the line the generated client speaks</div>
+      </div>
+      <div class="btrack"><div class="bar b"><span class="bv">1,738,844</span></div></div>
+    </div>
+
+    <div class="ruler">
+      <div class="rl">bars drawn to scale against the larger of the two counts &mdash; no other values shown</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="vk">the same day</span>
+    <div class="facts">
+      <div class="f"><code>@solana/kit 8.0.0</code> published &mdash; npm <b>latest</b></div>
+      <div class="sep"></div>
+      <div class="f"><code>@solana-program/*</code> still peer <code>@solana/kit ^7.0.0</code></div>
+    </div>
+  </div>
+</div>
+</body></html>

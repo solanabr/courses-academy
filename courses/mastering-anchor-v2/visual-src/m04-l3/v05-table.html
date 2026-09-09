@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: CPI stack-depth budget (live ceiling 5)
+     purpose: place the escrow-vault call inside the budget and show where composition runs out of room
+     data: columns: stack height, what is running, example rows: - 1 | top-level instruction | player calls R3.redeem - 2 | first CPI | R3 calls R2.withdraw  <- this lesson lives here - 3 | second CPI | R2 calls the System Program - 4 | third CPI | (still legal) - 5 | fourth CPI (max today) | last legal level; a fifth returns an error - 9 | max with SIMD-0268 | Accepted; feature gate 6TkHkRmP7JZy1fdM6fg5uXn76wChQBWGokHBJzrLB3mj has no mainnet account (probed 2026-08-22, re-probe at build)
+     prompt: A vertical budget table or stacked-bar, height 1 at bottom to 5 at top, with the "R3 calls R2.withdraw" row at height 2 highlighted as "you are here". Show 9 as a dashed, greyed extension labeled "SIMD-0268, pending activation". Keep it a clean reference table.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:509px;height:504px;top:-256px;right:-256px;border-radius:42% 53% 52% 40% / 65% 41% 61% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:479px;height:501px;bottom:-274px;left:-274px;border-radius:47% 65% 63% 58% / 44% 62% 48% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:457px;height:486px;bottom:-243px;right:-243px;border-radius:40% 38% 53% 60% / 65% 58% 65% 53%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:22px; }
+  .r { display:flex; align-items:center; box-sizing:border-box; }
+  .hdr { height:58px; background:var(--surface-inverse); border-radius:var(--radius-md);
+         padding:0 18px; }
+  .hdr div { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.16em;
+             text-transform:uppercase; color:var(--stbr-cream); }
+  .row { height:70px; padding:0 18px; border-bottom:2px solid var(--border-subtle); }
+  .row:last-child { border-bottom:0; }
+  .c1 { flex:0 0 150px; display:flex; align-items:center; gap:12px; }
+  .c2 { flex:0 0 380px; }
+  .c3 { flex:1 1 auto; }
+  .badge { width:52px; height:52px; border-radius:var(--radius-md); background:var(--surface-brand);
+           color:var(--stbr-cream); font-family:var(--font-display); font-weight:900; font-size:26px;
+           display:flex; align-items:center; justify-content:center; }
+  .what { font-family:var(--font-body); font-weight:700; font-size:18px; color:var(--text-primary); }
+  .ex { font-family:var(--font-body); font-size:16.5px; color:var(--text-secondary); }
+  .ex code { font-family:var(--font-mono); font-size:15.5px; color:var(--text-primary);
+             font-weight:600; }
+  .here { background:#fff3cf; border-left:6px solid var(--stbr-yellow); padding-left:12px; }
+  .here .badge { background:var(--surface-accent); color:var(--stbr-dark); }
+  .here .what, .here .ex, .here .ex code { color:var(--stbr-dark); }
+  .here .pin { display:inline-block; background:var(--stbr-dark); color:var(--stbr-cream);
+               font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+               text-transform:uppercase; padding:5px 10px; border-radius:var(--radius-pill);
+               margin-left:14px; }
+  .pend { height:92px; padding:0 18px; border:2px dashed var(--stbr-ink-300);
+          border-radius:var(--radius-md); background:var(--surface-paper); margin-bottom:8px; }
+  .pend .badge { background:var(--stbr-ink-300); color:var(--surface-paper); }
+  .pend .what { color:var(--text-muted); }
+  .pend .ex { font-size:14px; color:var(--text-muted); line-height:1.35; }
+  .pend .ex code { font-size:13px; color:var(--text-muted); font-weight:600; }
+  .jump { height:34px; display:flex; align-items:center; padding:0 18px; }
+  .jump .g { flex:0 0 150px; font-family:var(--font-mono); font-size:20px; color:var(--stbr-ink-300); }
+  .jump .n { font-family:var(--font-body); font-size:13px; color:var(--text-muted); }
+  .cap { margin-top:14px; font-family:var(--font-body); font-size:15px; color:var(--text-secondary); }
+  .cap b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">composition budget</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 14px;">CPI stack depth: the live ceiling is 5</h2>
+
+  <div class="card">
+    <div class="r pend">
+      <div class="c1"><div class="badge">9</div></div>
+      <div class="c2"><div class="what">max with SIMD-0268</div></div>
+      <div class="c3"><div class="ex">Accepted — pending activation. Feature gate <code>6TkHkRmP7JZy1fdM6fg5uXn76wChQBWGokHBJzrLB3mj</code><br>has no mainnet account (probed 2026-08-22, re-probe at build).</div></div>
+    </div>
+    <div class="r jump"><div class="g"><div style="width:0;height:20px;border-left:3px dotted #b8bdb6;margin-left:25px;"></div></div><div class="n">not live today — do not design against it</div></div>
+
+    <div class="r hdr">
+      <div class="c1">stack height</div>
+      <div class="c2">what is running</div>
+      <div class="c3">example</div>
+    </div>
+    <div class="r row">
+      <div class="c1"><div class="badge">5</div></div>
+      <div class="c2"><div class="what">fourth CPI — max today</div></div>
+      <div class="c3"><div class="ex">last legal level; a fifth returns an error</div></div>
+    </div>
+    <div class="r row">
+      <div class="c1"><div class="badge">4</div></div>
+      <div class="c2"><div class="what">third CPI</div></div>
+      <div class="c3"><div class="ex">still legal</div></div>
+    </div>
+    <div class="r row">
+      <div class="c1"><div class="badge">3</div></div>
+      <div class="c2"><div class="what">second CPI</div></div>
+      <div class="c3"><div class="ex"><code>R2</code> calls the System Program</div></div>
+    </div>
+    <div class="r row here">
+      <div class="c1"><div class="badge">2</div></div>
+      <div class="c2"><div class="what">first CPI</div></div>
+      <div class="c3"><div class="ex"><code>R3</code> calls <code>R2.withdraw</code><span class="pin">this lesson lives here</span></div></div>
+    </div>
+    <div class="r row">
+      <div class="c1"><div class="badge">1</div></div>
+      <div class="c2"><div class="what">top-level instruction</div></div>
+      <div class="c3"><div class="ex">player calls <code>R3.redeem</code></div></div>
+    </div>
+  </div>
+  <div class="cap">Depth grows upward: the escrow → vault call sits at <b>2 of 5</b>, leaving three levels of room for anything R2 composes with.</div>
+</div>
+</body></html>

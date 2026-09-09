@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three ways to hold a growing list in an account
+     purpose: rule out the naive fixes in tiers and show why the Slab's fixed MAX wins for a hot list
+     data: option A - Vec<Score> with realloc: growth: explicit realloc instruction, moves rent, changes account size per-touch cost: still borsh serialize/deserialize the whole list verdict: growth is manual AND you pay the serialization tax option B - Vec<Score>, borsh account (v1 model): growth: handled by borsh, variable length per-touch cost: deserialize whole list on read, re-serialize on write verdict: flexible, but re-introduces the exact cost Pod exists to remove option C - Slab<Cabinet, Score> with fixed MAX: growth: never automatic; try_push past capacity is an Err, and growing means an explicit resize_to_capacity(n) that reallocs and settles rent per-touch cost: byte cast, mutate in place, nothing to serialize verdict: pay rent on empty slots + evict yourself; touch cost = the item, not the length
+     prompt: A three-column comparison card, one column per option (A, B, C), three rows (growth, per-touch cost, verdict). Visually de-emphasize A and B and highlight C as the choice for a hot, frequently-touched list. Put a small "you evict yourself" and "rent on empty slots" tag on C so the cost is not hidden.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:492px;height:487px;top:-240px;right:-240px;border-radius:36% 64% 57% 40% / 45% 45% 62% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:512px;height:405px;left:-332px;top:299px;border-radius:56% 65% 54% 60% / 36% 62% 58% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:514px;height:566px;bottom:-318px;left:681px;border-radius:35% 49% 49% 45% / 60% 55% 62% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:20px; }
+  .col { flex:1; display:flex; flex-direction:column; gap:10px; }
+  .chd { height:66px; border-radius:var(--radius-lg); padding:0 22px; display:flex;
+    align-items:center; gap:14px; background:var(--surface-paper);
+    border:2px solid var(--border-subtle); }
+  .chd .k { width:36px; height:36px; flex:none; border-radius:var(--radius-sm);
+    background:var(--stbr-ink-300); color:var(--surface-card); display:flex;
+    align-items:center; justify-content:center; font-family:var(--font-display);
+    font-weight:900; font-size:20px; }
+  .chd .t { font-family:var(--font-display); font-weight:900; font-size:20px;
+    line-height:1.1; color:var(--text-secondary); }
+  .chd .t code { font-family:var(--font-mono); font-size:19px; }
+  .col.win .chd { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .col.win .chd .k { background:var(--stbr-cream); color:var(--stbr-emerald); }
+  .col.win .chd .t { color:var(--text-on-brand); }
+
+  .cell { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+    background:var(--surface-card); padding:16px 22px; }
+  .cell .st { font-family:var(--font-display); font-weight:900; font-size:13px;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted);
+    margin-bottom:9px; }
+  .cell .tx { font-family:var(--font-body); font-size:16.5px; line-height:1.36;
+    color:var(--text-secondary); }
+  .cell .tx code { font-family:var(--font-mono); font-size:15.5px; font-weight:700;
+    color:var(--text-primary); }
+  .cell .tx b { color:var(--text-primary); font-weight:800; }
+  .cell.growth { height:150px; }
+  .cell.cost   { height:118px; }
+  .cell.verd   { height:158px; }
+  .col.win .cell .st { color:var(--stbr-emerald); }
+  .col.win .cell.verd { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .col.win .cell.verd .st { color:var(--stbr-dark); }
+  .col.win .cell.verd .tx, .col.win .cell.verd .tx b { color:var(--stbr-dark); }
+  .tags { display:flex; gap:8px; margin-top:11px; }
+  .tags span { font-family:var(--font-body); font-size:12.5px; font-weight:800;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--stbr-cream);
+    background:var(--stbr-dark); border-radius:var(--radius-pill); padding:6px 12px; }
+  .out { font-family:var(--font-body); font-size:12px; font-weight:800;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted);
+    margin-left:auto; }
+  .band { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:20px 30px; font-family:var(--font-body);
+    font-size:20px; font-weight:500; line-height:1.35; }
+  .band b { color:var(--stbr-yellow); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">three ways to hold a growing list</div>
+  <h2 class="viz-title">why a fixed MAX wins for a hot list</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="chd"><span class="k">A</span>
+        <span class="t"><code>Vec&lt;Score&gt;</code> + realloc</span>
+        <span class="out">ruled out</span></div>
+      <div class="cell growth"><div class="st">growth</div>
+        <div class="tx">explicit <b>realloc instruction</b> &mdash; moves rent, changes the account size</div></div>
+      <div class="cell cost"><div class="st">per-touch cost</div>
+        <div class="tx">still borsh serialize / deserialize <b>the whole list</b></div></div>
+      <div class="cell verd"><div class="st">verdict</div>
+        <div class="tx">growth is <b>manual</b> AND you still pay the <b>serialization tax</b></div></div>
+    </div>
+    <div class="col">
+      <div class="chd"><span class="k">B</span>
+        <span class="t"><code>Vec&lt;Score&gt;</code>, borsh account<br>(the v1 model)</span>
+        <span class="out">ruled out</span></div>
+      <div class="cell growth"><div class="st">growth</div>
+        <div class="tx">handled by borsh &mdash; <b>variable length</b>, nothing to declare up front</div></div>
+      <div class="cell cost"><div class="st">per-touch cost</div>
+        <div class="tx">deserialize the whole list on read, re-serialize on write</div></div>
+      <div class="cell verd"><div class="st">verdict</div>
+        <div class="tx">flexible, but re-introduces the <b>exact cost Pod exists to remove</b></div></div>
+    </div>
+    <div class="col win">
+      <div class="chd"><span class="k">C</span>
+        <span class="t"><code>Slab&lt;Cabinet, Score&gt;</code><br>with a fixed MAX</span></div>
+      <div class="cell growth"><div class="st">growth</div>
+        <div class="tx"><b>never automatic</b> &mdash; <code>try_push</code> past capacity is an <code>Err</code>; growing means an explicit <code>resize_to_capacity(n)</code> that reallocs and settles rent</div></div>
+      <div class="cell cost"><div class="st">per-touch cost</div>
+        <div class="tx">byte cast, mutate in place, <b>nothing to serialize</b></div></div>
+      <div class="cell verd"><div class="st">verdict</div>
+        <div class="tx">touch cost = <b>the item</b>, not the length</div>
+        <div class="tags"><span>rent on empty slots</span><span>you evict yourself</span></div></div>
+    </div>
+  </div>
+  <div class="band">For a list you touch constantly, C is the trade worth making: its costs are <b>rent and eviction</b>, both priced up front &mdash; not a serialization bill on every single touch.</div>
+</div>
+</body></html>

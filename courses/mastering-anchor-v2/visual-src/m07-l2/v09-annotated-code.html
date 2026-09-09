@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Raw subtraction versus checked_sub on the withdraw
+     purpose: show the underflow the raw path hides and the checked path that rejects it, both against a concrete over-withdraw
+     data: input: credit = 30, amount = 100 (an over-withdraw) RAW (VULN): vault.credit = vault.credit - amount; -> release: wraps to 18446744073709551546 (u64 underflow), the vault's books "gain" money -> debug:   panics -> neither rejects the withdrawal CHECKED (PATCH): vault.credit = vault.credit.checked_sub(amount).ok_or(VaultError::Underflow)?; -> checked_sub(30, 100) = None -> ? returns Err(VaultError::Underflow) -> the over-withdraw is REJECTED, credit unchanged
+     prompt: Two code cards, RAW (red, "wraps or panics") and CHECKED (green, "rejects"). Between them a shared input line "balance = 30, amount = 100". Show the wrapped u64 value in the RAW card as the scary artifact and the Err return in the CHECKED card. Margin note: "this is a how-much bug, not a who bug".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:538px;height:544px;top:-280px;right:-280px;border-radius:52% 53% 55% 50% / 53% 59% 62% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:442px;height:488px;left:-247px;top:301px;border-radius:40% 59% 63% 50% / 59% 56% 37% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:594px;height:537px;bottom:-331px;right:-331px;border-radius:46% 49% 37% 36% / 52% 35% 58% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 18px; }
+  .input { border:2px dashed var(--border-strong); border-radius:var(--radius-lg);
+           background:var(--surface-card); padding:14px 24px; display:flex;
+           align-items:center; }
+  .input .ik { font-family:var(--font-body); font-weight:800; font-size:12px;
+               letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted);
+               width:170px; flex-grow:0; flex-shrink:0; }
+  .input .iv { font-family:var(--font-mono); font-weight:700; font-size:18px;
+               color:var(--text-primary); }
+  .input .ix { font-family:var(--font-body); font-size:14px; color:var(--text-secondary);
+               margin-left:18px; }
+  .cols { display:flex; align-items:stretch; margin-top:18px; }
+  .col { width:713px; flex-grow:0; flex-shrink:0; border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-inverse); }
+  .col + .col { margin-left:30px; }
+  .ch { padding:11px 22px; display:flex; align-items:center; }
+  .ch .l { font-family:var(--font-display); font-weight:900; font-size:15px;
+           letter-spacing:.12em; text-transform:uppercase; }
+  .ch .s { font-family:var(--font-body); font-weight:600; font-size:13px; margin-left:14px; }
+  .h-raw { background:#c0392b; }
+  .h-raw .l, .h-raw .s { color:var(--stbr-cream); }
+  .h-chk { background:var(--surface-brand); }
+  .h-chk .l, .h-chk .s { color:var(--text-on-brand); }
+  .code { white-space:pre-wrap; padding:16px 22px 12px; font-family:var(--font-mono);
+          font-size:15px; line-height:1.5; color:var(--stbr-cream); }
+  .steps { padding:2px 22px 18px; }
+  .st { font-family:var(--font-body); font-size:14px; line-height:1.45;
+        color:var(--stbr-cream); opacity:.82; margin-top:9px; }
+  .st code { font-family:var(--font-mono); font-size:13.5px; }
+  .scary { display:block; margin-top:10px; background:var(--surface-accent);
+           border-radius:var(--radius-md); padding:10px 14px; }
+  .scary .sk { font-family:var(--font-body); font-weight:800; font-size:11px;
+               letter-spacing:.09em; text-transform:uppercase; color:var(--text-on-accent);
+               opacity:.72; }
+  .scary .sv { font-family:var(--font-mono); font-weight:700; font-size:20px;
+               color:var(--text-on-accent); margin-top:4px; }
+  .verd { margin-top:12px; border-top:1px solid rgba(245,232,202,0.22); padding-top:11px;
+          font-family:var(--font-display); font-weight:800; font-size:17px;
+          line-height:1.25; color:var(--stbr-white); }
+  .note { margin-top:18px; background:var(--surface-brand-deep);
+          border-radius:var(--radius-lg); padding:16px 26px; display:flex;
+          align-items:center; }
+  .note .k { font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+             opacity:.7; width:150px; flex-grow:0; flex-shrink:0; }
+  .note .t { font-family:var(--font-display); font-weight:900; font-size:22px;
+             line-height:1.2; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">class 7 · arithmetic overflow</div>
+  <h2 class="viz-title">the same over-withdraw, twice</h2>
+
+  <div class="input">
+    <div class="ik">shared input</div>
+    <div class="iv">balance = 30 &nbsp;·&nbsp; amount = 100</div>
+    <div class="ix">an over-withdraw: the caller asks for more than the vault holds</div>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="ch h-raw"><span class="l">raw</span><span class="s">wraps, or panics</span></div>
+      <div class="code">vault.credit = vault.credit - amount;</div>
+      <div class="steps">
+        <div class="st"><b>release build</b> &mdash; u64 underflow: the vault &ldquo;gains&rdquo; money</div>
+        <div class="scary">
+          <div class="sk">vault.credit becomes</div>
+          <div class="sv">18446744073709551546</div>
+        </div>
+        <div class="st"><b>debug build</b> &mdash; panics</div>
+        <div class="verd">Neither build rejects the withdrawal.</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="ch h-chk"><span class="l">checked</span><span class="s">rejects</span></div>
+      <div class="code">vault.credit = vault.credit
+    .checked_sub(amount)
+    .ok_or(VaultError::Underflow)?;</div>
+      <div class="steps">
+        <div class="st"><code>checked_sub(30, 100)</code> &rarr; <code>None</code></div>
+        <div class="st"><code>?</code> returns <code>Err(VaultError::Underflow)</code></div>
+        <div class="verd">The over-withdraw is REJECTED &mdash; credit unchanged at 30.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="k">margin note</span>
+    <span class="t">This is a how-much bug, not a who bug &mdash; every identity check in this lesson would still have passed.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The authority ladder, and what each rung costs
+     purpose: frame immutability as a one-way trade, not a strict upgrade, so the irreversibility lands
+     data: columns: Rung | What it buys | What it costs rows: - "Single keypair" | "fast upgrades, full control" | "one key can silently replace the bytes" - "Squads v4 multisig" | "no single point can upgrade; threshold approval" | "coordination overhead; trust the (immutable) Squads program" - "Authority = None (immutable)" | "provably can never change" | "IRREVERSIBLE: no fix, no upgrade, ever" note: verify BEFORE you climb; immutability freezes whatever is there
+     prompt: A three-row ladder/table, ascending from single key to immutable. Color the cost cells by severity (yellow, orange, red). Put a bold "one-way, no undo" tag on the immutable row. Header: "Each rung up trades control for assurance."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:511px;top:-324px;right:-324px;border-radius:38% 54% 48% 35% / 46% 59% 39% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:595px;height:557px;bottom:-325px;left:-325px;border-radius:47% 54% 56% 53% / 57% 59% 37% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:604px;height:543px;bottom:-330px;right:-330px;border-radius:46% 48% 61% 65% / 43% 56% 64% 51%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; margin: 4px 0 20px; }
+  .head { display: grid; grid-template-columns: 78px 372px 1fr 1fr; gap: 0;
+          background: var(--surface-inverse); border-radius: var(--radius-md);
+          border: 1.5px solid transparent; padding: 11px 0 12px; margin-bottom: 14px; }
+  .hc { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .14em;
+        text-transform: uppercase; color: rgba(245,232,202,0.62); padding-left: 22px; }
+  .rung { display: grid; grid-template-columns: 78px 372px 1fr 1fr; align-items: stretch;
+          border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+          background: var(--surface-card); overflow: hidden; margin-bottom: 14px; }
+  .rung.top { border: 2px solid var(--stbr-yellow-700); }
+  .lad { display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+         gap: 5px; padding: 18px 0 20px; background: var(--surface-paper);
+         border-right: 1.5px solid var(--border-subtle); }
+  .bar { width: 34px; height: 9px; border-radius: 3px; background: var(--stbr-ink-100); }
+  .bar.on { background: var(--stbr-emerald); }
+  .rung.top .bar.on { background: var(--stbr-yellow-700); }
+  .cell { padding: 18px 22px 20px; display: flex; flex-direction: column; justify-content: center; }
+  .cell.buy { border-right: 1.5px solid var(--border-subtle); background: rgba(0,139,76,0.06); }
+  .cell.cost { background: var(--surface-paper); }
+  .rung.mid .cell.cost { background: rgba(255,210,63,0.26); }
+  .rung.top .cell.cost { background: var(--surface-inverse); }
+  .name { font-family: var(--font-display); font-weight: 900; font-size: 25px; line-height: 1.08;
+          color: var(--text-primary); }
+  .nsub { font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: .12em;
+          text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .txt { font-family: var(--font-body); font-size: 15px; line-height: 1.36; color: var(--text-primary); }
+  .rung.top .cell.cost .txt { color: rgba(245,232,202,0.88); }
+  .warn { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.1;
+          color: var(--text-on-dark); }
+  .oneway { display: inline-block; margin-top: 9px; padding: 5px 13px 6px;
+            border-radius: var(--radius-pill); background: var(--surface-accent);
+            color: var(--text-on-accent); font-family: var(--font-body); font-weight: 800;
+            font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+            align-self: flex-start; }
+  .note { background: var(--surface-brand); border-radius: var(--radius-md);
+          padding: 15px 26px 16px; display: flex; align-items: center; gap: 22px; }
+  .nk { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.75); white-space: nowrap; }
+  .nt { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">each rung up trades control for assurance</div>
+  <h2 class="viz-title">the authority ladder, and what each rung costs</h2>
+
+  <div class="head">
+    <div class="hc">rung</div>
+    <div class="hc">who can replace the bytes</div>
+    <div class="hc">what it buys</div>
+    <div class="hc">what it costs</div>
+  </div>
+
+  <div class="rung">
+    <div class="lad"><div class="bar on"></div></div>
+    <div class="cell"><div class="nsub">rung 1 &mdash; ground</div><div class="name">Single keypair</div></div>
+    <div class="cell buy"><div class="txt">fast upgrades, full control &mdash; ship a fix the minute you have one</div></div>
+    <div class="cell cost"><div class="txt">one key can silently replace the bytes; every verification you published is only as good as that key</div></div>
+  </div>
+
+  <div class="rung mid">
+    <div class="lad"><div class="bar on"></div><div class="bar on"></div></div>
+    <div class="cell"><div class="nsub">rung 2 &mdash; shared</div><div class="name">Squads v4 multisig</div></div>
+    <div class="cell buy"><div class="txt">no single point can upgrade; a threshold of members must approve first</div></div>
+    <div class="cell cost"><div class="txt">coordination overhead on every upgrade, and you now trust the (immutable) Squads program too</div></div>
+  </div>
+
+  <div class="rung top">
+    <div class="lad"><div class="bar on"></div><div class="bar on"></div><div class="bar on"></div></div>
+    <div class="cell"><div class="nsub">rung 3 &mdash; top</div><div class="name">Authority = None</div><div class="txt" style="margin-top:5px;color:var(--text-secondary);font-size:13.5px">immutable</div></div>
+    <div class="cell buy"><div class="txt">provably can never change &mdash; the strongest promise a program can make</div></div>
+    <div class="cell cost">
+      <div class="warn">IRREVERSIBLE</div>
+      <div class="txt" style="margin-top:5px">no fix, no upgrade, ever</div>
+      <span class="oneway">one-way &mdash; no undo</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <span class="nk">before you climb</span>
+    <span class="nt">Verify first. Immutability does not make the bytes good &mdash; it freezes whatever is already there.</span>
+  </div>
+</div>
+</body></html>

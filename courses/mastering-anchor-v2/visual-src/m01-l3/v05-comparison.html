@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The five anchor init test templates, and the one you got by default
+     purpose: place the LiteSVM default among its alternatives so the reader knows what the scaffold chose and why
+     data: columns: Template | Language | Runs where | Default? rows: - Mocha | TypeScript | validator / RPC | no - Jest | TypeScript | validator / RPC | no - Rust (anchor-client) | Rust | validator / RPC | no - Mollusk | Rust | in-process VM | no - Litesvm | Rust | in-process VM | YES (#[default])
+     prompt: A five-row comparison table, columns Template, Language, Runs where, Default. The Litesvm row is emphasized (accent fill or a marker) as the #[default]. Group visually so the two in-process Rust options (Mollusk, Litesvm) read as a pair distinct from the three validator-backed ones. Monospace for template names.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:444px;top:-246px;right:-246px;border-radius:45% 35% 57% 65% / 55% 61% 39% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:538px;height:464px;bottom:-278px;left:-278px;border-radius:37% 41% 45% 56% / 54% 47% 55% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:565px;height:536px;bottom:-317px;right:-317px;border-radius:56% 60% 53% 60% / 50% 48% 55% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .hdr, .r { display:table; width:100%; table-layout:fixed; }
+  .hdr > div, .r > div { display:table-cell; vertical-align:middle; padding:0 22px; }
+  .c1 { width:30%; } .c2 { width:22%; } .c3 { width:30%; } .c4 { width:18%; text-align:right; }
+  .hdr { background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-md);
+    padding:14px 0; margin-top:22px; font-family:var(--font-display); font-weight:800;
+    font-size:15px; letter-spacing:.09em; text-transform:uppercase; }
+  .grp { margin-top:16px; border:2px solid var(--border-subtle); border-radius:var(--radius-md);
+    overflow:hidden; }
+  .grp .band { background:var(--surface-brand-deep); color:var(--text-on-brand);
+    padding:9px 22px; font-family:var(--font-display); font-weight:800; font-size:14px;
+    letter-spacing:.09em; text-transform:uppercase; display:flex; justify-content:space-between; }
+  .grp .band em { font-style:normal; font-family:var(--font-body); font-weight:600; font-size:13px;
+    letter-spacing:.02em; text-transform:none; color:var(--stbr-cream); }
+  .r { background:var(--surface-card); padding:15px 0; border-top:2px solid var(--border-subtle); }
+  .grp .r:first-of-type { border-top:0; }
+  .r .c1 { font-family:var(--font-mono); font-weight:700; font-size:19px; color:var(--text-primary); }
+  .r .c2, .r .c3 { font-family:var(--font-body); font-size:17px; color:var(--text-secondary); }
+  .r .c4 { font-family:var(--font-body); font-weight:700; font-size:16px; color:var(--text-muted); }
+  .r.win { background:var(--stbr-yellow); }
+  .r.win .c1, .r.win .c2, .r.win .c3 { color:var(--stbr-dark); }
+  .r.win .c1 { font-size:20px; }
+  .r.win .c4 { color:var(--stbr-dark); }
+  .r.win .c4 span { display:inline-block; background:var(--stbr-dark); color:var(--stbr-yellow);
+    font-family:var(--font-mono); font-weight:700; font-size:14px; padding:5px 13px;
+    border-radius:var(--radius-pill); }
+  .note { margin-top:18px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-md); padding:15px 28px; font-family:var(--font-display);
+    font-weight:800; font-size:19px; letter-spacing:-0.01em; }
+</style>
+  <div class="stbr-eyebrow">what the scaffold chose for you</div>
+  <h2 class="viz-title">five <span style="font-family:var(--font-mono);font-size:44px;">anchor init</span> test templates &mdash; one is the default</h2>
+  <div class="hdr">
+    <div class="c1">template</div><div class="c2">language</div>
+    <div class="c3">runs where</div><div class="c4">default?</div>
+  </div>
+
+  <div class="grp">
+    <div class="band"><span>validator-backed</span><em>needs a running node / RPC</em></div>
+    <div class="r"><div class="c1">Mocha</div><div class="c2">TypeScript</div><div class="c3">validator / RPC</div><div class="c4">no</div></div>
+    <div class="r"><div class="c1">Jest</div><div class="c2">TypeScript</div><div class="c3">validator / RPC</div><div class="c4">no</div></div>
+    <div class="r"><div class="c1">Rust <span style="font-family:var(--font-body);font-weight:500;font-size:15px;color:var(--text-muted);">(anchor-client)</span></div><div class="c2">Rust</div><div class="c3">validator / RPC</div><div class="c4">no</div></div>
+  </div>
+
+  <div class="grp">
+    <div class="band"><span>in-process VM</span><em>no node &mdash; the SVM runs inside the test binary</em></div>
+    <div class="r"><div class="c1">Mollusk</div><div class="c2">Rust</div><div class="c3">in-process VM</div><div class="c4">no</div></div>
+    <div class="r win"><div class="c1">Litesvm</div><div class="c2">Rust</div><div class="c3">in-process VM</div><div class="c4"><span>#[default]</span></div></div>
+  </div>
+
+  <div class="note">you got Litesvm: Rust, in-process, no validator to start</div>
+</div>
+</body></html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three attempts to catch the bug you did not imagine
+     purpose: derive why coverage-guided stateful fuzzing is the tool, by ruling out the naive answers in order
+     data: attempt 1 - write more tests: bounded by your imagination; a test only asserts a behavior you already thought of attempt 2 - random inputs per instruction: unbounded by imagination, but blind to sequence; never reaches states that need a chain of earlier calls attempt 3 - random instruction sequences: reaches deep states in principle, but wanders; spends nearly all time re-exploring shallow states the tool - coverage-guided + stateful: state persists (deep states reachable) AND edge coverage steers toward new branches (directed, not random)
+     prompt: Vertical ladder of four rungs, bottom to top, each a labeled bar. Rungs 1-3 are the failing attempts with a small red x and their one-line reason; the top rung is the working tool in a calm confident color with a small check. A thin upward arrow on the left labeled "each failure points at the next requirement". Serious, technical.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:497px;height:476px;top:-262px;right:-262px;border-radius:45% 60% 35% 60% / 42% 55% 63% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:487px;bottom:-281px;left:-281px;border-radius:63% 52% 58% 52% / 54% 65% 38% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:431px;height:584px;bottom:-337px;left:538px;border-radius:40% 56% 36% 48% / 59% 47% 61% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .ladder { display: flex; align-items: stretch; gap: 20px; }
+  .rail { flex: 0 0 150px; display: flex; align-items: center; gap: 12px; }
+  .raillab { flex: 1 1 0; font-family: var(--font-body); font-weight: 800; font-size: 12px;
+             line-height: 1.32; letter-spacing: .02em; color: var(--text-secondary); }
+  .rungs { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 13px; }
+  .rung { display: flex; align-items: center; gap: 20px; padding: 0 24px;
+          border-radius: var(--radius-lg); }
+  .rung.no { height: 112px; background: var(--surface-card);
+             border: 2px solid var(--border-subtle); }
+  .rung.yes { height: 148px; background: var(--surface-accent);
+              border: 3px solid var(--stbr-yellow-700); }
+  .mark { flex: 0 0 40px; display: flex; align-items: center; justify-content: center; }
+  .lab { flex: 0 0 300px; }
+  .lk { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: var(--text-muted); }
+  .rung.yes .lk { color: rgba(27,35,29,0.62); }
+  .lt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.1;
+        color: var(--text-primary); margin-top: 4px; }
+  .rung.yes .lt { font-size: 26px; color: var(--text-on-accent); }
+  .why { flex: 1 1 0; min-width: 0; font-family: var(--font-body); font-size: 14.5px;
+         line-height: 1.42; color: var(--text-secondary); }
+  .rung.yes .why { color: var(--text-on-accent); font-size: 15px; }
+  .why b { color: var(--text-primary); font-weight: 700; }
+  .why .pt { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 7px; }
+  .why .pt:last-child { margin-bottom: 0; }
+  .dot { flex: 0 0 8px; width: 8px; height: 8px; border-radius: 50%; margin-top: 6px;
+         background: var(--stbr-green-800); }
+  .verdict { margin-top: 16px; background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 13px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-brand); }
+  .vt code { font-family: var(--font-mono); font-size: 18px; color: var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">ruling out the naive answers, in order</div>
+  <h2 class="viz-title">three attempts to catch the bug you did not imagine</h2>
+
+  <div class="ladder">
+    <div class="rail">
+      <svg width="26" height="512" viewBox="0 0 26 512">
+        <line x1="13" y1="510" x2="13" y2="20" stroke="#306c40" stroke-width="2.6"/>
+        <polygon points="13,0 4,20 22,20" fill="#306c40"/>
+      </svg>
+      <div class="raillab">each failure points at the next requirement</div>
+    </div>
+
+    <div class="rungs">
+      <div class="rung yes">
+        <div class="mark">
+          <svg width="30" height="30" viewBox="0 0 30 30">
+            <circle cx="15" cy="15" r="13.2" fill="none" stroke="#1b231d" stroke-width="2.6"/>
+            <polyline points="8,15.5 13,21 22,9.5" fill="none" stroke="#1b231d" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="lab">
+          <div class="lk">the tool</div>
+          <div class="lt">coverage-guided<br>+ stateful</div>
+        </div>
+        <div class="why">
+          <div class="pt"><span class="dot"></span><span>state persists, so deep states are reachable</span></div>
+          <div class="pt"><span class="dot"></span><span>edge coverage steers toward new branches &mdash; directed, not random</span></div>
+        </div>
+      </div>
+
+      <div class="rung no">
+        <div class="mark">
+          <svg width="26" height="26" viewBox="0 0 26 26">
+            <line x1="4" y1="4" x2="22" y2="22" stroke="#767f73" stroke-width="3"/>
+            <line x1="22" y1="4" x2="4" y2="22" stroke="#767f73" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="lab">
+          <div class="lk">attempt 3</div>
+          <div class="lt">random instruction sequences</div>
+        </div>
+        <div class="why">reaches deep states <b>in principle</b>, but wanders &mdash; nearly all the time goes to re-exploring shallow states</div>
+      </div>
+
+      <div class="rung no">
+        <div class="mark">
+          <svg width="26" height="26" viewBox="0 0 26 26">
+            <line x1="4" y1="4" x2="22" y2="22" stroke="#767f73" stroke-width="3"/>
+            <line x1="22" y1="4" x2="4" y2="22" stroke="#767f73" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="lab">
+          <div class="lk">attempt 2</div>
+          <div class="lt">random inputs per instruction</div>
+        </div>
+        <div class="why">unbounded by imagination, but <b>blind to sequence</b> &mdash; never reaches states that need a chain of earlier calls</div>
+      </div>
+
+      <div class="rung no">
+        <div class="mark">
+          <svg width="26" height="26" viewBox="0 0 26 26">
+            <line x1="4" y1="4" x2="22" y2="22" stroke="#767f73" stroke-width="3"/>
+            <line x1="22" y1="4" x2="4" y2="22" stroke="#767f73" stroke-width="3"/>
+          </svg>
+        </div>
+        <div class="lab">
+          <div class="lk">attempt 1</div>
+          <div class="lt">write more tests</div>
+        </div>
+        <div class="why"><b>bounded by your imagination</b> &mdash; a test only asserts a behavior you already thought of</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">why this tool</span>
+    <span class="vt">Each attempt fails for a different reason, and the two surviving requirements &mdash; persistent state and coverage feedback &mdash; are exactly <code>--stateful</code> plus a coverage-guided engine.</span>
+  </div>
+</div>
+</body></html>

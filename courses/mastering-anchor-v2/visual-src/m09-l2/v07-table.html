@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: What each generated piece closes, and when it fires
+     purpose: the gate rehearsal: name the native step each expansion line replaces and whether it fires at compile or runtime
+     data: columns: generated piece | native step it replaces | bug class it addresses | fires at rows: - Account<Vault> load (owner + 8-byte disc) | TryFrom owner + [0] discriminator checks | type cosplay: wrong account read as a vault | runtime - Signer load | TryFrom is_signer() | unauthorized caller | runtime - constraint / seeds / bump constraint hooks | hand-fused checks in the handler | wrong PDA or wrong owner presented | runtime - 8-byte instruction dispatch | u8 discriminator match | wrong handler routed | runtime - MUT_MASK const | (none) | shape of which fields are mutable | compile-time - duplicate-account walk | (none) | duplicate-mutable aliasing | runtime - CpiHandle borrow | (none: raw borrows) | stale account read after a CPI | compile-time - unsafe(dup) keyword requirement | (none) | silently aliasing without acknowledging it | compile-time
+     prompt: A four-column reference table. Emphasize the "fires at" column with two visual states, compile-time vs runtime. Group the rows with a native twin apart from the four rows whose native step is "(none)". This is the study aid for the end-of-lesson gate.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:507px;top:-252px;right:-252px;border-radius:49% 45% 36% 56% / 59% 58% 35% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:497px;height:545px;bottom:-285px;left:-285px;border-radius:37% 65% 60% 36% / 57% 45% 49% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:362px;height:456px;bottom:-221px;left:649px;border-radius:37% 60% 47% 53% / 39% 39% 41% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); overflow:hidden; }
+  .row { display:flex; align-items:stretch; border-top:1px solid var(--border-subtle); }
+  .row.head { border-top:0; background:var(--surface-inverse); }
+  .row.alt { background:var(--surface-paper); }
+  .c1 { flex:0 0 372px; width:372px; }
+  .c2 { flex:0 0 352px; width:352px; }
+  .c3 { flex:0 0 430px; width:430px; }
+  .c4 { flex:0 0 298px; width:298px; }
+  .cell { padding:12px 20px; display:flex; flex-direction:column; justify-content:center; }
+  .div1 { border-right:1px solid var(--border-subtle); }
+  .row.head .div1 { border-right-color:rgba(245,232,202,0.22); }
+  .hl { font-family:var(--font-display); font-weight:800; font-size:14px;
+        letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-cream); }
+  .t { font-family:var(--font-body); font-size:14.5px; line-height:1.3;
+       color:var(--text-primary); }
+  .t.dim { color:var(--text-secondary); }
+  .t .mono { font-family:var(--font-mono); font-size:13px; }
+  .none { font-family:var(--font-display); font-weight:900; font-size:15px;
+          color:var(--stbr-ink-300); }
+  .none .sm { font-family:var(--font-body); font-weight:500; font-size:12.5px;
+              color:var(--text-muted); }
+  .band { display:flex; align-items:center; padding:9px 20px;
+          border-top:1px solid var(--border-subtle); }
+  .band.a { background:var(--surface-paper); }
+  .band.b { background:var(--surface-inverse); }
+  .band .bl { font-family:var(--font-display); font-weight:900; font-size:12.5px;
+              letter-spacing:.14em; text-transform:uppercase; }
+  .band.a .bl { color:var(--text-secondary); }
+  .band.b .bl { color:var(--stbr-yellow); }
+  .band .bs { font-family:var(--font-body); font-size:13px; margin-left:14px; }
+  .band.a .bs { color:var(--text-muted); }
+  .band.b .bs { color:var(--stbr-cream); opacity:.8; }
+  .chip { display:inline-block; font-family:var(--font-body); font-weight:700;
+          font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+          padding:6px 13px; border-radius:var(--radius-pill); line-height:1.1; }
+  .chip.rt { border:2px solid var(--stbr-emerald); color:var(--stbr-emerald-800); }
+  .chip.ct { background:var(--stbr-yellow); border:2px solid var(--stbr-yellow-700);
+             color:var(--text-on-accent); }
+</style>
+  <div class="stbr-eyebrow">gate rehearsal</div>
+  <h2 class="viz-title">what each generated piece closes</h2>
+
+  <div class="tbl">
+    <div class="row head">
+      <div class="cell c1 div1"><div class="hl">generated piece</div></div>
+      <div class="cell c2 div1"><div class="hl">native step it replaces</div></div>
+      <div class="cell c3 div1"><div class="hl">bug class it addresses</div></div>
+      <div class="cell c4"><div class="hl">fires at</div></div>
+    </div>
+
+    <div class="band a">
+      <span class="bl">has a native twin</span>
+      <span class="bs">you already wrote a version of these by hand</span>
+    </div>
+
+    <div class="row">
+      <div class="cell c1 div1"><div class="t"><b>Account&lt;Vault&gt;</b> load (owner + 8-byte disc)</div></div>
+      <div class="cell c2 div1"><div class="t dim"><span class="mono">TryFrom</span> owner + <span class="mono">[0]</span> discriminator checks</div></div>
+      <div class="cell c3 div1"><div class="t">type cosplay: a wrong account read as a vault</div></div>
+      <div class="cell c4"><div><span class="chip rt">runtime</span></div></div>
+    </div>
+    <div class="row alt">
+      <div class="cell c1 div1"><div class="t"><b>Signer</b> load</div></div>
+      <div class="cell c2 div1"><div class="t dim"><span class="mono">TryFrom is_signer()</span></div></div>
+      <div class="cell c3 div1"><div class="t">unauthorized caller</div></div>
+      <div class="cell c4"><div><span class="chip rt">runtime</span></div></div>
+    </div>
+    <div class="row">
+      <div class="cell c1 div1"><div class="t"><span class="mono">constraint</span> / <span class="mono">seeds</span> / <span class="mono">bump</span> constraint hooks</div></div>
+      <div class="cell c2 div1"><div class="t dim">hand-fused checks in the handler</div></div>
+      <div class="cell c3 div1"><div class="t">a wrong PDA or a wrong owner presented</div></div>
+      <div class="cell c4"><div><span class="chip rt">runtime</span></div></div>
+    </div>
+    <div class="row alt">
+      <div class="cell c1 div1"><div class="t">8-byte instruction dispatch</div></div>
+      <div class="cell c2 div1"><div class="t dim"><span class="mono">u8</span> discriminator match</div></div>
+      <div class="cell c3 div1"><div class="t">the wrong handler routed</div></div>
+      <div class="cell c4"><div><span class="chip rt">runtime</span></div></div>
+    </div>
+
+    <div class="band b">
+      <span class="bl">no native twin</span>
+      <span class="bs">this is what the framework adds that your vault never had</span>
+    </div>
+
+    <div class="row">
+      <div class="cell c1 div1"><div class="t"><span class="mono"><b>MUT_MASK</b></span> const</div></div>
+      <div class="cell c2 div1"><div class="none">(none)</div></div>
+      <div class="cell c3 div1"><div class="t">the shape of which fields are mutable</div></div>
+      <div class="cell c4"><div><span class="chip ct">compile-time</span></div></div>
+    </div>
+    <div class="row alt">
+      <div class="cell c1 div1"><div class="t"><b>duplicate-account walk</b></div></div>
+      <div class="cell c2 div1"><div class="none">(none)</div></div>
+      <div class="cell c3 div1"><div class="t">duplicate-mutable aliasing</div></div>
+      <div class="cell c4"><div><span class="chip rt">runtime</span></div></div>
+    </div>
+    <div class="row">
+      <div class="cell c1 div1"><div class="t"><b>CpiHandle</b> borrow</div></div>
+      <div class="cell c2 div1"><div class="none">(none)<span class="sm"> &mdash; raw borrows</span></div></div>
+      <div class="cell c3 div1"><div class="t">a stale account read after a CPI</div></div>
+      <div class="cell c4"><div><span class="chip ct">compile-time</span></div></div>
+    </div>
+    <div class="row alt">
+      <div class="cell c1 div1"><div class="t"><span class="mono"><b>unsafe(dup)</b></span> keyword requirement</div></div>
+      <div class="cell c2 div1"><div class="none">(none)</div></div>
+      <div class="cell c3 div1"><div class="t">silently aliasing without acknowledging it</div></div>
+      <div class="cell c4"><div><span class="chip ct">compile-time</span></div></div>
+    </div>
+  </div>
+</div>
+</body></html>

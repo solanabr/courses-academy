@@ -1,0 +1,85 @@
+id: lesson-mav2-m09-l3
+slug: m09-l3
+title: "Capstone: run the whole arcade floor"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    surfpool: "1.5.0"
+    mollusk-svm: "0.15.1"
+    solana-verify: "0.5.1"
+    solana-cli: "3.1.10"
+    anchor-lang: "2.0.0-rc.1"
+skills:
+  - cpi
+  - idl
+  - program-deployment
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m09-l3-q1
+        prompt: "Your floor-registry increments each cabinet's play counter by CPI-ing into the counter program from module 2. Why does the course insist this wiring be written as worked CPI steps rather than handed to you pre-built?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Because the capstone gates on you producing the composition yourself — accretion is demonstrated, never handed over finished."
+            correct: true
+            feedback: "The wiring is the artifact. Hand it over finished and there is nothing left to assess; one rung gets worked end to end as a template, and the other three are yours."
+          - id: d
+            label: "Because a pre-built registry would hardcode the callee program ids, and each learner's rungs land at their own addresses."
+            correct: false
+            feedback: "Nothing has to be hardcoded: `declare_program!` reads each rung's harvested JSON at expansion time, so the generated `Program<T>` marker carries that rung's own IDL_ADDRESS. Shipped source would compile against your ids perfectly well, which is why the reason is pedagogical rather than technical."
+          - id: a
+            label: "Because exercising a CPI needs both programs actually deployed, so the wiring can only be checked once you are on devnet."
+            correct: false
+            feedback: "Tempting if you assume cross-program calls need a real validator, but they do not: LiteSVM runs the compiled programs in process, and the Surfpool localnet run in Step 8 stands the whole five-program floor up on your machine before devnet."
+          - id: b
+            label: "Because turning on a rung's `cpi` feature changes its bytecode, so the counter must be redeployed to a fresh program id first."
+            correct: false
+            feedback: "The registry never flips any feature on a rung at all — it consumes the counter through its IDL via `declare_program!` — and nothing a caller does can alter bytecode already deployed at an address. The counter keeps the program id from its own `declare_id!`, and the registry CPIs that already-deployed address."
+        explanation: "The no-undemonstrated-accretion rule: the capstone gates on your producing the composition, so the CPI edges (including the counter increment) are worked steps you write, not a finished registry you receive. A pre-built wiring would prove nothing about your ability to compose the rungs — the wiring itself is the artifact under test, which is why R1 is worked in full as a template and R2, R3, and R4 are yours."
+      - id: m09-l3-q2
+        prompt: "Before the devnet deploy, the capstone runs the five-program floor together on a Surfpool localnet via anchor test. What does that step catch that per-program unit tests do not?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "That the five-program floor still deploys together, since anchor test pushes the whole workspace up to devnet first."
+            correct: false
+            feedback: "It does deploy the whole workspace, but onto a Surfpool localnet on your machine, which is the point: the seam runs before a byte reaches the cluster. The devnet deploy is a later step you drive yourself."
+          - id: c
+            label: "Whether each rung's IDL was written to its on-chain metadata account, which clients need to decode the registry's accounts."
+            correct: false
+            feedback: "IDL upload is a ship-module metadata step (Program Metadata), and a missing IDL breaks clients, not the programs. The localnet run exercises on-chain composition, which does not read the IDL at all."
+          - id: a
+            label: "Cross-program integration failures that only surface when all five programs run against the same accounts together."
+            correct: true
+            feedback: "Seam bugs, mostly — two programs each deriving an address correctly by their own convention and disagreeing with each other. A single-program suite can't surface that; only one convention is in the room."
+          - id: b
+            label: "Compile errors in a single instruction handler, such as a `CpiHandle` type mismatch inside the registry's `settle_prize`."
+            correct: false
+            feedback: "Tempting because the RC's handle grammar is where most early errors land, but `anchor build` (and `cargo build-sbf` before the Mollusk tests) rejects a bad handle type long before anything runs. The localnet run is about programs interacting, not compiling."
+        explanation: "Unit tests prove each rung in isolation; the Surfpool localnet run stands up the whole floor so the registry's CPIs into every rung run together — the integration failures that only appear when programs compose are caught locally, before devnet. Concretely: the registry's CPIs into the counter, vault, escrow, and swap are never exercised together by isolated unit tests, so a seam bug like the registry deriving the escrow's vault from `[b\"vault\", escrow.key()]` while the test helper created it from `[b\"vault\", operator.key()]` passes every single-program suite and fails only when both programs sit on the same accounts."
+      - id: m09-l3-q3
+        prompt: "The capstone gate is a local verify-from-repo against your devnet deploy. The remote OtterSec submit-job and Squads v4 execution were only demonstrated, labelled 'mainnet-only — beyond this course's cluster'. Why is the local devnet verify still a real proof?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Because solana-verify rebuilds the program from your source and matches the hash against the deployed devnet bytecode."
+            correct: true
+            feedback: "Reproducibility does not care which cluster you point it at. The remote submission and the multisig handoff are distribution and governance, which are different jobs entirely."
+          - id: c
+            label: "Because a program keeps the same address across clusters, so a devnet verify carries over to that program's mainnet deployment."
+            correct: false
+            feedback: "Each deploy is its own program account on its own cluster, and nothing about a devnet hash says anything about a mainnet one. What the devnet verify proves is that your source reproduces the bytecode you deployed — on whatever cluster you point it at."
+          - id: d
+            label: "Because the pinned Docker toolchain makes the rebuild deterministic, which proves the deployed source is correct as well as authentic."
+            correct: false
+            feedback: "The first half is how the proof works and the second half is the over-read. Determinism buys provenance: these bytes came from that source. A verified build of a buggy program is a faithfully reproduced bug, which is what the fuzz case, the checklist and an audit are for."
+          - id: a
+            label: "It isn't — verify-from-repo only compares hashes locally; only the `--remote` OtterSec job produces a verifiable build."
+            correct: false
+            feedback: "Tempting because the public registry entry is what other people can look up, but `--remote` submits your build to that registry and only runs against mainnet. That is distribution. The reproducibility proof is the local Docker rebuild whose hash matches the on-chain program."
+        explanation: "Verification is bytecode reproducibility: solana-verify rebuilds from source in Docker and matches the hash against the deployed program. Running that locally against your devnet deploy is the real proof; the remote OtterSec submission and Squads v4 execution are mainnet-only distribution/authority steps, demonstrated and labelled as out of cluster — the remote job publishes to a registry, the multisig governs upgrade authority, and neither is the verification proof itself. Note also what the match does not buy you: it is a claim about provenance, not correctness. A verified build of a buggy program is a faithfully reproduced bug."

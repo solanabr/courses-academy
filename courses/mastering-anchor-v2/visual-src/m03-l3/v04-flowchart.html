@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Which hook does your rule belong in?
+     purpose: give a reusable decision procedure for placing any custom constraint
+     data: start: what does your rule do? q1: does it MUTATE the account as part of an explicit update flow? - yes -> update - no -> q2 q2: must it hold on EVERY instruction that loads this account (a read-time gate)? - yes -> check - no -> q3 q3: does it only need to hold at creation time? - yes -> init - no -> q4 q4: is it a post-handler assertion on the final serialized state? - yes -> exit (rare; prefer check for gates) note: a balance floor answers YES at q2 -> check
+     prompt: A vertical decision flowchart with four yes/no diamonds (q1..q4) in order, each routing to one of update / check / init / exit. Draw the path a balance floor takes: fall through q1 (no), stop at q2 (yes) -> check, and highlight that path in a distinct color. Add a small caution note on the exit leaf: "rare; prefer check for gates."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:484px;height:457px;top:-238px;right:-238px;border-radius:62% 64% 52% 63% / 52% 39% 57% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:562px;height:517px;bottom:-335px;left:-335px;border-radius:52% 60% 48% 48% / 51% 42% 60% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:541px;height:510px;bottom:-264px;right:-264px;border-radius:55% 65% 41% 37% / 61% 54% 63% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .legend { display:flex; align-items:center; gap:12px; margin:0 0 16px; }
+  .legend .sw { width:34px; height:8px; border-radius:4px; background:var(--stbr-yellow-700); }
+  .legend .lt { font-family:var(--font-body); font-weight:700; font-size:14.5px;
+                color:var(--text-secondary); }
+  .legend .lt b { color:var(--text-primary); }
+  .board { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); padding:24px 30px 26px; }
+  .start { width:640px; height:50px; border-radius:var(--radius-pill); background:var(--surface-inverse);
+           display:flex; align-items:center; padding:0 26px; font-family:var(--font-display);
+           font-weight:900; font-size:19px; color:var(--text-on-dark); }
+  .dn { height:26px; display:flex; align-items:center; gap:10px; padding-left:44px; }
+  .dn svg { display:block; }
+  .dn .no { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.14em;
+            text-transform:uppercase; color:var(--text-muted); }
+  .dn.hot .no { color:var(--text-primary); }
+  .row { display:flex; align-items:stretch; gap:0; height:80px; }
+  .q { flex:1 1 auto; border:2px solid var(--border-subtle); border-radius:var(--radius-md);
+       background:var(--surface-paper); display:flex; align-items:center; gap:18px; padding:0 22px; }
+  .row.hot .q { border-color:var(--stbr-yellow-700); background:rgba(255,210,63,0.20); }
+  .q .qn { flex:0 0 44px; height:44px; border-radius:var(--radius-pill); background:var(--surface-brand);
+           color:var(--text-on-brand); font-family:var(--font-display); font-weight:900; font-size:17px;
+           display:flex; align-items:center; justify-content:center; }
+  .row.hot .q .qn { background:var(--surface-inverse); color:var(--stbr-yellow); }
+  .q .qt { font-family:var(--font-body); font-size:16.5px; line-height:1.32; color:var(--text-primary); }
+  .q .qt b { font-weight:800; }
+  .yes { flex:0 0 122px; display:flex; flex-direction:column; align-items:center;
+         justify-content:center; gap:5px; }
+  .yes .yl { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.14em;
+             text-transform:uppercase; color:var(--stbr-emerald); }
+  .row.hot .yes .yl { color:var(--text-primary); }
+  .yes svg { display:block; }
+  .leaf { flex:0 0 330px; border-radius:var(--radius-md); background:var(--surface-brand);
+          padding:0 22px; display:flex; flex-direction:column; justify-content:center; }
+  .leaf .ln { font-family:var(--font-mono); font-weight:800; font-size:23px; line-height:1.1;
+              color:var(--text-on-brand); }
+  .leaf .lc { font-family:var(--font-body); font-size:12.5px; line-height:1.3;
+              color:rgba(245,232,202,0.95); margin-top:5px; }
+  .row.hot .leaf { background:var(--surface-inverse); }
+  .row.hot .leaf .ln { color:var(--stbr-yellow); }
+  .leaf.rare { background:var(--surface-brand-deep); }
+</style>
+  <div class="stbr-eyebrow">a reusable placement procedure</div>
+  <h2 class="viz-title">which hook does your rule belong in?</h2>
+  <div class="legend">
+    <span class="sw"></span>
+    <span class="lt">the path a <b>balance floor</b> takes &mdash; no at q1, yes at q2 &rarr; <b>check</b></span>
+  </div>
+
+  <div class="board">
+    <div class="start">start: what does your rule do?</div>
+
+    <div class="dn hot">
+      <svg width="14" height="24"><line x1="7" y1="0" x2="7" y2="15" stroke="#d9a608" stroke-width="3"/><polygon points="7,24 1,13 13,13" fill="#d9a608"/></svg>
+    </div>
+
+    <div class="row">
+      <div class="q">
+        <span class="qn">q1</span>
+        <span class="qt">does it <b>MUTATE</b> the account as part of an explicit update flow?</span>
+      </div>
+      <div class="yes">
+        <span class="yl">yes</span>
+        <svg width="122" height="14"><line x1="0" y1="7" x2="108" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="122,7 108,1 108,13" fill="#008b4c"/></svg>
+      </div>
+      <div class="leaf">
+        <div class="ln">update</div>
+        <div class="lc">runs inside the update(&hellip;) clause</div>
+      </div>
+    </div>
+
+    <div class="dn hot">
+      <svg width="14" height="24"><line x1="7" y1="0" x2="7" y2="15" stroke="#d9a608" stroke-width="3"/><polygon points="7,24 1,13 13,13" fill="#d9a608"/></svg>
+      <span class="no">no</span>
+    </div>
+
+    <div class="row hot">
+      <div class="q">
+        <span class="qn">q2</span>
+        <span class="qt">must it hold on <b>EVERY</b> instruction that loads this account &mdash; a read-time gate?</span>
+      </div>
+      <div class="yes">
+        <span class="yl">yes</span>
+        <svg width="122" height="14"><line x1="0" y1="7" x2="108" y2="7" stroke="#d9a608" stroke-width="3"/><polygon points="122,7 108,1 108,13" fill="#d9a608"/></svg>
+      </div>
+      <div class="leaf">
+        <div class="ln">check</div>
+        <div class="lc">a balance floor lands here</div>
+      </div>
+    </div>
+
+    <div class="dn">
+      <svg width="14" height="24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.2"/><polygon points="7,24 1,13 13,13" fill="#1b231d"/></svg>
+      <span class="no">no</span>
+    </div>
+
+    <div class="row">
+      <div class="q">
+        <span class="qn">q3</span>
+        <span class="qt">does it only need to hold at <b>creation time</b>?</span>
+      </div>
+      <div class="yes">
+        <span class="yl">yes</span>
+        <svg width="122" height="14"><line x1="0" y1="7" x2="108" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="122,7 108,1 108,13" fill="#008b4c"/></svg>
+      </div>
+      <div class="leaf">
+        <div class="ln">init</div>
+        <div class="lc">runs after the account is created</div>
+      </div>
+    </div>
+
+    <div class="dn">
+      <svg width="14" height="24"><line x1="7" y1="0" x2="7" y2="15" stroke="#1b231d" stroke-width="2.2"/><polygon points="7,24 1,13 13,13" fill="#1b231d"/></svg>
+      <span class="no">no</span>
+    </div>
+
+    <div class="row">
+      <div class="q">
+        <span class="qn">q4</span>
+        <span class="qt">is it a post-handler assertion on the <b>final serialized state</b>?</span>
+      </div>
+      <div class="yes">
+        <span class="yl">yes</span>
+        <svg width="122" height="14"><line x1="0" y1="7" x2="108" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="122,7 108,1 108,13" fill="#306c40"/></svg>
+      </div>
+      <div class="leaf rare">
+        <div class="ln">exit</div>
+        <div class="lc">rare &mdash; prefer check for gates</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

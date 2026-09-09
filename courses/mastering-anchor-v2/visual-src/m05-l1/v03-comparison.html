@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Typing a token account, and typing the token program
+     purpose: separate the owner-agnostic interface pairing from the program-locked one, and show the matching program-account choice
+     data: Account<TokenAccount>  (T from the plain token module) - accepts: classic SPL Token accounts ONLY - Token-2022 mint arrives -> fails to load (wrong owner) - use when: you are certain you will only ever see classic SPL Token InterfaceAccount<T>  (T from token_interface; the wrapper is an alias of Account<T> in V2) - accepts: classic SPL Token AND Token-2022 - one code path, no hardcoded token program - use when: writing new programs (the default) Program<Token> vs Interface<'static, TokenInterface>  (the program account) - Program<Token>: one token program only - Interface<'static, TokenInterface>: either token program
+     prompt: Two stacked cards under a shared header "the account", then a third card set apart under a second header "the program account". Card 1 "Account<TokenAccount> (token module)" warning accent, card 2 "InterfaceAccount<T> (token_interface)" recommended accent, marked "default for new programs". The third card holds the Program<Token> vs Interface<'static, TokenInterface> pair as two chips side by side. Each card lists "accepts" and "use when". Monospace type names.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:594px;height:521px;top:-323px;right:-323px;border-radius:35% 45% 47% 65% / 58% 65% 57% 59%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:551px;height:387px;left:-332px;top:119px;border-radius:56% 49% 44% 40% / 44% 60% 44% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:528px;height:532px;bottom:-315px;right:-315px;border-radius:57% 56% 59% 55% / 61% 39% 41% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .sec { display:flex; align-items:center; gap:14px; margin:2px 0 12px; }
+  .sec .sl { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.14em;
+             text-transform:uppercase; color:var(--text-primary); white-space:nowrap; }
+  .sec .sr { flex:1 1 auto; height:2px; background:var(--border-subtle); }
+  .card { display:flex; min-height:112px; align-items:stretch; border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-card);
+          margin-bottom:14px; }
+  .card.pick { border-color:var(--stbr-yellow-700); }
+  .idb { flex:0 0 392px; padding:18px 22px; display:flex; flex-direction:column;
+         justify-content:center; }
+  .idb.plain { background:var(--surface-inverse); }
+  .idb.pick { background:var(--surface-accent); }
+  .idb.prog { background:var(--surface-brand); }
+  .tn { font-family:var(--font-mono); font-weight:700; font-size:20px; line-height:1.15; }
+  .idb.plain .tn { color:var(--text-on-dark); }
+  .idb.pick .tn { color:var(--text-on-accent); }
+  .idb.prog .tn { color:var(--text-on-brand); }
+  .ts { font-family:var(--font-body); font-size:12.5px; line-height:1.35; margin-top:7px; }
+  .idb.plain .ts { color:rgba(245,232,202,0.62); }
+  .idb.pick .ts { color:rgba(27,35,29,0.66); }
+  .idb.prog .ts { color:rgba(245,232,202,0.72); }
+  .flag { display:inline-block; margin-top:11px; padding:4px 11px; border-radius:var(--radius-pill);
+          font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.09em;
+          text-transform:uppercase; background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .cell { flex:1 1 0; min-width:0; padding:18px 22px; border-left:1.5px solid var(--border-subtle); }
+  .ck { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+        text-transform:uppercase; color:var(--text-muted); margin-bottom:7px; }
+  .cv { font-family:var(--font-body); font-size:14.5px; line-height:1.45; color:var(--text-primary); }
+  .cv code { font-family:var(--font-mono); font-size:13.5px; font-weight:600; color:var(--stbr-emerald-800); }
+  .cv .no { color:var(--status-danger); font-weight:700; }
+  .cv .yes { color:var(--stbr-emerald); font-weight:700; }
+  .chips { flex:1 1 0; display:flex; align-items:stretch; }
+  .chip { flex:1 1 0; padding:18px 22px; border-left:1.5px solid var(--border-subtle); }
+  .chip .cn { font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-primary); }
+  .chip .cd { font-family:var(--font-body); font-size:14px; line-height:1.4; color:var(--text-secondary);
+              margin-top:7px; }
+  .verdict { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">two choices, two blast radii</div>
+  <h2 class="viz-title">typing a token account &mdash; and its program</h2>
+
+  <div class="sec"><span class="sl">the account</span><span class="sr"></span></div>
+
+  <div class="card">
+    <div class="idb plain">
+      <div class="tn">Account&lt;TokenAccount&gt;</div>
+      <div class="ts">T from the plain <span style="font-family:var(--font-mono)">token</span> module</div>
+    </div>
+    <div class="cell">
+      <div class="ck">accepts</div>
+      <div class="cv">classic SPL Token accounts <b>ONLY</b><br>
+        <span class="no">&#10007;</span> Token-2022 mint arrives &rarr; fails to load <em style="font-style:normal;color:var(--text-secondary)">(wrong owner)</em></div>
+    </div>
+    <div class="cell">
+      <div class="ck">use when</div>
+      <div class="cv">you are certain you will only ever see classic SPL Token</div>
+    </div>
+  </div>
+
+  <div class="card pick">
+    <div class="idb pick">
+      <div class="tn">InterfaceAccount&lt;T&gt;</div>
+      <div class="ts">T from <span style="font-family:var(--font-mono)">token_interface</span> &mdash; an alias of <span style="font-family:var(--font-mono)">Account&lt;T&gt;</span> in V2</div>
+    </div>
+    <div class="cell">
+      <div class="ck">accepts</div>
+      <div class="cv"><span class="yes">&#10003;</span> classic SPL Token <b>AND</b> Token-2022<br>
+        one code path, no hardcoded token program</div>
+    </div>
+    <div class="cell">
+      <div class="ck">use when</div>
+      <div class="cv">writing new programs</div>
+      <span class="flag">default for new programs</span>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:22px"><span class="sl">the program account</span><span class="sr"></span></div>
+
+  <div class="card" style="margin-bottom:0">
+    <div class="idb prog">
+      <div class="tn" style="font-family:var(--font-display);font-weight:900;font-size:23px">the matching program field</div>
+      <div class="ts">pick the one that matches the account type above</div>
+    </div>
+    <div class="chips">
+      <div class="chip">
+        <div class="cn">Program&lt;Token&gt;</div>
+        <div class="cd">one token program only</div>
+      </div>
+      <div class="chip">
+        <div class="cn">Interface&lt;'static, TokenInterface&gt;</div>
+        <div class="cd">either token program</div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">
+    <span class="vk">pair them</span>
+    <span class="vt">InterfaceAccount&lt;T&gt; goes with Interface&lt;TokenInterface&gt; &mdash; the only pair Token-2022 can walk into.</span>
+  </div>
+</div>
+</body></html>

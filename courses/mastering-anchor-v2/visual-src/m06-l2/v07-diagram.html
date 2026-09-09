@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One change is attributable; three are a guess
+     purpose: contrast a single-variable delta against a three-change total that hides a regression
+     data: Scenario A (the loop): baseline -> change guardrails only -> re-measure delta is attributable: the whole change belongs to one flag. KEEP or REVERT with certainty. Scenario B (the anti-pattern): baseline -> change guardrails + const-rent + refactor -> re-measure total dropped, but: change 1 saved a lot, change 2 saved a little, change 3 REGRESSED. the sum still went down, so the regression ships invisibly. delta is unattributable. Rule: a total delta over N simultaneous changes tells you nothing about any single change.
+     prompt: A two-panel diagram. Left panel "One change": a single arrow from baseline to a new number, labeled "delta belongs to one thing". Right panel "Three changes": three stacked arrows (big save, small save, a red regression) collapsing into one net-down total, with the red regression circled and tagged "ships invisibly". Caption the rule underneath.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:537px;height:487px;top:-273px;right:-273px;border-radius:37% 35% 54% 46% / 60% 56% 61% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:507px;height:504px;left:-294px;top:125px;border-radius:59% 36% 43% 42% / 38% 46% 48% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:530px;height:507px;bottom:-315px;right:-315px;border-radius:56% 62% 57% 49% / 45% 61% 54% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panels { position:relative; width:1456px; height:480px; }
+  .pn { position:absolute; top:0; height:480px; box-sizing:border-box;
+        background:var(--surface-card); border-radius:var(--radius-xl); padding:24px; }
+  .pn.a { left:0; width:560px; border:3px solid var(--stbr-emerald); }
+  .pn.b { left:600px; width:856px; border:3px solid var(--stbr-dark); }
+  .pey { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+         letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .pt { font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1.1;
+        color:var(--text-primary); margin-top:7px; }
+  .chip { height:92px; box-sizing:border-box; border-radius:var(--radius-md);
+          padding:0 20px; display:flex; align-items:center; }
+  .chip .cl { font-family:var(--font-display); font-weight:900; font-size:21px;
+              line-height:1.1; width:180px; flex:0 0 180px; }
+  .chip .cv { font-family:var(--font-mono); font-size:15px; line-height:1.3; }
+  .chip.base { background:var(--surface-paper); border:2px solid var(--border-subtle); }
+  .chip.base .cl { color:var(--text-primary); } .chip.base .cv { color:var(--text-secondary); }
+  .chip.after { background:var(--surface-brand); }
+  .chip.after .cl { color:var(--text-on-brand); } .chip.after .cv { color:var(--stbr-cream); }
+  .arrowrow { height:44px; display:flex; align-items:center; }
+  .arrowrow .lb { font-family:var(--font-body); font-weight:700; font-size:14px;
+                  color:var(--stbr-green); margin-left:16px; }
+  .pnote { margin-top:20px; height:110px; box-sizing:border-box; border-radius:var(--radius-md);
+           padding:16px 20px; background:var(--surface-inverse); }
+  .pnote .nk { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+               opacity:.6; }
+  .pnote .nb { font-family:var(--font-display); font-weight:800; font-size:19px;
+               line-height:1.25; color:var(--text-on-dark); margin-top:8px; }
+  .bars { position:relative; height:178px; margin-top:18px; }
+  .zero { position:absolute; left:420px; top:-6px; width:2px; height:184px;
+          background:var(--stbr-ink-300); }
+  .blab { position:absolute; left:0; width:190px; text-align:right;
+          font-family:var(--font-mono); font-size:15px; font-weight:700;
+          color:var(--text-primary); line-height:46px; }
+  .bar { position:absolute; height:46px; border-radius:var(--radius-sm); }
+  .bar.save { background:var(--surface-brand); }
+  .bar.reg { background:var(--surface-accent); border:3px solid var(--stbr-dark);
+             box-sizing:border-box; }
+  .btag { position:absolute; left:590px; width:212px;
+          font-family:var(--font-body); font-size:13.5px; line-height:1.3;
+          color:var(--text-secondary); }
+  .btag.hot { font-weight:800; color:var(--stbr-dark); }
+  .total { margin-top:10px; height:110px; box-sizing:border-box; border-radius:var(--radius-md);
+           background:var(--surface-inverse); padding:16px 20px; display:flex;
+           align-items:center; }
+  .total .tl { min-width:0; font-family:var(--font-display); font-weight:900; font-size:24px;
+               line-height:1.1; color:var(--stbr-cream); width:240px; flex:0 0 240px; }
+  .total .tl small { display:block; font-family:var(--font-body); font-weight:600;
+                     font-size:13px; opacity:.65; margin-top:6px; }
+  .total .tb { min-width:0; font-family:var(--font-body); font-size:15px; line-height:1.35;
+               color:var(--stbr-cream); opacity:.9; }
+  .total .tb b { color:var(--stbr-yellow); font-weight:800; }
+  .band { margin-top:20px; height:84px; box-sizing:border-box;
+          background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:0 30px; display:flex; align-items:center; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+              opacity:.75; width:110px; flex:0 0 110px; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:25px;
+              line-height:1.15; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">attribution · one variable at a time</div>
+  <h2 class="viz-title">one change is attributable, three are a guess</h2>
+
+  <div class="panels">
+    <div class="pn a">
+      <div class="pey">scenario A &#8212; the loop</div>
+      <div class="pt">One change</div>
+      <div style="height:14px;"></div>
+      <div class="chip base">
+        <span class="cl">baseline</span>
+        <span class="cv">CU before</span>
+      </div>
+      <div class="arrowrow"><span><svg width="40" height="40" viewBox="0 0 40 40">
+          <line x1="20" y1="2" x2="20" y2="26" stroke="#008b4c" stroke-width="4"/>
+          <polygon points="11,26 29,26 20,38" fill="#008b4c"/>
+        </svg>
+        <span class="lb">change <code>guardrails</code> only</span></span></div>
+      <div class="chip after">
+        <span class="cl">re-measure</span>
+        <span class="cv">CU after</span>
+      </div>
+      <div class="pnote">
+        <div class="nk">delta is attributable</div>
+        <div class="nb">the whole change belongs to one flag &#8212; KEEP or REVERT with certainty</div>
+      </div>
+    </div>
+
+    <div class="pn b">
+      <div class="pey">scenario B &#8212; the anti-pattern</div>
+      <div class="pt">Three changes at once</div>
+
+      <div class="bars">
+        <div class="zero"></div>
+        <div class="blab" style="top:0;">guardrails</div>
+        <div class="bar save" style="top:0; left:210px; width:210px;"></div>
+        <div class="btag" style="top:14px;">saved a lot</div>
+
+        <div class="blab" style="top:62px;">const-rent</div>
+        <div class="bar save" style="top:62px; left:340px; width:80px;"></div>
+        <div class="btag" style="top:76px;">saved a little</div>
+
+        <div class="blab" style="top:124px;">refactor</div>
+        <div class="bar reg" style="top:124px; left:420px; width:150px;"></div>
+        <div class="btag hot" style="top:130px;">REGRESSED &#8212; and ships invisibly</div>
+      </div>
+
+      <div class="total">
+        <span class="tl">net total: still down<small>so the build looks like a win</small></span>
+        <span class="tb">The sum went down, so <b>the regression hides inside it</b>. The delta is unattributable &#8212; no single change can be kept or reverted on evidence.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="bk">the rule</span>
+    <span class="bt">a total delta over N simultaneous changes tells you nothing about any single change</span>
+  </div>
+</div>
+</body></html>

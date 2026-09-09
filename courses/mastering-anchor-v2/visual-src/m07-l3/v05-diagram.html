@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What sits under `anchor fuzz`
+     purpose: make the toolchain concrete so "the fuzzer" stops being a black box
+     data: layer 1 (you type): anchor fuzz run token_ticket_swap constant_product_holds --release --stateful layer 2 (CLI dispatch): Crucible, bundled as crucible-fuzz-cli 0.2.1 layer 3 (engine): LibAFL - mutates inputs, schedules the corpus layer 4 (runtime): LiteSVM - executes the program in-process, no validator layer 5 (feedback): sBPF edge coverage - which branches each input reached feedback arrow: layer 5 -> layer 3 (coverage steers the next mutation) outputs: crash artifacts (replayable) + LCOV coverage export
+     prompt: Vertical stack of five labeled layers, top to bottom, with the text above in each. Draw a curved feedback arrow from the bottom layer (edge coverage) back up to the engine layer (LibAFL) labeled "coverage steers mutation". To the right, a small outputs box listing "crash artifacts" and "LCOV". Technical, uncluttered.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:432px;top:-251px;right:-251px;border-radius:47% 58% 64% 57% / 61% 58% 42% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:498px;height:498px;left:-282px;top:92px;border-radius:61% 52% 49% 47% / 35% 45% 59% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:538px;height:558px;bottom:-315px;left:551px;border-radius:63% 50% 53% 61% / 59% 53% 65% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .frame { display: flex; align-items: flex-start; }
+  .stack { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+  .layer { height: 88px; display: flex; align-items: stretch; border-radius: var(--radius-lg);
+           overflow: hidden; background: var(--surface-card);
+           border: 2px solid var(--border-subtle); }
+  .layer.cmd { background: var(--surface-inverse); border-color: var(--surface-inverse); }
+  .lside { flex: 0 0 196px; padding: 14px 18px; display: flex; flex-direction: column;
+           justify-content: center; background: var(--surface-paper);
+           border-right: 2px solid var(--border-subtle); }
+  .layer.cmd .lside { background: var(--stbr-dark-900); border-right-color: rgba(245,232,202,0.18); }
+  .ln { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .13em;
+        text-transform: uppercase; color: var(--stbr-emerald); }
+  .layer.cmd .ln { color: var(--stbr-yellow); }
+  .lr { font-family: var(--font-display); font-weight: 900; font-size: 17px; line-height: 1.12;
+        color: var(--text-primary); margin-top: 4px; }
+  .layer.cmd .lr { color: var(--text-on-dark); }
+  .lbody { flex: 1 1 0; min-width: 0; padding: 14px 20px; display: flex; flex-direction: column;
+           justify-content: center; }
+  .lt2 { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.1;
+         color: var(--text-primary); }
+  .ld { font-family: var(--font-body); font-size: 13.5px; line-height: 1.35;
+        color: var(--text-secondary); margin-top: 4px; }
+  .cmdline { font-family: var(--font-mono); font-size: 14px; line-height: 1.45;
+             color: var(--text-on-dark); }
+  .cmdline b { color: var(--stbr-yellow); font-weight: 700; }
+  .rail { flex: 0 0 190px; position: relative; height: 488px; }
+  .rail svg { position: absolute; left: 0; top: 0; }
+  .fbchip { position: absolute; left: 80px; top: 288px; width: 110px;
+            background: var(--surface-accent); color: var(--text-on-accent);
+            border-radius: var(--radius-md); padding: 9px 10px; text-align: center;
+            font-family: var(--font-body); font-weight: 800; font-size: 11.5px; line-height: 1.28; }
+  .outs { flex: 0 0 292px; background: var(--surface-card);
+          border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+          overflow: hidden; }
+  .oh { height: 52px; padding: 0 20px; display: flex; align-items: center;
+        background: var(--surface-brand); font-family: var(--font-display); font-weight: 900;
+        font-size: 17px; letter-spacing: .04em; color: var(--text-on-brand); }
+  .oi { padding: 16px 20px; border-top: 1.5px solid var(--border-subtle); }
+  .oi:first-of-type { border-top: 0; }
+  .oit { font-family: var(--font-display); font-weight: 900; font-size: 17px; line-height: 1.12;
+         color: var(--text-primary); }
+  .oid { font-family: var(--font-body); font-size: 13px; line-height: 1.35;
+         color: var(--text-secondary); margin-top: 4px; }
+  .verdict { margin-top: 16px; background: var(--surface-brand-deep); border-radius: var(--radius-lg);
+             padding: 13px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.72); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">the black box, opened</div>
+  <h2 class="viz-title">what sits under <code style="font-family:var(--font-mono);font-size:40px">anchor fuzz</code></h2>
+
+  <div class="frame">
+    <div class="stack">
+      <div class="layer cmd">
+        <div class="lside"><div class="ln">layer 1</div><div class="lr">you type</div></div>
+        <div class="lbody"><div class="cmdline">anchor fuzz run token_ticket_swap<br>constant_product_holds --release <b>--stateful</b></div></div>
+      </div>
+      <div class="layer">
+        <div class="lside"><div class="ln">layer 2</div><div class="lr">CLI dispatch</div></div>
+        <div class="lbody"><div class="lt2">Crucible</div><div class="ld">bundled as <code style="font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--stbr-emerald-800)">crucible-fuzz-cli 0.2.1</code></div></div>
+      </div>
+      <div class="layer">
+        <div class="lside"><div class="ln">layer 3</div><div class="lr">engine</div></div>
+        <div class="lbody"><div class="lt2">LibAFL</div><div class="ld">mutates inputs, schedules the corpus</div></div>
+      </div>
+      <div class="layer">
+        <div class="lside"><div class="ln">layer 4</div><div class="lr">runtime</div></div>
+        <div class="lbody"><div class="lt2">LiteSVM</div><div class="ld">executes the program in-process &mdash; no validator</div></div>
+      </div>
+      <div class="layer">
+        <div class="lside"><div class="ln">layer 5</div><div class="lr">feedback</div></div>
+        <div class="lbody"><div class="lt2">sBPF edge coverage</div><div class="ld">which branches each input reached</div></div>
+      </div>
+    </div>
+
+    <div class="rail">
+      <svg width="190" height="488" viewBox="0 0 190 488">
+        <polyline points="4,444 68,444 68,244 22,244" fill="none" stroke="#d9a608"
+                  stroke-width="3.2" stroke-linejoin="miter"/>
+        <polygon points="2,244 22,235 22,253" fill="#d9a608"/>
+      </svg>
+      <div class="fbchip">coverage steers mutation</div>
+    </div>
+
+    <div class="outs">
+      <div class="oh">outputs</div>
+      <div class="oi">
+        <div class="oit">crash artifacts</div>
+        <div class="oid">saved to disk, replayable step for step</div>
+      </div>
+      <div class="oi">
+        <div class="oit">LCOV export</div>
+        <div class="oid">coverage report showing which branches the campaign actually reached</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">one command, five layers</span>
+    <span class="vt">Layer 5 feeds layer 3 &mdash; that loop is the whole difference between guided fuzzing and random input.</span>
+  </div>
+</div>
+</body></html>

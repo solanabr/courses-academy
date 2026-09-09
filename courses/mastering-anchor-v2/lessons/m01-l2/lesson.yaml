@@ -1,0 +1,89 @@
+id: lesson-mav2-m01-l2
+slug: m01-l2
+title: "Two parallel lines, and the install that fights you"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-cli: "2.0.0-rc.1"
+    anchor-lang: "2.0.0-rc.1"
+    wincode: "0.5.5"
+    solana-address: "2.6.0"
+    rust: "1.89.0"
+    solana-cli: "3.1.10"
+skills:
+  - anchor
+  - version-pinning
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l2-q1
+        prompt: "You try to install the V2 RC with avm and it fails. Why does avm choke, and what is the documented path?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "avm refuses prerelease version strings by policy; pass --force to avm install so it accepts the 2.0.0-rc.1 tag anyway"
+            correct: false
+            feedback: "Both halves are wrong. avm parses prerelease strings fine — it even has an explicit latest-pre-release channel — and --force does exist; it just skips the already-installed check, which does not conjure a file nobody published. Nobody ever cut a Release object here, so the asset URL points at nothing and the download 404s."
+          - id: c
+            label: "the CLI is published on npm as @anchor-lang/core@2, so you npm install that package before avm can resolve the version"
+            correct: false
+            feedback: "Tempting because Anchor 1.0 really did rename the TS client to @anchor-lang/core — but that package is the JavaScript client, there is no v2 of it, and the CLI is a Rust binary cargo builds from the anchor-next branch."
+          - id: d
+            label: "avm's prerelease channel is the fix: avm install latest-pre-release usually resolves the 2.0.0-rc.1 tag and builds it from source for you"
+            correct: false
+            feedback: "That channel is real, and reaching for it is the right instinct once you know the version string parses fine. It resolves to whatever prerelease has a Release object behind it, and it still downloads rather than builds, so it cannot conjure an asset nobody uploaded. The flag that does build is --from-source."
+          - id: a
+            label: "avm install fetches a prebuilt binary from the tag's GitHub Release; none was cut for v2, so it 404s and you build from anchor-next"
+            correct: true
+            feedback: "Worth being able to tell apart: a missing file and a refused signature look much the same in a terminal, and they call for completely different responses."
+        explanation: "For any version at or above 0.31, avm install fetches a prebuilt binary from the tag's GitHub Release assets rather than building anything. No Release was ever cut for the v2 tag (/releases/tags/v2.0.0-rc.1 404s, and so does the asset URL under it), so the fetch fails with 'Failed to download the binary for version 2.0.0-rc.1 (status code: 404 Not Found)'. Nothing cryptographic is involved — avm does no attestation verification at all — and the documented channel is the anchor-next git install. Concretely: cargo install --git https://github.com/otter-sec/anchor.git --branch anchor-next anchor-cli --locked --force, where --branch pins the frontier source, --locked honors the committed Cargo.lock (reproducibility that matters on an RC), and --force overwrites any anchor-cli already in ~/.cargo/bin."
+      - id: m01-l2-q2
+        prompt: "On macOS the RC build dies during LTO. Which line belongs in your pins/setup notes as the fix?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "rustup toolchain install nightly"
+            correct: false
+            feedback: "Tempting if you read an RC as needing nightly, but the RC pins a stable MSRV of 1.89.0 (the scaffold writes rust-toolchain.toml), and installing nightly does not disable the link-time optimization pass that is crashing."
+          - id: d
+            label: "cargo clean && anchor build"
+            correct: false
+            feedback: "A stale-artifact hypothesis is the cheapest thing to try and costs nothing but a rebuild. The RC dies inside link-time optimization every run, on a clean tree too, so the pass has to be switched off rather than retried."
+          - id: b
+            label: "CARGO_PROFILE_RELEASE_LTO=off"
+            correct: true
+            feedback: "Cargo owns that knob, not Anchor. Harmless on Linux, so one install line covers both platforms."
+          - id: c
+            label: "export ANCHOR_BUILD_LTO=false"
+            correct: false
+            feedback: "Anchor exposes no LTO switch of its own; LTO is a cargo release-profile setting, so the knob is the CARGO_PROFILE_RELEASE_* env var cargo already reads."
+          - id: e
+            label: "export CARGO_PROFILE_DEV_LTO=off"
+            correct: false
+            feedback: "The right variable family, the wrong profile. anchor build compiles the program under the release profile, so the knob that reaches it is CARGO_PROFILE_RELEASE_LTO; the dev-profile twin is read for debug builds and leaves the failing pass switched on."
+        explanation: "The documented macOS workaround disables release LTO via the cargo profile env var; record it with a freshness note in the central pins file. LTO is cargo's final cross-crate optimization pass, so the override is a standard CARGO_PROFILE_RELEASE_* variable — on Linux the same prefix is harmless, which lets one install command work everywhere."
+      - id: m01-l2-q3
+        prompt: "crates.io tags the release 'rc' while the project's own benchmarks page calls it 'alpha.' How should the course handle the mismatch?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Teach the conflict verbatim, and pin the exact installed version with a re-verify date"
+            correct: true
+            feedback: "Two maintainer-written labels disagreeing is itself the maturity reading: pick one for the reader and you have deleted the signal. What goes in its place is a dated pin you re-check."
+          - id: d
+            label: "Call it beta in your own notes, since the two labels typically bracket that"
+            correct: false
+            feedback: "Splitting the difference feels fairer than taking a side, and it is the same move wearing a friendlier hat. A third label nobody published still resolves a tension the project left open, and the reader loses the one fact that mattered: two maintainer-written labels disagree about this build."
+          - id: a
+            label: "Pick 'rc' — crates.io is the canonical registry, so its label overrides the project's own docs"
+            correct: false
+            feedback: "The registry is not an authority on maturity — the 2026-08-12 crates.io publish is itself undocumented and untested for CLI installs. Taking its word silently deletes the signal the reader needs."
+          - id: b
+            label: "Pick 'alpha' — the benchmarks page is maintainer-written, so it is the more accurate signal"
+            correct: false
+            feedback: "Both labels are maintainer-written, which is exactly the problem. Picking the conservative one still resolves a tension the project never resolved, and the unresolved tension is the maturity signal."
+        explanation: "The project labels it both 'rc' and 'alpha'; the course surfaces the conflict and pins-and-reverifies rather than laundering it. An 'rc' claims near-shippable and an 'alpha' claims expect-breakage, so when one build carries both words the honest read is 'somewhere in between' — which is why PINS.md carries a verified date column and why issue #4937 (anchor-lang pinning wincode 0.5 while solana-address had moved to wincode 0.6, breaking #[account(borsh)]) was caught by --locked plus a human re-check rather than by a label."

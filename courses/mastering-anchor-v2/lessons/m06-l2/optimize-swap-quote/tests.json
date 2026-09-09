@@ -1,0 +1,62 @@
+[
+  {
+    "id": "t1",
+    "description": "0.3% fee (30 bps), equal 1M reserves, 10k in — fee-adjusted constant product",
+    "input": "1000000, 1000000, 10000, 30",
+    "expectedOutput": "9871"
+  },
+  {
+    "id": "t2",
+    "description": "0.3% fee, uneven reserves (5M in / 2M out), 100k in",
+    "input": "5000000, 2000000, 100000, 30",
+    "expectedOutput": "39100"
+  },
+  {
+    "id": "t3",
+    "description": "zero fee behaves like the plain constant product (starter and solution agree here)",
+    "input": "1000000, 1000000, 1000, 0",
+    "expectedOutput": "999"
+  },
+  {
+    "id": "t4",
+    "description": "0.3% fee, large trade (500k into 1M/1M) where the missing fee is obvious",
+    "input": "1000000, 1000000, 500000, 30",
+    "expectedOutput": "332665"
+  },
+  {
+    "id": "t5",
+    "description": "empty reserve_in: the denominator collapses to amount_in_with_fee, so an unguarded quote hands back the entire reserve_out",
+    "input": "0, 1000000, 10000, 30",
+    "expectedOutput": "0"
+  },
+  {
+    "id": "t6",
+    "description": "fully drained pool (both reserves empty) asked for a zero-size quote — an unguarded quote divides 0 by 0",
+    "input": "0, 0, 0, 30",
+    "expectedOutput": "0"
+  },
+  {
+    "id": "t7",
+    "description": "fee above the 10_000 bps scale: 10_000 - fee_bps underflows unless it is guarded",
+    "input": "1000000, 1000000, 10000, 10001",
+    "expectedOutput": "0"
+  },
+  {
+    "id": "t8",
+    "description": "fee_bps == 10_000 is the boundary, not an error: a 100% fee eats the whole input and 0 out is the arithmetic answer",
+    "input": "1000000, 1000000, 10000, 10000",
+    "expectedOutput": "0"
+  },
+  {
+    "id": "t9",
+    "description": "u64::MAX reserves and input: the numerator exceeds u128, so the checked product must degrade to 0 instead of overflowing",
+    "input": "18446744073709551615, 18446744073709551615, 18446744073709551615, 30",
+    "expectedOutput": "0"
+  },
+  {
+    "id": "t10",
+    "description": "1e18 reserves, 1e12 in: fits u128 comfortably but overflows a u64 multiply, so this is the case that forces the promotion",
+    "input": "1000000000000000000, 1000000000000000000, 1000000000000, 30",
+    "expectedOutput": "996999005991"
+  }
+]

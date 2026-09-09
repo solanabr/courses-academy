@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The admin gate, walked constraint by constraint
+     purpose: explain each line of the authority-gated AdminSetCredit struct
+     data: #[account(address = config.authority @ VaultError::Unauthorized)] pub authority: Signer,                 // rejected in the hook phase if key != config.authority #[account(seeds = [b"config"], bump = config.bump)] pub config: Account<Config>,           // re-derive the singleton config, reuse its stored bump #[account(mut, seeds = [b"vault", vault.owner.as_ref()], bump = vault.bump)] pub vault: Account<Vault>,             // re-derive the target vault from its STORED owner + bump notes: - "address = config.authority is the has_one replacement; runs in the constraint-hook phase" - "config is read-only here, so no `mut`; vault is written, so `mut`" - "seeds use vault.owner (stored) so the admin need not pass the player key separately"
+     prompt: Show the three annotated fields as Rust on the left with callout lines on the right pointing to each constraint. Emphasize the address line as the security gate (highlight it). Keep a code-annotation layout, not a flowchart.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:513px;height:479px;top:-277px;right:-277px;border-radius:52% 43% 36% 43% / 49% 41% 35% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:487px;height:405px;left:-256px;top:112px;border-radius:35% 48% 50% 53% / 35% 65% 41% 53%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:579px;height:529px;bottom:-331px;right:-331px;border-radius:62% 53% 47% 61% / 51% 37% 56% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:42px; margin:4px 0 8px; }
+  .a6-lead { font-family:var(--font-body); font-size:19px; color:var(--text-secondary);
+             margin-bottom:16px; }
+  .a6-lead code { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                  color:var(--stbr-emerald-800); }
+
+  .a6-r { display:flex; align-items:stretch; }
+  .a6-code { flex:0 0 836px; background:var(--surface-inverse); padding:16px 24px;
+             display:flex; flex-direction:column; justify-content:center; }
+  .a6-r.first .a6-code { border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding-top:20px; }
+  .a6-r.last .a6-code { border-radius:0 0 var(--radius-lg) var(--radius-lg); padding-bottom:20px; }
+  .a6-code .ln { font-family:var(--font-mono); font-size:17px; line-height:1.65;
+                 color:rgba(245,232,202,0.55); white-space:nowrap; }
+  .a6-code .ln.f { color:var(--stbr-cream); font-weight:700; }
+  .a6-code .hl { color:var(--stbr-yellow); font-weight:700; }
+  .a6-code .em { color:var(--stbr-cream); font-weight:700; }
+  .a6-code .div { height:1px; background:rgba(245,232,202,0.14); margin:12px 0; }
+
+  .a6-gut { flex:0 0 56px; display:flex; align-items:center; justify-content:center; }
+  .a6-note { flex:1; }
+  .a6-card { height:100%; border-radius:var(--radius-md); padding:14px 18px;
+             background:var(--surface-card); border:1.5px solid var(--border-subtle);
+             border-left:5px solid var(--stbr-emerald); }
+  .a6-r.gate .a6-card { background:var(--surface-accent);
+                        border:2px solid var(--stbr-yellow-700); }
+  .a6-tag { display:inline-block; font-family:var(--font-body); font-size:13px;
+            font-weight:800; letter-spacing:0.12em; text-transform:uppercase;
+            padding:3px 11px; border-radius:var(--radius-pill);
+            background:var(--surface-brand); color:var(--stbr-cream); margin-bottom:7px; }
+  .a6-r.gate .a6-tag { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .a6-card .t { font-family:var(--font-body); font-size:17px; line-height:1.32;
+                color:var(--text-primary); }
+  .a6-card .t code { font-family:var(--font-mono); font-size:16px; font-weight:700;
+                     color:var(--stbr-emerald-800); }
+  .a6-r.gate .a6-card .t code { color:var(--stbr-dark); }
+  .a6-card .t b { font-weight:800; }
+
+  .a6-sp { height:10px; }
+</style>
+  <div class="stbr-eyebrow">the admin gate, constraint by constraint</div>
+  <h2 class="viz-title">AdminSetCredit, walked line by line</h2>
+  <div class="a6-lead">Three fields, three jobs: gate the caller, re-derive the singleton, re-derive the target &mdash; all before the handler body runs.</div>
+
+  <div class="a6-r first gate">
+    <div class="a6-code">
+      <div class="ln">#[account(<span class="hl">address = config.authority @ VaultError::Unauthorized</span>)]</div>
+      <div class="ln f">pub authority: Signer,</div>
+    </div>
+    <div class="a6-gut"><svg width="46" height="14"><line x1="0" y1="7" x2="32" y2="7" stroke="#d9a608" stroke-width="3"/><polygon points="46,7 31,2 31,12" fill="#d9a608"/></svg></div>
+    <div class="a6-note"><div class="a6-card">
+      <div class="a6-tag">the security gate</div>
+      <div class="t"><code>address = config.authority</code> is the <code>has_one</code> replacement. It runs in the <b>constraint-hook phase</b>, rejecting any signer whose key is not <code>config.authority</code>.</div>
+    </div></div>
+  </div>
+
+  <div class="a6-r sp"><div class="a6-code"><div class="div"></div></div><div class="a6-gut"></div><div class="a6-note"><div class="a6-sp"></div></div></div>
+
+  <div class="a6-r">
+    <div class="a6-code">
+      <div class="ln">#[account(<span class="em">seeds = [b"config"], bump = config.bump</span>)]</div>
+      <div class="ln f">pub config: Account&lt;Config&gt;,</div>
+    </div>
+    <div class="a6-gut"><svg width="46" height="14"><line x1="0" y1="7" x2="32" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="46,7 31,2 31,12" fill="#008b4c"/></svg></div>
+    <div class="a6-note"><div class="a6-card">
+      <div class="a6-tag">re-derive the singleton</div>
+      <div class="t">Rebuild the one config PDA and reuse its <b>stored</b> bump. Read-only here &mdash; so no <code>mut</code>.</div>
+    </div></div>
+  </div>
+
+  <div class="a6-r sp"><div class="a6-code"><div class="div"></div></div><div class="a6-gut"></div><div class="a6-note"><div class="a6-sp"></div></div></div>
+
+  <div class="a6-r last">
+    <div class="a6-code">
+      <div class="ln">#[account(<span class="em">mut</span>, <span class="em">seeds = [b"vault", vault.owner.as_ref()], bump = vault.bump</span>)]</div>
+      <div class="ln f">pub vault: Account&lt;Vault&gt;,</div>
+    </div>
+    <div class="a6-gut"><svg width="46" height="14"><line x1="0" y1="7" x2="32" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="46,7 31,2 31,12" fill="#008b4c"/></svg></div>
+    <div class="a6-note"><div class="a6-card">
+      <div class="a6-tag">re-derive the target</div>
+      <div class="t">The seeds use the vault's <b>stored</b> <code>owner</code>, so the admin never passes the player key separately. This one is written &mdash; hence <code>mut</code>.</div>
+    </div></div>
+  </div>
+</div>
+</body></html>

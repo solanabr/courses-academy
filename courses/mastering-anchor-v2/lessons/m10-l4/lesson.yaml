@@ -1,0 +1,78 @@
+id: lesson-mav2-m10-l4
+slug: m10-l4
+title: "Conclusion: what you built, and should you move to V2 today?"
+skills:
+  - anchor
+  - solana-programs
+  - program-security
+  - account-model
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m10-l4-q1
+        prompt: "A team runs a live lending protocol holding user funds on a 1.1.2 Anchor build and asks whether to migrate to V2 now for the CU savings. Using the decision tree, what is the honest routing?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Stay on the maintained 1.1.2 line and watch for a committed stable date and a published audit before moving value onto V2."
+            correct: true
+            feedback: "Waiting isn't stagnating — the maintained line goes on absorbing fixes and runtime churn on your behalf, so the wait costs you close to nothing. What you are watching for is two specific signals, not a vibe."
+          - id: b
+            label: "Rewrite on V2 in a branch and ship it to mainnet behind a feature flag, so the 1.1.2 path stays live and V2 traffic can be rolled back instantly."
+            correct: false
+            feedback: "A feature flag buys you a rollback switch, not an audit. Every transaction the flag routes to V2 still executes unaudited alpha code against real user funds, and a rollback only helps after the loss is visible. The flag hides the audit/stable-date risk rather than resolving it."
+          - id: a
+            label: "Migrate immediately -- the ~94% bytecode drop and ~8.8x CU win, plus compile-time removal of the stale-after-CPI class, outweigh process concerns."
+            correct: false
+            feedback: "Those wins are real, but they sit on a different axis from readiness: the benchmarks are alpha-caveated and self-revised-down, and the code is an unaudited RC with no committed stable date. Speed argues for your next greenfield build, not for moving user funds this quarter."
+          - id: d
+            label: "Start the port now on the assumption the stable tag is close, since an unannounced date usually means weeks."
+            correct: false
+            feedback: "An absent date is not a short one. Nothing has been committed anywhere, so a schedule built on 'close' is built on your own hope; the plan changes when a real published date arrives, not before."
+        explanation: "The decision tree routes a live, value-at-risk protocol away from same-day V2 adoption: V2 labels itself both 'rc' and 'alpha,' the docs say it is not audited, and no RC->stable date is committed, while the v1 line (1.1.2) is still maintained. The CU win is real but does not outweigh putting user funds on unaudited alpha; the honest move is to wait for stability and an audit. Note that the correct option is a routing, not an argument: the reasoning behind it is that value-at-risk should not move onto code labeled both rc and alpha, and the two signals worth watching are precisely a committed stable date and a published audit -- neither the CU number nor a deploy trick substitutes for them. Waiting here is not stagnating, because the 1.1.2 line keeps shipping fixes and tracking the runtime underneath you."
+      - id: m10-l4-q2
+        prompt: "The project's own benchmarks page says 'this version is alpha and exact values can move,' and a PR once revised the headline numbers DOWN from 95%/9.9x to 94%/8.8x. What is the right way to carry those figures into a decision?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Treat 94% and 8.8x as a conservative floor, since a project that revises its own numbers down usually leaves margin."
+            correct: false
+            feedback: "One correction downward says the measurement got more careful, not that the true figures sit above it. The page's own warning cuts both ways as codegen and the pinocchio runtime move, which is why the honest carry is directional plus a re-read at decision time."
+          - id: c
+            label: "Drop the numbers from the decision entirely; benchmarks taken on alpha codegen over a moving pinocchio runtime cannot support any claim."
+            correct: false
+            feedback: "A moving benchmark is still evidence of direction, and the maintainers revising their own boast downward makes it more trustworthy, not worthless. The right move is to carry the figures WITH the caveat, not to discard the strongest measured argument V2 has."
+          - id: b
+            label: "Quote the pre-revision 95%/9.9x figures -- PR #4914 trimmed them by about a point, so the bigger numbers still argue the case fairly."
+            correct: false
+            feedback: "PR #4914 superseded those numbers; reaching back for them because they read better is exactly the dishonesty the maintainers' own self-correction guards against. Cite the current 94%/8.8x figures and carry the caveat that they can move as codegen and pinocchio change."
+          - id: a
+            label: "Cite them as directional, alpha-caveated evidence that V2 is leaner, and re-verify the current figures at decision time."
+            correct: true
+            feedback: "The awkward part is doing this in a document: a slide with 8.8x on it outlives the decision it was written for, so the caveat has to travel in the same sentence as the number, every time."
+        explanation: "PR #4914 revised the headline claims down from 95%/9.9x to 94%/8.8x, and the page itself warns the values can move as codegen and pinocchio change. That self-correction is a credibility signal, not a weakness -- so the figures belong in a decision as caveated, re-verifiable directional evidence, never as a frozen boast. Unpacking the correct option: 'directional' means the defensible claim is 'V2 is dramatically leaner,' not any fixed multiplier; 'alpha-caveated' means you state that the values can still move; and 're-verify at decision time' means you go read the current benchmark page when the call is actually being made rather than quoting a number you memorized months earlier."
+      - id: m10-l4-q3
+        prompt: "A reader finishing this course wants to add a Token-2022 transfer hook and, separately, tune priority fees so their transactions land. Where does this course send them, and why?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Transfer hooks to the Digital Assets course; priority fees and tx-landing to the Client-Side course. This course owns the framework layer."
+            correct: true
+            feedback: "A handoff names the sibling that owns the topic end to end, which is not at all the same as the topic not mattering. One walks the token standard in full; the other gets transactions landed."
+          - id: a
+            label: "Both are covered here -- m05 walks the Token-2022 transfer-hook interface end to end, and m06 covers priority fees and transaction landing."
+            correct: false
+            feedback: "m05 touches Token-2022 only from the program's seat and explicitly hands the transfer-hook interface to the Digital Assets course; there is no priority-fee module at all, because this course refuses client-side tx-landing entirely. Neither topic is owned here."
+          - id: d
+            label: "Transfer hooks to the Digital Assets course; priority fees and tx-landing to DeFi and RWA Engineering, which owns the real venue mechanics."
+            correct: false
+            feedback: "Half right, and the half that is wrong costs you the reading list. DeFi and RWA owns protocol and venue design past the toy swap; what gets a transaction confirmed under load (fees, retries, bundles) is the Client-Side course's whole subject."
+          - id: b
+            label: "Nowhere in the catalog -- transfer hooks and priority-fee science fall outside the whole curriculum, so both of them send you to external docs."
+            correct: false
+            feedback: "They are firmly in the catalog, just not in THIS course: Digital Assets owns the transfer-hook interface and Client-Side Mastery owns tx-landing. The boundary is a handoff to a named sibling, not an omission from the curriculum."
+        explanation: "This course owns the framework layer and refuses two things by design: token/NFT standards depth (the transfer-hook interface belongs to the Digital Assets course, which walks it end to end) and client tx-landing / priority-fee science (the Client-Side Mastery course). The conclusion routes readers to the sibling that owns each -- the boundary map is a set of handoffs, not gaps. Behind the crisp routing sits the fourth misreading from this lesson: a topic this course skipped is not a topic that does not matter. Digital Assets walks the whole Token-2022 standard, and Client-Side Mastery teaches priority fees, Jito bundles, DEX aggregation, and DAS indexing -- each better than a bolted-on chapter here ever could."

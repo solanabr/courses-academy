@@ -1,0 +1,119 @@
+id: lesson-mav2-m10-l2
+slug: m10-l2
+title: "1.x -> 2.0: the rewrite deltas"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    solana-address: "2.6.0"
+    wincode: "0.5.5"
+skills:
+  - anchor
+  - account-model
+  - version-pinning
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: port-init-space
+    type: code
+    language: rust
+    starter: port-init-space/starter.rs
+    solution: port-init-space/solution.rs
+    tests: port-init-space/tests.json
+    hints:
+      - "The V2 idiom is `T::DISCRIMINATOR.len() + T::INIT_SPACE`, both through the same `T`; DISCRIMINATOR.len() is 8."
+      - "INIT_SPACE is field bytes ONLY -- it never includes the discriminator, so add the 8 back exactly once."
+      - "An empty struct still costs 8 bytes on-chain (test t3)."
+      - "Add the 8 with a checked_add inside `with_discriminator`, the chain's last link: a `+ 8` bolted on after unwrap_or turns an overflow into a plausible-looking 8."
+  - key: check
+    type: quiz
+    questions:
+      - id: m10-l2-q1
+        prompt: "Porting a v1 program, you copy `#[account(mut, has_one = authority)]` into V2 and the build succeeds but emits a deprecation warning underlining `has_one`. What is the V2 spelling, and why does the compiler underline that exact keyword?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Rewrite it as `#[account(address = <parent>.authority)]` on the sibling field; the parser deliberately stores the `has_one` keyword span so codegen can underline that exact token."
+            correct: true
+            feedback: "It moves house: off the parent, onto the sibling account it actually constrains. And it replaces the equality test only, so a signer requirement still has to be declared on its own."
+          - id: c
+            label: "Leave it -- `has_one` is fully supported on the V2 line and the warning is a known `anchor-next` false positive; silence it with `#[allow(deprecated)]` until a later RC clears it."
+            correct: false
+            feedback: "The warning is engineered, not a false positive: `has_one` is deprecated in favor of `address = parent.field` and is on a path to removal. `#[allow(deprecated)]` keeps syntax a later RC may drop."
+          - id: d
+            label: "Rewrite it as `#[account(address = <parent>.authority)]` on the sibling field; the underline lands on that exact keyword because rustc resolves a deprecation warning to the token naming it."
+            correct: false
+            feedback: "The spelling is right and the mechanism is not. A deprecation on a generated item would point wherever codegen happened to place it; the framework keeps the `has_one` span deliberately so the warning can land back on the word you typed."
+          - id: a
+            label: "Rewrite it as `#[account(mut, owner = authority)]`; `owner` is the V2 replacement for `has_one`, and the old keyword is underlined because the field-equality check folded into the ownership constraint."
+            correct: false
+            feedback: "`owner` constrains which program owns the account, not whether a stored field matches a sibling account. The `has_one` replacement is `address = parent.field`, and it lands on the sibling account, not on the parent."
+        explanation: "V2 deprecates `has_one` in favor of `address = parent.field` (any expression). The framework's parser deliberately records the `has_one` keyword span so codegen can underline it -- the deprecation warning is engineered, not incidental, and it is telling you the exact edit to make. Note where the constraint lands: it moves off the parent account and onto the sibling, e.g. `#[account(address = config.authority)] pub authority: Signer`. `address` swaps the equality check only; the authority still has to be a `Signer`."
+      - id: m10-l2-q2
+        prompt: "Your v1 code opts a duplicate mutable account out of the dup check with `#[account(mut, dup)]`. In V2 the build fails on `dup`. What does the fix look like and what is the reasoning?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Remove the attribute; V2 dropped the duplicate-mutable check along with its opt-out, so repeated addresses now validate normally."
+            correct: false
+            feedback: "The check is alive in V2: the dispatcher marks addresses that arrive twice in the walked bitvec and ANDs that against the struct's `MUT_MASK`. Only the opt-out's spelling changed, to `unsafe(dup)`."
+          - id: d
+            label: "Write `#[account(mut, unsafe(dup))]`; the wrapper is needed because V2 dropped the runtime walk behind it."
+            correct: false
+            feedback: "Right edit, wrong story. The walk is still there: the dispatcher marks addresses that arrive twice and ANDs them against `MUT_MASK`. What `unsafe(dup)` does is exempt one field you deliberately aliased, which is why the word sits at that field and nowhere else."
+          - id: b
+            label: "Rename it to `#[account(mut, allow(dup))]`; V2 collected every constraint escape hatch under a single `allow` namespace."
+            correct: false
+            feedback: "There is no `allow` namespace for constraints, and no `allow(dup)`. The V2 spelling is specifically `unsafe(dup)`, and the compile error names it for you."
+          - id: a2
+            label: "Keep `dup` as written and wrap the handler body in a Rust `unsafe { }` block; the constraint spelling itself is unchanged in V2."
+            correct: false
+            feedback: "The opt-out is a per-constraint spelling, `unsafe(dup)`, not a Rust `unsafe` block elsewhere in the code. The keyword absolutely changed -- plain `dup` no longer compiles."
+          - id: c
+            label: "Write `#[account(mut, unsafe(dup))]`; plain `dup` is a compile error in V2 whose message names the `unsafe` spelling."
+            correct: true
+            feedback: "You spell the risk out at the exact site of the deviation — no conflicting mutable reference may form in the handler, and you typed that promise yourself. A hazard you had to write down is much harder to forget you took."
+        explanation: "This is a fork the port hits one line at a time: v1.0 spells the opt-out `dup`; V2 spells it `unsafe(dup)`, and plain `dup` is a compile error whose text tells you to write `unsafe(dup)`. Duplicate-mutable detection still runs -- V2 just forces you to acknowledge the escape hatch as unsafe at the site where you use it. The word is doing work: it makes you accept, right where you deviate, the obligation to write the handler so it never forms conflicting mutable references. A `dup` that silently compiled was a risk you could forget; an `unsafe(dup)` you had to type is a risk you chose."
+      - id: m10-l2-q3
+        prompt: "A migrator says 'V2 removed `.reload()`, so I'll just call it manually after each CPI like before.' Why is that both impossible and unnecessary in V2?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "It is unnecessary because typed access while a `CpiHandle` is live is a compile error, so the stale-data window `.reload()` patched cannot be written."
+            correct: true
+            feedback: "The borrow sits on the typed wrapper itself, so a live invocation and an out-of-date copy cannot overlap in time — and a method with nothing left to refresh is a method you delete."
+          - id: b
+            label: "It is impossible because `.reload()` was renamed to `.refresh()` on the `CpiHandle`; call that after each CPI to re-read the account bytes into your typed copy."
+            correct: false
+            feedback: "There is no `.refresh()`, on `CpiHandle` or anywhere else. `.reload()` was removed because the borrow model eliminates the bug it existed for, not renamed."
+          - id: c
+            label: "It is unnecessary because V2 re-deserializes every account touched by a CPI as soon as the invocation returns, so a typed copy is never stale."
+            correct: false
+            feedback: "V2 does not silently re-deserialize anything after a CPI; that would cost compute on every call. The safety is static: borrow-tracked `CpiHandle`s make stale typed access a compile error."
+          - id: d
+            label: "There is no method left to call: `.reload()` needed the `AccountInfo` clone V2 no longer hands you, and the transaction is atomic anyway, so a bad CPI reverts the read with it."
+            correct: false
+            feedback: "Atomicity covers the call that errors, not the call that succeeds against a premise your handler read before the transfer. That second case is the whole reason `.reload()` was written, and it is closed by the borrow, not by the revert."
+        explanation: "In V2, CPI accounts are borrow-tracked CpiHandles, and typed data access while a handle is live is a compile error. The whole reason `.reload()` existed in v1 -- stale deserialized data after a CPI mutated the account -- can no longer be expressed, so the method was removed rather than kept. This is the m04-l2 derivation applied to migration. Concretely, the handle ties the CPI to a Rust borrow of the typed wrapper it came from, so a stale copy and a live handle cannot coexist: there is literally nothing left to reload."
+      - id: m10-l2-q4
+        prompt: "Grepping a v1 codebase for migration, you find `AccountLoader<'info, T>`. A colleague says 'AccountLoader is gone in V2, delete it.' Why is that wrong?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Because `AccountLoader` survives in V2 but is repurposed as a sequential account cursor, so deleting it or reusing it unchanged misbehaves silently."
+            correct: true
+            feedback: "The type that genuinely vanished fails loudly the moment you carry it across. A name that survives with a new meaning compiles, runs, and then behaves like something you did not ask for — much the worse of the two."
+          - id: b
+            label: "Because the v1 `AccountLoader` maps one-to-one onto V2's `LazyAccount`, so the port is a find-and-replace of the name plus its `load_mut()` calls."
+            correct: false
+            feedback: "`LazyAccount` is v1-only and has no V2 spelling at all, so it cannot be a migration target. The v1 zero-copy role moves to `Account<T>`, while the `AccountLoader` name is repurposed."
+          - id: a
+            label: "Because `AccountLoader` became the default V2 wrapper once zero-copy became the default model; rewrite every `Account<T>` in the port as `AccountLoader<T>`."
+            correct: false
+            feedback: "Zero-copy did become the default, but the default wrapper is `Account<T>` -- that is what carries the `T: Pod` view now. `AccountLoader` is a different, repurposed type in V2."
+          - id: d
+            label: "Because `AccountLoader` is deprecated rather than removed in V2, so it still loads zero-copy accounts until a later RC drops it."
+            correct: false
+            feedback: "That reading is the dangerous half of the false friend: same name, same assumed job, no warning. The zero-copy load moved to `Account<T>`, and what still answers to `AccountLoader` walks accounts in sequence instead."
+        explanation: "V2 keeps the name `AccountLoader` but repurposes it as a sequential account cursor, not the v1 zero-copy wrapper -- the docs warn it 'means something else' in V2. Teaching it as 'gone' is the trap: the v1 zero-copy role moves to `Account<T>` (default zero-copy), while the surviving `AccountLoader` name now does something unrelated and will compile-and-misbehave if you assume the old meaning. Contrast that with `LazyAccount`, which is v1-only and has no V2 equivalent at all: carrying it across fails to resolve loudly rather than misbehaving quietly."

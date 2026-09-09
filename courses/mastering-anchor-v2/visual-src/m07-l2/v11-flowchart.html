@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The escrow's guarded redeem, top to bottom
+     purpose: give the reader the final ordered shape so they can audit any conditional-release by position
+     data: load accounts: address = escrow.vault    (no vault substitution) address = escrow.player   (no caller substitution) address = escrow.maker    (no rent-recipient substitution) handler: copy scalars out (borrow model) require!(final_score >= winning)      <- guard BEFORE payout build release CPI, escrow PDA signs vault debits credit with checked_sub   <- no underflow close = maker zeroes + sweeps          <- no revival
+     prompt: Vertical flowchart in two bands: "load (constraints)" listing the three address pins, then "handler" listing copy-scalars, the require guard, the signed CPI, the checked debit, and the zeroing close. Mark the require line as a locked gate before the CPI. Positive tone throughout; this is the safe shape.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:484px;top:-236px;right:-236px;border-radius:52% 43% 41% 38% / 40% 52% 48% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:482px;height:363px;left:-274px;top:288px;border-radius:51% 35% 64% 49% / 47% 57% 53% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:397px;height:492px;bottom:-301px;left:491px;border-radius:56% 55% 51% 59% / 46% 44% 65% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 20px; }
+  .band { border-radius:var(--radius-lg); overflow:hidden;
+          border:2px solid var(--border-subtle); background:var(--surface-card); }
+  .bh { display:flex; align-items:center; height:42px; padding:0 24px;
+        background:var(--surface-brand); }
+  .bh .bl { font-family:var(--font-display); font-weight:900; font-size:15px;
+            letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-brand); }
+  .bh .bs { font-family:var(--font-body); font-weight:600; font-size:13px;
+            color:var(--stbr-cream); opacity:.82; margin-left:16px; }
+  .pins { display:flex; align-items:stretch; padding:18px 24px; }
+  .pin { width:452px; flex-grow:0; flex-shrink:0; border:2px solid var(--stbr-emerald);
+         border-radius:var(--radius-md); background:var(--surface-paper); padding:13px 16px; }
+  .pin + .pin { margin-left:22px; }
+  .pin .pc { font-family:var(--font-mono); font-weight:700; font-size:16px;
+             color:var(--text-primary); }
+  .pin .pn { font-family:var(--font-body); font-size:13.5px; line-height:1.35;
+             color:var(--stbr-emerald-800); font-weight:600; margin-top:8px; }
+  .down { text-align:center; height:32px; padding-top:4px; }
+  .step { display:flex; align-items:center; min-height:56px; padding:9px 24px;
+          border-bottom:1px solid var(--border-subtle); }
+  .step:last-child { border-bottom:0; }
+  .step .sn { width:44px; flex-grow:0; flex-shrink:0; font-family:var(--font-display);
+              font-weight:900; font-size:15px; color:var(--text-muted); }
+  .step .sc { width:820px; flex-grow:0; flex-shrink:0; font-family:var(--font-mono);
+              font-size:16px; line-height:1.35; color:var(--text-primary);
+              padding-right:20px; }
+  .step .sx { width:520px; flex-grow:0; flex-shrink:0; font-family:var(--font-body);
+              font-size:14px; line-height:1.35; color:var(--text-secondary); }
+  .gate { background:var(--surface-accent); }
+  .gate .sn { color:var(--text-on-accent); }
+  .gate .sc { font-weight:700; color:var(--text-on-accent); }
+  .gate .sx { color:var(--text-on-accent); font-weight:700; }
+  .gate .lock { display:inline-block; margin-right:10px; background:var(--stbr-dark);
+                color:var(--stbr-cream); font-family:var(--font-body); font-weight:700;
+                font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+                padding:3px 9px; border-radius:var(--radius-pill); }
+</style>
+  <div class="stbr-eyebrow">the shape you ship</div>
+  <h2 class="viz-title">the escrow&rsquo;s guarded redeem, top to bottom</h2>
+
+  <div class="band">
+    <div class="bh"><span class="bl">load &mdash; constraints</span><span class="bs">all three run before any handler code; each pins one account to the one this escrow recorded</span></div>
+    <div class="pins">
+      <div class="pin">
+        <div class="pc">address = escrow.vault</div>
+        <div class="pn">no vault substitution</div>
+      </div>
+      <div class="pin">
+        <div class="pc">address = escrow.player</div>
+        <div class="pn">no caller substitution</div>
+      </div>
+      <div class="pin">
+        <div class="pc">address = escrow.maker</div>
+        <div class="pn">no rent-recipient substitution</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="down"><svg width="16" height="28" viewBox="0 0 16 28"><line x1="8" y1="0" x2="8" y2="19" stroke="#008b4c" stroke-width="3"/><polygon points="1,19 8,28 15,19" fill="#008b4c"/></svg></div>
+
+  <div class="band">
+    <div class="bh"><span class="bl">handler</span><span class="bs">in this order, every time</span></div>
+    <div class="step">
+      <div class="sn">01</div>
+      <div class="sc">let (amount, winning) = (escrow.amount, escrow.winning_score);</div>
+      <div class="sx">copy the scalars out first &mdash; the borrow model wants no live handle across the CPI</div>
+    </div>
+    <div class="step gate">
+      <div class="sn">02</div>
+      <div class="sc"><span class="lock">locked gate</span>require!(final_score &gt;= winning, EscrowError::ScoreTooLow);</div>
+      <div class="sx">the guard runs BEFORE any payout &mdash; nothing below it executes on a failed condition</div>
+    </div>
+    <div class="step">
+      <div class="sn">03</div>
+      <div class="sc">release CPI &mdash; the escrow PDA signs, callee is a typed Program</div>
+      <div class="sx">the caller cannot choose who you sign for</div>
+    </div>
+    <div class="step">
+      <div class="sn">04</div>
+      <div class="sc">vault.credit = vault.credit.checked_sub(amount).ok_or(..)?;</div>
+      <div class="sx">no underflow: an over-withdraw returns Err instead of wrapping</div>
+    </div>
+    <div class="step">
+      <div class="sn">05</div>
+      <div class="sc">close = maker &mdash; zeroes the data, sweeps the rent</div>
+      <div class="sx">no revival: a re-funded account has no valid discriminator left</div>
+    </div>
+  </div>
+</div>
+</body></html>

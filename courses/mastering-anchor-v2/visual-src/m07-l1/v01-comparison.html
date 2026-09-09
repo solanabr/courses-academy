@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Four classic Anchor classes, v1 hazard vs V2 default
+     purpose: show which failure moved from runtime to compile time, and which did not move at all
+     data: columns: Class | Where it bit in v1 | Where it bites on V2 defaults | Still your job row: Type cosplay | runtime: raw bytes hand-decoded through the wrong struct, logic runs on garbage | load-time discriminator rejection (as in v1) PLUS no ordinary way around it: Account<T> is a Pod-typed view and the laundering cast will not build | choosing the right T, and grepping for deliberate byte casts row: Duplicate-mutable | runtime: dispatcher dup check, easy to disable by accident | compile error: bare `dup` rejected, opt-out must be spelled `unsafe(dup)` | deciding when a dup is truly intended row: CPI aliasing / stale-after-CPI | runtime: silent stale read unless you remembered `.reload()` | compile error: a live `CpiHandle` holds a borrow that excludes typed access | ordering your reads and writes row: Bump recalculation | runtime: recompute a bump, sign with the wrong one | compiles, and re-derives the same canonical bump the account stored, so it burns CU and finds no seam to diverge | not confusing "compiles" with "safe"
+     prompt: Four-row comparison table. Columns: Class, v1 (runtime), V2 default, Still your job. Color the "V2 default" cells: green for the three compile-error rows, amber for the bump row (compiles-but-inert). Keep the "Still your job" column visually equal weight so it does not read as an afterthought.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:572px;height:541px;top:-286px;right:-286px;border-radius:62% 45% 57% 47% / 51% 65% 51% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:554px;height:550px;bottom:-336px;left:-336px;border-radius:51% 51% 56% 47% / 64% 57% 50% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:478px;height:467px;bottom:-273px;right:-273px;border-radius:41% 58% 51% 45% / 47% 52% 50% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 16px; }
+  .wrap { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+          overflow: hidden; background: var(--surface-card); }
+  table.cmp { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .cmp th { background: var(--surface-inverse); padding: 12px 18px; text-align: left;
+            vertical-align: middle; }
+  .hk { display: block; font-family: var(--font-body); font-weight: 800; font-size: 11px;
+        letter-spacing: .13em; text-transform: uppercase; color: rgba(245,232,202,0.55); }
+  .ht { display: block; font-family: var(--font-display); font-weight: 900; font-size: 18px;
+        line-height: 1.1; color: var(--text-on-dark); margin-top: 3px; }
+  .cmp td { padding: 13px 18px; vertical-align: top; border-top: 1.5px solid var(--border-subtle); }
+  .cls { font-family: var(--font-display); font-weight: 900; font-size: 17px; line-height: 1.14;
+         color: var(--text-primary); }
+  .clsn { font-family: var(--font-body); font-weight: 700; font-size: 10.5px; letter-spacing: .12em;
+          text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+  .txt { font-family: var(--font-body); font-size: 13.5px; line-height: 1.4;
+         color: var(--text-primary); }
+  .txt.dim { color: var(--text-secondary); }
+  .txt code { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600;
+              color: var(--stbr-emerald-800); }
+  .chip { display: inline-block; padding: 3px 10px 4px; border-radius: var(--radius-pill);
+          font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .1em;
+          text-transform: uppercase; margin-bottom: 7px; }
+  .chip.err { background: var(--surface-brand); color: var(--text-on-brand); }
+  .chip.inert { background: var(--surface-accent); color: var(--text-on-accent); }
+  .chip.rt { background: rgba(27,35,29,0.08); color: var(--text-secondary); }
+  td.v2 { background: rgba(0,139,76,0.075); border-left: 3px solid var(--stbr-emerald); }
+  td.v2.hot { background: rgba(255,210,63,0.30); border-left: 3px solid var(--stbr-yellow-700); }
+  td.job { background: var(--surface-paper); border-left: 1.5px solid var(--border-subtle); }
+  .verdict { margin-top: 18px; background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 15px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.14;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">four classic classes</div>
+  <h2 class="viz-title">what moved to compile time &mdash; and what only looks like it did</h2>
+
+  <div class="wrap">
+    <table class="cmp">
+      <tr>
+        <th style="width:15%"><span class="hk">the class</span><span class="ht">attack</span></th>
+        <th style="width:25%"><span class="hk">v1</span><span class="ht">where it bit</span></th>
+        <th style="width:34%"><span class="hk">V2 defaults</span><span class="ht">where it bites now</span></th>
+        <th style="width:26%"><span class="hk">unmoved</span><span class="ht">still your job</span></th>
+      </tr>
+
+      <tr>
+        <td><div class="clsn">attack 1</div><div class="cls">Type cosplay</div></td>
+        <td><span class="chip rt">runtime</span><div class="txt dim">raw bytes hand-decoded through the wrong struct, logic runs on garbage</div></td>
+        <td class="v2"><span class="chip err">compile error</span><div class="txt">load-time discriminator rejection (as in v1) <b>plus</b> no ordinary way around it: <code>Account&lt;T&gt;</code> is a Pod-typed view, and the laundering cast will not build</div></td>
+        <td class="job"><div class="txt">choosing the right <code>T</code>, and grepping for deliberate byte casts</div></td>
+      </tr>
+
+      <tr>
+        <td><div class="clsn">attack 2</div><div class="cls">Duplicate-mutable</div></td>
+        <td><span class="chip rt">runtime</span><div class="txt dim">dispatcher dup check &mdash; easy to disable by accident</div></td>
+        <td class="v2"><span class="chip err">compile error</span><div class="txt">bare <code>dup</code> rejected; the opt-out must be spelled <code>unsafe(dup)</code></div></td>
+        <td class="job"><div class="txt">deciding when a dup is truly intended</div></td>
+      </tr>
+
+      <tr>
+        <td><div class="clsn">attack 3</div><div class="cls">CPI aliasing<br>/ stale-after-CPI</div></td>
+        <td><span class="chip rt">runtime</span><div class="txt dim">silent stale read unless you remembered <code>.reload()</code></div></td>
+        <td class="v2"><span class="chip err">compile error</span><div class="txt">a live <code>CpiHandle</code> holds a borrow that excludes typed access</div></td>
+        <td class="job"><div class="txt">ordering your reads and writes</div></td>
+      </tr>
+
+      <tr>
+        <td><div class="clsn">attack 4</div><div class="cls">Bump recalculation</div></td>
+        <td><span class="chip rt">runtime</span><div class="txt dim">recompute a bump, sign with the wrong one</div></td>
+        <td class="v2 hot"><span class="chip inert">compiles &mdash; inert</span><div class="txt">it re-derives the same canonical bump the account already stored, so it burns CU and finds no seam to diverge</div></td>
+        <td class="job"><div class="txt">not confusing &ldquo;compiles&rdquo; with &ldquo;safe&rdquo;</div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">read the yellow row</span>
+    <span class="vt">Three failures moved to the compiler. The fourth never moved &mdash; it just stopped having anywhere to go.</span>
+  </div>
+</div>
+</body></html>

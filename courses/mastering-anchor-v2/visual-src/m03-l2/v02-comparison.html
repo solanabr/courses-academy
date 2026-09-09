@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: has_one versus address = expr
+     purpose: contrast the deprecated narrow keyword with the general V2 form
+     data: axis | has_one = authority (v1, deprecated) | address = config.authority (V2) what it compares | a stored key field, same-named account | the account's key vs ANY expression flexibility | stored key only | any expression returning an Address where you put it | on the account holding the key | on the account being constrained status in V2 | parses, emits a deprecation warning | the recommended form custom error | @ Err supported | @ Err supported
+     prompt: Two-column comparison card. Left column "has_one (deprecated)" in a muted tone with a small warning-triangle tag. Right column "address = expr" emphasized. Five labeled rows as above. Draw a thin arrow from the left header to the right header labeled "generalized".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:479px;height:505px;top:-251px;right:-251px;border-radius:37% 51% 64% 54% / 50% 49% 37% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:556px;height:516px;left:-312px;top:323px;border-radius:52% 62% 55% 47% / 46% 65% 61% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:521px;height:528px;bottom:-282px;right:-282px;border-radius:36% 61% 37% 42% / 56% 35% 57% 57%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:44px; margin:4px 0 16px; }
+
+  .c2-row { display:flex; align-items:stretch; margin-bottom:10px; }
+  .c2-axis { flex:0 0 236px; padding:0 18px 0 4px; display:flex; align-items:center; }
+  .c2-axis .t { font-family:var(--font-display); font-weight:900; font-size:19px;
+                line-height:1.15; color:var(--stbr-dark); }
+  .c2-l { flex:0 0 496px; }
+  .c2-gut { flex:0 0 116px; }
+  .c2-r { flex:1; }
+
+  .c2-cell { height:100%; padding:13px 20px; border-radius:var(--radius-md);
+             background:var(--surface-card); border:1.5px solid var(--border-subtle); }
+  .c2-l .c2-cell { border-left:5px solid var(--stbr-ink-300); }
+  .c2-r .c2-cell { border-left:5px solid var(--stbr-emerald); }
+  .c2-cell .v { font-family:var(--font-body); font-size:19px; line-height:1.3;
+                color:var(--text-primary); }
+  .c2-l .c2-cell .v { color:var(--text-secondary); }
+  .c2-cell .v code { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                     color:var(--stbr-emerald-800); }
+  .c2-l .c2-cell .v code { color:var(--stbr-ink-700); }
+
+  .c2-head { margin-bottom:14px; }
+  .c2-hcard { height:100%; padding:14px 22px 16px; border-radius:var(--radius-lg); }
+  .c2-l .c2-hcard { background:var(--surface-paper); border:2px solid var(--stbr-ink-300); }
+  .c2-r .c2-hcard { background:var(--surface-brand); border:2px solid var(--stbr-emerald-800); }
+  .c2-hcard .k { font-family:var(--font-mono); font-size:24px; font-weight:800;
+                 color:var(--stbr-ink-700); }
+  .c2-r .c2-hcard .k { color:var(--stbr-cream); }
+  .c2-hcard .meta { margin-top:9px; }
+  .c2-tag { display:inline-block; font-family:var(--font-body); font-size:14px;
+            font-weight:800; letter-spacing:0.1em; text-transform:uppercase;
+            padding:4px 13px; border-radius:var(--radius-pill);
+            background:var(--surface-accent); color:var(--stbr-dark);
+            border:1.5px solid var(--stbr-yellow-700); }
+  .c2-sub { font-family:var(--font-body); font-size:16px; font-weight:700;
+            color:var(--stbr-ink-500); margin-left:12px; }
+  .c2-r .c2-sub { color:rgba(245,232,202,0.9); margin-left:0; }
+
+  .c2-gutwrap { height:100%; display:flex; flex-direction:column;
+                align-items:center; justify-content:center; }
+  .c2-gutlab { font-family:var(--font-body); font-size:13px; font-weight:800;
+               letter-spacing:0.04em; text-transform:uppercase;
+               color:var(--text-secondary); margin-bottom:8px; }
+
+  .c2-verdict { margin-top:6px; background:var(--surface-inverse);
+                border-radius:var(--radius-lg); padding:18px 26px;
+                display:flex; align-items:center; }
+  .c2-verdict .lead { flex:0 0 178px; font-family:var(--font-display); font-weight:900;
+                      font-size:18px; letter-spacing:0.12em; text-transform:uppercase;
+                      color:var(--stbr-emerald); }
+  .c2-verdict .body { flex:1; font-family:var(--font-body); font-size:21px;
+                      line-height:1.35; color:var(--stbr-cream); }
+  .c2-verdict .body code { font-family:var(--font-mono); font-size:20px; font-weight:700;
+                           color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">one keyword absorbed by a general form</div>
+  <h2 class="viz-title">has_one versus address = expr</h2>
+
+  <div class="c2-row c2-head">
+    <div class="c2-axis"></div>
+    <div class="c2-l"><div class="c2-hcard">
+      <div class="k">has_one = authority</div>
+      <div class="meta"><span class="c2-tag">&#9650; v1 &middot; deprecated</span><span class="c2-sub">still parses</span></div>
+    </div></div>
+    <div class="c2-gut"><div class="c2-gutwrap">
+      <div class="c2-gutlab">generalized</div>
+      <svg width="96" height="14"><line x1="0" y1="7" x2="82" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="96,7 81,2 81,12" fill="#1b231d"/></svg>
+    </div></div>
+    <div class="c2-r"><div class="c2-hcard">
+      <div class="k">address = config.authority</div>
+      <div class="meta"><span class="c2-sub">V2 &middot; the recommended form</span></div>
+    </div></div>
+  </div>
+
+  <div class="c2-row">
+    <div class="c2-axis"><div class="t">what it compares</div></div>
+    <div class="c2-l"><div class="c2-cell"><div class="v">a stored key field, against the same-named account</div></div></div>
+    <div class="c2-gut"></div>
+    <div class="c2-r"><div class="c2-cell"><div class="v">the account's key against <strong>any</strong> expression</div></div></div>
+  </div>
+
+  <div class="c2-row">
+    <div class="c2-axis"><div class="t">flexibility</div></div>
+    <div class="c2-l"><div class="c2-cell"><div class="v">stored key only</div></div></div>
+    <div class="c2-gut"></div>
+    <div class="c2-r"><div class="c2-cell"><div class="v">any expression returning an <code>Address</code></div></div></div>
+  </div>
+
+  <div class="c2-row">
+    <div class="c2-axis"><div class="t">where you put it</div></div>
+    <div class="c2-l"><div class="c2-cell"><div class="v">on the account <em>holding</em> the key</div></div></div>
+    <div class="c2-gut"></div>
+    <div class="c2-r"><div class="c2-cell"><div class="v">on the account <em>being constrained</em></div></div></div>
+  </div>
+
+  <div class="c2-row">
+    <div class="c2-axis"><div class="t">status in V2</div></div>
+    <div class="c2-l"><div class="c2-cell"><div class="v">parses, emits a deprecation warning</div></div></div>
+    <div class="c2-gut"></div>
+    <div class="c2-r"><div class="c2-cell"><div class="v">the recommended form</div></div></div>
+  </div>
+
+  <div class="c2-row">
+    <div class="c2-axis"><div class="t">custom error</div></div>
+    <div class="c2-l"><div class="c2-cell"><div class="v"><code>@ Err</code> supported</div></div></div>
+    <div class="c2-gut"></div>
+    <div class="c2-r"><div class="c2-cell"><div class="v"><code>@ Err</code> supported &mdash; identical</div></div></div>
+  </div>
+
+  <div class="c2-verdict">
+    <div class="lead">the verdict</div>
+    <div class="body">Reach for <code>address = expr</code>. It does everything <code>has_one</code> did &mdash; same <code>@&nbsp;Err</code>, any expression, and stated on the account you are actually constraining.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: swap_out, field by field
+     purpose: name what each line defends against
+     data: Line: if amount_in==0 || reserve_in==0 || reserve_out==0 -> return 0 Defends: a quote on an empty pool or a no-op trade; caller reads 0 as "no trade". Line: amount_in_with_fee = (amount_in as u128) * 997 Defends: the fee is taken BEFORE the curve; promotion to u128 starts here. Line: numerator = amount_in_with_fee.checked_mul(reserve_out as u128) Defends: the only multiply that can exceed u64; checked_mul returns 0 on overflow. Line: denominator = (reserve_in as u128) * 1000 + amount_in_with_fee Defends: keeps the 997/1000 scale consistent; reserve_in>0 means never divide by zero. Line: (numerator / denominator) as u64 Defends: integer division rounds DOWN (pool's favor); output <= reserve_out so the cast is safe.
+     prompt: Annotated code panel. Left column: the five swap_out lines in monospace. Right column: one short "defends against" note per line, connected by a thin leader line. Highlight the checked_mul line as the critical one (accent color). Keep it scannable, one row per line.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:461px;top:-277px;right:-277px;border-radius:55% 37% 50% 59% / 56% 61% 49% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:447px;height:435px;left:-235px;top:310px;border-radius:37% 54% 40% 60% / 54% 43% 55% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:513px;height:412px;bottom:-232px;right:-232px;border-radius:58% 62% 56% 60% / 60% 45% 65% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .a3-title { font-size:46px; }
+  .a3-stage { display:flex; justify-content:center; align-items:flex-start; }
+  .a3-panel { width:680px; flex:0 0 680px; box-sizing:border-box;
+              background:var(--surface-inverse); border-radius:var(--radius-xl);
+              padding:20px 24px; }
+  .a3-mid   { width:40px; flex:0 0 40px; padding-top:20px; }
+  .a3-notes { width:600px; flex:0 0 600px; padding-top:20px; }
+
+  .a3-line { height:92px; box-sizing:border-box; display:flex; align-items:center; gap:14px;
+             padding:0 10px; }
+  .a3-line + .a3-line { border-top:1px solid rgba(245,232,202,0.16); }
+  .a3-line .ln { width:24px; flex:0 0 24px; font-family:var(--font-mono); font-size:14px;
+                 color:rgba(245,232,202,0.42); text-align:right; }
+  .a3-line pre { margin:0; font-family:var(--font-mono); font-size:15.5px; line-height:1.55;
+                 color:var(--stbr-cream); white-space:pre; }
+  .a3-line pre .kw { color:#7fc39a; }
+  .a3-line.hot { background:rgba(255,210,63,0.16); border-radius:var(--radius-sm); }
+  .a3-line.hot pre { color:var(--stbr-yellow); }
+  .a3-line.hot .ln { color:rgba(255,210,63,0.7); }
+
+  .a3-conn { height:92px; display:flex; align-items:center; justify-content:center; }
+
+  .a3-note { height:92px; box-sizing:border-box; padding:0 0 0 18px;
+             border-left:3px solid var(--border-subtle); display:flex;
+             flex-direction:column; justify-content:center; }
+  .a3-note .k { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+                letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-emerald-800);
+                height:16px; }
+  .a3-note .t { font-family:var(--font-body); font-size:15.5px; line-height:1.34;
+                color:var(--text-primary); margin-top:5px; }
+  .a3-note .t b { font-weight:800; }
+  .a3-note .t code { font-family:var(--font-mono); font-size:14.5px; }
+  .a3-note.hot { border-left-color:var(--stbr-yellow-700); background:#fffbee;
+                 border-radius:0 var(--radius-md) var(--radius-md) 0; padding-right:14px; }
+  .a3-note.hot .k { color:var(--stbr-yellow-700); }
+
+  .a3-band { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 30px; display:flex; align-items:center; gap:26px; }
+  .a3-band .bk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                 letter-spacing:.14em; text-transform:uppercase;
+                 color:rgba(245,232,202,0.75); white-space:nowrap; }
+  .a3-band .bt { font-family:var(--font-display); font-weight:900; font-size:23px;
+                 line-height:1.15; color:var(--stbr-cream); }
+  .a3-band .bt b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">five lines, five things they stop</div>
+  <h2 class="viz-title a3-title">swap_out, field by field</h2>
+  <div class="a3-stage">
+    <div class="a3-panel">
+      <div class="a3-line"><span class="ln">1</span><pre><span class="kw">if</span> amount_in == 0 || reserve_in == 0
+   || reserve_out == 0 { <span class="kw">return</span> 0; }</pre></div>
+      <div class="a3-line"><span><span class="ln">2</span><pre><span class="kw">let</span> amount_in_with_fee =
+   (amount_in <span class="kw">as</span> u128) * 997;</pre></span></div>
+      <div class="a3-line hot"><span><span class="ln">3</span><pre><span class="kw">let</span> numerator = <span class="kw">match</span> amount_in_with_fee
+   .checked_mul(reserve_out <span class="kw">as</span> u128)
+   { Some(n) =&gt; n, None =&gt; <span class="kw">return</span> 0 };</pre></span></div>
+      <div class="a3-line"><span><span class="ln">4</span><pre><span class="kw">let</span> denominator = (reserve_in <span class="kw">as</span> u128)
+   * 1000 + amount_in_with_fee;</pre></span></div>
+      <div class="a3-line"><span class="ln">5</span><pre>(numerator / denominator) <span class="kw">as</span> u64</pre></div>
+    </div>
+
+    <div class="a3-mid">
+      <div class="a3-conn"><svg width="40" height="12" viewBox="0 0 40 12"><line x1="0" y1="6" x2="30" y2="6" stroke="#b8bdb6" stroke-width="2"/><polygon points="40,6 28,1 28,11" fill="#b8bdb6"/></svg></div>
+      <div class="a3-conn"><svg width="40" height="12" viewBox="0 0 40 12"><line x1="0" y1="6" x2="30" y2="6" stroke="#b8bdb6" stroke-width="2"/><polygon points="40,6 28,1 28,11" fill="#b8bdb6"/></svg></div>
+      <div class="a3-conn"><svg width="40" height="12" viewBox="0 0 40 12"><line x1="0" y1="6" x2="30" y2="6" stroke="#d9a608" stroke-width="2.5"/><polygon points="40,6 28,1 28,11" fill="#d9a608"/></svg></div>
+      <div class="a3-conn"><svg width="40" height="12" viewBox="0 0 40 12"><line x1="0" y1="6" x2="30" y2="6" stroke="#b8bdb6" stroke-width="2"/><polygon points="40,6 28,1 28,11" fill="#b8bdb6"/></svg></div>
+      <div class="a3-conn"><svg width="40" height="12" viewBox="0 0 40 12"><line x1="0" y1="6" x2="30" y2="6" stroke="#b8bdb6" stroke-width="2"/><polygon points="40,6 28,1 28,11" fill="#b8bdb6"/></svg></div>
+    </div>
+
+    <div class="a3-notes">
+      <div class="a3-note">
+        <div class="k">defends &middot; empty pool, no-op trade</div>
+        <div class="t">A quote on an empty pool or a zero trade. The caller reads <b>0</b> as &ldquo;no trade&rdquo;.</div>
+      </div>
+      <div class="a3-note">
+        <div class="k">defends &middot; fee placement</div>
+        <div class="t">The fee is taken <b>before</b> the curve &mdash; and the promotion to <code>u128</code> starts right here.</div>
+      </div>
+      <div class="a3-note hot">
+        <div class="k">the critical line &middot; overflow</div>
+        <div class="t">The one multiply that can overflow even <code>u128</code> &mdash; the <b>&times;997</b> spent the headroom. <b><code>checked_mul</code> hands back <code>None</code></b>; the match turns it into &ldquo;no quote&rdquo;, never a wrap.</div>
+      </div>
+      <div class="a3-note">
+        <div class="k">defends &middot; scale + divide-by-zero</div>
+        <div class="t">Keeps the <b>997/1000</b> scale consistent; <code>reserve_in &gt; 0</code> means the denominator is never zero.</div>
+      </div>
+      <div class="a3-note">
+        <div class="k">defends &middot; rounding + the cast</div>
+        <div class="t">Integer division rounds <b>DOWN</b>, in the pool&rsquo;s favor; output &le; <code>reserve_out</code>, so the cast is safe.</div>
+      </div>
+    </div>
+  </div>
+  <div class="a3-band">
+    <span class="bk">the shape of it</span>
+    <span class="bt">Every line in the quote is a guard &mdash; and the one that can actually lose money is <b>the multiply</b>.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The two phases behind every derive struct
+     purpose: show that owner and discriminator checks run in load, before any constraint hook
+     data: incoming transaction -> Anchor builds the Accounts struct PHASE 1, load (per Account<T> field): - read raw account bytes - check owner == this program  -> fail here = IllegalOwner (built-in) - check discriminator == T     -> fail here = AccountDiscriminatorMismatch (built-in) PHASE 2, constraint hooks (after ALL fields loaded): - seeds / bump  (re-derive & match the PDA) - address = expr  (key equals an expression) - owner = expr    (owner equals a program id)  <- @ custom error fires ONLY on UncheckedAccount; on Account<T> load already rejected it - constraint = expr @ Err  (arbitrary boolean) - close = dest    (return rent, invalidate) then -> your handler runs
+     prompt: Vertical flowchart with two shaded bands. Top band "PHASE 1: load" holds the owner and discriminator checks with red exit arrows labeled "IllegalOwner" and "DiscriminatorMismatch". Bottom band "PHASE 2: constraint hooks" lists seeds/bump, address, owner, constraint, close. A final green node "your handler runs". Emphasize the hard boundary between the two bands: everything in phase 1 finishes before phase 2 starts.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:500px;height:548px;top:-291px;right:-291px;border-radius:53% 63% 37% 57% / 53% 39% 64% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:455px;bottom:-239px;left:-239px;border-radius:47% 37% 44% 42% / 46% 54% 65% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:368px;height:483px;bottom:-308px;left:444px;border-radius:64% 42% 40% 55% / 51% 44% 40% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:42px; margin:4px 0 14px; }
+
+  .f1-entry { background:var(--surface-inverse); border-radius:var(--radius-lg);
+              height:44px; display:flex; align-items:center; justify-content:center;
+              font-family:var(--font-body); font-size:20px; font-weight:700;
+              color:var(--stbr-cream); }
+  .f1-entry code { font-family:var(--font-mono); font-size:19px; color:var(--stbr-yellow); }
+
+  .f1-tick { height:20px; display:flex; justify-content:center; align-items:flex-start; }
+
+  .f1-band { border-radius:var(--radius-lg); overflow:hidden; border:2px solid var(--stbr-dark); }
+  .f1-band.b2 { border-color:var(--stbr-emerald-800); }
+  .f1-head { height:34px; display:flex; align-items:center; padding:0 22px;
+             background:var(--stbr-dark); font-family:var(--font-display); font-weight:900;
+             font-size:19px; letter-spacing:0.08em; text-transform:uppercase;
+             color:var(--stbr-cream); }
+  .f1-band.b2 .f1-head { background:var(--stbr-emerald-800); }
+  .f1-head .sub { font-family:var(--font-body); font-weight:600; font-size:16px;
+                  letter-spacing:0.01em; text-transform:none;
+                  color:rgba(245,232,202,0.72); margin-left:14px; }
+  .f1-body { background:var(--surface-card); padding:12px 20px; }
+
+  .f1-row { display:flex; align-items:center; height:40px; margin-bottom:8px; }
+  .f1-row.last { margin-bottom:0; }
+  .f1-step { flex:0 0 470px; height:40px; display:flex; align-items:center;
+             padding:0 18px; border-radius:var(--radius-md);
+             background:rgba(0,139,76,0.08); border:1.5px solid rgba(0,139,76,0.32);
+             font-family:var(--font-body); font-size:19px; font-weight:600;
+             color:var(--text-primary); }
+  .f1-step code { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                  color:var(--stbr-emerald-800); }
+  .f1-conn { flex:0 0 118px; padding-left:14px; }
+  .f1-fail { display:flex; align-items:center; height:38px; padding:0 20px;
+             border-radius:var(--radius-pill); background:var(--stbr-dark); }
+  .f1-fail .lab { font-family:var(--font-body); font-size:15px; font-weight:800;
+                  letter-spacing:0.1em; text-transform:uppercase;
+                  color:rgba(245,232,202,0.62); margin-right:12px; }
+  .f1-fail .err { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                  color:var(--stbr-cream); }
+  .f1-fail .tag { font-family:var(--font-body); font-size:14px; font-weight:700;
+                  color:rgba(245,232,202,0.62); margin-left:10px; }
+
+  .f1-bound { height:46px; margin:10px 0; display:flex; align-items:center;
+              justify-content:center; border-radius:var(--radius-pill);
+              background:var(--surface-accent); border:2px solid var(--stbr-yellow-700);
+              font-family:var(--font-display); font-weight:900; font-size:20px;
+              color:var(--stbr-dark); letter-spacing:0.01em; }
+  .f1-bound .lead { font-family:var(--font-body); font-size:15px; font-weight:800;
+                    letter-spacing:0.12em; text-transform:uppercase;
+                    color:rgba(27,35,29,0.66); margin-right:14px; }
+
+  .f1-hook { display:flex; align-items:center; height:32px; margin-bottom:6px; }
+  .f1-hook.last { margin-bottom:0; }
+  .f1-hook .k { flex:0 0 330px; font-family:var(--font-mono); font-size:18px;
+                font-weight:800; color:var(--stbr-emerald-800);
+                background:rgba(0,139,76,0.10); border:1.5px solid rgba(0,139,76,0.30);
+                border-radius:var(--radius-sm); height:32px; line-height:29px;
+                padding:0 14px; }
+  .f1-hook .d { flex:1; padding-left:20px; font-family:var(--font-body); font-size:18px;
+                color:var(--text-primary); }
+  .f1-hook .d em { font-style:normal; font-weight:700; color:var(--stbr-emerald-800); }
+  .f1-hook .d code { font-family:var(--font-mono); font-size:17px; font-weight:700; }
+
+  .f1-end { height:46px; display:flex; align-items:center; justify-content:center;
+            border-radius:var(--radius-lg); background:var(--surface-brand);
+            font-family:var(--font-display); font-weight:900; font-size:23px;
+            color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">load runs first, hooks run after</div>
+  <h2 class="viz-title">The two phases behind every derive struct</h2>
+
+  <div class="f1-entry"><span>incoming transaction &nbsp;&rarr;&nbsp; Anchor builds the <code>Accounts</code> struct</span></div>
+
+  <div class="f1-tick"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,20 3,11 15,11" fill="#1b231d"/></svg></div>
+
+  <div class="f1-band">
+    <div class="f1-head"><span>Phase 1 &middot; load<span class="sub">per <code>Account&lt;T&gt;</code> field, before any hook exists</span></span></div>
+    <div class="f1-body">
+      <div class="f1-row">
+        <div class="f1-step"><span>read raw account bytes</span></div>
+        <div class="f1-conn"></div>
+      </div>
+      <div class="f1-row">
+        <div class="f1-step"><span>check <code>owner == this program</code></span></div>
+        <div class="f1-conn"><svg width="104" height="14"><line x1="0" y1="7" x2="90" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="104,7 89,2 89,12" fill="#1b231d"/></svg></div>
+        <div class="f1-fail"><span class="lab">fail</span><span class="err">IllegalOwner</span><span class="tag">built-in</span></div>
+      </div>
+      <div class="f1-row last">
+        <div class="f1-step"><span>check <code>discriminator == T</code></span></div>
+        <div class="f1-conn"><svg width="104" height="14"><line x1="0" y1="7" x2="90" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="104,7 89,2 89,12" fill="#1b231d"/></svg></div>
+        <div class="f1-fail"><span class="lab">fail</span><span class="err">AccountDiscriminatorMismatch</span><span class="tag">built-in</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="f1-bound"><span class="lead">hard boundary</span>ALL fields finish load before ANY constraint hook runs</div>
+
+  <div class="f1-band b2">
+    <div class="f1-head"><span>Phase 2 &middot; constraint hooks<span class="sub">only now can your <code>@ Err</code> fire</span></span></div>
+    <div class="f1-body">
+      <div class="f1-hook"><div class="k">seeds = [..], bump</div><div class="d">re-derive the PDA and match it</div></div>
+      <div class="f1-hook"><div class="k">address = expr</div><div class="d">key equals an expression</div></div>
+      <div class="f1-hook"><div class="k">owner = expr</div><div class="d">owner equals a program id &mdash; <em>@ custom error fires ONLY on <code>UncheckedAccount</code></em>; on <code>Account&lt;T&gt;</code> load already rejected it</div></div>
+      <div class="f1-hook"><div class="k">constraint = expr @ Err</div><div class="d">arbitrary boolean</div></div>
+      <div class="f1-hook last"><div class="k">close = dest</div><div class="d">return rent, invalidate the account</div></div>
+    </div>
+  </div>
+
+  <div class="f1-tick"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#008b4c" stroke-width="2.5"/><polygon points="9,20 3,11 15,11" fill="#008b4c"/></svg></div>
+
+  <div class="f1-end">your handler runs</div>
+</div>
+</body></html>

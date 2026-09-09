@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The lock lands only on the accounts inside the CpiContext
+     purpose: show the exclusion is exact — mutably-CPI'd accounts reject reads while disjoint and shared-handle accounts stay readable — and that the edge traces the staleness hazard
+     data: Property                   | in the CPI, mutably (vault_ta) | outside the CPI, or shared (state, mint) typed read while cpi is live | E0502, rejected at compile time | compiles, nothing conflicts could this CPI change it?   | yes, that is what the mut handle grants | no: state never reaches the callee, mint goes in read-only v1 on the same read          | compiled, could return a stale copy | compiled, was safe anyway what you do                 | move the read below the call that consumes cpi | nothing, read it whenever
+     prompt: Two-column comparison table. Left column "in the CPI, mutably — vault_ta" flagged as THE LOCK; right column "outside the CPI, or shared — state, mint". Four property rows. Flag the left column's compile-error cell in yellow as the enforcement moment; shade the right column green as untouched-by-design. No icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:510px;height:451px;top:-253px;right:-253px;border-radius:41% 54% 53% 59% / 36% 38% 42% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:437px;height:414px;left:-259px;top:279px;border-radius:50% 40% 37% 37% / 60% 46% 44% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:522px;height:487px;bottom:-303px;right:-303px;border-radius:43% 48% 43% 35% / 41% 54% 52% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-card); }
+  .cmp .r { display:grid; grid-template-columns:330px 1fr 1fr; align-items:stretch; }
+  .cmp .body .r { border-top:1.5px solid var(--border-subtle); }
+  .cmp .hd .axis-lbl { background:var(--surface-inverse); color:var(--text-on-dark);
+    font-family:var(--font-display); font-weight:800; font-size:14px; letter-spacing:.08em;
+    text-transform:uppercase; padding:18px 26px; display:flex; align-items:center; }
+  .cmp .hd .h { padding:16px 26px; font-family:var(--font-display); font-weight:900;
+    font-size:17px; line-height:1.15; display:flex; align-items:center; gap:12px;
+    border-left:1.5px solid var(--border-subtle); }
+  .cmp .hd .h.alt { background:var(--stbr-ink-100); color:var(--text-secondary); }
+  .cmp .hd .h.pick { background:var(--surface-brand); color:var(--text-on-brand);
+    border-left-color:var(--surface-brand); }
+  .cmp .hd .h .badge { font-family:var(--font-body); font-size:11px; font-weight:800;
+    letter-spacing:.08em; padding:5px 11px; border-radius:999px;
+    background:rgba(255,255,255,.24); color:#fff; }
+  .cmp .axis { padding:17px 26px; display:flex; align-items:center; background:var(--surface-paper);
+    font-family:var(--font-body); font-weight:800; font-size:16px; color:var(--text-secondary); }
+  .cmp .c { padding:17px 26px; display:flex; align-items:center; font-size:17px;
+    line-height:1.3; border-left:1.5px solid var(--border-subtle); color:var(--text-primary); }
+  .cmp .c.alt { color:var(--text-secondary); }
+  .cmp .c.pick { background:rgba(0,139,76,.08); color:var(--stbr-emerald-800); font-weight:600; }
+  .cmp .c.leak { background:var(--stbr-yellow); color:var(--text-on-accent); font-weight:800; }
+  .cmp .c.leak b { font-family:var(--font-display); font-weight:900; }
+  .cmp .r.last .axis { background:var(--surface-inverse); color:var(--stbr-cream);
+    font-family:var(--font-display); font-weight:900; font-size:17px; }
+  .cmp .r.last .c { font-weight:800; font-size:18px; }
+  .verdict { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:22px 34px; font-size:21px; line-height:1.35; }
+  .verdict b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">where the borrow actually lands</div>
+  <h2 class="viz-title">the lock&rsquo;s edge traces the hazard&rsquo;s edge</h2>
+  <div class="cmp">
+    <div class="r hd">
+      <div class="axis-lbl">property</div>
+      <div class="h pick">in the CPI, mutably &mdash; <code>vault_ta</code> <span class="badge">THE LOCK</span></div>
+      <div class="h alt">outside the CPI, or shared &mdash; <code>state</code>, <code>mint</code></div>
+    </div>
+    <div class="body">
+      <div class="r">
+        <div class="axis"><span>typed read while <code>cpi</code> is live</span></div>
+        <div class="c leak"><b>E0502 — rejected at compile time</b></div>
+        <div class="c pick">compiles — nothing conflicts</div>
+      </div>
+      <div class="r">
+        <div class="axis">could this CPI change it?</div>
+        <div class="c alt">yes — that is what the mut handle grants</div>
+        <div class="c pick"><span>no — <code>state</code> never reaches the callee; <code>mint</code> goes in read-only</span></div>
+      </div>
+      <div class="r">
+        <div class="axis">v1 on the same read</div>
+        <div class="c alt">compiled, could hand you a stale copy</div>
+        <div class="c pick">compiled, was safe anyway</div>
+      </div>
+      <div class="r last">
+        <div class="axis">what you do</div>
+        <div class="c alt"><span>move the read below the call that consumes <code>cpi</code></span></div>
+        <div class="c pick">nothing — read it whenever</div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">Every read that could go stale is rejected; every read that cannot is untouched.
+    The precision is free: it is Rust&rsquo;s own per-field borrow rules, <b>not a bespoke analysis</b>.</div>
+</div>
+</body></html>

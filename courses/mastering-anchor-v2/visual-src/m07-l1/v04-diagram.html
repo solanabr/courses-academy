@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: CpiHandle borrow lifetime
+     purpose: show the window where typed access to the borrowed account is a compile error
+     data: timeline (top to bottom): 1. let push = TransferChecked { from: ctx.accounts.reserve_ticket.cpi_handle_mut(), to: ctx.accounts.trader_ticket.cpi_handle_mut() } -> a CpiHandle borrow of reserve_ticket begins 2. read ctx.accounts.reserve_ticket.amount() -> COMPILE ERROR: reserve_ticket is borrowed by the handle (E0502) 3. transfer_checked(CpiContext::new(&token_program, push), out, decimals)? -> CPI runs, bytes may change 4. the handles go out of scope -> borrow ends 5. read ctx.accounts.reserve_ticket.amount() -> OK, fresh bytes, no reload needed contrast: v1 would compile step 2 and silently return the pre-CPI value
+     prompt: Vertical timeline, five steps. Draw a bracket spanning steps 1 through 4 labeled "reserve_ticket borrowed by a CpiHandle". Mark step 2 with a red X and "won't compile". Mark step 5 with a green check and "fresh, no .reload()". In a side note, show the v1 behavior: step 2 compiles and returns stale.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:559px;height:590px;top:-336px;right:-336px;border-radius:58% 60% 35% 40% / 51% 65% 56% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:543px;height:573px;bottom:-318px;left:-318px;border-radius:47% 39% 64% 59% / 65% 47% 65% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:449px;height:493px;bottom:-250px;left:495px;border-radius:59% 60% 55% 57% / 38% 58% 37% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 14px; }
+  .cols { display: flex; gap: 20px; align-items: flex-start; }
+  .steps { position: relative; flex: 1 1 0; min-width: 0; padding-left: 78px; }
+  .brk { position: absolute; left: 30px; top: 0; width: 22px; height: 452px;
+         border: 3px solid var(--stbr-emerald); border-right: none;
+         border-radius: 10px 0 0 10px; }
+  .brklab { position: absolute; left: 26px; top: 452px; width: 452px; height: 24px;
+            transform: rotate(-90deg); transform-origin: 0 0;
+            font-family: var(--font-body); font-weight: 800; font-size: 12px;
+            letter-spacing: .12em; text-transform: uppercase; color: var(--stbr-emerald-800);
+            text-align: center; line-height: 24px; }
+  .step { height: 104px; margin-bottom: 12px; display: flex; align-items: stretch;
+          border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md);
+          background: var(--surface-card); overflow: hidden; }
+  /* opaque tints (pre-composited over --surface-page) so the decoration layer
+     cannot bleed through the step fills */
+  .step.hot { border: 2px solid var(--stbr-yellow-700); background: #f7e3ab; }
+  .step.ok { border: 2px solid var(--stbr-emerald); background: #e1e0c0; }
+  .num { flex: 0 0 46px; background: var(--surface-inverse); display: flex; align-items: center;
+         justify-content: center; font-family: var(--font-display); font-weight: 900;
+         font-size: 22px; color: var(--text-on-dark); }
+  .step.hot .num { background: var(--stbr-yellow-700); color: var(--stbr-dark); }
+  .step.ok .num { background: var(--surface-brand); color: var(--text-on-brand); }
+  .body { flex: 1 1 0; min-width: 0; padding: 11px 16px; display: flex;
+          flex-direction: column; justify-content: center; }
+  .mono { font-family: var(--font-mono); font-size: 13px; line-height: 1.4;
+          color: var(--text-primary); }
+  .mono .g { color: var(--stbr-emerald-800); font-weight: 600; }
+  .sub { font-family: var(--font-body); font-size: 13px; line-height: 1.35;
+         color: var(--text-secondary); margin-top: 6px; }
+  .tag { flex: 0 0 186px; border-left: 1.5px solid var(--border-subtle); padding: 10px 14px;
+         display: flex; flex-direction: column; justify-content: center; gap: 5px; }
+  .step.hot .tag { border-left-color: var(--stbr-yellow-700); }
+  .step.ok .tag { border-left-color: var(--stbr-emerald); }
+  .tl { display: flex; align-items: center; gap: 7px; font-family: var(--font-body);
+        font-weight: 800; font-size: 12px; letter-spacing: .07em; text-transform: uppercase;
+        color: var(--text-secondary); line-height: 1.2; }
+  .tl.y { color: var(--stbr-green-800); }
+  .tl.g { color: var(--stbr-emerald-800); }
+  .tn { font-family: var(--font-body); font-size: 11.5px; line-height: 1.3; color: var(--text-muted); }
+  .side { flex: 0 0 344px; }
+  .card { border-radius: var(--radius-lg); padding: 18px 20px; }
+  .card.dark { background: var(--surface-inverse); }
+  .card.brand { background: var(--surface-brand); margin-top: 16px; }
+  .card.brand .ck { color: rgba(245,232,202,0.92); }
+  .ck { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.58); margin-bottom: 8px; }
+  .ct { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.14;
+        color: var(--text-on-dark); }
+  .cp { font-family: var(--font-body); font-size: 13.5px; line-height: 1.45;
+        color: rgba(245,232,202,0.82); margin-top: 9px; }
+  .cp code { font-family: var(--font-mono); font-size: 12.5px; color: var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">attack 3 &mdash; cpi aliasing</div>
+  <h2 class="viz-title">the window where typed access is a compile error</h2>
+
+  <div class="cols">
+    <div class="steps">
+      <div class="brk"></div>
+      <div class="brklab">reserve_ticket borrowed by a CpiHandle</div>
+
+      <div class="step">
+        <div class="num">1</div>
+        <div class="body">
+          <div class="mono">let push = TransferChecked {<br>&nbsp;&nbsp;from: ctx.accounts.reserve_ticket.<span class="g">cpi_handle_mut()</span>, to: ctx.accounts.trader_ticket.<span class="g">cpi_handle_mut()</span> }</div>
+        </div>
+        <div class="tag"><div class="tl">borrow begins</div><div class="tn">the handle now holds <b>reserve_ticket</b></div></div>
+      </div>
+
+      <div class="step hot">
+        <div class="num">2</div>
+        <div class="body">
+          <div class="mono">read ctx.accounts.reserve_ticket.amount()</div>
+          <div class="sub">the typed field you wanted is exactly what the handle excludes.</div>
+        </div>
+        <div class="tag">
+          <div class="tl y">
+            <svg width="14" height="14" viewBox="0 0 14 14"><line x1="2" y1="2" x2="12" y2="12" stroke="#1d4327" stroke-width="2.6"/><line x1="12" y1="2" x2="2" y2="12" stroke="#1d4327" stroke-width="2.6"/></svg>
+            won&rsquo;t compile
+          </div>
+          <div class="tn">E0502 &mdash; reserve_ticket is borrowed by the handle</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <div class="body">
+          <div class="mono">transfer(CpiContext::new(&amp;token_program, accts), amount)?</div>
+          <div class="sub">the CPI runs; the account&rsquo;s bytes may change underneath you.</div>
+        </div>
+        <div class="tag"><div class="tl">cpi executes</div><div class="tn">borrow still live</div></div>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <div class="body">
+          <div class="mono">// the handles go out of scope</div>
+          <div class="sub">the borrow ends here &mdash; and only here.</div>
+        </div>
+        <div class="tag"><div class="tl">borrow ends</div><div class="tn">typed access unlocked</div></div>
+      </div>
+
+      <div class="step ok">
+        <div class="num">5</div>
+        <div class="body">
+          <div class="mono">read ctx.accounts.reserve_ticket.amount()</div>
+          <div class="sub">the same line as step 2 &mdash; now it is simply correct.</div>
+        </div>
+        <div class="tag">
+          <div class="tl g">
+            <svg width="15" height="14" viewBox="0 0 15 14"><polyline points="1.5,7.5 5.5,11.5 13,3" fill="none" stroke="#005c33" stroke-width="2.6"/></svg>
+            fresh bytes
+          </div>
+          <div class="tn">no <b>.reload()</b> needed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card dark">
+        <div class="ck">what v1 did here</div>
+        <div class="ct">Step 2 compiled.</div>
+        <div class="cp">v1 had nothing to say about a borrow, so the read went through and quietly returned the <b>pre-CPI</b> value &mdash; correct only if you remembered <code>.reload()</code> yourself.</div>
+      </div>
+      <div class="card brand">
+        <div class="ck">the V2 difference</div>
+        <div class="cp" style="margin-top:0;color:var(--text-on-brand);font-weight:600;font-size:14.5px;">A stale read is no longer a thing you can forget to prevent. It is a line that does not build.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

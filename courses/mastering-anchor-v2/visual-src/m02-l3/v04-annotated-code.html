@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Why the two holes are holes
+     purpose: show that each incompatibility comes from an underlying non-determinism, not a bug
+     data: // Hole 1: HashMap has NO defined iteration order (std randomizes it per run). // "serialize entries in iteration order" => different bytes each run. use std::collections::HashMap; let mut m = HashMap::new(); m.insert("a", 1); m.insert("b", 2); // for (k, v) in &m { ... }  <- order is NOT guaranteed; wincode and borsh //                              resolve it differently => wire mismatch. // Hole 2: NaN is many bit patterns, and NaN != NaN. let x = f64::NAN; assert!(x != x);            // true, NaN is not equal to itself // "which NaN do we write, and do we accept one?" wincode and borsh disagree.
+     prompt: Annotated Rust snippet, two clearly separated blocks ("Hole 1" and "Hole 2"). Call out the commented iteration line in block 1 and the assert!(x != x) line in block 2 with side annotations naming the root non-determinism each encoder must resolve. Keep the two blocks visually distinct so the reader reads them as two independent root causes, not one example.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:586px;height:535px;top:-304px;right:-304px;border-radius:46% 61% 49% 55% / 38% 54% 59% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:483px;height:473px;bottom:-261px;left:-261px;border-radius:39% 42% 39% 48% / 42% 60% 57% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:367px;height:535px;bottom:-320px;left:484px;border-radius:54% 42% 59% 45% / 44% 42% 51% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .a4-title { font-size:46px; }
+  .a4-cols { display:flex; gap:32px; align-items:flex-start; }
+  .a4-col { flex:1 1 0; }
+  .a4-hd { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .a4-hd .num { font-family:var(--font-display); font-weight:900; font-size:15px;
+                letter-spacing:.12em; text-transform:uppercase; background:var(--surface-brand);
+                color:var(--stbr-cream); padding:7px 15px; border-radius:var(--radius-pill);
+                white-space:nowrap; }
+  .a4-hd .ttl { font-family:var(--font-display); font-weight:900; font-size:24px;
+                line-height:1.1; color:var(--text-primary); }
+  .a4-panel { background:var(--surface-inverse); border-radius:var(--radius-lg);
+              padding:22px 24px; height:296px; }
+  .a4-panel pre { margin:0; font-family:var(--font-mono); font-size:16.5px; line-height:1.62;
+                  color:var(--stbr-cream); white-space:pre; }
+  .a4-panel .cm { color:#8fae95; }
+  .a4-hl { display:block; background:rgba(255,210,63,0.20); border-left:3px solid var(--stbr-yellow);
+           margin:6px -10px; padding:4px 10px 4px 9px; color:var(--stbr-yellow); }
+  .a4-note { margin-top:16px; border:2px solid var(--stbr-yellow-700); background:#fffbee;
+             border-radius:var(--radius-md); padding:16px 20px; display:flex; gap:14px;
+             align-items:flex-start; }
+  .a4-note .pin { font-family:var(--font-display); font-weight:900; font-size:13px;
+                  letter-spacing:.11em; text-transform:uppercase; background:var(--surface-accent);
+                  color:var(--stbr-dark); padding:5px 11px; border-radius:var(--radius-pill);
+                  white-space:nowrap; }
+  .a4-note .tx { font-family:var(--font-body); font-size:17px; line-height:1.4;
+                 color:var(--text-primary); }
+  .a4-note .tx b { font-weight:800; }
+  .a4-foot { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 30px; font-family:var(--font-display); font-weight:900; font-size:23px;
+             color:var(--stbr-cream); line-height:1.16; }
+</style>
+  <div class="stbr-eyebrow">two root non-determinisms, not one bug</div>
+  <h2 class="viz-title a4-title">Why the two holes are holes</h2>
+  <div class="a4-cols">
+    <div class="a4-col">
+      <div class="a4-hd"><span class="num">hole 1</span><span class="ttl">HashMap has no defined iteration order</span></div>
+      <div class="a4-panel"><pre><span class="cm">// std randomizes the order per run, so
+// "serialize entries in iteration order"
+// yields different bytes each run.</span>
+use std::collections::HashMap;
+
+let mut m = HashMap::new();
+m.insert("a", 1);
+m.insert("b", 2);
+<span class="a4-hl">// for (k, v) in &amp;m { ... }  &lt;- NOT guaranteed</span></pre></div>
+      <div class="a4-note"><span class="pin">root cause</span><span class="tx">There is <b>no canonical order</b> to serialize. wincode and borsh each pick a resolution &mdash; and they pick differently &rArr; <b>wire mismatch</b>.</span></div>
+    </div>
+    <div class="a4-col">
+      <div class="a4-hd"><span class="num">hole 2</span><span class="ttl">NaN is many bit patterns, and NaN != NaN</span></div>
+      <div class="a4-panel"><pre><span class="cm">// A float can hold thousands of distinct
+// NaN payloads, and none of them compare
+// equal &mdash; not even to themselves.</span>
+let x = f64::NAN;
+
+<span class="a4-hl">assert!(x != x);   // true</span>
+<span class="cm">// so: which NaN do we write on the wire,
+// and do we accept one on read?</span></pre></div>
+      <div class="a4-note"><span class="pin">root cause</span><span class="tx">There is <b>no single NaN to write</b> and no obvious accept rule. wincode and borsh disagree on both halves &rArr; <b>f32 / f64 NaN is out of scope</b>.</span></div>
+    </div>
+  </div>
+  <div class="a4-foot">Each hole is a place where Rust itself leaves a choice open &mdash; two encoders, two answers.</div>
+</div>
+</body></html>

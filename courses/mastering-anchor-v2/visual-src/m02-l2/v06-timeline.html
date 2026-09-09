@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: From a blunt forum comment to a shipped primitive
+     purpose: show the community-voice-to-design lineage behind the Slab and Pod toolkit
+     data: discussion #3742 (community, "What do you want to see in Anchor V2?"): ChewingGlass, "the default serialization should probably behave more like zero-copy but with better UX ... But borsh is kind of terrible" -> design issue #4390 (V2 design input): quotes that comment back as "As #3742 discussion feedback put it: the default serialization should probably behave more like zero-copy but with better UX", and cites #3742 -> issue #4355 (critical path): V2 benchmarks framed against Quasar and Pinocchio, ahead of the Accelerate conference, early May 2026, the primitives must earn their CU -> shipped: the Pod toolkit + Slab + #[event(bytemuck)], with wincode replacing the borsh implementation wherever the wire still needs borsh-shaped bytes
+     prompt: A horizontal four-stop timeline, left to right, one node per stop (#3742, #4390, #4355, shipped). Under each node a short caption as in the data. Draw it as a lineage, each arrow captioned with the transition (raised as input, became critical-path benchmark, shipped). Keep issue numbers prominent. This is history, not a metric, so no invented values.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:535px;height:526px;top:-278px;right:-278px;border-radius:55% 56% 48% 59% / 52% 61% 56% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:574px;height:525px;bottom:-307px;left:-307px;border-radius:60% 56% 44% 48% / 60% 48% 47% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:443px;height:500px;bottom:-322px;left:539px;border-radius:49% 45% 61% 38% / 48% 53% 47% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { display:grid; grid-template-columns:1fr 108px 1fr 108px 1fr 108px 1fr;
+    column-gap:0; }
+  .hd { height:96px; display:flex; flex-direction:column; align-items:center;
+    justify-content:flex-end; padding:0 10px 10px; text-align:center; }
+  .hd .num { font-family:var(--font-display); font-weight:900; font-size:40px;
+    line-height:1; letter-spacing:-.02em; color:var(--text-primary); }
+  .hd .num.sm { font-size:33px; }
+  .hd .kind { margin-top:7px; font-family:var(--font-body); font-size:12px;
+    font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+    color:var(--text-muted); }
+  .hd.last .num { color:var(--stbr-dark); }
+  .ct { height:96px; display:flex; align-items:flex-end; justify-content:center;
+    padding:0 4px 12px; text-align:center; font-family:var(--font-body);
+    font-size:12.5px; font-weight:700; line-height:1.25; letter-spacing:.02em;
+    color:var(--text-secondary); }
+
+  .rl { height:44px; position:relative; }
+  .rl .line { position:absolute; top:20px; left:0; right:0; height:3px;
+    background:var(--stbr-ink-300); }
+  .rl .line.half-r { left:50%; }
+  .rl .line.half-l { right:50%; }
+  .rl .dot { position:absolute; top:8px; left:50%; margin-left:-13px; width:26px;
+    height:26px; border-radius:50%; background:var(--stbr-emerald);
+    border:3px solid var(--surface-page); }
+  .rl .dot.acc { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .rl .arw { position:absolute; top:13px; right:0; border-top:9px solid transparent;
+    border-bottom:9px solid transparent; border-left:13px solid var(--stbr-ink-500); }
+  /* incoming arrowhead: tip lands on the node dot it points at, not mid-line */
+  .rl .arw.in { right:auto; left:50%; margin-left:-27px; }
+
+  .cd { margin:16px 10px 0; height:292px; border-radius:var(--radius-lg);
+    padding:20px 22px; background:var(--surface-card);
+    border:2px solid var(--border-subtle); }
+  .cd .ttl { font-family:var(--font-display); font-weight:900; font-size:17px;
+    line-height:1.15; color:var(--text-primary); margin-bottom:11px; }
+  .cd .tx { font-family:var(--font-body); font-size:14.5px; line-height:1.4;
+    color:var(--text-secondary); }
+  .cd .tx + .tx { margin-top:10px; }
+  .cd .q { border-left:4px solid var(--stbr-emerald); padding-left:12px;
+    font-style:italic; color:var(--text-primary); }
+  .cd .tx code { font-family:var(--font-mono); font-size:13.5px; font-weight:700;
+    color:var(--text-primary); }
+  .cd .tx b { color:var(--text-primary); font-weight:800; }
+  .cd.acc { background:var(--surface-accent); border-color:var(--stbr-dark); }
+  .cd.acc .ttl, .cd.acc .tx, .cd.acc .tx b, .cd.acc .tx code { color:var(--stbr-dark); }
+
+  .band { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:19px 30px; font-family:var(--font-body);
+    font-size:19px; font-weight:500; line-height:1.35; }
+  .band b { color:var(--stbr-yellow); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">community voice &rarr; design input &rarr; primitive</div>
+  <h2 class="viz-title">how the Slab got here</h2>
+  <div class="tl">
+    <div class="hd"><span class="num">#3742</span><span class="kind">discussion &middot; community</span></div>
+    <div class="ct">raised as input</div>
+    <div class="hd"><span class="num">#4390</span><span class="kind">issue &middot; V2 design input</span></div>
+    <div class="ct">became critical-path benchmark</div>
+    <div class="hd"><span class="num">#4355</span><span class="kind">issue &middot; critical path</span></div>
+    <div class="ct">shipped</div>
+    <div class="hd last"><span class="num sm">shipped</span><span class="kind">Anchor V2</span></div>
+
+    <div class="rl"><span class="line half-r"></span><span class="dot"></span></div>
+    <div class="rl"><span class="line"></span></div>
+    <div class="rl"><span class="line"></span><span class="arw in"></span><span class="dot"></span></div>
+    <div class="rl"><span class="line"></span></div>
+    <div class="rl"><span class="line"></span><span class="arw in"></span><span class="dot"></span></div>
+    <div class="rl"><span class="line"></span></div>
+    <div class="rl"><span class="line half-l"></span><span class="arw in"></span><span class="dot acc"></span></div>
+
+    <div class="cd">
+      <div class="ttl">&ldquo;What do you want to see in Anchor V2?&rdquo;</div>
+      <div class="tx q">the default serialization should probably behave more like zero-copy but with better UX &hellip; But borsh is kind of terrible</div>
+      <div class="tx">&mdash; <b>ChewingGlass</b>, in the open community thread</div>
+    </div>
+    <div class="ct"></div>
+    <div class="cd">
+      <div class="ttl">The comment quoted back into the design</div>
+      <div class="tx q">As #3742 discussion feedback put it: the default serialization should probably behave more like zero-copy but with better UX</div>
+      <div class="tx">The design issue <b>cites #3742</b> directly &mdash; the forum line is the stated input, not a paraphrase.</div>
+    </div>
+    <div class="ct"></div>
+    <div class="cd">
+      <div class="ttl">Benchmarks become the bar</div>
+      <div class="tx">V2 benchmarks framed against <b>Quasar</b> and <b>Pinocchio</b>.</div>
+      <div class="tx">Ahead of the <b>Accelerate conference, early May 2026</b>.</div>
+      <div class="tx">The primitives <b>must earn their CU</b>.</div>
+    </div>
+    <div class="ct"></div>
+    <div class="cd acc">
+      <div class="ttl">The Pod toolkit lands</div>
+      <div class="tx"><code>Slab</code> and the Pod field wrappers, plus <code>#[event(bytemuck)]</code>.</div>
+      <div class="tx"><b>wincode</b> replaces the borsh implementation wherever the wire still needs borsh-shaped bytes.</div>
+    </div>
+  </div>
+  <div class="band">A blunt forum comment became a design citation, then a benchmark the release had to clear &mdash; and only then <b>a primitive you can call</b>.</div>
+</div>
+</body></html>

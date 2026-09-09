@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: What init_if_needed reuse-validation checks, and what still bites
+     purpose: draw the exact line between the structural checks V2 adds and the business intent it cannot judge
+     data: columns: check, who enforces it, catches rows: - space matches the type          | V2 reuse-validation | wrong-size reinit - owner is the declaring program   | V2 reuse-validation | foreign-owned reinit - discriminator matches T          | V2 reuse-validation | type-mismatch reinit - included in duplicate-mut check  | V2 (#4239)          | aliased init_if_needed accounts - "is reinitializing THIS account semantically valid?" | YOU | overwrite of live, funded state - "was the account closed between two ixs by an attacker?" | YOU | re-init attack across instructions
+     prompt: Two-part table. Top four rows in a green "V2 handles" band. Bottom two rows in a caution "yours" band. Columns: check, who enforces it, what it catches. Emphasize the divider between framework-structural and business-intent.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:526px;top:-280px;right:-280px;border-radius:56% 58% 46% 59% / 59% 64% 61% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:506px;height:456px;bottom:-220px;left:-220px;border-radius:44% 59% 56% 51% / 63% 63% 44% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:557px;height:496px;bottom:-313px;right:-313px;border-radius:64% 54% 60% 41% / 45% 41% 35% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 22px; }
+  .tbl { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .hd { display:flex; align-items:center; height:46px; padding:0 26px;
+        background:var(--surface-inverse); }
+  .hd span { font-family:var(--font-display); font-weight:800; font-size:12.5px;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream); }
+  .r { display:flex; align-items:center; min-height:70px; padding:12px 26px;
+       border-bottom:1px solid var(--border-subtle); }
+  .c1 { width:640px; padding-right:24px; }
+  .c2 { width:290px; padding-right:20px; }
+  .c3 { width:454px; }
+  .ck { font-family:var(--font-display); font-weight:800; font-size:18px;
+        line-height:1.25; color:var(--text-primary); }
+  .cw { font-family:var(--font-body); font-size:14.5px; line-height:1.4;
+        color:var(--text-secondary); }
+  .chip { display:inline-block; font-family:var(--font-body); font-weight:700;
+          font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+          padding:5px 12px; border-radius:var(--radius-pill); }
+  .chip-v2 { background:var(--surface-brand); color:var(--text-on-brand); }
+  .chip-you { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .split { display:flex; align-items:center; padding:11px 26px;
+           background:var(--surface-accent); }
+  .split .sl { font-family:var(--font-display); font-weight:900; font-size:15px;
+               letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-accent);
+               width:390px; flex:0 0 390px; }
+  .split .ss { font-family:var(--font-body); font-weight:600; font-size:14.5px;
+               color:var(--text-on-accent); }
+  .yours { background:var(--surface-paper); }
+  .yours .ck { font-family:var(--font-body); font-style:italic; font-weight:600;
+               font-size:17px; color:var(--text-primary); }
+  .r:last-child { border-bottom:0; }
+  .cap { margin-top:16px; background:var(--surface-brand); border-radius:var(--radius-lg);
+         padding:18px 28px; display:flex; align-items:center; }
+  .cap .k { font-family:var(--font-body); font-weight:800; font-size:12px;
+            letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+            opacity:.78; width:150px; flex:0 0 150px; }
+  .cap .t { font-family:var(--font-display); font-weight:900; font-size:24px;
+            line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">class 4 · init_if_needed reuse-of-state</div>
+  <h2 class="viz-title">V2 checks the account&rsquo;s shape, never your intent</h2>
+
+  <div class="tbl">
+    <div class="hd"><span class="c1">check</span><span class="c2">who enforces it</span><span class="c3">what it catches</span></div>
+
+    <div class="r">
+      <div class="c1"><div class="ck">space matches the type</div></div>
+      <div class="c2"><span class="chip chip-v2">V2 reuse-validation</span></div>
+      <div class="c3"><div class="cw">wrong-size reinit</div></div>
+    </div>
+    <div class="r">
+      <div class="c1"><div class="ck">owner is the declaring program</div></div>
+      <div class="c2"><span class="chip chip-v2">V2 reuse-validation</span></div>
+      <div class="c3"><div class="cw">foreign-owned reinit</div></div>
+    </div>
+    <div class="r">
+      <div class="c1"><div class="ck">discriminator matches T</div></div>
+      <div class="c2"><span class="chip chip-v2">V2 reuse-validation</span></div>
+      <div class="c3"><div class="cw">type-mismatch reinit</div></div>
+    </div>
+    <div class="r">
+      <div class="c1"><div class="ck">included in the duplicate-mut check</div></div>
+      <div class="c2"><span class="chip chip-v2">V2 (#4239)</span></div>
+      <div class="c3"><div class="cw">aliased init_if_needed accounts</div></div>
+    </div>
+
+    <div class="split">
+      <div class="sl">structure ends &mdash; intent begins</div>
+      <div class="ss">everything above is a shape the framework can see; everything below is a question only your program can answer</div>
+    </div>
+
+    <div class="r yours">
+      <div class="c1"><div class="ck">&ldquo;is reinitializing THIS account semantically valid?&rdquo;</div></div>
+      <div class="c2"><span class="chip chip-you">you</span></div>
+      <div class="c3"><div class="cw">overwrite of live, funded state</div></div>
+    </div>
+    <div class="r yours">
+      <div class="c1"><div class="ck">&ldquo;was the account closed between two ixs by an attacker?&rdquo;</div></div>
+      <div class="c2"><span class="chip chip-you">you</span></div>
+      <div class="c3"><div class="cw">re-init attack across instructions</div></div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <span class="k">the takeaway</span>
+    <span class="t">A well-formed account and a legitimately reusable account are not the same claim.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The shape of the generated try_accounts for LightMarquee
+     purpose: show that the three abstract phases are literally straight-line generated code, in field order
+     data: // In the dispatcher, BEFORE try_accounts: let (views, duplicates) = loader.walk();               // one pass over the incoming accounts if let Some(dups) = duplicates {                          // only if an account repeated if dups.intersects(&LightMarquee::MUT_MASK) {         // one 4-word AND return Err(ConstraintDuplicateMutableAccount); } } fn try_accounts(program_id, views, ix_data, bumps) -> Result<Self> { // PHASE 1 + 2, field by field, in declaration order: let payer: Signer = anchor::try_load(views)?;         // load: signature bit anchor::constraint_mut(&payer)?;                      // constraint: mut let marquee: Account<Marquee> = anchor::try_init(     // load + init CPI views, payer, program_id)?;                       //   writes account:Marquee disc let system_program: Program<System> = anchor::try_load(views)?;                         // load: address + executable Ok(LightMarquee { payer, marquee, system_program })   // PHASE 3 handoff }
+     prompt: Annotated pseudo-code panel. Show the two blocks exactly as in data, monospace. Mark the top block with a runtime accent and the label "the guard, in the dispatcher, before any typed load". Bracket the try_accounts body with "PHASE 1+2: load then constrain, in field order", and mark the final Ok(...) with "PHASE 3: validated struct handed to the handler". Note in a caption: simplified; real output is more verbose.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:549px;height:570px;top:-306px;right:-306px;border-radius:46% 61% 35% 49% / 49% 60% 65% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:470px;height:514px;left:-226px;top:243px;border-radius:49% 36% 57% 41% / 44% 47% 44% 63%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:465px;height:568px;bottom:-328px;left:465px;border-radius:47% 35% 45% 56% / 58% 42% 64% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p2-row  { display:flex; align-items:stretch; gap:18px; margin-bottom:16px; }
+  .p2-code { flex:1; background:var(--surface-inverse); border-radius:var(--radius-lg);
+             padding:16px 22px; border:2px solid var(--surface-inverse); }
+  .p2-code pre { margin:0; font-family:var(--font-mono); font-size:17px; line-height:1.48;
+                 color:var(--stbr-cream); white-space:pre; }
+  .p2-code .c  { color:#8fb79c; }
+  .p2-code .k  { color:#7fd8a6; font-weight:700; }
+  .p2-code .y  { color:var(--stbr-yellow); font-weight:700; }
+  .p2-guard .p2-code { border-color:var(--stbr-yellow); }
+  .p2-ann  { flex:0 0 322px; }
+  .p2-tag  { border-radius:var(--radius-md); padding:12px 16px; margin-bottom:12px; }
+  .p2-tag:last-child { margin-bottom:0; }
+  .p2-tag .lb { font-family:var(--font-display); font-weight:900; font-size:14px; letter-spacing:0.14em;
+                text-transform:uppercase; }
+  .p2-tag .tx { font-family:var(--font-body); font-size:16px; line-height:1.34; margin-top:5px; }
+  .p2-acc  { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .p2-acc .lb { color:var(--stbr-dark); }
+  .p2-em   { background:var(--surface-brand); color:var(--stbr-cream); }
+  .p2-em .lb { color:var(--stbr-cream); }
+  .p2-cap  { font-family:var(--font-body); font-size:16px; color:var(--text-muted); }
+</style>
+  <div class="stbr-eyebrow">the generated try_accounts, simplified</div>
+  <h2 class="viz-title">The three phases are just straight-line code</h2>
+
+  <div class="p2-row p2-guard">
+    <div class="p2-code"><pre><span class="c">// In the dispatcher, BEFORE try_accounts:</span>
+<span class="k">let</span> (views, duplicates) = loader.walk();               <span class="c">// one pass over the incoming accounts</span>
+<span class="k">if let</span> Some(dups) = duplicates {                        <span class="c">// only if an account repeated</span>
+    <span class="k">if</span> dups.intersects(&amp;LightMarquee::<span class="y">MUT_MASK</span>) {      <span class="c">// one 4-word AND</span>
+        <span class="k">return</span> Err(ConstraintDuplicateMutableAccount);
+    }
+}</pre></div>
+    <div class="p2-ann">
+      <div class="p2-tag p2-acc">
+        <div class="lb">Runtime guard</div>
+        <div class="tx">The guard, in the dispatcher, before any typed load.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p2-row">
+    <div class="p2-code"><pre><span class="k">fn</span> try_accounts(program_id, views, ix_data, bumps) -&gt; Result&lt;Self&gt; {
+    <span class="c">// PHASE 1 + 2, field by field, in declaration order:</span>
+    <span class="k">let</span> payer: Signer = anchor::try_load(views)?;          <span class="c">// load: signature bit</span>
+    anchor::constraint_mut(&amp;payer)?;                       <span class="c">// constraint: mut</span>
+
+    <span class="k">let</span> marquee: Account&lt;Marquee&gt; = anchor::try_init(       <span class="c">// load + init CPI</span>
+        views, payer, program_id)?;                        <span class="c">//   writes account:Marquee disc</span>
+
+    <span class="k">let</span> system_program: Program&lt;System&gt; =
+        anchor::try_load(views)?;                          <span class="c">// load: address + executable</span>
+
+    Ok(LightMarquee { payer, marquee, system_program })     <span class="c">// PHASE 3 handoff</span>
+}</pre></div>
+    <div class="p2-ann">
+      <div class="p2-tag p2-em">
+        <div class="lb">Phase 1 + 2</div>
+        <div class="tx">Load then constrain, in field order.</div>
+      </div>
+      <div class="p2-tag p2-em">
+        <div class="lb">Phase 3</div>
+        <div class="tx">Validated struct handed to the handler.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p2-cap">Simplified — the real generated output is more verbose.</div>
+</div>
+</body></html>

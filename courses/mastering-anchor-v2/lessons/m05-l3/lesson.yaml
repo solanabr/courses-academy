@@ -1,0 +1,104 @@
+id: lesson-mav2-m05-l3
+slug: m05-l3
+title: "Token-2022 from the framework's seat"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+skills:
+  - token-2022
+  - spl-tokens
+  - solana-kit
+  - rpc-reads
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m05-l3-q1
+        prompt: "You read a Token-2022 token account and hardcoded its length to the classic SPL TokenAccount size. The read returns garbage for some accounts. Why?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Extensions append a TLV tail after the base layout, so the real length is data you must read, not a constant."
+            correct: true
+            feedback: "The classic base is preserved and padded, then a type tag and whatever entries the issuer added, which is why a real mainnet mint measures far longer than the constant your parser is holding."
+          - id: b
+            label: "Token-2022 stores its base fields in big-endian order, so a little-endian deserializer misreads supply and decimals."
+            correct: false
+            feedback: "Byte order is unchanged: Token-2022 kept the classic base layout precisely so existing parsers would not break. What breaks a fixed-length assumption is the TLV tail appended after that base."
+          - id: a
+            label: "Token-2022 encrypts account data by default, so the base fields cannot be read without confidential-transfer keys."
+            correct: false
+            feedback: "Confidential transfer is one opt-in extension, not blanket encryption; the base fields of a Token-2022 account decode in the clear exactly like a classic one. The bug is the hardcoded length, not encryption."
+          - id: d
+            label: "The extensions can sit ahead of the base layout, so a fixed offset lands on the wrong bytes."
+            correct: false
+            feedback: "The standard could not renumber a format the whole ecosystem was already parsing, so the base fields stayed exactly where they were and everything new was appended behind them. Extension data never moves in front of the base; what it does is make the total length something you read instead of something you assume."
+        explanation: "A Token-2022 mint or token account carries optional TLV extensions after the base layout, so its length is not the classic constant. From the program's seat the fix is simple: read the actual account length rather than assuming a fixed size. That variable sizing is one of the two things this lesson makes you account for. Concretely, a Token-2022 mint keeps the classic 82-byte base, pads out to 165 bytes, carries a one-byte account-type tag at byte 165, and only then runs the TLV tail, which is why the live PYUSD mint reads 866 bytes. Nothing in the base is encrypted or re-ordered; it decodes with the same little-endian fields a classic mint uses."
+      - id: m05-l3-q2
+        prompt: "Your transfer_checked worked on a plain SPL mint but fails on a specific Token-2022 mint. What is the most likely program-seat cause?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Token-2022 needs its own transfer instruction, because transfer_checked exists only on the classic Token program."
+            correct: false
+            feedback: "transfer_checked is the one primitive that spans both programs, which is why the swap lesson built on it and why no branch was needed. The instruction name is right; the account list is short."
+          - id: d
+            label: "The mint declares a TransferFeeConfig extension, so the token program typically rejects a transfer it would shrink."
+            correct: false
+            feedback: "A fee mint fails the other way, and that is the whole reason the two are worth separating. The transfer succeeds and less arrives than you sent, so nothing announces itself: your invariant is what eventually notices. A hook with a real programId is the one that stops the transfer outright."
+          - id: c
+            label: "InterfaceAccount<Mint> refuses Token-2022 mints, so you must hardcode the Token-2022 program id in the accounts struct."
+            correct: false
+            feedback: "That is Account<TokenAccount>, which pins the owner to the classic Token program. InterfaceAccount<T> accepts accounts owned by either program, which is exactly why hardcoding a program id is the footgun token_interface removes."
+          - id: a
+            label: "The mint declares a TransferHook extension and you did not forward the hook program's extra accounts."
+            correct: true
+            feedback: "Presence of the extension is not the question; the program id recorded inside it is. All zeroes and the hook is inert, so that mint transfers fine on the ordinary account list."
+        explanation: "A mint with a TransferHook extension runs a hook program on every transfer, and that program needs its extra accounts forwarded in the instruction. transfer_checked itself is fine; a transfer against a hooked mint just won't complete unless you resolve and pass those accounts. Designing the hook is the Digital Assets course's job; noticing you must forward its accounts is yours. Note that the extension being present is not the trigger: the hook's programId is. An all-zero programId means the hook is declared but dormant, and the usual four accounts still suffice."
+      - id: m05-l3-q3
+        prompt: "A teammate asks you to add full transfer-hook design, writing the hook program and its account-resolution interface, into this lesson's swap. What's the right call?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Split the difference: write a minimal hook program here and defer only the account-resolution interface to Digital Assets."
+            correct: false
+            feedback: "A partial re-teach is exactly the boundary creep the design forbids. It duplicates owned material and leaves learners unsure which course actually teaches the interface end to end."
+          - id: b
+            label: "Decline: hook authoring is standards depth the Digital Assets course owns; this lesson stays at program-seat mechanics."
+            correct: true
+            feedback: "Sizing the account, spotting the extension, shipping the extra accounts along with the call: that's the program seat's work. Authoring the hook and its resolution interface is standards work, and it lives in one place."
+          - id: a
+            label: "Add it here: the lesson already reads the TransferHook extension, so authoring the hook program is the natural next step."
+            correct: false
+            feedback: "Reading the extension's programId is a program-seat mechanic; authoring the hook and its account-resolution interface is standards depth that lives in one place by design. Detecting is not designing."
+          - id: d
+            label: "Tell them it is covered already: detecting the hook and authoring it are one skill from the program's seat."
+            correct: false
+            feedback: "Reading a stored programId off a mint and writing the program that field points at are not the same job, and the lesson draws that line in as many words: noticing is mechanics, authoring is the standard. Collapsing them is how a course quietly grows a second syllabus it never planned to maintain."
+        explanation: "The boundary is explicit: this course teaches Token-2022 from the program's seat (account sizing, forwarding hook accounts), and the Digital Assets course owns extension-standards depth and walks the transfer-hook interface end to end. Keeping the line sharp is the lesson's job: mechanics here, standards there. Concretely, reading the extension-aware account length, detecting a TransferHook extension and reading its programId, and reasoning about whether a transfer must forward extra accounts belong here; designing extensions, writing a hook program, and wiring its account-resolution interface belong there."
+      - id: m05-l3-q4
+        prompt: "Budgeting space for a Token-2022 mint, you reach for the account length a docs example printed for a similar mint and cite it as fixed. What does the lesson teach you to do instead?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Read the live mint and reason from what you observe, because a remembered figure can already be stale."
+            correct: true
+            feedback: "Per mint as much as per release, since each carries its own extension set. An authority can bolt one on after issuance too; even a single mint's measurement has a shelf life."
+          - id: a
+            label: "Cite the docs figure; a measurement published in official docs is a versioned guarantee."
+            correct: false
+            feedback: "Anchor's own team revised its headline numbers down in PR #4914 and attached an explicit 'exact values can move' caveat, and a published benchmark is a snapshot, not a versioned guarantee."
+          - id: b
+            label: "Average the figures quoted across several posts to smooth out per-release variation."
+            correct: false
+            feedback: "Averaging stale figures does not make any of them current, and it hides which release each came from. The lesson's move is to read the live account and reason from the observation."
+          - id: d
+            label: "Use the 866 bytes the lab measured on PYUSD, since a live mainnet reading beats a published figure."
+            correct: false
+            feedback: "A live reading does beat a docs figure, and 866 is still the wrong thing to carry forward: it is one mint's extension set on one day. Another Token-2022 mint carries different extensions and lands at a different length, and an authority can add one after issuance, so the number you want is the one you read from the mint in front of you."
+        explanation: "PR #4914 revised Anchor's own headline benchmarks down (95% to 94%, 9.9x to 8.8x) with an explicit 'exact values can move' caveat. Extension-aware sizing is exactly that kind of moving cost, so the discipline is to read the live Token-2022 mint and reason from the observation rather than freeze a remembered number. The cost also moves per-mint, not just per-release: a different Token-2022 mint carries a different extension set and lands at a different length, and an authority can add an extension after issuance, so even one mint's number is not stable over time."

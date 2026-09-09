@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The Pod field toolkit and what each one is for
+     purpose: give the reader a decision table for which wrapper to reach for
+     data: columns: Wrapper | Replaces | Use it when PodU64 / PodI128 / PodBool | u64 / i128 / bool | any multi-byte scalar field in a Pod struct #[derive(bytemuck::Pod)] | a hand-rolled #[repr(C)] struct | you define your own fixed-size record (e.g. Score) Nested<T> | a bare nested struct field | a Pod field is itself a struct and must stay aligned PodVec<T, MAX> | Vec<T> | you want a bounded list as ONE field, length stored inline Slab<Header, TailItem> | an account holding Header + Vec<TailItem> | the list IS the account's tail (a whole account layout)
+     prompt: A clean five-row reference table, three columns (Wrapper, Replaces, Use it when). Monospace the wrapper names in the first column. No row shading gimmicks; this is a lookup the reader returns to. Keep Slab visually set apart as the account-level one versus the field-level ones above it.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:580px;height:511px;top:-311px;right:-311px;border-radius:52% 54% 52% 59% / 62% 60% 57% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:552px;height:350px;left:-305px;top:345px;border-radius:35% 64% 65% 48% / 60% 55% 41% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:396px;height:451px;bottom:-236px;left:479px;border-radius:64% 41% 64% 61% / 35% 61% 47% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { margin-top:12px; border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+    overflow:hidden; background:var(--surface-card); }
+  .tbl * { box-sizing:border-box; }
+  .row { display:flex; align-items:stretch; }
+  .row.rule { border-top:1.5px solid var(--border-subtle); }
+  .row.keyrow { border-top:2px solid var(--stbr-yellow-700); }
+  .hdrow { background:var(--surface-inverse); }
+  .hd { color:var(--stbr-cream); padding:16px 26px;
+    font-family:var(--font-display); font-weight:900; font-size:16px; letter-spacing:.13em;
+    text-transform:uppercase; }
+  .sect { background:var(--surface-brand); color:var(--text-on-brand);
+    padding:9px 26px; font-family:var(--font-display); font-weight:800; font-size:14px;
+    letter-spacing:.14em; text-transform:uppercase; }
+  /* .c is a flex container for vertical centering; its content MUST sit in a single
+     child <div> — otherwise each text run / <b> becomes its own anonymous flex item
+     and the whitespace between them is stripped ("anymulti-byte scalar fieldin"). */
+  .c { padding:17px 26px; background:var(--surface-card);
+    display:flex; align-items:center; }
+  .c > div { width:100%; }
+  .k1 { width:400px; flex:0 0 400px; }
+  .k2 { width:392px; flex:0 0 392px; }
+  .k3 { flex:1 1 auto; min-width:0; }
+  .c.w { font-family:var(--font-mono); font-size:19px; font-weight:700; color:var(--text-primary);
+    line-height:1.3; }
+  .c.r { font-family:var(--font-mono); font-size:17px; color:var(--text-secondary); line-height:1.3; }
+  .c.u { font-family:var(--font-body); font-size:17px; color:var(--text-secondary); line-height:1.35; }
+  .c.u b { color:var(--text-primary); font-weight:700; }
+  .c.mid { border-left:1.5px solid var(--border-subtle); }
+  .c.key { background:var(--surface-accent); }
+  .c.key.w, .c.key.r, .c.key.u, .c.key.u b { color:var(--stbr-dark); }
+  .c.key.mid { border-left-color:var(--stbr-yellow-700); }
+  .foot { margin-top:20px; display:flex; gap:16px; }
+  .foot .n { flex:1; border-radius:var(--radius-md); padding:14px 22px;
+    font-family:var(--font-body); font-size:17px; line-height:1.35; }
+  .foot .n.a { background:var(--surface-paper); border:2px solid var(--border-subtle);
+    color:var(--text-secondary); }
+  .foot .n.b { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .foot .n b { font-weight:800; color:var(--text-primary); }
+  .foot .n.b b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">which wrapper do i reach for?</div>
+  <h2 class="viz-title">the Pod field toolkit</h2>
+  <div class="tbl">
+    <div class="row hdrow">
+      <div class="hd k1">wrapper</div>
+      <div class="hd k2">replaces</div>
+      <div class="hd k3">use it when</div>
+    </div>
+
+    <div class="sect">field level &mdash; inside one Pod struct</div>
+
+    <div class="row">
+      <div class="c w k1"><div>PodU64 / PodI128 / PodBool</div></div>
+      <div class="c r mid k2"><div>u64 / i128 / bool</div></div>
+      <div class="c u mid k3"><div>any <b>multi-byte scalar field</b> in a Pod struct</div></div>
+    </div>
+
+    <div class="row rule">
+      <div class="c w k1"><div>#[derive(bytemuck::Pod)]</div></div>
+      <div class="c r mid k2"><div>a hand-rolled #[repr(C)] struct</div></div>
+      <div class="c u mid k3"><div>you define your own <b>fixed-size record</b> (e.g. <b>Score</b>)</div></div>
+    </div>
+
+    <div class="row rule">
+      <div class="c w k1"><div>Nested&lt;T&gt;</div></div>
+      <div class="c r mid k2"><div>a bare nested struct field</div></div>
+      <div class="c u mid k3"><div>a Pod field <b>is itself a struct</b> and must stay aligned</div></div>
+    </div>
+
+    <div class="row rule">
+      <div class="c w k1"><div>PodVec&lt;T, MAX&gt;</div></div>
+      <div class="c r mid k2"><div>Vec&lt;T&gt;</div></div>
+      <div class="c u mid k3"><div>you want a <b>bounded list as ONE field</b>, length stored inline</div></div>
+    </div>
+
+    <div class="sect">account level &mdash; the whole layout</div>
+
+    <div class="row keyrow">
+      <div class="c w key k1"><div>Slab&lt;Header, TailItem&gt;</div></div>
+      <div class="c r mid key k2"><div>an account holding Header + Vec&lt;TailItem&gt;</div></div>
+      <div class="c u mid key k3"><div>the list <b>IS the account's tail</b> (a whole account layout)</div></div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="n a">The first four are <b>fields</b> you compose inside a struct.</div>
+    <div class="n b">Slab is the <b>account</b> itself &mdash; header first, the list as its tail.</div>
+  </div>
+</div>
+</body></html>

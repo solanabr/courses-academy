@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: MUT_MASK is compile-time, the duplicate check is runtime
+     purpose: separate the compile-time mask (shape) from the runtime bitvec (values) so the distinction sticks
+     data: COMPILE TIME (known from the struct definition): MUT_MASK = [u64; 4], a 256-bit associated const, one bit per account slot bit set for each field that is `mut`, not `unsafe(dup)`, not Option<_> the wrapper type is irrelevant: a mut Signer counts, a non-mut Account<T> does not Nested<Inner> folds the inner MUT_MASK in, shifted by the field's offset RUNTIME (known only when the transaction arrives): the dispatcher walks the incoming account views, flagging repeats in a bitvec one AND: bitvec & MUT_MASK any bit survives -> return ConstraintDuplicateMutableAccount (fires in the dispatcher, before try_accounts loads a single field)
+     prompt: Two-column diagram. Left column headed COMPILE TIME shows a row of 256 tiny cells with a few highlighted, labeled MUT_MASK, caption "the shape: which fields are mutable". Right column headed RUNTIME shows the same mask feeding a bitvec that fills as two account addresses arrive, with a collision flagged in red and an arrow to "ConstraintDuplicateMutableAccount". A dividing line between the columns labeled "the caller's values cross here".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:478px;height:448px;top:-236px;right:-236px;border-radius:47% 38% 44% 63% / 48% 46% 62% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:473px;height:520px;left:-249px;top:320px;border-radius:35% 40% 52% 44% / 63% 46% 39% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:401px;height:449px;bottom:-264px;left:486px;border-radius:38% 59% 50% 64% / 36% 36% 44% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p3-wrap { display:flex; align-items:stretch; }
+  .p3-col  { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+             border-radius:var(--radius-lg); padding:18px 22px; }
+  .p3-hd   { font-family:var(--font-display); font-weight:900; font-size:15px; letter-spacing:0.16em;
+             text-transform:uppercase; display:inline-block; padding:6px 16px;
+             border-radius:var(--radius-pill); }
+  .p3-hd-a { background:var(--surface-brand); color:var(--stbr-cream); }
+  .p3-hd-b { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .p3-hsub { font-family:var(--font-body); font-size:16px; color:var(--text-muted); margin-top:7px; }
+  .p3-mono { font-family:var(--font-mono); font-weight:700; font-size:20px; color:var(--text-primary);
+             margin:14px 0 8px; }
+  .p3-grid { display:flex; flex-wrap:wrap; width:512px; }
+  .p3-bit  { width:14px; height:14px; margin:1px; border-radius:2px; background:var(--stbr-ink-100); }
+  .p3-bit.on { background:var(--stbr-emerald); }
+  .p3-cap  { font-family:var(--font-body); font-size:16px; color:var(--text-secondary); margin-top:9px; }
+  .p3-li   { font-family:var(--font-body); font-size:16px; line-height:1.36; color:var(--text-secondary);
+             padding-left:16px; position:relative; margin-top:9px; }
+  .p3-li::before { content:""; position:absolute; left:0; top:8px; width:7px; height:7px;
+                   border-radius:50%; background:var(--stbr-emerald); }
+  .p3-li code { font-size:15px; color:var(--stbr-emerald-800); }
+  .p3-div  { flex:0 0 118px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .p3-line { position:absolute; top:0; bottom:0; left:58px; border-left:2px dashed var(--stbr-ink-300); }
+  .p3-dl   { position:relative; width:104px; text-align:center; font-family:var(--font-body);
+             font-weight:700; font-size:14px; line-height:1.28; color:var(--text-secondary);
+             background:var(--surface-page); border:1.5px solid var(--stbr-ink-300);
+             border-radius:var(--radius-md); padding:8px 6px; }
+  .p3-slots{ display:flex; gap:8px; margin-top:4px; }
+  .p3-slot { font-family:var(--font-mono); font-weight:700; font-size:15px; padding:7px 10px;
+             border-radius:var(--radius-sm); background:var(--surface-paper);
+             border:1.5px solid var(--border-subtle); color:var(--text-secondary); }
+  .p3-slot.dup { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); color:var(--stbr-dark); }
+  .p3-vec  { display:flex; gap:4px; margin-top:4px; }
+  .p3-vb   { width:26px; height:26px; border-radius:4px; background:var(--stbr-ink-100);
+             font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--text-muted);
+             text-align:center; line-height:26px; }
+  .p3-vb.on{ background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .p3-and  { margin-top:14px; border:2px solid var(--surface-inverse); border-radius:var(--radius-md);
+             background:var(--surface-inverse); color:var(--stbr-cream); padding:11px 16px;
+             font-family:var(--font-mono); font-weight:700; font-size:19px; }
+  .p3-and b{ color:var(--stbr-yellow); }
+  .p3-err  { margin-top:10px; display:flex; align-items:center; gap:12px; }
+  .p3-arr  { flex:0 0 34px; }
+  .p3-errc { font-family:var(--font-mono); font-weight:700; font-size:17px; padding:9px 14px;
+             border-radius:var(--radius-md); background:var(--stbr-yellow); color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">two clocks, one check</div>
+  <h2 class="viz-title">MUT_MASK is compile-time; the dup check is runtime</h2>
+
+  <div class="p3-wrap">
+    <div class="p3-col">
+      <span class="p3-hd p3-hd-a">Compile time</span>
+      <div class="p3-hsub">known from the struct definition</div>
+      <div class="p3-mono">MUT_MASK = [u64; 4] &mdash; 256 bits, one per account slot</div>
+      <div class="p3-grid">
+        <div class="p3-bit on"></div><div class="p3-bit"></div><div class="p3-bit on"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit on"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit on"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div>
+        <div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div>
+        <div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div>
+        <div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div><div class="p3-bit"></div>
+      </div>
+      <div class="p3-cap">The shape: which fields are mutable.</div>
+      <div class="p3-li">A bit is set for each field that is <code>mut</code>, not <code>unsafe(dup)</code>, not <code>Option&lt;_&gt;</code>.</div>
+      <div class="p3-li">The wrapper type is irrelevant: a <code>mut Signer</code> counts, a non-mut <code>Account&lt;T&gt;</code> does not.</div>
+      <div class="p3-li"><code>Nested&lt;Inner&gt;</code> folds the inner MUT_MASK in, shifted by the field's offset.</div>
+    </div>
+
+    <div class="p3-div">
+      <div class="p3-line"></div>
+      <div class="p3-dl">the caller's values cross here</div>
+    </div>
+
+    <div class="p3-col">
+      <span class="p3-hd p3-hd-b">Runtime</span>
+      <div class="p3-hsub">known only when the transaction arrives</div>
+      <div class="p3-mono">the dispatcher walks the incoming account views</div>
+      <div class="p3-slots">
+        <span class="p3-slot">payer</span>
+        <span class="p3-slot dup">marquee</span>
+        <span class="p3-slot dup">marquee</span>
+        <span class="p3-slot">system_program</span>
+      </div>
+      <div class="p3-mono">repeats flagged in a bitvec</div>
+      <div class="p3-vec">
+        <span class="p3-vb">0</span><span class="p3-vb on">1</span><span class="p3-vb on">1</span><span class="p3-vb">0</span><span class="p3-vb">0</span><span class="p3-vb">0</span><span class="p3-vb">0</span><span class="p3-vb">0</span>
+      </div>
+      <div class="p3-and">one AND: bitvec &amp; MUT_MASK &nbsp;&rarr;&nbsp; <b>a bit survives</b></div>
+      <div class="p3-err">
+        <svg class="p3-arr" width="34" height="18" viewBox="0 0 34 18"><line x1="0" y1="9" x2="26" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,9 25,3 25,15" fill="#1b231d"/></svg>
+        <span class="p3-errc">ConstraintDuplicateMutableAccount</span>
+      </div>
+      <div class="p3-cap">Fires in the dispatcher, before try_accounts loads a single field.</div>
+    </div>
+  </div>
+</div>
+</body></html>

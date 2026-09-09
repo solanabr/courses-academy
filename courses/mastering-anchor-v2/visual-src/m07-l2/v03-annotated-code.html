@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The signer/owner exploit and its one-line patch
+     purpose: show the exact peeled-back field, the drain it enables, and the single constraint that closes it
+     data: VULN (drains): pub player: Signer,                    // no pin at all: any signer accepted // handler pays escrow.amount to ctx.accounts.player -> whoever signed EXPLOIT: a stranger (not escrow.player) signs redeem with final_score = 9_999 -> account load passes (they ARE a signer) -> handler pays the stranger. drain_as_stranger = ok PATCH (rejects the drain): #[account(address = escrow.player)]   // key must equal the recorded player pub player: Signer, -> stranger's key != escrow.player -> rejected at load, before the handler -> drain_as_stranger now FAILS; conditional_release still passes
+     prompt: Two stacked code cards, VULN (red header, "drains") and PATCH (green header, "rejects"). Between them a short EXPLOIT band describing the stranger's transaction. Highlight the added `address = escrow.player` clause in the PATCH card. Margin note: "rejected at account load, before the handler runs".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:451px;top:-241px;right:-241px;border-radius:41% 61% 54% 64% / 57% 54% 41% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:517px;left:-320px;top:85px;border-radius:36% 59% 40% 48% / 41% 52% 63% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:586px;height:528px;bottom:-315px;right:-315px;border-radius:51% 51% 49% 44% / 59% 42% 53% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 20px; }
+  /* no italic face is available to the renderer: carry emphasis with weight/colour */
+  em { font-style:normal; font-weight:700; }
+  .viz-title em { font-weight:900; color:var(--stbr-emerald); }
+  .card { border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-inverse); }
+  .chead { display:flex; align-items:center; height:40px; padding:0 22px; }
+  .chead .lb { font-family:var(--font-display); font-weight:900; font-size:15px;
+               letter-spacing:.12em; text-transform:uppercase; }
+  .chead .sb { font-family:var(--font-body); font-weight:600; font-size:13px;
+               margin-left:14px; }
+  .h-vuln { background:#c0392b; }
+  .h-vuln .lb, .h-vuln .sb { color:var(--stbr-cream); }
+  .h-vuln .sb { opacity:.85; }
+  .h-patch { background:var(--surface-brand); }
+  .h-patch .lb, .h-patch .sb { color:var(--text-on-brand); }
+  .h-patch .sb { opacity:.88; }
+  .code { white-space:pre-wrap; padding:16px 22px 14px; font-family:var(--font-mono); font-size:16px;
+          line-height:1.55; color:var(--stbr-cream); }
+  .cmt { color:var(--stbr-ink-300); }
+  .hl { background:var(--stbr-yellow); color:var(--stbr-dark); font-weight:700;
+        padding:1px 4px; border-radius:var(--radius-xs); }
+  .out { padding:0 22px 16px; font-family:var(--font-body); font-size:14px;
+         line-height:1.5; color:var(--stbr-cream); opacity:.82; }
+  .out b { color:var(--stbr-white); font-weight:700; opacity:1; }
+  .band { margin:14px 0; border:2px solid var(--stbr-dark); border-radius:var(--radius-lg);
+          background:var(--surface-paper); padding:14px 22px; display:flex; align-items:center; }
+  .band .bk { font-family:var(--font-display); font-weight:900; font-size:14px;
+              letter-spacing:.12em; text-transform:uppercase; color:#c0392b;
+              width:120px; flex:0 0 120px; }
+  .band .bt { font-family:var(--font-body); font-size:15px; line-height:1.45;
+              color:var(--text-primary); }
+  .band .bt code { font-family:var(--font-mono); font-size:14px; }
+  .lower { display:flex; align-items:stretch; }
+  .lower .card { flex:1 1 auto; }
+  .note { width:300px; flex:0 0 300px; margin-left:16px; border:2px solid var(--stbr-emerald);
+          border-radius:var(--radius-lg); background:var(--surface-card); padding:18px 20px; }
+  .note .nk { font-family:var(--font-body); font-weight:700; font-size:11px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-emerald-800); }
+  .note .nt { font-family:var(--font-display); font-weight:800; font-size:20px;
+              line-height:1.2; color:var(--text-primary); margin-top:10px; }
+  .note .ns { font-family:var(--font-body); font-size:13.5px; line-height:1.45;
+              color:var(--text-secondary); margin-top:10px; }
+</style>
+  <div class="stbr-eyebrow">class 1 · signer present, identity absent</div>
+  <h2 class="viz-title">a signer proves someone signed, not that <em>they</em> did</h2>
+
+  <div class="card">
+    <div class="chead h-vuln"><span class="lb">vuln</span><span class="sb">drains</span></div>
+    <div class="code">pub player: Signer,                    <span class="cmt">// no pin: any signer accepted</span></div>
+    <div class="out">handler pays <code>escrow.amount</code> to <code>ctx.accounts.player</code> — i.e. to <b>whoever signed</b></div>
+  </div>
+
+  <div class="band">
+    <div class="bk">exploit</div>
+    <div class="bt">a stranger (not <code>escrow.player</code>) signs <code>redeem</code> with <code>final_score = 9_999</code> &nbsp;&rarr;&nbsp; account load passes (they <em>are</em> a signer) &nbsp;&rarr;&nbsp; handler pays the stranger. &nbsp;<code>drain_as_stranger = ok</code></div>
+  </div>
+
+  <div class="lower">
+    <div class="card">
+      <div class="chead h-patch"><span class="lb">patch</span><span class="sb">rejects the drain</span></div>
+      <div class="code">#[account(<span class="hl">address = escrow.player</span>)]   <span class="cmt">// key must equal the recorded player</span>
+pub player: Signer,</div>
+      <div class="out">stranger's key != <code>escrow.player</code> &nbsp;&rarr;&nbsp; rejected at load, before the handler<br>
+      <b>drain_as_stranger now FAILS</b> &nbsp;·&nbsp; conditional_release still passes</div>
+    </div>
+    <div class="note">
+      <div class="nk">margin note</div>
+      <div class="nt">rejected at account load, before the handler runs</div>
+      <div class="ns">The guard is one clause in the accounts struct — no handler code changes, no extra CU on the happy path.</div>
+    </div>
+  </div>
+</div>
+</body></html>

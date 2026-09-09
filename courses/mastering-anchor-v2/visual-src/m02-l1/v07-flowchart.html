@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What the LiteSVM harness does, end to end
+     purpose: trace the round-trip the test proves, from init through the byte read-back
+     data: 1. anchor_v2_testing::svm() spins up LiteSVM in-process; add_program() loads the include_bytes! of target/deploy/cabinet_counter.so 2. create player keypair, airdrop lamports 3. derive cabinet PDA from seeds [b"cabinet", player] 4. send init  -> play_count=0, high_score=0 written into the account buffer 5. send increment(score=4200) -> play_count=1, high_score=4200 in place 6. fetch account.data, slice data[8..24], bytemuck::from_bytes::<Cabinet> 7. assert play_count.get()==1 and high_score.get()==4200  (no deserialize anywhere)
+     prompt: A vertical seven-step flowchart, one box per numbered step in data, arrows top to bottom. Highlight step 6 ("slice data[8..24], cast") and step 7 ("assert") as the payload. Annotate the arrow into step 6 with "skip the 8-byte discriminator".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:454px;height:440px;top:-249px;right:-249px;border-radius:58% 45% 58% 60% / 55% 47% 49% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:489px;height:480px;left:-265px;top:257px;border-radius:47% 44% 47% 37% / 37% 53% 49% 47%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:467px;height:502px;bottom:-248px;right:-248px;border-radius:42% 51% 54% 45% / 47% 60% 55% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { margin-top:8px; }
+  .row { display:flex; align-items:stretch; }
+  .rail { flex:0 0 62px; display:flex; flex-direction:column; align-items:center; }
+  .seg { width:3px; flex:1 1 0; background:var(--stbr-emerald); }
+  .seg.void { background:transparent; }
+  .seg.acc { background:var(--stbr-yellow-700); }
+  .badge { flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--surface-brand);
+           color:var(--text-on-brand); font-family:var(--font-display); font-weight:900; font-size:17px;
+           display:flex; align-items:center; justify-content:center; }
+  .badge.acc { background:var(--surface-accent); color:var(--text-on-accent); }
+  .tip { flex:0 0 auto; display:block; }
+
+  .box { flex:1 1 auto; margin:5px 0 5px 4px; border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); background:var(--surface-card); padding:12px 22px; }
+  .box.acc { border-color:var(--stbr-yellow-700); background:rgba(255,210,63,0.20); }
+  .box .hd { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .box .t { font-family:var(--font-body); font-weight:800; font-size:17px; line-height:1.2;
+            color:var(--text-primary); }
+  .box .tag { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.11em;
+              text-transform:uppercase; padding:4px 12px; border-radius:var(--radius-pill);
+              background:var(--surface-inverse); color:var(--text-on-dark); white-space:nowrap; }
+  .box .d { font-family:var(--font-mono); font-size:13.5px; line-height:1.35;
+            color:var(--text-secondary); margin-top:5px; }
+  .box.acc .d { color:var(--stbr-dark); }
+
+  .anno { display:flex; align-items:center; }
+  .anno .chip { margin-left:4px; padding:6px 16px; border-radius:var(--radius-pill);
+                background:var(--surface-accent); color:var(--text-on-accent);
+                font-family:var(--font-body); font-weight:800; font-size:13px;
+                letter-spacing:.05em; }
+</style>
+  <div class="stbr-eyebrow">what the LiteSVM harness proves</div>
+  <h2 class="viz-title">init, increment, read the bytes back</h2>
+  <div class="flow">
+
+    <div class="row">
+      <div class="rail"><span class="seg void"></span><span class="badge">1</span><span class="seg"></span><svg class="tip" width="14" height="10" viewBox="0 0 14 10"><polygon points="7,10 0,0 14,0" fill="#008b4c"/></svg></div>
+      <div class="box">
+        <div class="hd"><span class="t">spin up LiteSVM in-process</span></div>
+        <div class="d">anchor_v2_testing::svm(); add_program() loads the include_bytes! of target/deploy/cabinet_counter.so</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="rail"><span class="seg"></span><span class="badge">2</span><span class="seg"></span><svg class="tip" width="14" height="10" viewBox="0 0 14 10"><polygon points="7,10 0,0 14,0" fill="#008b4c"/></svg></div>
+      <div class="box">
+        <div class="hd"><span class="t">fund a player</span></div>
+        <div class="d">create player keypair, airdrop lamports</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="rail"><span class="seg"></span><span class="badge">3</span><span class="seg"></span><svg class="tip" width="14" height="10" viewBox="0 0 14 10"><polygon points="7,10 0,0 14,0" fill="#008b4c"/></svg></div>
+      <div class="box">
+        <div class="hd"><span class="t">derive the cabinet PDA</span></div>
+        <div class="d">seeds = [b"cabinet", player]</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="rail"><span class="seg"></span><span class="badge">4</span><span class="seg"></span><svg class="tip" width="14" height="10" viewBox="0 0 14 10"><polygon points="7,10 0,0 14,0" fill="#008b4c"/></svg></div>
+      <div class="box">
+        <div class="hd"><span class="t">send init</span></div>
+        <div class="d">play_count = 0, high_score = 0 written into the account buffer</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="rail"><span class="seg"></span><span class="badge">5</span><span class="seg acc"></span></div>
+      <div class="box">
+        <div class="hd"><span class="t">send increment(score = 4200)</span></div>
+        <div class="d">play_count = 1, high_score = 4200 &mdash; updated in place</div>
+      </div>
+    </div>
+
+    <div class="row anno">
+      <div class="rail"><span class="seg acc"></span><svg class="tip" width="14" height="10" viewBox="0 0 14 10"><polygon points="7,10 0,0 14,0" fill="#d9a608"/></svg></div>
+      <span class="chip">skip the 8-byte discriminator</span>
+    </div>
+
+    <div class="row">
+      <div class="rail"><span class="seg void"></span><span class="badge acc">6</span><span class="seg acc"></span><svg class="tip" width="14" height="10" viewBox="0 0 14 10"><polygon points="7,10 0,0 14,0" fill="#d9a608"/></svg></div>
+      <div class="box acc">
+        <div class="hd"><span class="t">slice the raw bytes and cast</span><span class="tag">the payload</span></div>
+        <div class="d">fetch account.data &rarr; data[8..24] &rarr; bytemuck::from_bytes::&lt;Cabinet&gt;</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="rail"><span class="seg acc"></span><span class="badge acc">7</span><span class="seg void"></span></div>
+      <div class="box acc">
+        <div class="hd"><span class="t">assert on the cast values</span><span class="tag">the payload</span></div>
+        <div class="d">play_count.get() == 1 &amp;&amp; high_score.get() == 4200 &mdash; no deserialize anywhere</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The escrow classes, re-run against the swap
+     purpose: show the surviving classes are program-agnostic by mapping each of them onto R4's real fields
+     data: Class on the escrow (R3)             | Same class on the swap (R4)                  | The pin stranger drains (signer/owner)       | trader quotes against attacker reserves      | record the reserves on Pool, then pin each one substituted maker steals rent        | substituted reserve token account           | address = pool.arcade_reserve / pool.ticket_reserve arbitrary CPI via untyped program    | untyped token_program moves the tokens       | Interface<'static, TokenInterface> pins the callee over-withdraw wraps the balance      | fill computed on unchecked reserve math      | checked math on the reserve debit
+     prompt: Four-row comparison table, three columns: class on the escrow, same class on the swap, the pin that closes it. Frame it as "the classes travel between programs". Keep a neutral, reference tone; the point is the one-to-one mapping.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:505px;height:489px;top:-281px;right:-281px;border-radius:45% 61% 40% 54% / 65% 52% 39% 45%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:591px;height:564px;bottom:-310px;left:-310px;border-radius:55% 42% 47% 47% / 37% 53% 60% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:552px;height:559px;bottom:-295px;right:-295px;border-radius:41% 46% 55% 52% / 62% 44% 41% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 22px; }
+  .tbl { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .hdr { background:var(--surface-inverse); border-bottom:0; }
+  .hdr .cell { padding:14px 26px; }
+  .hdr .c3 { background:none; border-left:5px solid var(--surface-inverse); }
+  .hdr .h { font-family:var(--font-display); font-weight:800; font-size:12.5px;
+            letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream); }
+  .pinhead { display:inline-block; background:var(--surface-accent);
+             color:var(--text-on-accent); font-family:var(--font-display);
+             font-weight:900; font-size:12.5px; letter-spacing:.12em;
+             text-transform:uppercase; padding:6px 14px;
+             border-radius:var(--radius-pill); }
+  .r { display:flex; align-items:stretch; border-bottom:1px solid var(--border-subtle); }
+  .r:last-child { border-bottom:0; }
+  .cell { padding:16px 26px; }
+  .c1 { width:465px; flex-grow:0; flex-shrink:0; }
+  .c2 { width:445px; flex-grow:0; flex-shrink:0; }
+  .c3 { width:530px; flex-grow:1; flex-shrink:0; background:var(--surface-paper);
+        border-left:5px solid var(--stbr-yellow); }
+  .num { font-family:var(--font-display); font-weight:900; font-size:12px;
+         letter-spacing:.1em; color:var(--text-muted); }
+  .t { font-family:var(--font-display); font-weight:800; font-size:18px;
+       line-height:1.25; color:var(--text-primary); margin-top:5px; }
+  .s { font-family:var(--font-mono); font-size:13px; line-height:1.4;
+       color:var(--text-secondary); margin-top:7px; }
+  .pin { font-family:var(--font-mono); font-weight:700; font-size:14px;
+         line-height:1.45; color:var(--text-primary); overflow-wrap:break-word; }
+  .arrow { width:0; }
+  .verdict { margin-top:16px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:19px 30px; display:flex;
+             align-items:center; }
+  .verdict .k { font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                opacity:.78; width:190px; flex-grow:0; flex-shrink:0; }
+  .verdict .v { font-family:var(--font-display); font-weight:900; font-size:24px;
+                line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">the classes travel between programs</div>
+  <h2 class="viz-title">the escrow&rsquo;s four classes, re-run against the swap</h2>
+
+  <div class="tbl">
+    <div class="r hdr">
+      <div class="cell c1"><div class="h">class on the escrow &nbsp;(R3)</div></div>
+      <div class="cell c2"><div class="h">the same class on the swap &nbsp;(R4)</div></div>
+      <div class="cell c3"><span class="pinhead">the pin that closes it</span></div>
+    </div>
+
+    <div class="r">
+      <div class="cell c1"><div class="num">01</div><div class="t">stranger drains</div><div class="s">signer / owner missing</div></div>
+      <div class="cell c2"><div class="t">trader quotes against attacker reserves</div></div>
+      <div class="cell c3"><div class="pin">pin reserve_arcade / reserve_ticket to the pool</div></div>
+    </div>
+
+    <div class="r">
+      <div class="cell c1"><div class="num">02</div><div class="t">substituted maker steals rent</div><div class="s">UncheckedAccount substitution</div></div>
+      <div class="cell c2"><div class="t">substituted reserve token account</div></div>
+      <div class="cell c3"><div class="pin">address / constraint to the pool&rsquo;s recorded reserve</div></div>
+    </div>
+
+    <div class="r">
+      <div class="cell c1"><div class="num">03</div><div class="t">arbitrary CPI via untyped program</div><div class="s">caller chooses the callee</div></div>
+      <div class="cell c2"><div class="t">untyped token_program moves the tokens</div></div>
+      <div class="cell c3"><div class="pin">Interface&lt;'static, TokenInterface&gt; pins the callee</div></div>
+    </div>
+
+    <div class="r">
+      <div class="cell c1"><div class="num">04</div><div class="t">over-withdraw wraps the balance</div><div class="s">arithmetic overflow</div></div>
+      <div class="cell c2"><div class="t">fill computed on unchecked reserve math</div></div>
+      <div class="cell c3"><div class="pin">checked math on the reserve debit</div></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="k">why this matters</span>
+    <span class="v">Different program, different field names, identical class &mdash; and the same four pins.</span>
+  </div>
+</div>
+</body></html>

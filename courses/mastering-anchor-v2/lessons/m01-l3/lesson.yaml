@@ -1,0 +1,85 @@
+id: lesson-mav2-m01-l3
+slug: m01-l3
+title: "Program anatomy: what declare_id! and #[program] expand to"
+skills:
+  - anchor
+  - solana-programs
+  - program-testing
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l3-q1
+        prompt: "Reading a V2 handler you see pub fn greet(ctx: &mut Context<Greet>). In v1 this was Context<Greet> by value with <'info> everywhere. What did V2 change?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The <'info> lifetime moved from the wrappers onto the #[program] module itself"
+            correct: false
+            feedback: "The lifetime was removed from the surface you write, not relocated. The framework still tracks the underlying account data's lifetimes internally, but nothing on #[program] spells it out."
+          - id: a
+            label: "V2 handlers take &mut Context<T> and the account wrappers carry no <'info> lifetime"
+            correct: true
+            feedback: "One borrowed context now threads validation, your handler and the write-back at the end. The per-instruction move is simply gone."
+          - id: b
+            label: "V2 kept Context<T> by value and only dropped <'info> from Signer and Account<T>"
+            correct: false
+            feedback: "Half right, and that half is the trap: the wrappers did lose <'info>, but the signature changed too. A handler written Context<T> by value will not compile against the RC."
+          - id: d
+            label: "V2 dropped Context<T> altogether; handlers now take &mut Greet, the accounts struct itself"
+            correct: false
+            feedback: "Plausible if you read the missing lifetimes as the whole wrapper going away, and the direction is right that V2 deleted surface here. Context survives: the signature is &mut Context<Greet>, and the context is what carries validation, your body, and the exit routine as one borrowed thing."
+        explanation: "V2's expansion takes &mut Context<T> and drops <'info> from the wrappers — a visibly cleaner surface than v1's by-value, lifetime-heavy shape. The reference also removes a move on every instruction: one borrowed context carries through validation, your handler, and the exit routine that persists account changes."
+      - id: m01-l3-q2
+        prompt: "Your v1 muscle memory writes ctx.accounts.vault.key() and the V2 compiler rejects it. The fix?"
+        multiSelect: false
+        options:
+          - id: e
+            label: "ctx.accounts.vault.to_account_info().key"
+            correct: false
+            feedback: "Straight v1 muscle memory, and the shape it targets is real off-chain, where a Keypair still hands you a Pubkey. Inside a V2 program the wrapper's accessor is .address(), and that seam between the on-chain Address surface and the off-chain Pubkey one holds for the whole course."
+          - id: a
+            label: "ctx.accounts.vault.pubkey()"
+            correct: false
+            feedback: ".pubkey() is the off-chain accessor — a Keypair in your LiteSVM test still hands you a Pubkey that way. On the V2 wrapper surface the type is Address and the accessor is .address()."
+          - id: b
+            label: "ctx.accounts.vault.address()"
+            correct: true
+            feedback: "It is not only a rename — Pubkey became Address, out of a crate the runtime layer already pulled in, so the type on the left of your let changes too."
+          - id: c
+            label: "ctx.accounts.vault.to_address()"
+            correct: false
+            feedback: "There is no to_ conversion here — nothing is being converted. The rename is a straight .key() to .address(), and it reads the address the wrapper already holds."
+          - id: d
+            label: "ctx.accounts.vault.key().into()"
+            correct: false
+            feedback: ".key() is the name your fingers reach for and the one the compiler rejects first, so converting its result looks like the small fix. There is nothing to convert from: the V2 wrapper surface exposes .address() and no .key() at all."
+        explanation: "V2 replaces Pubkey with Address (via the solana-address crate pinocchio pulls in) and .key() with .address(); the twin renames trip every migrator once. The accessor hands back a reference, so storing an owned copy needs a leading star, as in *ctx.accounts.payer.address(). There is no .pubkey() and no .to_address() on the V2 wrapper surface at all."
+      - id: m01-l3-q3
+        prompt: "You just ran the scaffolded test to invoke the greeter. Which invoke vehicle did anchor init generate by default in V2?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "A LiteSVM Rust test running in an in-process VM"
+            correct: true
+            feedback: "Whichever template carries #[default] is the file you get, and no validator starts for any of them. The built .so goes straight into an in-process VM."
+          - id: b
+            label: "A Mollusk Rust test running in an in-process VM"
+            correct: false
+            feedback: "Also in-process, also validator-free — but only one of the five carries #[default], and it is not this one."
+          - id: a
+            label: "A Mocha TypeScript test wired to @coral-xyz/anchor"
+            correct: false
+            feedback: "Mocha is one of the five templates but not the default, and @coral-xyz/anchor is the v1 package name — there is no official V2 TypeScript package to import yet."
+          - id: d
+            label: "A Jest TypeScript test run against Surfpool"
+            correct: false
+            feedback: "Jest is genuinely one of the five templates, and Surfpool is genuinely the validator behind anchor test, so both halves exist. Neither is what #[default] marks, and the template that carries it needs no validator at all."
+          - id: e
+            label: "A bare Rust test driving a local validator"
+            correct: false
+            feedback: "Rust is one of the five templates and this describes it accurately. The one carrying #[default] is Litesvm, which loads the built .so into an in-process VM rather than talking to a validator."
+        explanation: "anchor init offers Mocha, Jest, Rust, Mollusk, and Litesvm; Litesvm is the #[default], which closes the deploy-and-invoke loop in Rust without writing any TypeScript. The scaffolded test loads target/deploy/greeter.so with svm.add_program and sends a transaction in-process, so anchor test never starts a validator."

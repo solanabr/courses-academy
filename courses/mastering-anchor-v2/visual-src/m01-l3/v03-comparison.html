@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The v1 to V2 translation table for reading program anatomy
+     purpose: give the reader a lookup for the renames they will hit reading any V2 program
+     data: columns: What you read | v1 (Anchor 1.0) | V2 (2.0.0-rc.1) rows: - Handler signature | fn greet(ctx: Context<Greet>) | fn greet(ctx: &mut Context<Greet>) - Address type | Pubkey | Address (via solana-address) - Key accessor | ctx.accounts.x.key() | ctx.accounts.x.address() - Account wrapper lifetime | Signer<'info>, Account<'info, T> | Signer, Account<T> - Bump lookup (pre-1.0) | ctx.bumps.get("vault") | ctx.bumps.vault
+     prompt: A clean two-column comparison table with a leftmost label column, "v1" and "V2" as the two value columns, five rows as listed. No decoration, monospace for the code cells, the V2 column subtly emphasized as the target.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:467px;height:421px;top:-223px;right:-223px;border-radius:56% 44% 44% 61% / 45% 39% 46% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:436px;height:397px;left:-239px;top:135px;border-radius:44% 52% 62% 47% / 52% 47% 47% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:487px;height:469px;bottom:-276px;right:-276px;border-radius:46% 57% 49% 43% / 60% 46% 45% 37%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; margin-top:22px; }
+  .cmp th { padding:14px 22px; font-family:var(--font-display); font-weight:800; font-size:15px;
+    letter-spacing:.09em; text-transform:uppercase; text-align:left; }
+  .cmp th.lab { background:var(--surface-inverse); color:var(--text-on-dark);
+    border-top-left-radius:var(--radius-md); }
+  .cmp th.v1 { background:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .cmp th.v2 { background:var(--stbr-yellow); color:var(--text-on-accent);
+    border-top-right-radius:var(--radius-md); }
+  .cmp th small { display:block; font-family:var(--font-body); font-weight:600; font-size:12px;
+    letter-spacing:.03em; text-transform:none; opacity:.85; margin-top:2px; }
+  .cmp td { padding:15px 22px; border-bottom:2px solid var(--border-subtle); vertical-align:middle;
+    line-height:1.35; }
+  .cmp td.lab { background:var(--surface-paper); font-family:var(--font-body); font-weight:700;
+    font-size:17px; color:var(--text-primary); }
+  .cmp td.v1 { background:var(--surface-card); font-family:var(--font-mono); font-size:16px;
+    color:var(--text-muted); word-wrap:break-word; overflow-wrap:break-word; }
+  .cmp td.v2 { background:rgba(255,210,63,0.20); font-family:var(--font-mono); font-size:16px;
+    font-weight:700; color:var(--stbr-dark); border-bottom-color:var(--stbr-yellow-600);
+    word-wrap:break-word; overflow-wrap:break-word; }
+  .cmp tr:last-child td { border-bottom:0; }
+  .cmp tr:last-child td.lab { border-bottom-left-radius:var(--radius-md); }
+  .cmp tr:last-child td.v2 { border-bottom-right-radius:var(--radius-md); }
+  .verdict { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-md); padding:16px 28px; font-family:var(--font-display);
+    font-weight:800; font-size:20px; letter-spacing:-0.01em; }
+</style>
+  <div class="stbr-eyebrow">reading any V2 program</div>
+  <h2 class="viz-title">the v1 &rarr; V2 translation table</h2>
+  <table class="cmp">
+    <tr>
+      <th class="lab" style="width:26%">what you read</th>
+      <th class="v1" style="width:36%">v1<small>Anchor 1.0</small></th>
+      <th class="v2" style="width:38%">V2 &mdash; the target<small>2.0.0-rc.1</small></th>
+    </tr>
+    <tr><td class="lab">Handler signature</td>
+      <td class="v1">fn greet(ctx: Context&lt;Greet&gt;)</td>
+      <td class="v2">fn greet(ctx: &amp;mut Context&lt;Greet&gt;)</td></tr>
+    <tr><td class="lab">Address type</td>
+      <td class="v1">Pubkey</td>
+      <td class="v2">Address <span style="font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--text-secondary);">(via solana-address)</span></td></tr>
+    <tr><td class="lab">Key accessor</td>
+      <td class="v1">ctx.accounts.x.key()</td>
+      <td class="v2">ctx.accounts.x.address()</td></tr>
+    <tr><td class="lab">Account wrapper lifetime</td>
+      <td class="v1">Signer&lt;'info&gt;, Account&lt;'info, T&gt;</td>
+      <td class="v2">Signer, Account&lt;T&gt;</td></tr>
+    <tr><td class="lab">Bump lookup <span style="font-family:var(--font-body);font-weight:500;font-size:14px;color:var(--text-muted);">(the string map died in 0.29)</span></td>
+      <td class="v1">ctx.bumps.vault</td>
+      <td class="v2">ctx.bumps.vault</td></tr>
+  </table>
+  <div class="verdict">four renames and one thing that never moved &mdash; translate the names and V2 anatomy reads like v1</div>
+</div>
+</body></html>

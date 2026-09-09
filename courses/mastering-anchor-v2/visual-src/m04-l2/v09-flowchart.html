@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The V2 read-after-CPI idiom
+     purpose: give a reusable decision path for any "read an account you just touched in a CPI" moment
+     data: Do you need to read an account's typed data after a CPI touched it? -> Is a CpiHandle for those accounts still in scope? yes -> you cannot read yet. End the handle's scope: let the CPI call consume the CpiContext, or wrap the handle setup + call in a block { ... } so it drops. no  -> read ctx.accounts.<name>.<field> directly. It reads the LIVE account. No reload needed. Reaching for .reload()? -> stop: it is gone in V2. The drop-then-read pattern replaces it.
+     prompt: Vertical flowchart. Start "need post-CPI typed read?" -> decision "handle still in scope?". Yes branch to "drop the handle first (consume the CpiContext or scope it in a block)". No branch to "read directly, reads live data". A side note box in red: ".reload() does not exist in V2".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:472px;height:445px;top:-224px;right:-224px;border-radius:63% 65% 36% 46% / 49% 42% 52% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:482px;height:506px;left:-267px;top:338px;border-radius:41% 60% 62% 59% / 52% 62% 53% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:428px;height:428px;bottom:-243px;left:611px;border-radius:57% 35% 43% 60% / 59% 57% 43% 64%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:grid; grid-template-columns:1fr 400px; gap:30px; align-items:start; }
+  .node { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); padding:18px 26px; }
+  .node .k { font-family:var(--font-display); font-weight:900; font-size:22px;
+    line-height:1.12; color:var(--text-primary); }
+  .node .s { font-size:16px; line-height:1.35; color:var(--text-secondary); margin-top:8px; }
+  .node code { font-family:var(--font-mono); font-weight:700; font-size:15px; }
+  .start { background:var(--surface-inverse); border-color:var(--surface-inverse); }
+  .start .k { color:var(--stbr-cream); }
+  .decide { border-color:var(--stbr-emerald); border-width:3px; text-align:center; }
+  .decide .k { color:var(--stbr-emerald-800); }
+  .arrow { position:relative; height:30px; display:flex; align-items:flex-end;
+    justify-content:center; }
+  .arrow::before { content:""; position:absolute; top:0; left:calc(50% - 1.5px); width:3px;
+    height:18px; background:var(--stbr-emerald); }
+  .arrow i { display:block; width:0; height:0; border-left:11px solid transparent;
+    border-right:11px solid transparent; border-top:14px solid var(--stbr-emerald); font-style:normal; }
+  .branches { display:grid; grid-template-columns:1fr 1fr; gap:26px; align-items:stretch; }
+  .br { display:flex; flex-direction:column; }
+  .br .node { flex:1 1 auto; }
+  .lbl { position:relative; display:flex; align-items:flex-end; justify-content:center; height:44px; }
+  .lbl::before { content:""; position:absolute; top:0; left:calc(50% - 1.5px); width:3px; height:18px;
+    background:var(--stbr-emerald); }
+  .lbl span { font-family:var(--font-display); font-weight:900; font-size:14px;
+    letter-spacing:.1em; text-transform:uppercase; padding:6px 16px; border-radius:999px;
+    background:var(--stbr-emerald); color:#fff; }
+  .aside { background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:24px 28px; }
+  .aside .tag { font-family:var(--font-display); font-weight:900; font-size:13px;
+    letter-spacing:.11em; text-transform:uppercase; color:var(--stbr-dark);
+    background:rgba(27,35,29,.14); display:inline-block; padding:6px 13px;
+    border-radius:999px; margin-bottom:14px; }
+  .aside .k { font-family:var(--font-display); font-weight:900; font-size:30px;
+    line-height:1.06; color:var(--text-on-accent); }
+  .aside p { margin:12px 0 0; font-size:17px; line-height:1.4; color:var(--stbr-dark); }
+  .aside code { font-family:var(--font-mono); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">a reusable decision path</div>
+  <h2 class="viz-title">the V2 read-after-CPI idiom</h2>
+  <div class="wrap">
+    <div>
+      <div class="node start"><div class="k">Do you need to read an account&rsquo;s typed data after a CPI touched it?</div></div>
+      <div class="arrow stem"><i></i></div>
+      <div class="node decide"><div class="k">Is a CpiHandle for those accounts still in scope?</div></div>
+      <div class="branches">
+        <div class="br">
+          <div class="lbl"><span>yes</span></div>
+          <div class="arrow"><i></i></div>
+          <div class="node">
+            <div class="k">You cannot read yet — end the handle&rsquo;s scope</div>
+            <div class="s">Let the CPI call consume the <code>CpiContext</code>, or wrap the handle
+              setup and the call in a block <code>{ … }</code> so it drops.</div>
+          </div>
+        </div>
+        <div class="br">
+          <div class="lbl"><span>no</span></div>
+          <div class="arrow"><i></i></div>
+          <div class="node">
+            <div class="k">Read it directly</div>
+            <div class="s"><code>ctx.accounts.&lt;name&gt;.&lt;field&gt;</code> reads the LIVE account.
+              No reload needed, ever.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aside">
+      <div class="tag">dead end</div>
+      <div class="k">Reaching for <code>.reload()</code>?</div>
+      <p>Stop — it does not exist in V2. It was removed because the drop-then-read pattern
+        above replaces it entirely: once the handle is gone, every typed read is already live.</p>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The V2 CPI grammar, the three parts you reuse
+     purpose: isolate the reusable template so the reader can apply it to the vault, escrow, and swap
+     data: // 1. accounts struct from the callee's cpi module: one CpiHandle per account let cpi_accounts = <rung>_cpi::accounts::<Instruction> { writable_account: ctx.accounts.x.cpi_handle_mut(),  // callee will write it readonly_account: ctx.accounts.y.cpi_handle(),      // callee only reads it }; // 2. CpiContext::new with the callee program id via .address() (&Address in V2) let cpi_ctx = CpiContext::new(ctx.accounts.<rung>_program.address(), cpi_accounts); //    ...or .with_signer(seeds) / new_with_signer(..) when a PDA of YOURS must sign // 3. the generated wrapper packs args and invokes <rung>_cpi::<instruction>(cpi_ctx..args)?; RULE: read any typed state you need BEFORE step 1; the handle borrow blocks it after.
+     prompt: Render as an annotated code card, three numbered blocks matching the three parts of a CPI, with the read-before-handle RULE called out at the bottom in an accent color. Use placeholder tokens (<rung>, <Instruction>) to signal this is the reusable template, not one specific call.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:603px;height:523px;top:-317px;right:-317px;border-radius:60% 36% 37% 49% / 55% 64% 53% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:440px;height:423px;bottom:-233px;left:-233px;border-radius:60% 41% 50% 36% / 47% 53% 56% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:535px;height:498px;bottom:-254px;left:320px;border-radius:39% 56% 36% 60% / 40% 58% 64% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .panel { background: var(--surface-inverse); border-radius: var(--radius-xl);
+           padding: 22px 26px; }
+  .blk { display: flex; align-items: flex-start; padding: 14px 0;
+         border-top: 1.5px solid rgba(245,232,202,0.16); }
+  .blk:first-child { border-top: 0; padding-top: 4px; }
+  .num { flex: 0 0 44px; height: 44px; border-radius: var(--radius-pill);
+         background: var(--surface-brand); color: var(--text-on-brand);
+         font-family: var(--font-display); font-weight: 900; font-size: 22px;
+         display: flex; align-items: center; justify-content: center; }
+  .bmain { flex: 1 1 0; min-width: 0; margin-left: 20px; }
+  .bt { font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.15;
+        color: var(--text-on-dark); }
+  .bt em { font-style: normal; color: #7fd4a3; }
+  .code { font-family: var(--font-mono); font-size: 15px; line-height: 1.5;
+          color: var(--text-on-dark); margin-top: 8px; white-space: pre; }
+  .code .kw { color: #7fd4a3; }
+  .code .ph { color: var(--stbr-yellow); font-weight: 700; }
+  .code .cm { color: rgba(245,232,202,0.5); }
+  .code .fn { color: #ffffff; font-weight: 700; }
+  .alt { font-family: var(--font-body); font-size: 12.5px; line-height: 1.35;
+         color: rgba(245,232,202,0.66); margin-top: 7px; }
+  .alt code { font-family: var(--font-mono); font-size: 12.5px; color: rgba(245,232,202,0.9); }
+  .rule { margin-top: 18px; background: var(--surface-accent); border-radius: var(--radius-lg);
+          padding: 16px 26px; display: flex; align-items: center; }
+  .rk { flex: 0 0 auto; font-family: var(--font-display); font-weight: 900; font-size: 15px;
+        letter-spacing: .16em; text-transform: uppercase; color: var(--text-on-accent);
+        opacity: .62; }
+  .rt { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.18;
+        color: var(--text-on-accent); margin-left: 24px; }
+  .rt code { font-family: var(--font-mono); font-size: 19px; }
+  .rt b { font-weight: 900; border-bottom: 3px solid rgba(27,35,29,0.45); }
+  .ph2 { font-family: var(--font-body); font-size: 12px; font-weight: 700;
+         color: var(--text-muted); margin-bottom: 10px; letter-spacing: .04em; }
+  .ph2 b { color: var(--stbr-emerald-800); font-family: var(--font-mono); font-weight: 700; }
+</style>
+  <div class="stbr-eyebrow">the reusable template</div>
+  <h2 class="viz-title">every V2 CPI is these three parts</h2>
+  <div class="ph2">placeholders &mdash; swap <b>&lt;rung&gt;</b> for the vault, escrow or swap, and <b>&lt;Instruction&gt;</b> for its instruction</div>
+
+  <div class="panel">
+    <div class="blk">
+      <div class="num">1</div>
+      <div class="bmain">
+        <div class="bt">the accounts struct <em>from the callee&rsquo;s cpi module</em> &mdash; one <code style="font-family:var(--font-mono)">CpiHandle</code> per account</div>
+<div class="code"><span class="kw">let</span> cpi_accounts = <span class="ph">&lt;rung&gt;</span>_cpi::accounts::<span class="ph">&lt;Instruction&gt;</span> {
+    writable_account: ctx.accounts.x.<span class="fn">cpi_handle_mut</span>(),  <span class="cm">// callee will write it</span>
+    readonly_account: ctx.accounts.y.<span class="fn">cpi_handle</span>(),      <span class="cm">// callee only reads it</span>
+};</div>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="num">2</div>
+      <div class="bmain">
+        <div class="bt"><code style="font-family:var(--font-mono)">CpiContext::new</code> with the callee program id <em>via .address()</em> &mdash; an <code style="font-family:var(--font-mono)">&amp;Address</code> in V2</div>
+<div class="code"><span class="kw">let</span> cpi_ctx = CpiContext::<span class="fn">new</span>(ctx.accounts.<span class="ph">&lt;rung&gt;</span>_program.<span class="fn">address</span>(), cpi_accounts);</div>
+        <div class="alt">&hellip;or <code>.with_signer(seeds)</code> / <code>new_with_signer(..)</code> when a PDA of YOURS must sign</div>
+      </div>
+    </div>
+
+    <div class="blk">
+      <div class="num">3</div>
+      <div class="bmain">
+        <div class="bt">the generated wrapper <em>packs the args and invokes</em></div>
+<div class="code"><span class="ph">&lt;rung&gt;</span>_cpi::<span class="ph">&lt;instruction&gt;</span>(cpi_ctx, ..args)?;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule">
+    <span class="rk">rule</span>
+    <div class="rt">Read any typed state you need <b>before step 1</b> &mdash; once the handle borrow is taken, the typed read will not compile.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,114 @@
+id: lesson-mav2-m04-l2
+slug: m04-l2
+title: "The reload footgun is gone"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    solana-address: "2.6.0"
+    wincode: "0.5.5"
+skills:
+  - cpi
+  - anchor
+  - account-model
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: settlement-receipt
+    type: code
+    language: rust
+    starter: settlement-receipt/starter.rs
+    solution: settlement-receipt/solution.rs
+    tests: settlement-receipt/tests.json
+    hints:
+      - "The handles do not die when the TransferChecked literal closes, and not when the let cpi statement ends. They die when transfer_checked takes the CpiContext by value, and that call is the boundary every read has to fall on one side of."
+      - "Only the accounts the CPI was handed are locked, and only as hard as their handle: mint went in through a shared cpi_handle(), which is why reading mint.decimals() inside that same span is not the error and moving it will not help."
+      - "Compiling is half the bar. Whenever amount is non-zero the two numbers in the receipt have to differ, so a fix that only silences E0502 can still report the same balance twice and be graded wrong."
+  - key: check
+    type: quiz
+    questions:
+      - id: m04-l2-q1
+        prompt: "You try to read ctx.accounts.vault's typed balance while a cpi_handle_mut taken from that same vault account is still in scope. What happens in V2?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "It compiles: a CpiHandle borrows the raw AccountInfo, and typed field reads take a separate path the borrow checker misses"
+            correct: false
+            feedback: "It would be a real hole if the handle and the typed read went through different borrows, and that is worth checking rather than assuming. They do not: a CpiHandle is an ordinary Rust borrow of that account field, so a typed read of the same field is the second conflicting borrow and the build stops."
+          - id: a
+            label: "It is a compile error: the live CpiHandle holds a mutable borrow of that account, which excludes typed reads of it."
+            correct: true
+            feedback: "One account wide, no wider — hand the CPI a vault and the config beside it stays readable the whole time. When the handle goes, the read is legal again and already current, because there was never a copy to refresh."
+          - id: b
+            label: "It compiles and returns the pre-CPI value until you call ctx.accounts.vault.reload() to refresh the copy."
+            correct: false
+            feedback: "That is the v1 behavior, and .reload() is a v1 API. V2 removes it and makes the stale read impossible to write in the first place."
+          - id: c
+            label: "It compiles and returns the post-CPI value, because V2's Account<T> is a zero-copy view over live bytes."
+            correct: false
+            feedback: "Account<T> being a zero-copy view is why a read is fresh once the handle drops, but it does not make the read legal while the handle is live: the borrow checker rejects it, so the line never compiles."
+        explanation: "The CpiHandle is a Rust borrow of that one account. While it is alive the borrow checker will not let you also borrow the same account's typed data, so the classic read-during-a-live-CPI line cannot be written — and the lock is exact: accounts you did not hand the CPI stay readable the whole time. Safety here is a property of the type system, not a runtime check you might forget. Once the handle drops the read is legal and already fresh, because V2's Account<T> is a zero-copy view over the account's live buffer rather than a deserialized copy sitting on your stack."
+      - id: m04-l2-q2
+        prompt: "How is this different from the v1 footgun it replaces?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "v1 panicked at runtime whenever a post-CPI read hit an invalidated copy."
+            correct: false
+            feedback: "It did not panic. The deserialized copy was a perfectly valid struct holding an out-of-date number, so v1 quietly handed you old data — silent-and-wrong, which is worse than a panic because nothing points at it."
+          - id: b
+            label: "In v1 the stale read compiled and returned the pre-CPI copy; V2 makes it a compile error."
+            correct: true
+            feedback: "The v1 remedy was one line you had to remember, and forgetting it produced no diagnostic whatsoever — not an error, not a warning, nothing. Trading a silent wrong answer for a loud build failure is the whole of the deal."
+          - id: a
+            label: "v1 also rejected the read at compile time; V2 merely renamed .reload() into an idiom."
+            correct: false
+            feedback: "v1 compiled the stale read just fine, which is why it shipped as a bug so often. And .reload() was a real runtime re-read of the account bytes, not an idiom V2 renamed — V2 deletes it because there is no copy left to refresh."
+          - id: d
+            label: "v1 auto-reloaded each account after a CPI, and V2 dropped that to save the deserialize cost"
+            correct: false
+            feedback: "Auto-refresh was genuinely weighed for V2 and dropped on exactly that cost, so half of this is a real design note filed under the wrong version. v1 refreshed nothing on its own: .reload() was a call you had to remember, and forgetting it produced no diagnostic at all."
+        explanation: "The v1 hazard was invisible: your program compiled, ran, and acted on data from before the CPI, and only a careful test or an incident revealed it. V2 moves the failure from runtime-and-silent to compile-time-and-loud, which is the entire point of the borrow model. v1's only defence was remembering to call .reload() after every mutating CPI — one cheap line whose omission produced no error, no warning, and no panic."
+      - id: m04-l2-q3
+        prompt: "A teammate says the borrow model means you never have to think about account freshness again. Are they right?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Yes: dropping the CpiHandle re-deserializes the account, so every post-CPI read is refreshed."
+            correct: false
+            feedback: "Nothing is re-deserialized. Auto-refreshing accounts after every CPI was one of the designs V2 considered and rejected on cost; the handle only excludes typed access while it is live."
+          - id: c
+            label: "No: it guards typed account access only, not raw AccountInfo lamports or manual byte reads."
+            correct: true
+            feedback: "Auto-refreshing every held account was weighed and dropped: that deserialize cost is the exact thing the rewrite exists to remove. So lamport arithmetic and hand-rolled byte reads stay yours."
+          - id: b
+            label: "Yes: the borrow held by a live CpiHandle covers raw AccountInfo lamports and hand-rolled byte reads too."
+            correct: false
+            feedback: "The borrow model guards typed account access only. Raw AccountInfo lamports and manual reads out of the data buffer stay your responsibility, exactly as they were in v1."
+          - id: d
+            label: "Yes, provided each account the instruction takes goes into the CpiContext, which the derive typically checks for you"
+            correct: false
+            feedback: "Handing everything to the CPI would widen the lock, which is at least the right shape for a guarantee. Nothing checks that you did, and a CPI can touch none of the accounts it was not given, so the lock stays on the handles you actually built and raw lamport reads sit outside it either way."
+        explanation: "The guarantee is precise and worth stating precisely. The compiler stops you from reading typed account data while a handle is live, which kills the common footgun, but it does not refresh values and it does not cover raw lamport or byte-level reads. Knowing the edge of a safety guarantee is part of using it well. Silently re-deserializing every held account after every CPI was ruled out deliberately: eager Account<T> deserialization was the number-one performance complaint that motivated V2, so doing it more often would have reinstated the exact tax the redesign set out to abolish — and it would still miss raw byte reads."
+      - id: m04-l2-q4
+        prompt: "The receipt needs the vault's typed balance once the transfer has landed. What is the V2 idiom?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Call ctx.accounts.vault.reload() after the CPI to refresh the deserialized copy."
+            correct: false
+            feedback: ".reload() is a v1 API that V2 removes, and there is no deserialized copy to refresh: Account<T> is a zero-copy view over the account's live bytes."
+          - id: a
+            label: "Let the cpi_handle_mut drop by ending its scope, then read the typed account."
+            correct: true
+            feedback: "Remembering a call became shaping a scope, and the compiler checks the shape. Snapshotting into a local is the opposite tool: it freezes the old value, so it can never show you the new one."
+          - id: c
+            label: "Copy the field into a local before building the handle, then read that local after the CPI."
+            correct: false
+            feedback: "Capturing into a local up top is the right idiom when you need the pre-CPI value, and it is how the handler grabs sol_bump. But the local is frozen at the instant you copied it, so it can never show the post-CPI balance."
+          - id: d
+            label: "Take a fresh cpi_handle() on the vault after the CPI and read through that one"
+            correct: false
+            feedback: "A handle is how you hand an account to a CPI, not how you read one, and taking a second one is the move that keeps a borrow alive rather than ending it. The read you want is a plain typed field access below the line that consumes the CpiContext."
+        explanation: "The V2 idiom is scope discipline: the handle exists only for the CPI, and once it drops the borrow is released and the live typed data is readable again. Where v1 asked you to remember .reload(), V2 asks you to structure the borrow, and the compiler checks you did. Capturing a value into a local before any handle exists is the complementary idiom for the other direction — it gives you the pre-CPI value — so a post-CPI read must sit below the line that consumes the CpiContext."

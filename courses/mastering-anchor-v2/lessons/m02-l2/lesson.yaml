@@ -1,0 +1,94 @@
+id: lesson-mav2-m02-l2
+slug: m02-l2
+title: "Pod data types, lists in an account, and zero-copy events"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    wincode: "0.5.5"
+    anchor-v2-testing: "2.0.0-rc.1"
+    litesvm: "0.11.0"
+skills:
+  - account-model
+  - anchor
+  - solana-programs
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: high-score-cutoff
+    type: code
+    language: rust
+    starter: high-score-cutoff/starter.rs
+    solution: high-score-cutoff/solution.rs
+    tests: high-score-cutoff/tests.json
+    hints:
+      - "While board.len() < cap, every score is admitted — no comparison needed."
+      - "When the board is full, the decision is `beats_cutoff` — implement it (strictly greater gets in, ties do not) and route the full-board branch of `admit` through it."
+      - "Sort highest-first, truncate to cap, and return the last (smallest) retained score — the truncate matters even for a board that arrives over capacity."
+  - key: check
+    type: quiz
+    questions:
+      - id: m02-l2-q1
+        prompt: "Your high-score Slab has MAX = 10 and is full when a player posts an 11th, higher score. What does the Slab do on its own?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "It wraps to slot 0 like a ring buffer, so the eleventh post overwrites the oldest one"
+            correct: false
+            feedback: "A fixed-capacity buffer that wraps is a familiar shape, and it would make try_push infallible, which is the tell that this is not it. try_push past capacity returns an Err, and which entry to drop is a policy the Slab has no opinion about."
+          - id: a
+            label: "It calls resize_to_capacity(11) for you, so try_push still succeeds on a full board."
+            correct: false
+            feedback: "resize_to_capacity(n) is a real Slab method, but it is an explicit call that reallocs the account and settles rent. try_push past capacity returns an Err; it never reallocs behind your back."
+          - id: b
+            label: "Nothing automatic — you evict yourself; a write past MAX is an error, not a resize."
+            correct: true
+            feedback: "Capacity is fixed when the type compiles, and the admission policy is yours. One method does grow the account, but it reallocs and settles rent, and you call it on purpose."
+          - id: c
+            label: "It drops the oldest entry for you, using the Slab's live-length field to find the stalest slot."
+            correct: false
+            feedback: "There is no built-in eviction policy of any kind. The 4-byte length field tracks how many items are live, not how old they are — admitting and evicting is logic you write."
+        explanation: "A Pod list has a compile-time capacity. You size for the worst case and manage insertion and eviction yourself; a write past MAX is a hard error. That fixed cap is exactly the price of a serialization-free list — the point of the high-score-cutoff challenge. The Slab does have one escape valve, resize_to_capacity(n), which reallocs the account and settles the rent difference — but it is an instruction you deliberately run, never a side effect of try_push, and nothing grows behind your back."
+      - id: m02-l2-q2
+        prompt: "You emit a #[event(bytemuck)] high-score event, but a downstream indexer built for #[event] can't parse it. Why?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "bytemuck events bypass sol_log_data and write to account data instead, so nothing lands in the logs."
+            correct: false
+            feedback: "Both variants lower to sol_log_data and show up as a `Program data:` line on the confirmed transaction. The event is genuinely in the logs — the reader just can't decode it."
+          - id: d
+            label: "Both variants write identical bytes; the reader fails because it decodes the payload before matching the tag"
+            correct: false
+            feedback: "Blaming the reader's order of operations is a fair first theory when the tag matches and the fields come out wrong. The tag matches because both variants prefix the same 8 bytes; what differs is the payload behind it, wincode-serialized in one variant and a raw memcpy in the other."
+          - id: c
+            label: "The two variants put different bytes on the wire: a raw memcpy versus wincode/borsh serialization."
+            correct: true
+            feedback: "Same syscall, same 8-byte tag: the reader matches the event and then mis-decodes it, which is why you get nonsense fields instead of silence."
+          - id: b
+            label: "#[event(bytemuck)] derives a different 8-byte discriminator, so the reader's tag match never fires."
+            correct: false
+            feedback: "The discriminator is derived from the event type the same way in both variants, so the tag match succeeds. The mismatch is in the payload bytes that follow those 8 bytes."
+        explanation: "#[event] is wincode/borsh-wire; #[event(bytemuck)] is a zero-copy memcpy — cheaper by mechanism, though the project publishes no number for that gap (its 3-10x CU figure compares the plain #[event] against v1's borsh events, not bytemuck against plain). Both go out via sol_log_data, but the bytes differ — every consumer must decode with the same variant the program emits. Both also prefix the payload with the same 8-byte event discriminator, so the tag match still succeeds and only the decode fails, which is why the symptom is garbage fields rather than a missing event."
+      - id: m02-l2-q3
+        prompt: "You store the board as a bare [Score; 10] and start getting misaligned-reference warnings when reading a field. What's the right fix?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Move the account to BorshAccount<Cabinet> with a Vec<Score>, since borsh reads at any offset."
+            correct: false
+            feedback: "BorshAccount<T> is a real V2 escape hatch for genuinely variable-length data, but reaching for it here forfeits the byte cast to dodge an alignment issue the Pod wrappers solve directly."
+          - id: a
+            label: "Use PodU64 and Nested<T> so every field's alignment is defined and the byte cast stays sound."
+            correct: true
+            feedback: "The condition the cast needs is a defined alignment on every field. Packing removes it and manufactures the exact reference the warning is pointing at."
+          - id: b
+            label: "Add #[repr(packed)] to the Score struct so the padding the cast is complaining about is removed."
+            correct: false
+            feedback: "repr(packed) is what CREATES misaligned references — taking a reference to a packed field is the footgun, not the fix. It guarantees the exact hazard the warning is pointing at."
+          - id: d
+            label: "Add #[repr(align(8))] to Score so that each tail slot starts on an 8-byte boundary"
+            correct: false
+            feedback: "Naming the alignment you want is a reasonable move, and it does change what the type demands. It does not change where the tail lands: an item sits at whatever offset the header and the 4-byte length field push it to, so raising the requirement makes more of those offsets illegal rather than fewer. Alignment-1 wrappers read correctly from any of them."
+        explanation: "Alignment discipline is the Pod tax. PodU64, #[derive(bytemuck::Pod)], and Nested<T> keep every field aligned so the direct byte cast is valid — PodU64 stores the value as a [u8; 8] with alignment 1, so it reads correctly from any offset in the tail. repr(packed) creates the exact misaligned-reference hazard you're seeing, and dropping to BorshAccount<T> forfeits the whole reason you're using Pod: you'd be paying a whole-list serialize on every touch to solve a field-layout problem."

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The measured optimization loop
+     purpose: fix the four-step cycle in the reader's head with the "exactly one thing" step flagged as load-bearing
+     data: start: baseline CU (from last lesson's Mollusk read) -> step 2: change EXACTLY ONE thing (one flag OR one refactor) -> step 3: re-measure the SAME instruction, same fixture, same command -> step 4: compute delta = after - before -> decision: delta good? -> KEEP + record the one change -> decision: delta bad/zero? -> REVERT -> loop back to step 2 for the next single change invariant: only ONE variable moves per trip around the loop
+     prompt: A clean cyclic flowchart. Four boxes in a loop: Measure, Change one thing, Re-measure, Keep-or-revert, with an arrow back to Change one thing. Put a bold badge on the "Change EXACTLY ONE thing" box reading "one variable per loop". Show the Keep-or-revert box branching to KEEP (record the change) and REVERT. Monospace the command hint under Measure.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:559px;top:-306px;right:-306px;border-radius:54% 63% 59% 40% / 44% 51% 37% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:501px;bottom:-238px;left:-238px;border-radius:59% 61% 56% 41% / 64% 48% 46% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:444px;height:445px;bottom:-232px;left:661px;border-radius:37% 44% 41% 62% / 54% 38% 58% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { position:relative; width:1456px; height:500px; }
+  .lay { position:absolute; top:0; left:0; z-index:0; }
+  .nd { position:absolute; top:0; width:320px; height:196px; box-sizing:border-box;
+        background:var(--surface-card); border:2px solid var(--border-subtle);
+        border-radius:var(--radius-lg); padding:20px 22px; z-index:1; }
+  .stp { font-family:var(--font-body); font-weight:800; font-size:12px;
+         letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-emerald);
+         line-height:1.2; }
+  .nt { font-family:var(--font-display); font-weight:900; font-size:25px; line-height:1.1;
+        color:var(--text-primary); margin-top:10px; }
+  .ns { font-family:var(--font-body); font-size:14px; line-height:1.4;
+        color:var(--text-secondary); margin-top:10px; }
+  .ns.mono { font-family:var(--font-mono); font-size:13px; line-height:1.45; }
+  .nd.acc { background:var(--surface-accent); border:2px solid var(--stbr-dark); }
+  .nd.acc .stp { color:var(--stbr-green-800); }
+  .nd.acc .ns { color:var(--stbr-dark); }
+  .badge { display:inline-block; margin-top:12px; background:var(--surface-inverse);
+           color:var(--text-on-dark); font-family:var(--font-body); font-weight:800;
+           font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+           padding:7px 12px; border-radius:var(--radius-pill); }
+  .dec { position:absolute; left:1088px; top:252px; width:360px; height:128px;
+         box-sizing:border-box; background:var(--surface-card);
+         border:3px solid var(--stbr-dark); border-radius:var(--radius-lg);
+         padding:18px 22px; z-index:1; }
+  .dec .dq { font-family:var(--font-display); font-weight:900; font-size:24px;
+             line-height:1.1; color:var(--text-primary); }
+  .dec .dd { font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);
+             margin-top:10px; line-height:1.4; }
+  .out { position:absolute; left:640px; width:370px; height:60px; box-sizing:border-box;
+         border-radius:var(--radius-md); padding:0 18px; display:flex; align-items:center;
+         z-index:1; }
+  .out .ol { font-family:var(--font-display); font-weight:900; font-size:17px;
+             letter-spacing:.06em; width:96px; flex:0 0 96px; }
+  .out .os { font-family:var(--font-body); font-size:13.5px; line-height:1.3; }
+  .keep { top:252px; background:var(--surface-brand); }
+  .keep .ol, .keep .os { color:var(--text-on-brand); }
+  .rev { top:320px; background:var(--surface-inverse); }
+  .rev .ol, .rev .os { color:var(--text-on-dark); }
+  .yn { position:absolute; z-index:1; font-family:var(--font-body); font-weight:800;
+        font-size:11px; letter-spacing:.1em; color:var(--text-primary);
+        background:var(--surface-paper); border:1px solid var(--border-subtle);
+        border-radius:var(--radius-pill); padding:3px 9px; }
+  .loopchip { position:absolute; left:150px; top:258px; width:350px; z-index:1;
+              text-align:right; }
+  .loopchip .lt { font-family:var(--font-display); font-weight:900; font-size:19px;
+                  color:var(--stbr-green); line-height:1.15; }
+  .loopchip .lsub { font-family:var(--font-body); font-size:13px; color:var(--text-secondary);
+                    margin-top:5px; line-height:1.35; }
+  .band { position:absolute; left:0; top:420px; width:1456px; height:80px;
+          box-sizing:border-box; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:0 32px; display:flex;
+          align-items:center; z-index:1; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+              opacity:.75; width:150px; flex:0 0 150px; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:26px;
+              line-height:1.15; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">measure · change one · re-measure · decide</div>
+  <h2 class="viz-title">the loop only works if one variable moves</h2>
+
+  <div class="stage">
+    <svg class="lay" width="1456" height="500" viewBox="0 0 1456 500">
+      <path d="M 324 98 H 358" stroke="#1b231d" stroke-width="4" fill="none"/>
+      <polygon points="358,89 376,98 358,107" fill="#1b231d"/>
+      <path d="M 700 98 H 734" stroke="#1b231d" stroke-width="4" fill="none"/>
+      <polygon points="734,89 752,98 734,107" fill="#1b231d"/>
+      <path d="M 1076 98 H 1110" stroke="#1b231d" stroke-width="4" fill="none"/>
+      <polygon points="1110,89 1128,98 1110,107" fill="#1b231d"/>
+      <path d="M 1288 200 V 240" stroke="#1b231d" stroke-width="4" fill="none"/>
+      <polygon points="1279,240 1297,240 1288,252" fill="#1b231d"/>
+      <path d="M 1086 316 H 1050 V 282 H 1028" stroke="#008b4c" stroke-width="3" fill="none"/>
+      <polygon points="1028,273 1010,282 1028,291" fill="#008b4c"/>
+      <path d="M 1086 316 H 1050 V 350 H 1028" stroke="#1b231d" stroke-width="3" fill="none"/>
+      <polygon points="1028,341 1010,350 1028,359" fill="#1b231d"/>
+      <path d="M 640 282 H 618 V 350 H 640" stroke="#306c40" stroke-width="3" fill="none"/>
+      <path d="M 618 316 H 536 V 210" stroke="#306c40" stroke-width="4" fill="none"/>
+      <polygon points="527,210 545,210 536,194" fill="#306c40"/>
+    </svg>
+
+    <div class="nd" style="left:0;">
+      <div class="stp">start</div>
+      <div class="nt">measure the baseline</div>
+      <div class="ns mono">baseline CU, from last lesson&#8217;s Mollusk read</div>
+    </div>
+
+    <div class="nd acc" style="left:376px;">
+      <div class="stp">step 2</div>
+      <div class="nt">change EXACTLY one thing</div>
+      <div class="ns">one flag OR one refactor</div>
+      <div class="badge">one variable per loop</div>
+    </div>
+
+    <div class="nd" style="left:752px;">
+      <div class="stp">step 3</div>
+      <div class="nt">re-measure</div>
+      <div class="ns">the SAME instruction, the same fixture, the same command</div>
+    </div>
+
+    <div class="nd" style="left:1128px;">
+      <div class="stp">step 4</div>
+      <div class="nt">compute the delta</div>
+      <div class="ns mono">delta = after &#8722; before</div>
+    </div>
+
+    <div class="dec">
+      <div class="dq">delta good?</div>
+      <div class="dd">good &#8594; keep &nbsp;·&nbsp; bad or zero &#8594; revert</div>
+    </div>
+
+    <div class="yn" style="left:1016px; top:250px;">YES</div>
+    <div class="yn" style="left:1020px; top:362px;">NO</div>
+
+    <div class="out keep">
+      <span class="ol">KEEP</span>
+      <span class="os">and record the one change you made</span>
+    </div>
+    <div class="out rev">
+      <span class="ol">REVERT</span>
+      <span class="os">the change bought nothing &#8212; put it back</span>
+    </div>
+
+    <div class="loopchip">
+      <div class="lt">back to step 2</div>
+      <div class="lsub">for the next single change &#8212; never two at once</div>
+    </div>
+
+    <div class="band">
+      <span class="bk">invariant</span>
+      <span class="bt">only ONE variable moves per trip around the loop</span>
+    </div>
+  </div>
+</div>
+</body></html>

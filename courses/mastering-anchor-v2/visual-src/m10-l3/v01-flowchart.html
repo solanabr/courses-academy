@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Which toolchain builds what
+     purpose: show that the anchor-lang row, not the CLI on PATH, selects the framework major — and that on a source already edited for V2 a stale pin fails LOUDLY, not silently
+     data: Source (edited vault) -> decision: which anchor-lang does Cargo.toml pin? branch A: anchor-lang 1.x (stale pin) -> Address, .address() and &mut Context resolve nowhere in the 1.x crates, under ANY CLI -> build FAILS at every line you edited (no artifact) branch B: anchor-lang 2.0.0-rc.1 (step 1 flips the row) -> emits the V2 deprecations + the E0599 missing-method error on .reload() -> V2 artifact (correct) note: the pin selects the major; the CLI on PATH does not. The silent-v1 case is the UNEDITED vault on a stale pin: it builds clean and behaves like v1, which is why you read the pin before you read the CLI.
+     prompt: Vertical decision flowchart. One source node at top, labelled as the vault you have ALREADY edited for V2, splits on "which anchor-lang does Cargo.toml pin?" into two branches. Left branch (1.x, stale) ends in a red "no artifact - a loud failure" terminal. Right branch (2.0.0-rc.1, flipped in step 1) ends in a green "V2 artifact" terminal, with a callout that this branch is the one that produces the deprecation warnings and the missing-method error the rest of the lesson relies on. Label the branches clearly; the point is that the pin, not the CLI, decides, and that on edited source the wrong pin is loud.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:497px;top:-278px;right:-278px;border-radius:58% 39% 39% 53% / 52% 55% 58% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:470px;height:370px;left:-245px;top:353px;border-radius:41% 36% 63% 58% / 35% 40% 54% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:509px;bottom:-285px;left:568px;border-radius:61% 55% 59% 52% / 38% 52% 64% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .fc-src { width:560px; margin:0 auto; background:var(--surface-card);
+            border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+            padding:12px 22px; text-align:center; }
+  .fc-src .t { font-family:var(--font-display); font-weight:900; font-size:20px;
+               color:var(--text-primary); line-height:1.15; }
+  .fc-src .s { font-family:var(--font-mono); font-size:12.5px; color:var(--text-muted); margin-top:4px; }
+  .fc-stem { display:flex; justify-content:center; }
+  .fc-dec { width:700px; margin:0 auto; background:var(--surface-inverse);
+            border-radius:var(--radius-lg); padding:14px 22px; text-align:center; }
+  .fc-dec .k { font-family:var(--font-display); font-weight:900; font-size:12px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+               opacity:.6; }
+  .fc-dec .q { font-family:var(--font-display); font-weight:900; font-size:23px;
+               color:var(--text-on-dark); line-height:1.15; margin-top:3px; }
+  .fc-cols { display:flex; gap:56px; }
+  .fc-col { width:700px; flex:0 0 700px; }
+  .fc-box { background:var(--surface-card); border:1.5px solid var(--border-subtle);
+            border-radius:var(--radius-lg); padding:12px 18px; }
+  .fc-box + .fc-box { margin-top:10px; }
+  .fc-lab { font-family:var(--font-display); font-weight:900; font-size:11px;
+            letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .fc-h { font-family:var(--font-display); font-weight:900; font-size:19px;
+          color:var(--text-primary); line-height:1.2; }
+  .fc-h code { font-family:var(--font-mono); font-size:18px; }
+  .fc-p { font-family:var(--font-body); font-size:13.5px; line-height:1.4;
+          color:var(--text-secondary); margin-top:4px; }
+  .fc-p code { font-family:var(--font-mono); font-size:12.5px; color:var(--text-primary); font-weight:600; }
+  .fc-term { border-radius:var(--radius-lg); padding:13px 18px; margin-top:10px; }
+  .fc-term.bad { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); }
+  .fc-term.bad .fc-lab { color:var(--stbr-dark); opacity:.7; }
+  .fc-term.bad .fc-h { color:var(--stbr-dark); }
+  .fc-term.bad .fc-p { color:var(--stbr-dark); opacity:.85; }
+  .fc-term.good { background:var(--surface-brand); }
+  .fc-term.good .fc-lab { color:var(--stbr-cream); opacity:.75; }
+  .fc-term.good .fc-h { color:var(--text-on-brand); }
+  .fc-term.good .fc-p { color:var(--stbr-cream); opacity:.9; }
+  .fc-note { margin-top:14px; background:var(--surface-paper);
+             border:1.5px solid var(--border-subtle); border-left:6px solid var(--stbr-emerald);
+             border-radius:var(--radius-md); padding:10px 18px;
+             font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); }
+  .fc-note code { font-family:var(--font-mono); font-size:12.5px; color:var(--text-primary); font-weight:600; }
+</style>
+  <div class="stbr-eyebrow">flip the pin first</div>
+  <h2 class="viz-title">which pin builds what</h2>
+
+  <div class="fc-src">
+    <div class="t">source: the edited vault</div>
+    <div class="s">programs/quarter_vault/src/lib.rs</div>
+  </div>
+
+  <div class="fc-stem">
+    <svg width="24" height="26" viewBox="0 0 24 26">
+      <line x1="12" y1="0" x2="12" y2="16" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="4,15 20,15 12,26" fill="#1b231d"/>
+    </svg>
+  </div>
+
+  <div class="fc-dec">
+    <div class="k">decision</div>
+    <div class="q">which <span style="font-family:var(--font-mono)">anchor-lang</span> does Cargo.toml pin?</div>
+  </div>
+
+  <svg width="1456" height="50" viewBox="0 0 1456 50">
+    <path d="M728 0 L728 18 L350 18 L350 38" stroke="#1b231d" stroke-width="3" fill="none"/>
+    <polygon points="342,37 358,37 350,50" fill="#1b231d"/>
+    <path d="M728 0 L728 18 L1106 18 L1106 38" stroke="#008b4c" stroke-width="3" fill="none"/>
+    <polygon points="1098,37 1114,37 1106,50" fill="#008b4c"/>
+  </svg>
+
+  <div class="fc-cols">
+    <div class="fc-col">
+      <div class="fc-box">
+        <div class="fc-lab">branch a &middot; the stale pin</div>
+        <div class="fc-h"><code>anchor-lang = "1.x"</code> still in the manifest</div>
+        <div class="fc-p">under ANY CLI &mdash; the host 1.1.2 and the RC alike</div>
+      </div>
+      <div class="fc-box">
+        <div class="fc-h">nothing you just edited resolves</div>
+        <div class="fc-p"><code>Address</code>, <code>.address()</code>, <code>&amp;mut Context</code> exist nowhere in the 1.x crates</div>
+      </div>
+      <div class="fc-term bad">
+        <div class="fc-lab">terminal &middot; the failure mode</div>
+        <div class="fc-h">no artifact — a loud failure</div>
+        <div class="fc-p">the compiler names every line you edited. Leave the vault UNedited on this pin and it does build clean, into a v1 artifact — that is the silent case.</div>
+      </div>
+    </div>
+
+    <div class="fc-col">
+      <div class="fc-box">
+        <div class="fc-lab">branch b &middot; the flipped pin</div>
+        <div class="fc-h"><code>anchor-lang = "2.0.0-rc.1"</code></div>
+        <div class="fc-p">step 1 of the port flips this row before any code edit</div>
+      </div>
+      <div class="fc-box">
+        <div class="fc-h">emits V2 deprecations + <code>E0599</code> on <code>.reload()</code></div>
+        <div class="fc-p">the exact output the rest of this lesson reads as instructions</div>
+      </div>
+      <div class="fc-term good">
+        <div class="fc-lab">terminal &middot; correct</div>
+        <div class="fc-h">V2 artifact</div>
+        <div class="fc-p">built from the dependency graph the port actually targets</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-note">No symbol in your source selects a framework major &mdash; the <code>anchor-lang</code> row in <code>Cargo.toml</code> does. The CLI on PATH matters for the CLI&rsquo;s own behavior, not for which major your crate compiles against.</div>
+</div>
+</body></html>

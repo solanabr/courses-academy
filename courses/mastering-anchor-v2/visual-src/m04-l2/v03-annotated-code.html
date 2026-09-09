@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Two handles are legal; the CpiContext carries exactly those borrows
+     purpose: pre-empt the "shouldn't two mutable handles be an error?" reflex, and show the lock is per-field, not struct-wide
+     data: // legal: two DISJOINT fields of one struct, borrowed mutably let ix = Transfer { from: ctx.accounts.sol_vault.cpi_handle_mut(),   // borrows ctx.accounts.sol_vault to:   ctx.accounts.authority.cpi_handle_mut(),   // borrows ctx.accounts.authority }; // the handles MOVE into cpi: the same two borrows, kept alive let cpi = CpiContext::new(&sys, ix); // ctx.accounts.sol_vault / .authority  <-- locked while `cpi` is alive // ctx.accounts.state.credit            <-- still readable: not in this CPI transfer(cpi, amount)?;       // cpi consumed -> both borrows released
+     prompt: A single code panel with two annotation bands. Band one, over the Transfer literal, in a neutral tone: "two disjoint fields, Rust has always allowed this". Band two, from CpiContext::new down to the transfer call, in a warning tone: "the same two borrows, held until the call consumes them" — showing the two CPI'd fields locked and the disjoint state field still readable. Draw a bracket down the left margin spanning band two and label it "CPI'd accounts excluded".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:469px;height:489px;top:-234px;right:-234px;border-radius:38% 57% 39% 45% / 41% 56% 35% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:521px;height:468px;bottom:-244px;left:-244px;border-radius:36% 54% 58% 60% / 49% 42% 56% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:496px;height:494px;bottom:-290px;right:-290px;border-radius:53% 50% 40% 52% / 36% 36% 54% 53%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .ac { display:grid; grid-template-columns:270px 1fr; align-items:stretch; }
+  .marg { padding:0 22px 0 0; display:flex; }
+  .marg.a { align-items:center; }
+  .marg .note { font-family:var(--font-body); font-size:15px; font-weight:600;
+    color:var(--text-muted); line-height:1.3; text-align:right; width:100%; }
+  .marg.b { padding-top:10px; padding-bottom:10px; }
+  .brk { width:100%; border:3px solid var(--stbr-yellow); border-right:0;
+    border-radius:var(--radius-lg) 0 0 var(--radius-lg); padding:18px 20px 18px 18px;
+    display:flex; flex-direction:column; justify-content:center; align-items:flex-end; text-align:right; }
+  .brk .k { font-family:var(--font-display); font-weight:900; font-size:21px;
+    letter-spacing:-.01em; color:var(--text-primary); line-height:1.12; }
+  .brk .s { font-family:var(--font-body); font-size:14px; font-weight:600;
+    color:var(--text-secondary); margin-top:7px; line-height:1.3; }
+  .grp { background:var(--surface-inverse); padding:22px 30px 24px; }
+  .grp.a { border-radius:var(--radius-lg) var(--radius-lg) 0 0; }
+  .grp.b { border-radius:0 0 var(--radius-lg) var(--radius-lg);
+    border-top:1.5px solid rgba(245,232,202,.18);
+    background:linear-gradient(rgba(255,210,63,.09), rgba(255,210,63,.09)), var(--surface-inverse); }
+  .chip { display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:800;
+    letter-spacing:.09em; text-transform:uppercase; padding:6px 13px; border-radius:999px;
+    margin-bottom:14px; }
+  .chip.n { background:rgba(245,232,202,.14); color:var(--stbr-cream); }
+  .chip.w { background:var(--stbr-yellow); color:var(--text-on-accent); }
+  pre { margin:0; font-family:var(--font-mono); font-size:17px; line-height:1.55;
+    color:var(--stbr-cream); white-space:pre; }
+  .cm { color:#8fae95; }
+  .kw { color:#7fd8a6; font-weight:700; }
+  .ty { color:var(--stbr-yellow); }
+  .er { color:#f0a3a3; }
+  .ok { color:#9fdcb4; }
+</style>
+  <div class="stbr-eyebrow">two handles are legal</div>
+  <h2 class="viz-title">the CpiContext carries those borrows — and no more</h2>
+  <div class="ac">
+    <div class="marg a"><div class="note">no bracket here —<br>ordinary Rust field borrows,<br>legal since 1.0</div></div>
+    <div class="grp a">
+      <span class="chip n">two disjoint fields — Rust has always allowed this</span>
+<pre><span class="cm">// legal: two DISJOINT fields of one struct, borrowed mutably</span>
+<span class="kw">let</span> ix = <span class="ty">Transfer</span> {
+    from: ctx.accounts.sol_vault.cpi_handle_mut(),   <span class="cm">// borrows ctx.accounts.sol_vault</span>
+    to:   ctx.accounts.authority.cpi_handle_mut(),   <span class="cm">// borrows ctx.accounts.authority</span>
+};</pre>
+    </div>
+    <div class="marg b"><div class="brk"><div class="k">CPI&rsquo;d accounts<br>excluded</div>
+      <div class="s">those two fields only — from <code>CpiContext::new</code> to the call that consumes it</div></div></div>
+    <div class="grp b">
+      <span class="chip w">the same two borrows, held until the call consumes them</span>
+<pre><span class="cm">// the handles MOVE into cpi: their borrows stay alive, and stay per-field</span>
+<span class="kw">let</span> cpi = <span class="ty">CpiContext</span>::new(&amp;sys, ix);
+<span class="er">// ctx.accounts.sol_vault / .authority  &lt;-- locked while `cpi` is alive</span>
+<span class="ok">// ctx.accounts.state.credit            &lt;-- still readable: not in this CPI</span>
+transfer(cpi, amount)?;       <span class="cm">// cpi consumed -&gt; both borrows released</span></pre>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The reinit surface across three eras
+     purpose: place V2's ungated init_if_needed in the lineage that softened around it
+     data: - v1: init_if_needed is FEATURE-GATED; docs warn loudly; house rule says "never" - the rewrite: reuse-validation designed in (604-line test file backs it, lang-v2 tests 2026-08) - V2: init_if_needed ships with NO feature gate; structural reuse re-checked automatically - what did NOT change: business-state invariants (your live balance) are still your guard
+     prompt: Horizontal four-stop timeline, left to right. Stops: "v1: gated + 'never'", "rewrite: reuse-validation built", "V2: no feature gate", "unchanged: your invariants are yours". Understate it, no marketing gloss. Mark the last stop with a small amber "you own this" tag.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:527px;top:-314px;right:-314px;border-radius:46% 47% 54% 58% / 53% 53% 61% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:507px;height:460px;bottom:-247px;left:-247px;border-radius:44% 48% 42% 54% / 55% 53% 60% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:443px;bottom:-258px;right:-258px;border-radius:42% 42% 42% 59% / 44% 57% 43% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:44px; margin:4px 0 8px; }
+  .t7-lead { font-family:var(--font-body); font-size:19px; color:var(--text-secondary);
+             margin-bottom:26px; }
+
+  .t7-r { display:flex; align-items:flex-end; }
+  .t7-c { flex:0 0 340px; margin:0 12px; }
+
+  .t7-era { font-family:var(--font-display); font-weight:900; font-size:30px;
+            line-height:1.05; color:var(--text-primary); }
+  .t7-c.own .t7-era { color:var(--stbr-emerald-800); }
+  .t7-kick { margin-top:5px; font-family:var(--font-body); font-size:15px; font-weight:800;
+             letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); }
+
+  .t7-rail { position:relative; height:44px; margin-top:14px; }
+  .t7-line { position:absolute; top:19px; left:182px; width:728px; height:6px;
+             background:var(--stbr-emerald); border-radius:var(--radius-pill); }
+  .t7-line2 { position:absolute; top:21px; left:910px; width:364px; height:2px;
+              background:var(--stbr-ink-300); }
+  .t7-dots { position:relative; display:flex; align-items:center; height:44px; }
+  .t7-dot { width:26px; height:26px; border-radius:50%; background:var(--stbr-emerald);
+            border:4px solid var(--stbr-cream); margin:0 auto; }
+  .t7-c.own .t7-dot { width:32px; height:32px; background:var(--stbr-yellow);
+                      border:4px solid var(--stbr-dark); }
+
+  .t7-card { border-radius:var(--radius-lg); background:var(--surface-card);
+             border:1.5px solid var(--border-subtle); border-top:6px solid var(--stbr-emerald);
+             padding:18px 20px 20px; height:208px; }
+  .t7-c.own .t7-card { border:2px solid var(--stbr-yellow-700);
+                       border-top:6px solid var(--stbr-yellow-700); }
+  .t7-card .b { font-family:var(--font-body); font-size:19px; line-height:1.36;
+                color:var(--text-primary); }
+  .t7-card .b code { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                     color:var(--stbr-emerald-800); }
+  .t7-card .b b { font-weight:800; }
+  .t7-card .sub { margin-top:14px; padding-top:12px; border-top:1.5px solid var(--border-subtle);
+                  font-family:var(--font-body); font-size:16px; line-height:1.3;
+                  color:var(--text-secondary); }
+  .t7-tag { display:inline-block; margin-top:14px; font-family:var(--font-body);
+            font-size:14px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase;
+            padding:5px 14px; border-radius:var(--radius-pill);
+            background:var(--surface-accent); color:var(--stbr-dark);
+            border:1.5px solid var(--stbr-yellow-700); }
+</style>
+  <div class="stbr-eyebrow">the reinit surface, three eras</div>
+  <h2 class="viz-title">How init_if_needed lost its feature gate</h2>
+  <div class="t7-lead">The gate came off because the framework took on the structural half of the problem &mdash; not because reinit stopped being a risk.</div>
+
+  <div class="t7-r">
+    <div class="t7-c"><div class="t7-era">v1</div><div class="t7-kick">gated</div></div>
+    <div class="t7-c"><div class="t7-era">the rewrite</div><div class="t7-kick">lang-v2 &middot; 2026-08</div></div>
+    <div class="t7-c"><div class="t7-era">V2</div><div class="t7-kick">shipped</div></div>
+    <div class="t7-c own"><div class="t7-era">unchanged</div><div class="t7-kick">across all three</div></div>
+  </div>
+
+  <div class="t7-rail">
+    <div class="t7-line"></div>
+    <div class="t7-line2"></div>
+    <div class="t7-dots">
+      <div class="t7-c"><div class="t7-dot"></div></div>
+      <div class="t7-c"><div class="t7-dot"></div></div>
+      <div class="t7-c"><div class="t7-dot"></div></div>
+      <div class="t7-c own"><div class="t7-dot"></div></div>
+    </div>
+  </div>
+
+  <div class="t7-r">
+    <div class="t7-c"><div class="t7-card">
+      <div class="b"><code>init_if_needed</code> is <b>feature-gated</b>. You opt in explicitly.</div>
+      <div class="sub">The docs warn loudly, and the house rule is shorter still: never.</div>
+    </div></div>
+
+    <div class="t7-c"><div class="t7-card">
+      <div class="b">Reuse-validation is <b>designed in</b> during the rewrite.</div>
+      <div class="sub">A 604-line test file backs it &mdash; the lang-v2 tests, August 2026.</div>
+    </div></div>
+
+    <div class="t7-c"><div class="t7-card">
+      <div class="b"><code>init_if_needed</code> ships with <b>no feature gate</b>.</div>
+      <div class="sub">Structural reuse &mdash; space, owner, discriminator &mdash; is re-checked automatically.</div>
+    </div></div>
+
+    <div class="t7-c own"><div class="t7-card">
+      <div class="b">Business-state invariants did <b>not</b> move.</div>
+      <div class="sub">Your live balance is still yours to guard, in every era on this line.</div>
+      <span class="t7-tag">you own this</span>
+    </div></div>
+  </div>
+</div>
+</body></html>

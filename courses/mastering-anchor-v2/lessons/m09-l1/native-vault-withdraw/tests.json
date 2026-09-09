@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "input": "100, 40",
+    "expectedOutput": "60",
+    "description": "a normal withdraw returns the remaining balance"
+  },
+  {
+    "id": "t2",
+    "input": "100, 150",
+    "expectedOutput": "-1",
+    "description": "an over-withdraw is rejected with -1 via checked_sub"
+  },
+  {
+    "id": "t3",
+    "input": "100, 0",
+    "expectedOutput": "-2",
+    "description": "a zero-amount withdraw is rejected with -2"
+  },
+  {
+    "id": "t4",
+    "input": "0, 0",
+    "expectedOutput": "-2",
+    "description": "a zero-amount withdraw from an empty vault is still the -2 rejection, not a 0 remainder"
+  },
+  {
+    "id": "t5",
+    "input": "50, 50",
+    "expectedOutput": "0",
+    "description": "draining the vault to exactly zero is allowed"
+  },
+  {
+    "id": "t6",
+    "input": "100, 102",
+    "expectedOutput": "-1",
+    "description": "an over-withdraw by exactly 2 must be the -1 sentinel. A naive (balance as i128) - (amount as i128) yields -2 here, which is the ZERO-AMOUNT code: the sentinels are not arithmetic, they are decisions"
+  },
+  {
+    "id": "t7",
+    "input": "0, 5",
+    "expectedOutput": "-1",
+    "description": "withdrawing from an empty vault is an over-withdraw (-1), not a zero-amount rejection (-2): the guard is on the amount, never on the balance"
+  },
+  {
+    "id": "t8",
+    "input": "18446744073709551615, 1",
+    "expectedOutput": "18446744073709551614",
+    "description": "a u64::MAX balance: the i128 return exists so the full u64 range survives the cast. Doing the subtraction in i64 wraps u64::MAX to -1 and returns -2"
+  }
+]

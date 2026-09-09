@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The native trade-off, honestly costed
+     purpose: give the reader a decision tool for framework vs native
+     data: Dimension            | Anchor V2                          | Native pinocchio Checks on withdraw   | 6, generated (5 by the derive + the dup-mutable walk) | 6, hand-written, omit-at-your-peril Compute              | Account<T> deserialization overhead| minimal, zero-copy byte access Lines to audit       | fewer, but macro-expanded          | more, but every one is visible Failure mode         | miswritten constraint              | forgotten check = exploit When to choose it    | most programs, most of the time    | hot paths where CU is the constraint
+     prompt: Two-column decision table (Anchor V2 vs native pinocchio) across five dimensions. Neutral styling, no winner-loser coloring; the point is the trade, not a verdict. Bold the "When to choose it" row as the takeaway.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:536px;height:521px;top:-322px;right:-322px;border-radius:52% 65% 55% 64% / 49% 38% 40% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:496px;height:385px;left:-280px;top:287px;border-radius:62% 62% 36% 48% / 57% 64% 45% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:568px;height:513px;bottom:-332px;right:-332px;border-radius:65% 42% 59% 41% / 60% 35% 59% 53%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden;
+         background:var(--surface-card); margin-top:2px; }
+  .tr { display:flex; align-items:stretch; }
+  .tr + .tr { border-top:1.5px solid var(--border-subtle); }
+  .th { background:var(--surface-inverse); }
+  .c { flex:1 1 0; min-width:0; padding:17px 24px; display:flex; flex-direction:column;
+       justify-content:center; }
+  .c.dim { flex:0 0 296px; }
+  .c.b, .c.n { border-left:1.5px solid var(--border-subtle); }
+  .th .c.b, .th .c.n { border-left-color:rgba(245,232,202,0.16); }
+  .th .c { padding:14px 24px; }
+  .hk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.50); }
+  .hn { font-family:var(--font-display); font-weight:900; font-size:22px; line-height:1.1;
+        color:var(--text-on-dark); margin-top:4px; }
+  .th .c.dim .hk { color:rgba(245,232,202,0.72); }
+
+  .dl { font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.15;
+        color:var(--text-primary); }
+  .tx { font-family:var(--font-body); font-size:15px; line-height:1.42; color:var(--text-primary); }
+  .tx code { font-family:var(--font-mono); font-size:13.5px; font-weight:700;
+             color:var(--stbr-emerald-800); }
+  .tx em { font-style:normal; color:var(--text-secondary); }
+
+  .tr.key { background:rgba(255,210,63,0.30); }
+  .tr.key .dl { color:var(--text-on-accent); }
+  .tr.key .tx { font-weight:700; }
+  .keytag { display:inline-block; align-self:flex-start; margin-top:7px; padding:3px 11px;
+            border-radius:var(--radius-pill); background:var(--stbr-dark); color:var(--stbr-yellow);
+            font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.12em;
+            text-transform:uppercase; }
+
+  .foot { margin-top:18px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+          padding:17px 28px; display:flex; align-items:center; gap:22px; }
+  .fk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.55); white-space:nowrap; }
+  .ft { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.12;
+        color:var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">the trade, not a verdict</div>
+  <h2 class="viz-title">the native trade-off, honestly costed</h2>
+
+  <div class="tbl">
+    <div class="tr th">
+      <div class="c dim"><span class="hk">dimension</span></div>
+      <div class="c b"><span class="hk">framework</span><span class="hn">Anchor V2</span></div>
+      <div class="c n"><span class="hk">hand-written</span><span class="hn">native pinocchio</span></div>
+    </div>
+
+    <div class="tr">
+      <div class="c dim"><span class="dl">checks on withdraw</span></div>
+      <div class="c b"><span class="tx"><b>6</b>, generated &mdash; <em>5 from the derive attributes + the duplicate-mutable walk</em></span></div>
+      <div class="c n"><span class="tx"><b>6</b>, hand-written &mdash; <em>omit one at your peril</em></span></div>
+    </div>
+
+    <div class="tr">
+      <div class="c dim"><span class="dl">compute</span></div>
+      <div class="c b"><span class="tx"><code>Account&lt;T&gt;</code> deserialization overhead</span></div>
+      <div class="c n"><span class="tx">minimal &mdash; zero-copy byte access</span></div>
+    </div>
+
+    <div class="tr">
+      <div class="c dim"><span class="dl">lines to audit</span></div>
+      <div class="c b"><span class="tx">fewer, but macro-expanded</span></div>
+      <div class="c n"><span class="tx">more, but every one is visible</span></div>
+    </div>
+
+    <div class="tr">
+      <div class="c dim"><span class="dl">failure mode</span></div>
+      <div class="c b"><span class="tx">a miswritten constraint</span></div>
+      <div class="c n"><span class="tx">a forgotten check <b>= an exploit</b></span></div>
+    </div>
+
+    <div class="tr key">
+      <div class="c dim"><span class="dl">when to choose it</span><span class="keytag">the takeaway row</span></div>
+      <div class="c b"><span class="tx">most programs, most of the time</span></div>
+      <div class="c n"><span class="tx">hot paths where CU is the constraint</span></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">read it as</span>
+    <span class="ft">Both columns ship the same six checks. You are choosing who writes them &mdash; and what a mistake costs.</span>
+  </div>
+</div>
+</body></html>

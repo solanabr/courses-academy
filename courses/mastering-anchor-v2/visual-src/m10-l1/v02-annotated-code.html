@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The CpiContext program argument, 0.32 to 1.0
+     purpose: show the exact signature change and why the old call no longer type-checks
+     data: 0.32 (breaks on 1.x): let cpi_ctx = CpiContext::new( ctx.accounts.token_program.to_account_info(),  // AccountInfo Transfer { from, to, authority },              // plain Transfer ); transfer(cpi_ctx, amount)?; 1.0 (compiles): let cpi_ctx = CpiContext::new( ctx.accounts.token_program.key(),              // Pubkey TransferChecked { mint, from, to, authority }, // mint + decimals ); transfer_checked(cpi_ctx, amount, mint.decimals)?;
+     prompt: Two stacked code panels labeled "0.32 (breaks)" and "1.0 (compiles)". Highlight in red the changed argument on line 2 of the top panel (.to_account_info()) and in green its replacement (.key()) in the bottom panel. Highlight the Transfer -> TransferChecked swap and the added decimals argument. Monospace, side comments as shown.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:576px;height:523px;top:-286px;right:-286px;border-radius:43% 60% 47% 52% / 42% 49% 40% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:432px;height:400px;left:-234px;top:334px;border-radius:42% 60% 35% 47% / 41% 65% 46% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:508px;height:546px;bottom:-337px;left:464px;border-radius:61% 59% 39% 57% / 52% 44% 36% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:50px; margin:6px 0 16px; }
+  .pan { background:var(--surface-inverse); border-radius:var(--radius-xl);
+         padding:20px 30px 22px; }
+  .pan + .pan { margin-top:20px; }
+  .phead { display:flex; align-items:center; border-bottom:1px solid rgba(245,232,202,0.18);
+           padding-bottom:14px; margin-bottom:14px; }
+  .pill { font-family:var(--font-display); font-weight:900; font-size:17px; line-height:1;
+          padding:8px 16px; border-radius:var(--radius-pill); }
+  .pill.v032 { background:#c0392b; color:var(--stbr-cream); }
+  .pill.v10  { background:var(--surface-accent); color:var(--text-on-accent); }
+  .phead .pnote { font-family:var(--font-body); font-weight:700; font-size:16px;
+                  color:var(--stbr-ink-300); margin-left:18px; }
+  .ln { display:flex; align-items:center; font-family:var(--font-mono); font-size:19px;
+        line-height:34px; color:var(--stbr-cream); white-space:pre;
+        border-left:4px solid transparent; padding-left:14px; }
+  .ln.bad { background:rgba(192,57,43,0.20); border-left-color:#c0392b; }
+  .ln.fix { background:rgba(255,210,63,0.16); border-left-color:var(--stbr-yellow); }
+  .ln .cd { flex:1; }
+  .cm { color:rgba(245,232,202,0.52); }
+  .tok-bad { border-bottom:2px solid #e0705f; }
+  .tok-fix { color:var(--stbr-yellow); font-weight:700; }
+  .chip { font-family:var(--font-body); font-weight:800; font-size:14px; line-height:1;
+          padding:7px 14px; border-radius:var(--radius-pill); white-space:nowrap;
+          margin-left:24px; }
+  .chip.bad { background:#c0392b; color:var(--stbr-cream); }
+  .chip.fix { background:var(--surface-accent); color:var(--text-on-accent); }
+  .verdict { display:flex; align-items:center; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:18px 30px; margin-top:20px; }
+  .verdict .vk { font-family:var(--font-display); font-weight:900; font-size:16px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-brand);
+                 width:150px; }
+  .verdict .vt { font-family:var(--font-body); font-size:18px; line-height:1.45;
+                 color:var(--text-on-brand); }
+  .verdict .vt b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">cpicontext, 0.32 &rarr; 1.0</div>
+  <h2 class="viz-title">the program argument stopped being an account</h2>
+
+  <div class="pan">
+    <div class="phead">
+      <span class="pill v032">0.32</span>
+      <span class="pnote">breaks on 1.x &mdash; will not type-check</span>
+    </div>
+    <div class="ln"><span class="cd">let cpi_ctx = CpiContext::new(</span></div>
+    <div class="ln bad"><span class="cd">    ctx.accounts.token_program.<span class="tok-bad">to_account_info()</span>,  <span class="cm">// AccountInfo</span></span><span class="chip bad">wrong type in 1.0</span></div>
+    <div class="ln bad"><span class="cd">    <span class="tok-bad">Transfer</span> { from, to, authority },              <span class="cm">// plain Transfer</span></span><span class="chip bad">deprecated CPI</span></div>
+    <div class="ln"><span class="cd">);</span></div>
+    <div class="ln bad"><span class="cd"><span class="tok-bad">transfer</span>(cpi_ctx, amount)?;</span><span class="chip bad">no mint, no decimals</span></div>
+  </div>
+
+  <div class="pan">
+    <div class="phead">
+      <span class="pill v10">1.0</span>
+      <span class="pnote">compiles</span>
+    </div>
+    <div class="ln"><span class="cd">let cpi_ctx = CpiContext::new(</span></div>
+    <div class="ln fix"><span class="cd">    ctx.accounts.token_program.<span class="tok-fix">key()</span>,              <span class="cm">// Pubkey</span></span><span class="chip fix">a program is its address</span></div>
+    <div class="ln fix"><span class="cd">    <span class="tok-fix">TransferChecked</span> { mint, from, to, authority }, <span class="cm">// mint + decimals</span></span><span class="chip fix">mint now required</span></div>
+    <div class="ln"><span class="cd">);</span></div>
+    <div class="ln fix"><span class="cd"><span class="tok-fix">transfer_checked</span>(cpi_ctx, amount, <span class="tok-fix">mint.decimals</span>)?;</span><span class="chip fix">decimals added</span></div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the edit</span>
+    <span class="vt">Swap <b>.to_account_info()</b> for <b>.key()</b> &mdash; the narrower type catches wrong-account bugs at compile time. The same edit forces <b>Transfer &rarr; TransferChecked</b>, so pass the mint and its decimals.</span>
+  </div>
+</div>
+</body></html>

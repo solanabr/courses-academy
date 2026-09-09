@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: "resolve_withdrawal: the guard as a pure function"
+     purpose: give the exact decision procedure and return codes the challenge grades
+     data: fn resolve_withdrawal(balance: u64, rent_exempt_min: u64, requested: u64) -> i64 q1: requested == 0?            -> yes: return -1  (nothing to withdraw) q2: requested > balance?       -> yes: return -2  (would underflow the vault) q3: balance - requested < rent_exempt_min?  -> yes: return -3  (would drop below rent floor, risk closing the PDA) else: return requested as i64  (safe to sign for) invariant: the subtraction in q3 is reached only AFTER q2 proves requested <= balance, so it can never underflow test vectors: (1_000_000, 890_880, 100_000) -> 100_000 ; (_, _, 0) -> -1 ; (500_000, 0, 900_000) -> -2 ; (1_000_000, 950_000, 100_000) -> -3
+     prompt: A vertical decision flowchart with three ordered diamonds (q1 requested==0, q2 requested>balance, q3 remainder<rent floor), each with a red exit returning -1 / -2 / -3, and a final green node returning the requested amount. Annotate the edge from q2 to q3 with "requested <= balance proven here, so q3's subtraction is safe". List the four test vectors in a side panel.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:554px;height:593px;top:-338px;right:-338px;border-radius:58% 57% 41% 55% / 59% 41% 64% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:588px;height:567px;bottom:-335px;left:-335px;border-radius:55% 56% 59% 60% / 50% 49% 44% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:364px;height:507px;bottom:-288px;left:804px;border-radius:62% 47% 49% 47% / 63% 50% 51% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .rw-wrap { display:flex; gap:26px; align-items:flex-start; margin-top:8px; }
+  .rw-flow { width:940px; }
+  .rw-sig { background:var(--surface-inverse); color:var(--stbr-cream);
+            border-radius:var(--radius-md); padding:11px 18px; }
+  .rw-sig .t { font-family:var(--font-mono); font-weight:700; font-size:16px; line-height:1.35; }
+  .rw-sig .t b { color:#7fd8a6; }
+  .rw-ar { display:flex; align-items:center; gap:12px; padding:3px 0 3px 30px; }
+  .rw-ar .no { font-family:var(--font-body); font-weight:700; font-size:14px;
+               color:var(--text-muted); }
+  .rw-inv { font-family:var(--font-body); font-weight:700; font-size:14px; line-height:1.28;
+            background:var(--stbr-yellow); color:var(--stbr-dark);
+            border:1.5px solid var(--stbr-yellow-700); border-radius:var(--radius-sm);
+            padding:6px 13px; }
+  .rw-q { display:flex; align-items:center; gap:12px; border:2px solid var(--border-subtle);
+          border-radius:var(--radius-md); background:var(--surface-card); padding:10px 14px; }
+  .rw-dia { position:relative; width:28px; height:28px; flex:0 0 28px; }
+  .rw-dia i { position:absolute; left:4px; top:4px; width:20px; height:20px;
+              background:var(--surface-brand); transform:rotate(45deg); display:block; }
+  .rw-q .qb { flex:1; }
+  .rw-q .ql { font-family:var(--font-display); font-weight:900; font-size:12px;
+              letter-spacing:0.15em; text-transform:uppercase; color:var(--stbr-emerald-800); }
+  .rw-q .qt { font-family:var(--font-mono); font-weight:700; font-size:18px; line-height:1.25;
+              color:var(--text-primary); margin-top:2px; }
+  .rw-yes { flex:0 0 auto; text-align:center; white-space:nowrap;
+            font-family:var(--font-body); font-weight:700;
+            font-size:13px; letter-spacing:0.1em; text-transform:uppercase;
+            color:var(--text-muted); }
+  .rw-exit { flex:0 0 318px; background:var(--surface-inverse); color:var(--stbr-cream);
+             border-radius:var(--radius-sm); padding:8px 13px; }
+  .rw-exit .r { font-family:var(--font-mono); font-weight:700; font-size:17px; }
+  .rw-exit .e { font-family:var(--font-body); font-size:13px; line-height:1.28;
+                opacity:0.84; margin-top:2px; }
+  .rw-final { display:flex; align-items:center; gap:14px; background:var(--surface-brand);
+              color:var(--stbr-cream); border-radius:var(--radius-md); padding:12px 18px; }
+  .rw-final .r { font-family:var(--font-mono); font-weight:700; font-size:19px; }
+  .rw-final .e { font-family:var(--font-body); font-size:15px; opacity:0.9; }
+  .rw-side { width:490px; border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+             background:var(--surface-card); padding:16px 18px; }
+  .rw-side .hd { font-family:var(--font-display); font-weight:900; font-size:13px;
+                 letter-spacing:0.15em; text-transform:uppercase; color:var(--stbr-emerald-800); }
+  .rw-side .sub { font-family:var(--font-body); font-size:14px; line-height:1.3;
+                  color:var(--text-secondary); margin-top:5px; }
+  .rw-tv { width:100%; border-collapse:separate; border-spacing:0; margin-top:12px; }
+  .rw-tv th { text-align:left; padding:7px 10px; background:var(--surface-inverse);
+              color:var(--stbr-cream); font-family:var(--font-display); font-weight:900;
+              font-size:11px; letter-spacing:0.11em; text-transform:uppercase; }
+  .rw-tv th:first-child { border-top-left-radius:var(--radius-sm); }
+  .rw-tv th:last-child  { border-top-right-radius:var(--radius-sm); text-align:right; }
+  .rw-tv td { padding:9px 10px; border-bottom:1.5px solid var(--border-subtle);
+              font-family:var(--font-mono); font-size:14px; color:var(--text-primary); }
+  .rw-tv td.out { text-align:right; font-weight:700; color:var(--stbr-emerald-800); }
+  .rw-tv td.neg { color:var(--text-muted); }
+  .rw-tv tr:last-child td { border-bottom:0; }
+  .rw-ord { margin-top:13px; border-radius:var(--radius-sm); padding:9px 12px;
+            background:rgba(0,139,76,0.10); border:1.5px solid rgba(0,139,76,0.30);
+            font-family:var(--font-body); font-size:14px; line-height:1.32;
+            color:var(--stbr-emerald-800); }
+</style>
+  <div class="stbr-eyebrow">the guard as a pure function</div>
+  <h2 class="viz-title">resolve_withdrawal, decision by decision</h2>
+
+  <div class="rw-wrap">
+    <div class="rw-flow">
+      <div class="rw-sig"><div class="t">fn resolve_withdrawal(balance: u64, rent_exempt_min: u64, requested: u64) -&gt; <b>i64</b></div></div>
+
+      <div class="rw-ar">
+        <svg width="20" height="24" viewBox="0 0 20 24"><line x1="10" y1="0" x2="10" y2="14" stroke="#1b231d" stroke-width="2.5"/><polygon points="10,24 4,13 16,13" fill="#1b231d"/></svg>
+      </div>
+
+      <div class="rw-q">
+        <div class="rw-dia"><i></i></div>
+        <div class="qb"><div class="ql">q1</div><div class="qt">requested == 0 ?</div></div>
+        <div class="rw-yes">yes &rarr;</div>
+        <div class="rw-exit"><div class="r">return -1</div><div class="e">nothing to withdraw</div></div>
+      </div>
+
+      <div class="rw-ar">
+        <svg width="20" height="24" viewBox="0 0 20 24"><line x1="10" y1="0" x2="10" y2="14" stroke="#1b231d" stroke-width="2.5"/><polygon points="10,24 4,13 16,13" fill="#1b231d"/></svg>
+        <span class="no">no</span>
+      </div>
+
+      <div class="rw-q">
+        <div class="rw-dia"><i></i></div>
+        <div class="qb"><div class="ql">q2</div><div class="qt">requested &gt; balance ?</div></div>
+        <div class="rw-yes">yes &rarr;</div>
+        <div class="rw-exit"><div class="r">return -2</div><div class="e">would underflow the vault</div></div>
+      </div>
+
+      <div class="rw-ar">
+        <svg width="20" height="24" viewBox="0 0 20 24"><line x1="10" y1="0" x2="10" y2="14" stroke="#008b4c" stroke-width="2.5"/><polygon points="10,24 4,13 16,13" fill="#008b4c"/></svg>
+        <span class="rw-inv">no &mdash; and <b>requested &le; balance is proven here</b>, so q3&rsquo;s subtraction can never underflow</span>
+      </div>
+
+      <div class="rw-q">
+        <div class="rw-dia"><i></i></div>
+        <div class="qb"><div class="ql">q3</div><div class="qt">balance - requested &lt; rent_exempt_min ?</div></div>
+        <div class="rw-yes">yes &rarr;</div>
+        <div class="rw-exit"><div class="r">return -3</div><div class="e">would drop below the rent floor and risk closing the PDA</div></div>
+      </div>
+
+      <div class="rw-ar">
+        <svg width="20" height="24" viewBox="0 0 20 24"><line x1="10" y1="0" x2="10" y2="14" stroke="#008b4c" stroke-width="2.5"/><polygon points="10,24 4,13 16,13" fill="#008b4c"/></svg>
+        <span class="no">no</span>
+      </div>
+
+      <div class="rw-final">
+        <div class="r">return requested as i64</div>
+        <div class="e">&mdash; safe to sign for</div>
+      </div>
+    </div>
+
+    <div class="rw-side">
+      <div class="hd">test vectors the challenge grades</div>
+      <div class="sub">arguments in declaration order: (balance, rent_exempt_min, requested)</div>
+      <table class="rw-tv">
+        <tr><th>arguments</th><th>returns</th></tr>
+        <tr><td>(1_000_000, 890_880, 100_000)</td><td class="out">100_000</td></tr>
+        <tr><td>(_, _, 0)</td><td class="out neg">-1</td></tr>
+        <tr><td>(500_000, 0, 900_000)</td><td class="out neg">-2</td></tr>
+        <tr><td>(1_000_000, 950_000, 100_000)</td><td class="out neg">-3</td></tr>
+      </table>
+      <div class="rw-ord">The order of the three questions is part of the contract: q1 and q2 must run before q3, or q3&rsquo;s subtraction is no longer safe.</div>
+    </div>
+  </div>
+</div>
+</body></html>

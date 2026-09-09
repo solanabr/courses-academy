@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Reading the has_one deprecation as an instruction
+     purpose: teach the reader to treat the warning's own text as the edit to make, not as noise to silence
+     data: Compiler output: warning: use of deprecated function `__deprecated_has_one`: `has_one` is deprecated; on the sibling field, use `#[account(address = owner.field)]` instead. -> programs/quarter_vault/src/lib.rs:71:18 | 71 |         has_one = authority, |         ^^^^^^^  the span parse.rs kept precisely so this underline could exist Annotation 1: "is deprecated" -> still compiles + passes today, so it will NOT block your test Annotation 2: "on the sibling field, use address = owner.field" -> the literal replacement: address = state.authority Annotation 3: the underline points at the exact token to delete; codegen has the span on purpose Action: move the check onto the sibling authority account as `#[account(address = state.authority)]`, rebuild until deprecation count = 0
+     prompt: Render a terminal-style compiler warning block (monospace) with three call-out annotations pulled to the side by leader lines: one on "is deprecated" (explaining it will not fail the test), one on the suggested replacement text (mapping it to `address = state.authority`), and one on the caret underline (noting the parser stored the span deliberately). Below, a single green "Action" line with the resulting constraint. The point of the graphic is that the warning literally spells out the next edit.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:481px;height:501px;top:-244px;right:-244px;border-radius:51% 57% 64% 37% / 35% 63% 37% 59%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:500px;height:504px;left:-304px;top:171px;border-radius:41% 41% 35% 42% / 45% 45% 57% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:560px;height:546px;bottom:-318px;right:-318px;border-radius:41% 64% 57% 37% / 55% 62% 36% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:26px; align-items:flex-start; }
+  .term { width:806px; flex:0 0 806px; background:var(--surface-inverse);
+          border-radius:var(--radius-xl); padding:20px 24px 22px; }
+  .term .top { font-family:var(--font-mono); font-size:12px; color:var(--stbr-cream);
+               opacity:.5; letter-spacing:.04em; margin-bottom:14px; }
+  .wl { font-family:var(--font-mono); font-size:13.5px; line-height:1.75;
+        color:var(--stbr-cream); white-space:pre-wrap; }
+  .wl.g { opacity:.4; }
+  .wtag { color:var(--stbr-yellow); font-weight:700; }
+  .caret { color:var(--stbr-yellow); font-weight:700; }
+  .hi { background:var(--stbr-yellow); color:var(--stbr-dark); padding:1px 5px;
+        border-radius:3px; font-weight:600; }
+  .ul { border-bottom:2px solid rgba(245,232,202,0.55); padding-bottom:1px; }
+  .num { display:inline-block; width:20px; height:20px; line-height:20px;
+         text-align:center; border-radius:50%; font-family:var(--font-display);
+         font-weight:900; font-size:12px; background:var(--stbr-cream);
+         color:var(--stbr-dark); margin-left:7px; vertical-align:2px; }
+  .num.y { background:var(--stbr-yellow); }
+
+  .notes { flex:1; }
+  .note { background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:13px 16px; display:flex; gap:12px;
+          align-items:flex-start; }
+  .note + .note { margin-top:13px; }
+  .note.key { border:2px solid var(--stbr-yellow-700); background:rgba(255,210,63,0.16); }
+  .nnum { flex:0 0 26px; width:26px; height:26px; line-height:26px; text-align:center;
+          border-radius:50%; background:var(--surface-inverse); color:var(--stbr-cream);
+          font-family:var(--font-display); font-weight:900; font-size:14px; }
+  .note.key .nnum { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .nbody { flex:1; }
+  .nq { font-family:var(--font-mono); font-size:13px; color:var(--text-primary);
+        font-weight:600; line-height:1.3; }
+  .np { font-family:var(--font-body); font-size:13.5px; line-height:1.45;
+        color:var(--text-secondary); margin-top:6px; }
+  .np code { font-family:var(--font-mono); font-size:13px; color:var(--text-primary);
+             font-weight:600; }
+  .action { margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg);
+            padding:14px 24px; display:flex; align-items:center; gap:18px; }
+  .action .ak { font-family:var(--font-display); font-weight:900; font-size:12px;
+                letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+                opacity:.7; flex:0 0 auto; }
+  .action .at { font-family:var(--font-display); font-weight:900; font-size:19px;
+                line-height:1.25; color:var(--text-on-brand); }
+  .action .at code { font-family:var(--font-mono); font-size:18px; }
+</style>
+  <div class="stbr-eyebrow">the warning spells out the edit</div>
+  <h2 class="viz-title">reading the has_one deprecation as an instruction</h2>
+
+  <div class="cols">
+    <div class="term">
+      <div class="top">$ cargo build &nbsp;&middot;&nbsp; anchor-cli 2.0.0-rc.1</div>
+      <div class="wl"><span class="wtag">warning</span>: use of deprecated function `__deprecated_has_one`:
+         `has_one` <span class="ul">is deprecated</span><span class="num">1</span>; on the sibling field,
+         use <span class="hi">`#[account(address = owner.field)]`</span><span class="num y">2</span> instead.</div>
+      <div class="wl g">  --&gt; programs/quarter_vault/src/lib.rs:71:18</div>
+      <div class="wl g">   |</div>
+      <div class="wl"><span class="g">71 |</span>         has_one = authority,</div>
+      <div class="wl"><span class="g">   |</span>         <span class="caret">^^^^^^^</span><span class="num">3</span></div>
+      <div class="wl g">   |</div>
+      <div class="wl g">warning: `quarter_vault` generated 1 warning</div>
+    </div>
+
+    <div class="notes">
+      <div class="note">
+        <div class="nnum">1</div>
+        <div class="nbody">
+          <div class="nq">&ldquo;is deprecated&rdquo;</div>
+          <div class="np">It still compiles and the test still passes today &mdash; so this will <b>not</b> block you. That is exactly why it is easy to ship with it left in.</div>
+        </div>
+      </div>
+
+      <div class="note key">
+        <div class="nnum">2</div>
+        <div class="nbody">
+          <div class="nq">&ldquo;on the sibling field, use address = owner.field&rdquo;</div>
+          <div class="np">That is the literal replacement, already written for you. Here <code>owner.field</code> resolves to <code>address = state.authority</code>.</div>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="nnum">3</div>
+        <div class="nbody">
+          <div class="nq">the <span style="font-family:var(--font-mono)">^^^^^^^</span> underline</div>
+          <div class="np">It points at the exact token to delete. Codegen keeps that span on purpose &mdash; <code>parse.rs</code> holds it precisely so this underline can exist.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="action">
+    <div class="ak">action</div>
+    <div class="at">Move the check onto the sibling authority account &mdash; <code>#[account(address = state.authority)]</code> &mdash; and rebuild until the deprecation count is 0.</div>
+  </div>
+</div>
+</body></html>

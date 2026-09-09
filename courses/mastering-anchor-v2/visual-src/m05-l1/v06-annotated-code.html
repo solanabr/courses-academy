@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The CPI call diff, system transfer to transfer_checked
+     purpose: make the one-verb custody change concrete around an unchanged signer-seeds block
+     data: THE MOVE, UNCHANGED (rebuild seeds from a STORED bump, attach .with_signer): BEFORE: let signer_seeds = [b"sol",   owner,         [state.sol_bump]];  // the sol-vault PDA signed AFTER:  let signer_seeds = [b"vault", authority_key, [vault.bump]];      // the state PDA signs; sol_bump retires BEFORE (lamports): system_program::transfer( CpiContext::new(system_program.address(), Transfer { from: sol_vault, to: authority }) .with_signer(signer_seeds), amount)?; AFTER (SPL): token_interface::transfer_checked( CpiContext::new(token_program.address(), TransferChecked { from: vault_token_account.cpi_handle_mut(), mint: mint.cpi_handle(),                       // + the mint account rides along to:   authority_token_account.cpi_handle_mut(), authority: vault.cpi_handle(), }).with_signer(signer_seeds), amount, decimals)?;                              // + the decimals argument
+     prompt: Two stacked code panels, BEFORE (amber) and AFTER (green), with a neutral band ABOVE both holding the two signer_seeds lines side by side under the header "same move, different account". In the AFTER panel, tag the three new pieces (the mint field, the trailing decimals arg, token_program.address()) with small "+ new in SPL" margin notes. Monospace throughout.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:519px;height:518px;top:-309px;right:-309px;border-radius:58% 57% 51% 54% / 55% 51% 43% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:540px;height:478px;bottom:-282px;left:-282px;border-radius:57% 65% 54% 41% / 48% 44% 62% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:453px;height:560px;bottom:-311px;left:517px;border-radius:46% 57% 57% 35% / 59% 63% 49% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .band { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:14px 22px; margin-top:2px;
+          display:flex; align-items:center; gap:22px; }
+  .bl { flex:0 0 auto; }
+  .bl .bt { font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.1;
+            color:var(--text-primary); }
+  .bl .bs { font-family:var(--font-body); font-weight:700; font-size:11px; letter-spacing:.13em;
+            text-transform:uppercase; color:var(--stbr-emerald); margin-top:4px; }
+  .seeds { flex:1 1 auto; display:flex; gap:18px; }
+  .sd { flex:1 1 0; min-width:0; border-left:3px solid var(--border-subtle); padding:2px 0 2px 14px; }
+  .sd.now { border-left-color:var(--stbr-emerald); }
+  .sd .sk { font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.13em;
+            text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+  .sd .sv { font-family:var(--font-mono); font-size:14px; line-height:1.35; color:var(--text-primary); }
+  .sd .sn { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:3px; }
+
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-lg);
+           padding:16px 26px 18px; margin-top:16px; }
+  .plab { display:inline-block; padding:5px 13px; border-radius:var(--radius-pill);
+          font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.13em;
+          text-transform:uppercase; margin-bottom:10px; }
+  .plab.before { background:rgba(245,232,202,0.14); color:rgba(245,232,202,0.80); }
+  .plab.after  { background:var(--surface-brand); color:var(--text-on-brand); }
+  .code { font-family:var(--font-mono); font-size:15px; line-height:1.52; color:var(--text-on-dark);
+          white-space:pre; }
+  .code .dim { color:rgba(245,232,202,0.46); }
+  .new { color:var(--stbr-yellow); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">system transfer &rarr; transfer_checked</div>
+  <h2 class="viz-title">the cpi call, one verb apart</h2>
+
+  <div class="band">
+    <div class="bl">
+      <div class="bt">same move,<br>different account</div>
+      <div class="bs">rebuild seeds from a STORED bump</div>
+    </div>
+    <div class="seeds">
+      <div class="sd">
+        <div class="sk">before</div>
+        <div class="sv">[b"sol", owner, [state.sol_bump]]</div>
+        <div class="sn">the sol-vault PDA signed</div>
+      </div>
+      <div class="sd now">
+        <div class="sk">after</div>
+        <div class="sv">[b"vault", authority_key, [vault.bump]]</div>
+        <div class="sn">the state PDA signs; sol_bump retires</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="plab before">before &middot; lamports</span>
+<div class="code">system_program::transfer(
+    CpiContext::new(system_program.address(),
+        Transfer { from: sol_vault, to: authority })
+        .with_signer(signer_seeds),
+    amount)?;</div>
+  </div>
+
+  <div class="panel">
+    <span class="plab after">after &middot; spl</span>
+<div class="code">token_interface::transfer_checked(
+    CpiContext::new(token_program.address(),          <span class="new">+ new in SPL</span>
+        TransferChecked {
+            from: vault_token_account.cpi_handle_mut(),
+            mint: mint.cpi_handle(),                  <span class="new">+ new in SPL &mdash; the mint rides along</span>
+            to:   authority_token_account.cpi_handle_mut(),
+            authority: vault.cpi_handle(),
+        }).with_signer(signer_seeds),
+    amount, decimals)?;                               <span class="new">+ new in SPL &mdash; the decimals argument</span></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "description": "one Address + one u64 + one bool: 8 discriminator + 32 + 8 + 1",
+    "input": "1, 1, 1",
+    "expectedOutput": "49"
+  },
+  {
+    "id": "t2",
+    "description": "two Addresses + three u64 + no bool: 8 + 64 + 24",
+    "input": "2, 3, 0",
+    "expectedOutput": "96"
+  },
+  {
+    "id": "t3",
+    "description": "empty struct still carries the 8-byte discriminator",
+    "input": "0, 0, 0",
+    "expectedOutput": "8"
+  },
+  {
+    "id": "t4",
+    "description": "one Address + two bools: 8 + 32 + 2",
+    "input": "1, 0, 2",
+    "expectedOutput": "42"
+  },
+  {
+    "id": "t5",
+    "input": "18446744073709551615, 0, 0",
+    "expectedOutput": "0",
+    "description": "no struct has this many fields, and that is the point: it is a garbage count, the kind the caller hands you when something upstream is wrong. The guard has to refuse it with 0. Add the discriminator outside the chain (`...unwrap_or(0) + 8`) and the answer is 8 instead — a refusal dressed up as an empty account"
+  }
+]

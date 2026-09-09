@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Three ways an account gets signed for
+     purpose: place PDA signing next to the wallet model the reader already knows
+     data: compare three signing paths for a source account: - WALLET (keypair): holder signs the tx off-chain with a private key -> runtime verifies the ed25519 signature - PDA via invoke_signed: NO private key exists; program calls invoke_signed with [seeds..., canonical_bump]; runtime re-derives address from seeds + program_id; if it matches, runtime marks the PDA as signer for this CPI only - forged attempt: any other program presents the seeds -> re-derivation uses THAT program's id -> address does NOT match -> not signed key point: PDA signing authority is bound to the OWNING program's id; only it can sign for seeds it owns
+     prompt: Three horizontal lanes, one per signing path in the data. Lane 1 (wallet): a key icon -> signature -> runtime check. Lane 2 (PDA): program box -> invoke_signed with a seeds+bump chip -> runtime "re-derive from seeds + program_id" box -> green "marked as signer" result. Lane 3 (forged): a different program box -> same re-derive box -> red "no match, rejected". Emphasize that lanes 2 and 3 hit the SAME re-derivation gate and only the owning program passes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:513px;height:525px;top:-270px;right:-270px;border-radius:61% 62% 40% 58% / 55% 62% 57% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:580px;height:500px;bottom:-290px;left:-290px;border-radius:38% 52% 41% 40% / 55% 49% 62% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:554px;height:540px;bottom:-340px;right:-340px;border-radius:48% 52% 54% 62% / 52% 58% 37% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .sg-lane { display:flex; align-items:flex-start; margin-bottom:13px; }
+  .sg-rail { width:186px; height:104px; border-radius:var(--radius-md); padding:14px 16px;
+             box-sizing:border-box; }
+  .sg-rail .k { font-family:var(--font-display); font-weight:900; font-size:13px;
+                letter-spacing:0.15em; text-transform:uppercase; }
+  .sg-rail .n { font-family:var(--font-display); font-weight:900; font-size:19px;
+                line-height:1.12; margin-top:4px; }
+  .sg-r1 { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .sg-r2 { background:var(--surface-brand); color:var(--stbr-cream); }
+  .sg-r3 { background:var(--surface-brand-deep); color:var(--stbr-cream); }
+  .sg-node { height:104px; box-sizing:border-box; border-radius:var(--radius-md);
+             border:2px solid var(--border-subtle); background:var(--surface-card);
+             padding:14px 16px; }
+  .sg-node .t { font-family:var(--font-mono); font-weight:700; font-size:16px;
+                line-height:1.3; color:var(--text-primary); }
+  .sg-node .d { font-family:var(--font-body); font-size:14px; line-height:1.3;
+                color:var(--text-secondary); margin-top:6px; }
+  .sg-a { width:28px; height:104px; padding-top:44px; box-sizing:border-box; text-align:center; }
+  .sg-gate { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); }
+  .sg-gate .t { color:var(--stbr-dark); }
+  .sg-gate .d { color:var(--stbr-dark); opacity:0.82; }
+  .sg-plain { background:var(--surface-paper); }
+  .sg-ok { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .sg-ok .t { color:var(--stbr-cream); }
+  .sg-ok .d { color:var(--stbr-cream); opacity:0.86; }
+  .sg-no { background:var(--surface-inverse); border-color:var(--surface-inverse); }
+  .sg-no .t { color:var(--stbr-cream); }
+  .sg-no .d { color:var(--stbr-cream); opacity:0.86; }
+  .sg-w1 { width:292px; } .sg-w2 { width:316px; } .sg-w3 { width:296px; } .sg-w4 { width:254px; }
+  .sg-key { margin-top:8px; background:var(--surface-brand); color:var(--stbr-cream);
+            border-radius:var(--radius-md); padding:16px 26px;
+            font-family:var(--font-display); font-weight:900; font-size:21px;
+            line-height:1.24; letter-spacing:-0.01em; }
+  .sg-key b { color:var(--stbr-yellow); }
+  .sg-same { font-family:var(--font-body); font-weight:700; font-size:14px;
+             color:var(--text-secondary); margin:0 0 8px 868px; }
+</style>
+  <div class="stbr-eyebrow">signing, three ways</div>
+  <h2 class="viz-title">Only the owning program can sign for its seeds</h2>
+
+  <div class="sg-lane">
+  <div class="sg-rail sg-r1"><div class="k">lane 1</div><div class="n">wallet</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#1b231d"/></svg></div>
+  <div class="sg-node  sg-w1"><div class="t">keypair holder</div><div class="d">holds the private key for this address</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#1b231d"/></svg></div>
+  <div class="sg-node sg-plain sg-w2"><div class="t">signs the tx off-chain</div><div class="d">ed25519 signature over the message</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#1b231d"/></svg></div>
+  <div class="sg-node  sg-w3"><div class="t">runtime verifies the signature</div><div class="d">a key-based gate</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#1b231d"/></svg></div>
+  <div class="sg-node sg-ok sg-w4"><div class="t">signed</div><div class="d">the classic model</div></div>
+  </div>
+
+  <div class="sg-lane">
+  <div class="sg-rail sg-r2"><div class="k">lane 2</div><div class="n">PDA via<br>invoke_signed</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#008b4c"/></svg></div>
+  <div class="sg-node  sg-w1"><div class="t">the OWNING program</div><div class="d">NO private key exists for this address</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#008b4c"/></svg></div>
+  <div class="sg-node sg-plain sg-w2"><div class="t">invoke_signed([seeds.., bump])</div><div class="d">passes the canonical bump stored at init</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#008b4c"/></svg></div>
+  <div class="sg-node sg-gate sg-w3"><div class="t">re-derive from<br>seeds + program_id</div><div class="d">the gate both PDA lanes hit</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#008b4c"/></svg></div>
+  <div class="sg-node sg-ok sg-w4"><div class="t">match &rarr; marked as signer</div><div class="d">for this CPI only</div></div>
+  </div>
+
+  <div class="sg-lane">
+  <div class="sg-rail sg-r3"><div class="k">lane 3</div><div class="n">forged<br>attempt</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#306c40"/></svg></div>
+  <div class="sg-node  sg-w1"><div class="t">ANY other program</div><div class="d">presents the exact same seeds</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#306c40"/></svg></div>
+  <div class="sg-node sg-plain sg-w2"><div class="t">invoke_signed([same seeds, bump])</div><div class="d">seeds are public &mdash; copying them is free</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#306c40"/></svg></div>
+  <div class="sg-node sg-gate sg-w3"><div class="t">re-derive from<br>seeds + program_id</div><div class="d">but with THAT program&rsquo;s id</div></div>
+  <div class="sg-a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="18" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="26,8 17,3 17,13" fill="#306c40"/></svg></div>
+  <div class="sg-node sg-no sg-w4"><div class="t">no match &rarr; not signed</div><div class="d">rejected</div></div>
+  </div>
+
+  <div class="sg-same">&#8593;&nbsp; same yellow gate, only the program_id differs</div>
+
+  <div class="sg-key">PDA signing authority is bound to the <b>owning program&rsquo;s id</b> &mdash; only that program can sign for the seeds it owns.</div>
+</div>
+</body></html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Account<T> as a typed window onto raw account bytes
+     purpose: show the wrapper points at the buffer rather than owning a decoded copy
+     data: account buffer (owned by the runtime): [ 8-byte discriminator | play_count 8B | high_score 8B ] Account<Cabinet> = Slab<Cabinet, HeaderOnly> -> holds a pointer to the buffer, not a decoded struct -> account.play_count reads bytes [8..16] as PodU64 -> account.high_score reads bytes [16..24] as PodU64 -> a write goes straight to the buffer; there is no encode-on-exit
+     prompt: A single wide byte-strip at the bottom labeled "account buffer (runtime-owned)" divided into three segments: discriminator (8B), play_count (8B), high_score (8B). Above it a box labeled "Account<Cabinet> = Slab<Cabinet, HeaderOnly>" with two arrows pointing DOWN into the play_count and high_score segments, annotated "offset read, no copy". Make clear the box holds a pointer, not data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:476px;top:-276px;right:-276px;border-radius:50% 48% 61% 63% / 46% 44% 44% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:429px;bottom:-243px;left:-243px;border-radius:36% 36% 50% 42% / 37% 49% 45% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:593px;height:509px;bottom:-305px;right:-305px;border-radius:55% 52% 45% 65% / 45% 65% 53% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { margin-top:6px; }
+  .ptr { border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+         background:var(--surface-card); overflow:hidden; }
+  .ptr .top { background:var(--surface-inverse); padding:16px 26px; display:flex;
+              align-items:center; justify-content:space-between; gap:20px; }
+  .ptr .top .name { font-family:var(--font-mono); font-weight:800; font-size:22px;
+                    color:var(--text-on-dark); }
+  .ptr .top .tag { font-family:var(--font-body); font-weight:800; font-size:13px;
+                   letter-spacing:.04em; padding:7px 16px; border-radius:var(--radius-pill);
+                   background:var(--surface-accent); color:var(--text-on-accent); white-space:nowrap; }
+  .ptr .sub { padding:13px 26px; font-family:var(--font-body); font-size:15px;
+              color:var(--text-secondary); border-bottom:1.5px solid var(--border-subtle); }
+  .ptr .sub b { color:var(--text-primary); font-weight:700; }
+  .cells { display:flex; }
+  .cell { flex:1 1 0; padding:16px 22px; border-right:1.5px solid var(--border-subtle);
+          min-height:76px; display:flex; flex-direction:column; justify-content:center; }
+  .cell:last-child { border-right:0; }
+  .cell .fld { font-family:var(--font-mono); font-weight:800; font-size:17px; color:var(--text-primary); }
+  .cell .rng { font-family:var(--font-body); font-size:13px; color:var(--text-muted); margin-top:4px; }
+  .cell.blank .fld { font-family:var(--font-body); font-weight:700; font-size:14px; color:var(--text-muted); line-height:1.35; }
+
+  .band { display:flex; }
+  .bcell { flex:1 1 0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+           padding-top:2px; height:112px; }
+  .bcell svg { display:block; }
+  .acap { margin-top:8px; padding:6px 14px; border-radius:var(--radius-pill);
+          background:var(--surface-accent); color:var(--text-on-accent);
+          font-family:var(--font-body); font-weight:800; font-size:12.5px; white-space:nowrap; }
+
+  .strip { display:flex; border:2px solid var(--border-strong); border-radius:var(--radius-md);
+           overflow:hidden; background:var(--surface-card); }
+  .seg { flex:1 1 0; padding:18px 22px; border-right:2px solid var(--stbr-dark); }
+  .seg:last-child { border-right:0; }
+  .seg.skip { background:var(--stbr-ink-100); }
+  .seg.hit  { background:rgba(0,139,76,0.13); }
+  .seg .sn { font-family:var(--font-mono); font-weight:800; font-size:17px; color:var(--text-primary); }
+  .seg.skip .sn { color:var(--text-secondary); }
+  .seg .so { font-family:var(--font-body); font-weight:700; font-size:13px; margin-top:5px;
+             letter-spacing:.06em; color:var(--text-muted); }
+  .seg.hit .so { color:var(--stbr-emerald-800); }
+  .cap { margin-top:12px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+  .cap .l { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.12em;
+            text-transform:uppercase; color:var(--text-secondary); }
+  .cap .r { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+  .cap .r b { color:var(--text-primary); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">the wrapper is a window, not a box</div>
+  <h2 class="viz-title">Account&lt;T&gt; points at the bytes</h2>
+  <div class="wrap">
+
+    <div class="ptr">
+      <div class="top">
+        <span class="name">Account&lt;Cabinet&gt; = Slab&lt;Cabinet, HeaderOnly&gt;</span>
+        <span class="tag">holds a pointer, not data</span>
+      </div>
+      <div class="sub">it holds a <b>pointer to the buffer</b>, never a decoded struct &mdash; and a write goes straight to the buffer, so there is <b>no encode-on-exit</b>.</div>
+      <div class="cells">
+        <div class="cell blank"><div class="fld">the 8-byte discriminator is checked,<br>then stepped over</div></div>
+        <div class="cell"><div class="fld">account.play_count</div><div class="rng">reads bytes [8..16] as PodU64</div></div>
+        <div class="cell"><div class="fld">account.high_score</div><div class="rng">reads bytes [16..24] as PodU64</div></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <div class="bcell"></div>
+      <div class="bcell">
+        <svg width="22" height="64"><line x1="11" y1="0" x2="11" y2="52" stroke="#1b231d" stroke-width="2.5"/><polygon points="11,64 5,50 17,50" fill="#1b231d"/></svg>
+        <span class="acap">offset read, no copy</span>
+      </div>
+      <div class="bcell">
+        <svg width="22" height="64"><line x1="11" y1="0" x2="11" y2="52" stroke="#1b231d" stroke-width="2.5"/><polygon points="11,64 5,50 17,50" fill="#1b231d"/></svg>
+        <span class="acap">offset read, no copy</span>
+      </div>
+    </div>
+
+    <div class="strip">
+      <div class="seg skip"><div class="sn">discriminator</div><div class="so">8 B &middot; [0..8]</div></div>
+      <div class="seg hit"><div class="sn">play_count</div><div class="so">8 B &middot; [8..16]</div></div>
+      <div class="seg hit"><div class="sn">high_score</div><div class="so">8 B &middot; [16..24]</div></div>
+    </div>
+    <div class="cap">
+      <span class="l">account buffer (runtime-owned)</span>
+      <span class="r">the only bytes that exist &mdash; <b>there is no second, decoded copy</b></span>
+    </div>
+
+  </div>
+</div>
+</body></html>

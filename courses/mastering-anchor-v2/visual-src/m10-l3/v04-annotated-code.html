@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The missing method is the migration step
+     purpose: show that the copied v1 tail produces exactly ONE error, and that the read above it is legal
+     data: Compiler output (V2), ONE error: error[E0599]: no method named `reload` found for `BorshAccount<VaultState>` |  let cpi_ctx = CpiContext::new_with_signer(.., Transfer { |      from: ctx.accounts.vault.cpi_handle_mut(), |      to: ctx.accounts.authority.cpi_handle_mut() }, signer); |  let before = ctx.accounts.state.total_withdrawn;  // COMPILES: state is not handed to this CPI |  system_program::transfer(cpi_ctx, amount)?; |  ctx.accounts.state.reload()?;  // ^^^^^^ method not found Read it as one instruction: E0599 -> delete the .reload()? line; nothing changes underneath a loaded typed account, so there is nothing to refresh Not an error: the typed read above it. This transfer's handles are on vault and authority; state is a disjoint account, so nothing excludes reading it. Hand state itself to a CPI with cpi_handle_mut() and THAT read becomes the compile error. Result: one line stops the build; the exclusion lands on the accounts the CPI actually takes
+     prompt: Two-panel annotated code graphic. Left panel: the copied v1-style withdraw tail with ONE red error banner (E0599 no reload) and a leader line to the .reload() line, plus a muted annotation marking the typed read above it as legal. Right panel: the fix as a green annotation (delete reload) and a second card explaining why the read above it stands. Monospace code. The graphic should read as "error text -> exact edit", reinforcing let-the-compiler-drive.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:482px;height:502px;top:-264px;right:-264px;border-radius:51% 42% 55% 43% / 40% 42% 65% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:447px;height:419px;bottom:-229px;left:-229px;border-radius:42% 56% 52% 52% / 64% 35% 62% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:517px;bottom:-274px;right:-274px;border-radius:42% 35% 65% 47% / 46% 58% 64% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:26px; align-items:stretch; }
+  .term { width:846px; flex:0 0 846px; background:var(--surface-inverse);
+          border-radius:var(--radius-xl); padding:18px 22px 20px; }
+  .term .top { font-family:var(--font-mono); font-size:12px; color:var(--stbr-cream);
+               opacity:.5; letter-spacing:.04em; margin-bottom:12px; }
+  .err { border-left:4px solid var(--stbr-yellow); padding:8px 0 8px 14px; }
+  .err + .err { margin-top:14px; }
+  .ecode { display:inline-block; background:var(--stbr-yellow); color:var(--stbr-dark);
+           font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+           padding:2px 9px; border-radius:var(--radius-sm); margin-bottom:6px; }
+  .emsg { font-family:var(--font-mono); font-size:13.5px; line-height:1.4;
+          color:var(--stbr-cream); }
+  .code { margin-top:9px; }
+  .ln { font-family:var(--font-mono); font-size:13px; line-height:1.55;
+        color:var(--stbr-cream); white-space:pre; }
+  .ln .g { opacity:.35; }
+  .ln .c { color:var(--stbr-yellow); }
+  .ln .d { opacity:.55; }
+
+  .fixes { flex:1; }
+  .fix + .fix { margin-top:14px; }
+  .fix { background:var(--surface-card); border:1.5px solid var(--border-subtle);
+         border-top:5px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+         padding:14px 18px; }
+  .fix .fh { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  .fix .fb { font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+             background:var(--stbr-dark); color:var(--stbr-cream);
+             padding:2px 9px; border-radius:var(--radius-sm); }
+  .fix .fl { font-family:var(--font-display); font-weight:900; font-size:11px;
+             letter-spacing:.13em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .fix .ft { font-family:var(--font-display); font-weight:900; font-size:19px;
+             line-height:1.2; color:var(--text-primary); }
+  .fix .fp { font-family:var(--font-body); font-size:13.5px; line-height:1.45;
+             color:var(--text-secondary); margin-top:7px; }
+  .fix .fp code { font-family:var(--font-mono); font-size:12.5px; color:var(--text-primary);
+                  font-weight:600; }
+  .result { margin-top:16px; background:var(--surface-brand); border-radius:var(--radius-lg);
+            padding:13px 24px; display:flex; align-items:center; gap:18px; }
+  .result .rk { font-family:var(--font-display); font-weight:900; font-size:12px;
+                letter-spacing:.14em; text-transform:uppercase;
+                color:var(--stbr-cream); opacity:.7; flex:0 0 auto; }
+  .result .rt { font-family:var(--font-display); font-weight:900; font-size:19px;
+                line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">the error text is the edit</div>
+  <h2 class="viz-title">the missing method is the migration step</h2>
+
+  <div class="cols">
+    <div class="term">
+      <div class="top">$ cargo build &nbsp;&middot;&nbsp; anchor-cli 2.0.0-rc.1</div>
+
+      <div class="err">
+        <span class="ecode">error[E0599]</span>
+        <div class="emsg">no method named <span class="c">`reload`</span> found for <span class="c">`BorshAccount&lt;VaultState&gt;`</span></div>
+        <div class="code">
+<div class="ln"><span class="g">  |</span>  let cpi_ctx = CpiContext::new_with_signer(.., Transfer {</div>
+<div class="ln"><span class="g">  |</span>      from: ctx.accounts.vault.cpi_handle_mut(),</div>
+<div class="ln"><span class="g">  |</span>      to:   ctx.accounts.authority.cpi_handle_mut() }, signer);</div>
+<div class="ln"><span class="g">  |</span>  let before = ctx.accounts.state.total_withdrawn;</div>
+<div class="ln"><span class="g">  |</span>               <span class="d">compiles &mdash; state is not handed to this CPI</span></div>
+<div class="ln"><span class="g">  |</span>  system_program::transfer(cpi_ctx, amount)?;</div>
+<div class="ln"><span class="g">  |</span>  ctx.accounts.state.reload()?;</div>
+<div class="ln"><span class="g">  |</span>                     <span class="c">^^^^^^</span> <span class="d">method not found in this scope</span></div>
+        </div>
+      </div>
+
+      <div class="err">
+        <span class="ecode">1 error</span>
+        <div class="emsg">the borrow checker never fires on this tail</div>
+      </div>
+    </div>
+
+    <div class="fixes">
+      <div class="fix">
+        <div class="fh"><span class="fb">E0599</span><span class="fl">reads as</span></div>
+        <div class="ft">delete the <span style="font-family:var(--font-mono);font-size:18px">.reload()?</span> line</div>
+        <div class="fp">The method is gone by design. Nothing changes underneath a loaded typed account, so there is nothing to refresh &mdash; and nothing to call.</div>
+      </div>
+
+      <div class="fix">
+        <div class="fh"><span class="fb">no error</span><span class="fl">why the read stands</span></div>
+        <div class="ft">state is not this CPI&rsquo;s account</div>
+        <div class="fp">The handles here are on <code>vault</code> and <code>authority</code>. <code>state</code> is disjoint, so nothing excludes reading it. Hand <code>state</code> itself over with <code>cpi_handle_mut()</code> and <b>that</b> read is the compile error.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="result">
+    <div class="rk">result</div>
+    <div class="rt">One line stops the build &mdash; the exclusion lands on the accounts the CPI actually takes.</div>
+  </div>
+</div>
+</body></html>

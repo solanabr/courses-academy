@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Close-and-revival inside one transaction
+     purpose: show why moving lamports alone is not a close, and where zeroing plus a guard breaks the revival
+     data: ix A (hand-rolled close, VULN): move lamports out -> realloc to 0 -> return   (discriminator NOT zeroed) ix B (same tx, attacker): transfer lamports back in -> account revived with old data + valid discriminator ix C (same tx, attacker): call the program again over the revived account -> passes validation -> double-spend --- SAFE (close = maker, or explicit): zero the data + write closed sentinel + assign to system program -> ix B revives an account with no valid discriminator -> ix C rejected at load
+     prompt: A horizontal timeline of one transaction with three instructions A, B, C in the vulnerable path (warning tone), showing the account reviving between them. Below it a green "SAFE" bar showing the zero+sentinel step that makes the revived account fail validation. Emphasize that zeroing the discriminator is the break.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:527px;height:492px;top:-263px;right:-263px;border-radius:40% 39% 50% 64% / 53% 35% 41% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:427px;height:446px;left:-233px;top:240px;border-radius:64% 53% 38% 53% / 39% 41% 35% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:472px;height:440px;bottom:-231px;right:-231px;border-radius:57% 39% 62% 53% / 37% 64% 53% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 20px; }
+  .tl { position:relative; height:52px; }
+  .tl .cap { position:absolute; left:60px; top:0; font-family:var(--font-body);
+             font-weight:800; font-size:12px; letter-spacing:.12em;
+             text-transform:uppercase; color:var(--text-secondary); }
+  .tl svg { position:absolute; left:0; top:22px; }
+  .cards { display:flex; align-items:stretch; }
+  .c { width:465px; flex-grow:0; flex-shrink:0; border:2px solid #c0392b;
+       border-radius:var(--radius-lg); background:var(--surface-card); padding:16px 18px; }
+  .c + .c { margin-left:30px; }
+  .c .ck { font-family:var(--font-display); font-weight:900; font-size:14px;
+           letter-spacing:.1em; text-transform:uppercase; color:#c0392b; }
+  .c .ct { font-family:var(--font-display); font-weight:800; font-size:19px;
+           line-height:1.2; color:var(--text-primary); margin-top:8px; }
+  .c .cs { font-family:var(--font-mono); font-size:13.5px; line-height:1.5;
+           color:var(--text-secondary); margin-top:10px; }
+  .c .st { margin-top:12px; border-top:1px solid var(--border-subtle); padding-top:9px;
+           font-family:var(--font-body); font-size:13px; line-height:1.4;
+           color:#96271b; font-weight:600; }
+  .safe { margin-top:22px; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:20px 24px; display:flex;
+          align-items:center; }
+  .safe .sk { width:140px; flex-grow:0; flex-shrink:0; padding-right:18px; }
+  .safe .sk .t { font-family:var(--font-display); font-weight:900; font-size:24px;
+                 line-height:1.05; color:var(--text-on-brand); }
+  .safe .sk .s { font-family:var(--font-body); font-size:12.5px; line-height:1.35;
+                 color:var(--stbr-cream); opacity:.85; margin-top:6px; }
+  .break { width:380px; flex-grow:0; flex-shrink:0; background:var(--surface-accent);
+           border-radius:var(--radius-md); padding:13px 16px; }
+  .break .bk { font-family:var(--font-body); font-weight:800; font-size:11px;
+               letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-accent);
+               opacity:.72; }
+  .break .bt { font-family:var(--font-mono); font-weight:700; font-size:15px;
+               line-height:1.45; color:var(--text-on-accent); margin-top:7px; }
+  .sa { width:40px; flex-grow:0; flex-shrink:0; text-align:center; }
+  .sres { width:404px; flex-grow:0; flex-shrink:0; border:2px solid var(--stbr-cream);
+          border-radius:var(--radius-md); padding:12px 15px; }
+  .sres .rt { font-family:var(--font-body); font-weight:700; font-size:14.5px;
+              line-height:1.4; color:var(--stbr-cream); }
+  .sres .rs { font-family:var(--font-mono); font-size:12.5px; line-height:1.4;
+              color:var(--stbr-cream); opacity:.82; margin-top:7px; }
+</style>
+  <div class="stbr-eyebrow">class 6 · close-and-revival</div>
+  <h2 class="viz-title">moving the lamports out is not a close</h2>
+
+  <div class="tl">
+    <div class="cap">one transaction &middot; the vulnerable path</div>
+    <svg width="1456" height="26" viewBox="0 0 1456 26">
+      <line x1="60" y1="13" x2="1396" y2="13" stroke="#c0392b" stroke-width="3"/>
+      <polygon points="1396,5 1412,13 1396,21" fill="#c0392b"/>
+      <circle cx="232" cy="13" r="9" fill="#c0392b"/>
+      <circle cx="727" cy="13" r="9" fill="#c0392b"/>
+      <circle cx="1222" cy="13" r="9" fill="#c0392b"/>
+    </svg>
+  </div>
+
+  <div class="cards">
+    <div class="c">
+      <div class="ck">ix A &middot; your hand-rolled close</div>
+      <div class="ct">lamports out, realloc to 0</div>
+      <div class="cs">move lamports out<br>realloc(0)<br>return</div>
+      <div class="st">the discriminator was never zeroed</div>
+    </div>
+    <div class="c">
+      <div class="ck">ix B &middot; attacker, same tx</div>
+      <div class="ct">transfer lamports back in</div>
+      <div class="cs">system transfer -&gt; account<br>rent-exempt again</div>
+      <div class="st">revived: old data + a valid discriminator</div>
+    </div>
+    <div class="c">
+      <div class="ck">ix C &middot; attacker, same tx</div>
+      <div class="ct">call the program again</div>
+      <div class="cs">load(revived account)<br>-&gt; passes validation</div>
+      <div class="st">double-spend of the same escrow</div>
+    </div>
+  </div>
+
+  <div class="safe">
+    <div class="sk">
+      <div class="t">safe</div>
+      <div class="s">close = maker, or the same steps by hand</div>
+    </div>
+    <div class="break">
+      <div class="bk">the break</div>
+      <div class="bt">zero the data<br>+ write the closed sentinel<br>+ assign to the system program</div>
+    </div>
+    <div class="sa"><svg width="44" height="16" viewBox="0 0 44 16"><line x1="0" y1="8" x2="32" y2="8" stroke="#f5e8ca" stroke-width="3"/><polygon points="32,1 44,8 32,15" fill="#f5e8ca"/></svg></div>
+    <div class="sres">
+      <div class="rt">ix B now revives an empty account</div>
+      <div class="rs">lamports return, but there is no valid discriminator to find</div>
+    </div>
+    <div class="sa"><svg width="44" height="16" viewBox="0 0 44 16"><line x1="0" y1="8" x2="32" y2="8" stroke="#f5e8ca" stroke-width="3"/><polygon points="32,1 44,8 32,15" fill="#f5e8ca"/></svg></div>
+    <div class="sres">
+      <div class="rt">ix C is rejected at load</div>
+      <div class="rs">AccountDiscriminatorMismatch, before any handler runs</div>
+    </div>
+  </div>
+</div>
+</body></html>

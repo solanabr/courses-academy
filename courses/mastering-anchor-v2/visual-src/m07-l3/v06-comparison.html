@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Stateless versus stateful fuzzing
+     purpose: show why the deep accumulated-state bug is out of budget without --stateful
+     data: Stateless (default): world: a fresh clone of the post-setup snapshot every iteration executes: a whole mutated sequence, up to --max-actions (default 8), then discards it reaches: bugs inside one instruction and inside short sequences from a shallow start cannot reach: states that need far more than --max-actions steps; every try re-pays for step 1 command: anchor fuzz run token_ticket_swap constant_product_holds --release Stateful (--stateful): world: a coverage-indexed pool of live states (--pool-size, default 256000) executes: ONE mutated action per iteration, applied to a state drawn from the pool reaches: deep accumulated state up to --max-depth (default 15) - drain-then-refill, rounding residue cost: ~an order of magnitude more throughput, paid in memory as the pool grows command: anchor fuzz run token_ticket_swap constant_product_holds --release --stateful
+     prompt: Two side-by-side timelines. Top "Stateless": four short segments each labeled "clone snapshot -> 8 actions -> check -> discard", all starting from the same shallow origin line. Bottom "Stateful": one continuous timeline "setup -> action -> check -> action -> check -> ..." growing out of a state pool, with a red marker fifteen actions deep labeled "bug only exists here". Emphasize that the deep marker sits past where the top timeline's repeated restarts can afford to go.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:548px;height:560px;top:-322px;right:-322px;border-radius:53% 50% 49% 44% / 50% 61% 54% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:498px;height:479px;bottom:-223px;left:-223px;border-radius:58% 43% 61% 59% / 39% 39% 65% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:508px;height:431px;bottom:-222px;right:-222px;border-radius:55% 37% 56% 58% / 49% 65% 37% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 42px; margin: 4px 0 14px; }
+  .pair { display: flex; gap: 20px; align-items: stretch; }
+  .card { flex: 1 1 0; min-width: 0; background: var(--surface-card);
+          border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+          overflow: hidden; display: flex; flex-direction: column; }
+  .ch { height: 54px; padding: 0 20px; display: flex; align-items: center;
+        justify-content: space-between; background: var(--surface-inverse); }
+  .card.sf .ch { background: var(--surface-brand); }
+  .cht { font-family: var(--font-display); font-weight: 900; font-size: 20px;
+         color: var(--text-on-dark); }
+  .chf { font-family: var(--font-mono); font-weight: 700; font-size: 12.5px;
+         color: rgba(245,232,202,0.7); }
+  .attrs { flex: 1 1 0; padding: 14px 20px 4px; }
+  .a { margin-bottom: 10px; }
+  .ak { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .13em;
+        text-transform: uppercase; color: var(--stbr-emerald); }
+  .av { font-family: var(--font-body); font-size: 13px; line-height: 1.36;
+        color: var(--text-primary); margin-top: 2px; }
+  .av.dim { color: var(--text-secondary); }
+  .av code, .cl code { font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+                       color: var(--stbr-emerald-800); }
+  .cl { margin: 0 14px 14px; background: var(--surface-inverse); border-radius: var(--radius-md);
+        padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; line-height: 1.4;
+        color: var(--text-on-dark); }
+  .cl b { color: var(--stbr-yellow); font-weight: 700; }
+  .strip { margin-top: 16px; background: var(--surface-card);
+           border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+           padding: 14px 20px 16px; }
+  .stitle { font-family: var(--font-body); font-weight: 800; font-size: 10.5px;
+            letter-spacing: .13em; text-transform: uppercase; color: var(--text-muted);
+            margin-bottom: 10px; }
+  .sline { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .sline:last-child { margin-bottom: 0; }
+  .slab { flex: 0 0 214px; font-family: var(--font-body); font-size: 12px; line-height: 1.3;
+          color: var(--text-secondary); }
+  .slab b { display: block; font-family: var(--font-display); font-weight: 900; font-size: 16px;
+            color: var(--text-primary); }
+  .tcol { flex: 1 1 0; min-width: 0; }
+  .track { display: flex; gap: 4px; margin-bottom: 5px; }
+  .track:last-child { margin-bottom: 0; }
+  .cell { flex: 1 1 0; height: 13px; border-radius: 2px; background: var(--stbr-emerald); }
+  .cell.off { background: rgba(27,35,29,0.07); }
+  .track.deep .cell { height: 26px; border-radius: 3px; }
+  .cell.bug { background: var(--stbr-yellow); }
+  .scale { display: flex; gap: 4px; }
+  .sc { flex: 1 1 0; text-align: center; font-family: var(--font-body); font-weight: 700;
+        font-size: 10px; color: var(--stbr-ink-300); }
+  .sc.mark { color: var(--stbr-green-800); }
+  .buglab { display: flex; justify-content: flex-end; align-items: center; gap: 8px;
+            margin-bottom: 5px; padding-right: 31px; }
+  .bugchip { background: var(--surface-accent); color: var(--text-on-accent);
+             border-radius: var(--radius-pill); padding: 4px 12px 5px;
+             font-family: var(--font-body); font-weight: 800; font-size: 11px; }
+  .verdict { margin-top: 14px; background: var(--surface-brand-deep); border-radius: var(--radius-lg);
+             padding: 12px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.72); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.16;
+        color: var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">one flag, a different world</div>
+  <h2 class="viz-title">stateless versus stateful fuzzing</h2>
+
+  <div class="pair">
+    <div class="card">
+      <div class="ch"><span class="cht">Stateless</span><span class="chf">default</span></div>
+      <div class="attrs">
+        <div class="a"><div class="ak">world</div><div class="av">a fresh clone of the post-setup snapshot, every iteration</div></div>
+        <div class="a"><div class="ak">executes</div><div class="av">a whole mutated sequence, up to <code>--max-actions</code> (default 8), then discards it</div></div>
+        <div class="a"><div class="ak">reaches</div><div class="av">bugs inside one instruction, and inside short sequences from a shallow start</div></div>
+        <div class="a"><div class="ak">cannot reach</div><div class="av dim">states that need far more than <code>--max-actions</code> steps &mdash; every try re-pays for step 1</div></div>
+      </div>
+      <div class="cl">anchor fuzz run token_ticket_swap<br>constant_product_holds --release</div>
+    </div>
+
+    <div class="card sf">
+      <div class="ch"><span class="cht">Stateful</span><span class="chf">--stateful</span></div>
+      <div class="attrs">
+        <div class="a"><div class="ak">world</div><div class="av">a coverage-indexed pool of live states (<code>--pool-size</code>, default 256000)</div></div>
+        <div class="a"><div class="ak">executes</div><div class="av">ONE mutated action per iteration, applied to a state drawn from the pool</div></div>
+        <div class="a"><div class="ak">reaches</div><div class="av">deep accumulated state up to <code>--max-depth</code> (default 15) &mdash; drain-then-refill, rounding residue</div></div>
+        <div class="a"><div class="ak">cost</div><div class="av dim">~an order of magnitude more throughput, paid in memory as the pool grows</div></div>
+      </div>
+      <div class="cl">anchor fuzz run token_ticket_swap<br>constant_product_holds --release <b>--stateful</b></div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="stitle">the same depth axis &mdash; actions accumulated on one world</div>
+
+    <div class="sline">
+      <div class="slab"><b>Stateless</b>four runs, each cloned back to the shallow origin</div>
+      <div class="tcol">
+        <div class="track">
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div>
+        </div>
+        <div class="track">
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div>
+        </div>
+        <div class="track">
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div>
+        </div>
+        <div class="track">
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div><div class="cell off"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sline">
+      <div class="slab"><b>Stateful</b>one continuous run, growing out of the state pool</div>
+      <div class="tcol">
+        <div class="buglab">
+          <span class="bugchip">bug only exists here</span>
+          <svg width="14" height="14" viewBox="0 0 14 14"><line x1="7" y1="0" x2="7" y2="7" stroke="#d9a608" stroke-width="2.6"/><polygon points="7,14 2,5 12,5" fill="#d9a608"/></svg>
+        </div>
+        <div class="track deep">
+          <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell bug"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sline">
+      <div class="slab" style="color:var(--text-muted);font-weight:700">actions deep &rarr;</div>
+      <div class="tcol">
+        <div class="scale">
+          <div class="sc">1</div><div class="sc">2</div><div class="sc">3</div><div class="sc">4</div><div class="sc">5</div><div class="sc">6</div><div class="sc">7</div><div class="sc mark">8</div><div class="sc">9</div><div class="sc">10</div><div class="sc">11</div><div class="sc">12</div><div class="sc">13</div><div class="sc">14</div><div class="sc mark">15</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">why the flag matters</span>
+    <span class="vt">The deep bug sits at depth 15. Stateless restarts can afford eight &mdash; so no amount of stateless wall-clock time ever arrives.</span>
+  </div>
+</div>
+</body></html>

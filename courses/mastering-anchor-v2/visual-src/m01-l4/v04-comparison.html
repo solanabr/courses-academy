@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The three discriminator namespaces (and the one that surprises you)
+     purpose: map each item kind to its real preimage prefix and flag the global: trap
+     data: item kind          | preimage prefix | example preimage       | maps to account struct     | account:        | account:Marquee        | Account<Marquee> owner+type check event struct       | event:          | event:MarqueeLit       | emitted log tag for indexers instruction handler| global:         | global:greet           | dispatcher routing tag TRAP: an instruction is NOT "instruction:<Name>", it is "global:<Name>"
+     prompt: Three-row comparison card, one row per item kind, columns for prefix, example preimage, and what it maps to. Render the instruction-handler row with a warning accent and a callout box reading: an instruction handler hashes from global:, never instruction:. Keep account and event rows neutral so the global: row is the visual focus.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:490px;height:439px;top:-253px;right:-253px;border-radius:45% 54% 56% 48% / 57% 63% 62% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:503px;height:487px;bottom:-297px;left:-297px;border-radius:41% 50% 44% 57% / 50% 43% 50% 63%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:411px;height:502px;bottom:-301px;left:689px;border-radius:55% 35% 45% 59% / 58% 41% 51% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p4-tbl  { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+             overflow:hidden; background:var(--surface-card); }
+  .p4-r    { display:flex; align-items:stretch; border-bottom:1.5px solid var(--border-subtle); }
+  .p4-r:last-child { border-bottom:0; }
+  .p4-hd   { background:var(--surface-inverse); }
+  .p4-c    { padding:16px 22px; display:flex; flex-direction:column; justify-content:center; }
+  .p4-c1   { flex:0 0 330px; }
+  .p4-c2   { flex:0 0 230px; border-left:1.5px solid var(--border-subtle); }
+  .p4-c3   { flex:0 0 340px; border-left:1.5px solid var(--border-subtle); }
+  .p4-c4   { flex:1; border-left:1.5px solid var(--border-subtle); }
+  .p4-hd .p4-c { font-family:var(--font-display); font-weight:900; font-size:15px;
+                 letter-spacing:0.15em; text-transform:uppercase; color:var(--stbr-cream);
+                 padding-top:13px; padding-bottom:13px; border-left-color:rgba(245,232,202,0.2); }
+  .p4-kind { font-family:var(--font-display); font-weight:900; font-size:27px; color:var(--text-primary);
+             line-height:1.06; }
+  .p4-pre  { font-family:var(--font-mono); font-weight:700; font-size:26px; color:var(--stbr-emerald-800); }
+  .p4-ex   { font-family:var(--font-mono); font-weight:600; font-size:22px; color:var(--text-primary); }
+  .p4-maps { font-family:var(--font-body); font-size:18px; line-height:1.32; color:var(--text-secondary); }
+  .p4-trap { background:#fff6d6; }
+  .p4-trap .p4-pre { color:var(--stbr-dark); background:var(--stbr-yellow); align-self:flex-start;
+                     padding:5px 14px; border-radius:var(--radius-sm); }
+  .p4-trap .p4-maps { color:var(--text-primary); }
+  .p4-flag { font-family:var(--font-body); font-weight:800; font-size:15px; letter-spacing:0.1em;
+             text-transform:uppercase; color:var(--stbr-yellow-700); margin-bottom:5px; }
+  .p4-band { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:22px 28px; color:var(--stbr-cream); }
+  .p4-band .lb { font-family:var(--font-display); font-weight:900; font-size:14px;
+                 letter-spacing:0.16em; text-transform:uppercase; }
+  .p4-band .tx { font-family:var(--font-body); font-weight:600; font-size:25px; line-height:1.26;
+                 margin-top:6px; }
+  .p4-band .tx b { font-family:var(--font-mono); font-weight:800; color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">discriminator preimages</div>
+  <h2 class="viz-title">Three namespaces &mdash; and the one that surprises you</h2>
+
+  <div class="p4-tbl">
+    <div class="p4-r p4-hd">
+      <div class="p4-c p4-c1">item kind</div>
+      <div class="p4-c p4-c2">preimage prefix</div>
+      <div class="p4-c p4-c3">example preimage</div>
+      <div class="p4-c p4-c4">maps to</div>
+    </div>
+    <div class="p4-r">
+      <div class="p4-c p4-c1"><span class="p4-kind">account struct</span></div>
+      <div class="p4-c p4-c2"><span class="p4-pre">account:</span></div>
+      <div class="p4-c p4-c3"><span class="p4-ex">account:Marquee</span></div>
+      <div class="p4-c p4-c4"><span class="p4-maps"><code>Account&lt;Marquee&gt;</code> owner + type check</span></div>
+    </div>
+    <div class="p4-r">
+      <div class="p4-c p4-c1"><span class="p4-kind">event struct</span></div>
+      <div class="p4-c p4-c2"><span class="p4-pre">event:</span></div>
+      <div class="p4-c p4-c3"><span class="p4-ex">event:MarqueeLit</span></div>
+      <div class="p4-c p4-c4"><span class="p4-maps">emitted log tag for indexers</span></div>
+    </div>
+    <div class="p4-r p4-trap">
+      <div class="p4-c p4-c1">
+        <div class="p4-flag">the trap</div>
+        <span class="p4-kind">instruction handler</span>
+      </div>
+      <div class="p4-c p4-c2"><span class="p4-pre">global:</span></div>
+      <div class="p4-c p4-c3"><span class="p4-ex">global:greet</span></div>
+      <div class="p4-c p4-c4"><span class="p4-maps">dispatcher routing tag</span></div>
+    </div>
+  </div>
+
+  <div class="p4-band">
+    <div class="lb">Remember</div>
+    <div class="tx">An instruction handler hashes from <b>global:</b>&lt;Name&gt; &mdash; never <b>instruction:</b>&lt;Name&gt;.</div>
+  </div>
+</div>
+</body></html>

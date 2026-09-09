@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What one filled checklist row looks like
+     purpose: show the reader the exact artifact a row produces before they fill seven of them
+     data: row 2 | Every UncheckedAccount pinned | swap.rs:41  <- the line, not a tick // swap.rs:41, the account the row points at /// CHECK: pinned to the pool's recorded fee destination #[account(address = pool.fee_destination)] pub fee_destination: UncheckedAccount, // what a FAIL looks like instead: /// CHECK: fee destination pub fee_destination: UncheckedAccount,   // nothing pins it -> row 2 = FAIL
+     prompt: A single panel split top and bottom. Top: the filled checklist row with the file:line reference circled and labelled "the evidence". Bottom: two small code blocks side by side, the left one green-bordered and labelled PASS with the address constraint highlighted, the right one red-bordered and labelled FAIL with the missing constraint called out by an empty-slot marker.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:550px;height:537px;top:-311px;right:-311px;border-radius:43% 37% 43% 52% / 40% 48% 52% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:517px;height:503px;bottom:-295px;left:-295px;border-radius:61% 36% 48% 48% / 65% 49% 64% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:401px;height:510px;bottom:-274px;left:493px;border-radius:63% 61% 42% 36% / 56% 58% 48% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .rowcard { background: var(--surface-card); border: 2px solid var(--border-subtle);
+             border-radius: var(--radius-lg); padding: 18px 24px; display: flex;
+             align-items: center; gap: 20px; height: 108px; }
+  .rk2 { font-family: var(--font-body); font-weight: 800; font-size: 10.5px;
+         letter-spacing: .13em; text-transform: uppercase; color: var(--text-muted);
+         white-space: nowrap; }
+  .rno { flex: 0 0 auto; background: var(--surface-brand); color: var(--text-on-brand);
+         border-radius: var(--radius-md); padding: 9px 16px; font-family: var(--font-display);
+         font-weight: 900; font-size: 20px; line-height: 1; }
+  .rtxt { flex: 1 1 0; min-width: 0; font-family: var(--font-display); font-weight: 900; font-size: 24px;
+          line-height: 1.12; color: var(--text-primary); }
+  .rtxt code { font-family: var(--font-mono); font-size: 22px; }
+  .ev { flex: 0 0 274px; display: flex; align-items: center; gap: 14px; }
+  .evbox { border: 3px solid var(--stbr-yellow-700); background: var(--surface-accent);
+           border-radius: var(--radius-pill); padding: 9px 22px; font-family: var(--font-mono);
+           font-weight: 700; font-size: 21px; color: var(--text-on-accent); }
+  .evlab { flex: 0 0 76px; font-family: var(--font-body); font-weight: 800; font-size: 11px;
+           letter-spacing: .13em; text-transform: uppercase; color: var(--stbr-green-800);
+           line-height: 1.3; }
+  .note { font-family: var(--font-body); font-size: 13px; color: var(--text-secondary);
+          margin: 9px 2px 16px; }
+  .pair { display: flex; gap: 22px; align-items: stretch; }
+  .pane { flex: 1 1 0; min-width: 0; border-radius: var(--radius-lg); overflow: hidden;
+          height: 236px; display: flex; flex-direction: column; }
+  .pane.pass { border: 3px solid var(--stbr-emerald); }
+  .pane.fail { border: 3px dashed var(--stbr-ink-500); }
+  .pbar { height: 44px; display: flex; align-items: center; justify-content: space-between;
+          padding: 0 18px; }
+  .pane.pass .pbar { background: var(--surface-brand); }
+  .pane.fail .pbar { background: var(--stbr-ink-700); }
+  .pv { font-family: var(--font-display); font-weight: 900; font-size: 17px;
+        letter-spacing: .1em; color: var(--text-on-brand); }
+  .ps { font-family: var(--font-body); font-weight: 700; font-size: 11.5px;
+        color: rgba(245,232,202,0.72); }
+  .code { flex: 1 1 0; background: var(--surface-inverse); padding: 16px 18px;
+          font-family: var(--font-mono); font-size: 14px; line-height: 1.62;
+          color: var(--text-on-dark); }
+  .cm { color: var(--stbr-ink-500); }
+  .hl { background: rgba(0,139,76,0.42); border-left: 3px solid var(--stbr-emerald);
+        padding: 2px 8px 3px 7px; display: block; margin: 3px 0; }
+  .slot { display: block; margin: 3px 0; padding: 3px 8px; border: 2px dashed var(--stbr-ink-500);
+          border-radius: var(--radius-xs); color: var(--stbr-ink-300); }
+  .verdict { margin-top: 16px; background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 13px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">one row, filled in</div>
+  <h2 class="viz-title">a checklist row is a file and a line &mdash; not a tick</h2>
+
+  <div class="rowcard">
+    <div class="rno">row 2</div>
+    <div class="rtxt">Every <code>UncheckedAccount</code> pinned</div>
+    <div class="ev">
+      <div class="evbox">swap.rs:41</div>
+      <div class="evlab">the<br>evidence</div>
+    </div>
+  </div>
+
+  <div class="note">The line the row points at &mdash; and what it has to contain for the row to be honest.</div>
+
+  <div class="pair">
+    <div class="pane pass">
+      <div class="pbar"><span class="pv">PASS</span><span class="ps">something pins it</span></div>
+      <div class="code">
+<span class="cm">// swap.rs:41</span><br>
+<span class="cm">/// CHECK: pinned to the pool&rsquo;s</span><br>
+<span class="cm">/// recorded fee destination</span><br>
+<span class="hl">#[account(address = pool.fee_destination)]</span>
+pub fee_destination: UncheckedAccount,
+      </div>
+    </div>
+
+    <div class="pane fail">
+      <div class="pbar"><span class="pv">FAIL</span><span class="ps">nothing pins it</span></div>
+      <div class="code">
+<span class="cm">// swap.rs:41</span><br>
+<span class="cm">/// CHECK: fee destination</span><br>
+<span class="cm">&nbsp;</span><br>
+<span class="slot">no address / owner / constraint</span>
+pub fee_destination: UncheckedAccount,
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">row 2 = FAIL</span>
+    <span class="vt">A row you cannot cite a line for is a row you never ran.</span>
+  </div>
+</div>
+</body></html>

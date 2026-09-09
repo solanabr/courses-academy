@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Who signs a PDA-owned transfer_checked
+     purpose: show that the vault PDA (not a keypair) authorizes the token CPI via seeds, and where each account plugs in
+     data: nodes: - quarter_vault program - signer_seeds = [b"vault", authority, bump]  (rebuilt from the stored bump) - CpiContext::new(token_program.address(), TransferChecked{..}).with_signer(seeds) - Token program (classic SPL or Token-2022) - vault_token_account (from, authority = vault PDA) -> authority_token_account (to) edges: - program rebuilds signer_seeds from the stored bump - program invokes the CPI, presenting seeds as the PDA's signature - token program verifies the seeds reproduce the vault PDA, then moves the balance - mint + decimals ride along so decimals are verified before the move
+     prompt: Left-to-right dataflow diagram. Box "quarter_vault program" emits an arrow labeled "signer_seeds (stored bump)" into a middle box "transfer_checked CPI (.with_signer)". That box arrows into "Token program". Below, show vault_token_account -> authority_token_account with a coin glyph moving along the arrow. Annotate the CPI box "carries mint + decimals". Mark the signature as seeds, not a keypair, with a small key-with-a-slash icon labeled "no private key".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:561px;height:490px;top:-276px;right:-276px;border-radius:45% 37% 49% 39% / 36% 49% 64% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:450px;height:519px;left:-238px;top:329px;border-radius:36% 43% 55% 50% / 61% 43% 41% 44%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:539px;height:454px;bottom:-257px;left:327px;border-radius:49% 35% 38% 65% / 50% 62% 54% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { display:flex; align-items:stretch; margin-top:2px; }
+  .node { flex:1 1 0; min-width:0; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); overflow:hidden; display:flex; flex-direction:column; }
+  .node.sig { border-color:var(--stbr-yellow-700); }
+  .nh { padding:12px 16px; background:var(--surface-inverse); }
+  .node.sig .nh { background:var(--surface-accent); }
+  .node.tp .nh { background:var(--surface-brand); }
+  .nt { font-family:var(--font-display); font-weight:900; font-size:17px; line-height:1.12;
+        color:var(--text-on-dark); }
+  .node.sig .nt { color:var(--text-on-accent); }
+  .node.tp .nt { color:var(--text-on-brand); }
+  .nb { padding:13px 16px; flex:1 1 auto; }
+  .nm { font-family:var(--font-mono); font-size:13px; line-height:1.42; color:var(--text-primary);
+        overflow-wrap:break-word; }
+  .nc { font-family:var(--font-body); font-size:13px; line-height:1.4; color:var(--text-secondary);
+        border-top:1.5px solid var(--border-subtle); margin-top:11px; padding-top:10px; }
+  .nchip { display:inline-block; margin-top:10px; padding:4px 10px; border-radius:var(--radius-pill);
+           font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em;
+           text-transform:uppercase; background:rgba(0,139,76,0.13); color:var(--stbr-emerald-800); }
+  .nokey { display:flex; align-items:center; gap:8px; margin-top:10px; padding:5px 10px;
+           border-radius:var(--radius-pill); background:var(--stbr-dark); }
+  .nokey span { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em;
+                text-transform:uppercase; color:var(--stbr-yellow); }
+  .conn { flex:0 0 62px; display:flex; align-items:center; justify-content:center; }
+
+  .move { margin-top:22px; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:18px 24px; display:flex; align-items:center; gap:20px; }
+  .acct { flex:1 1 0; min-width:0; border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+          background:var(--surface-paper); padding:13px 18px; }
+  .ak { font-family:var(--font-mono); font-weight:700; font-size:16px; color:var(--text-primary); }
+  .av { font-family:var(--font-body); font-size:13px; line-height:1.4; color:var(--text-secondary);
+        margin-top:5px; }
+  .mmid { flex:0 0 300px; display:flex; flex-direction:column; align-items:center; gap:7px; }
+  .mlab { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.11em;
+          text-transform:uppercase; color:var(--stbr-emerald); text-align:center; }
+  .verdict { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:17px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.12;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">a pda authorizes the move</div>
+  <h2 class="viz-title">who signs a pda-owned <span style="font-family:var(--font-mono);font-size:0.78em">transfer_checked</span></h2>
+
+  <div class="flow">
+    <div class="node">
+      <div class="nh"><div class="nt">quarter_vault program</div></div>
+      <div class="nb">
+        <div class="nm">your withdraw / release handler</div>
+        <div class="nc">rebuilds <b>signer_seeds</b> from the bump stored on the vault.</div>
+      </div>
+    </div>
+
+    <div class="conn"><svg width="52" height="18" viewBox="0 0 52 18"><line x1="0" y1="9" x2="40" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="52,9 39,3 39,15" fill="#1b231d"/></svg></div>
+
+    <div class="node sig">
+      <div class="nh"><div class="nt">signer_seeds</div></div>
+      <div class="nb">
+        <div class="nm">[b"vault", authority, bump]</div>
+        <div class="nc">this <b>is</b> the signature the PDA presents.</div>
+        <div class="nokey">
+          <svg width="20" height="14" viewBox="0 0 20 14"><circle cx="5" cy="7" r="3.6" fill="none" stroke="#ffd23f" stroke-width="1.8"/><line x1="8.6" y1="7" x2="18" y2="7" stroke="#ffd23f" stroke-width="1.8"/><line x1="14" y1="7" x2="14" y2="10.5" stroke="#ffd23f" stroke-width="1.8"/><line x1="17" y1="7" x2="17" y2="10.5" stroke="#ffd23f" stroke-width="1.8"/><line x1="1" y1="13" x2="19" y2="1" stroke="#ffd23f" stroke-width="2"/></svg>
+          <span>no private key</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="conn"><svg width="52" height="18" viewBox="0 0 52 18"><line x1="0" y1="9" x2="40" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="52,9 39,3 39,15" fill="#1b231d"/></svg></div>
+
+    <div class="node">
+      <div class="nh"><div class="nt">the transfer_checked CPI</div></div>
+      <div class="nb">
+        <div class="nm">CpiContext::new(<br>&nbsp;&nbsp;token_program.address(),<br>&nbsp;&nbsp;TransferChecked{..}<br>).with_signer(seeds)</div>
+        <span class="nchip">carries mint + decimals</span>
+      </div>
+    </div>
+
+    <div class="conn"><svg width="52" height="18" viewBox="0 0 52 18"><line x1="0" y1="9" x2="40" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="52,9 39,3 39,15" fill="#1b231d"/></svg></div>
+
+    <div class="node tp">
+      <div class="nh"><div class="nt">Token program</div></div>
+      <div class="nb">
+        <div class="nm">classic SPL &nbsp;or&nbsp; Token-2022</div>
+        <div class="nc">verifies the seeds reproduce the vault PDA, then moves the balance.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="move">
+    <div class="acct">
+      <div class="ak">vault_token_account</div>
+      <div class="av">from &middot; authority = the vault PDA</div>
+    </div>
+    <div class="mmid">
+      <div class="mlab">mint + decimals verified before the move</div>
+      <svg width="290" height="26" viewBox="0 0 290 26"><line x1="0" y1="13" x2="272" y2="13" stroke="#008b4c" stroke-width="2.5"/><polygon points="290,13 271,6 271,20" fill="#008b4c"/><circle cx="132" cy="13" r="11" fill="#008b4c"/><circle cx="132" cy="13" r="5" fill="#f5e8ca"/></svg>
+    </div>
+    <div class="acct">
+      <div class="ak">authority_token_account</div>
+      <div class="av">to &middot; the owner / recipient</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the point</span>
+    <span class="vt">Nobody holds a key for the vault. The seeds, rebuilt from a stored bump, are the key.</span>
+  </div>
+</div>
+</body></html>

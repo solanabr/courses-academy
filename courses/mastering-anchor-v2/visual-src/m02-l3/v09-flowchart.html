@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Which tier does this field belong to?
+     purpose: give the reader a reusable decision procedure, not a memorized answer
+     data: Q1: Is the field's length fixed at compile time? yes -> Pod (plain field or Pod wrapper), done no  -> Q2 Q2: Is there an acceptable compile-time maximum? yes -> Pod (PodVec<T, MAX> / Slab), done no  -> Q3: genuinely unbounded -> BorshAccount (escape hatch) then check: HashMap/HashSet or NaN-able float? no  -> borsh clients read it fine yes -> decide the encoding deliberately
+     prompt: Vertical decision flowchart. Diamond "length fixed at compile time?" -> yes to a "Pod" terminal. No -> diamond "acceptable compile-time MAX?" -> yes to a "Pod (PodVec/Slab)" terminal. No -> "BorshAccount (escape hatch)" node, then a final diamond "HashMap/HashSet or NaN float?" with "borsh clients read it fine" vs "decide the encoding" terminals. Keep the two Pod terminals visually the default path and the borsh branch the exception.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:583px;height:543px;top:-306px;right:-306px;border-radius:35% 64% 65% 46% / 59% 62% 53% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:422px;height:475px;left:-236px;top:201px;border-radius:41% 50% 51% 58% / 49% 40% 57% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:418px;height:499px;bottom:-259px;left:407px;border-radius:48% 55% 50% 40% / 45% 39% 62% 64%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .f9-title { font-size:44px; }
+  .f9-wrap { width:100%; }
+  .f9-row { display:flex; align-items:stretch; }
+  .f9-q { flex:1 1 0; min-width:0; height:120px; box-sizing:border-box; background:var(--surface-card);
+          border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+          padding:0 26px; display:flex; align-items:center; gap:16px; }
+  .f9-q .qk { font-family:var(--font-display); font-weight:900; font-size:12.5px;
+              letter-spacing:.12em; text-transform:uppercase; background:var(--surface-inverse);
+              color:var(--stbr-cream); padding:6px 12px; border-radius:var(--radius-pill);
+              white-space:nowrap; }
+  .f9-q .qt { font-family:var(--font-display); font-weight:900; font-size:22px; line-height:1.16;
+              color:var(--text-primary); }
+  .f9-arrow { flex:0 0 118px; height:120px; display:flex; flex-direction:column;
+              align-items:center; justify-content:center; }
+  .f9-arrow .yes { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                   letter-spacing:.12em; text-transform:uppercase; color:var(--surface-brand);
+                   margin-bottom:6px; }
+  .f9-arrow .nope { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                    letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted);
+                    margin-bottom:6px; }
+  .f9-term { flex:1 1 0; min-width:0; height:120px; box-sizing:border-box; background:#eef6f0;
+             border:2px solid var(--surface-brand); border-radius:var(--radius-lg);
+             padding:0 26px; display:flex; flex-direction:column; justify-content:center; }
+  .f9-term .tk { font-family:var(--font-display); font-weight:900; font-size:12.5px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--surface-brand); }
+  .f9-term .tt { margin-top:7px; font-family:var(--font-mono); font-weight:700; font-size:20px;
+                 color:var(--text-primary); }
+  .f9-down { height:36px; padding-left:330px; display:flex; align-items:center; gap:14px; }
+  .f9-down .stem { width:3px; height:36px; background:var(--border-strong); }
+  .f9-down .lab { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                  letter-spacing:.12em; text-transform:uppercase; color:var(--text-primary);
+                  background:var(--surface-card); border:2px solid var(--border-subtle);
+                  padding:5px 13px; border-radius:var(--radius-pill); }
+  .f9-esc { height:100px; box-sizing:border-box; background:var(--surface-accent);
+            border-radius:var(--radius-lg); padding:0 30px; display:flex; align-items:center;
+            gap:22px; }
+  .f9-esc .ek { font-family:var(--font-display); font-weight:900; font-size:12.5px;
+                letter-spacing:.12em; text-transform:uppercase; background:var(--surface-inverse);
+                color:var(--stbr-cream); padding:7px 14px; border-radius:var(--radius-pill);
+                white-space:nowrap; }
+  .f9-esc .et { font-family:var(--font-display); font-weight:900; font-size:27px;
+                color:var(--stbr-dark); line-height:1.14; }
+  .f9-esc .et small { display:block; font-family:var(--font-body); font-weight:600;
+                      font-size:15.5px; color:rgba(27,35,29,0.68); margin-top:3px; }
+  .f9-row.last .f9-q { height:144px; }
+  .f9-branches { flex:0 0 787px; height:144px; display:flex; flex-direction:column;
+                 justify-content:space-between; }
+  .f9-branch { display:flex; align-items:stretch; height:65px; }
+  .f9-branch .f9-arrow { height:65px; }
+  .f9-out { flex:1 1 0; min-width:0; height:65px; box-sizing:border-box; border-radius:var(--radius-md);
+            padding:0 22px; display:flex; align-items:center; font-family:var(--font-body);
+            font-size:18px; }
+  .f9-out.ok { background:#eef6f0; border:2px solid var(--surface-brand);
+               color:var(--text-primary); }
+  .f9-out.care { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .f9-out b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">a procedure, not a memorised answer</div>
+  <h2 class="viz-title f9-title">Which tier does this field belong to?</h2>
+  <div class="f9-wrap">
+    <div class="f9-row">
+      <div class="f9-q"><span class="qk">q1</span><span class="qt">Is the field&rsquo;s length fixed at compile time?</span></div>
+      <div class="f9-arrow"><span class="yes">yes</span>
+        <svg width="92" height="14" viewBox="0 0 92 14"><line x1="0" y1="7" x2="81" y2="7" stroke="#008b4c" stroke-width="3"/><polygon points="81,1 92,7 81,13" fill="#008b4c"/></svg></div>
+      <div class="f9-term"><span class="tk">tier 1 &middot; done</span><span class="tt">Pod &mdash; plain field or Pod wrapper</span></div>
+    </div>
+    <div class="f9-down"><span class="stem"></span><span class="lab">no</span></div>
+    <div class="f9-row">
+      <div class="f9-q"><span class="qk">q2</span><span class="qt">Is there an acceptable compile-time maximum?</span></div>
+      <div class="f9-arrow"><span class="yes">yes</span>
+        <svg width="92" height="14" viewBox="0 0 92 14"><line x1="0" y1="7" x2="81" y2="7" stroke="#008b4c" stroke-width="3"/><polygon points="81,1 92,7 81,13" fill="#008b4c"/></svg></div>
+      <div class="f9-term"><span class="tk">tier 1 &middot; done</span><span class="tt">Pod &mdash; PodVec&lt;T, MAX&gt; / Slab</span></div>
+    </div>
+    <div class="f9-down"><span class="stem"></span><span class="lab">no &mdash; genuinely unbounded</span></div>
+    <div class="f9-esc">
+      <span class="ek">the exception</span>
+      <span class="et">BorshAccount &mdash; the escape hatch<small>you have left the default path deliberately, for this field only</small></span>
+    </div>
+    <div class="f9-down"><span class="stem"></span><span class="lab">then check</span></div>
+    <div class="f9-row last">
+      <div class="f9-q"><span class="qk">q3</span><span class="qt">Does it hold a HashMap / HashSet, or a NaN-able float?</span></div>
+      <div class="f9-branches">
+        <div class="f9-branch">
+          <div class="f9-arrow"><span class="nope">no</span>
+            <svg width="92" height="14" viewBox="0 0 92 14"><line x1="0" y1="7" x2="81" y2="7" stroke="#1b231d" stroke-width="3"/><polygon points="81,1 92,7 81,13" fill="#1b231d"/></svg></div>
+          <div class="f9-out ok"><span>borsh-decoding clients <b>read it fine</b></span></div>
+        </div>
+        <div class="f9-branch">
+          <div class="f9-arrow"><span class="nope">yes</span>
+            <svg width="92" height="14" viewBox="0 0 92 14"><line x1="0" y1="7" x2="81" y2="7" stroke="#1b231d" stroke-width="3"/><polygon points="81,1 92,7 81,13" fill="#1b231d"/></svg></div>
+          <div class="f9-out care"><span>you are in a wire hole &mdash; <b>decide the encoding deliberately</b></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The two parallel lines (a snapshot, 2026-08-22)
+     purpose: fix in the reader's head that v1 and V2 are concurrent branches, not a linear upgrade
+     data: v1 line (anchor-lang): 1.1.2 stable through most of 2026; v1.2.0 RELEASED 2026-09-04 and now the stable line V2 line (anchor-next branch): 2.0.0-rc.1 tagged and published to crates.io on 2026-08-12 Docs lag: V2 reference still describes the pre-publish install (consume from git); the rc-and-alpha double label is current, not lag RC-era risk: issue #4937 (filed 2026-08-16, closed 2026-08-20), anchor-lang's wincode 0.5 pin vs solana-address's own wincode 0.6 requirement broke #[account(borsh)]
+     prompt: A horizontal two-track timeline. Top track "v1 (stable)" flat and continuous through 2026. Bottom track "V2 (anchor-next, RC)" starting later, with a marked node at 2026-08-12 "rc.1 to crates.io" and a caution node spanning 2026-08-16 to 2026-08-20 "#4937 pin skew filed, then fixed". Draw a light dashed vertical "today 2026-08-22" line. Emphasize that both tracks run at once. Monospace for versions and issue numbers.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:521px;height:471px;top:-239px;right:-239px;border-radius:36% 56% 39% 61% / 49% 36% 39% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:571px;height:588px;bottom:-340px;left:-340px;border-radius:56% 48% 56% 57% / 65% 52% 55% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:563px;bottom:-303px;right:-303px;border-radius:45% 50% 37% 54% / 61% 61% 37% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:30px 40px; }
+  .tl { position:relative; height:392px; }
+  .lane { position:absolute; left:0; width:190px; }
+  .lane .ln { font-family:var(--font-display); font-weight:900; font-size:24px;
+              line-height:1.05; color:var(--text-primary); }
+  .lane .ls { font-family:var(--font-mono); font-size:12.5px; color:var(--text-secondary);
+              margin-top:5px; line-height:1.3; }
+  .area { position:absolute; left:200px; top:0; width:1150px; height:392px; }
+  .bar { position:absolute; height:14px; border-radius:var(--radius-pill); }
+  .bar.v1 { top:118px; left:0; width:1150px; background:var(--stbr-emerald); }
+  .bar.v2 { top:210px; left:0; width:1150px; background:var(--stbr-green); }
+  .chip { position:absolute; background:var(--surface-paper);
+          border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+          padding:8px 12px; font-family:var(--font-body); font-size:12.5px;
+          line-height:1.3; color:var(--text-secondary); }
+  .chip b { color:var(--text-primary); font-family:var(--font-mono); font-size:12.5px; }
+  .dot { position:absolute; width:20px; height:20px; border-radius:50%;
+         background:var(--stbr-dark); border:3px solid var(--surface-card); }
+  .span { position:absolute; top:205px; height:24px; border-radius:var(--radius-sm);
+          background:var(--stbr-yellow); border:2px solid var(--stbr-yellow-700); }
+  .spanleg { position:absolute; width:2px; background:var(--stbr-yellow-700); }
+  .axis { position:absolute; left:0; top:318px; width:1150px; height:1px;
+          background:var(--border-subtle); }
+  .tick { position:absolute; top:326px; font-family:var(--font-mono); font-size:12px;
+          color:var(--text-muted); }
+  .today { position:absolute; left:980px; top:110px; width:0;
+           height:236px; border-left:3px dashed var(--stbr-yellow-700); }
+  .todaychip { position:absolute; left:840px; top:352px; width:310px;
+               background:var(--stbr-yellow); border-radius:var(--radius-pill);
+               padding:9px 18px; text-align:center;
+               font-family:var(--font-display); font-weight:900; font-size:14px;
+               letter-spacing:.04em; color:var(--text-on-accent); }
+  .foot { display:flex; gap:18px; margin-top:18px; }
+  .fc { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+        border-radius:var(--radius-lg); padding:14px 20px; height:118px; }
+  .fc.warn { border-color:var(--status-warning); background:#fffaea; }
+  .fk { font-family:var(--font-display); font-weight:900; font-size:12px;
+        letter-spacing:.12em; text-transform:uppercase; color:var(--brand-primary);
+        margin-bottom:7px; }
+  .fc.warn .fk { color:var(--stbr-yellow-700); }
+  .ft { font-family:var(--font-body); font-size:12.5px; line-height:1.45;
+        color:var(--text-secondary); }
+  .ft code { font-family:var(--font-mono); font-size:12px; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">snapshot · 2026-08-22</div>
+  <h2 class="viz-title">two lines, running at the same time</h2>
+
+  <div class="card">
+    <div class="tl">
+      <div class="lane" style="top:96px;">
+        <div class="ln">v1</div>
+        <div class="ls">anchor-lang<br>stable</div>
+      </div>
+      <div class="lane" style="top:188px;">
+        <div class="ln">V2</div>
+        <div class="ls">anchor-next branch<br>release candidate</div>
+      </div>
+
+      <div class="area">
+        <div class="chip" style="left:0;top:62px;width:288px;"><b>1.1.2</b> stable — still shipping</div>
+        <div class="chip" style="left:306px;top:62px;width:250px;"><b>v1.2.0</b> shipped 09-04</div>
+        <div class="bar v1"></div>
+
+        <div class="bar v2"></div>
+        <div class="dot" style="left:782px;top:207px;"></div>
+        <div class="span" style="left:866px;width:78px;"></div>
+        <div class="spanleg" style="left:904px;top:229px;height:49px;"></div>
+
+        <div class="chip" style="left:620px;top:240px;width:214px;"><b>2026-08-12</b> · rc.1 → crates.io</div>
+        <div class="chip" style="left:800px;top:278px;width:168px;border-color:var(--status-warning);"><b>#4937</b> 08-16 → 08-20</div>
+
+        <div class="axis"></div>
+        <div class="tick" style="left:0;">2026-07-01</div>
+        <div class="tick" style="left:264px;">07-15</div>
+        <div class="tick" style="left:585px;">08-01</div>
+        <div class="tick" style="left:792px;">08-12</div>
+        <div class="tick" style="left:953px;">08-22</div>
+
+        <div class="today"></div>
+        <div class="todaychip">today 2026-08-22 · both lines alive</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="fc">
+      <div class="fk">V2 · 2026-08-12</div>
+      <div class="ft"><code>2.0.0-rc.1</code> tagged and published to crates.io on the
+        <code>anchor-next</code> branch. v1 keeps shipping in parallel.</div>
+    </div>
+    <div class="fc warn">
+      <div class="fk">rc-era risk · issue #4937</div>
+      <div class="ft">Filed 2026-08-16, closed 2026-08-20: <code>anchor-lang</code>'s
+        wincode 0.5 pin vs <code>solana-address</code>'s own wincode 0.6 requirement
+        broke <code>#[account(borsh)]</code>.</div>
+    </div>
+    <div class="fc">
+      <div class="fk">docs lag</div>
+      <div class="ft">The V2 reference still describes the pre-publish install (consume
+        from git). The rc-and-alpha double label is current, not lag.</div>
+    </div>
+  </div>
+</div>
+</body></html>

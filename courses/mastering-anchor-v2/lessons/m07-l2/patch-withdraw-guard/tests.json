@@ -1,0 +1,44 @@
+[
+  {
+    "id": "t1",
+    "description": "The authority withdrawing within balance returns the new balance",
+    "input": "100, 30, [7u8; 32], [7u8; 32]",
+    "expectedOutput": "70"
+  },
+  {
+    "id": "t2",
+    "description": "A withdraw requested by a non-authority caller is rejected with -1",
+    "input": "100, 30, [9u8; 32], [7u8; 32]",
+    "expectedOutput": "-1"
+  },
+  {
+    "id": "t3",
+    "description": "An over-withdraw that would underflow the balance is rejected with -2",
+    "input": "30, 100, [7u8; 32], [7u8; 32]",
+    "expectedOutput": "-2"
+  },
+  {
+    "id": "t4",
+    "description": "An exact-balance withdraw by the authority returns zero",
+    "input": "50, 50, [7u8; 32], [7u8; 32]",
+    "expectedOutput": "0"
+  },
+  {
+    "id": "t5",
+    "description": "A caller that sorts BELOW the authority is still not the authority: an ordering comparison passes t2 and fails here, because addresses have no order, only equality",
+    "input": "100, 30, [3u8; 32], [7u8; 32]",
+    "expectedOutput": "-1"
+  },
+  {
+    "id": "t6",
+    "description": "Near-miss in the LAST byte: 31 of 32 bytes match. A gate that compares only the first byte (or any prefix) lets this address drain the vault",
+    "input": "100, 30, [7u8,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8], [7u8; 32]",
+    "expectedOutput": "-1"
+  },
+  {
+    "id": "t7",
+    "description": "Near-miss in the FIRST byte, so the mirror of t6: a gate that compares only the last byte fails here. Only a full 32-byte equality passes both",
+    "input": "100, 30, [8u8,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7], [7u8; 32]",
+    "expectedOutput": "-1"
+  }
+]

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Three decisions, every delta downstream
+     purpose: show that the migration is not a flat list of renames but a tree rooted in three design choices
+     data: Decision 1, no_std rewrite on pinocchio (types from solana-address) -> Pubkey becomes Address -> .key() becomes .address() -> <'info> lifetimes vanish; handlers take &mut Context<T> Decision 2, zero-copy is the default account model (Account<T>: Pod) -> the zero_copy attribute is gone -> AccountLoader is repurposed (sequential cursor), not the zero-copy wrapper -> state that is not Pod-legal moves to BorshAccount<T> -> space = T::DISCRIMINATOR.len() + T::INIT_SPACE Decision 3, CPI is borrow-tracked (CpiHandle) -> .reload() is removed, not renamed -> typed access during a live CPI handle is a compile error -> CpiContext::new takes the program as &Address Cross-cutting (the compiler narrates the edit) -> has_one deprecates to address = parent.field (span-underlined) -> dup becomes unsafe(dup) (plain dup is a compile error) -> realloc::payer becomes realloc_payer
+     prompt: A three-rooted tree, left to right. Three large root nodes stacked on the left (Decision 1, 2, 3), each with its consequence leaves branching to the right, labels as given. A fourth smaller "cross-cutting" root at the bottom with its three leaves. Keep type names in monospace. Group each decision's leaves with a subtle band so the reader sees "this cluster of renames all comes from one choice."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:433px;top:-250px;right:-250px;border-radius:52% 64% 59% 60% / 63% 40% 52% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:433px;height:453px;left:-243px;top:347px;border-radius:46% 65% 65% 58% / 65% 35% 38% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:523px;height:472px;bottom:-251px;left:572px;border-radius:37% 39% 61% 60% / 35% 59% 36% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .row { display:flex; align-items:stretch; height:138px; }
+  .row + .row { margin-top:14px; }
+  .root { width:326px; flex:0 0 326px; background:var(--surface-inverse);
+          border-radius:var(--radius-lg); padding:16px 22px;
+          display:flex; flex-direction:column; justify-content:center; }
+  .root.x { background:var(--surface-brand-deep); }
+  .badge { display:inline-block; align-self:flex-start; background:var(--stbr-yellow);
+           color:var(--text-on-accent); font-family:var(--font-display); font-weight:900;
+           font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+           padding:4px 12px; border-radius:var(--radius-pill); margin-bottom:10px; }
+  .badge.n { background:var(--stbr-cream); color:var(--stbr-dark); }
+  .rt { font-family:var(--font-display); font-weight:900; font-size:22px;
+        line-height:1.12; color:var(--text-on-dark); }
+  .rs { font-family:var(--font-mono); font-size:12.5px; line-height:1.35;
+        color:var(--stbr-cream); opacity:.75; margin-top:7px; }
+  .conn { width:46px; flex:0 0 46px; display:flex; align-items:center; justify-content:center; }
+  .band { flex:1; background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:11px; display:flex; gap:11px; }
+  .leaf { flex:1; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:11px 13px;
+          display:flex; align-items:center;
+          font-family:var(--font-body); font-size:13px; line-height:1.4;
+          color:var(--text-secondary); }
+  .leaf code { font-family:var(--font-mono); font-size:12.5px; font-weight:600;
+               color:var(--text-primary); }
+  .leaf.strong { border-color:var(--stbr-emerald); }
+</style>
+  <div class="stbr-eyebrow">one migration · three roots</div>
+  <h2 class="viz-title">three decisions, every delta downstream</h2>
+
+  <div class="row">
+    <div class="root">
+      <span class="badge">decision 1</span>
+      <div class="rt">no_std rewrite on pinocchio</div>
+      <div class="rs">types from solana-address</div>
+    </div>
+    <div class="conn">
+      <svg width="46" height="18" viewBox="0 0 46 18">
+        <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="30,1 46,9 30,17" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="band">
+      <div class="leaf"><span><code>Pubkey</code> becomes <code>Address</code></span></div>
+      <div class="leaf"><span><code>.key()</code> becomes <code>.address()</code></span></div>
+      <div class="leaf"><span><code>&lt;'info&gt;</code> lifetimes vanish; handlers take <code>&amp;mut Context&lt;T&gt;</code></span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="root">
+      <span class="badge">decision 2</span>
+      <div class="rt">zero-copy is the default account model</div>
+      <div class="rs">Account&lt;T&gt;: Pod</div>
+    </div>
+    <div class="conn">
+      <svg width="46" height="18" viewBox="0 0 46 18">
+        <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="30,1 46,9 30,17" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="band">
+      <div class="leaf"><span>the <code>zero_copy</code> attribute is gone</span></div>
+      <div class="leaf"><span><code>AccountLoader</code> is repurposed (sequential cursor), not the zero-copy wrapper</span></div>
+      <div class="leaf"><span>state that is not Pod-legal moves to <code>BorshAccount&lt;T&gt;</code></span></div>
+      <div class="leaf"><span><code>space = T::DISCRIMINATOR.len() + T::INIT_SPACE</code></span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="root">
+      <span class="badge">decision 3</span>
+      <div class="rt">CPI is borrow-tracked</div>
+      <div class="rs">CpiHandle</div>
+    </div>
+    <div class="conn">
+      <svg width="46" height="18" viewBox="0 0 46 18">
+        <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="30,1 46,9 30,17" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="band">
+      <div class="leaf"><span><code>.reload()</code> is removed, not renamed</span></div>
+      <div class="leaf"><span>typed access during a live CPI handle is a <b>compile error</b></span></div>
+      <div class="leaf"><span><code>CpiContext::new</code> takes the program as <code>&amp;Address</code></span></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="root x">
+      <span class="badge n">cross-cutting</span>
+      <div class="rt">the compiler narrates the edit</div>
+    </div>
+    <div class="conn">
+      <svg width="46" height="18" viewBox="0 0 46 18">
+        <line x1="0" y1="9" x2="30" y2="9" stroke="#306c40" stroke-width="3"/>
+        <polygon points="30,1 46,9 30,17" fill="#306c40"/>
+      </svg>
+    </div>
+    <div class="band">
+      <div class="leaf"><span><code>has_one</code> deprecates to <code>address = parent.field</code> (span-underlined)</span></div>
+      <div class="leaf"><span><code>dup</code> becomes <code>unsafe(dup)</code> — plain <code>dup</code> is a compile error</span></div>
+      <div class="leaf"><span><code>realloc::payer</code> becomes <code>realloc_payer</code></span></div>
+    </div>
+  </div>
+</div>
+</body></html>

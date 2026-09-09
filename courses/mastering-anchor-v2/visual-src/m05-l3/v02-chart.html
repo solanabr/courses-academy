@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: A Token-2022 mint's length is not the classic constant
+     purpose: show that extension-aware accounts blow past the fixed classic sizes, so length must be read
+     data: bars (bytes): classic SPL mint = 82 classic SPL token account = 165 PYUSD Token-2022 mint (live, 2026-08-22) = 866 note: 866 is one observed value; other Token-2022 mints differ
+     prompt: Horizontal bar chart, three bars, value labels at the end of each bar. First two bars ("classic SPL mint 82", "classic SPL token account 165") in a muted neutral color to read as fixed baselines. Third bar ("PYUSD Token-2022 mint 866") in the accent color to read as the variable case. Small footnote: "866 is one live reading; other Token-2022 mints land elsewhere."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:576px;height:550px;top:-300px;right:-300px;border-radius:44% 49% 63% 54% / 50% 41% 55% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:444px;left:-281px;top:315px;border-radius:65% 49% 64% 63% / 63% 50% 48% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:548px;height:546px;bottom:-290px;right:-290px;border-radius:48% 59% 63% 35% / 39% 41% 50% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { width:1420px; margin:0 auto; background:var(--surface-card);
+          border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+          padding:36px 40px 28px; }
+  .axhead { display:flex; align-items:flex-end; height:26px;
+            border-bottom:2px solid var(--stbr-ink-300); padding-bottom:6px; }
+  .axhead .k { width:330px; flex:0 0 330px; font-family:var(--font-body);
+               font-weight:800; font-size:11px; letter-spacing:.14em;
+               text-transform:uppercase; color:var(--text-muted); }
+  .axhead .v { font-family:var(--font-body); font-weight:800; font-size:11px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .row { display:flex; align-items:center; height:104px; }
+  .row + .row { margin-top:20px; }
+  .lbl { width:308px; flex:0 0 308px; padding-right:22px; }
+  .lbl .n { font-family:var(--font-display); font-weight:800; font-size:21px;
+            line-height:1.15; color:var(--text-primary); }
+  .lbl .s { font-family:var(--font-body); font-size:13px; line-height:1.35;
+            color:var(--text-muted); margin-top:5px; }
+  .track { width:1010px; flex:0 0 1010px; display:flex; align-items:center; }
+  .bar { height:60px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+  .bar.base { background:var(--surface-brand-deep); }
+  .bar.var  { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); }
+  .val { font-family:var(--font-display); font-weight:900; font-size:30px;
+         line-height:1; color:var(--text-primary); margin-left:16px; }
+  .val .u { font-family:var(--font-body); font-weight:600; font-size:14px;
+            color:var(--text-muted); margin-left:5px; }
+  .foot { margin-top:26px; border-top:1.5px solid var(--border-subtle); padding-top:16px;
+          display:flex; align-items:center; }
+  .foot .dot { width:16px; height:16px; flex:0 0 16px; border-radius:4px;
+               background:var(--surface-accent); border:2px solid var(--stbr-yellow-700);
+               margin-right:12px; }
+  .foot .t { font-family:var(--font-body); font-size:15px; line-height:1.4;
+             color:var(--text-secondary); }
+  .foot .t b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">bytes on chain · measured</div>
+  <h2 class="viz-title">a Token-2022 mint's length is not the classic constant</h2>
+
+  <div class="card">
+    <div class="axhead">
+      <div class="k">account</div>
+      <div class="v">length in bytes &nbsp;→</div>
+    </div>
+
+    <div class="row">
+      <div class="lbl">
+        <div class="n">classic SPL mint</div>
+        <div class="s">fixed baseline</div>
+      </div>
+      <div class="track">
+        <div class="bar base" style="width:85px;"></div>
+        <div class="val">82<span class="u">B</span></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="lbl">
+        <div class="n">classic SPL token account</div>
+        <div class="s">fixed baseline</div>
+      </div>
+      <div class="track">
+        <div class="bar base" style="width:171px;"></div>
+        <div class="val">165<span class="u">B</span></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="lbl">
+        <div class="n">PYUSD Token-2022 mint</div>
+        <div class="s">live read, 2026-08-22</div>
+      </div>
+      <div class="track">
+        <div class="bar var" style="width:900px;"></div>
+        <div class="val">866<span class="u">B</span></div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="dot"></div>
+      <div class="t">866 is <b>one</b> live reading; other Token-2022 mints land elsewhere — the extension tail sizes each mint differently, so length is something you read, not something you assume.</div>
+    </div>
+  </div>
+</div>
+</body></html>

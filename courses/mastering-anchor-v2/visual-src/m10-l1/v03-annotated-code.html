@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Account space, hand-counted to derived
+     purpose: show the 8-plus-fields literal becoming a discriminator-plus-INIT_SPACE expression
+     data: 0.32: #[account(init, payer = authority, space = 8 + 32 + 8 + 1)] pub vault: Account<'info, Vault>, //          ^ 8 = discriminator, then you hand-count every field, forever 1.0: #[account( init, payer = authority, space = Vault::DISCRIMINATOR.len() + Vault::INIT_SPACE, )] pub vault: Account<'info, Vault>, //   INIT_SPACE comes from #[derive(InitSpace)] on the struct
+     prompt: Two code panels, "0.32" and "1.0". In the top, circle the "8 + 32 + 8 + 1" literal and annotate "hand-counted, drifts when a field changes". In the bottom, circle "Vault::DISCRIMINATOR.len() + Vault::INIT_SPACE" and annotate "derived, tracks the struct". Monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:443px;height:448px;top:-226px;right:-226px;border-radius:52% 57% 38% 50% / 59% 62% 58% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:550px;height:502px;left:-324px;top:287px;border-radius:64% 59% 46% 55% / 61% 57% 43% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:467px;bottom:-235px;left:438px;border-radius:45% 59% 56% 44% / 59% 46% 65% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; margin:4px 0 14px; }
+  .pan { background:var(--surface-inverse); border-radius:var(--radius-xl);
+         padding:18px 28px 20px; }
+  .pan + .pan { margin-top:18px; }
+  .phead { display:flex; align-items:center; border-bottom:1px solid rgba(245,232,202,0.18);
+           padding-bottom:12px; margin-bottom:12px; }
+  .pill { font-family:var(--font-display); font-weight:900; font-size:17px; line-height:1;
+          padding:8px 16px; border-radius:var(--radius-pill); }
+  .pill.v032 { background:#c0392b; color:var(--stbr-cream); }
+  .pill.v10  { background:var(--surface-accent); color:var(--text-on-accent); }
+  .phead .pnote { font-family:var(--font-body); font-weight:700; font-size:15px;
+                  color:var(--stbr-ink-300); margin-left:16px; }
+  .ln { display:flex; align-items:center; font-family:var(--font-mono); font-size:18px;
+        line-height:32px; color:var(--stbr-cream); white-space:pre; }
+  .ln .cd { flex:1; }
+  .cm { color:rgba(245,232,202,0.52); }
+  .circ-bad { border:2px solid #e0705f; border-radius:var(--radius-pill);
+              padding:1px 10px; color:var(--stbr-cream); }
+  .circ-fix { border:2px solid var(--stbr-yellow); border-radius:var(--radius-pill);
+              padding:1px 10px; color:var(--stbr-yellow); font-weight:700; }
+  .chip { font-family:var(--font-body); font-weight:800; font-size:14px; line-height:1.25;
+          padding:8px 14px; border-radius:var(--radius-md); white-space:nowrap;
+          margin-left:24px; text-align:center; }
+  .chip.bad { background:#c0392b; color:var(--stbr-cream); }
+  .chip.fix { background:var(--surface-accent); color:var(--text-on-accent); }
+  .foot { display:flex; align-items:center; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:16px 28px; margin-top:18px; }
+  .foot .fk { font-family:var(--font-display); font-weight:900; font-size:15px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-brand);
+              width:140px; }
+  .foot .ft { font-family:var(--font-body); font-size:18px; line-height:1.4;
+              color:var(--text-on-brand); }
+  .foot .ft b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">account space, 0.32 &rarr; 1.0</div>
+  <h2 class="viz-title">stop hand-counting bytes</h2>
+
+  <div class="pan">
+    <div class="phead">
+      <span class="pill v032">0.32</span>
+      <span class="pnote">a literal you maintain by hand</span>
+    </div>
+    <div class="ln"><span class="cd">#[account(init, payer = authority, space = <span class="circ-bad">8 + 32 + 8 + 1</span>)]</span><span class="chip bad">hand-counted &mdash; drifts when a field changes</span></div>
+    <div class="ln"><span class="cd">pub vault: Account&lt;'info, Vault&gt;,</span></div>
+    <div class="ln"><span class="cd"><span class="cm">//          ^ 8 = discriminator, then you hand-count every field, forever</span></span></div>
+  </div>
+
+  <div class="pan">
+    <div class="phead">
+      <span class="pill v10">1.0</span>
+      <span class="pnote">an expression the compiler keeps honest</span>
+    </div>
+    <div class="ln"><span class="cd">#[account(</span></div>
+    <div class="ln"><span class="cd">    init,</span></div>
+    <div class="ln"><span class="cd">    payer = authority,</span></div>
+    <div class="ln"><span class="cd">    space = <span class="circ-fix">Vault::DISCRIMINATOR.len() + Vault::INIT_SPACE</span>,</span><span class="chip fix">derived &mdash; tracks the struct</span></div>
+    <div class="ln"><span class="cd">)]</span></div>
+    <div class="ln"><span class="cd">pub vault: Account&lt;'info, Vault&gt;,</span></div>
+    <div class="ln"><span class="cd"><span class="cm">//   INIT_SPACE comes from #[derive(InitSpace)] on the struct</span></span></div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">the edit</span>
+    <span class="ft">Delete the arithmetic. Add <b>#[derive(InitSpace)]</b> to the struct &mdash; and the discriminator length is read, not assumed, so custom discriminators keep working.</span>
+  </div>
+</div>
+</body></html>

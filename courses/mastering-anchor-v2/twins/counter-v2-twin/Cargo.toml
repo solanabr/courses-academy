@@ -1,0 +1,28 @@
+[package]
+name = "counter_v2_twin"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[features]
+default = []
+no-entrypoint = []
+cpi = ["no-entrypoint"]
+
+[dependencies]
+# The V2 twin: the RC pin set every program crate in the course carries (m01-l2).
+anchor-lang = "2.0.0-rc.1"
+wincode = { version = "0.5", features = ["derive"] }
+solana-address = "=2.6.0" # standalone workspace of one: the exact pin, like the greeter
+
+[dev-dependencies]
+solana-sdk = "4"
+# The two rows that hold solana-sdk 4's graph on wincode 0.5 (m06-l1's dev rows).
+solana-short-vec = ">=3.2.2, <3.3"
+solana-signature = ">=3.4.1, <3.5"
+solana-hash = ">=4.4.0, <4.6" # 4.6.0 moved to wincode 0.6; same class, one crate further down
+bincode = "1"
+
+[workspace]

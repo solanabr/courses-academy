@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: "Moving lamports out of a PDA: two accounts, two mechanisms"
+     purpose: show why a data-bearing vault cannot use a System transfer, and what each ownership case requires
+     data: columns: source account | owned by | can be a System `transfer` source? | correct way to move lamports out | needs invoke_signed? rows: - data-bearing PDA (Account<Vault>, has #[account] data) | your program | NO ("Transfer: from must not carry data") | direct lamport math: **from.try_borrow_mut_lamports() -= x; **to... += x | no (program already owns it; no CPI) - System-owned PDA (SystemAccount, zero data) | System Program | YES | System Program `transfer` CPI | YES, signed with the PDA's seeds + stored bump takeaway: to teach a PDA-signed System CPI at all, the lamports must live in a zero-data SystemAccount PDA
+     prompt: A two-row comparison matrix with the five columns from the data. Row 1 is the data-bearing vault (flag the "can be a System transfer source?" cell red/NO with the error string). Row 2 is the SystemAccount SOL vault (green/YES). Visually connect row 2's "invoke_signed" column to the lesson's build. Put the takeaway as a full-width banner under both rows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:480px;height:439px;top:-232px;right:-232px;border-radius:36% 48% 60% 61% / 41% 56% 54% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:553px;bottom:-292px;left:-292px;border-radius:57% 64% 52% 58% / 56% 56% 48% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:472px;bottom:-220px;right:-220px;border-radius:38% 36% 41% 51% / 52% 62% 58% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lm { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; margin-top:20px; }
+  .lm th { padding:13px 18px; font-family:var(--font-display); font-weight:900; font-size:13px;
+           letter-spacing:0.11em; text-transform:uppercase; text-align:left;
+           background:var(--surface-inverse); color:var(--stbr-cream); vertical-align:middle; }
+  .lm th:first-child { border-top-left-radius:var(--radius-md); }
+  .lm th:last-child  { border-top-right-radius:var(--radius-md); }
+  .lm td { padding:16px 18px; border-bottom:2px solid var(--border-subtle);
+           border-right:2px solid var(--border-subtle); background:var(--surface-card);
+           vertical-align:top; }
+  .lm td:last-child { border-right:0; }
+  .lm tr:last-child td:first-child { border-bottom-left-radius:var(--radius-md); }
+  .lm tr:last-child td:last-child  { border-bottom-right-radius:var(--radius-md); }
+  .lm .acct { background:var(--surface-paper); }
+  .lm .acct .n { font-family:var(--font-display); font-weight:900; font-size:20px;
+                 line-height:1.14; color:var(--text-primary); }
+  .lm .acct .s { font-family:var(--font-mono); font-size:14px; line-height:1.32;
+                 color:var(--stbr-emerald-800); margin-top:6px; }
+  .mono { font-family:var(--font-mono); font-size:15px; line-height:1.34; color:var(--text-primary); }
+  .body { font-family:var(--font-body); font-size:15px; line-height:1.34; color:var(--text-secondary); }
+  .verd { font-family:var(--font-display); font-weight:900; font-size:22px; letter-spacing:0.02em; }
+  .lm td.cell-no  { background:var(--surface-inverse); border-right-color:var(--surface-inverse);
+                    border-top:3px solid var(--surface-page); }
+  .cell-no .verd { color:var(--stbr-cream); }
+  .cell-no .body { color:var(--stbr-cream); opacity:0.84; }
+  .cell-yes .verd { color:var(--stbr-emerald); }
+  .lm td.cell-hero { background:var(--stbr-yellow); border-right-color:var(--stbr-yellow-700);
+               border-bottom-color:var(--stbr-yellow-700); }
+  .cell-hero .verd { color:var(--stbr-dark); }
+  .cell-hero .mono, .cell-hero .body { color:var(--stbr-dark); }
+  .lm-take { margin-top:18px; background:var(--surface-brand); color:var(--stbr-cream);
+             border-radius:var(--radius-md); padding:16px 26px; font-family:var(--font-display);
+             font-weight:900; font-size:21px; line-height:1.26; letter-spacing:-0.01em; }
+  .lm-take b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">two accounts, two mechanisms</div>
+  <h2 class="viz-title">Moving lamports out of a PDA</h2>
+  <table class="lm">
+    <tr>
+      <th style="width:288px">source account</th>
+      <th style="width:172px">owned by</th>
+      <th style="width:270px">can be a System <code>transfer</code> source?</th>
+      <th style="width:436px">correct way to move lamports out</th>
+      <th>needs invoke_signed?</th>
+    </tr>
+    <tr>
+      <td class="acct">
+        <div class="n">data-bearing PDA</div>
+        <div class="s">Account&lt;Vault&gt; &mdash; carries #[account] data</div>
+      </td>
+      <td><div class="mono">your program</div></td>
+      <td class="cell-no">
+        <div class="verd">NO</div>
+        <div class="body" style="margin-top:6px;">&ldquo;Transfer: <code>from</code> must not carry data&rdquo;</div>
+      </td>
+      <td>
+        <div class="body" style="margin-bottom:6px;">direct lamport math &mdash; no CPI at all</div>
+        <div class="mono">**from.try_borrow_mut_lamports()? -= x;<br>**to.try_borrow_mut_lamports()?   += x;</div>
+      </td>
+      <td>
+        <div class="verd" style="color:var(--text-muted);">no</div>
+        <div class="body" style="margin-top:6px;">the program already owns it &mdash; nothing to sign</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="acct">
+        <div class="n">System-owned PDA</div>
+        <div class="s">SystemAccount &mdash; zero data</div>
+      </td>
+      <td><div class="mono">System Program</div></td>
+      <td class="cell-yes">
+        <div class="verd">YES</div>
+        <div class="body" style="margin-top:6px;">keyless, and carries no data</div>
+      </td>
+      <td>
+        <div class="body" style="margin-bottom:6px;">a real CPI into the System Program</div>
+        <div class="mono">System Program <code>transfer</code> CPI</div>
+      </td>
+      <td class="cell-hero">
+        <div class="verd">YES</div>
+        <div class="body" style="margin-top:6px;">signed with the PDA&rsquo;s seeds + its stored bump &mdash; <b>this is the lesson&rsquo;s build</b></div>
+      </td>
+    </tr>
+  </table>
+  <div class="lm-take">To teach a PDA-signed System CPI at all, the lamports must live in a <b>zero-data SystemAccount PDA</b>.</div>
+</div>
+</body></html>

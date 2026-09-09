@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Why bool breaks the cast and PodU64 does not
+     purpose: contrast a non-Pod field with its Pod wrapper at the bit-pattern level
+     data: bool: 1 byte, valid patterns {0x00, 0x01}, 254 patterns UNDEFINED -> not Pod PodBool: wraps u8, valid patterns {all 256} -> Pod.get() -> bool via (byte != 0) u64 (native): 8 bytes, all patterns valid, alignment 8 -> Pod, and legal in a header because Solana guarantees an 8-byte-aligned data buffer and the header sits at offset 8 (the scaffold's own Counter uses a bare u64) PodU64: wraps [u8; 8], alignment 1, all patterns valid -> Pod at ANY offset, which is what a Slab tail item or a nested struct needs
+     prompt: Four small labeled cards in a 2x2 grid: "bool", "PodBool", "u64 native", "PodU64". Each card shows byte width, an "alignment" value, and a "Pod?" verdict (red X or green check). Highlight that bool fails on undefined patterns and native u64 carries an 8-byte alignment requirement, while the Pod wrappers are alignment 1 and always valid.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:547px;height:578px;top:-329px;right:-329px;border-radius:52% 64% 37% 46% / 65% 49% 39% 48%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:558px;height:524px;bottom:-275px;left:-275px;border-radius:37% 35% 42% 61% / 59% 59% 51% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:609px;height:536px;bottom:-336px;right:-336px;border-radius:60% 57% 65% 60% / 61% 61% 48% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .row { display:flex; gap:20px; margin-bottom:20px; }
+  .card { flex:1 1 0; height:224px; border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-card);
+          display:flex; flex-direction:column; }
+  .card.bad { border-color:var(--stbr-yellow-700); }
+
+  .chead { height:56px; background:var(--surface-inverse); padding:0 22px; display:flex;
+           align-items:center; justify-content:space-between; }
+  .cname { font-family:var(--font-mono); font-weight:800; font-size:21px; line-height:1;
+           color:var(--text-on-dark); }
+  .cname .cw { font-family:var(--font-body); font-weight:600; font-size:12.5px;
+               color:rgba(245,232,202,0.60); margin-left:10px; }
+  .badge { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.04em;
+           padding:6px 14px; border-radius:var(--radius-pill); white-space:nowrap; }
+  .badge.ok { background:var(--surface-brand); color:var(--text-on-brand); }
+  .badge.no { background:var(--surface-accent); color:var(--text-on-accent); }
+
+  .metrics { height:74px; display:flex; border-bottom:1.5px solid var(--border-subtle); }
+  .m { flex:1 1 0; padding:14px 20px; border-right:1.5px solid var(--border-subtle); }
+  .m:last-child { border-right:0; }
+  .mk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.11em;
+        text-transform:uppercase; color:var(--text-muted); }
+  .mv { font-family:var(--font-mono); font-weight:700; font-size:17px; line-height:1.2;
+        color:var(--text-primary); margin-top:6px; }
+  .mv.flag { color:var(--stbr-dark); background:var(--surface-accent);
+             display:inline-block; padding:1px 8px; border-radius:var(--radius-sm); }
+  .mv.hard { color:var(--stbr-green); }
+
+  .note { flex:1 1 auto; padding:13px 20px; font-family:var(--font-body); font-size:14px;
+          line-height:1.4; color:var(--text-secondary); }
+  .note b { color:var(--text-primary); font-weight:700; }
+  .note.tax { background:rgba(255,210,63,0.22); color:var(--text-primary); }
+
+  .foot { background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:16px 28px; font-family:var(--font-display); font-weight:900; font-size:22px;
+          line-height:1.2; color:var(--text-on-brand); }
+  .mono { font-family:var(--font-mono); font-size:0.86em; }
+</style>
+  <div class="stbr-eyebrow">every byte pattern must be legal</div>
+  <h2 class="viz-title">why <span class="mono">bool</span> breaks the cast and <span class="mono">PodU64</span> does not</h2>
+
+  <div class="row">
+
+    <div class="card bad">
+      <div class="chead">
+        <span class="cname">bool<span class="cw">primitive</span></span>
+        <span class="badge no">&#10007; not Pod</span>
+      </div>
+      <div class="metrics">
+        <div class="m"><div class="mk">width</div><div class="mv">1 byte</div></div>
+        <div class="m"><div class="mk">alignment</div><div class="mv">1</div></div>
+        <div class="m"><div class="mk">valid patterns</div><div class="mv flag">2 of 256</div></div>
+      </div>
+      <div class="note tax">only <b>0x00</b> and <b>0x01</b> are defined &mdash; the other <b>254 patterns are UNDEFINED</b>, so the cast is rejected.</div>
+    </div>
+
+    <div class="card">
+      <div class="chead">
+        <span class="cname">PodBool<span class="cw">wraps u8</span></span>
+        <span class="badge ok">&#10003; Pod</span>
+      </div>
+      <div class="metrics">
+        <div class="m"><div class="mk">width</div><div class="mv">1 byte</div></div>
+        <div class="m"><div class="mk">alignment</div><div class="mv">1</div></div>
+        <div class="m"><div class="mk">valid patterns</div><div class="mv">all 256</div></div>
+      </div>
+      <div class="note">every byte is legal; <b>.get()</b> hands back a <b>bool</b> via <b>(byte != 0)</b>.</div>
+    </div>
+
+  </div>
+
+  <div class="row">
+
+    <div class="card">
+      <div class="chead">
+        <span class="cname">u64<span class="cw">native</span></span>
+        <span class="badge ok">&#10003; Pod</span>
+      </div>
+      <div class="metrics">
+        <div class="m"><div class="mk">width</div><div class="mv">8 bytes</div></div>
+        <div class="m"><div class="mk">alignment</div><div class="mv hard">8 &mdash; a constraint</div></div>
+        <div class="m"><div class="mk">valid patterns</div><div class="mv">all</div></div>
+      </div>
+      <div class="note">legal <b>in a header</b>: Solana guarantees an 8-byte-aligned data buffer and the header sits at offset 8 &mdash; the scaffold's own <b>Counter</b> uses a bare u64.</div>
+    </div>
+
+    <div class="card">
+      <div class="chead">
+        <span class="cname">PodU64<span class="cw">wraps [u8; 8]</span></span>
+        <span class="badge ok">&#10003; Pod</span>
+      </div>
+      <div class="metrics">
+        <div class="m"><div class="mk">width</div><div class="mv">8 bytes</div></div>
+        <div class="m"><div class="mk">alignment</div><div class="mv">1</div></div>
+        <div class="m"><div class="mk">valid patterns</div><div class="mv">all</div></div>
+      </div>
+      <div class="note">alignment 1 means it is Pod at <b>any offset</b> &mdash; what a <b>Slab tail item</b> or a nested struct needs.</div>
+    </div>
+
+  </div>
+
+  <div class="foot">the wrappers trade nothing but a <span class="mono">.get()</span> for a cast that is always sound.</div>
+</div>
+</body></html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What anchor codama generate writes, and what each part gives you
+     purpose: map the generated directory to the three things the caller actually uses
+     data: clients/js/            <- from `-p clients -l js`: <path>/<language> index.ts       -> re-exports everything below instructions/  -> getSwapArcadeForTicketsInstructionAsync(...)  // the builder you call accounts/      -> fetchPool(...)          // the decoder
+     pdas/         -> findPoolPda(...)        // the PDA finder, its own folder types/         -> Pool, and the arg types (amountIn/minOut as bigint) programs/      -> the program address + program-level helpers errors/        -> typed SwapError (ZeroOutput, SlippageExceeded) The caller touches four of these folders for three things: the instruction builder (instructions/), the PDA finder (pdas/), the decoder (accounts/).
+     prompt: Directory-tree diagram of the six generated folders. Put a right-side callout on four of them: instructions -> "the swap builder", accounts -> "the decoder", pdas -> "its own folder, not accounts/", errors -> "typed reverts". pdas/ is a top-level sibling of accounts/ and must never be folded into it: the lesson checkpoint imports findPoolPda from pdas/ and fetchPool from accounts/. Leave types/ and programs/ unannotated but present. Monospace tree, clean callouts.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:471px;height:463px;top:-257px;right:-257px;border-radius:51% 40% 52% 37% / 57% 58% 62% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:595px;height:504px;bottom:-321px;left:-321px;border-radius:51% 55% 39% 46% / 63% 37% 37% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:432px;height:402px;bottom:-223px;left:700px;border-radius:44% 62% 63% 62% / 52% 44% 47% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 18px; }
+  .card { border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+          overflow: hidden; background: var(--surface-card); }
+  .head { background: var(--surface-inverse); padding: 15px 26px;
+          display: flex; align-items: center; gap: 18px; }
+  .root { font-family: var(--font-mono); font-weight: 700; font-size: 20px;
+          color: var(--text-on-dark); }
+  .from { font-family: var(--font-body); font-size: 12.5px; line-height: 1.35;
+          color: rgba(245,232,202,0.62); }
+  .from code { font-family: var(--font-mono); color: rgba(245,232,202,0.88); font-size: 12px; }
+
+  .r { display: flex; align-items: center; border-top: 1.5px solid var(--border-subtle); }
+  .r.hot { background: rgba(255,210,63,0.20); }
+  .nm { flex: 0 0 auto; width: 262px; padding: 14px 0 14px 26px; display: flex; align-items: center;
+        font-family: var(--font-mono); font-weight: 700; font-size: 16px;
+        color: var(--text-primary); }
+  .nm .g { color: var(--stbr-ink-300); font-weight: 400; margin-right: 8px; }
+  .r.hot .nm .g { color: var(--stbr-yellow-700); }
+  .ds { flex: 1 1 0; min-width: 0; padding: 16px 18px; display: block;
+        font-family: var(--font-mono); font-size: 13.5px;
+        line-height: 1.34; color: var(--text-secondary); }
+  .ds b { color: var(--text-primary); }
+  .co { flex: 0 0 auto; width: 318px; padding: 12px 26px 12px 0; display: flex;
+        align-items: center; gap: 12px; }
+  .chip { font-family: var(--font-body); font-weight: 800; font-size: 11.5px;
+          letter-spacing: .1em; text-transform: uppercase; border-radius: var(--radius-pill);
+          padding: 7px 16px; background: var(--surface-accent); color: var(--text-on-accent);
+          line-height: 1.25; }
+
+  .band { margin-top: 20px; background: var(--surface-brand); border-radius: var(--radius-lg);
+          padding: 16px 26px; display: flex; align-items: center; gap: 24px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.18;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">anchor codama generate &middot; what lands on disk</div>
+  <h2 class="viz-title">the generated tree, annotated</h2>
+
+  <div class="card">
+    <div class="head">
+      <div class="root">clients/js/</div>
+      <div class="from">from <code>-p clients -l js</code> &mdash; the path and the language you asked for</div>
+    </div>
+
+    <div class="r">
+      <div class="nm"><span class="g">&#9500;&#9472;&#9472;</span>index.ts</div>
+      <div class="ds">re-exports everything below</div>
+      <div class="co"></div>
+    </div>
+
+    <div class="r hot">
+      <div class="nm"><span class="g">&#9500;&#9472;&#9472;</span>instructions/</div>
+      <div class="ds"><b>getSwapArcadeForTicketsInstructionAsync(...)</b></div>
+      <div class="co">
+        <svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#d9a608" stroke-width="2.6"/><polygon points="34,7 22,2 22,12" fill="#d9a608"/></svg>
+        <span class="chip">the swap builder</span>
+      </div>
+    </div>
+
+    <div class="r hot">
+      <div class="nm"><span class="g">&#9500;&#9472;&#9472;</span>accounts/</div>
+      <div class="ds"><b>fetchPool(...)</b></div>
+      <div class="co">
+        <svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#d9a608" stroke-width="2.6"/><polygon points="34,7 22,2 22,12" fill="#d9a608"/></svg>
+        <span class="chip">the decoder</span>
+      </div>
+    </div>
+
+    <div class="r hot">
+      <div class="nm"><span class="g">&#9500;&#9472;&#9472;</span>pdas/</div>
+      <div class="ds"><b>findPoolPda(...)</b></div>
+      <div class="co">
+        <svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#d9a608" stroke-width="2.6"/><polygon points="34,7 22,2 22,12" fill="#d9a608"/></svg>
+        <span class="chip">its own folder, not accounts/</span>
+      </div>
+    </div>
+
+    <div class="r">
+      <div class="nm"><span class="g">&#9500;&#9472;&#9472;</span>types/</div>
+      <div class="ds">Pool, and the arg types &mdash; amountIn / minOut as bigint</div>
+      <div class="co"></div>
+    </div>
+
+    <div class="r">
+      <div class="nm"><span class="g">&#9500;&#9472;&#9472;</span>programs/</div>
+      <div class="ds">the program address + program-level helpers</div>
+      <div class="co"></div>
+    </div>
+
+    <div class="r hot">
+      <div class="nm"><span class="g">&#9492;&#9472;&#9472;</span>errors/</div>
+      <div class="ds"><b>SwapError</b> &mdash; ZeroOutput &middot; SlippageExceeded</div>
+      <div class="co">
+        <svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="23" y2="7" stroke="#d9a608" stroke-width="2.6"/><polygon points="34,7 22,2 22,12" fill="#d9a608"/></svg>
+        <span class="chip">typed reverts</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="vk">what the caller actually touches</span>
+    <span class="vt">Three of the six: the instruction builder, the PDA finder, the decoder.</span>
+  </div>
+</div>
+</body></html>

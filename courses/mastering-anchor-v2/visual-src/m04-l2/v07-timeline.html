@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: From the manifesto to a compile error
+     purpose: place the borrow model in the arc of V2's design so it reads as thesis, not trick
+     data: #4390, "Zero-copy account deserialization by default": names Account<T> as the slow path and the number-one performance complaint from Anchor developers. The seed of V2. Anchor 1.0.0 released 2026-04-02: the redesign ships; safe-by-default account model becomes the line. The borrow model: the same thesis applied to CPIs. The stale-read footgun becomes a compile error instead of a docs warning; .reload() is removed because nothing needs reloading. #4431, fuzzing: the changelog credits fuzzing with finding 4 correctness bugs in the framework itself; the test suite carries Miri witnesses and Kani configs. The framework holds itself to the bar it enforces.
+     prompt: Horizontal timeline with four labeled points in order: "#4390 manifesto", "Anchor 1.0.0 (2026-04-02)", "borrow model kills the reload footgun", "#4431 fuzzing finds 4 framework bugs". A caption bar underneath: "safe-by-default, carried from deserialization into composition".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:488px;height:499px;top:-243px;right:-243px;border-radius:46% 35% 51% 61% / 38% 41% 65% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:550px;height:434px;left:-308px;top:220px;border-radius:59% 40% 65% 50% / 40% 49% 38% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:457px;height:402px;bottom:-222px;right:-222px;border-radius:50% 38% 49% 43% / 54% 47% 48% 63%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .band { display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+  .band .slot { min-height:1px; }
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); padding:16px 22px; height:220px; }
+  .card .k { font-family:var(--font-display); font-weight:900; font-size:20px;
+    line-height:1.1; color:var(--text-primary); }
+  .card .when { font-family:var(--font-body); font-size:12px; font-weight:800;
+    letter-spacing:.09em; text-transform:uppercase; color:var(--stbr-emerald); margin-bottom:7px; }
+  .card p { margin:10px 0 0; font-size:15px; line-height:1.38; color:var(--text-secondary); }
+  .card code { font-family:var(--font-mono); font-weight:700; font-size:14px; color:var(--text-primary); }
+  .card.hero { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); }
+  .card.hero .when { color:var(--stbr-dark); }
+  .card.hero .k, .card.hero p { color:var(--text-on-accent); }
+  .card.hero p { color:var(--stbr-dark); }
+  .rail { position:relative; height:56px; margin:10px 0; }
+  .rail .line { position:absolute; left:60px; right:60px; top:26px; height:4px;
+    background:var(--stbr-emerald); border-radius:2px; }
+  .rail .dots { position:absolute; left:0; right:0; top:0; height:56px;
+    display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; }
+  .rail .d { display:flex; align-items:center; justify-content:center; }
+  .rail .d i { display:block; width:22px; height:22px; border-radius:999px;
+    background:var(--stbr-emerald); border:4px solid var(--surface-page); font-style:normal; }
+  .rail .d.hero i { width:32px; height:32px; background:var(--stbr-yellow);
+    border:5px solid var(--stbr-dark); }
+  .cap { margin-top:16px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:18px 34px; font-size:21px; text-align:center; }
+  .cap b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">thesis, not trick</div>
+  <h2 class="viz-title">from the manifesto to a compile error</h2>
+  <div class="band">
+    <div class="card">
+      <div class="when">issue #4390</div>
+      <div class="k">the manifesto</div>
+      <p>&ldquo;Zero-copy account deserialization by default&rdquo; names <code>Account&lt;T&gt;</code> as the slow path
+        and the number-one performance complaint from Anchor developers. The seed of V2.</p>
+    </div>
+    <div class="slot"></div>
+    <div class="card hero">
+      <div class="when">the borrow model</div>
+      <div class="k">the reload footgun dies</div>
+      <p>The same thesis applied to CPIs. The stale read becomes a <b>compile error</b> instead of a
+        docs warning — and <code>.reload()</code> is removed, because nothing needs reloading.</p>
+    </div>
+    <div class="slot"></div>
+  </div>
+  <div class="rail">
+    <div class="line"></div>
+    <div class="dots">
+      <div class="d"><i></i></div>
+      <div class="d"><i></i></div>
+      <div class="d hero"><i></i></div>
+      <div class="d"><i></i></div>
+    </div>
+  </div>
+  <div class="band">
+    <div class="slot"></div>
+    <div class="card">
+      <div class="when">2026-04-02</div>
+      <div class="k">Anchor 1.0.0 ships</div>
+      <p>The redesign lands and the safe-by-default account model becomes the line the framework
+        holds — not an option you opt into.</p>
+    </div>
+    <div class="slot"></div>
+    <div class="card">
+      <div class="when">issue #4431</div>
+      <div class="k">fuzzing turns inward</div>
+      <p>The changelog credits fuzzing with 4 correctness bugs found in the framework itself; the
+        suite carries Miri witnesses and Kani configs. It holds itself to the bar it enforces.</p>
+    </div>
+  </div>
+  <div class="cap">safe-by-default, carried from <b>deserialization</b> into <b>composition</b></div>
+</div>
+</body></html>

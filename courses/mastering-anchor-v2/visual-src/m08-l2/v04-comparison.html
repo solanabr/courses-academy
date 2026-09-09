@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What a verified build proves, and what it does not
+     purpose: separate provenance from safety and from authority so the reader stops over-reading a green result
+     data: columns: Claim | Does a hash match prove it? rows: - "The deployed bytes came from this exact source" | YES - "The bytes were built at the pinned toolchain" | YES - "The source is free of bugs or exploits" | NO (that is your audit + fuzz) - "The program is safe to grant permissions to" | NO (logic is never read) - "Upgrades are locked / authority is safe" | NO (separate authority step) - "Anyone can re-run the proof themselves" | YES (trustless, reproducible)
+     prompt: A two-column comparison table, YES rows in green, NO rows in red, with the parenthetical reason kept in the NO cells. Group the three YES rows visually apart from the three NO rows so the provenance/safety split reads at a glance. Header: "Provenance is not safety."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:512px;height:464px;top:-280px;right:-280px;border-radius:53% 62% 50% 52% / 60% 59% 63% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:513px;height:505px;bottom:-283px;left:-283px;border-radius:48% 35% 44% 50% / 43% 63% 41% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:466px;height:437px;bottom:-229px;right:-229px;border-radius:35% 38% 42% 39% / 65% 61% 58% 38%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 50px; margin: 4px 0 24px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .col { border-radius: var(--radius-lg); border: 1.5px solid var(--border-subtle);
+         background: var(--surface-card); overflow: hidden; }
+  .col.yes { border: 2px solid var(--stbr-emerald); }
+  .col.no { border: 2px solid var(--stbr-yellow-700); }
+  .colh { padding: 14px 22px 19px; display: flex; align-items: baseline; gap: 14px; }
+  .col.yes .colh { background: var(--surface-brand); }
+  .col.no .colh { background: var(--surface-accent); }
+  .verd { font-family: var(--font-display); font-weight: 900; font-size: 30px; line-height: 1; }
+  .col.yes .verd { color: var(--text-on-brand); }
+  .col.no .verd { color: var(--text-on-accent); }
+  .colq { font-family: var(--font-body); font-weight: 700; font-size: 13px; line-height: 1.25; }
+  .col.yes .colq { color: rgba(245,232,202,0.8); }
+  .col.no .colq { color: rgba(27,35,29,0.68); }
+  .row { display: flex; align-items: flex-start; gap: 14px; padding: 17px 22px 18px;
+         border-top: 1.5px solid var(--border-subtle); }
+  .row:first-of-type { border-top: 0; }
+  .gl { flex: 0 0 auto; margin-top: 2px; }
+  .claim { font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.16;
+           color: var(--text-primary); }
+  .why { font-family: var(--font-body); font-size: 13.5px; line-height: 1.35;
+         color: var(--text-secondary); margin-top: 5px; }
+  .why b { color: var(--text-primary); font-weight: 700; }
+  .band { margin-top: 26px; background: var(--surface-brand); border-radius: var(--radius-lg);
+          padding: 17px 28px 19px; display: flex; align-items: center; gap: 24px; }
+  .bk { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.75); white-space: nowrap; }
+  .bt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">does a hash match prove it?</div>
+  <h2 class="viz-title">provenance is not safety</h2>
+
+  <div class="cols">
+    <div class="col yes">
+      <div class="colh">
+        <span class="verd">YES</span>
+        <span class="colq">a matching hash settles these<br>&mdash; completely, and for anyone</span>
+      </div>
+      <div class="row">
+        <span class="gl"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#008b4c"/><polyline points="5.5,11.5 9.5,15.5 16.5,7" fill="none" stroke="#f5e8ca" stroke-width="2.6"/></svg></span>
+        <span>
+          <div class="claim">The deployed bytes came from this exact source</div>
+          <div class="why">that is precisely what the two hashes test</div>
+        </span>
+      </div>
+      <div class="row">
+        <span class="gl"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#008b4c"/><polyline points="5.5,11.5 9.5,15.5 16.5,7" fill="none" stroke="#f5e8ca" stroke-width="2.6"/></svg></span>
+        <span>
+          <div class="claim">The bytes were built at the pinned toolchain</div>
+          <div class="why">a different toolchain would not reproduce the hash</div>
+        </span>
+      </div>
+      <div class="row">
+        <span class="gl"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#008b4c"/><polyline points="5.5,11.5 9.5,15.5 16.5,7" fill="none" stroke="#f5e8ca" stroke-width="2.6"/></svg></span>
+        <span>
+          <div class="claim">Anyone can re-run the proof themselves</div>
+          <div class="why">trustless and reproducible &mdash; no registry or authority is consulted</div>
+        </span>
+      </div>
+    </div>
+
+    <div class="col no">
+      <div class="colh">
+        <span class="verd">NO</span>
+        <span class="colq">a matching hash says nothing here<br>&mdash; the logic is never read</span>
+      </div>
+      <div class="row">
+        <span class="gl"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#1b231d"/><line x1="6.5" y1="6.5" x2="15.5" y2="15.5" stroke="#f5e8ca" stroke-width="2.6"/><line x1="15.5" y1="6.5" x2="6.5" y2="15.5" stroke="#f5e8ca" stroke-width="2.6"/></svg></span>
+        <span>
+          <div class="claim">The source is free of bugs or exploits</div>
+          <div class="why"><b>that is your audit + fuzz</b> &mdash; a hash compares bytes, it does not read them</div>
+        </span>
+      </div>
+      <div class="row">
+        <span class="gl"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#1b231d"/><line x1="6.5" y1="6.5" x2="15.5" y2="15.5" stroke="#f5e8ca" stroke-width="2.6"/><line x1="15.5" y1="6.5" x2="6.5" y2="15.5" stroke="#f5e8ca" stroke-width="2.6"/></svg></span>
+        <span>
+          <div class="claim">The program is safe to grant permissions to</div>
+          <div class="why"><b>logic is never read</b> &mdash; verified malware is still malware</div>
+        </span>
+      </div>
+      <div class="row">
+        <span class="gl"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="10" fill="#1b231d"/><line x1="6.5" y1="6.5" x2="15.5" y2="15.5" stroke="#f5e8ca" stroke-width="2.6"/><line x1="15.5" y1="6.5" x2="6.5" y2="15.5" stroke="#f5e8ca" stroke-width="2.6"/></svg></span>
+        <span>
+          <div class="claim">Upgrades are locked / the authority is safe</div>
+          <div class="why"><b>a separate authority step</b> &mdash; today's verified bytes can be replaced tomorrow</div>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="bk">read the yellow column</span>
+    <span class="bt">A green result proves where the bytes came from. It never claims they are good &mdash; stop over-reading it.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Which checklist rows the framework helps with, and which are all yours
+     purpose: separate the rows V2 assists at compile time from the rows the framework explicitly will not cover
+     data: Framework assists (cite it, still confirm the line): row 7 discriminators / type confusion - Account<T> requires T: Pod, so a wrong-type read fails to compile row 1 owner check - implicit in Account<T> for typed accounts Entirely your job (the framework will not save you): row 2 UncheckedAccount - V2 docs are blunt: no validation; you add address / owner / constraint row 3 CPI targets - use a typed Interface/Program, never a caller-supplied key row 4 checked math - only checked_* on balances and reserves row 5 close-and-zero - zero the data on teardown to block revival row 6 canonical bumps - read the stored bump, never re-find it
+     prompt: Two-band comparison card. Top band "Framework assists" (calm green) with the two rows; bottom band "Entirely your job" (amber) with the five rows. Keep the bottom band visually heavier so it does not read as an afterthought, because most rows live there.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:491px;top:-237px;right:-237px;border-radius:58% 51% 38% 36% / 38% 48% 60% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:503px;height:486px;bottom:-283px;left:-283px;border-radius:59% 45% 43% 61% / 64% 54% 44% 38%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:390px;height:442px;bottom:-225px;left:774px;border-radius:59% 41% 42% 60% / 56% 61% 59% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .band { border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-card); }
+  .band.assist { border: 2px solid var(--border-subtle); }
+  .band.yours  { border: 3px solid var(--stbr-yellow-700); margin-top: 18px; }
+  .bh { display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
+  .band.assist .bh { height: 58px; background: var(--surface-brand-deep); }
+  .band.yours  .bh { height: 68px; background: var(--surface-accent); }
+  .bht { font-family: var(--font-display); font-weight: 900; line-height: 1.1; }
+  .band.assist .bht { font-size: 22px; color: var(--text-on-dark); }
+  .band.yours  .bht { font-size: 27px; color: var(--text-on-accent); }
+  .bhs { font-family: var(--font-body); font-weight: 700; font-size: 12.5px; }
+  .band.assist .bhs { color: rgba(245,232,202,0.72); }
+  .band.yours  .bhs { color: rgba(27,35,29,0.68); }
+  .cnt { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+         text-transform: uppercase; }
+  .band.assist .cnt { color: rgba(245,232,202,0.6); }
+  .band.yours  .cnt { color: rgba(27,35,29,0.6); }
+  .r { display: flex; align-items: flex-start; gap: 18px; padding: 12px 24px;
+       border-top: 1.5px solid var(--border-subtle); }
+  .r:first-of-type { border-top: 0; }
+  .band.assist .r { min-height: 62px; }
+  .band.yours  .r { height: 64px; align-items: center; }
+  .band.yours .r { border-left: 6px solid var(--surface-accent); }
+  .rn { flex: 0 0 172px; font-family: var(--font-display); font-weight: 900; font-size: 17px;
+        line-height: 1.15; color: var(--text-primary); }
+  .rn small { display: block; font-family: var(--font-body); font-weight: 800; font-size: 10px;
+              letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted);
+              margin-bottom: 2px; }
+  .rd { flex: 1 1 0; font-family: var(--font-body); font-size: 14px; line-height: 1.4;
+        color: var(--text-secondary); }
+  .band.yours .rd { color: var(--text-primary); font-size: 14.5px; }
+  .rd code { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+             color: var(--stbr-emerald-800); }
+  .verdict { margin-top: 16px; background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 13px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">seven rows, split two ways</div>
+  <h2 class="viz-title">what V2 assists with &mdash; and what is entirely yours</h2>
+
+  <div class="band assist">
+    <div class="bh">
+      <div>
+        <span class="bht">Framework assists</span>
+        <span class="bhs">&nbsp;&mdash; cite it, still confirm the line</span>
+      </div>
+      <span class="cnt">2 of 7 rows</span>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 7</small>discriminators / type confusion</div>
+      <div class="rd"><code>Account&lt;T&gt;</code> requires <code>T: Pod</code>, so a wrong-type read fails to compile</div>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 1</small>owner check</div>
+      <div class="rd">implicit in <code>Account&lt;T&gt;</code> for typed accounts</div>
+    </div>
+  </div>
+
+  <div class="band yours">
+    <div class="bh">
+      <div>
+        <span class="bht">Entirely your job</span>
+        <span class="bhs">&nbsp;&mdash; the framework will not save you</span>
+      </div>
+      <span class="cnt">5 of 7 rows</span>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 2</small>UncheckedAccount</div>
+      <div class="rd">V2 docs are blunt: no validation. You add <code>address</code> / <code>owner</code> / <code>constraint</code>.</div>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 3</small>CPI targets</div>
+      <div class="rd">use a typed <code>Interface</code>/<code>Program</code>, never a caller-supplied key</div>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 4</small>checked math</div>
+      <div class="rd">only <code>checked_*</code> on balances and reserves</div>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 5</small>close-and-zero</div>
+      <div class="rd">zero the data on teardown to block revival</div>
+    </div>
+    <div class="r">
+      <div class="rn"><small>row 6</small>canonical bumps</div>
+      <div class="rd">read the stored bump, never re-find it</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">read the weight</span>
+    <span class="vt">Five of seven rows the compiler never looks at. The checklist is not an afterthought &mdash; it is most of the work.</span>
+  </div>
+</div>
+</body></html>

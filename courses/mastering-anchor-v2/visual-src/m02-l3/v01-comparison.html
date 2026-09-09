@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two tiers, one decision
+     purpose: fix the mental model that Pod and borsh are complementary tiers, not good-vs-bad
+     data: Tier 1, Account<T> (Pod, the default) read: direct byte cast, no deserialize write: mutate fields in place shapes: fixed size only; PodU64, PodBool, PodVec<T,MAX>, Slab<Header,Tail> cost: layout discipline (no padding, largest-to-smallest, every field Pod) use when: state is fixed OR bounded with a known MAX Tier 2, BorshAccount<T> (#[account(borsh)], the escape hatch) read: deserialize the WHOLE account into a heap value write: re-serialize the whole account shapes: String, Vec<T> with no MAX, deeply nested / optional data cost: the (de)serialize tax V2 was built to erase, + two wire holes use when: length is genuinely unbounded and Pod cannot reach
+     prompt: Two-column comparison card. Left column "Tier 1, Account<T> (Pod)", right column "Tier 2, BorshAccount<T> (escape hatch)". Five aligned rows: read, write, shapes, cost, use-when. Make the left column read as the calm default and the right as the deliberate exception, not as winner/loser. Keep the row labels in a shared gutter.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:569px;height:561px;top:-322px;right:-322px;border-radius:61% 60% 65% 43% / 36% 56% 35% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:435px;height:431px;bottom:-220px;left:-220px;border-radius:38% 43% 63% 46% / 53% 42% 46% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:490px;height:522px;bottom:-281px;right:-281px;border-radius:45% 54% 37% 38% / 42% 55% 47% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c1-title { font-size: 48px; }
+  .c1-grid { display:flex; align-items:flex-start; gap:0; }
+  .c1-gutter { width:170px; flex:0 0 170px; }
+  .c1-col { flex:1 1 0; background:var(--surface-card); border:2px solid var(--border-subtle);
+            border-radius:var(--radius-xl); overflow:hidden; }
+  .c1-col.b { margin-left:18px; }
+  .c1-head { height:84px; padding:0 26px; display:flex; flex-direction:column;
+             justify-content:center; }
+  .c1-col.a .c1-head { background:var(--surface-brand); }
+  .c1-col.b .c1-head { background:var(--surface-accent); }
+  .c1-head .k { font-family:var(--font-body); font-weight:800; font-size:14px;
+                letter-spacing:.14em; text-transform:uppercase; }
+  .c1-col.a .c1-head .k { color:rgba(245,232,202,0.82); }
+  .c1-col.b .c1-head .k { color:rgba(27,35,29,0.60); }
+  .c1-head .n { font-family:var(--font-display); font-weight:900; font-size:27px;
+                line-height:1.08; margin-top:3px; }
+  .c1-col.a .c1-head .n { color:var(--stbr-cream); }
+  .c1-col.b .c1-head .n { color:var(--stbr-dark); }
+  .c1-cell { height:84px; padding:0 26px; display:flex; align-items:center;
+             border-top:1.5px solid var(--border-subtle); }
+  .c1-cell p { margin:0; font-family:var(--font-body); font-size:17px; line-height:1.32;
+               color:var(--text-primary); }
+  .c1-cell p b { font-weight:700; }
+  .c1-col.b .c1-cell { background:#fffaea; }
+  .c1-lab { height:84px; display:flex; align-items:center; justify-content:flex-end;
+            padding-right:22px; }
+  .c1-lab span { font-family:var(--font-display); font-weight:800; font-size:17px;
+                 letter-spacing:.10em; text-transform:uppercase; color:var(--text-muted); }
+  .c1-spacer { height:84px; }
+  .c1-verdict { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+                padding:22px 34px; display:flex; align-items:center; gap:26px; }
+  .c1-verdict .vk { font-family:var(--font-body); font-weight:800; font-size:16px;
+                    letter-spacing:.13em; text-transform:uppercase; color:rgba(245,232,202,0.78);
+                    white-space:nowrap; }
+  .c1-verdict .vt { font-family:var(--font-display); font-weight:900; font-size:26px;
+                    line-height:1.12; color:var(--stbr-cream); }
+  .c1-verdict .vt b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">pod and borsh are tiers, not good vs bad</div>
+  <h2 class="viz-title c1-title">Two tiers, one decision</h2>
+  <div class="c1-grid">
+    <div class="c1-gutter">
+      <div class="c1-spacer"></div>
+      <div class="c1-lab"><span>read</span></div>
+      <div class="c1-lab"><span>write</span></div>
+      <div class="c1-lab"><span>shapes</span></div>
+      <div class="c1-lab"><span>cost</span></div>
+      <div class="c1-lab"><span>use when</span></div>
+    </div>
+    <div class="c1-col a">
+      <div class="c1-head"><span class="k">tier 1 &middot; the default</span><span class="n">Account&lt;T&gt; (Pod)</span></div>
+      <div class="c1-cell"><p>direct byte cast &mdash; <b>no deserialize</b></p></div>
+      <div class="c1-cell"><p>mutate fields <b>in place</b></p></div>
+      <div class="c1-cell"><p>fixed size only; PodU64, PodBool,<br>PodVec&lt;T, MAX&gt;, Slab&lt;Header, Tail&gt;</p></div>
+      <div class="c1-cell"><p>layout discipline (no padding,<br>largest-to-smallest, every field Pod)</p></div>
+      <div class="c1-cell"><span><p>state is fixed <b>OR</b> bounded with a known MAX</p></span></div>
+    </div>
+    <div class="c1-col b">
+      <div class="c1-head"><span class="k">tier 2 &middot; the escape hatch</span><span class="n">BorshAccount&lt;T&gt; &mdash; #[account(borsh)]</span></div>
+      <div class="c1-cell"><span><p>deserialize the <b>whole account</b> into a heap value</p></span></div>
+      <div class="c1-cell"><p><b>re-serialize</b> the whole account</p></div>
+      <div class="c1-cell"><p>String, Vec&lt;T&gt; with no MAX,<br>deeply nested / optional data</p></div>
+      <div class="c1-cell"><p>the (de)serialize tax V2 was built to erase,<br>+ two wire holes</p></div>
+      <div class="c1-cell"><span><p>length is <b>genuinely unbounded</b> and Pod cannot reach</p></span></div>
+    </div>
+  </div>
+  <div class="c1-verdict">
+    <span class="vk">the decision</span>
+    <span class="vt">Stay on the cast by default; reach for tier 2 <b>deliberately</b>, and only for the field that forces it.</span>
+  </div>
+</div>
+</body></html>

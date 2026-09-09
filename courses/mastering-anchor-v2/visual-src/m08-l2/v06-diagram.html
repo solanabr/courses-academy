@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The single steward across the Anchor supply chain
+     purpose: show OtterSec sitting under three distinct trust points at once, so the single-point-of-trust is legible
+     data: center node: OtterSec (steward) spoke 1 -> builds the Anchor framework (and GPG-signs the v2 tag: trixter-osec) spoke 2 -> publishes the artifacts: the anchor-lang crates on crates.io (cargo owner --list) and @anchor-lang/core on npm (repository field, otter-sec since v1.1.1) spoke 3 -> runs the verified-builds registry Anchor verifies against frame: a verified build removes trust in YOUR program's builder, not trust in the FRAMEWORK's builder
+     prompt: A hub-and-spoke diagram: one central node "OtterSec" with three spokes to labeled boxes (framework, crates, registry). Add a caption band across the bottom stating the trust distinction. Make the single center node visually dominant to convey concentration.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:591px;height:559px;top:-332px;right:-332px;border-radius:39% 54% 36% 46% / 64% 60% 59% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:476px;height:376px;left:-273px;top:386px;border-radius:53% 62% 41% 41% / 38% 52% 63% 62%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:508px;height:516px;bottom:-299px;right:-299px;border-radius:51% 42% 38% 38% / 60% 47% 36% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 22px; }
+  .hs { display: grid; grid-template-columns: 400px 116px 1fr; align-items: center; }
+  .hub { background: var(--surface-accent); border-radius: var(--radius-xl);
+         padding: 26px 28px 28px; height: 452px; display: flex; flex-direction: column;
+         justify-content: center; }
+  .hk { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .14em;
+        text-transform: uppercase; color: rgba(27,35,29,0.62); }
+  .hn { font-family: var(--font-display); font-weight: 900; font-size: 58px; line-height: 1;
+        color: var(--text-on-accent); margin: 10px 0 4px; }
+  .hr { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.1;
+        color: var(--text-on-accent); }
+  .hx { font-family: var(--font-body); font-size: 14.5px; line-height: 1.42;
+        color: rgba(27,35,29,0.8); margin-top: 16px; padding-top: 16px;
+        border-top: 2px solid rgba(27,35,29,0.18); }
+  .fan { height: 452px; display: flex; align-items: center; }
+  .spokes { display: flex; flex-direction: column; gap: 16px; }
+  .sp { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+        background: var(--surface-card); height: 140px; overflow: hidden; display: flex; }
+  .spn { flex: 0 0 168px; background: var(--surface-inverse); padding: 15px 16px;
+         display: flex; flex-direction: column; justify-content: center; }
+  .spk { font-family: var(--font-body); font-weight: 800; font-size: 9.5px; letter-spacing: .14em;
+         text-transform: uppercase; color: rgba(245,232,202,0.5); }
+  .spt { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.06;
+         color: var(--text-on-dark); margin-top: 5px; }
+  .spb { flex: 1 1 auto; padding: 15px 20px; display: flex; flex-direction: column;
+         justify-content: center; }
+  .spx { font-family: var(--font-body); font-size: 14px; line-height: 1.4; color: var(--text-primary); }
+  .spx + .spx { margin-top: 7px; }
+  .spx code { font-family: var(--font-mono); font-size: 13px; color: var(--stbr-emerald-800);
+              font-weight: 600; }
+  .cap { margin-top: 24px; background: var(--surface-brand); border-radius: var(--radius-lg);
+         padding: 17px 28px 19px; display: flex; align-items: center; gap: 24px; }
+  .ck { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.75); white-space: nowrap; }
+  .ct { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.18;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">one steward, three trust points</div>
+  <h2 class="viz-title">who sits under the anchor supply chain</h2>
+
+  <div class="hs">
+    <div class="hub">
+      <div class="hk">the hub</div>
+      <div class="hn">OtterSec</div>
+      <div class="hr">a single steward, standing under all three</div>
+      <div class="hx">Not a criticism &mdash; a fact to hold consciously. Every arrow on the right terminates at the same organisation, so a compromise there is not three independent failures but one.</div>
+    </div>
+
+    <div class="fan">
+      <svg width="116" height="452" viewBox="0 0 116 452">
+        <line x1="0" y1="226" x2="102" y2="70" stroke="#1b231d" stroke-width="2.6"/>
+        <line x1="0" y1="226" x2="102" y2="226" stroke="#1b231d" stroke-width="2.6"/>
+        <line x1="0" y1="226" x2="102" y2="382" stroke="#1b231d" stroke-width="2.6"/>
+        <polygon points="102,62 116,70 102,78" fill="#1b231d"/>
+        <polygon points="102,218 116,226 102,234" fill="#1b231d"/>
+        <polygon points="102,374 116,382 102,390" fill="#1b231d"/>
+        <circle cx="2" cy="226" r="7" fill="#1b231d"/>
+      </svg>
+    </div>
+
+    <div class="spokes">
+      <div class="sp">
+        <div class="spn"><div class="spk">spoke 1</div><div class="spt">builds the framework</div></div>
+        <div class="spb">
+          <div class="spx">Anchor itself is developed under OtterSec stewardship.</div>
+          <div class="spx">The v2 tag is GPG-signed by <code>trixter-osec</code> &mdash; a signature you can check, from the same steward.</div>
+        </div>
+      </div>
+
+      <div class="sp">
+        <div class="spn"><div class="spk">spoke 2</div><div class="spt">publishes the artifacts</div></div>
+        <div class="spb">
+          <div class="spx">crates.io: the <code>anchor-lang</code> crates &mdash; confirm with <code>cargo owner --list</code>.</div>
+          <div class="spx">npm: <code>@anchor-lang/core</code> &mdash; <code>repository</code> field reads otter-sec since v1.1.1.</div>
+        </div>
+      </div>
+
+      <div class="sp">
+        <div class="spn"><div class="spk">spoke 3</div><div class="spt">runs the registry</div></div>
+        <div class="spb">
+          <div class="spx">The verified-builds registry that Anchor verifies against is operated by the same steward.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <span class="ck">the distinction that matters</span>
+    <span class="ct">A verified build removes trust in <b>your</b> program's builder. It does not remove trust in the <b>framework's</b> builder.</span>
+  </div>
+</div>
+</body></html>

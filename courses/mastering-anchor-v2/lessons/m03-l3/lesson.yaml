@@ -1,0 +1,93 @@
+id: lesson-mav2-m03-l3
+slug: m03-l3
+title: "Write your own constraint: the AccountConstraint trait"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    anchor-v2-testing: "2.0.0-rc.1"
+    litesvm: "0.11.0"
+skills:
+  - anchor
+  - solana-programs
+  - program-security
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: custom-min-balance-constraint
+    type: code
+    language: rust
+    starter: custom-min-balance-constraint/starter.rs
+    solution: custom-min-balance-constraint/solution.rs
+    tests: custom-min-balance-constraint/tests.json
+    hints:
+      - "The floor is inclusive: a balance equal to min passes."
+      - "The rule is one comparison in MinBalanceRule::meets_floor; check and run_constraint are already wired for you."
+      - "The verification harness is compile-time. If the build fails, read the assertion message: it names the case your comparison got wrong."
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "You want `#[account(quarters::min_balance = 100)]` to reject an underfunded vault. Which AccountConstraint hook does the rule belong in, and why?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "check — a read-time gate on the loaded account, re-verified before every matching handler runs"
+            correct: true
+            feedback: "Of the other three, one fires once at creation, one only for accounts that get written back out, and the last mutates instead of judging. A floor has to hold on every call — that rules out all three."
+          - id: c
+            label: "exit — the hook fires during account serialization, so it validates the final state written back out"
+            correct: false
+            feedback: "exit runs after the handler, and only for accounts that were mutated and serialize back out. The read-only vault in RequireFunded is not even `mut`, so exit never fires for it — and a post-hoc assertion is not the up-front gate a floor needs."
+          - id: d
+            label: "update - the hook fires whenever a constrained value is written, so the floor tracks changes"
+            correct: false
+            feedback: "The fourth hook, and the one whose name most suggests a live invariant that follows the account around. update fires only inside an explicit update(...) clause, and it exists for a constraint that mutates the account; a floor judges rather than writes."
+          - id: b
+            label: "init — the floor is a creation-time invariant, so it is enforced once after the account is allocated"
+            correct: false
+            feedback: "init fires only on the create path, and a balance floor has to hold on every instruction that loads the vault. Enforce it at birth alone and the very next set_credit can drop credit under the floor with nothing to catch it."
+        explanation: "check is the validation hook: it runs after load and before the handler, on every matching instruction, which is precisely where an invariant like a balance floor belongs. init is create-only and exit is post-handler, so neither gives you the up-front, every-call gate a min_balance constraint needs. Said the way the lesson argues it: the vault must ALREADY satisfy the invariant for the instruction to proceed, and that is re-verified each call, never cached and never one-time — which is the definition of a read-time gate. `update` is out too: it only fires inside an explicit `update(...)` clause, and a floor validates rather than mutates."
+      - id: q2
+        prompt: "Why does V2 dispatch namespaced constraints through an open AccountConstraint trait instead of just adding more built-in keywords?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Trait dispatch monomorphizes at compile time, so the emitted check costs fewer compute units than a built-in keyword"
+            correct: false
+            feedback: "Both forms are resolved by the proc macro and expand to inline code in the same instruction, so there is no CU gap between a built-in keyword and a trait-dispatched one. The motivation is extensibility, not performance — and the lesson is explicit that the cost of a cheap check is a wash."
+          - id: b
+            label: "No framework author can enumerate every program's invariants, so the surface is left open to downstream crates"
+            correct: true
+            feedback: "A handler branch never reaches the IDL, a fork is something you re-merge forever, and an inline boolean cannot be named or reused. Three different ways to lose, which is roughly the argument."
+          - id: c
+            label: "The token::* namespace requires it, and every other namespace only reaches the trait as an accidental side effect"
+            correct: false
+            feedback: "This has the exception backwards. token::* is the ONE namespace the core derive still handles itself, for anchor-spl's sake; every other namespace routes through AccountConstraint deliberately, not incidentally."
+          - id: d
+            label: "Because a trait impl gets evaluated at compile time, while a built-in keyword has to fire at runtime"
+            correct: false
+            feedback: "Traits do get resolved by the compiler, so the reasoning is not idle. Both forms are expanded by the proc macro into inline code in the same instruction, so a check hook runs at runtime and draws on the same compute budget your handler does. The motivation is extensibility, not speed."
+        explanation: "No framework author can enumerate every program's invariants ahead of time. By routing ns::key = val through a trait you implement for a marker type, V2 lets you (and any downstream crate) ship new, IDL-visible constraints without forking the framework — the same open-at-the-seams philosophy behind the public AnchorAccount/Id/Discriminator traits. The alternatives all fail on a specific axis: a handler `if` is invisible in the IDL and not inherited by the next call site, a fork is yours to re-merge every release, and an inline `constraint = <expr>` is an anonymous boolean you cannot name, reuse, or read off an interface."
+      - id: q3
+        prompt: "Your min_balance check hook does a modest comparison, but a teammate proposes a version that re-reads and re-hashes a large slab on every call. What's the cost you just signed up for?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The expensive check runs on every matching instruction, so you pay that CU on a hot path forever"
+            correct: true
+            feedback: "Same budget as the handler, every call, forever. A cheap comparison is a wash; an expensive one is a tax you keep paying, and a wrong one reads as a passing constraint."
+          - id: a
+            label: "Nothing — constraint hooks are metered separately, outside the instruction's own compute budget"
+            correct: false
+            feedback: "There is no separate meter. A check hook executes inside the same instruction as the handler and draws on the same compute budget, so every CU it burns is a CU the handler no longer has."
+          - id: b
+            label: "One time at init — codegen caches the check result on the account so later instructions skip the hook"
+            correct: false
+            feedback: "Codegen caches nothing. `ns::key = value` routes to check, and check re-runs on every instruction that declares the constraint, so the cost recurs on each call rather than amortizing at creation."
+          - id: d
+            label: "Just the calls that take the vault as mut, since a load without mut usually skips hooks"
+            correct: false
+            feedback: "A cost that scales with writes would be a comfortable rule, and exit really does behave that way. check does not: the vault on RequireFunded is not even mut, and the hook still runs on every instruction that declares the constraint."
+        explanation: "A check hook executes each time the constraint matches, inside the instruction's compute budget. An expensive hook is CU you pay on every call to a hot path — and because the account then reads as 'valid', a heavy or wrong check can also hide logic bugs behind a passing constraint. Keep hooks cheap and correct. Note the asymmetry the lesson draws: against a handler `if` you wrote once, a cheap comparison in a hook is a wash, and the reuse plus IDL visibility are pure gain. It is the expensive hook and the subtly wrong hook that compound, because both now ride along on every instruction that declares the constraint."

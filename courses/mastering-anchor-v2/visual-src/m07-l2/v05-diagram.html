@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Load runs before your hooks, so a bad owner short-circuits
+     purpose: show the ordering that makes owner = X @ MyErr surface IllegalOwner instead of the custom error
+     data: account arrives -> [ load(): 1. owner check   -> wrong owner? FAIL now with ProgramError::IllegalOwner ] [ load(): 2. discriminator -> wrong disc?  FAIL now with AccountDiscriminatorMismatch ] [ load succeeds -> you now hold a verified Account<T> ] [ constraint hooks: your `owner = X @ MyErr`, `address = ..`, `constraint = ..` run HERE ] consequence: on a bad owner, load fails at step 1; the hook carrying MyErr is never reached fix: take an UncheckedAccount (no load-time owner check) and put the SAME owner = X @ MyErr constraint on it -> no load to short-circuit, so the hook is the only owner check and it carries your error note: on the escrow's own vault field, the patch you ship is `address = escrow.vault @ WrongVault`, not `owner = ...`. Owner pins the account to a program; address pins it to THE account this escrow recorded, which is strictly stronger. Reach for owner = only when any account from that program is acceptable.
+     prompt: Vertical pipeline. A boxed "load()" phase at the top containing owner check then discriminator check, each with a red "fails here" exit. Below it a green "handle to Account<T>" then a "constraint hooks" box containing the @ MyErr hook, greyed with a note "never reached on bad owner". A side box shows the fix: UncheckedAccount carrying the same owner = X @ MyErr constraint.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:583px;height:567px;top:-332px;right:-332px;border-radius:51% 55% 56% 40% / 50% 59% 48% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:478px;height:460px;left:-247px;top:155px;border-radius:58% 36% 59% 59% / 45% 48% 56% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:472px;height:470px;bottom:-235px;right:-235px;border-radius:40% 62% 59% 40% / 57% 56% 44% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 18px; }
+  /* no italic face is available to the renderer: carry emphasis with weight/colour */
+  em { font-style:normal; font-weight:700; color:var(--text-primary); }
+  .cols { display:flex; align-items:flex-start; }
+  .left { width:880px; flex:0 0 880px; }
+  .right { width:556px; flex:0 0 556px; margin-left:20px; }
+  .pill { display:inline-block; background:var(--surface-inverse); color:var(--stbr-cream);
+          font-family:var(--font-body); font-weight:700; font-size:13px; letter-spacing:.08em;
+          text-transform:uppercase; padding:8px 16px; border-radius:var(--radius-pill); }
+  .down { text-align:center; height:30px; }
+  .down.l { text-align:left; padding-left:73px; }
+  .box { border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+         background:var(--surface-card); overflow:hidden; }
+  .box .bh { background:var(--surface-inverse); padding:9px 20px;
+             font-family:var(--font-mono); font-weight:700; font-size:15px;
+             color:var(--stbr-cream); }
+  .step { display:flex; align-items:center; padding:13px 20px;
+          border-bottom:1px solid var(--border-subtle); }
+  .step:last-child { border-bottom:0; }
+  .step .sn { width:290px; flex:0 0 290px; font-family:var(--font-display);
+              font-weight:800; font-size:17px; color:var(--text-primary); line-height:1.2; }
+  .step .sn i { display:block; font-family:var(--font-body); font-weight:400;
+                font-style:normal; font-size:12.5px; color:var(--text-muted); margin-top:3px; }
+  .step .ar { width:52px; flex:0 0 52px; }
+  .fail { flex:1 1 auto; border:2px solid #c0392b; border-radius:var(--radius-md);
+          padding:8px 12px; background:#fdf1ef; }
+  .fail .fk { font-family:var(--font-body); font-weight:800; font-size:11px;
+              letter-spacing:.08em; text-transform:uppercase; color:#c0392b; }
+  .fail .fc { font-family:var(--font-mono); font-size:14px; color:var(--text-primary);
+              margin-top:3px; }
+  .ok { border:2px solid var(--surface-brand); background:var(--surface-brand);
+        border-radius:var(--radius-lg); padding:14px 20px; }
+  .ok .ot { font-family:var(--font-display); font-weight:900; font-size:19px;
+            color:var(--text-on-brand); line-height:1.2; }
+  .grey { border:2px dashed var(--stbr-ink-300); border-radius:var(--radius-lg);
+          background:var(--stbr-ink-100); padding:14px 20px; }
+  .grey .gt { font-family:var(--font-display); font-weight:800; font-size:18px;
+              color:var(--text-secondary); line-height:1.2; }
+  .grey .gc { font-family:var(--font-mono); font-size:14px; color:var(--text-muted);
+              margin-top:7px; line-height:1.5; }
+  .grey .gn { display:inline-block; margin-top:10px; border:1.5px solid var(--text-muted);
+              color:var(--text-secondary); font-family:var(--font-body); font-weight:700;
+              font-size:11px; letter-spacing:.07em; text-transform:uppercase;
+              padding:4px 10px; border-radius:var(--radius-pill); }
+  .fix { border-radius:var(--radius-lg); overflow:hidden; border:2px solid var(--stbr-yellow-700); }
+  .fix .fh { background:var(--surface-accent); padding:11px 20px;
+             font-family:var(--font-display); font-weight:900; font-size:15px;
+             letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-accent); }
+  .fix .fb { background:var(--surface-card); padding:16px 20px; }
+  .fix .ft { font-family:var(--font-body); font-size:14.5px; line-height:1.45;
+             color:var(--text-secondary); }
+  .fix .fcode { font-family:var(--font-mono); font-size:14px; line-height:1.5;
+                background:var(--surface-inverse); color:var(--stbr-cream);
+                border-radius:var(--radius-md); padding:12px 14px; margin:12px 0; }
+  .fix .fcode b { color:var(--stbr-yellow); font-weight:700; }
+  .note { margin-top:16px; border-left:6px solid var(--stbr-emerald);
+          background:var(--surface-card); border-radius:var(--radius-md);
+          padding:14px 18px; }
+  .note .nk { font-family:var(--font-body); font-weight:800; font-size:11px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-emerald-800); }
+  .note .nt { font-family:var(--font-body); font-size:14px; line-height:1.45;
+              color:var(--text-secondary); margin-top:7px; }
+  .note .nt code { font-family:var(--font-mono); font-size:13px; color:var(--text-primary); }
+  .conseq { margin-top:16px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+            padding:14px 22px; display:flex; align-items:center; }
+  .conseq .ck { font-family:var(--font-body); font-weight:800; font-size:11px;
+                letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                opacity:.65; width:130px; flex:0 0 130px; }
+  .conseq .ct { font-family:var(--font-display); font-weight:800; font-size:18px;
+                line-height:1.25; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">class 3 · the owner-error footgun</div>
+  <h2 class="viz-title">load() runs before your hooks, so a bad owner short-circuits</h2>
+
+  <div class="cols">
+    <div class="left">
+      <div class="pill">account arrives</div>
+      <div class="down l"><svg width="16" height="30" viewBox="0 0 16 30"><line x1="8" y1="0" x2="8" y2="21" stroke="#1b231d" stroke-width="3"/><polygon points="1,21 8,30 15,21" fill="#1b231d"/></svg></div>
+
+      <div class="box">
+        <div class="bh">load()</div>
+        <div class="step">
+          <div class="sn">1. owner check<i>is this account owned by the declaring program?</i></div>
+          <div class="ar"><svg width="52" height="16" viewBox="0 0 52 16"><line x1="0" y1="8" x2="42" y2="8" stroke="#c0392b" stroke-width="3"/><polygon points="42,1 52,8 42,15" fill="#c0392b"/></svg></div>
+          <div class="fail"><div class="fk">wrong owner? fails HERE</div><div class="fc">ProgramError::IllegalOwner</div></div>
+        </div>
+        <div class="step">
+          <div class="sn">2. discriminator<i>do the first bytes match T?</i></div>
+          <div class="ar"><svg width="52" height="16" viewBox="0 0 52 16"><line x1="0" y1="8" x2="42" y2="8" stroke="#c0392b" stroke-width="3"/><polygon points="42,1 52,8 42,15" fill="#c0392b"/></svg></div>
+          <div class="fail"><div class="fk">wrong disc? fails HERE</div><div class="fc">AccountDiscriminatorMismatch</div></div>
+        </div>
+      </div>
+
+      <div class="down"><svg width="16" height="30" viewBox="0 0 16 30"><line x1="8" y1="0" x2="8" y2="21" stroke="#008b4c" stroke-width="3"/><polygon points="1,21 8,30 15,21" fill="#008b4c"/></svg></div>
+      <div class="ok"><div class="ot">load succeeds &mdash; you now hold a verified Account&lt;T&gt;</div></div>
+      <div class="down"><svg width="16" height="30" viewBox="0 0 16 30"><line x1="8" y1="0" x2="8" y2="21" stroke="#008b4c" stroke-width="3"/><polygon points="1,21 8,30 15,21" fill="#008b4c"/></svg></div>
+
+      <div class="grey">
+        <div class="gt">constraint hooks run HERE</div>
+        <div class="gc">owner = X @ MyErr &nbsp;·&nbsp; address = .. &nbsp;·&nbsp; constraint = ..</div>
+        <div class="gn">never reached on a bad owner</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="fix">
+        <div class="fh">the fix</div>
+        <div class="fb">
+          <div class="ft">Take an <b>UncheckedAccount</b> — no load-time owner check to short-circuit — and put the <em>same</em> constraint on it. Now the hook is the only owner check, so it carries your error.</div>
+          <div class="fcode">#[account(<b>owner = X @ MyErr</b>)]<br>pub thing: UncheckedAccount,</div>
+          <div class="ft">MyErr is what the client sees, every time.</div>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="nk">on the escrow's own vault field</div>
+        <div class="nt">Ship <code>address = escrow.vault @ WrongVault</code>, not <code>owner = ..</code>. Owner pins the account to a <em>program</em>; address pins it to <em>the</em> account this escrow recorded — strictly stronger. Reach for <code>owner =</code> only when any account from that program is acceptable.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="conseq">
+    <span class="ck">consequence</span>
+    <span class="ct">On a bad owner, load fails at step 1 — the hook carrying MyErr is never reached, and the client sees IllegalOwner instead.</span>
+  </div>
+</div>
+</body></html>

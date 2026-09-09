@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The four V2 ideas, wired to the five programs you built
+     purpose: show that the Quarters programs are one connected model, not five exercises
+     data: center: Anchor V2 pillar 1: Account<T> = zero-copy Pod by default (issue #4390)  ->  cabinet-counter pillar 2: CPIs are borrow-tracked CpiHandles (reload footgun removed)  ->  floor-registry, quarter-vault pillar 3: for an ALL-LITERAL seed scheme V2 precomputes the canonical bump as a macro-time const; the typed ctx.bumps.vault struct itself is Anchor 0.29, not a V2 delta, and a runtime-keyed seed still derives at validation  ->  quarter-vault pillar 4: three named vulnerability classes (type cosplay, duplicate-mutable, stale-after-CPI) are compile errors, not runtime exploits; account substitution still is not  ->  prize-escrow, token-to-ticket swap
+     prompt: Central node labeled "Anchor V2" with four labeled pillars radiating outward. Each pillar connects with a thin arrow to the program name(s) that demonstrate it, listed above. Keep the four pillar labels short. This is a concept map, one center, four spokes, each spoke terminating in one or two artifact names. No decorative icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:610px;height:550px;top:-337px;right:-337px;border-radius:48% 62% 49% 64% / 56% 42% 56% 44%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:533px;height:521px;bottom:-317px;left:-317px;border-radius:59% 47% 59% 57% / 41% 63% 59% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:484px;height:439px;bottom:-228px;left:398px;border-radius:48% 44% 38% 61% / 43% 61% 65% 41%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { position:relative; height:630px; }
+  .lines { position:absolute; left:0; top:0; width:1456px; height:630px; }
+  .hub { position:absolute; left:0; top:195px; width:296px; height:240px;
+         background:var(--surface-brand); border-radius:var(--radius-xl);
+         padding:26px; display:flex; flex-direction:column; justify-content:center; }
+  .hub .hk { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+             letter-spacing:.14em; text-transform:uppercase; color:rgba(245,232,202,0.70); }
+  .hub .ht { font-family:var(--font-display); font-weight:900; font-size:44px;
+             line-height:1; color:var(--text-on-brand); margin-top:10px; }
+  .hub .hs { font-family:var(--font-body); font-size:14px; line-height:1.4;
+             color:rgba(245,232,202,0.82); margin-top:12px; }
+  .row { position:absolute; left:420px; width:1036px; height:132px;
+         border-radius:var(--radius-lg); border:2px solid var(--border-subtle);
+         background:var(--surface-card); display:flex; align-items:stretch; }
+  .pil { flex:1 1 0; min-width:0; padding:16px 22px; display:flex;
+         flex-direction:column; justify-content:center; }
+  .pk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.14em;
+        text-transform:uppercase; color:var(--stbr-emerald); }
+  .pt { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.12;
+        color:var(--text-primary); margin-top:6px; }
+  .ps { font-family:var(--font-body); font-size:13.5px; line-height:1.38;
+        color:var(--text-secondary); margin-top:6px; }
+  .ps code { font-family:var(--font-mono); font-size:12.5px; font-weight:700;
+             color:var(--stbr-emerald-800); }
+  .art { flex:0 0 344px; border-left:1.5px solid var(--border-subtle);
+         padding:16px 20px; display:flex; flex-direction:column; justify-content:center; }
+  .ak { font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.13em;
+        text-transform:uppercase; color:var(--text-muted); margin-bottom:9px; }
+  .pill { display:inline-block; padding:6px 13px; border-radius:var(--radius-pill);
+          background:var(--surface-accent); color:var(--text-on-accent);
+          font-family:var(--font-mono); font-weight:700; font-size:13.5px; margin:3px 5px 3px 0; }
+</style>
+  <div class="stbr-eyebrow">one model, five artifacts</div>
+  <h2 class="viz-title" style="font-size:46px">the four V2 ideas, wired to the programs you built</h2>
+  <div class="wrap">
+    <svg class="lines" width="1456" height="630" viewBox="0 0 1456 630">
+      <path d="M296,315 H356 V84  H406" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <path d="M296,315 H356 V238 H406" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <path d="M296,315 H356 V392 H406" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <path d="M296,315 H356 V546 H406" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="420,84 404,76 404,92" fill="#1b231d"/>
+      <polygon points="420,238 404,230 404,246" fill="#1b231d"/>
+      <polygon points="420,392 404,384 404,400" fill="#1b231d"/>
+      <polygon points="420,546 404,538 404,554" fill="#1b231d"/>
+    </svg>
+
+    <div class="hub">
+      <span class="hk">the center</span>
+      <div class="ht">Anchor V2</div>
+      <div class="hs">Four pillars. Each one you already met &mdash; in the Quarters programs, not in the changelog.</div>
+    </div>
+
+    <div class="row" style="top:18px">
+      <div class="pil">
+        <span class="pk">pillar 1</span>
+        <div class="pt"><code style="font-family:var(--font-mono);font-size:19px">Account&lt;T&gt;</code> is a zero-copy Pod by default</div>
+        <div class="ps">issue #4390 &mdash; deserialization stops being the tax you pay per account</div>
+      </div>
+      <div class="art">
+        <div class="ak">shown by</div>
+        <div><span class="pill">cabinet-counter</span></div>
+      </div>
+    </div>
+
+    <div class="row" style="top:172px">
+      <div class="pil">
+        <span class="pk">pillar 2</span>
+        <div class="pt">CPIs are borrow-tracked <code style="font-family:var(--font-mono);font-size:19px">CpiHandle</code>s</div>
+        <div class="ps">the <code>reload()</code> footgun is removed by the type system, not by discipline</div>
+      </div>
+      <div class="art">
+        <div class="ak">shown by</div>
+        <div><span class="pill">floor-registry</span><span class="pill">quarter-vault</span></div>
+      </div>
+    </div>
+
+    <div class="row" style="top:326px">
+      <div class="pil">
+        <span class="pk">pillar 3</span>
+        <div class="pt">a bump const, but only for all-literal seeds</div>
+        <div class="ps">the typed <code>ctx.bumps.vault</code> struct is 0.29, not V2 &mdash; and a runtime-keyed seed like this vault&rsquo;s still derives at validation</div>
+      </div>
+      <div class="art">
+        <div class="ak">shown by</div>
+        <div><span class="pill">quarter-vault</span></div>
+      </div>
+    </div>
+
+    <div class="row" style="top:480px">
+      <div class="pil">
+        <span class="pk">pillar 4</span>
+        <div class="pt" style="font-size:20px">Three named vulnerability classes &rarr; compile errors</div>
+        <div class="ps">type cosplay &middot; duplicate-mutable &middot; stale-after-CPI &mdash; account substitution still is <b>not</b></div>
+      </div>
+      <div class="art">
+        <div class="ak">shown by</div>
+        <div><span class="pill">prize-escrow</span><span class="pill">token-to-ticket swap</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

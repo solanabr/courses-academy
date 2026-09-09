@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Custody swapped, skeleton kept
+     purpose: show which parts of the vault change under SPL and which are byte-for-byte identical
+     data: UNCHANGED (identity + control): - the state PDA: seeds = [b"vault", authority], with its own stored bump - address = vault.owner  (the has_one replacement) - the checked_sub debit on the vault's books - instruction shapes: initialize / deposit / withdraw / release - the &mut Context<T> handler signature - the signing MOVE: rebuild seeds from a stored canonical bump, attach .with_signer CHANGED (custody only): - value leaves the [b"sol", owner] SystemAccount PDA for a token account owned by the state PDA - so the seeds you sign with become the state PDA's own, and the stored sol_bump retires with it - accounts gain: mint, vault_token_account, an owner/recipient token account, token_program - System Program transfer  ->  token_interface::transfer_checked (carries mint + decimals)
+     prompt: Two-column comparison. Left column header "Stays identical", lists the six unchanged items; right column header "Custody layer only", lists the four changed items. A thin vertical divider between them. Small lock glyph by the left header, swap-arrows glyph by the right. Code-ish labels in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:436px;height:444px;top:-226px;right:-226px;border-radius:44% 62% 65% 52% / 59% 59% 61% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:444px;bottom:-237px;left:-237px;border-radius:58% 52% 41% 44% / 56% 50% 44% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:460px;height:539px;bottom:-329px;left:412px;border-radius:58% 41% 41% 51% / 40% 49% 52% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:22px; margin-top:4px; align-items:flex-start; }
+  .col { flex:1 1 0; min-width:0; border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-card); }
+  .col.hot { border-color:var(--stbr-yellow-700); }
+  .chead { padding:15px 20px; display:flex; align-items:center; gap:12px; }
+  .chead.keep { background:var(--surface-inverse); }
+  .chead.swap { background:var(--surface-accent); }
+  .ct { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.05; }
+  .chead.keep .ct { color:var(--text-on-dark); }
+  .chead.swap .ct { color:var(--text-on-accent); }
+  .cn { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+        text-transform:uppercase; margin-left:auto; white-space:nowrap; }
+  .chead.keep .cn { color:rgba(245,232,202,0.60); }
+  .chead.swap .cn { color:rgba(27,35,29,0.62); }
+  .r { padding:14px 20px; border-top:1.5px solid var(--border-subtle);
+       display:flex; align-items:flex-start; gap:12px; }
+  .mk { flex:0 0 9px; height:9px; margin-top:6px; border-radius:2px; background:var(--stbr-emerald); }
+  .col.hot .mk { background:var(--stbr-yellow-700); }
+  .rt { font-family:var(--font-body); font-size:14.5px; line-height:1.42; color:var(--text-primary); }
+  .rt code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-emerald-800);
+             font-weight:600; }
+  .col.hot .rt code { color:var(--stbr-green-800); }
+  .rt em { font-style:normal; color:var(--text-secondary); }
+  .verdict { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:25px; line-height:1.1;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">lamport vault &rarr; spl vault</div>
+  <h2 class="viz-title">custody swapped, skeleton kept</h2>
+  <div class="cols">
+
+    <div class="col">
+      <div class="chead keep">
+        <svg width="20" height="22" viewBox="0 0 20 22"><path d="M5 9.5V6.5a5 5 0 0 1 10 0v3" fill="none" stroke="#f5e8ca" stroke-width="2.2"/><rect x="2.5" y="9" width="15" height="11.5" rx="2.5" fill="#f5e8ca"/></svg>
+        <span class="ct">stays identical</span>
+        <span class="cn">identity + control</span>
+      </div>
+      <div class="r"><span class="mk"></span><span class="rt">the state PDA: <code>seeds = [b"vault", authority]</code>, with its own stored bump</span></div>
+      <div class="r"><span class="mk"></span><span class="rt"><code>address = vault.owner</code> &mdash; <em>the has_one replacement</em></span></div>
+      <div class="r"><span class="mk"></span><span class="rt">the <code>checked_sub</code> debit on the vault's books</span></div>
+      <div class="r"><span class="mk"></span><span class="rt">instruction shapes: <code>initialize / deposit / withdraw / release</code></span></div>
+      <div class="r"><span class="mk"></span><span class="rt">the <code>&amp;mut Context&lt;T&gt;</code> handler signature</span></div>
+      <div class="r"><span class="mk"></span><span class="rt">the signing MOVE: rebuild seeds from a stored canonical bump, attach <code>.with_signer</code></span></div>
+    </div>
+
+    <div class="col hot" style="flex:1.16 1 0">
+      <div class="chead swap">
+        <svg width="24" height="21" viewBox="0 0 24 21"><path d="M2 6.5h16" fill="none" stroke="#1b231d" stroke-width="2.2"/><polygon points="24,6.5 15,2 15,11" fill="#1b231d"/><path d="M22 15.5H6" fill="none" stroke="#1b231d" stroke-width="2.2"/><polygon points="0,15.5 9,11 9,20" fill="#1b231d"/></svg>
+        <span class="ct">custody layer only</span>
+        <span class="cn">the whole diff</span>
+      </div>
+      <div class="r"><span class="mk"></span><span class="rt">value leaves the <code>[b"sol", owner]</code> SystemAccount PDA for a token account owned by the state PDA</span></div>
+      <div class="r"><span class="mk"></span><span class="rt">so the seeds you sign with become the state PDA's own, and the stored <code>sol_bump</code> retires with it</span></div>
+      <div class="r"><span class="mk"></span><span class="rt">accounts gain: <code>mint</code>, <code>vault_token_account</code>, an owner/recipient token account, <code>token_program</code></span></div>
+      <div class="r"><span class="mk"></span><span class="rt">System Program <code>transfer</code> &rarr; <code>token_interface::transfer_checked</code> <em>(carries mint + decimals)</em></span></div>
+    </div>
+
+  </div>
+  <div class="verdict">
+    <span class="vk">the takeaway</span>
+    <span class="vt">Nothing about who owns the vault changed &mdash; only where the value sits.</span>
+  </div>
+</div>
+</body></html>

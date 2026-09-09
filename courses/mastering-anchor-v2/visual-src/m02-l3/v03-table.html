@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: All-borsh versus mixed-tier, on the two axes that matter
+     purpose: make the steelman's trade explicit so the reader chooses on cost, not vibe
+     data: columns: [approach, dev simplicity, CU on the hot account, rent, when it's the right call] row: [All-borsh, high (no layout discipline), pays deserialize every touch, sized for the largest value, CU is not the bottleneck; accounts touched rarely] row: [Mixed-tier (Pod core + isolated borsh), moderate (Pod discipline on the core), flat/near-zero on the hot path, hot account sized exactly; worst-case rent isolated, a hot account with one genuinely unbounded field]
+     prompt: A designed two-row comparison table with four value columns plus the approach label. Row 1 "All-borsh", row 2 "Mixed-tier (Pod core + isolated borsh)". Emphasize the "CU on the hot account" column as the deciding axis: all-borsh pays every touch, mixed-tier stays flat. Keep it readable as a decision aid, not a spec dump.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:486px;top:-294px;right:-294px;border-radius:47% 61% 55% 46% / 36% 53% 42% 56%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:615px;height:531px;bottom:-339px;left:-339px;border-radius:41% 43% 62% 58% / 60% 43% 60% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:587px;bottom:-338px;left:335px;border-radius:54% 59% 59% 53% / 52% 65% 55% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .t3-title { font-size:48px; }
+  .t3-tab { background:var(--surface-card); border:2px solid var(--border-subtle);
+            border-radius:var(--radius-xl); overflow:hidden; }
+  .t3-r { display:flex; align-items:stretch; }
+  .t3-r + .t3-r { border-top:1.5px solid var(--border-subtle); }
+  .t3-c { padding:20px 24px; }
+  .t3-a { width:300px; flex:0 0 300px; }
+  .t3-b { width:236px; flex:0 0 236px; }
+  .t3-cu { width:300px; flex:0 0 300px; }
+  .t3-d { width:250px; flex:0 0 250px; }
+  .t3-e { flex:1 1 auto; }
+
+  .t3-head { background:var(--surface-inverse); }
+  .t3-head .t3-c { display:flex; align-items:flex-end; height:82px; }
+  .t3-head span { font-family:var(--font-display); font-weight:800; font-size:16px;
+                  letter-spacing:.11em; text-transform:uppercase; color:var(--stbr-cream);
+                  line-height:1.25; }
+  .t3-head .t3-cu { background:var(--surface-accent); }
+  .t3-head .t3-cu span { color:var(--stbr-dark); }
+
+  .t3-body .t3-c { min-height:148px; }
+  .t3-body .t3-cu { background:#fff8e0; border-left:1.5px solid var(--stbr-yellow-700);
+                    border-right:1.5px solid var(--stbr-yellow-700); }
+  .t3-nm { font-family:var(--font-display); font-weight:900; font-size:25px; line-height:1.1;
+           color:var(--text-primary); }
+  .t3-nm .sm { display:block; font-family:var(--font-body); font-weight:600; font-size:16px;
+               color:var(--text-secondary); margin-top:8px; line-height:1.3; }
+  .t3-v { font-family:var(--font-body); font-size:18px; line-height:1.38; color:var(--text-primary); }
+  .t3-cu .t3-v { font-weight:700; }
+  .t3-tag { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:13px;
+            letter-spacing:.1em; text-transform:uppercase; padding:5px 12px;
+            border-radius:var(--radius-pill); margin-bottom:10px; }
+  .t3-tag.pay { background:var(--stbr-yellow-700); color:var(--stbr-cream); }
+  .t3-tag.flat { background:var(--surface-brand); color:var(--stbr-cream); }
+  .t3-note { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:20px 32px; display:flex; align-items:center; gap:24px; }
+  .t3-note .k { font-family:var(--font-body); font-weight:800; font-size:15px; letter-spacing:.13em;
+                text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .t3-note .v { font-family:var(--font-display); font-weight:900; font-size:25px; line-height:1.14;
+                color:var(--stbr-cream); }
+  .t3-note .v b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">choose on cost, not on vibe</div>
+  <h2 class="viz-title t3-title">All-borsh vs mixed-tier</h2>
+  <div class="t3-tab">
+    <div class="t3-r t3-head">
+      <div class="t3-c t3-a"><span>approach</span></div>
+      <div class="t3-c t3-b"><span>dev simplicity</span></div>
+      <div class="t3-c t3-cu"><span>CU on the hot account<br>&mdash; the deciding axis</span></div>
+      <div class="t3-c t3-d"><span>rent</span></div>
+      <div class="t3-c t3-e"><span>when it&rsquo;s the right call</span></div>
+    </div>
+    <div class="t3-r t3-body">
+      <div class="t3-c t3-a"><div class="t3-nm">All-borsh<span class="sm">every account on the escape hatch</span></div></div>
+      <div class="t3-c t3-b"><div class="t3-v">high &mdash; no layout discipline</div></div>
+      <div class="t3-c t3-cu"><span class="t3-tag pay">pays every touch</span><div class="t3-v">deserialize runs on every read, serialize on every write</div></div>
+      <div class="t3-c t3-d"><div class="t3-v">sized for the largest value</div></div>
+      <div class="t3-c t3-e"><div class="t3-v">CU is not the bottleneck; accounts touched rarely</div></div>
+    </div>
+    <div class="t3-r t3-body">
+      <div class="t3-c t3-a"><div class="t3-nm">Mixed-tier<span class="sm">Pod core + isolated borsh</span></div></div>
+      <div class="t3-c t3-b"><div class="t3-v">moderate &mdash; Pod discipline on the core</div></div>
+      <div class="t3-c t3-cu"><span class="t3-tag flat">flat</span><div class="t3-v">flat / near-zero on the hot path &mdash; the cast never deserializes</div></div>
+      <div class="t3-c t3-d"><div class="t3-v">hot account sized exactly; worst-case rent isolated</div></div>
+      <div class="t3-c t3-e"><div class="t3-v">a hot account with one genuinely unbounded field</div></div>
+    </div>
+  </div>
+  <div class="t3-note">
+    <span class="k">the trade</span>
+    <span class="v">You buy dev simplicity with <b>CU on every touch of your hottest account</b>.</span>
+  </div>
+</div>
+</body></html>

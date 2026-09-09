@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The challenge's three obstacles, and what locates each one
+     purpose: show that every obstacle has a tool that finds it, so the reader stops hunting by eye
+     data: columns: Obstacle | What locates it for you | What you do about it row: `has_one` in two places | the deprecation warnings from `cargo build` | resolve both to the V2 replacement the warning names row: a `.reload()` between two counter reads around a CPI | the missing-method error from the compiler | delete the reload and take the counter's typed borrow after the call row: one account handed into two mutable slots | validation fails with ConstraintDuplicateMutableAccount, before your handler runs | apply `unsafe(dup)` to the two vault fields and justify the aliasing in a comment guard rail: do NOT reach for unsafe(dup) on the counter, because one account in one slot means the opt-out is hiding a different bug
+     prompt: A three-row table with the middle column styled as tool output (monospace, terminal tint), and a full-width caution strip at the bottom carrying the guard rail. Number the rows 1-3 to match the list above.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:560px;top:-310px;right:-310px;border-radius:52% 57% 35% 40% / 52% 53% 42% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:424px;height:368px;left:-241px;top:297px;border-radius:49% 60% 43% 65% / 50% 45% 51% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:519px;height:483px;bottom:-249px;right:-249px;border-radius:60% 55% 58% 64% / 63% 49% 61% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { width:100%; border-collapse:collapse; table-layout:fixed;
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .tbl th { background:var(--surface-inverse); border:1.5px solid var(--stbr-dark);
+            color:var(--text-on-dark); font-family:var(--font-display); font-weight:900;
+            font-size:16px; text-align:left; padding:12px 18px; letter-spacing:.02em; }
+  .tbl th.n { width:64px; text-align:center; }
+  .tbl td { border:1.5px solid var(--border-subtle); vertical-align:middle;
+            padding:16px 18px; }
+  .tbl td.n { width:64px; text-align:center; background:var(--surface-paper);
+              font-family:var(--font-display); font-weight:900; font-size:26px;
+              color:var(--text-muted); }
+  td.obs { background:var(--surface-card); }
+  td.obs .oh { font-family:var(--font-display); font-weight:900; font-size:18px;
+               line-height:1.22; color:var(--text-primary); }
+  td.obs .om { font-family:var(--font-mono); font-size:12.5px; line-height:1.4;
+               color:var(--text-secondary); margin-top:7px; }
+  td.tool { background:var(--surface-inverse); border-color:var(--border-on-dark); }
+  td.tool .tk { font-family:var(--font-display); font-weight:900; font-size:10px;
+                letter-spacing:.14em; text-transform:uppercase;
+                color:var(--stbr-cream); opacity:.45; margin-bottom:7px; }
+  td.tool .tm { font-family:var(--font-mono); font-size:12.5px; line-height:1.5;
+                color:var(--stbr-cream); }
+  td.tool .tm .hl { color:var(--stbr-yellow); }
+  td.act { background:var(--surface-card); font-family:var(--font-body); font-size:14px;
+           line-height:1.45; color:var(--text-secondary); }
+  td.act code { font-family:var(--font-mono); font-size:13px; font-weight:600;
+                color:var(--text-primary); }
+  .caution { margin-top:14px; background:var(--surface-accent);
+             border-radius:var(--radius-lg); padding:13px 24px;
+             display:flex; align-items:center; gap:18px; }
+  .caution .ck { font-family:var(--font-display); font-weight:900; font-size:12px;
+                 letter-spacing:.14em; text-transform:uppercase;
+                 color:var(--stbr-dark); opacity:.65; flex:0 0 auto; }
+  .caution .ct { font-family:var(--font-display); font-weight:900; font-size:18px;
+                 line-height:1.25; color:var(--stbr-dark); }
+  .caution .ct code { font-family:var(--font-mono); font-size:17px; }
+</style>
+  <div class="stbr-eyebrow">stop hunting by eye</div>
+  <h2 class="viz-title">three obstacles &mdash; and what locates each one</h2>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th class="n">#</th>
+        <th style="width:392px">Obstacle</th>
+        <th style="width:452px">What locates it for you</th>
+        <th>What you do about it</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="n">1</td>
+        <td class="obs">
+          <div class="oh">has_one, in two places</div>
+          <div class="om">both constraints still compile today</div>
+        </td>
+        <td class="tool">
+          <div class="tk">cargo build &mdash; deprecation warnings</div>
+          <div class="tm"><span class="hl">warning</span>: `has_one` is deprecated;<br>&nbsp;&nbsp;on the sibling field, use<br>&nbsp;&nbsp;`#[account(address = owner.field)]`<br>&nbsp;&nbsp;&hellip; <span class="hl">2 warnings emitted</span></div>
+        </td>
+        <td class="act">Resolve <b>both</b> to the V2 replacement the warning itself names &mdash; <code>address = state.authority</code> &mdash; then rebuild until the count is 0.</td>
+      </tr>
+      <tr>
+        <td class="n">2</td>
+        <td class="obs">
+          <div class="oh">a .reload() between two counter reads, around a CPI</div>
+          <div class="om">the classic v1 stale-read patch</div>
+        </td>
+        <td class="tool">
+          <div class="tk">the compiler &mdash; missing method</div>
+          <div class="tm"><span class="hl">error[E0599]</span>: no method named<br>&nbsp;&nbsp;`reload` found &mdash; the type<br>&nbsp;&nbsp;has no such method in V2</div>
+        </td>
+        <td class="act">Delete the reload and take the counter&rsquo;s typed borrow <b>after</b> the call &mdash; nothing changes underneath a loaded typed account, so there is nothing to refresh.</td>
+      </tr>
+      <tr>
+        <td class="n">3</td>
+        <td class="obs">
+          <div class="oh">one account handed into two mutable slots</div>
+          <div class="om">deliberate aliasing, not a typo</div>
+        </td>
+        <td class="tool">
+          <div class="tk">account validation &mdash; before your handler runs</div>
+          <div class="tm"><span class="hl">Error</span>:<br>&nbsp;&nbsp;ConstraintDuplicateMutable<br>&nbsp;&nbsp;Account</div>
+        </td>
+        <td class="act">Apply <code>unsafe(dup)</code> to the two vault fields &mdash; and justify the aliasing in a comment next to it.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="caution">
+    <div class="ck">guard rail</div>
+    <div class="ct">Do <b>not</b> reach for <code>unsafe(dup)</code> on the counter &mdash; one account in one slot means the opt-out is hiding a different bug.</div>
+  </div>
+</div>
+</body></html>

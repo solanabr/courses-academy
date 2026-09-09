@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The full production lifecycle, one program through the whole pipeline
+     purpose: show the eight stages the capstone runs, in order, and which are local vs on-cluster
+     data: build (anchor build, V2 rc) -> unit suite (LiteSVM + Mollusk, in-process) -> fuzz (anchor fuzz / Crucible, one green case) -> harden (per-instruction security checklist) -> CU profile (measure settle_prize + one optimization) -> Surfpool localnet (anchor test: all five programs together) -> devnet deploy (anchor deploy) -> verify-from-repo (solana-verify against the devnet program, local) markers: stages 1-6 are local; stage 7 touches devnet; stage 8 is a local build compared to devnet bytecode
+     prompt: A left-to-right pipeline flowchart, eight labelled stages in the order given. Shade the first six as "local", stage 7 as "devnet", stage 8 as "local build vs devnet". Put a small gate icon on the Surfpool localnet stage to mark it as the integration gate before anything touches devnet.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:434px;top:-253px;right:-253px;border-radius:53% 52% 58% 57% / 53% 53% 59% 38%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:521px;height:527px;bottom:-273px;left:-273px;border-radius:55% 46% 44% 50% / 37% 61% 41% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:469px;height:575px;bottom:-328px;left:768px;border-radius:36% 51% 58% 45% / 35% 53% 53% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz, .viz * { box-sizing: border-box; }
+  .viz-title { font-size: 42px; margin: 4px 0 12px; }
+
+  .row { display: flex; align-items: stretch; height: 210px; }
+  .node { flex: 0 0 291px; height: 210px; border-radius: var(--radius-lg);
+          padding: 16px 18px; display: flex; flex-direction: column;
+          justify-content: space-between;
+          background: var(--surface-card); border: 2px solid var(--border-subtle); }
+  .conn { flex: 0 0 44px; height: 210px; display: flex; align-items: center;
+          justify-content: center; }
+  .nhead { display: flex; align-items: center; }
+  .num { flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+         background: var(--surface-brand); color: var(--text-on-brand);
+         font-family: var(--font-body); font-weight: 800; font-size: 13px;
+         display: flex; align-items: center; justify-content: center; }
+  .zone { margin-left: 10px; font-family: var(--font-body); font-weight: 800;
+          font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+          color: var(--text-muted); }
+  .nname { font-family: var(--font-display); font-weight: 900; font-size: 22px;
+           line-height: 1.1; color: var(--text-primary); }
+  .ncmd { font-family: var(--font-mono); font-size: 13.5px; line-height: 1.4;
+          color: var(--text-primary); border-top: 1.5px solid var(--border-subtle);
+          padding-top: 9px; }
+
+  .node.gate { background: var(--surface-accent); border-color: var(--stbr-yellow-700); }
+  .gate .num { background: var(--stbr-dark); color: var(--stbr-yellow); }
+  .gate .zone { color: var(--stbr-dark); opacity: .75; }
+  .gate .ncmd { border-top-color: rgba(27,35,29,0.25); }
+  .gatechip { align-self: flex-start; background: var(--stbr-dark); color: var(--stbr-yellow);
+              border-radius: var(--radius-pill); padding: 3px 11px;
+              font-family: var(--font-body); font-weight: 800; font-size: 10px;
+              letter-spacing: .12em; text-transform: uppercase; }
+
+  .node.devnet { background: var(--surface-inverse); border-color: var(--stbr-dark); }
+  .devnet .num { background: var(--surface-brand); color: var(--text-on-brand); }
+  .devnet .zone { color: rgba(245,232,202,0.6); }
+  .devnet .nname { color: var(--text-on-dark); }
+  .devnet .ncmd { color: rgba(245,232,202,0.92); border-top-color: rgba(245,232,202,0.24); }
+
+  .node.compare { background: var(--surface-paper); border: 2px dashed var(--stbr-ink-500); }
+  .compare .num { background: var(--surface-brand-deep); }
+
+  .band { height: 56px; position: relative; }
+  .band svg { position: absolute; left: 0; top: 0; }
+  .bandlbl { position: absolute; left: 380px; top: 6px;
+             font-family: var(--font-body); font-weight: 800; font-size: 11px;
+             letter-spacing: .13em; text-transform: uppercase; color: var(--text-muted); }
+
+  .verdict { margin-top: 20px; background: var(--surface-brand-deep);
+             border-radius: var(--radius-lg); padding: 14px 26px;
+             display: flex; align-items: center; }
+  .vk { flex: 0 0 auto; font-family: var(--font-body); font-weight: 800; font-size: 11.5px;
+        letter-spacing: .13em; text-transform: uppercase; color: rgba(245,232,202,0.72); }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-dark); margin-left: 22px; }
+</style>
+  <div class="stbr-eyebrow">one program, eight stages</div>
+  <h2 class="viz-title">the production lifecycle &mdash; six local stages, then the cluster</h2>
+
+
+  <div class="row">
+    <div class="node">
+      <div class="nhead"><span class="num">1</span><span class="zone">local</span></div>
+      <div class="nname">build</div>
+      <div class="ncmd">anchor build &middot; V2 rc</div>
+    </div>
+    <div class="conn">
+      <svg width="30" height="16" viewBox="0 0 30 16">
+        <line x1="0" y1="8" x2="20" y2="8" stroke="#1b231d" stroke-width="2.4"/>
+        <polygon points="30,8 16,2 16,14" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node">
+      <div class="nhead"><span class="num">2</span><span class="zone">local</span></div>
+      <div class="nname">unit suite</div>
+      <div class="ncmd">LiteSVM + Mollusk, in-process</div>
+    </div>
+    <div class="conn">
+      <svg width="30" height="16" viewBox="0 0 30 16">
+        <line x1="0" y1="8" x2="20" y2="8" stroke="#1b231d" stroke-width="2.4"/>
+        <polygon points="30,8 16,2 16,14" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node">
+      <div class="nhead"><span class="num">3</span><span class="zone">local</span></div>
+      <div class="nname">fuzz</div>
+      <div class="ncmd">anchor fuzz &mdash; one green case</div>
+    </div>
+    <div class="conn">
+      <svg width="30" height="16" viewBox="0 0 30 16">
+        <line x1="0" y1="8" x2="20" y2="8" stroke="#1b231d" stroke-width="2.4"/>
+        <polygon points="30,8 16,2 16,14" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node">
+      <div class="nhead"><span class="num">4</span><span class="zone">local</span></div>
+      <div class="nname">harden</div>
+      <div class="ncmd">per-instruction security checklist</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <svg width="1456" height="56" viewBox="0 0 1456 56">
+      <path d="M1290,0 V28 H166 V44" fill="none" stroke="#1b231d" stroke-width="2.4"/>
+      <polygon points="166,56 159,42 173,42" fill="#1b231d"/>
+    </svg>
+    <div class="bandlbl">the pipeline continues</div>
+  </div>
+
+  <div class="row">
+    <div class="node">
+      <div class="nhead"><span class="num">5</span><span class="zone">local</span></div>
+      <div class="nname">CU profile</div>
+      <div class="ncmd">settle_prize CU, before &amp; after</div>
+    </div>
+    <div class="conn">
+      <svg width="30" height="16" viewBox="0 0 30 16">
+        <line x1="0" y1="8" x2="20" y2="8" stroke="#1b231d" stroke-width="2.4"/>
+        <polygon points="30,8 16,2 16,14" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node gate">
+      <div class="nhead"><span class="num">6</span><span class="zone">local</span></div>
+      <div class="nname">Surfpool localnet</div>
+      <span class="gatechip">the integration gate</span>
+      <div class="ncmd">anchor test &mdash; all five programs</div>
+    </div>
+    <div class="conn">
+      <svg width="30" height="16" viewBox="0 0 30 16">
+        <line x1="0" y1="8" x2="20" y2="8" stroke="#1b231d" stroke-width="2.4"/>
+        <polygon points="30,8 16,2 16,14" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node devnet">
+      <div class="nhead"><span class="num">7</span><span class="zone">devnet</span></div>
+      <div class="nname">devnet deploy</div>
+      <div class="ncmd">anchor deploy</div>
+    </div>
+    <div class="conn">
+      <svg width="30" height="16" viewBox="0 0 30 16">
+        <line x1="0" y1="8" x2="20" y2="8" stroke="#1b231d" stroke-width="2.4"/>
+        <polygon points="30,8 16,2 16,14" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node compare">
+      <div class="nhead"><span class="num">8</span><span class="zone">local build vs devnet</span></div>
+      <div class="nname">verify-from-repo</div>
+      <div class="ncmd">solana-verify &mdash; hash vs devnet</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">read the zones</span>
+    <div class="vt">Six stages never leave your machine. The Surfpool floor is the gate &mdash; only after it is green does stage 7 touch devnet, and stage 8 builds locally again to compare hashes.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: "Canonical" and "commonly used" are two different packages
+     purpose: show that the renamed package is dwarfed by the old name it replaced, so a migrator must grep both scopes
+     data: npm weekly downloads, week of 2026-08-13 to 2026-08-19 (api.npmjs.org, pulled 2026-08-21): @coral-xyz/anchor (old name): 601,707 @anchor-lang/core (new name): 14,745 ratio ~ 40.8 to 1 (round to "roughly forty to one"; this churns week to week)
+     prompt: Two horizontal bars, same axis, wildly different lengths. Top bar labeled "@coral-xyz/anchor (old)" at 601,707. Bottom bar labeled "@anchor-lang/core (new)" at 14,745. Annotate the gap with "~40:1". Caption: weekly npm downloads, week of 2026-08-13, pulled 2026-08-21, ratio moves week to week. Keep it plain, no icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:525px;height:467px;top:-264px;right:-264px;border-radius:59% 50% 64% 55% / 59% 65% 48% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:465px;height:483px;bottom:-241px;left:-241px;border-radius:44% 55% 61% 41% / 40% 43% 40% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:571px;height:523px;bottom:-281px;right:-281px;border-radius:57% 56% 64% 56% / 50% 62% 38% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-2xl); padding:38px 54px 34px; }
+  .axhead { display:flex; justify-content:space-between; align-items:baseline;
+            border-bottom:2px solid var(--border-subtle); padding-bottom:12px;
+            margin-bottom:30px; }
+  .axhead .k { font-family:var(--font-body); font-weight:800; font-size:13px;
+               letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); }
+  .row { margin-bottom:26px; }
+  .blab { display:flex; align-items:center; margin-bottom:10px; }
+  .blab .pkg { font-family:var(--font-mono); font-size:23px; font-weight:700;
+               color:var(--text-primary); }
+  .blab .tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+               letter-spacing:.1em; text-transform:uppercase; margin-left:14px;
+               padding:4px 12px; border-radius:var(--radius-pill); line-height:1; }
+  .tag.old { background:var(--surface-accent); color:var(--text-on-accent); }
+  .tag.new { background:var(--surface-brand); color:var(--text-on-brand); }
+  .track { display:flex; align-items:center; height:56px; }
+  .bar { height:56px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+  .bar.old { background:var(--stbr-yellow); border:2px solid var(--stbr-yellow-700);
+             border-left:0; }
+  .bar.new { background:var(--surface-brand); }
+  .num { font-family:var(--font-display); font-weight:900; font-size:30px;
+         color:var(--text-primary); margin-left:18px; line-height:1; }
+  .zero { width:4px; height:56px; background:var(--stbr-dark); }
+  .gapband { display:flex; align-items:center; background:var(--surface-brand);
+             border-radius:var(--radius-xl); padding:20px 34px; margin-top:6px; }
+  .gapband .ratio { font-family:var(--font-display); font-weight:900; font-size:44px;
+                    line-height:1; color:var(--text-on-brand); white-space:nowrap; }
+  .gapband .rt { font-family:var(--font-body); font-size:19px; line-height:1.45;
+                 color:var(--text-on-brand); margin-left:30px; }
+  .gapband .rt b { font-weight:800; }
+  .cap { margin-top:18px; font-family:var(--font-mono); font-size:14px;
+         line-height:1.6; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">two names, one package</div>
+  <h2 class="viz-title">the canonical name is not the name people import</h2>
+
+  <div class="card">
+    <div class="axhead">
+      <span class="k">weekly npm downloads</span>
+      <span class="k">common axis &nbsp;·&nbsp; 0 &ndash; 620,000</span>
+    </div>
+
+    <div class="row">
+      <div class="blab">
+        <span class="pkg">@coral-xyz/anchor</span>
+        <span class="tag old">old name</span>
+      </div>
+      <div class="track">
+        <div class="zero"></div>
+        <div class="bar old" style="width:1180px;"></div>
+        <div class="num">601,707</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="blab">
+        <span class="pkg">@anchor-lang/core</span>
+        <span class="tag new">new / canonical</span>
+      </div>
+      <div class="track">
+        <div class="zero"></div>
+        <div class="bar new" style="width:29px;"></div>
+        <div class="num">14,745</div>
+      </div>
+    </div>
+
+    <div class="gapband">
+      <span class="ratio">&asymp; 40 : 1</span>
+      <span class="rt">The renamed package is dwarfed by the name it replaced.<br>
+        Migrating? <b>grep BOTH scopes</b> &mdash; the old one is still what the ecosystem imports.</span>
+    </div>
+
+    <div class="cap">
+      weekly npm downloads, week of 2026-08-13 &rarr; 2026-08-19 &nbsp;·&nbsp; source api.npmjs.org, pulled 2026-08-21<br>
+      the ratio churns week to week &mdash; re-pull before quoting it.
+    </div>
+  </div>
+</div>
+</body></html>

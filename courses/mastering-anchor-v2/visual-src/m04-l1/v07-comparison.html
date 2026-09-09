@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What atomicity catches, and what it does not
+     purpose: show why checked_sub matters even though instructions roll back on error
+     data: columns: debit path | ledger goes negative? | does it raise an error? | what the runtime does | vault ends rows: - checked_sub (returns Err) | attempted | yes, returns Err | whole instruction aborts, the CPI transfer unwinds | correct (no half-state) - plain `-` (silent wrap WHEN overflow-checks are off; the Anchor scaffold's release profile sets them ON, where it panics instead) | wraps to a huge value | no, never raises | nothing rolls back, transfer stays committed | corrupt (believes a lie) rule: atomicity rewinds ERRORS, not silent bugs. A wrap is not an error, so make the bug an error with checked_sub.
+     prompt: A two-row comparison. Row 1 checked_sub (raises -> instruction aborts -> vault stays correct), row 2 plain minus (wraps silently when overflow-checks are off -> nothing rolls back -> vault corrupt); keep the "when overflow-checks are off" qualifier on the card, the scaffold ships them on. Stress that only the raising path benefits from atomicity. Put a full-width band under both rows with the rule text.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:467px;height:483px;top:-227px;right:-227px;border-radius:63% 57% 62% 61% / 36% 39% 48% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:566px;height:348px;left:-336px;top:194px;border-radius:58% 55% 61% 56% / 37% 36% 47% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:494px;height:463px;bottom:-226px;left:490px;border-radius:56% 51% 61% 36% / 35% 35% 42% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .at { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; margin-top:20px; }
+  .at th { padding:13px 18px; font-family:var(--font-display); font-weight:900; font-size:13px;
+           letter-spacing:0.11em; text-transform:uppercase; text-align:left;
+           background:var(--surface-inverse); color:var(--stbr-cream); }
+  .at th:first-child { border-top-left-radius:var(--radius-md); }
+  .at th:last-child  { border-top-right-radius:var(--radius-md); }
+  .at td { padding:16px 18px; border-bottom:2px solid var(--border-subtle);
+           border-right:2px solid var(--border-subtle); background:var(--surface-card);
+           vertical-align:top; }
+  .at td:last-child { border-right:0; }
+  .at tr:last-child td:first-child { border-bottom-left-radius:var(--radius-md); }
+  .at tr:last-child td:last-child  { border-bottom-right-radius:var(--radius-md); }
+  .at td.path { background:var(--surface-paper); }
+  .at .code { font-family:var(--font-mono); font-weight:700; font-size:22px; line-height:1.15;
+              color:var(--text-primary); }
+  .at .sub { font-family:var(--font-body); font-size:14px; line-height:1.32;
+             color:var(--text-secondary); margin-top:6px; }
+  .at .mono { font-family:var(--font-mono); font-size:15px; line-height:1.36; color:var(--text-primary); }
+  .at .bd { font-family:var(--font-body); font-size:15px; line-height:1.34; color:var(--text-secondary); }
+  .at .verd { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.1; }
+  .v-ok { color:var(--stbr-emerald); }
+  .at td.end-bad { background:var(--surface-inverse); border-right-color:var(--surface-inverse); }
+  .end-bad .verd { color:var(--stbr-cream); }
+  .end-bad .bd { color:var(--stbr-cream); opacity:0.84; }
+  .at td.hero { background:var(--stbr-yellow); border-right-color:var(--stbr-yellow-700);
+                border-bottom-color:var(--stbr-yellow-700); }
+  .hero .verd, .hero .bd, .hero .mono { color:var(--stbr-dark); }
+  .at-band { margin-top:18px; background:var(--surface-brand); color:var(--stbr-cream);
+             border-radius:var(--radius-md); padding:17px 26px; font-family:var(--font-display);
+             font-weight:900; font-size:22px; line-height:1.26; letter-spacing:-0.01em; }
+  .at-band b { color:var(--stbr-yellow); }
+  .at-note { margin-top:11px; font-family:var(--font-body); font-size:15px;
+             color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">what atomicity catches, and what it does not</div>
+  <h2 class="viz-title">Why checked_sub still matters</h2>
+  <table class="at">
+    <tr>
+      <th style="width:296px">debit path</th>
+      <th style="width:234px">ledger goes negative?</th>
+      <th style="width:246px">does it raise an error?</th>
+      <th style="width:392px">what the runtime does</th>
+      <th>vault ends</th>
+    </tr>
+    <tr>
+      <td class="path">
+        <div class="code">checked_sub</div>
+        <div class="sub">returns <code>Err</code> on underflow</div>
+      </td>
+      <td>
+        <div class="mono">attempted</div>
+        <div class="bd" style="margin-top:5px;">the subtraction is refused, not performed</div>
+      </td>
+      <td>
+        <div class="verd v-ok">yes</div>
+        <div class="bd" style="margin-top:5px;">returns <code>Err</code> &mdash; the bug becomes an error</div>
+      </td>
+      <td>
+        <div class="mono">whole instruction aborts</div>
+        <div class="bd" style="margin-top:5px;">the CPI transfer unwinds with it &mdash; the lamports come back</div>
+      </td>
+      <td>
+        <div class="verd v-ok">correct</div>
+        <div class="bd" style="margin-top:5px;">no half-state</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="path">
+        <div class="code">plain &nbsp;&minus;</div>
+        <div class="sub">silent wrap when overflow-checks are off</div>
+      </td>
+      <td>
+        <div class="mono">wraps to a huge value</div>
+        <div class="bd" style="margin-top:5px;">the ledger now claims a credit nobody deposited</div>
+      </td>
+      <td class="hero">
+        <div class="verd">no, never</div>
+        <div class="bd" style="margin-top:5px;">a wrap is not an error &mdash; so atomicity has nothing to rewind</div>
+      </td>
+      <td>
+        <div class="mono">nothing rolls back</div>
+        <div class="bd" style="margin-top:5px;">the transfer stays committed; the instruction returns Ok</div>
+      </td>
+      <td class="end-bad">
+        <div class="verd">corrupt</div>
+        <div class="bd" style="margin-top:5px;">the vault believes a lie</div>
+      </td>
+    </tr>
+  </table>
+  <div class="at-band">Atomicity rewinds <b>ERRORS</b>, not silent bugs. A wrap is not an error &mdash; so make the bug an error with <b>checked_sub</b>.</div>
+  <div class="at-note">Only the raising path benefits from atomicity: the rollback is triggered by the <code>Err</code>, never by the wrongness of the number.</div>
+</div>
+</body></html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The AccountLoader trap, same name, three destinations
+     purpose: stop the reader from either deleting AccountLoader or reusing it unchanged
+     data: columns: what you had in v1, what it becomes in V2, the failure if you guess wrong rows: - AccountLoader<'info, T> as a zero-copy wrapper | its ROLE moves to Account<T> (default zero-copy) | keep the old name and you get a sequential cursor, not a wrapper - the NAME AccountLoader | repurposed as a sequential account cursor | delete it and you lose the cursor you actually needed - LazyAccount<'info, T> | v1-only, no V2 equivalent | carrying it in fails to resolve note: the docs warn AccountLoader "means something else" in V2, it compiles, then misbehaves
+     prompt: A three-row mapping table with a clear "danger" column on the right. Center column is the destination, right column is the concrete failure. Put a warning band on the AccountLoader rows since the whole point is silent misbehavior. Monospace the types.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:457px;top:-266px;right:-266px;border-radius:59% 54% 47% 56% / 42% 37% 41% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:586px;height:580px;bottom:-328px;left:-328px;border-radius:35% 45% 47% 39% / 59% 43% 40% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:590px;height:558px;bottom:-316px;right:-316px;border-radius:42% 47% 36% 41% / 61% 63% 37% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-card); }
+  .trow { display:flex; align-items:stretch; border-bottom:1px solid var(--border-subtle); }
+  .hd { height:54px; background:var(--surface-inverse); align-items:center; }
+  .c1 { width:420px; flex:0 0 420px; padding:18px 22px;
+        display:flex; flex-direction:column; justify-content:center; }
+  .c2 { width:456px; flex:0 0 456px; padding:18px 22px;
+        display:flex; flex-direction:column; justify-content:center;
+        border-left:1px solid var(--border-subtle); border-right:1px solid var(--border-subtle); }
+  .c3 { flex:1; padding:14px 20px; display:flex; align-items:center; }
+  .hd .c1, .hd .c2, .hd .c3 { padding-top:0; padding-bottom:0;
+        font-family:var(--font-display); font-weight:900; font-size:14px;
+        letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-dark);
+        border-color:rgba(245,232,202,0.22); }
+  .hd .c3 { color:var(--stbr-yellow); }
+  .row { height:116px; }
+  .row.trap { background:#fffaea; }
+  code { font-family:var(--font-mono); font-size:14px; font-weight:600;
+         color:var(--text-primary); }
+  .sub { font-family:var(--font-body); font-size:13px; line-height:1.35;
+         color:var(--text-secondary); margin-top:8px; }
+  .dest { font-family:var(--font-body); font-size:14px; line-height:1.4;
+          color:var(--text-primary); font-weight:600; }
+  .dest code { font-size:13.5px; color:var(--stbr-emerald-800); }
+  .fail { width:100%; background:var(--stbr-yellow); border-radius:var(--radius-md);
+          padding:12px 16px; font-family:var(--font-body); font-size:13.5px;
+          line-height:1.4; font-weight:600; color:var(--text-on-accent); }
+  .fail.mute { background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+               color:var(--text-secondary); font-weight:500; }
+  .strip { display:flex; align-items:center; height:38px; padding:0 22px;
+           background:var(--stbr-yellow); }
+  .strip span { font-family:var(--font-display); font-weight:900; font-size:12.5px;
+                letter-spacing:.13em; text-transform:uppercase; color:var(--text-on-accent); }
+  .verdict { margin-top:18px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:22px 30px; display:flex;
+             align-items:center; }
+  .verdict .vk { width:170px; flex:0 0 170px; font-family:var(--font-body);
+                 font-weight:800; font-size:12.5px; letter-spacing:.12em;
+                 text-transform:uppercase; color:var(--stbr-cream); opacity:.8; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:23px;
+                 line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">one name · three destinations</div>
+  <h2 class="viz-title">the AccountLoader trap</h2>
+
+  <div class="tbl">
+    <div class="trow hd">
+      <div class="c1">what you had in v1</div>
+      <div class="c2">what it becomes in V2</div>
+      <div class="c3">the failure if you guess wrong</div>
+    </div>
+
+    <div class="strip"><span>same name, different job — it compiles, then misbehaves</span></div>
+
+    <div class="trow row trap">
+      <div class="c1">
+        <code>AccountLoader&lt;'info, T&gt;</code>
+        <div class="sub">used as the zero-copy wrapper</div>
+      </div>
+      <div class="c2">
+        <div class="dest">its ROLE moves to <code>Account&lt;T&gt;</code><br>(zero-copy is now the default)</div>
+      </div>
+      <div class="c3">
+        <div class="fail">Keep the old name and you get a sequential cursor, not a wrapper.</div>
+      </div>
+    </div>
+
+    <div class="trow row trap">
+      <div class="c1">
+        <code>AccountLoader</code>
+        <div class="sub">the NAME itself</div>
+      </div>
+      <div class="c2">
+        <div class="dest">repurposed as a <b>sequential account cursor</b></div>
+      </div>
+      <div class="c3">
+        <div class="fail">Delete it and you lose the cursor you actually needed.</div>
+      </div>
+    </div>
+
+    <div class="trow row" style="border-bottom:0;">
+      <div class="c1">
+        <code>LazyAccount&lt;'info, T&gt;</code>
+        <div class="sub">v1 lazy deserialization</div>
+      </div>
+      <div class="c2">
+        <div class="dest">v1-only — <span style="color:var(--text-secondary);font-weight:500;">no V2 equivalent</span></div>
+      </div>
+      <div class="c3">
+        <div class="fail mute">Carrying it in fails to resolve — loud and immediate, unlike the two above.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the docs warn</span>
+    <span class="vt">AccountLoader “means something else” in V2 — the build stays green while the behaviour changes underneath you</span>
+  </div>
+</div>
+</body></html>

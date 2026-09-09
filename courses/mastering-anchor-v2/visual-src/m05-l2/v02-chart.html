@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Why a big trade against a shallow pool self-destructs
+     purpose: contrast the naive linear quote against the constant-product quote as trade size grows
+     data: Pool: reserve_in = 1,000,000, reserve_out = 1,000,000, fee 0.3%. x-axis: amount_in (arcade tokens). y-axis: tickets out. Naive linear (amount_in * reserve_out / reserve_in): 1,000 -> 1,000; 10,000 -> 10,000; 100,000 -> 100,000; 500,000 -> 500,000 Constant-product with fee (swap_out): 1,000 -> 996; 10,000 -> 9,871; 100,000 -> 90,661; 500,000 -> 332,665 Gap widens as the trade gets large relative to the reserve.
+     prompt: Line chart, two series over amount_in from 0 to 500,000. Series A "naive linear" a straight diagonal. Series B "constant-product (with fee)" a concave curve bending below A, the gap small at the left and large at the right. Shade the area between them labeled "over-quote a naive rate would give away". Mark the 10,000 point on both lines (10,000 vs 9,871).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:607px;height:586px;top:-326px;right:-326px;border-radius:57% 48% 41% 65% / 50% 60% 54% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:553px;height:547px;bottom:-304px;left:-304px;border-radius:43% 65% 54% 56% / 61% 44% 60% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:459px;height:486px;bottom:-238px;left:451px;border-radius:52% 54% 60% 60% / 51% 49% 35% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c2-title { font-size:44px; }
+  .c2-card { background:var(--surface-card); border:2px solid var(--border-subtle);
+             border-radius:var(--radius-2xl); padding:24px 30px 26px; }
+  .c2-legend { display:flex; align-items:center; gap:30px; height:34px; }
+  .c2-li { display:flex; align-items:center; gap:11px; }
+  .c2-li .sw { width:40px; height:8px; border-radius:2px; }
+  .c2-li .sw.naive { background:var(--stbr-dark); }
+  .c2-li .sw.curve { background:var(--stbr-emerald); }
+  .c2-li .sw.gap   { height:20px; width:34px; background:rgba(255,210,63,0.55);
+                     border:1.5px solid var(--stbr-yellow-700); border-radius:3px; }
+  .c2-li .tx { font-family:var(--font-body); font-size:15px; color:var(--text-primary);
+               white-space:nowrap; }
+  .c2-li .tx b { font-weight:800; }
+  .c2-li .tx code { font-family:var(--font-mono); font-size:13.5px; color:var(--text-secondary); }
+
+  .c2-plot { position:relative; width:1320px; height:410px; margin:16px auto 0; }
+  .c2-plot svg { position:absolute; left:0; top:0; }
+  .c2-yl { position:absolute; left:0; width:66px; text-align:right; height:22px;
+           font-family:var(--font-mono); font-size:13.5px; color:var(--text-muted);
+           line-height:22px; }
+  .c2-xl { position:absolute; top:358px; width:80px; text-align:center; height:22px;
+           font-family:var(--font-mono); font-size:13.5px; color:var(--text-muted);
+           line-height:22px; }
+  .c2-ax { position:absolute; font-family:var(--font-body); font-weight:800; font-size:12px;
+           letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted); }
+  .c2-chip { position:absolute; box-sizing:border-box; border-radius:var(--radius-md);
+             padding:9px 14px; }
+  .c2-chip .ck { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+                 letter-spacing:.13em; text-transform:uppercase; }
+  .c2-chip .ct { font-family:var(--font-body); font-size:15px; line-height:1.32;
+                 margin-top:4px; }
+  .c2-chip .ct b { font-weight:800; }
+  .c2-chip.mark { left:96px; top:150px; width:380px; height:52px;
+                  background:var(--surface-card); border:2px solid var(--stbr-emerald); }
+  .c2-chip.mark .ck { color:var(--stbr-emerald-800); }
+  .c2-chip.mark .ct { color:var(--text-primary); }
+  .c2-chip.wide { left:840px; top:256px; width:440px; height:78px;
+                  background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); }
+  .c2-chip.wide .ck { color:rgba(27,35,29,0.62); }
+  .c2-chip.wide .ct { color:var(--stbr-dark); }
+
+  .c2-band { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 30px; display:flex; align-items:center; gap:26px; }
+  .c2-band .bk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                 letter-spacing:.14em; text-transform:uppercase;
+                 color:rgba(245,232,202,0.75); white-space:nowrap; }
+  .c2-band .bt { font-family:var(--font-display); font-weight:900; font-size:23px;
+                 line-height:1.15; color:var(--stbr-cream); }
+  .c2-band .bt b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">reserve 1,000,000 / 1,000,000 &middot; fee 0.3%</div>
+  <h2 class="viz-title c2-title">Why a big trade against a shallow pool self-destructs</h2>
+  <div class="c2-card">
+    <div class="c2-legend">
+      <span class="c2-li"><span class="sw naive"></span><span class="tx"><b>naive linear</b> &mdash; <code>amount_in * reserve_out / reserve_in</code></span></span>
+      <span class="c2-li"><span class="sw curve"></span><span class="tx"><b>constant-product with fee</b> &mdash; <code>swap_out()</code></span></span>
+      <span class="c2-li"><span class="sw gap"></span><span class="tx">the over-quote a naive rate gives away</span></span>
+    </div>
+
+    <div class="c2-plot">
+      <svg width="1320" height="380" viewBox="0 0 1320 380">
+        <!-- gridlines -->
+        <line x1="80" y1="284" x2="1280" y2="284" stroke="#e7e3da" stroke-width="1.5"/>
+        <line x1="80" y1="218" x2="1280" y2="218" stroke="#e7e3da" stroke-width="1.5"/>
+        <line x1="80" y1="152" x2="1280" y2="152" stroke="#e7e3da" stroke-width="1.5"/>
+        <line x1="80" y1="86"  x2="1280" y2="86"  stroke="#e7e3da" stroke-width="1.5"/>
+        <line x1="80" y1="20"  x2="1280" y2="20"  stroke="#e7e3da" stroke-width="1.5"/>
+        <line x1="320"  y1="20" x2="320"  y2="350" stroke="#f0ece2" stroke-width="1.5"/>
+        <line x1="560"  y1="20" x2="560"  y2="350" stroke="#f0ece2" stroke-width="1.5"/>
+        <line x1="800"  y1="20" x2="800"  y2="350" stroke="#f0ece2" stroke-width="1.5"/>
+        <line x1="1040" y1="20" x2="1040" y2="350" stroke="#f0ece2" stroke-width="1.5"/>
+        <line x1="1280" y1="20" x2="1280" y2="350" stroke="#f0ece2" stroke-width="1.5"/>
+
+        <!-- the over-quote wedge -->
+        <polygon points="80,350 1280,20 1280,130.4 1040,161.8 800,198 560,240.3 320,290.2 200,318.7"
+                 fill="#ffd23f" fill-opacity="0.5"/>
+
+        <!-- naive linear -->
+        <line x1="80" y1="350" x2="1280" y2="20" stroke="#1b231d" stroke-width="3.5"
+              stroke-dasharray="10 7"/>
+        <!-- constant-product with fee -->
+        <polyline points="80,350 200,318.7 320,290.2 560,240.3 800,198 1040,161.8 1280,130.4"
+                  fill="none" stroke="#008b4c" stroke-width="4" stroke-linejoin="round"/>
+
+        <!-- axes -->
+        <line x1="80" y1="350" x2="1280" y2="350" stroke="#1b231d" stroke-width="3"/>
+        <line x1="80" y1="20"  x2="80"   y2="350" stroke="#1b231d" stroke-width="3"/>
+
+        <!-- the 10,000 marker + leader -->
+        <line x1="104" y1="343.5" x2="104" y2="206" stroke="#008b4c" stroke-width="2"
+              stroke-dasharray="5 5"/>
+        <circle cx="104" cy="343.5" r="6" fill="#008b4c"/>
+        <circle cx="104" cy="343.0" r="10" fill="none" stroke="#008b4c" stroke-width="2"/>
+
+        <!-- gap marker at 500,000 -->
+        <line x1="1280" y1="20" x2="1280" y2="130.4" stroke="#d9a608" stroke-width="6"/>
+      </svg>
+
+      <div class="c2-yl" style="top:339px;">0</div>
+      <div class="c2-yl" style="top:273px;">100k</div>
+      <div class="c2-yl" style="top:207px;">200k</div>
+      <div class="c2-yl" style="top:141px;">300k</div>
+      <div class="c2-yl" style="top:75px;">400k</div>
+      <div class="c2-yl" style="top:9px;">500k</div>
+
+      <div class="c2-xl" style="left:40px;">0</div>
+      <div class="c2-xl" style="left:280px;">100k</div>
+      <div class="c2-xl" style="left:520px;">200k</div>
+      <div class="c2-xl" style="left:760px;">300k</div>
+      <div class="c2-xl" style="left:1000px;">400k</div>
+      <div class="c2-xl" style="left:1240px;">500k</div>
+
+      <div class="c2-ax" style="left:0px; top:382px;">tickets out &uarr;</div>
+      <div class="c2-ax" style="left:940px; top:382px; width:340px; text-align:right;">amount_in (arcade tokens) &rarr;</div>
+
+      <div class="c2-chip mark">
+        <div class="ck">at amount_in = 10,000</div>
+        <div class="ct">naive <b>10,000</b> &middot; constant-product <b>9,871</b></div>
+      </div>
+      <div class="c2-chip wide">
+        <div class="ck">at amount_in = 500,000 &mdash; half the reserve</div>
+        <div class="ct">naive would promise <b>500,000</b>; the curve pays <b>332,665</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="c2-band">
+    <span class="bk">read the wedge</span>
+    <span class="bt">Small next to the reserve, the two quotes agree. Large next to the reserve, <b>the naive rate is giving the pool away</b>.</span>
+  </div>
+</div>
+</body></html>

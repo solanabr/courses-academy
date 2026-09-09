@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: From instruction bytes to your greet handler
+     purpose: trace one invocation through the generated entrypoint so the macro is not a black box
+     data: nodes (in order): 1. Entrypoint reached (program invoked) 2. Declared program id == invoked program id?  (no -> reject) 3. Match leading discriminator bytes to a handler  (no match -> reject) 4. Handler wrapper: deserialize accounts into Greet, run constraints, build Context 5. Your code runs: greet(&mut ctx) -> Ok(()) 6. Exit routine: persist account changes reject points: step 2 (wrong program id), step 3 (unknown instruction)
+     prompt: Vertical top-to-bottom flowchart, six numbered nodes in sequence as listed. Steps 2 and 3 are decision diamonds with a red "reject" branch peeling off to the side. Node 4 is annotated "generated glue", node 5 annotated "the code you wrote". Monospace labels, one accent color for the reject branches.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:575px;height:484px;top:-298px;right:-298px;border-radius:38% 58% 60% 64% / 49% 49% 47% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:618px;height:591px;bottom:-339px;left:-339px;border-radius:37% 42% 60% 53% / 45% 42% 54% 37%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:576px;height:558px;bottom:-324px;right:-324px;border-radius:48% 45% 45% 44% / 59% 36% 44% 60%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { width:1220px; margin:18px auto 0; }
+  .row { display:flex; align-items:center; }
+  .gut { flex:0 0 250px; }
+  .gut.r { display:flex; align-items:center; padding-left:16px; }
+  .main { flex:0 0 720px; }
+  .node { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:11px 20px; display:flex; align-items:center; }
+  .node .n { flex:0 0 30px; height:30px; line-height:30px; text-align:center;
+    background:var(--surface-brand); color:var(--text-on-brand); border-radius:var(--radius-pill);
+    font-family:var(--font-body); font-weight:800; font-size:15px; margin-right:16px; }
+  .node .txt { flex:1 1 auto; }
+  .node .t { font-family:var(--font-mono); font-weight:700; font-size:18px; color:var(--text-primary); }
+  .node .s { font-family:var(--font-body); font-size:14px; color:var(--text-muted); margin-top:2px; }
+  .node .tag { flex:0 0 auto; margin-left:14px; font-family:var(--font-body); font-weight:800;
+    font-size:12px; letter-spacing:.06em; text-transform:uppercase; padding:5px 13px;
+    border-radius:var(--radius-pill); white-space:nowrap; }
+  .node .tag.glue { background:var(--surface-paper); color:var(--text-secondary);
+    border:2px solid var(--border-subtle); }
+  .node.q { background:var(--surface-inverse); border-color:var(--surface-inverse); }
+  .node.q .n { background:var(--stbr-dark-700); color:var(--text-on-dark); }
+  .node.q .t { color:var(--text-on-dark); }
+  .node.q .t b { color:var(--stbr-yellow); font-weight:700; }
+  .node.q .s { color:var(--stbr-ink-300); }
+  .node.mine { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .node.mine .n { background:var(--stbr-cream); color:var(--stbr-emerald); }
+  .node.mine .t { color:var(--text-on-brand); }
+  .node.mine .tag.you { background:var(--stbr-cream); color:var(--stbr-emerald); }
+  .conn { width:3px; height:20px; background:var(--stbr-dark); margin:0 auto; position:relative; }
+  .conn::after { content:""; position:absolute; bottom:-1px; left:-4px;
+    border-left:6px solid transparent; border-right:6px solid transparent;
+    border-top:9px solid var(--stbr-dark); }
+  .rej { display:flex; align-items:center; }
+  .rej .ln { width:30px; height:3px; background:var(--stbr-yellow-700); position:relative; }
+  .rej .ln::after { content:""; position:absolute; right:-1px; top:-4px;
+    border-top:5px solid transparent; border-bottom:5px solid transparent;
+    border-left:9px solid var(--stbr-yellow-700); }
+  .rej .chip { background:var(--stbr-yellow); color:var(--text-on-accent);
+    border:2px solid var(--stbr-yellow-700); border-radius:var(--radius-md);
+    padding:8px 14px; margin-left:8px; }
+  .rej .chip .h { font-family:var(--font-display); font-weight:900; font-size:13px;
+    letter-spacing:.08em; text-transform:uppercase; }
+  .rej .chip .w { font-family:var(--font-body); font-weight:600; font-size:13px; margin-top:1px; }
+</style>
+  <div class="stbr-eyebrow">the macro is not a black box</div>
+  <h2 class="viz-title">from instruction bytes to your <span style="font-family:var(--font-mono);font-size:44px;">greet</span> handler</h2>
+  <div class="flow">
+    <div class="row"><div class="gut"></div><div class="main">
+      <div class="node"><div class="n">1</div><div class="txt">
+        <div class="t">entrypoint reached</div><div class="s">the program is invoked</div></div></div>
+    </div><div class="gut r"></div></div>
+    <div class="conn"></div>
+
+    <div class="row"><div class="gut"></div><div class="main">
+      <div class="node q"><div class="n">2</div><div class="txt">
+        <div class="t">declared program id == invoked program id <b>?</b></div></div></div>
+    </div><div class="gut r"><div class="rej"><div class="ln"></div>
+      <div class="chip"><div class="h">reject</div><div class="w">wrong program id</div></div></div></div></div>
+    <div class="conn"></div>
+
+    <div class="row"><div class="gut"></div><div class="main">
+      <div class="node q"><div class="n">3</div><div class="txt">
+        <div class="t">leading discriminator bytes match a handler <b>?</b></div></div></div>
+    </div><div class="gut r"><div class="rej"><div class="ln"></div>
+      <div class="chip"><div class="h">reject</div><div class="w">unknown instruction</div></div></div></div></div>
+    <div class="conn"></div>
+
+    <div class="row"><div class="gut"></div><div class="main">
+      <div class="node"><div class="n">4</div><div class="txt">
+        <div class="t">handler wrapper</div>
+        <div class="s">deserialize accounts into <b>Greet</b> &middot; run constraints &middot; build <b>Context</b></div></div>
+        <div class="tag glue">generated glue</div></div>
+    </div><div class="gut r"></div></div>
+    <div class="conn"></div>
+
+    <div class="row"><div class="gut"></div><div class="main">
+      <div class="node mine"><div class="n">5</div><div class="txt">
+        <div class="t">greet(&amp;mut ctx) -&gt; Ok(())</div></div>
+        <div class="tag you">the code you wrote</div></div>
+    </div><div class="gut r"></div></div>
+    <div class="conn"></div>
+
+    <div class="row"><div class="gut"></div><div class="main">
+      <div class="node"><div class="n">6</div><div class="txt">
+        <div class="t">exit routine</div><div class="s">persist account changes</div></div></div>
+    </div><div class="gut r"></div></div>
+  </div>
+</div>
+</body></html>

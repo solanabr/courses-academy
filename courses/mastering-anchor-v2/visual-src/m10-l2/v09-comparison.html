@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two decisions, not one: learn the deltas vs move real funds
+     purpose: separate the cheap decision (port a throwaway now) from the expensive one (port production to an RC)
+     data: columns: the decision, do it now?, why rows: - Learn the deltas on a scratch copy | yes | cheap, calm, compiler-taught; the map is worthless stale - Port a throwaway program end to end | yes | proves you own the reasoning before it counts - Move a program holding real funds | no (wait) | RC is unaudited, docs carry alpha caveats, pins can break correct code (#4937) - Wait for a stable, audited 2.0 to port live funds | yes | match tooling risk to the value it guards
+     prompt: A four-row decision table, "decision / now? / why". Green "yes" cells for the two learning rows and the "wait for stable" row; a red "no (wait)" cell for the real-funds row. Draw a faint divider between the two learning rows and the two production rows so the reader sees the two distinct decisions. Monospace the issue number.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:515px;top:-251px;right:-251px;border-radius:42% 43% 40% 49% / 55% 36% 47% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:550px;height:489px;bottom:-274px;left:-274px;border-radius:41% 55% 51% 40% / 35% 60% 36% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:473px;height:523px;bottom:-338px;left:555px;border-radius:64% 39% 58% 48% / 41% 53% 65% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-card); }
+  .trow { display:flex; align-items:stretch; height:86px;
+          border-bottom:1px solid var(--border-subtle); }
+  .hd { height:52px; align-items:center; background:var(--surface-inverse);
+        border-bottom:0; }
+  .c1 { width:620px; flex:0 0 620px; padding:0 24px; display:flex;
+        flex-direction:column; justify-content:center; }
+  .c2 { width:220px; flex:0 0 220px; padding:12px 20px; display:flex;
+        align-items:center; justify-content:center;
+        border-left:1px solid var(--border-subtle); border-right:1px solid var(--border-subtle); }
+  .c3 { flex:1; padding:0 24px; display:flex; align-items:center; }
+  .hd .c1, .hd .c2, .hd .c3 { font-family:var(--font-display); font-weight:900;
+        font-size:14px; letter-spacing:.1em; text-transform:uppercase;
+        color:var(--text-on-dark); border-color:rgba(245,232,202,0.22); }
+  .dt { font-family:var(--font-display); font-weight:800; font-size:20px;
+        line-height:1.2; color:var(--text-primary); }
+  .why { font-family:var(--font-body); font-size:14px; line-height:1.4;
+         color:var(--text-secondary); }
+  .why code { font-family:var(--font-mono); font-size:13.5px; color:var(--text-primary);
+              font-weight:600; }
+  .verd { width:100%; text-align:center; border-radius:var(--radius-md);
+          padding:11px 8px; font-family:var(--font-display); font-weight:900;
+          font-size:17px; line-height:1.15; }
+  .verd.yes { background:var(--surface-brand); color:var(--text-on-brand); }
+  .verd.no { background:var(--stbr-yellow); color:var(--text-on-accent); }
+  .grp { display:flex; align-items:center; height:40px; padding:0 24px;
+         background:var(--surface-paper); border-bottom:1px solid var(--border-subtle); }
+  .grp .gl { font-family:var(--font-display); font-weight:900; font-size:12px;
+             letter-spacing:.14em; text-transform:uppercase; color:var(--brand-primary); }
+  .grp .gs { font-family:var(--font-body); font-size:12.5px; color:var(--text-muted);
+             margin-left:14px; }
+  .band { margin-top:18px; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:20px 30px;
+          display:flex; align-items:center; }
+  .band .bk { width:190px; flex:0 0 190px; font-family:var(--font-body);
+              font-weight:800; font-size:12.5px; letter-spacing:.12em;
+              text-transform:uppercase; color:var(--stbr-cream); opacity:.8; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:23px;
+              line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">two decisions, not one</div>
+  <h2 class="viz-title">learn the deltas now · move real funds later</h2>
+
+  <div class="tbl">
+    <div class="trow hd">
+      <div class="c1">the decision</div>
+      <div class="c2">do it now?</div>
+      <div class="c3">why</div>
+    </div>
+
+    <div class="grp">
+      <span class="gl">decision A · learning</span>
+      <span class="gs">cheap, reversible, nothing at stake</span>
+    </div>
+
+    <div class="trow">
+      <div class="c1"><div class="dt">Learn the deltas on a scratch copy</div></div>
+      <div class="c2"><div class="verd yes">yes</div></div>
+      <div class="c3"><span class="why">Cheap, calm, compiler-taught — and the map is worthless stale.</span></div>
+    </div>
+    <div class="trow">
+      <div class="c1"><div class="dt">Port a throwaway program end to end</div></div>
+      <div class="c2"><div class="verd yes">yes</div></div>
+      <div class="c3"><span class="why">Proves you own the reasoning before it counts.</span></div>
+    </div>
+
+    <div class="grp">
+      <span class="gl">decision B · production</span>
+      <span class="gs">expensive, and the RC is not the place to find out</span>
+    </div>
+
+    <div class="trow">
+      <div class="c1"><div class="dt">Move a program holding real funds</div></div>
+      <div class="c2"><div class="verd no">no — wait</div></div>
+      <div class="c3"><span class="why">The RC is unaudited, the docs carry alpha caveats, and pins can break
+        correct code (<code>#4937</code>).</span></div>
+    </div>
+    <div class="trow" style="border-bottom:0;">
+      <div class="c1"><div class="dt">Wait for a stable, audited 2.0 to port live funds</div></div>
+      <div class="c2"><div class="verd yes">yes</div></div>
+      <div class="c3"><span class="why">Match tooling risk to the value it guards.</span></div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="bk">the takeaway</span>
+    <span class="bt">Your knowledge should migrate today; your treasury should not.</span>
+  </div>
+</div>
+</body></html>

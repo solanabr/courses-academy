@@ -1,0 +1,106 @@
+id: lesson-mav2-m10-l1
+slug: m10-l1
+title: "0.3x -> 1.0: the pains migrators still hit"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-cli: "1.1.2"
+skills:
+  - anchor
+  - version-pinning
+  - solana-programs
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m10-l1-q1
+        prompt: "You bump an inherited 0.32 program to the 1.x toolchain and the build fails on `#[interface]`. What replaced it, and why does the change exist?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "`#[interface]` was folded into `declare_program!` in 1.0: vendor the SPL interface IDL and the module it generates supplies the hook's `execute` entry point and its accounts for you."
+            correct: false
+            feedback: "`declare_program!` generates the caller's half of an interface -- CPI builders and account parsers for a program you invoke. A transfer hook is the callee, so nothing generates its `execute` for you; you declare it yourself and tell the dispatcher which discriminator to match."
+          - id: b
+            label: "`#[interface]` was renamed to `#[program_interface]` in 1.0; the hook body and its `Context<Execute>` are unchanged once you update the attribute name."
+            correct: false
+            feedback: "There is no `#[program_interface]` attribute in 1.0. Interface-instructions were removed outright, not renamed -- a transfer hook is now an ordinary instruction matched by `#[instruction(discriminator = ...)]`."
+          - id: a
+            label: "`#[interface]` and interface-instructions were removed in 1.0; a transfer hook's `execute` is now declared with `#[instruction(discriminator = ...SPL_DISCRIMINATOR_SLICE)]`."
+            correct: true
+            feedback: "One bespoke macro fewer, and the tag bytes now come out of the SPL standard itself. Nothing in the framework has to carry a copy of them for you."
+          - id: c
+            label: "`#[interface]` still compiles in 1.0, but only once the `interface-instructions` feature is enabled on the `anchor-lang` dependency, the way the `lazy-account` feature is gated."
+            correct: false
+            feedback: "`lazy-account` is a real 1.0 feature flag, which is what makes this tempting -- but `interface-instructions` is not one. The feature and the macro were both deleted, so no Cargo.toml edit brings them back."
+        explanation: "Anchor 1.0 removed `#[interface]` / interface-instructions. Transfer hooks and other SPL-interface instructions are now matched by discriminator via `#[instruction(discriminator = ...SPL_DISCRIMINATOR_SLICE)]`. The change collapses a bespoke macro into the same discriminator-dispatch machinery every other instruction already used, and the discriminator bytes come from the SPL interface itself rather than from a macro that has to know them for you."
+      - id: m10-l1-q2
+        prompt: "A teammate says 'the rename is cosmetic, just update the import.' You are about to migrate. Why is that advice a trap in practice?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Because most code you will READ still imports `@coral-xyz/anchor` -- it still out-downloads the new name by roughly forty to one, so you grep both scopes."
+            correct: true
+            feedback: "Canonical and common have come apart, and only one of the two is what you will actually paste. Assume a single import scope and the migration fails quietly, against real snippets, long after you thought it was done."
+          - id: d
+            label: "Because the two version lines do not meet: as of 1.0.0 the new scope starts fresh, so an inherited `0.32.1` pin has no counterpart under it and the port jumps a major."
+            correct: false
+            feedback: "The new scope's first real publish carried the old line's own number, 0.32.1, on 2026-01-06 -- months before 1.0.0 shipped. A pin does map across, which is part of why the move reads as cosmetic until you go looking for the call sites."
+          - id: c
+            label: "Because `@coral-xyz/anchor` was unpublished from npm when 1.0.0 shipped, so any lockfile still pinning the old scope now hard-fails on a fresh `npm install`."
+            correct: false
+            feedback: "Nothing was unpublished. The old package is very much still up and installing fine -- it out-downloads the new name by roughly forty to one, which is precisely why the divergence bites instead of failing loudly."
+          - id: a
+            label: "Because `@anchor-lang/core` ships a different API surface -- `Program`, `AnchorProvider` and `BN` were all reshaped, so every call site needs a hand rewrite."
+            correct: false
+            feedback: "The rename itself is a package-name move; the API in the box did not change because of it. The 1.0 API breaks came from other changes (CpiContext, error enums). The real trap is the ecosystem, not a hidden API swap."
+        explanation: "The rename is a name move, but roughly eight months on the old `@coral-xyz/anchor` still out-downloads `@anchor-lang/core` by about forty to one. Most example code you copy from still imports the old scope, so you grep for both -- assuming a single canonical import is how a migration quietly breaks against real-world snippets. 'Canonical' and 'commonly used' have diverged, and only one of them is what you will actually read."
+      - id: m10-l1-q3
+        prompt: "Your 0.32 program deploys fine, but after moving to the 1.x line the first deploy errors on the on-chain IDL. What is the missing migration step?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Close the legacy on-chain IDL account using the 0.32.1 CLI, then redeploy the program on the 1.x line."
+            correct: true
+            feedback: "Legacy IDL instructions went out in favour of the metadata program, and an account created under the old scheme is what the deploy trips on. You drop back once per program, then never again."
+          - id: d
+            label: "Run `anchor idl init` on the 1.x line so Program Metadata overwrites the legacy account before you deploy."
+            correct: false
+            feedback: "Two different accounts: the stale one belongs to the mechanism 1.0 deleted, and Program Metadata writes somewhere else entirely, so a fresh publish leaves the old account sitting exactly where the deploy trips on it. It has to be closed by the CLI that knows how to close it."
+          - id: b
+            label: "Add a second `#[error_code]` enum so the regenerated IDL can still carry the legacy error variants."
+            correct: false
+            feedback: "Adding a second `#[error_code]` enum would not even be caught: it compiles green on the 1.x line, and both enums silently base their codes at 6000, so the danger is a collision nothing warns about — the opposite of a fix. And error enums have nothing to do with the legacy IDL-account break."
+          - id: a
+            label: "Run `anchor login` and re-register the program under `[registry]` in Anchor.toml before the 1.x deploy."
+            correct: false
+            feedback: "`[registry]` and `anchor login` were both removed in 1.0. That publish flow no longer exists at all -- IDLs go on-chain through the Program Metadata Program instead."
+          - id: a2
+            label: "Pin `avm` back to 0.32.1 permanently, since the 1.x line has no way to write an IDL on-chain at all."
+            correct: false
+            feedback: "1.x writes IDLs fine -- through the Program Metadata Program. You drop back to the 0.32.1 CLI exactly once, to CLOSE the stale legacy IDL account, then switch forward and deploy on 1.x."
+        explanation: "1.0 removed the legacy on-chain IDL instructions (#3798) in favor of the Program Metadata Program. A program carrying an IDL account created the old way must have that account closed with the 0.32.1 CLI before a v1 deploy, or the deploy trips over the stale account. The sequence is `avm use 0.32.1` -> `anchor idl close <program-id>` -> `avm use 1.1.2` -> `anchor deploy`, and you run it exactly once per program."
+      - id: m10-l1-q4
+        prompt: "In 0.32 you wrote `CpiContext::new(ctx.accounts.token_program.to_account_info(), accounts)`. Why does the 1.0 signature reject that, and what is the reason behind the change?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The accounts argument became a `CpiHandle` in 1.0, and that reshape is what makes the old `AccountInfo` program argument stop type-checking."
+            correct: false
+            feedback: "`CpiHandle` is the V2 (2.0) borrow model, not a 1.0 change -- this is the delta most migrators conflate. In 1.0 the break is specifically the program argument moving from `AccountInfo` to `Pubkey`."
+          - id: a
+            label: "1.0's `CpiContext::new` takes the program as a `Pubkey` (#2762), not an `AccountInfo` -- swap `.to_account_info()` for `.key()` at the call site."
+            correct: true
+            feedback: "The narrower type is the point — a full account handle let you pass something that was not a program at all, then find out at runtime. The plain transfer's deprecation rides along with it, mint and decimals included."
+          - id: b
+            label: "1.0 removed `CpiContext::new` entirely; CPIs are now built through the module `declare_program!` generates from the callee's on-chain IDL entry."
+            correct: false
+            feedback: "`CpiContext::new` still exists in 1.0 -- only its program argument changed from an `AccountInfo` to a `Pubkey`. `declare_program!` is a real way to consume another program, but it is a separate path, not a replacement for the constructor."
+          - id: d
+            label: "1.0's `CpiContext::new` now demands a typed `Program<T>` wrapper where the bare `AccountInfo` used to go, so wrap `token_program` before the call."
+            correct: false
+            feedback: "`Program<T>` is how the account is declared in the struct, and it is what you call `.key()` on; the constructor itself wants the address, not a wrapper. Passing the typed account there fails with the same mismatch, since the parameter is a `Pubkey`."
+        explanation: "Anchor 1.0 changed `CpiContext::new` to take the program as a `Pubkey` (#2762). The runtime identifies a program by its address, so passing the key rather than a full AccountInfo removes a redundant handle and is the shape V2 later builds on. The deeper motivation is type narrowing: the fat `AccountInfo` let you hand the constructor an account that was not the program at all and defer the mismatch to a runtime failure, while a `Pubkey` argument turns that class of mistake into a flat compile error. Riding along with it, plain `transfer` is deprecated for `transfer_checked`, so the mechanical edit is two moves: `.to_account_info()` -> `.key()`, and add the mint plus decimals. (The `CpiHandle` borrow model is a separate, later 2.0 change -- don't conflate the two deltas.)"

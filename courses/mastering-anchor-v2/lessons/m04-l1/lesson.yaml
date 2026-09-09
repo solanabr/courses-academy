@@ -1,0 +1,93 @@
+id: lesson-mav2-m04-l1
+slug: m04-l1
+title: "CPI basics and signing as a PDA"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    anchor-v2-testing: "2.0.0-rc.1"
+    litesvm: "0.11.0"
+skills:
+  - cpi
+  - pdas
+  - signers
+  - checked-arithmetic
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: resolve-withdrawal
+    type: code
+    language: rust
+    starter: resolve-withdrawal/starter.rs
+    solution: resolve-withdrawal/solution.rs
+    tests: resolve-withdrawal/tests.json
+    hints:
+      - "Check the three failure cases first, then compute the safe remainder."
+      - "The rent-exempt floor is what keeps the PDA alive; letting the balance fall below it can close the account."
+  - key: check
+    type: quiz
+    questions:
+      - id: m04-l1-q1
+        prompt: "You wired the vault's withdraw to sign as a PDA. What do you pass to invoke_signed as the signer seeds?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "A bump recomputed by calling find_program_address for [b\"sol\", owner] inside the withdraw handler."
+            correct: false
+            feedback: "That compiles and usually works, which is what makes it tempting. But find_program_address walks bumps downward from 255 with a syscall per attempt, so you pay for the search on every withdraw, and a hand-rolled derivation can land on a non-canonical address. Store the bump at init and reuse it."
+          - id: a
+            label: "The SOL vault's own seeds plus its stored canonical bump: [b\"sol\", owner.as_ref(), &[state.sol_bump]]."
+            correct: true
+            feedback: "Lamports leave the zero-data PDA, so it is that account's seed set you present, not the state account's. That is the easy slip here. Derivation is scoped to the invoking program id, so nobody else can present them."
+          - id: d
+            label: "The state PDA's seeds plus its stored bump: [b\"vault\", owner.as_ref(), &[state.bump]]."
+            correct: false
+            feedback: "The commonest slip on this handler, because the state account is the one that feels like the vault. The lamports leave the zero-data SOL PDA, so the seeds you present are that account's, [b\"sol\", owner] with state.sol_bump; the state account is only the ledger and signs nothing."
+          - id: b
+            label: "The authority's secret key bytes, read off the Signer account, since the authority owns the vault."
+            correct: false
+            feedback: "A Signer exposes no secret key to the program, and a PDA has no private key at all. PDA signing is a runtime permission granted from seeds plus the bump, never a keypair."
+        explanation: "A PDA is off the ed25519 curve and has no private key, so the runtime lets the owning program sign for it by presenting the exact seeds plus the canonical bump. You stored that bump at initialization precisely so withdraw can rebuild the signer seeds cheaply and deterministically. Note whose seeds they are: withdraw moves lamports out of the zero-data SOL PDA, so the seeds are [b\"sol\", owner] with state.sol_bump, not the state PDA's own [b\"vault\", owner]. Re-derivation is bound to the calling program's ID, which is why no other program can present those seeds and sign for your vault."
+      - id: m04-l1-q2
+        prompt: "In Anchor V2, what does CpiContext::new take as its program argument, and how are the accounts passed?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "An &Address for the program, with accounts as an AccountInfo slice you assemble by hand"
+            correct: false
+            feedback: "Right about the program argument, which is the half most migrations reach first. The accounts do not arrive as raw AccountInfos: each is a CpiHandle from .cpi_handle() or .cpi_handle_mut(), and that borrow is what the next lesson's compile-time safety rests on."
+          - id: c
+            label: "A Pubkey by value for the program, with accounts as plain &mut references."
+            correct: false
+            feedback: "The Anchor 1.0 line did take the program as a Pubkey, so this is the natural half-migration guess. V2 takes a &Address and wraps each account in a CpiHandle instead of a bare mutable reference."
+          - id: b
+            label: "A &Address for the program, with accounts as CpiHandle borrow-tracked handles."
+            correct: true
+            feedback: "Read accessor or mutable one: that single distinction is the hinge everything in the next lesson turns on. Signer seeds do not ride in the constructor at all. They arrive through a separate wrapper."
+          - id: a
+            label: "An AccountInfo for the target program, with accounts as plain typed structs."
+            correct: false
+            feedback: "That is the pre-1.0 shape, and it is still what a lot of tutorials show. V2 changed both halves: the program argument type and the way accounts are handed over."
+        explanation: "V2's CpiContext::new(program: &Address, accounts) is the shape you will type all lesson. The accounts arrive as CpiHandle borrow-tracked handles, obtained with .cpi_handle() for a read and .cpi_handle_mut() for a write, which is the detail that makes the next lesson's compile-time safety possible. The PDA signer rides along separately through .with_signer(signer_seeds), the ergonomic wrapper over the raw invoke_signed syscall."
+      - id: m04-l1-q3
+        prompt: "Your withdraw debits state.credit after the transfer. Which line is safe under the house rules?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "state.credit = state.credit - amount; // safe: rustc panics on underflow"
+            correct: false
+            feedback: "A default debug build does panic, which is where that belief comes from. But whether an optimized build panics or wraps is a manifest setting, not a rustc constant: with overflow-checks off, the subtraction wraps silently to a value near u64::MAX. A flag someone can flip is no guard, and neither a panic nor a wrap is acceptable on a custody path."
+          - id: b
+            label: "state.credit -= amount; // safe: the require! above proved amount <= vault lamports"
+            correct: false
+            feedback: "The guard proves the request fits the SOL vault's lamport balance. state.credit is the separate ledger figure, and the two can drift apart, so the debit can still underflow. Use checked_sub."
+          - id: c
+            label: "state.credit = state.credit.checked_sub(amount).ok_or(VaultError::Underflow)?;"
+            correct: true
+            feedback: "Atomicity only rewinds what raises, and a wrap raises nothing: the transfer commits and the ledger quietly disagrees with it. Turning the None into an error is what gives atomicity something to catch."
+          - id: d
+            label: "state.credit = state.credit.saturating_sub(amount); // safe: floors at zero, no wrap"
+            correct: false
+            feedback: "It does remove the wrap, which is the failure this lesson opened on, so it reads like the safe pick. Flooring at zero is still a silent answer: an over-withdraw leaves the ledger reading zero and raises nothing, so nothing rolls back the transfer that already ran."
+        explanation: "checked_sub returns None on underflow instead of panicking, and the ? turns that into a clean program error the caller can handle. On a custody path this is the difference between a rejected transaction and an aborted instruction with a confusing panic log. It also matters because atomicity only rewinds errors, not silent bugs: if the debit raises, the whole instruction aborts and the transfer that already ran unwinds with it, but a wrap never raises, so nothing rolls back and the vault is left believing it holds eighteen quintillion lamports. Make the bug an error."

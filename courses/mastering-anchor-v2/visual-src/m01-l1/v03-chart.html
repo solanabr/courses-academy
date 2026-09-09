@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The V2 headline claims, before and after PR #4914 (2026-08-13)
+     purpose: show the numbers moved DOWN in a self-correction, which is why you never freeze a multiplier
+     data: Metric: average CU improvement, before: 9.9x, after: 8.8x Metric: bytecode size reduction, before: 95%, after: 94% Reference: single largest CU reduction in the set ~50x (best case, not average) Source: Anchor benchmark PR #4914, merged 2026-08-13. Alpha: values can move again.
+     prompt: A small paired-bar chart with two metric groups on the x-axis ("avg CU improvement" and "bytecode reduction"), each showing a "before" and "after" bar. Label bars 9.9x/8.8x and 95%/94%. Draw a downward arrow between each before/after pair. Add a caption line: "largest single reduction ~50x = best case, not the average". Footer: "PR #4914, 2026-08-13, alpha, re-verify at write". Keep it minimal, no gridline clutter.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:578px;height:566px;top:-337px;right:-337px;border-radius:41% 52% 42% 39% / 59% 51% 50% 49%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:610px;height:515px;bottom:-332px;left:-332px;border-radius:42% 41% 36% 41% / 57% 48% 38% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:410px;height:527px;bottom:-288px;left:674px;border-radius:40% 58% 59% 45% / 37% 36% 53% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .grid2 { display:flex; gap:40px; }
+  .grp { width:708px; background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); padding:26px 30px 24px; }
+  .gt { font-family:var(--font-display); font-weight:900; font-size:26px; line-height:1;
+        color:var(--text-primary); text-align:center; height:30px; }
+  .plot { height:280px; display:flex; align-items:flex-end; justify-content:center;
+          border-bottom:3px solid var(--stbr-dark); }
+  .col { width:150px; display:flex; flex-direction:column; align-items:center;
+         justify-content:flex-end; }
+  .val { font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1;
+         color:var(--text-primary); height:40px; }
+  .bar { width:130px; border-radius:var(--radius-sm) var(--radius-sm) 0 0; }
+  .bar.before { background:var(--surface-brand); }
+  .bar.after  { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700);
+                border-bottom:0; }
+  .mid { width:160px; height:280px; display:flex; flex-direction:column;
+         align-items:center; justify-content:center; }
+  .delta { font-family:var(--font-body); font-weight:800; font-size:16px;
+           color:var(--text-primary); background:var(--surface-paper);
+           border:2px solid var(--border-subtle); border-radius:var(--radius-pill);
+           padding:6px 16px; margin-bottom:8px; line-height:1; }
+  .axis { display:flex; justify-content:center; height:34px; padding-top:10px; }
+  .ax { width:150px; text-align:center; font-family:var(--font-body); font-weight:700;
+        font-size:15px; letter-spacing:.08em; text-transform:uppercase;
+        color:var(--text-secondary); }
+  .axgap { width:160px; }
+  .scale { height:24px; text-align:center; font-family:var(--font-mono); font-size:13px;
+           color:var(--text-muted); padding-top:6px; }
+  .cap { margin-top:20px; background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); padding:16px 26px; display:flex; align-items:center; }
+  .cap .ck { font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted);
+             width:150px; }
+  .cap .ct { font-family:var(--font-body); font-size:19px; color:var(--text-primary); }
+  .cap .ct b { font-family:var(--font-display); font-weight:900; }
+  .foot { margin-top:16px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:16px 26px; font-family:var(--font-body); font-size:16px;
+          color:var(--text-on-brand); }
+  .foot b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">the multiplier moved</div>
+  <h2 class="viz-title">the headline numbers went down, on purpose</h2>
+
+  <div class="grid2">
+    <div class="grp">
+      <div class="gt">average CU improvement</div>
+      <div class="plot">
+        <div class="col">
+          <div class="val">9.9&times;</div>
+          <div class="bar before" style="height:238px;"></div>
+        </div>
+        <div class="mid">
+          <div class="delta">&minus;1.1&times;</div>
+          <svg width="46" height="70" viewBox="0 0 46 70">
+            <line x1="23" y1="0" x2="23" y2="50" stroke="#1b231d" stroke-width="4"/>
+            <polygon points="9,48 37,48 23,70" fill="#1b231d"/>
+          </svg>
+        </div>
+        <div class="col">
+          <div class="val">8.8&times;</div>
+          <div class="bar after" style="height:211px;"></div>
+        </div>
+      </div>
+      <div class="axis">
+        <div class="ax">before</div><div class="axgap"></div><div class="ax">after</div>
+      </div>
+      <div class="scale">scale 0 &ndash; 10&times;</div>
+    </div>
+
+    <div class="grp">
+      <div class="gt">bytecode size reduction</div>
+      <div class="plot">
+        <div class="col">
+          <div class="val">95%</div>
+          <div class="bar before" style="height:228px;"></div>
+        </div>
+        <div class="mid">
+          <div class="delta">&minus;1 pt</div>
+          <svg width="46" height="70" viewBox="0 0 46 70">
+            <line x1="23" y1="0" x2="23" y2="50" stroke="#1b231d" stroke-width="4"/>
+            <polygon points="9,48 37,48 23,70" fill="#1b231d"/>
+          </svg>
+        </div>
+        <div class="col">
+          <div class="val">94%</div>
+          <div class="bar after" style="height:226px;"></div>
+        </div>
+      </div>
+      <div class="axis">
+        <div class="ax">before</div><div class="axgap"></div><div class="ax">after</div>
+      </div>
+      <div class="scale">scale 0 &ndash; 100%</div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <span class="ck">read this too</span>
+    <span class="ct">largest single reduction <b>&asymp; 50&times;</b> &mdash; that is the best case, not the average.</span>
+  </div>
+
+  <div class="foot">
+    Source: Anchor benchmark <b>PR #4914</b>, merged <b>2026-08-13</b>. Alpha &mdash; values can move again, so re-verify at write time. Never freeze a multiplier.
+  </div>
+</div>
+</body></html>

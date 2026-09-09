@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: What msg! can and cannot format in a stock V2 program
+     purpose: fence off the one formatting hole so the reader does not read it as "logging is broken in V2"
+     data: columns: What you write | Stock V2 (no extra features) | Why row: msg!("gm from the arcade") | compiles | a literal needs no formatting at all row: msg!("lit at {} plays", plays) on a u64 | compiles | u64 implements Display in core row: msg!("gm, {}", ctx.accounts.player.address()) | does NOT compile | Address gains Display/Debug only with solana-address's decode feature, which anchor-lang leaves off row: same line, with anchor-lang's compat feature on | compiles | you opted into base58 encoding, and you pay for it in binary size and CU
+     prompt: Four-row table with a status column rendered as green check / red cross chips. Monospace the "What you write" column. Put a short footer strip under the table reading "the hole is Display on Address, not formatting in general".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:569px;height:520px;top:-338px;right:-338px;border-radius:42% 36% 42% 63% / 54% 40% 64% 40%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:472px;height:457px;bottom:-242px;left:-242px;border-radius:43% 39% 42% 47% / 48% 36% 42% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:469px;height:552px;bottom:-315px;left:381px;border-radius:62% 37% 37% 38% / 35% 45% 37% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .mt { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; margin-top:24px; }
+  .mt th { background:var(--surface-inverse); color:var(--text-on-dark); text-align:left;
+    padding:16px 24px; font-family:var(--font-display); font-weight:800; font-size:15px;
+    letter-spacing:.09em; text-transform:uppercase; }
+  .mt th:first-child { border-top-left-radius:var(--radius-md); }
+  .mt th:last-child { border-top-right-radius:var(--radius-md); }
+  .mt td { background:var(--surface-card); padding:18px 24px; border-bottom:2px solid var(--border-subtle);
+    color:var(--text-secondary); vertical-align:middle; line-height:1.4; font-size:17px; }
+  .mt td.code { font-family:var(--font-mono); font-size:17px; font-weight:700;
+    color:var(--text-primary); word-wrap:break-word; overflow-wrap:break-word; }
+  .mt tr:last-child td { border-bottom:0; }
+  .mt tr:last-child td:first-child { border-bottom-left-radius:var(--radius-md); }
+  .mt tr:last-child td:last-child { border-bottom-right-radius:var(--radius-md); }
+  .mt tr.hole td { background:rgba(255,210,63,0.22); border-bottom-color:var(--stbr-yellow-600); }
+  .mt tr.hole td.code { color:var(--stbr-dark); }
+  .chip { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:14px;
+    letter-spacing:.04em; padding:6px 16px; border-radius:var(--radius-pill); white-space:nowrap; }
+  .chip.ok { background:var(--stbr-emerald); color:var(--text-on-brand); }
+  .chip.no { background:var(--stbr-yellow); color:var(--text-on-accent); border:2px solid var(--stbr-yellow-700); }
+  .mt td b { color:var(--text-primary); }
+  .mt tr.hole td b { color:var(--stbr-dark); }
+  .foot { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-md); padding:16px 28px; font-family:var(--font-display);
+    font-weight:800; font-size:20px; letter-spacing:-0.01em; }
+  .foot span { font-family:var(--font-mono); font-weight:700; color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">one hole, not a broken feature</div>
+  <h2 class="viz-title">what <span style="font-family:var(--font-mono);font-size:44px;">msg!</span> can and cannot format in a stock V2 program</h2>
+  <table class="mt">
+    <tr><th style="width:38%">what you write</th><th style="width:19%">stock V2 <span style="font-weight:600;letter-spacing:.04em;text-transform:none;">(no extra features)</span></th><th style="width:43%">why</th></tr>
+    <tr>
+      <td class="code">msg!("gm from the arcade")</td>
+      <td><span class="chip ok">compiles</span></td>
+      <td>a literal needs <b>no formatting at all</b></td>
+    </tr>
+    <tr>
+      <td class="code">msg!("lit at {} plays", plays)<div style="font-family:var(--font-body);font-weight:500;font-size:14px;color:var(--text-muted);margin-top:4px;">on a u64</div></td>
+      <td><span class="chip ok">compiles</span></td>
+      <td><b>u64</b> implements <b>Display</b> in core</td>
+    </tr>
+    <tr class="hole">
+      <td class="code">msg!("gm, {}", ctx.accounts.player.address())</td>
+      <td><span class="chip no">does NOT compile</span></td>
+      <td><b>Address</b> gains Display/Debug only with <b>solana-address</b>'s <b>decode</b> feature, which <b>anchor-lang leaves off</b></td>
+    </tr>
+    <tr>
+      <td class="code">same line, with anchor-lang's <b>compat</b> feature on</td>
+      <td><span class="chip ok">compiles</span></td>
+      <td>you opted into <b>base58 encoding</b> — and you pay for it in <b>binary size and CU</b></td>
+    </tr>
+  </table>
+  <div class="foot">the hole is <span>Display on Address</span>, not formatting in general</div>
+</div>
+</body></html>

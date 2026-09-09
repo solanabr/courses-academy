@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The R3 to R2 composition edge
+     purpose: show that the escrow never holds the lamports; the vault does, reached only by CPI
+     data: reserve: operator -> R3.reserve(amount, winning_score) R3 -> [CPI] -> R2.deposit(amount)   // lamports move operator -> vault instance R3 writes escrow record { maker, player, vault, amount, winning_score, bump } redeem: player -> R3.redeem(final_score) R3 checks: caller == escrow.player  AND  final_score >= escrow.winning_score R3 -> [CPI, escrow PDA signs] -> R2.withdraw(amount)  // lamports move vault -> player R3 closes escrow record -> rent back to maker invariant: the escrow account holds 0 prize lamports at all times; custody is R2's
+     prompt: Two-lane horizontal flowchart. Top lane "reserve", bottom lane "redeem". In each lane show R3 as the central actor with a CPI arrow crossing into a boxed R2 (quarter-vault). Label the CPI arrows with the lamport direction. Put the escrow record as a small side box in the reserve lane and mark it "0 prize lamports" as a callout in both lanes. Emphasize the two guard checks on the redeem CPI arrow.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:460px;top:-252px;right:-252px;border-radius:59% 63% 48% 50% / 57% 47% 57% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:529px;height:431px;bottom:-242px;left:-242px;border-radius:45% 37% 58% 55% / 46% 49% 35% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:407px;height:534px;bottom:-303px;left:625px;border-radius:55% 54% 64% 54% / 35% 37% 59% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lane { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:20px; display:flex; align-items:center; gap:15px; }
+  .lane + .lane { margin-top:16px; }
+  .tag { flex:0 0 116px; height:150px; border-radius:var(--radius-lg);
+         background:var(--surface-brand); color:var(--stbr-cream); text-align:center;
+         display:flex; flex-direction:column; align-items:center; justify-content:center;
+         font-family:var(--font-display); font-weight:900; font-size:27px; line-height:1; }
+  .tag em { font-style:normal; font-family:var(--font-body); font-weight:700; font-size:11px;
+            letter-spacing:.12em; text-transform:uppercase; opacity:.86; margin-top:9px; }
+  .n { height:150px; box-sizing:border-box; border:2px solid var(--stbr-dark);
+       border-radius:var(--radius-md); background:var(--surface-card); padding:13px 15px;
+       display:flex; flex-direction:column; justify-content:center; }
+  .n .k { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+          text-transform:uppercase; color:var(--text-muted); margin-bottom:9px; }
+  .n .m { font-family:var(--font-mono); font-size:16px; font-weight:600; line-height:1.28;
+          color:var(--text-primary); }
+  .n .s { font-family:var(--font-body); font-size:13px; line-height:1.3;
+          color:var(--text-secondary); margin-top:9px; }
+  .n.vault { background:var(--surface-brand); border-color:var(--stbr-emerald-800); }
+  .n.vault .k { color:var(--stbr-cream); opacity:.8; }
+  .n.vault .m, .n.vault .s { color:var(--stbr-cream); }
+  .n.rec { border-style:dashed; border-color:var(--stbr-ink-300); }
+  .n.rec .f { font-family:var(--font-mono); font-size:12px; line-height:1.45;
+              color:var(--text-secondary); }
+  .chip0 { display:inline-block; align-self:flex-start; margin-top:9px; background:var(--surface-accent);
+           color:var(--stbr-dark); font-family:var(--font-body); font-weight:800; font-size:11.5px;
+           letter-spacing:.04em; padding:4px 8px; border-radius:var(--radius-sm); }
+  .arr { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .arr .cpi { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.14em;
+              color:var(--stbr-cream); background:var(--surface-brand); padding:3px 9px;
+              border-radius:var(--radius-pill); margin-bottom:8px; }
+  .arr .lab { font-family:var(--font-body); font-size:11.5px; line-height:1.25; text-align:center;
+              color:var(--text-secondary); margin-top:8px; }
+  .sep { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .sep .txt { font-family:var(--font-body); font-size:11px; line-height:1.2; text-align:center;
+              color:var(--text-muted); font-weight:700; }
+  .sep .rule { width:0; height:44px; border-left:2px dashed var(--stbr-ink-300); margin-top:8px; }
+  .band { margin-top:18px; height:74px; box-sizing:border-box; background:var(--surface-accent);
+          border-radius:var(--radius-lg); display:flex; align-items:center; padding:0 30px; gap:18px; }
+  .band .w { font-family:var(--font-display); font-weight:900; font-size:15px; letter-spacing:.14em;
+             text-transform:uppercase; color:var(--stbr-dark); flex:0 0 132px; }
+  .band .t { font-family:var(--font-body); font-size:19px; font-weight:600; color:var(--stbr-dark); }
+  .band .t b { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">composition edge · R3 → R2</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 14px;">the escrow never holds the prize</h2>
+
+  <div class="lane">
+    <div class="tag">reserve<em>operator</em></div>
+    <div class="n" style="flex:0 0 142px;">
+      <div class="k">actor</div>
+      <div class="m">operator</div>
+      <div class="s">the maker of the bet</div>
+    </div>
+    <div class="arr" style="flex:0 0 68px;">
+      <svg width="68" height="16" viewBox="0 0 68 16"><line x1="0" y1="8" x2="52" y2="8" stroke="#1B231D" stroke-width="3"/><polygon points="52,1 68,8 52,15" fill="#1B231D"/></svg>
+    </div>
+    <div class="n" style="flex:0 0 266px;">
+      <div class="k">R3 · escrow program</div>
+      <div class="m">reserve(amount,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;winning_score)</div>
+      <div class="s">writes the escrow record, holds nothing</div>
+    </div>
+    <div class="arr" style="flex:0 0 140px;">
+      <div class="cpi">CPI</div>
+      <svg width="140" height="16" viewBox="0 0 140 16"><line x1="0" y1="8" x2="124" y2="8" stroke="#008B4C" stroke-width="3"/><polygon points="124,1 140,8 124,15" fill="#008B4C"/></svg>
+      <div class="lab">lamports move<br>operator → vault</div>
+    </div>
+    <div class="n vault" style="flex:0 0 206px;">
+      <div class="k">R2 · quarter-vault</div>
+      <div class="m">deposit(amount)</div>
+      <div class="s">custody lives here, and only here</div>
+    </div>
+    <div class="sep" style="flex:0 0 56px;">
+      <div class="txt">R3 also<br>writes</div>
+      <div class="rule"></div>
+    </div>
+    <div class="n rec" style="flex:0 0 177px;">
+      <div class="k">escrow record</div>
+      <div class="f">maker · player<br>vault · amount<br>winning_score · bump</div>
+      <div class="chip0">0 prize lamports</div>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="tag">redeem<em>player</em></div>
+    <div class="n" style="flex:0 0 136px;">
+      <div class="k">actor</div>
+      <div class="m">player</div>
+      <div class="s">the score holder</div>
+    </div>
+    <div class="arr" style="flex:0 0 68px;">
+      <svg width="68" height="16" viewBox="0 0 68 16"><line x1="0" y1="8" x2="52" y2="8" stroke="#1B231D" stroke-width="3"/><polygon points="52,1 68,8 52,15" fill="#1B231D"/></svg>
+    </div>
+    <div class="n" style="flex:0 0 276px;">
+      <div class="k">R3 · two guards, then the CPI</div>
+      <div class="m" style="font-size:15px;">redeem(final_score)</div>
+      <div class="s" style="font-family:var(--font-mono); font-size:12px; line-height:1.5; margin-top:8px;">
+        caller == escrow.player<br>final_score &gt;= escrow.winning_score</div>
+    </div>
+    <div class="arr" style="flex:0 0 150px;">
+      <div class="cpi">CPI · PDA SIGNS</div>
+      <svg width="150" height="16" viewBox="0 0 150 16"><line x1="0" y1="8" x2="134" y2="8" stroke="#008B4C" stroke-width="3"/><polygon points="134,1 150,8 134,15" fill="#008B4C"/></svg>
+      <div class="lab">lamports move<br>vault → player</div>
+    </div>
+    <div class="n vault" style="flex:0 0 196px;">
+      <div class="k">R2 · quarter-vault</div>
+      <div class="m">withdraw(amount)</div>
+      <div class="s">the escrow PDA is the signer</div>
+    </div>
+    <div class="sep" style="flex:0 0 56px;">
+      <div class="txt">then R3<br>closes</div>
+      <div class="rule"></div>
+    </div>
+    <div class="n rec" style="flex:0 0 173px;">
+      <div class="k">escrow record</div>
+      <div class="f">closed —<br>rent back to maker</div>
+      <div class="chip0">0 prize lamports</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="w">invariant</div>
+    <div class="t">the escrow account holds <b>0 prize lamports</b> at every point in both lanes — custody is R2's, reachable only by CPI.</div>
+  </div>
+</div>
+</body></html>

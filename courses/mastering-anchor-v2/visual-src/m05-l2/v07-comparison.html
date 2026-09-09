@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: unsafe(dup) is not the fix for a swap
+     purpose: show the wrong instinct versus the correct two-account design
+     data: Symptom: instruction rejected, "duplicate mutable account". Wrong fix: one shared reserve account + unsafe(dup) to silence the check. Result: two reserves aliased through one account, k accounting corrupts, check was right. Right fix: reserve_arcade and reserve_ticket as two distinct token accounts (different mints). Result: no duplication exists, default is satisfied, no opt-out needed. Rule: unsafe(dup) is for when duplication is genuinely intended, never to hide a design bug.
+     prompt: Side-by-side panel. Left "Wrong": a single reserve box feeding both swap directions, an unsafe(dup) badge, a red "aliasing" mark. Right "Correct": two separate reserve boxes (arcade, ticket), no badge, a green check. Caption the rule underneath. No icons beyond the mark/check.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:431px;top:-243px;right:-243px;border-radius:58% 46% 49% 54% / 40% 56% 53% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:441px;bottom:-241px;left:-241px;border-radius:41% 35% 57% 42% / 44% 36% 43% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:560px;height:492px;bottom:-274px;right:-274px;border-radius:37% 52% 58% 58% / 38% 63% 37% 38%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p7-title { font-size:46px; }
+  /* WeasyPrint sizes a flex-basis as the CONTENT box, so the 24px padding + 2px
+     border are ADDED to it: 662 basis renders 714 wide, and 714 + 28 + 714 = 1456
+     = the full .viz width. A 680 basis rendered 732 and bled past the page padding. */
+  .p7-row { display:flex; justify-content:flex-start; align-items:flex-start; gap:28px; }
+  .p7-card { width:662px; flex:0 0 662px; box-sizing:border-box; background:var(--surface-card);
+             border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+             padding:24px; }
+  .p7-card.ok { border-color:var(--stbr-emerald); }
+
+  .p7-hd { height:68px; display:flex; align-items:center; gap:16px; }
+  .p7-hd .mk { width:46px; flex:0 0 46px; height:46px; border-radius:var(--radius-pill);
+               font-family:var(--font-display); font-weight:900; font-size:24px;
+               line-height:46px; text-align:center; }
+  .p7-hd .mk.x { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .p7-hd .mk.v { background:var(--surface-brand); color:var(--stbr-cream); }
+  .p7-hd .tt .k { display:block; font-family:var(--font-body); font-weight:800; font-size:12px;
+                  letter-spacing:.15em; text-transform:uppercase; color:var(--text-muted); }
+  .p7-hd .tt .n { display:block; font-family:var(--font-display); font-weight:900; font-size:25px;
+                  line-height:1.1; color:var(--text-primary); margin-top:3px; }
+
+  .p7-dia { height:224px; display:flex; align-items:flex-start; margin-top:14px; }
+  .p7-legs { width:236px; flex:0 0 236px; }
+  .p7-leg { height:88px; box-sizing:border-box; border:2px solid var(--border-subtle);
+            background:var(--surface-paper); border-radius:var(--radius-md);
+            padding:14px 16px; }
+  .p7-leg .k { display:block; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+               letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted); }
+  .p7-leg .t { display:block; font-family:var(--font-mono); font-size:14px; line-height:1.3;
+               color:var(--text-primary); margin-top:6px; }
+  .p7-gap48 { height:48px; }
+  .p7-conn { width:120px; flex:0 0 120px; }
+
+  .p7-tgt { width:268px; flex:0 0 268px; }
+  .p7-sp56 { height:46px; }
+  .p7-box { box-sizing:border-box; border-radius:var(--radius-lg); padding:14px 18px; }
+  .p7-box.shared { height:132px; background:var(--surface-inverse); }
+  .p7-box.shared .n { display:block; font-family:var(--font-mono); font-size:19px;
+                      color:var(--stbr-cream); }
+  .p7-box.shared .s { display:block; font-family:var(--font-body); font-size:13.5px;
+                      color:rgba(245,232,202,0.7); margin-top:5px; }
+  .p7-badge { display:inline-block; margin-top:8px; background:var(--surface-accent);
+              color:var(--stbr-dark); font-family:var(--font-mono); font-size:14px;
+              font-weight:700; border-radius:var(--radius-pill); padding:5px 13px; }
+  .p7-box.own { height:88px; background:var(--surface-card);
+                border:2px solid var(--stbr-emerald); }
+  .p7-box.own .n { display:block; font-family:var(--font-mono); font-size:18px;
+                   color:var(--text-primary); }
+  .p7-box.own .s { display:block; font-family:var(--font-body); font-size:13.5px;
+                   color:var(--text-secondary); margin-top:5px; }
+
+  .p7-res { height:104px; box-sizing:border-box; margin-top:14px; border-radius:var(--radius-md);
+            padding:14px 18px; background:var(--surface-paper);
+            border-left:6px solid var(--stbr-ink-300); }
+  .p7-res.ok { background:#f2f8f4; border-left-color:var(--stbr-emerald); }
+  .p7-res .k { display:block; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .p7-res .t { display:block; font-family:var(--font-body); font-size:16.5px; line-height:1.34;
+               color:var(--text-primary); margin-top:6px; }
+  .p7-res .t b { font-weight:800; }
+
+  .p7-band { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:20px 32px; display:flex; align-items:center; gap:26px; }
+  .p7-band .bk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                 letter-spacing:.14em; text-transform:uppercase;
+                 color:rgba(245,232,202,0.75); white-space:nowrap; }
+  .p7-band .bt { font-family:var(--font-display); font-weight:900; font-size:24px;
+                 line-height:1.15; color:var(--stbr-cream); }
+  .p7-band .bt b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">&ldquo;duplicate mutable account&rdquo; &mdash; two ways to answer it</div>
+  <h2 class="viz-title p7-title">unsafe(dup) is not the fix for a swap</h2>
+  <div class="p7-row">
+
+    <div class="p7-card">
+      <div class="p7-hd">
+        <span class="mk x">&times;</span>
+        <span class="tt"><span class="k">wrong fix</span><span class="n">silence the check</span></span>
+      </div>
+      <div class="p7-dia">
+        <div class="p7-legs">
+          <div class="p7-leg"><span class="k">leg 1 &middot; pull in</span><span class="t">trader_arcade &rarr; reserve</span></div>
+          <div class="p7-gap48"></div>
+          <div class="p7-leg"><span class="k">leg 2 &middot; push out</span><span class="t">reserve &rarr; trader_ticket</span></div>
+        </div>
+        <div class="p7-conn">
+          <svg width="120" height="224" viewBox="0 0 120 224">
+            <path d="M0 44 L70 44 L70 112 L104 112" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+            <path d="M0 180 L70 180 L70 112 L104 112" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+            <polygon points="120,112 102,104 102,120" fill="#1b231d"/>
+          </svg>
+        </div>
+        <div class="p7-tgt">
+          <div class="p7-sp56"></div>
+          <div class="p7-box shared">
+            <span class="n">reserve</span>
+            <span class="s">one account passed twice, mutable both times</span>
+            <span class="p7-badge">unsafe(dup)</span>
+          </div>
+        </div>
+      </div>
+      <div class="p7-res">
+        <span class="k">result</span>
+        <span class="t">Two reserves aliased through one account. <b>k accounting corrupts</b> &mdash; the check was right.</span>
+      </div>
+    </div>
+
+    <div class="p7-card ok">
+      <div class="p7-hd">
+        <span class="mk v">&#10003;</span>
+        <span class="tt"><span class="k">right fix</span><span class="n">two distinct accounts</span></span>
+      </div>
+      <div class="p7-dia">
+        <div class="p7-legs">
+          <div class="p7-leg"><span class="k">leg 1 &middot; pull in</span><span class="t">trader_arcade &rarr; reserve_arcade</span></div>
+          <div class="p7-gap48"></div>
+          <div class="p7-leg"><span class="k">leg 2 &middot; push out</span><span class="t">reserve_ticket &rarr; trader_ticket</span></div>
+        </div>
+        <div class="p7-conn">
+          <svg width="120" height="224" viewBox="0 0 120 224">
+            <line x1="0" y1="44" x2="104" y2="44" stroke="#008b4c" stroke-width="2.5"/>
+            <polygon points="120,44 102,36 102,52" fill="#008b4c"/>
+            <line x1="0" y1="180" x2="104" y2="180" stroke="#008b4c" stroke-width="2.5"/>
+            <polygon points="120,180 102,172 102,188" fill="#008b4c"/>
+          </svg>
+        </div>
+        <div class="p7-tgt">
+          <div class="p7-box own"><span class="n">reserve_arcade</span><span class="s">arcade mint</span></div>
+          <div class="p7-gap48"></div>
+          <div class="p7-box own"><span class="n">reserve_ticket</span><span class="s">ticket mint &mdash; a different mint</span></div>
+        </div>
+      </div>
+      <div class="p7-res ok">
+        <span class="k">result</span>
+        <span class="t">No duplication exists. The default is satisfied &mdash; <b>no opt-out needed</b>.</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="p7-band">
+    <span class="bk">the rule</span>
+    <span class="bt"><b>unsafe(dup)</b> is for when duplication is genuinely intended &mdash; never to hide a design bug.</span>
+  </div>
+</div>
+</body></html>

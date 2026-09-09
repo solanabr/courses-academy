@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: R2's two PDAs after the withdraw lesson
+     purpose: show the ledger PDA and the SOL-holding PDA and which one the program signs for
+     data: under one player (authority), derived from that player's address: - STATE PDA: seeds [b"vault", owner]; owner = your program; type Account<Vault>; stores { owner, credit: u64, bump: u8, sol_bump: u8 }; this is the LEDGER - SOL PDA:   seeds [b"sol",   owner]; owner = System Program; type SystemAccount; zero data; holds the actual lamports; this is the CUSTODY account withdraw flow: program signs a System transfer for the SOL PDA using [b"sol", owner, &[state.sol_bump]], then debits state.credit with checked_sub note: the bump the program signs with is state.sol_bump (the SOL PDA's canonical bump), stored at init, never recomputed
+     prompt: Two boxes side by side under a single "player / authority" node, both fed by a dashed "derived from owner" line. Left box STATE PDA (program-owned, ledger) listing its fields. Right box SOL PDA (System-owned, SystemAccount, holds lamports). Draw the withdraw as an arrow from the program signing the SOL PDA's seeds, lamports flowing SOL PDA -> player, and a separate small arrow updating credit in the STATE PDA. Label the stored sol_bump on the SOL PDA.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:527px;height:543px;top:-310px;right:-310px;border-radius:37% 61% 54% 60% / 57% 54% 35% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:540px;height:456px;bottom:-272px;left:-272px;border-radius:61% 44% 60% 47% / 45% 61% 62% 54%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:476px;height:447px;bottom:-223px;right:-223px;border-radius:45% 37% 39% 43% / 61% 47% 36% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tp-top { display:flex; justify-content:center; }
+  .tp-player { width:470px; box-sizing:border-box; background:var(--surface-inverse);
+               color:var(--stbr-cream); border-radius:var(--radius-md); padding:12px 24px;
+               text-align:center; }
+  .tp-player .h { font-family:var(--font-display); font-weight:900; font-size:21px; }
+  .tp-player .s { font-family:var(--font-mono); font-size:14px; opacity:0.82; margin-top:3px; }
+  .tp-conn { position:relative; height:74px; }
+  .tp-conn .lbl { position:absolute; top:14px; left:772px; background:var(--surface-page);
+                  font-family:var(--font-body); font-weight:700; font-size:14px;
+                  color:var(--text-secondary); padding:0 8px; }
+  .tp-cols { display:flex; gap:32px; }
+  .tp-box { width:712px; box-sizing:border-box; border-radius:var(--radius-lg);
+            border:2px solid var(--border-subtle); background:var(--surface-card);
+            padding:16px 22px; }
+  .tp-hero { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); }
+  .tp-pill { display:inline-block; font-family:var(--font-display); font-weight:900;
+             font-size:13px; letter-spacing:0.15em; text-transform:uppercase;
+             padding:5px 14px; border-radius:var(--radius-pill);
+             background:var(--surface-brand); color:var(--stbr-cream); }
+  .tp-hero .tp-pill { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .tp-role { font-family:var(--font-display); font-weight:900; font-size:23px;
+             color:var(--text-primary); margin-top:9px; }
+  .tp-hero .tp-role { color:var(--stbr-dark); }
+  .tp-kv { display:flex; margin-top:8px; }
+  .tp-kv .k { flex:0 0 86px; font-family:var(--font-body); font-weight:700; font-size:14px;
+              color:var(--text-muted); padding-top:1px; }
+  .tp-hero .tp-kv .k { color:var(--stbr-dark); opacity:0.7; }
+  .tp-kv .v { flex:1; font-family:var(--font-mono); font-size:16px; line-height:1.3;
+              color:var(--text-primary); }
+  .tp-hero .tp-kv .v { color:var(--stbr-dark); }
+  .tp-badge { margin-top:11px; border-radius:var(--radius-sm); padding:8px 13px;
+              font-family:var(--font-body); font-size:15px; line-height:1.3; }
+  .tp-b-em { background:rgba(0,139,76,0.10); border:1.5px solid rgba(0,139,76,0.30);
+             color:var(--stbr-emerald-800); }
+  .tp-b-dk { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .tp-b-dk b { color:var(--stbr-yellow); }
+  .tp-flow { margin-top:16px; display:flex; align-items:stretch;
+             border:2px solid var(--surface-brand); border-radius:var(--radius-md);
+             overflow:hidden; }
+  .tp-flow .rail { width:150px; box-sizing:border-box; background:var(--surface-brand);
+                   color:var(--stbr-cream); padding:12px 16px;
+                   font-family:var(--font-display); font-weight:900; font-size:19px;
+                   line-height:1.1; }
+  .tp-flow .steps { flex:1; display:flex; align-items:center; padding:10px 14px;
+                    background:var(--surface-card); }
+  .tp-step { font-family:var(--font-mono); font-size:15px; line-height:1.3;
+             color:var(--text-primary); background:var(--surface-paper);
+             border:1.5px solid var(--border-subtle); border-radius:var(--radius-sm);
+             padding:8px 12px; }
+  .tp-step em { display:block; font-family:var(--font-body); font-style:normal;
+                font-weight:700; font-size:13px; color:var(--text-muted); margin-bottom:3px; }
+  .tp-ar { padding:0 10px; }
+  .tp-note { margin-top:11px; font-family:var(--font-body); font-size:15px;
+             color:var(--text-secondary); }
+  .tp-note b { color:var(--stbr-emerald-800); }
+</style>
+  <div class="stbr-eyebrow">R2 after the withdraw lesson</div>
+  <h2 class="viz-title">Two PDAs per player: the ledger and the custody</h2>
+
+  <div class="tp-top">
+    <div class="tp-player">
+      <div class="h">player / authority</div>
+      <div class="s">both PDAs derive from this address</div>
+    </div>
+  </div>
+
+  <div class="tp-conn">
+    <svg width="1456" height="74" viewBox="0 0 1456 74">
+      <line x1="728" y1="0" x2="728" y2="34" stroke="#1b231d" stroke-width="2.5" stroke-dasharray="7 6"/>
+      <line x1="356" y1="34" x2="1100" y2="34" stroke="#1b231d" stroke-width="2.5" stroke-dasharray="7 6"/>
+      <line x1="356" y1="34" x2="356" y2="60" stroke="#1b231d" stroke-width="2.5" stroke-dasharray="7 6"/>
+      <polygon points="356,72 349,58 363,58" fill="#1b231d"/>
+      <line x1="1100" y1="34" x2="1100" y2="60" stroke="#1b231d" stroke-width="2.5" stroke-dasharray="7 6"/>
+      <polygon points="1100,72 1093,58 1107,58" fill="#1b231d"/>
+    </svg>
+    <div class="lbl">derived from owner</div>
+  </div>
+
+  <div class="tp-cols">
+    <div class="tp-box">
+      <span class="tp-pill">state PDA &middot; the ledger</span>
+      <div class="tp-role">program-owned bookkeeping</div>
+      <div class="tp-kv"><div class="k">seeds</div><div class="v">[b"vault", owner]</div></div>
+      <div class="tp-kv"><div class="k">owner</div><div class="v">your program</div></div>
+      <div class="tp-kv"><div class="k">type</div><div class="v">Account&lt;Vault&gt;</div></div>
+      <div class="tp-kv"><div class="k">stores</div><div class="v">{ owner, credit: u64, bump: u8, sol_bump: u8 }</div></div>
+      <div class="tp-badge tp-b-em">Holds no lamports of its own beyond rent &mdash; it only records what the player is owed.</div>
+    </div>
+
+    <div class="tp-box tp-hero">
+      <span class="tp-pill">sol PDA &middot; the custody</span>
+      <div class="tp-role">the account the program signs for</div>
+      <div class="tp-kv"><div class="k">seeds</div><div class="v">[b"sol", owner]</div></div>
+      <div class="tp-kv"><div class="k">owner</div><div class="v">System Program</div></div>
+      <div class="tp-kv"><div class="k">type</div><div class="v">SystemAccount &mdash; zero data</div></div>
+      <div class="tp-kv"><div class="k">holds</div><div class="v">the actual lamports</div></div>
+      <div class="tp-badge tp-b-dk">signed with <b>state.sol_bump</b> &mdash; the SOL PDA&rsquo;s canonical bump, stored at init</div>
+    </div>
+  </div>
+
+  <div class="tp-flow">
+    <div class="rail">withdraw<br>flow</div>
+    <div class="steps">
+      <div class="tp-step"><em>1 &middot; sign</em>[b"sol", owner, &amp;[state.sol_bump]]</div>
+      <div class="tp-ar"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="21" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="30,8 20,3 20,13" fill="#008b4c"/></svg></div>
+      <div class="tp-step"><em>2 &middot; System transfer</em>SOL PDA &rarr; player &nbsp;(lamports move)</div>
+      <div class="tp-ar"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="0" y1="8" x2="21" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="30,8 20,3 20,13" fill="#008b4c"/></svg></div>
+      <div class="tp-step"><em>3 &middot; debit the ledger</em>state.credit = state.credit.checked_sub(amount)?</div>
+    </div>
+  </div>
+
+  <div class="tp-note">The bump the program signs with is <b>state.sol_bump</b> &mdash; stored at init, never recomputed.</div>
+</div>
+</body></html>

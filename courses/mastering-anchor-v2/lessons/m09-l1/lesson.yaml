@@ -1,0 +1,94 @@
+id: lesson-mav2-m09-l1
+slug: m09-l1
+title: "Strip the framework I: rebuild the vault native"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    pinocchio: "0.9.0"
+    pinocchio-system: "0.4.0"
+    pinocchio-pubkey: "0.3.0"
+    litesvm: "0.16.0"
+    solana-sdk: "4.0.0"
+skills:
+  - solana-programs
+  - pdas
+  - program-testing
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: native-vault-withdraw
+    type: code
+    language: rust
+    starter: native-vault-withdraw/starter.rs
+    solution: native-vault-withdraw/solution.rs
+    tests: native-vault-withdraw/tests.json
+    hints:
+      - "A zero-amount withdraw is invalid input — reject it first."
+      - "Use balance.checked_sub(amount); None means the withdraw exceeds the balance."
+  - key: check
+    type: quiz
+    questions:
+      - id: m09-l1-q1
+        prompt: "In your native rebuild you added `if data[0] != VAULT_DISCRIMINATOR { return Err(...) }` inside TryFrom. Anchor V2 wrote that check for you. What did that one line replace, and why can't you drop it?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "It replaced the PDA re-derivation that `bump = vault.bump` performed; without it invoke_signed signs with an uncanonical bump."
+            correct: false
+            feedback: "The PDA address is confirmed by the seed set you hand to invoke_signed, not by byte 0 of the config. The discriminator tags the account's type, not its derivation."
+          - id: c
+            label: "It replaced the framework's account-type check; without it another program-owned account of the same length can be read as a vault config."
+            correct: true
+            feedback: "The ownership check passes — your program really did create that other account — and length passes by coincidence. One byte of type tag is all that stands between those bytes and a bad read."
+          - id: b
+            label: "It replaced the data-length check; without it a short config account causes an out-of-bounds read on the `cfg[1..33]` authority slice."
+            correct: false
+            feedback: "Length and type are separate gates: gate 3 is `cfg.len() != CONFIG_LEN`, gate 4 is `cfg[0] != VAULT_DISCRIMINATOR`. A full-length account of the wrong type clears the length gate and is stopped only by the discriminator."
+          - id: d
+            label: "It replaced the owner check; without it an account another program owns may be passed into the config slot and read as a vault."
+            correct: false
+            feedback: "Ownership is gate 2, `config.is_owned_by(&crate::ID)`, and it is still in your TryFrom above this line. The account the discriminator stops is one your own program owns, which is why the owner check waves it through."
+        explanation: "The discriminator is the account's type tag. Anchor generates the check that the tag matches the expected type before it hands you typed data; strip the framework and you must write that check yourself, or you have re-opened the type-cosplay class of bug. Concretely: if some other instruction in your program creates a 34-byte program-owned account for an unrelated purpose — a scoreboard row, say — the owner check (gate 2) passes because your program genuinely owns it, and the length check (gate 3) passes because it is 34 bytes. Only `cfg[0] != VAULT_DISCRIMINATOR` stops those bytes from being read as an authority and a stored bump. (In this program the later signer-match gate happens to contain the damage — a usable row must name the signer, whose own vault she could already drain — but that containment is a coincidence of this seed scheme; the discriminator is what keeps it from being load-bearing.)"
+      - id: m09-l1-q2
+        prompt: "Your native withdraw moves lamports out of the vault PDA. Anchor stored that canonical bump for you and read it back through `bump = vault.bump`; in pinocchio you pass seeds to invoke_signed yourself. Which seed set signs correctly?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Re-run find_program_address inside the instruction to get a fresh bump each call, then sign with that."
+            correct: false
+            feedback: "That burns ~1500 CU per call and defeats the whole reason a canonical bump gets stored in the first place — store it at init, reuse it."
+          - id: a
+            label: "The exact seeds used to derive the PDA, plus the stored canonical bump as the final seed."
+            correct: true
+            feedback: "Whatever you present is what gets rebuilt into an address: the literal prefix and the trailing bump byte carry equal weight. Wrong order, missing element, either way you get a different address and a refusal."
+          - id: c
+            label: "The authority's pubkey alone, since the runtime already knows which program is invoking the CPI."
+            correct: false
+            feedback: "The runtime re-runs create_program_address over every seed you present, so the literal `b\"vault\"` prefix and the bump byte are not optional; the authority key alone derives a different address and you get InvalidSeeds."
+          - id: d
+            label: "Just the stored canonical bump as a single seed, since invoke_signed re-derives the others from the PDA."
+            correct: false
+            feedback: "There is nothing to re-derive from: the runtime is handed a seed list and rebuilds an address out of it, so a lone bump byte hashes to something that is not your vault. The bump is the last element of the set, not a replacement for it."
+        explanation: "A PDA signs by presenting the exact seeds it was derived from plus its canonical bump. Anchor gets that byte from the stored `vault.bump` for a seed scheme like this one — the macro-time const applies only when every seed is a byte literal, and the authority key is not; native, you store it and hand the seeds + bump slice to invoke_signed. In the lab that is `[Seed::from(b\"vault\"), Seed::from(self.authority.key().as_ref()), Seed::from(&bump)]`, with `bump` read back from `cfg[33]`. Get the array wrong in order or in content and the runtime reconstructs a different address, refuses to sign, and returns InvalidSeeds — there is no partial credit from the runtime here."
+      - id: m09-l1-q3
+        prompt: "Stripped of the framework, your native vault compiles with no_std and depends on pinocchio-system 0.4 instead of anchor-lang. What does that reveal about Anchor V2 specifically?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "That native pinocchio programs need a real validator and cannot clear the same LiteSVM gate the framework vault cleared."
+            correct: false
+            feedback: "They can, and yours did — the same in-process LiteSVM harness loads your `.so`, asserts the 500_000_000 lamport delta, and rejects the over-withdraw."
+          - id: b
+            label: "That Anchor V2 is itself a no_std rewrite built on pinocchio — you hand-wrote the layer V2 now generates."
+            correct: true
+            feedback: "What you assembled by hand is the same foundation the framework's own crate depends on — a couple of minor versions back, before the account and address types were renamed."
+          - id: a
+            label: "That Anchor V2 keeps V1's std-linked runtime and changes only surface ergonomics like `.key()` becoming `.address()`."
+            correct: false
+            feedback: "The `.address()` rename is real, but it is a symptom, not the change. V2 is a ground-up `no_std` rewrite: its `lang-v2` crate depends on `pinocchio` and `pinocchio-system 0.6` directly."
+          - id: d
+            label: "That Solana programs are no_std underneath either way, and the framework was hiding that ceremony."
+            correct: false
+            feedback: "That is the folklore version, and it overreaches. The SBF toolchain ships a trimmed but working std, the stock entrypoint installs a bump allocator, and Anchor 1.x programs link against all of it. no_std is what V2 and pinocchio chose, not the mode the runtime imposes."
+        explanation: "V2 is a no_std rewrite on pinocchio. Rebuilding the vault natively is not an unrelated exercise — it is hand-writing the exact foundation the framework sits on, which is why the resonance is the point of the module. V2's `lang-v2` crate depends on `pinocchio` and `pinocchio-system 0.6` directly; the crates you added by hand are that same foundation two minor lines back, on the 0.9 pins that still predate the 0.11 rename of `AccountInfo` to `AccountView` and `Pubkey` to `Address`."

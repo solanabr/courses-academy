@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What your program is allowed to assume
+     purpose: separate the parts that carry over from classic SPL from the two parts that do not
+     data: Carries over (safe to assume): - base mint layout: first 82 bytes, same fields - base token-account layout: first 165 bytes, same fields - transfer_checked is the same primitive for both programs - InterfaceAccount<T> accepts accounts owned by either program Does NOT carry over (must be checked live): - total account length: variable, grows with extensions - whether a transfer needs extra accounts: depends on a declared transfer hook
+     prompt: Two-column comparison. Left column "Carries over from classic SPL" lists the four safe-to-assume rows in a calm neutral tone. Right column "Must be observed on Token-2022" lists the two live-check rows, emphasized. Draw a thin vertical divider; put a small lock icon on the left header and a small magnifier icon on the right header.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:587px;height:546px;top:-329px;right:-329px;border-radius:49% 63% 60% 44% / 38% 59% 58% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:605px;height:541px;bottom:-320px;left:-320px;border-radius:44% 43% 45% 49% / 43% 56% 58% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:526px;height:438px;bottom:-249px;right:-249px;border-radius:63% 37% 58% 44% / 48% 43% 41% 37%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { display:flex; align-items:flex-start; width:1412px; margin:0 auto; }
+  .col { width:686px; height:486px; background:var(--surface-card);
+         border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+         overflow:hidden; }
+  .col.hot { border-color:var(--stbr-yellow-700); }
+  .divcell { width:40px; height:486px; display:flex; justify-content:center; }
+  .divcell .rule { width:2px; height:486px; background:var(--stbr-ink-300); }
+  .ch { height:82px; padding:0 24px; display:flex; align-items:center; }
+  .ch.g { background:var(--surface-brand); }
+  .ch.y { background:var(--surface-accent); }
+  .ch .ic { width:34px; flex:0 0 34px; margin-right:16px; }
+  .ct { font-family:var(--font-display); font-weight:900; font-size:25px; line-height:1.1; }
+  .ch.g .ct { color:var(--text-on-brand); }
+  .ch.y .ct { color:var(--text-on-accent); }
+  .cb { padding:22px 24px; }
+  .r { border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+       background:var(--surface-paper); padding:0 18px; display:flex; align-items:center; }
+  .r.calm { height:84px; }
+  .r.live { height:174px; background:#fffaeb; border:2px solid var(--stbr-yellow-700);
+            display:block; padding:20px 20px 0; }
+  .r + .r { margin-top:8px; }
+  .r.live + .r.live { margin-top:12px; }
+  .rn { font-family:var(--font-mono); font-size:16px; font-weight:600;
+        color:var(--stbr-emerald-800); }
+  .rs { font-family:var(--font-body); font-size:14px; line-height:1.35;
+        color:var(--text-secondary); margin-top:5px; }
+  .lr { flex:1; }
+  .lhn { font-family:var(--font-display); font-weight:900; font-size:24px;
+         line-height:1.15; color:var(--text-primary); }
+  .lhs { font-family:var(--font-body); font-size:15px; line-height:1.4;
+         color:var(--text-secondary); margin-top:8px; }
+  .chip { display:inline-block; margin-top:12px; background:var(--surface-inverse);
+          color:var(--stbr-cream); font-family:var(--font-body); font-weight:700;
+          font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+          padding:6px 12px; border-radius:var(--radius-pill); }
+  .verdict { width:1412px; margin:18px auto 0; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:22px 30px; display:flex;
+             align-items:center; height:96px; }
+  .verdict .vk { width:170px; flex:0 0 170px; font-family:var(--font-body);
+                 font-weight:800; font-size:12px; letter-spacing:.12em;
+                 text-transform:uppercase; color:var(--stbr-cream); opacity:.8; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:23px;
+                 line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">token-2022 · what holds, what moves</div>
+  <h2 class="viz-title">what your program is allowed to assume</h2>
+
+  <div class="cmp">
+    <div class="col">
+      <div class="ch g">
+        <svg class="ic" width="34" height="34" viewBox="0 0 34 34">
+          <path d="M11 15 V11 a6 6 0 0 1 12 0 v4" fill="none" stroke="#f5e8ca" stroke-width="3"/>
+          <rect x="7" y="15" width="20" height="14" rx="3" fill="#f5e8ca"/>
+          <circle cx="17" cy="22" r="2.4" fill="#008b4c"/>
+        </svg>
+        <div class="ct">carries over from classic SPL</div>
+      </div>
+      <div class="cb">
+        <div class="r calm"><div class="lr">
+          <div class="rn">base mint layout</div>
+          <div class="rs">first 82 bytes — the same fields, in the same order</div>
+        </div></div>
+        <div class="r calm"><div class="lr">
+          <div class="rn">base token-account layout</div>
+          <div class="rs">first 165 bytes — the same fields, in the same order</div>
+        </div></div>
+        <div class="r calm"><div class="lr">
+          <div class="rn">transfer_checked</div>
+          <div class="rs">the same primitive for both token programs</div>
+        </div></div>
+        <div class="r calm"><div class="lr">
+          <div class="rn">InterfaceAccount&lt;T&gt;</div>
+          <div class="rs">accepts accounts owned by either program</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="divcell"><div class="rule"></div></div>
+
+    <div class="col hot">
+      <div class="ch y">
+        <svg class="ic" width="34" height="34" viewBox="0 0 34 34">
+          <circle cx="15" cy="15" r="8.5" fill="none" stroke="#1b231d" stroke-width="3"/>
+          <line x1="21" y1="21" x2="29" y2="29" stroke="#1b231d" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="ct">must be observed on Token-2022</div>
+      </div>
+      <div class="cb">
+        <div class="r live">
+          <div class="lhn">total account length</div>
+          <div class="lhs">Variable. It grows with every extension appended to the TLV tail, so the classic 82 / 165 constants stop being a size.</div>
+          <span class="chip">read it live</span>
+        </div>
+        <div class="r live">
+          <div class="lhn">whether a transfer needs extra accounts</div>
+          <div class="lhs">Depends on whether the mint declares a transfer hook — and on what that hook's account list resolves to.</div>
+          <span class="chip">read it live</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the takeaway</span>
+    <span class="vt">the layout carries over — the length and the account list do not. Those two are runtime reads, never constants.</span>
+  </div>
+</div>
+</body></html>

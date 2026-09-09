@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What happens when init_vault runs
+     purpose: trace one init call from client derivation through macro validation to stored state
+     data: 1. client: derive PDA from [b"vault", player] + program_id, build init_vault instruction 2. macro (before handler, at RUNTIME): search for the canonical bump (bare `bump` means search; `bump = stored` means one derivation instead), check the account is off-curve and program-owned (on-curve check SKIPPED for program-owned), create the account via System Program, fund rent from player 3. macro: place the found bump into ctx.bumps.vault, the typed field whose SHAPE (not value) the macro generated at expansion time 4. handler: store owner = player.address(), bump = ctx.bumps.vault, credit = 0 5. result: a rent-funded per-player vault at a deterministic, re-derivable address
+     prompt: Vertical flowchart, five numbered stages, client stage at top in one color, macro stages in a second color (group steps 2 and 3 in a shaded "before handler runs" band), handler stage in a third. Mark "on-curve check skipped" as a small side annotation on stage 2. End on a vault chip labeled "deterministic, re-derivable".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:543px;top:-300px;right:-300px;border-radius:48% 51% 50% 39% / 47% 46% 55% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:433px;height:355px;left:-220px;top:158px;border-radius:39% 61% 55% 48% / 53% 39% 58% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:457px;bottom:-249px;left:547px;border-radius:54% 48% 41% 39% / 44% 55% 64% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { margin-top:2px; }
+  .stage { display:flex; gap:20px; align-items:center; }
+  .rail { flex:0 0 auto; box-sizing:border-box; width:184px; display:flex; align-items:center;
+    gap:10px; padding:7px 14px 7px 8px; background:var(--surface-paper);
+    border:1px solid var(--border-subtle); border-radius:var(--radius-pill); }
+  .rail .n { width:30px; height:30px; flex:0 0 auto; border-radius:50%;
+    font-family:var(--font-display); font-size:15px; font-weight:900; text-align:center;
+    line-height:30px; background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .rail .l { font-family:var(--font-body); font-size:12.5px; font-weight:800;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-secondary); line-height:1.2; }
+  .box { flex:1; box-sizing:border-box; border-radius:var(--radius-lg);
+    background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-left:6px solid var(--stbr-emerald); padding:14px 22px; }
+  .bt { font-family:var(--font-display); font-size:20px; font-weight:900;
+    color:var(--text-primary); line-height:22px; }
+  .bb { font-family:var(--font-body); font-size:15px; line-height:20px;
+    color:var(--text-secondary); margin-top:4px; }
+  .bb code, .bt code { font-family:var(--font-mono); font-weight:700; color:var(--text-primary); }
+  .arw { height:26px; padding-left:78px; }
+
+  .band { margin:0; border-radius:var(--radius-xl); border:2px solid rgba(0,139,76,0.35);
+    background:#e9e6c8; padding:14px 16px; }
+  .bandlab { font-family:var(--font-body); font-size:12px; font-weight:800;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--stbr-emerald-800);
+    margin:0 0 6px 6px; }
+  .band .arw { height:18px; }
+  .subs { display:flex; gap:12px; margin-top:8px; }
+  .sub { flex:1; box-sizing:border-box; height:74px; border-radius:var(--radius-md);
+    background:var(--surface-paper); border:1px solid var(--border-subtle); padding:10px 14px; }
+  .sub .st { font-family:var(--font-body); font-size:13.5px; font-weight:800;
+    color:var(--text-primary); }
+  .sub .ss { font-family:var(--font-body); font-size:13px; line-height:1.3;
+    color:var(--text-muted); margin-top:3px; }
+  .sub .ss code { font-family:var(--font-mono); color:var(--text-secondary); }
+  .skipchip { display:inline-block; margin-top:4px; background:var(--surface-inverse);
+    color:var(--stbr-yellow); font-family:var(--font-body); font-size:11px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; padding:3px 9px; border-radius:var(--radius-pill); }
+
+  .box.deep { background:var(--surface-brand-deep); border-color:var(--stbr-green-800);
+    border-left-color:var(--stbr-emerald); }
+  .box.deep .bt { color:var(--stbr-cream); }
+  .chips { display:flex; gap:10px; margin-top:8px; }
+  .chip { font-family:var(--font-mono); font-size:14px; font-weight:700;
+    background:rgba(245,232,202,0.14); color:var(--stbr-cream); padding:6px 12px;
+    border-radius:var(--radius-pill); }
+  .rail.deep .n { background:var(--stbr-green); }
+
+  .box.win { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700);
+    border-left-color:var(--stbr-yellow-700); display:flex; align-items:center;
+    justify-content:space-between; gap:20px; padding:16px 22px; }
+  .box.win .bt { color:var(--text-on-accent); font-size:21px; }
+  .box.win .bb { color:var(--text-on-accent); opacity:.85; margin-top:3px; }
+  .winchip { flex:0 0 auto; background:var(--surface-inverse); color:var(--stbr-yellow);
+    font-family:var(--font-body); font-size:13px; font-weight:800; letter-spacing:.1em;
+    text-transform:uppercase; padding:9px 16px; border-radius:var(--radius-pill); }
+  .rail.win .n { background:var(--stbr-yellow); color:var(--text-on-accent); }
+</style>
+  <div class="stbr-eyebrow">one init call, start to finish</div>
+  <h2 class="viz-title">what happens when init_vault runs</h2>
+  <div class="flow">
+    <div class="stage">
+      <div class="rail"><span class="n">1</span><span class="l">client</span></div>
+      <div class="box">
+        <div class="bt">derive the address, then ask for it</div>
+        <div class="bb">derive the PDA from <code>[b"vault", player]</code> + <code>program_id</code>, then build the <code>init_vault</code> instruction around it.</div>
+      </div>
+    </div>
+    <div class="arw"><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 1 V16" stroke="#1b231d" stroke-width="2.4" stroke-linecap="round"/><polygon points="13,25 6,11 20,11" fill="#1b231d"/></svg></div>
+
+    <div class="band">
+      <div class="bandlab">macro &mdash; before the handler runs (at runtime)</div>
+      <div class="stage">
+        <div class="rail"><span class="n">2</span><span class="l">validate<br>&amp; create</span></div>
+        <div class="box">
+          <div class="bt">the generated validation block</div>
+          <div class="subs">
+            <div class="sub"><div class="st">find the bump</div><div class="ss">bare <code>bump</code> searches; <code>bump = stored</code> derives once</div></div>
+            <div class="sub"><div class="st">check the address</div><div class="ss">off-curve &amp; program-owned<span class="skipchip">on-curve check skipped</span></div></div>
+            <div class="sub"><div class="st">create + fund</div><div class="ss">System Program creates it, rent paid by <code>player</code></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="arw"><svg width="18" height="18" viewBox="0 0 26 26"><path d="M13 1 V16" stroke="#008b4c" stroke-width="2.6" stroke-linecap="round"/><polygon points="13,25 6,11 20,11" fill="#008b4c"/></svg></div>
+      <div class="stage">
+        <div class="rail"><span class="n">3</span><span class="l">hand off</span></div>
+        <div class="box">
+          <div class="bt">the bump lands in <code>ctx.bumps.vault</code></div>
+          <div class="bb">a typed field whose <b>shape</b> &mdash; not value &mdash; the macro generated back at expansion time.</div>
+        </div>
+      </div>
+    </div>
+    <div class="arw"><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 1 V16" stroke="#1b231d" stroke-width="2.4" stroke-linecap="round"/><polygon points="13,25 6,11 20,11" fill="#1b231d"/></svg></div>
+
+    <div class="stage">
+      <div class="rail deep"><span class="n">4</span><span class="l">handler</span></div>
+      <div class="box deep">
+        <div class="bt">your code writes the state</div>
+        <div class="chips"><span class="chip">owner = player.address()</span><span class="chip">bump = ctx.bumps.vault</span><span class="chip">credit = 0</span></div>
+      </div>
+    </div>
+    <div class="arw"><svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 1 V16" stroke="#1b231d" stroke-width="2.4" stroke-linecap="round"/><polygon points="13,25 6,11 20,11" fill="#1b231d"/></svg></div>
+
+    <div class="stage">
+      <div class="rail win"><span class="n">5</span><span class="l">result</span></div>
+      <div class="box win">
+        <div><div class="bt">a rent-funded vault, one per player</div>
+          <div class="bb">nothing was stored to find it again &mdash; the address falls out of the seeds.</div></div>
+        <span class="winchip">deterministic, re-derivable</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

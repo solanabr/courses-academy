@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The four artifacts that close this lesson, and what a missing one means
+     purpose: turn the done-condition into something the reader can check off, with the usual cause of each miss
+     data: columns: Artifact | You have it when | If you do not have it row: A green checklist | every row is either checked or explicitly waived | you are trusting a row you never ran row: A replayed crash artifact | the seeded bug crashed AND you replayed the saved input | you patched before you saved the artifact; fix the order row: A clean re-fuzz | the same campaign runs clean after the patch | the patch closed the symptom, not the bug row: An LCOV report | coverage shows the fuzzer actually reached the swap math | a missing --stateful, or an invariant that asserts nothing order: crash, replay, patch, re-fuzz, never patch first
+     prompt: A four-row checklist table with a checkbox column on the left. Under the table, a single emphasized strip carrying the ordering rule "crash, replay, patch, re-fuzz" as four connected chips with arrows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:581px;height:513px;top:-298px;right:-298px;border-radius:55% 59% 65% 56% / 40% 58% 58% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:495px;height:453px;left:-305px;top:206px;border-radius:49% 59% 52% 38% / 63% 47% 53% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:407px;height:507px;bottom:-310px;left:717px;border-radius:40% 65% 65% 38% / 41% 53% 47% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .wrap { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+          overflow: hidden; background: var(--surface-card); }
+  table.t { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .t th { background: var(--surface-inverse); padding: 13px 18px; text-align: left; }
+  .hl2 { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+         text-transform: uppercase; color: var(--text-on-dark); }
+  .t td { padding: 15px 18px; vertical-align: middle;
+          border-top: 1.5px solid var(--border-subtle); }
+  .t tr:nth-child(odd) td { background: var(--surface-paper); }
+  .t tr:first-child td { background: transparent; }
+  td.box { text-align: center; }
+  .art { font-family: var(--font-display); font-weight: 900; font-size: 19px; line-height: 1.12;
+         color: var(--text-primary); }
+  .have { font-family: var(--font-body); font-size: 13.5px; line-height: 1.38;
+          color: var(--text-primary); }
+  .miss { font-family: var(--font-body); font-size: 13.5px; line-height: 1.38;
+          color: var(--text-secondary); }
+  .miss b { color: var(--text-primary); font-weight: 700; }
+  .have code, .miss code { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600;
+                           color: var(--stbr-emerald-800); }
+  .order { margin-top: 18px; background: var(--surface-brand); border-radius: var(--radius-lg);
+           padding: 16px 24px; display: flex; align-items: center; gap: 14px; }
+  .ok2 { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+         text-transform: uppercase; color: rgba(245,232,202,0.75); white-space: nowrap;
+         flex: 0 0 92px; line-height: 1.3; }
+  .chip { display: inline-block; background: transparent; border: 2px solid rgba(245,232,202,0.62);
+          border-radius: var(--radius-pill); padding: 8px 22px 9px; font-family: var(--font-display);
+          font-weight: 900; font-size: 18px; color: var(--text-on-brand); white-space: nowrap; }
+  .rule { margin-left: auto; background: var(--surface-accent); color: var(--text-on-accent);
+          border-radius: var(--radius-pill); padding: 9px 22px 10px; font-family: var(--font-display);
+          font-weight: 900; font-size: 18px; white-space: nowrap; }
+</style>
+  <div class="stbr-eyebrow">the done-condition, checkable</div>
+  <h2 class="viz-title">four artifacts &mdash; and what a missing one means</h2>
+
+  <div class="wrap">
+    <table class="t">
+      <tr>
+        <th style="width:6%"></th>
+        <th style="width:24%"><span class="hl2">artifact</span></th>
+        <th style="width:33%"><span class="hl2">you have it when</span></th>
+        <th style="width:37%"><span class="hl2">if you do not have it</span></th>
+      </tr>
+
+      <tr>
+        <td class="box"><svg width="26" height="26" viewBox="0 0 26 26"><rect x="1.5" y="1.5" width="23" height="23" rx="5" fill="none" stroke="#008b4c" stroke-width="2.4"/></svg></td>
+        <td><div class="art">A green checklist</div></td>
+        <td><div class="have">every row is either checked or explicitly waived</div></td>
+        <td><div class="miss">you are <b>trusting a row you never ran</b></div></td>
+      </tr>
+
+      <tr>
+        <td class="box"><svg width="26" height="26" viewBox="0 0 26 26"><rect x="1.5" y="1.5" width="23" height="23" rx="5" fill="none" stroke="#008b4c" stroke-width="2.4"/></svg></td>
+        <td><div class="art">A replayed crash artifact</div></td>
+        <td><div class="have">the seeded bug crashed <b>and</b> you replayed the saved input</div></td>
+        <td><div class="miss">you <b>patched before you saved the artifact</b> &mdash; fix the order</div></td>
+      </tr>
+
+      <tr>
+        <td class="box"><svg width="26" height="26" viewBox="0 0 26 26"><rect x="1.5" y="1.5" width="23" height="23" rx="5" fill="none" stroke="#008b4c" stroke-width="2.4"/></svg></td>
+        <td><div class="art">A clean re-fuzz</div></td>
+        <td><div class="have">the same campaign runs clean after the patch</div></td>
+        <td><div class="miss">the patch closed <b>the symptom, not the bug</b></div></td>
+      </tr>
+
+      <tr>
+        <td class="box"><svg width="26" height="26" viewBox="0 0 26 26"><rect x="1.5" y="1.5" width="23" height="23" rx="5" fill="none" stroke="#008b4c" stroke-width="2.4"/></svg></td>
+        <td><div class="art">An LCOV report</div></td>
+        <td><div class="have">coverage shows the fuzzer actually reached the swap math</div></td>
+        <td><div class="miss">a missing <code>--stateful</code>, or <b>an invariant that asserts nothing</b></div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="order">
+    <span class="ok2">the order<br>is the rule</span>
+    <span class="chip">crash</span>
+    <svg width="26" height="14" viewBox="0 0 26 14"><line x1="0" y1="7" x2="16" y2="7" stroke="#f5e8ca" stroke-width="2.4"/><polygon points="26,7 15,2 15,12" fill="#f5e8ca"/></svg>
+    <span class="chip">replay</span>
+    <svg width="26" height="14" viewBox="0 0 26 14"><line x1="0" y1="7" x2="16" y2="7" stroke="#f5e8ca" stroke-width="2.4"/><polygon points="26,7 15,2 15,12" fill="#f5e8ca"/></svg>
+    <span class="chip">patch</span>
+    <svg width="26" height="14" viewBox="0 0 26 14"><line x1="0" y1="7" x2="16" y2="7" stroke="#f5e8ca" stroke-width="2.4"/><polygon points="26,7 15,2 15,12" fill="#f5e8ca"/></svg>
+    <span class="chip">re-fuzz</span>
+    <span class="rule">never patch first</span>
+  </div>
+</div>
+</body></html>

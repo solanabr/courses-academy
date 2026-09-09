@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: npm repository-field custody for @anchor-lang/core
+     purpose: show the two silent custody transfers as a checkable metadata trail, not a rumor
+     data: earlier versions -> repository.url points to: coral-xyz (silent transfer, no announcement) later versions -> repository.url points to: solana-foundation (silent transfer, no announcement) from v1.1.1 (2026-06-25) onward -> repository.url points to: otter-sec method: `npm view @anchor-lang/core@<version> repository.url` takeaway: the whole trail is auditable in npm metadata; each hop was unannounced
+     prompt: A horizontal timeline with three labeled stops (coral-xyz, solana-foundation, otter-sec), each hop annotated "silent, no announcement". Mark the final stop with "v1.1.1, 2026-06-25". Put the `npm view` command as a footer so the reader knows it is self-checkable.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:523px;top:-286px;right:-286px;border-radius:58% 45% 62% 49% / 44% 38% 60% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:409px;height:369px;left:-228px;top:158px;border-radius:60% 41% 52% 40% / 42% 44% 50% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:459px;bottom:-248px;right:-248px;border-radius:55% 56% 40% 45% / 58% 42% 41% 41%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  /* the decor blob reaches into the content column and kills the emerald eyebrow's
+     contrast (1.9:1 on sage); clip it at the column edge */
+  .viz { background: var(--surface-page); }
+  .viz-title { font-size: 48px; margin: 4px 0 8px; }
+  .sub { font-family: var(--font-body); font-size: 15px; color: var(--text-secondary);
+         margin-bottom: 24px; }
+  .sub code { font-family: var(--font-mono); font-size: 14px; color: var(--stbr-emerald-800);
+              font-weight: 600; }
+  .track { display: grid; grid-template-columns: 1fr 190px 1fr 190px 1fr; align-items: end; }
+  .stop { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+          background: var(--surface-card); overflow: hidden; }
+  .stop.now { border: 2px solid var(--stbr-yellow-700); }
+  .sh { padding: 12px 18px 14px; background: var(--surface-inverse); }
+  .stop.now .sh { background: var(--surface-accent); }
+  .sk { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .14em;
+        text-transform: uppercase; color: rgba(245,232,202,0.55); }
+  .stop.now .sk { color: rgba(27,35,29,0.62); }
+  .st { font-family: var(--font-mono); font-weight: 700; font-size: 25px; line-height: 1.05;
+        color: var(--text-on-dark); margin-top: 5px; }
+  .stop.now .st { color: var(--text-on-accent); }
+  .sb { padding: 14px 18px 16px; }
+  .sx { font-family: var(--font-body); font-size: 13.5px; line-height: 1.4; color: var(--text-primary); }
+  .ver { display: inline-block; margin-top: 10px; padding: 4px 12px 5px;
+         border-radius: var(--radius-pill); font-family: var(--font-mono); font-weight: 700;
+         font-size: 12.5px; background: var(--surface-inverse); color: var(--text-on-dark); }
+  .hop { display: flex; flex-direction: column; align-items: center; padding-bottom: 22px; }
+  .hk { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .1em;
+        text-transform: uppercase; padding: 5px 12px 6px; border-radius: var(--radius-lg);
+        background: rgba(27,35,29,0.08); color: var(--text-secondary); margin-bottom: 9px;
+        text-align: center; line-height: 1.35; }
+  .axis { height: 40px; margin-top: 14px; }
+  .foot { margin-top: 22px; display: grid; grid-template-columns: 1fr 500px; gap: 20px; }
+  .band { border-radius: var(--radius-md); padding: 14px 24px 15px; display: flex;
+          align-items: center; gap: 18px; }
+  .band.dk { background: var(--surface-inverse); }
+  .band.em { background: var(--surface-brand); }
+  .bk { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.55); white-space: nowrap; }
+  .bc { font-family: var(--font-mono); font-size: 16px; color: var(--text-on-dark); }
+  .bt { font-family: var(--font-display); font-weight: 900; font-size: 18px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">npm repository field &middot; @anchor-lang/core</div>
+  <h2 class="viz-title">three custodians, two silent handovers</h2>
+  <div class="sub">Each stop is what <code>repository.url</code> pointed at, version by version &mdash; an auditable trail, never an announcement.</div>
+
+  <div class="track">
+    <div class="stop">
+      <div class="sh"><div class="sk">stop 1 &mdash; earlier versions</div><div class="st">coral-xyz</div></div>
+      <div class="sb">
+        <div class="sx">the original Anchor home; where every tutorial, issue link and fork still points</div>
+        <span class="ver">earlier versions</span>
+      </div>
+    </div>
+
+    <div class="hop">
+      <span class="hk">silent hop<br>no announcement</span>
+      <svg width="190" height="20" viewBox="0 0 190 20">
+        <line x1="0" y1="10" x2="174" y2="10" stroke="#306c40" stroke-width="2.4"/>
+        <polygon points="174,3 190,10 174,17" fill="#306c40"/>
+      </svg>
+    </div>
+
+    <div class="stop">
+      <div class="sh"><div class="sk">stop 2 &mdash; later versions</div><div class="st">solana-foundation</div></div>
+      <div class="sb">
+        <div class="sx">custody moved once already &mdash; nothing in the changelog, nothing in a release note</div>
+        <span class="ver">later versions</span>
+      </div>
+    </div>
+
+    <div class="hop">
+      <span class="hk">silent hop<br>no announcement</span>
+      <svg width="190" height="20" viewBox="0 0 190 20">
+        <line x1="0" y1="10" x2="174" y2="10" stroke="#306c40" stroke-width="2.4"/>
+        <polygon points="174,3 190,10 174,17" fill="#306c40"/>
+      </svg>
+    </div>
+
+    <div class="stop now">
+      <div class="sh"><div class="sk">stop 3 &mdash; current</div><div class="st">otter-sec</div></div>
+      <div class="sb">
+        <div class="sx">where the package you install today actually resolves &mdash; the steward you are trusting</div>
+        <span class="ver">v1.1.1 &middot; 2026-06-25 onward</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="axis">
+    <svg width="1456" height="40" viewBox="0 0 1456 40">
+      <line x1="179" y1="15" x2="1277" y2="15" stroke="#1b231d" stroke-width="2.5"/>
+      <circle cx="179" cy="15" r="9" fill="#1b231d"/>
+      <circle cx="728" cy="15" r="9" fill="#1b231d"/>
+      <circle cx="1277" cy="15" r="12" fill="#ffd23f" stroke="#d9a608" stroke-width="2.5"/>
+    </svg>
+  </div>
+
+  <div class="foot">
+    <div class="band dk">
+      <span class="bk">check it yourself</span>
+      <span class="bc">npm view @anchor-lang/core@&lt;version&gt; repository.url</span>
+    </div>
+    <div class="band em">
+      <span class="bt">The whole trail is auditable in npm metadata &mdash; every hop was unannounced.</span>
+    </div>
+  </div>
+</div>
+</body></html>

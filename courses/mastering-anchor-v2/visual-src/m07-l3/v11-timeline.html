@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The trust surface, from your program down to the steward
+     purpose: place "clean is not proven" inside the framework's own evidence and caveats
+     data: your swap: green checklist + clean stateful fuzz = "not found yet", not "safe" the framework's tests: Miri witnesses (UB checks) + Kani configs (model checks) what fuzzing found in Anchor itself: 4 correctness bugs (issue #4431) the steward: OtterSec maintains the framework, publishes the crates, runs the verified-builds registry Anchor checks against, and signs the v2 tag (GPG, trixter-osec) this course's own caveat (the pinned tag ships no hedging page): the defaults are not a substitute for review, fuzzing, and production-specific threat modeling
+     prompt: Vertical layered band diagram, top to bottom: "Your program", "Framework tests (Miri + Kani)", "Fuzzing found 4 bugs in Anchor (#4431)", "Steward: OtterSec", "This course's own caveat". Each band carries its one-line text. Layer 5 is NOT a docs quote and must never be rendered as one: there is no hedging page in the pinned tag, lang-v2/README.md says "v2 is secure by default for users" and stops, so the caveat is the course's and carries no quotation marks. Draw a thin vertical arrow down the left labeled "confidence, never proof". Calm, serious palette; no celebratory color.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:496px;height:430px;top:-222px;right:-222px;border-radius:38% 46% 63% 41% / 45% 38% 58% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:496px;height:535px;bottom:-291px;left:-291px;border-radius:44% 51% 39% 62% / 38% 46% 47% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:513px;bottom:-290px;left:548px;border-radius:47% 43% 47% 46% / 52% 62% 39% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 18px; }
+  .frame { display: flex; align-items: stretch; gap: 20px; }
+  .rail { flex: 0 0 154px; display: flex; align-items: center; gap: 12px; }
+  .raillab { flex: 1 1 0; font-family: var(--font-body); font-weight: 800; font-size: 13px;
+             line-height: 1.32; color: var(--text-secondary); }
+  .bands { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+  .b { display: flex; align-items: center; gap: 20px; padding: 0 24px;
+       border-radius: var(--radius-md); background: var(--surface-card);
+       border: 2px solid var(--border-subtle); height: 100px; }
+  .b.b1 { border-left: 8px solid var(--stbr-emerald); }
+  .b.b2 { border-left: 8px solid var(--stbr-green); }
+  .b.b3 { border-left: 8px solid var(--stbr-green-700); }
+  .b.b4 { border-left: 8px solid var(--stbr-green-800); height: 116px; }
+  .b.b5 { background: var(--surface-accent); border: 3px solid var(--stbr-yellow-700); }
+  .bl { flex: 0 0 292px; }
+  .blk { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .13em;
+         text-transform: uppercase; color: var(--text-muted); }
+  .b.b5 .blk { color: rgba(27,35,29,0.6); }
+  .blt { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.1;
+         color: var(--text-primary); margin-top: 4px; }
+  .bd { flex: 1 1 0; min-width: 0; font-family: var(--font-body); font-size: 14.5px;
+        line-height: 1.4; color: var(--text-secondary); }
+  .b.b5 .bd { color: var(--text-on-accent); font-size: 15.5px; font-weight: 600; }
+  .bd b { color: var(--text-primary); font-weight: 700; }
+  .bd code { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+             color: var(--stbr-emerald-800); }
+  .big { flex: 0 0 auto; font-family: var(--font-display); font-weight: 900; font-size: 46px;
+         line-height: 1; color: var(--stbr-emerald); margin-right: 4px; }
+</style>
+  <div class="stbr-eyebrow">the trust surface</div>
+  <h2 class="viz-title">from your program down to the steward</h2>
+
+  <div class="frame">
+    <div class="rail">
+      <svg width="26" height="562" viewBox="0 0 26 562">
+        <line x1="13" y1="2" x2="13" y2="540" stroke="#306c40" stroke-width="2.6"/>
+        <polygon points="13,562 4,540 22,540" fill="#306c40"/>
+      </svg>
+      <div class="raillab">confidence,<br>never proof</div>
+    </div>
+
+    <div class="bands">
+      <div class="b b1">
+        <div class="bl"><div class="blk">layer 1</div><div class="blt">Your swap</div></div>
+        <div class="bd">a green checklist plus a clean stateful fuzz means <b>&ldquo;not found yet&rdquo;</b> &mdash; it does not mean &ldquo;safe&rdquo;</div>
+      </div>
+
+      <div class="b b2">
+        <div class="bl"><div class="blk">layer 2</div><div class="blt">The framework&rsquo;s tests</div></div>
+        <div class="bd">Miri witnesses (UB checks) and Kani configs (model checks) run against Anchor itself</div>
+      </div>
+
+      <div class="b b3">
+        <div class="bl"><div class="blk">layer 3</div><div class="blt">What fuzzing found<br>in Anchor</div></div>
+        <div class="bd"><span class="big">4</span> correctness bugs in the framework itself &mdash; issue <code>#4431</code></div>
+      </div>
+
+      <div class="b b4">
+        <div class="bl"><div class="blk">layer 4</div><div class="blt">The steward</div></div>
+        <div class="bd"><b>OtterSec</b> maintains the framework, publishes the crates, runs the verified-builds registry Anchor checks against, and signs the v2 tag (GPG, <code>trixter-osec</code>)</div>
+      </div>
+
+      <div class="b b5">
+        <div class="bl"><div class="blk">layer 5</div><div class="blt">This course&rsquo;s own caveat</div></div>
+        <div class="bd">the defaults are not a substitute for review, fuzzing, and production-specific threat modeling</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

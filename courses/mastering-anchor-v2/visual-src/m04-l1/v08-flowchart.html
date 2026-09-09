@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One withdraw instruction, start to finish
+     purpose: map the guard-then-CPI-then-debit order the handler enforces
+     data: start: withdraw(amount) called by the player step1: resolve_withdrawal(sol_vault.lamports, rent_exempt_min, amount) - amount == 0            -> error (nothing to withdraw) - amount > vault lamports -> error (over-withdraw) - remainder < rent floor  -> error (would close the SOL vault) - else                    -> proceed with amount step2: build signer_seeds = [b"sol", owner, &[state.sol_bump]]  (stored bump) step3: CpiContext::new(&system_program, Transfer{from: sol_vault, to: player}).with_signer(seeds) step4: transfer(cpi, amount)   (invoke_signed into the System Program) step5: state.credit = state.credit.checked_sub(amount)?   (debit the ledger) end: Ok(()), lamports moved, ledger debited, or a clean error before any state changed
+     prompt: A vertical flowchart. Step 1 is a guard node with three red reject branches and one green "proceed" edge. Steps 2-5 run down the green path as a sequence. Highlight that all three rejects happen BEFORE step 4 (the CPI), so a rejected withdrawal never moves a lamport. Mark step 4 as the invoke_signed CPI and step 5 as the checked debit.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:517px;height:555px;top:-304px;right:-304px;border-radius:35% 55% 64% 41% / 50% 52% 56% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:514px;height:473px;bottom:-234px;left:-234px;border-radius:61% 36% 60% 62% / 52% 40% 61% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:484px;height:448px;bottom:-225px;right:-225px;border-radius:64% 63% 48% 40% / 59% 53% 36% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { margin:4px 0 10px; }
+  .wf-start { background:var(--surface-inverse); color:var(--stbr-cream);
+              border-radius:var(--radius-md); padding:10px 22px; }
+  .wf-start .t { font-family:var(--font-mono); font-weight:700; font-size:19px; }
+  .wf-start .s { font-family:var(--font-body); font-size:14px; opacity:0.82; margin-top:2px; }
+  .wf-arrow { display:flex; align-items:center; gap:14px; padding:2px 0 2px 38px; }
+  .wf-arrow .chip { font-family:var(--font-body); font-weight:700; font-size:15px;
+                    color:var(--text-secondary); border:1.5px dashed var(--border-strong);
+                    border-radius:var(--radius-pill); padding:5px 16px;
+                    background:var(--surface-card); white-space:nowrap; }
+  .wf-guard { border:2px solid var(--surface-brand); border-radius:var(--radius-lg);
+              background:var(--surface-card); padding:12px 18px; }
+  .wf-guard .hd { font-family:var(--font-mono); font-weight:700; font-size:17px;
+                  color:var(--text-primary); }
+  .wf-guard .hd em { font-family:var(--font-body); font-style:normal; font-weight:700;
+                     font-size:13px; letter-spacing:0.13em; text-transform:uppercase;
+                     color:var(--stbr-emerald-800); display:block; margin-bottom:4px; }
+  .wf-rej { display:flex; gap:12px; margin-top:9px; }
+  .wf-r { width:465px; box-sizing:border-box; background:var(--surface-inverse);
+          color:var(--stbr-cream); border-radius:var(--radius-sm); padding:7px 13px; }
+  .wf-r .c { font-family:var(--font-mono); font-weight:700; font-size:15px; }
+  .wf-r .e { font-family:var(--font-body); font-size:13px; opacity:0.82; margin-top:2px; }
+  .wf-else { margin-top:8px; font-family:var(--font-mono); font-weight:700; font-size:16px;
+             color:var(--stbr-emerald-800); }
+  .wf-step { display:flex; align-items:flex-start; gap:14px; border:2px solid var(--border-subtle);
+             border-radius:var(--radius-md); background:var(--surface-card);
+             padding:7px 16px; margin-bottom:6px; }
+  .wf-step .n { flex:0 0 34px; width:34px; height:34px; border-radius:var(--radius-sm);
+                background:var(--surface-brand); color:var(--stbr-cream); text-align:center;
+                font-family:var(--font-display); font-weight:900; font-size:17px; line-height:34px; }
+  .wf-step .b { flex:1; }
+  .wf-step .c { font-family:var(--font-mono); font-weight:700; font-size:16px; line-height:1.3;
+                color:var(--text-primary); }
+  .wf-step .d { font-family:var(--font-body); font-size:14px; line-height:1.3;
+                color:var(--text-secondary); margin-top:3px; }
+  .wf-cpi { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); }
+  .wf-cpi .n { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .wf-cpi .c, .wf-cpi .d { color:var(--stbr-dark); }
+  .wf-end { background:var(--surface-brand); color:var(--stbr-cream);
+            border-radius:var(--radius-md); padding:10px 22px; margin-top:2px; }
+  .wf-end .t { font-family:var(--font-display); font-weight:900; font-size:20px; }
+  .wf-end .s { font-family:var(--font-body); font-size:15px; opacity:0.9; margin-top:3px; }
+</style>
+  <div class="stbr-eyebrow">guard, then CPI, then debit</div>
+  <h2 class="viz-title">One withdraw instruction, start to finish</h2>
+
+  <div class="wf-start">
+    <div class="t">withdraw(amount)</div>
+    <div class="s">called by the player</div>
+  </div>
+
+  <div class="wf-arrow">
+    <svg width="22" height="26" viewBox="0 0 22 26"><line x1="11" y1="0" x2="11" y2="16" stroke="#1b231d" stroke-width="2.5"/><polygon points="11,26 5,15 17,15" fill="#1b231d"/></svg>
+  </div>
+
+  <div class="wf-guard">
+    <div class="hd"><em>step 1 &middot; the guard</em>resolve_withdrawal(sol_vault.lamports, rent_exempt_min, amount)</div>
+    <div class="wf-rej">
+      <div class="wf-r"><div class="c">amount == 0</div><div class="e">error &mdash; nothing to withdraw</div></div>
+      <div class="wf-r"><div class="c">amount &gt; vault lamports</div><div class="e">error &mdash; over-withdraw</div></div>
+      <div class="wf-r"><div class="c">remainder &lt; rent floor</div><div class="e">error &mdash; would close the SOL vault</div></div>
+    </div>
+    <div class="wf-else">else &rarr; proceed with amount</div>
+  </div>
+
+  <div class="wf-arrow">
+    <svg width="22" height="26" viewBox="0 0 22 26"><line x1="11" y1="0" x2="11" y2="16" stroke="#008b4c" stroke-width="2.5"/><polygon points="11,26 5,15 17,15" fill="#008b4c"/></svg>
+    <div class="chip">all three rejects fire above &mdash; before a single lamport moves</div>
+  </div>
+
+  <div class="wf-step">
+    <div class="n">2</div>
+    <div class="b">
+      <div class="c">signer_seeds = [b"sol", owner, &amp;[state.sol_bump]]</div>
+      <div class="d">the SOL vault&rsquo;s stored canonical bump &mdash; never recomputed</div>
+    </div>
+  </div>
+  <div class="wf-step">
+    <div class="n">3</div>
+    <div class="b">
+      <div class="c">CpiContext::new(&amp;system_program, Transfer{from: sol_vault, to: player}).with_signer(seeds)</div>
+      <div class="d">build the context and attach the PDA signer</div>
+    </div>
+  </div>
+  <div class="wf-step wf-cpi">
+    <div class="n">4</div>
+    <div class="b">
+      <div class="c">transfer(cpi, amount)</div>
+      <div class="d">the invoke_signed CPI into the System Program &mdash; this is the first line that moves value</div>
+    </div>
+  </div>
+  <div class="wf-step">
+    <div class="n">5</div>
+    <div class="b">
+      <div class="c">state.credit = state.credit.checked_sub(amount)?</div>
+      <div class="d">the checked debit of the ledger</div>
+    </div>
+  </div>
+
+  <div class="wf-end">
+    <div class="t">Ok(())</div>
+    <div class="s">lamports moved and the ledger debited &mdash; or a clean error before any state changed.</div>
+  </div>
+</div>
+</body></html>

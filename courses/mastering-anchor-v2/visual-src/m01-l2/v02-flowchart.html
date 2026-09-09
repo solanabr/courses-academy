@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Why avm refuses the RC, and where you go instead
+     purpose: trace the missing release asset that blocks avm and show the git install as the sanctioned fallback
+     data: start: avm install 2.0.0-rc.1 step 1: avm fetches the prebuilt binary from the tag's Release assets decision: was a Release cut for v2.0.0-rc.1? no-branch: releases/download/v2.0.0-rc.1/anchor-... -> 404 Not Found -> avm aborts fallback: documented git install -> cargo install --git otter-sec/anchor --branch anchor-next anchor-cli --locked --force end: isolated anchor 2.0.0-rc.1 binary, avm untouched, 1.1.2 still on PATH
+     prompt: Vertical flowchart. Top node "avm install 2.0.0-rc.1". Arrow to a decision diamond "was a Release cut for the tag?". The "no" edge goes to a red-annotated node "404 Not Found -> avm aborts". From there a separate arrow labeled "documented fallback" leads to a green node with the cargo git install command. Final node at the bottom: "isolated RC binary; 1.1.2 untouched". Keep the failing path and the fallback path visually distinct.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:516px;top:-311px;right:-311px;border-radius:35% 60% 49% 40% / 55% 58% 42% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:509px;height:437px;left:-277px;top:271px;border-radius:56% 57% 45% 53% / 41% 39% 49% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:429px;height:484px;bottom:-220px;right:-220px;border-radius:44% 45% 43% 56% / 57% 42% 48% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:46px; }
+  .f2-col { width:1040px; margin:0 auto; }
+  .f2-node { border-radius:var(--radius-lg); padding:13px 26px; text-align:center; }
+  .f2-start { background:var(--surface-inverse); }
+  .f2-start .t { font-family:var(--font-mono); font-size:24px; font-weight:800; color:var(--stbr-cream); }
+  .f2-step { background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .f2-step .t { font-family:var(--font-body); font-size:21px; font-weight:700; color:var(--text-primary); }
+  .f2-step .t code { font-family:var(--font-mono); font-size:19px; color:var(--stbr-emerald-800); }
+
+  .f2-dia { position:relative; width:640px; height:92px; margin:0 auto; }
+  .f2-dia svg { position:absolute; top:0; left:0; }
+  .f2-dia .t { position:absolute; top:0; left:0; width:640px; height:92px;
+               display:flex; align-items:center; justify-content:center;
+               font-family:var(--font-display); font-weight:900; font-size:25px; color:var(--text-primary); }
+
+  .f2-fail { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); }
+  .f2-fail .h { font-family:var(--font-display); font-weight:900; font-size:25px; color:var(--stbr-dark); }
+  .f2-fail .s { font-family:var(--font-mono); font-size:18px; font-weight:700;
+                color:rgba(27,35,29,0.78); margin-top:5px; }
+  .f2-fix { background:var(--surface-brand); border:2px solid var(--stbr-emerald-800); }
+  .f2-fix .h { font-family:var(--font-display); font-weight:900; font-size:23px; color:var(--stbr-cream); }
+  .f2-fix .s { font-family:var(--font-mono); font-size:18px; font-weight:700;
+               color:rgba(245,232,202,0.92); margin-top:6px; line-height:1.35; }
+  .f2-end { background:var(--surface-card); border:2.5px solid var(--stbr-emerald); }
+  .f2-end .t { font-family:var(--font-display); font-weight:900; font-size:23px; color:var(--stbr-emerald-800); }
+
+  .f2-arrow { position:relative; height:26px; }
+  .f2-arrow svg { display:block; margin:0 auto; }
+  .f2-arrowlab { position:relative; height:38px; }
+  .f2-arrowlab svg { display:block; margin:0 auto; }
+  .f2-chip { position:absolute; top:4px; left:548px; font-family:var(--font-body);
+             font-size:16px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
+             padding:5px 14px; border-radius:var(--radius-pill); white-space:nowrap; }
+  .f2-chip.no { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .f2-chip.fb { background:rgba(0,139,76,0.14); color:var(--stbr-emerald-800);
+                border:1.5px solid var(--stbr-emerald); }
+</style>
+  <div class="stbr-eyebrow">the missing release asset that blocks avm</div>
+  <h2 class="viz-title">Why avm refuses the RC, and where you go instead</h2>
+
+  <div class="f2-col">
+    <div class="f2-node f2-start"><div class="t">avm install 2.0.0-rc.1</div></div>
+
+    <div class="f2-arrow"><svg width="20" height="26"><line x1="10" y1="0" x2="10" y2="17" stroke="#1b231d" stroke-width="2.5"/><polygon points="10,26 3,16 17,16" fill="#1b231d"/></svg></div>
+
+    <div class="f2-node f2-step"><div class="t">avm fetches the prebuilt binary from the Release assets for tag <code>v2.0.0-rc.1</code></div></div>
+
+    <div class="f2-arrow"><svg width="20" height="26"><line x1="10" y1="0" x2="10" y2="17" stroke="#1b231d" stroke-width="2.5"/><polygon points="10,26 3,16 17,16" fill="#1b231d"/></svg></div>
+
+    <div class="f2-dia">
+      <svg width="640" height="92"><polygon points="320,3 636,46 320,89 4,46" fill="#ffffff" stroke="#1b231d" stroke-width="2.5"/></svg>
+      <div class="t">was a Release cut for the tag?</div>
+    </div>
+
+    <div class="f2-arrowlab">
+      <svg width="20" height="34"><line x1="10" y1="0" x2="10" y2="25" stroke="#d9a608" stroke-width="3"/><polygon points="10,34 3,24 17,24" fill="#d9a608"/></svg>
+      <div class="f2-chip no">no</div>
+    </div>
+
+    <div class="f2-node f2-fail">
+      <div class="h">404 Not Found — no binary to download, avm aborts</div>
+      <div class="s">releases/download/v2.0.0-rc.1/anchor-… → 404</div>
+    </div>
+
+    <div class="f2-arrowlab">
+      <svg width="20" height="34"><line x1="10" y1="0" x2="10" y2="25" stroke="#008b4c" stroke-width="3"/><polygon points="10,34 3,24 17,24" fill="#008b4c"/></svg>
+      <div class="f2-chip fb">documented fallback</div>
+    </div>
+
+    <div class="f2-node f2-fix">
+      <div class="h">build it from the git channel</div>
+      <div class="s">cargo install --git otter-sec/anchor --branch anchor-next anchor-cli --locked --force</div>
+    </div>
+
+    <div class="f2-arrow"><svg width="20" height="26"><line x1="10" y1="0" x2="10" y2="17" stroke="#008b4c" stroke-width="2.5"/><polygon points="10,26 3,16 17,16" fill="#008b4c"/></svg></div>
+
+    <div class="f2-node f2-end"><div class="t">isolated anchor 2.0.0-rc.1 binary · avm untouched · 1.1.2 still on PATH</div></div>
+  </div>
+</div>
+</body></html>

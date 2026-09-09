@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Anchor's V2 benchmark got more honest (PR #4914)
+     purpose: ground the "measure your own program" ethos in Anchor's own walk-back of its headline numbers
+     data: before PR #4914: "95% smaller bytecode", "9.9x average CU reduction" 2026-08-13, PR #4914 merged: revised to "94% smaller bytecode", "8.8x average CU reduction" takeaway: even the framework's own multiplier moved; this course freezes no multiplier and makes you measure your own program
+     prompt: A short two-point timeline, before and after PR #4914 (2026-08-13). Show both metric pairs with the numbers striking through the old value to the new (95->94, 9.9x->8.8x). End on the takeaway as a caption. Keep PR #4914 as a monospace label.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:484px;height:481px;top:-220px;right:-220px;border-radius:62% 42% 58% 61% / 61% 59% 52% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:575px;height:582px;bottom:-335px;left:-335px;border-radius:65% 39% 45% 48% / 42% 36% 59% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:584px;height:498px;bottom:-303px;right:-303px;border-radius:54% 54% 57% 53% / 48% 54% 52% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { display:flex; align-items:stretch; gap:0; margin-top:6px; }
+  .node { flex:1 1 0; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:22px 28px 24px; }
+  .node.after { border-color:var(--stbr-emerald); }
+  .dot { width:18px; height:18px; border-radius:var(--radius-pill);
+         background:var(--surface-inverse); margin-bottom:14px; }
+  .node.after .dot { background:var(--stbr-emerald); }
+  .nk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+        text-transform:uppercase; color:var(--text-muted); }
+  .node.after .nk { color:var(--stbr-emerald-800); }
+  .nd { font-family:var(--font-mono); font-size:14.5px; color:var(--text-secondary); margin-top:6px; }
+  .metric { margin-top:20px; padding-top:16px; border-top:1.5px solid var(--border-subtle); }
+  .metric:first-of-type { border-top:none; padding-top:0; }
+  .mv { font-family:var(--font-display); font-weight:900; font-size:52px; line-height:1;
+        color:var(--text-primary); }
+  .mv.old { color:var(--text-muted); text-decoration:line-through; font-size:44px; }
+  .ml { font-family:var(--font-body); font-size:15.5px; line-height:1.3;
+        color:var(--text-secondary); margin-top:7px; }
+  .pair { display:flex; align-items:baseline; gap:16px; }
+  .pair .to { font-family:var(--font-mono); font-weight:700; font-size:22px; color:var(--stbr-emerald); }
+  .span { flex:0 0 250px; width:250px; display:flex; flex-direction:column; align-items:center;
+          justify-content:center; }
+  .rail { align-self:stretch; height:14px; background:var(--surface-accent); }
+  .prchip { width:210px; margin-top:16px; background:var(--surface-accent);
+            color:var(--text-on-accent); border-radius:var(--radius-md); padding:10px 8px;
+            text-align:center; }
+  .prchip .p1 { font-family:var(--font-mono); font-weight:700; font-size:18px; }
+  .prchip .p2 { font-family:var(--font-body); font-weight:700; font-size:13px; margin-top:4px; }
+  .take { margin-top:26px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:20px 30px; display:flex; align-items:center; gap:26px; }
+  .take .tk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+              text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .take .tt { font-family:var(--font-display); font-weight:900; font-size:25px; line-height:1.14;
+              color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">the framework's own numbers moved</div>
+  <h2 class="viz-title">anchor's v2 benchmark got more honest</h2>
+  <div class="tl">
+    <div class="node">
+      <div class="dot"></div>
+      <div class="nk">before</div>
+      <div class="nd">the headline claim</div>
+      <div class="metric">
+        <div class="mv">95%</div>
+        <div class="ml">smaller bytecode</div>
+      </div>
+      <div class="metric">
+        <div class="mv">9.9&times;</div>
+        <div class="ml">average CU reduction</div>
+      </div>
+    </div>
+    <div class="span">
+      <div class="rail"></div>
+      <div class="prchip">
+        <div class="p1">PR #4914</div>
+        <div class="p2">merged 2026-08-13</div>
+      </div>
+    </div>
+    <div class="node after">
+      <div class="dot"></div>
+      <div class="nk">after</div>
+      <div class="nd">revised in the repo</div>
+      <div class="metric">
+        <div class="pair"><span class="mv old">95%</span><span class="to">&rarr;</span><span class="mv">94%</span></div>
+        <div class="ml">smaller bytecode</div>
+      </div>
+      <div class="metric">
+        <div class="pair"><span class="mv old">9.9&times;</span><span class="to">&rarr;</span><span class="mv">8.8&times;</span></div>
+        <div class="ml">average CU reduction</div>
+      </div>
+    </div>
+  </div>
+  <div class="take">
+    <span class="tk">takeaway</span>
+    <span class="tt">Even the framework's own multiplier moved. This course freezes no multiplier &mdash; you measure your own program.</span>
+  </div>
+</div>
+</body></html>

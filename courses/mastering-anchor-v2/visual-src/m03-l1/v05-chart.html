@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The on-curve-skip saving, per verify
+     purpose: show the single project-reported CU delta V2 buys for a program-owned PDA
+     data: metric: compute units spent verifying a program-owned PDA series: with on-curve check (general path): baseline on-curve check skipped (V2 program-owned path): baseline minus ~1,000 CU label: ~1,000 CU saved per verify (Anchor V2 changelog, project-reported, re-measure at write time)
+     prompt: A simple before/after horizontal bar chart, two bars. Top bar "with on-curve check", bottom bar "skipped (V2)". Annotate the difference between the bar ends with a bracket reading "~1,000 CU / verify (project-reported)". Do not imply the absolute baseline is a fixed number; only the delta is labeled.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:457px;top:-261px;right:-261px;border-radius:42% 61% 37% 40% / 56% 50% 52% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:355px;left:-266px;top:181px;border-radius:38% 44% 60% 53% / 54% 40% 55% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:402px;height:474px;bottom:-280px;left:659px;border-radius:37% 56% 63% 50% / 43% 52% 44% 53%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .metric { margin-top:14px; font-family:var(--font-body); font-weight:700; font-size:17px;
+    color:var(--text-muted); letter-spacing:.02em; }
+  /* All bar geometry is absolutely positioned: WeasyPrint shrink-wraps nested flex
+     children to their content, which silently made the two baselines unequal. */
+  .chart { margin-top:26px; }
+  .row { position:relative; height:80px; }
+  .row + .row { margin-top:22px; }
+  .lbl { position:absolute; left:0; top:14px; width:300px; text-align:right; }
+  .lbl .t { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.15;
+    color:var(--text-primary); }
+  .lbl .s { font-family:var(--font-body); font-size:15px; color:var(--text-muted); margin-top:4px; }
+  .brk { position:absolute; left:340px; top:0; width:26px; height:80px;
+    background:var(--surface-inverse); border-radius:var(--radius-sm) 0 0 var(--radius-sm);
+    color:var(--stbr-ink-300); font-family:var(--font-mono); font-weight:800; font-size:20px;
+    line-height:80px; text-align:center; }
+  .seg { position:absolute; left:366px; top:0; width:700px; height:80px;
+    background:var(--surface-brand); padding-left:24px; box-sizing:border-box;
+    font-family:var(--font-body); font-weight:700; font-size:16px; line-height:80px;
+    color:var(--text-on-brand); }
+  .tail { position:absolute; left:1066px; top:0; width:140px; height:80px;
+    background:var(--stbr-yellow); border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+    box-sizing:border-box; padding-top:22px; font-family:var(--font-body);
+    font-weight:800; font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-on-accent); text-align:center; line-height:1.35; }
+  .ghost { position:absolute; left:1066px; top:0; width:140px; height:80px;
+    border:2.5px dashed var(--stbr-yellow-700); border-left:none; box-sizing:border-box;
+    border-radius:0 var(--radius-sm) var(--radius-sm) 0; padding-top:22px;
+    font-family:var(--font-body); font-weight:800; font-size:13px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--stbr-yellow-700);
+    text-align:center; line-height:1.35; }
+  .seg.deep { background:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .brkt { margin-top:14px; position:relative; height:96px; }
+  .brkt .bk { position:absolute; left:1066px; width:140px; top:0; height:16px;
+    border:3px solid var(--stbr-yellow-700); border-top:none; }
+  .brkt .cap { position:absolute; left:946px; width:380px; top:24px; text-align:center;
+    font-family:var(--font-body); font-weight:800; font-size:19px; color:var(--stbr-yellow-700); }
+  .brkt .cap .s { display:block; font-weight:600; font-size:14px; color:var(--text-muted);
+    margin-top:4px; letter-spacing:0; }
+  .foot { margin-top:6px; background:var(--surface-inverse); color:var(--text-on-dark);
+    border-radius:var(--radius-lg); padding:20px 28px; font-size:18px; font-weight:500; line-height:1.4; }
+  .foot b { color:var(--stbr-yellow); font-weight:800; }
+  .foot .brkicon { font-family:var(--font-mono); font-weight:800; color:var(--stbr-ink-300); }
+</style>
+  <div class="stbr-eyebrow">only the delta is measured</div>
+  <h2 class="viz-title">the on-curve-skip saving, per verify</h2>
+  <div class="metric">metric &mdash; compute units spent verifying a program-owned PDA</div>
+  <div class="chart">
+    <div class="row">
+      <div class="lbl"><div class="t">with on-curve check</div><div class="s">the general path</div></div>
+      <div class="brk">&#8260;&#8260;</div>
+      <div class="seg">baseline &mdash; absolute value not measured here</div>
+      <div class="tail">on-curve<br>check</div>
+    </div>
+    <div class="row">
+      <div class="lbl"><div class="t">check skipped</div><div class="s">V2, program-owned path</div></div>
+      <div class="brk">&#8260;&#8260;</div>
+      <div class="seg deep">the same baseline</div>
+      <div class="ghost">not spent</div>
+    </div>
+  </div>
+  <div class="brkt">
+    <div class="bk"></div>
+    <div class="cap">&asymp; 1,000 CU saved per verify
+      <span class="s">Anchor V2 changelog &mdash; project-reported, re-measure at write time</span></div>
+  </div>
+  <div class="foot"><span class="brkicon">&#8260;&#8260;</span> The axis is broken: the baseline is <b>not a fixed number</b> and is drawn only as a reference length. The one quantity this chart states is the <b>difference</b> between the two bar ends.</div>
+</div>
+</body></html>

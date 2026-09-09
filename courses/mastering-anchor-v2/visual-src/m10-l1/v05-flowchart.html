@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Why a clean 1.x build still fails to deploy, and the one-time fix
+     purpose: show the legacy on-chain IDL account blocking the v1 deploy and the 0.32.1-CLI close step that clears it
+     data: Steps: 1. 0.32 program has a legacy on-chain IDL account (written the old way) 2. You fix the source, `anchor build` passes on 1.x 3. `anchor deploy` on 1.x  ->  ERROR: trips over the stale legacy IDL account Fix branch (one time only): 4. `avm use 0.32.1`  ->  `anchor idl close <program-id>`  (close the legacy account) 5. `avm use 1.1.2`  ->  `anchor deploy`  ->  succeeds; IDL now goes on-chain via the Program Metadata Program
+     prompt: Vertical flowchart. Green path: "legacy IDL account exists" -> "build passes on 1.x" -> red node "deploy FAILS on stale IDL". Branch off the red node to a fix lane: "switch to 0.32.1 CLI" -> "anchor idl close <program-id>" -> "switch back to 1.1.2" -> green node "deploy succeeds (IDL via Program Metadata Program)". Mark the fix lane "one time only". Monospace labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:528px;height:473px;top:-245px;right:-245px;border-radius:55% 40% 61% 60% / 38% 52% 62% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:532px;height:443px;left:-329px;top:362px;border-radius:50% 45% 41% 50% / 53% 50% 53% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:399px;height:507px;bottom:-285px;left:420px;border-radius:37% 53% 48% 59% / 38% 54% 60% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:50px; margin:4px 0 18px; }
+  .band { display:flex; align-items:stretch; }
+  .node { width:442px; height:132px; background:var(--surface-card);
+          border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+          padding:18px 22px; display:flex; flex-direction:column; justify-content:center; }
+  .node .nt { font-family:var(--font-display); font-weight:900; font-size:22px;
+              line-height:1.15; color:var(--text-primary); }
+  .node .nt code { font-family:var(--font-mono); font-size:20px; font-weight:700; }
+  .node .ns { font-family:var(--font-body); font-size:15px; line-height:1.35;
+              color:var(--text-secondary); margin-top:9px; }
+  .node.fail { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .node.fail .ns { color:var(--stbr-dark); }
+  .node.win { background:var(--surface-brand); border-color:var(--stbr-emerald-800); }
+  .node.win .nt { color:var(--text-on-brand); }
+  .node.win .ns { color:var(--text-on-brand); }
+  .arr { width:64px; display:flex; align-items:center; justify-content:center; }
+  .drop-row { position:relative; height:80px; }
+  .drop { position:absolute; left:0; right:199px; top:0; height:80px;
+          display:flex; align-items:center; justify-content:flex-end; }
+  .dchip { font-family:var(--font-body); font-weight:800; font-size:15px; line-height:1;
+           background:var(--surface-inverse); color:var(--text-on-dark);
+           padding:9px 18px; border-radius:var(--radius-pill); margin-right:16px; }
+  .lane { border:2px dashed var(--stbr-emerald); border-radius:var(--radius-xl);
+          padding:14px 24px 24px; }
+  .lanelab { font-family:var(--font-display); font-weight:900; font-size:14px;
+             letter-spacing:.14em; text-transform:uppercase; color:var(--brand-primary);
+             margin-bottom:12px; }
+  .lane .node { width:318px; height:132px; padding:16px 18px; }
+  .lane .node .nt { font-size:19px; }
+  .lane .node .nt code { font-size:18px; }
+  .lane .arr { width:44px; }
+  .foot { display:flex; align-items:center; background:var(--surface-inverse);
+          border-radius:var(--radius-lg); padding:16px 30px; margin-top:20px; }
+  .foot .fk { font-family:var(--font-display); font-weight:900; font-size:15px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-yellow);
+              width:150px; }
+  .foot .ft { font-family:var(--font-body); font-size:18px; line-height:1.4;
+              color:var(--text-on-dark); }
+  .foot .ft b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">clean build, failed deploy</div>
+  <h2 class="viz-title">the legacy IDL account is the thing blocking you</h2>
+
+  <div class="band">
+    <div class="node">
+      <div class="nt">legacy on-chain IDL account exists</div>
+      <div class="ns">written the old way by the 0.32 program</div>
+    </div>
+    <div class="arr">
+      <svg width="52" height="30" viewBox="0 0 52 30">
+        <line x1="0" y1="15" x2="36" y2="15" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="34,4 34,26 52,15" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node">
+      <div class="nt"><code>anchor build</code> passes on 1.x</div>
+      <div class="ns">you fixed the source &mdash; the compiler is happy</div>
+    </div>
+    <div class="arr">
+      <svg width="52" height="30" viewBox="0 0 52 30">
+        <line x1="0" y1="15" x2="36" y2="15" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="34,4 34,26 52,15" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="node fail">
+      <div class="nt"><code>anchor deploy</code> FAILS</div>
+      <div class="ns">trips over the stale legacy IDL account</div>
+    </div>
+  </div>
+
+  <div class="drop-row">
+    <div class="drop">
+      <span class="dchip">fix lane &mdash; one time only</span>
+      <svg width="44" height="80" viewBox="0 0 44 80">
+        <line x1="22" y1="0" x2="22" y2="60" stroke="#008b4c" stroke-width="3"/>
+        <polygon points="9,58 35,58 22,80" fill="#008b4c"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="lanelab">one time only &mdash; then never again</div>
+    <div class="band">
+      <div class="node">
+        <div class="nt"><code>avm use 0.32.1</code></div>
+        <div class="ns">switch back to the CLI that understands the legacy account</div>
+      </div>
+      <div class="arr">
+        <svg width="36" height="30" viewBox="0 0 36 30">
+          <line x1="0" y1="15" x2="22" y2="15" stroke="#1b231d" stroke-width="3"/>
+          <polygon points="20,5 20,25 36,15" fill="#1b231d"/>
+        </svg>
+      </div>
+      <div class="node">
+        <div class="nt"><code>anchor idl close<br>&lt;program-id&gt;</code></div>
+        <div class="ns">close the legacy IDL account</div>
+      </div>
+      <div class="arr">
+        <svg width="36" height="30" viewBox="0 0 36 30">
+          <line x1="0" y1="15" x2="22" y2="15" stroke="#1b231d" stroke-width="3"/>
+          <polygon points="20,5 20,25 36,15" fill="#1b231d"/>
+        </svg>
+      </div>
+      <div class="node">
+        <div class="nt"><code>avm use 1.1.2</code></div>
+        <div class="ns">switch back to the 1.x toolchain</div>
+      </div>
+      <div class="arr">
+        <svg width="36" height="30" viewBox="0 0 36 30">
+          <line x1="0" y1="15" x2="22" y2="15" stroke="#008b4c" stroke-width="3"/>
+          <polygon points="20,5 20,25 36,15" fill="#008b4c"/>
+        </svg>
+      </div>
+      <div class="node win">
+        <div class="nt"><code>anchor deploy</code> succeeds</div>
+        <div class="ns">the IDL now goes on-chain via the Program Metadata Program</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">read this</span>
+    <span class="ft">A green build is not a green deploy. The break lives <b>on-chain</b>, not in your source &mdash; so no amount of re-compiling clears it.</span>
+  </div>
+</div>
+</body></html>

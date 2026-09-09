@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The greeter's two proofs off one build
+     purpose: separate running the handler (LiteSVM) from proving the deploy shipped (devnet)
+     data: center: programs/greeter/src/lib.rs build step: anchor build -> target/deploy/greeter.so path A (in-process): greeter.so -> svm.add_program -> send_transaction -> greet runs -> "1 passed" path B (devnet): greeter.so -> deployed in m01-l2 -> solana program show confirms it is live and executable shared: one build, one .so; path A runs it, path B proves it shipped
+     prompt: A diagram with lib.rs at the top, an "anchor build" arrow down to a single greeter.so box in the center, then two branches: left branch labeled "LiteSVM (in-process, local)" ending in "1 passed", right branch labeled "devnet (deployed m01-l2)" ending in "solana program show: executable". A subtle note under both: "one build, two proofs". Clean boxes-and-arrows, two-color branch coding.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:555px;height:567px;top:-338px;right:-338px;border-radius:44% 39% 51% 55% / 56% 60% 59% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:446px;bottom:-227px;left:-227px;border-radius:37% 62% 40% 45% / 51% 45% 44% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:524px;height:551px;bottom:-311px;left:623px;border-radius:45% 44% 43% 63% / 46% 63% 63% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .dg { width:1000px; margin:14px auto 0; }
+  .box { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:13px 24px; text-align:center; }
+  .box .t { font-family:var(--font-mono); font-weight:700; font-size:19px; color:var(--text-primary); }
+  .box .s { font-family:var(--font-body); font-size:14px; color:var(--text-muted); margin-top:2px; }
+  .src { width:520px; margin:0 auto; }
+  .step { display:flex; align-items:center; justify-content:center; height:52px; }
+  .step .flank { flex:1 1 0; }
+  .step .flank.left { text-align:right; }
+  .step .line { flex:0 0 3px; height:52px; background:var(--stbr-dark); position:relative; }
+  .step .line::after { content:""; position:absolute; bottom:-1px; left:-4px;
+    border-left:6px solid transparent; border-right:6px solid transparent;
+    border-top:9px solid var(--stbr-dark); }
+  .step .lbl { display:inline-block; margin-left:14px; background:var(--surface-inverse);
+    color:var(--text-on-dark); font-family:var(--font-mono); font-weight:700; font-size:16px;
+    padding:6px 16px; border-radius:var(--radius-pill); }
+  .artifact { width:560px; margin:0 auto; background:var(--stbr-yellow);
+    border:3px solid var(--stbr-yellow-700); border-radius:var(--radius-md);
+    padding:14px 24px; text-align:center; }
+  .artifact .t { font-family:var(--font-mono); font-weight:700; font-size:24px; color:var(--stbr-dark); }
+  .artifact .s { font-family:var(--font-body); font-weight:700; font-size:14px;
+    letter-spacing:.07em; text-transform:uppercase; color:var(--stbr-dark); margin-top:3px; }
+  .fork { display:block; margin:0 auto; }
+  .branches { display:flex; gap:40px; }
+  .br { flex:0 0 480px; border:2px solid var(--border-subtle); border-radius:var(--radius-md);
+    overflow:hidden; }
+  .br .head { padding:10px 20px; font-family:var(--font-display); font-weight:800; font-size:15px;
+    letter-spacing:.08em; text-transform:uppercase; }
+  .br.a .head { background:var(--surface-brand); color:var(--text-on-brand); }
+  .br.b .head { background:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .br .body { padding:14px 20px; background:var(--surface-card); }
+  .br .s1 { font-family:var(--font-mono); font-weight:700; font-size:16px; color:var(--text-primary);
+    padding:7px 0; }
+  .br .s1 span { color:var(--text-muted); font-weight:500; }
+  .br .arw { text-align:center; color:var(--stbr-dark); font-size:22px; line-height:1; }
+  .br .res { margin-top:10px; border-radius:var(--radius-md); padding:11px 18px; text-align:center;
+    font-family:var(--font-mono); font-weight:700; font-size:20px; }
+  .br.a .res { background:var(--surface-brand); color:var(--text-on-brand); }
+  .br.b .res { background:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .foot { margin-top:16px; background:var(--surface-inverse); color:var(--text-on-dark);
+    border-radius:var(--radius-md); padding:13px 26px; text-align:center;
+    font-family:var(--font-display); font-weight:900; font-size:19px; letter-spacing:.02em; }
+</style>
+  <div class="stbr-eyebrow">running it vs proving it shipped</div>
+  <h2 class="viz-title">the greeter's two proofs off one build</h2>
+  <div class="dg">
+    <div class="src box"><div class="t">programs/greeter/src/lib.rs</div><div class="s">the source you edited</div></div>
+    <div class="step">
+      <div class="flank left"></div>
+      <div class="line"></div>
+      <div class="flank"><span class="lbl">anchor build</span></div>
+    </div>
+    <div class="artifact">
+      <div class="t">target/deploy/greeter.so</div>
+      <div class="s">one build &middot; one .so</div>
+    </div>
+    <svg class="fork" width="1000" height="56" viewBox="0 0 1000 56" xmlns="http://www.w3.org/2000/svg">
+      <path d="M500 0 L500 24 M240 24 L760 24 M240 24 L240 44 M760 24 L760 44"
+            stroke="#1b231d" stroke-width="3" fill="none"/>
+      <polygon points="240,55 233,42 247,42" fill="#1b231d"/>
+      <polygon points="760,55 753,42 767,42" fill="#1b231d"/>
+    </svg>
+    <div class="branches">
+      <div class="br a">
+        <div class="head">path A &mdash; LiteSVM (in-process, local)</div>
+        <div class="body">
+          <div class="s1">svm.add_program(<span>greeter.so</span>)</div>
+          <div class="arw">&#9662;</div>
+          <div class="s1">send_transaction(<span>greet</span>)</div>
+          <div class="res">1 passed</div>
+        </div>
+      </div>
+      <div class="br b">
+        <div class="head">path B &mdash; devnet (deployed in m01-l2)</div>
+        <div class="body">
+          <div class="s1">deployed in m01-l2 <span>(devnet)</span></div>
+          <div class="arw">&#9662;</div>
+          <div class="s1">solana program show <span>&lt;id&gt;</span></div>
+          <div class="res">live &amp; executable</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">one build, two proofs &mdash; path A runs it, path B proves it shipped</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anchor's two layers for Token-2022
+     purpose: show that the type layer is free but the read layer is work you must do
+     data: layer 1 (free, at the type level): InterfaceAccount<Mint> / InterfaceAccount<TokenAccount> accepts either Token program; deserializes the base fields transfer_checked spans both programs layer 2 (work, at the account level): anchor_spl::extensions parses the TLV tail you read: actual length, and the TransferHook programId boundary: the token program hands you the seat; it does not hand you the standard
+     prompt: Two stacked layers as horizontal bands. Top band "Type layer (free)" holds the InterfaceAccount / transfer_checked items with a check-mark motif. Bottom band "Read layer (your work)" holds the extensions-reader items with a magnifier motif. A thin labeled seam between them reads "the seat, not the standard." Keep it calm; the contrast free-vs-work is the whole message.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:517px;height:518px;top:-311px;right:-311px;border-radius:47% 47% 62% 45% / 47% 42% 56% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:524px;height:475px;left:-340px;top:328px;border-radius:65% 62% 62% 62% / 45% 55% 47% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:532px;height:463px;bottom:-275px;left:436px;border-radius:40% 52% 55% 41% / 51% 36% 54% 46%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { width:1420px; margin:0 auto; }
+  .band { border-radius:var(--radius-xl); padding:26px 34px; }
+  .b1 { background:var(--surface-brand); height:240px; }
+  .b2 { background:var(--surface-card); height:284px;
+        border:2px solid var(--border-subtle); border-left:10px solid var(--surface-accent); }
+  .bh { height:52px; display:flex; align-items:center; }
+  .bh .ttl { font-family:var(--font-display); font-weight:900; font-size:27px;
+             line-height:1.1; }
+  .b1 .bh .ttl { color:var(--text-on-brand); }
+  .b2 .bh .ttl { color:var(--text-primary); }
+  .tag { font-family:var(--font-body); font-weight:800; font-size:11px;
+         letter-spacing:.14em; text-transform:uppercase; padding:6px 13px;
+         border-radius:var(--radius-pill); margin-left:16px; line-height:1.2; }
+  .tag.free { background:rgba(245,232,202,0.18); color:var(--stbr-cream);
+              border:1.5px solid rgba(245,232,202,0.45); }
+  .tag.work { background:var(--surface-accent); color:var(--text-on-accent); }
+  .items { display:flex; height:130px; }
+  .it { flex:1; border-radius:var(--radius-md); padding:16px 18px; display:flex;
+        align-items:flex-start; }
+  .it + .it { margin-left:20px; }
+  .b1 .it { border:1.5px solid rgba(245,232,202,0.40); }
+  .b2 .it { border:1.5px solid var(--border-subtle); background:var(--surface-paper); }
+  .it .ic { width:30px; flex:0 0 30px; margin-right:14px; margin-top:2px; }
+  .it .tx .n { font-family:var(--font-mono); font-size:16px; font-weight:600; line-height:1.25; }
+  .it .tx .s { font-family:var(--font-body); font-size:13.5px; line-height:1.4; margin-top:7px; }
+  .b1 .it .tx .n { color:var(--stbr-cream); }
+  .b1 .it .tx .s { color:var(--stbr-cream); opacity:.82; }
+  .b2 .it .tx .n { color:var(--stbr-emerald-800); }
+  .b2 .it .tx .s { color:var(--text-secondary); }
+  .seam { height:64px; display:flex; align-items:center; }
+  .seam .r { flex:1; height:2px; background:var(--stbr-ink-300); }
+  .seam .lab { font-family:var(--font-display); font-weight:900; font-size:16px;
+               letter-spacing:.08em; text-transform:uppercase; color:var(--text-primary);
+               background:var(--surface-page); border:2px solid var(--stbr-dark);
+               border-radius:var(--radius-pill); padding:9px 22px; margin:0 20px;
+               line-height:1.2; }
+  .foot { height:44px; display:flex; align-items:center; margin-top:8px;
+          border-top:1.5px solid var(--border-subtle); }
+  .foot .t { font-family:var(--font-body); font-size:15px; line-height:1.4;
+             color:var(--text-secondary); padding-top:10px; }
+  .foot .t b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">anchor · two layers</div>
+  <h2 class="viz-title">the type layer is free — the read layer is your work</h2>
+
+  <div class="wrap">
+    <div class="band b1">
+      <div class="bh">
+        <span class="ttl">type layer</span>
+        <span class="tag free">free</span>
+      </div>
+      <div class="items">
+        <div class="it">
+          <svg class="ic" width="30" height="30" viewBox="0 0 30 30">
+            <circle cx="15" cy="15" r="13" fill="none" stroke="#f5e8ca" stroke-width="2"/>
+            <polyline points="8,15 13,20 22,10" fill="none" stroke="#f5e8ca"
+                      stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="tx">
+            <div class="n">InterfaceAccount&lt;Mint&gt; · InterfaceAccount&lt;TokenAccount&gt;</div>
+            <div class="s">Accepts accounts owned by either token program, and deserializes the base fields for you.</div>
+          </div>
+        </div>
+        <div class="it">
+          <svg class="ic" width="30" height="30" viewBox="0 0 30 30">
+            <circle cx="15" cy="15" r="13" fill="none" stroke="#f5e8ca" stroke-width="2"/>
+            <polyline points="8,15 13,20 22,10" fill="none" stroke="#f5e8ca"
+                      stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="tx">
+            <div class="n">transfer_checked</div>
+            <div class="s">One primitive that spans both programs — the call site does not change.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seam">
+      <div class="r"></div>
+      <div class="lab">the seat, not the standard</div>
+      <div class="r"></div>
+    </div>
+
+    <div class="band b2">
+      <div class="bh">
+        <span class="ttl">read layer</span>
+        <span class="tag work">your work</span>
+      </div>
+      <div class="items">
+        <div class="it">
+          <svg class="ic" width="30" height="30" viewBox="0 0 30 30">
+            <circle cx="13" cy="13" r="9" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+            <line x1="20" y1="20" x2="28" y2="28" stroke="#008b4c" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+          <div class="tx">
+            <div class="n">anchor_spl::extensions</div>
+            <div class="s">Parses the TLV tail. Nothing above this line does that for you.</div>
+          </div>
+        </div>
+        <div class="it">
+          <svg class="ic" width="30" height="30" viewBox="0 0 30 30">
+            <circle cx="13" cy="13" r="9" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+            <line x1="20" y1="20" x2="28" y2="28" stroke="#008b4c" stroke-width="3.5" stroke-linecap="round"/>
+          </svg>
+          <div class="tx">
+            <div class="n">you read: actual length · TransferHook programId</div>
+            <div class="s">The two facts a classic-SPL assumption gets wrong.</div>
+          </div>
+        </div>
+      </div>
+      <div class="foot">
+        <div class="t">The boundary: <b>the token program hands you the seat; it does not hand you the standard.</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

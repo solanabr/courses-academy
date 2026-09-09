@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What each line of LightMarquee generates
+     purpose: connect the three phases to real fields the reader just typed
+     data: #[account(mut)] payer: Signer            -> LOAD: signature bit; CONSTRAINT: mut #[account(init, payer = payer)] marquee  -> LOAD: new account; CONSTRAINT: init via system CPI, sets account:Marquee discriminator, payer funds rent system_program: Program<System>          -> LOAD: address + executable check for the System Program handler body                             -> DISPATCH: runs only after both fields load and all constraints pass
+     prompt: Annotated code panel showing the LightMarquee struct with a callout line from each field to a short note. Tag each note with its phase in a colored pill: LOAD (phase 1) or CONSTRAINT (phase 2). Add a final callout to the handler body tagged DISPATCH (phase 3). Keep the code monospace and the annotations concise.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:440px;height:465px;top:-225px;right:-225px;border-radius:47% 39% 50% 54% / 49% 36% 39% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:514px;height:398px;left:-291px;top:142px;border-radius:56% 55% 49% 43% / 36% 63% 36% 64%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:498px;height:435px;bottom:-240px;left:753px;border-radius:39% 57% 48% 40% / 41% 54% 37% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p8-row   { display:flex; align-items:stretch; }
+  .p8-code  { flex:0 0 812px; width:812px; background:var(--surface-inverse); padding:16px 24px; }
+  .p8-code pre { margin:0; font-family:var(--font-mono); font-size:19px; line-height:1.48;
+                 color:var(--stbr-cream); white-space:pre; }
+  .p8-code .c { color:#8fb79c; }
+  .p8-code .k { color:#7fd8a6; font-weight:700; }
+  .p8-code .a { color:var(--stbr-yellow); font-weight:700; }
+  .p8-top    { border-radius:var(--radius-lg) var(--radius-lg) 0 0; }
+  .p8-bot    { border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+  .p8-hand   { border-radius:var(--radius-lg); border:2px solid var(--stbr-yellow); }
+  .p8-arrow  { flex:0 0 48px; display:flex; align-items:center; justify-content:center; }
+  .p8-ann    { flex:1; display:flex; gap:12px; padding-left:0; }
+  .p8-card   { flex:1; border-radius:var(--radius-md); border:1.5px solid; padding:10px 16px;
+               margin:8px 0; }
+  .p8-card .lb { font-family:var(--font-display); font-weight:900; font-size:13px;
+                 letter-spacing:0.14em; text-transform:uppercase; }
+  .p8-card .tx { font-family:var(--font-body); font-size:16px; line-height:1.32;
+                 color:var(--text-secondary); margin-top:4px; }
+  .p8-card .tx code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-emerald-800); }
+  .p8-load   { background:rgba(0,139,76,0.10); border-color:rgba(0,139,76,0.34); }
+  .p8-load .lb { color:var(--stbr-emerald-800); }
+  .p8-con    { background:rgba(48,108,64,0.10); border-color:rgba(48,108,64,0.34); }
+  .p8-con .lb { color:var(--stbr-green-800); }
+  .p8-disp   { background:#fff6d6; border-color:var(--stbr-yellow-700); }
+  .p8-disp .lb { color:var(--stbr-dark); }
+  .p8-disp .tx { color:var(--stbr-dark); }
+  .p8-disp .tx code { color:var(--stbr-dark); }
+  .p8-gap    { height:18px; }
+  .p8-cap    { font-family:var(--font-body); font-size:16px; color:var(--text-muted); margin-top:14px; }
+</style>
+  <div class="stbr-eyebrow">line by line, field by field</div>
+  <h2 class="viz-title">What each line of LightMarquee generates</h2>
+
+  <div class="p8-row">
+    <div class="p8-code p8-top"><pre><span class="c">#[derive(Accounts)]</span>
+<span class="k">pub struct</span> LightMarquee {</pre></div>
+    <div class="p8-arrow"></div>
+    <div class="p8-ann"></div>
+  </div>
+
+  <div class="p8-row">
+    <div class="p8-code"><pre>    <span class="c">#[account(<span class="a">mut</span>)]</span>
+    <span class="k">pub</span> payer: Signer,</pre></div>
+    <div class="p8-arrow">
+      <svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="30" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="40,8 28,2 28,14" fill="#1b231d"/></svg>
+    </div>
+    <div class="p8-ann">
+      <div class="p8-card p8-load">
+        <div class="lb">Phase 1 · Load</div>
+        <div class="tx">Signature bit is checked.</div>
+      </div>
+      <div class="p8-card p8-con">
+        <div class="lb">Phase 2 · Constraint</div>
+        <div class="tx"><code>mut</code> — the account is marked writable.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p8-row">
+    <div class="p8-code"><pre>    <span class="c">#[account(<span class="a">init</span>, payer = payer)]</span>
+    <span class="k">pub</span> marquee: Account&lt;Marquee&gt;,</pre></div>
+    <div class="p8-arrow">
+      <svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="30" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="40,8 28,2 28,14" fill="#1b231d"/></svg>
+    </div>
+    <div class="p8-ann">
+      <div class="p8-card p8-load">
+        <div class="lb">Phase 1 · Load</div>
+        <div class="tx">A brand-new account view.</div>
+      </div>
+      <div class="p8-card p8-con">
+        <div class="lb">Phase 2 · Constraint</div>
+        <div class="tx"><code>init</code> via a System Program CPI — writes the <code>account:Marquee</code> discriminator, <code>payer</code> funds the rent.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p8-row">
+    <div class="p8-code p8-bot"><pre>    <span class="k">pub</span> system_program: Program&lt;System&gt;,
+}</pre></div>
+    <div class="p8-arrow">
+      <svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="30" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="40,8 28,2 28,14" fill="#1b231d"/></svg>
+    </div>
+    <div class="p8-ann">
+      <div class="p8-card p8-load">
+        <div class="lb">Phase 1 · Load</div>
+        <div class="tx">Address + executable check for the System Program. No constraint on this field.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p8-gap"></div>
+
+  <div class="p8-row">
+    <div class="p8-code p8-hand"><pre><span class="k">pub fn</span> light_marquee(ctx: &amp;mut Context&lt;LightMarquee&gt;) -&gt; Result&lt;()&gt; {
+    <span class="c">// handler body</span>
+}</pre></div>
+    <div class="p8-arrow">
+      <svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="30" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="40,8 28,2 28,14" fill="#1b231d"/></svg>
+    </div>
+    <div class="p8-ann">
+      <div class="p8-card p8-disp">
+        <div class="lb">Phase 3 · Dispatch</div>
+        <div class="tx">Runs only after both fields load and all constraints pass.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p8-cap">Each field loads first, then its own constraints fire — in declaration order.</div>
+</div>
+</body></html>

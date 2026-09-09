@@ -1,0 +1,85 @@
+id: lesson-mav2-m10-l3
+slug: m10-l3
+title: "Migration capstone: port a 0.31/1.0 program to V2"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    anchor-lang-v1-baseline: "1.1.2"
+    anchor-cli: "2.0.0-rc.1"
+    anchor-v2-testing: "2.0.0-rc.1"
+skills:
+  - anchor
+  - pdas
+  - program-testing
+  - version-pinning
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m10-l3-q1
+        prompt: "Your port compiles locally with `anchor build` and you assume it is V2-ready. Then it emits none of the V2 deprecations and behaves nothing like V2. What actually went wrong?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The `anchor-lang` pin in the program's `Cargo.toml` is still on the 1.x line — the dependency graph, not the CLI on your PATH, selects the framework major."
+            correct: true
+            feedback: "Cargo resolves the crate graph identically under either CLI wrapper, so a 1.x pin builds a v1 artifact no matter which anchor-cli ran — and once the row reads 2.0.0-rc.1, even the old CLI surfaces the V2 deprecations and the missing-method error, because they come from the macros in the graph. m10-l1's recon grepped for exactly this row."
+          - id: a
+            label: "You omitted `CARGO_PROFILE_RELEASE_LTO=off` from the cargo install, so the CLI fell back to building the program with v1 codegen semantics."
+            correct: false
+            feedback: "`CARGO_PROFILE_RELEASE_LTO=off` is only a macOS workaround for the release build blowing up; it is not a version switch of any kind. What selects the framework line is the `anchor-lang` row in Cargo.toml."
+          - id: d
+            label: "The `[toolchain]` block in `Anchor.toml` still names an `anchor_version` on the 1.x line, and it is that row, not the manifest, that the build resolves against."
+            correct: false
+            feedback: "That block steers the wrapper, the same job the CLI does: which binary runs, which harness scaffolds. Cargo never reads it when resolving your crate graph, so the framework you compile against is still whatever the `anchor-lang` row in Cargo.toml says."
+          - id: b
+            label: "You compiled with the machine's ambient `anchor-cli 1.1.2` instead of the pinned V2 RC CLI, and the old binary silently built the old framework."
+            correct: false
+            feedback: "The tempting answer — but `anchor build` is a wrapper, and which binary shelled out to cargo does not change which `anchor-lang` the graph resolves. An unflipped pin misbehaves identically under both CLIs, and a flipped pin surfaces the V2 diagnostics under both. The isolated CLI earns its keep on scaffold, test-harness, and IDL behavior — not as the major-version switch."
+        explanation: "The framework major is selected by the `anchor-lang` dependency in Cargo.toml, and cargo resolves it identically under either CLI wrapper. The handed vault compiles on 1.x because it pins 1.x; leave that row alone and every build is a v1 build, whichever anchor-cli is on PATH — and once the row reads 2.0.0-rc.1, the deprecation warnings and the missing-method error appear under the old CLI too, because they come from the macros in the dependency graph. That is why step 1 of the port is a manifest edit before it is an install. The isolated, pinned RC CLI still matters — scaffolds, the test harness, and IDL handling ride the CLI line — but it is not what your compiled program behaves like. Two things that control nothing here: `CARGO_PROFILE_RELEASE_LTO=off` (a macOS build workaround) and any type name in your handlers. The switch that does control it sits in your source tree as a version row, which is exactly what m10-l1's recon (`rg \"anchor_version|anchor-lang\"`) taught you to read first."
+      - id: m10-l3-q2
+        prompt: "Mid-port, `cargo build` succeeds but prints a deprecation warning underlining `has_one` in a constraint you copied over. The test would still pass. Why resolve it anyway?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Because `address = state.authority` adds a signer check that `has_one` skipped, so the rename closes a hole rather than restating one."
+            correct: false
+            feedback: "`address` swaps the equality test and nothing else. The signer requirement was always declared separately, by the field's own `Signer` type, and it stays exactly where it was on both spellings."
+          - id: a
+            label: "Because `has_one` is deprecated in favor of `address = parent.field`, and on a moving RC deprecated syntax is what a later tag is most likely to remove."
+            correct: true
+            feedback: "Mechanical, because the compiler spells out the replacement for you: shift the check onto the sibling and rebuild until nothing is underlined. Nothing fails today; the pressure is entirely about how long the port keeps building."
+          - id: c
+            label: "Because in V2 `has_one` still parses but no longer emits the equality check, so the authority comparison is silently skipped at runtime."
+            correct: false
+            feedback: "`has_one` still parses AND still performs the equality check in V2 — it is deprecated, not broken, which is exactly why the test passes. The reason to replace it is that a moving RC is likely to delete deprecated syntax."
+          - id: b
+            label: "Because `anchor test` promotes deprecation warnings to hard errors under V2's default profile, so the LiteSVM suite cannot go green until the warning is gone."
+            correct: false
+            feedback: "`anchor test` does not promote deprecation warnings to errors — the prompt itself says the test still passes. You resolve it for migration durability, not because it blocks the gate."
+        explanation: "The has_one deprecation warning is the framework driving the migration: V2 wants `address = parent.field`, and the parser stores the has_one span precisely so codegen can underline it. On an RC that is still changing, resolving deprecations to zero is how you keep the port building against the next version -- the warning is a checklist item, not noise. Concretely, the warning names its own replacement: move the check onto the sibling account as `#[account(address = state.authority)]`, then rebuild until the deprecation count is zero. Note also what the warning does not do — it never fails the build or the LiteSVM suite, and `has_one` keeps performing its equality check today, so the only thing pushing you to edit is the migration checklist itself."
+      - id: m10-l3-q3
+        prompt: "You copy a v1 pattern that reads `vault.amount` right after a CPI that moved lamports, then calls `vault.reload()`. The V2 build fails. What does letting the compiler drive tell you to do?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Keep the read and hand-roll the refresh, re-decoding the vault from its AccountInfo where `.reload()` used to sit."
+            correct: false
+            feedback: "There is nothing to refresh into. Once the call returns and its handles drop, the typed view is reading current bytes already, so a hand-rolled re-decode is the same work the removed method was doing pointlessly."
+          - id: a
+            label: "Add `unsafe(dup)` to the vault's `#[account(...)]` constraint, since that opt-out relaxes V2's account borrow checking for reads taken around a CPI."
+            correct: false
+            feedback: "`unsafe(dup)` is the opt-out for duplicate mutable accounts, and it is enforced at validation before your handler ever runs. It has nothing to do with a borrow held across a live `CpiContext` and will not clear this error."
+          - id: c
+            label: "Remove the `.reload()` call and restructure so no typed access to the vault is held while the `CpiContext` holds its borrow."
+            correct: true
+            feedback: "One diagnostic comes back — E0599, a method that no longer exists — and that is the whole instruction for what to delete. The borrow only covers accounts you handed the call, so a disjoint read still builds."
+          - id: b
+            label: "Re-enable `.reload()` through the `anchor-lang` compat feature and call it after `system_program::transfer` exactly as the v1 code did."
+            correct: false
+            feedback: "There is no compat feature that restores `.reload()` — V2 removed the method outright. A loaded typed account cannot go out of date behind your back, and while a CPI holds a handle to one, typed access to it will not compile, so the stale read `.reload()` patched cannot be written in the first place."
+        explanation: "V2 has no `.reload()`, and two things put it out of a job. Nothing changes underneath a loaded typed account without your say-so, so there is nothing for a re-deserialize call to re-read. And while a `CpiContext` is alive, the compiler holds one borrow per account handed to that CPI — so typed access to *those* accounts, the vault included here, will not compile. That is why (c) is the durable habit: delete the reload, keep the vault's typed data out of the CPI's span, and take a fresh borrow after the call. Be precise about what the build actually prints, though. On the copied v1 tail it is exactly one error, E0599 (no method named `reload`), which says delete that line. The lock falls on precisely the accounts the CPI can change and nothing wider, so a read of a disjoint account — this lab's `state` — compiles right beside it. You do still lift the scalars you need, the state address and the vault bump, into locals before you build the `CpiContext`, but for a plainer reason than a borrow error: `seeds` borrows `state_key`, so that local has to outlive the call that uses the signer."

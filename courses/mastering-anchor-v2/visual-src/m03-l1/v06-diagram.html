@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Why the player key has to be in the seeds
+     purpose: contrast a single-seed collision with a per-player namespace
+     data: left (broken): seeds = [ b"vault" ] player A -> derives -> PDA X player B -> derives -> PDA X   (same address! everyone shares one vault, no custody) right (correct): seeds = [ b"vault", player.address() ] player A -> derives -> PDA A player B -> derives -> PDA B   (distinct, per-player, each re-derivable)
+     prompt: Two side-by-side mini-diagrams. Left panel titled "single seed [b\"vault\"]": two player chips (A, B) both arrowing into ONE shared PDA box, marked with a red collision burst. Right panel titled "[b\"vault\", player]": two player chips arrowing into two separate PDA boxes, green checks. The visual point is one-vault-for-everyone versus one-vault-each.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:487px;top:-240px;right:-240px;border-radius:63% 35% 51% 44% / 56% 60% 54% 44%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:539px;height:522px;bottom:-263px;left:-263px;border-radius:51% 58% 65% 62% / 58% 47% 37% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:575px;height:496px;bottom:-314px;right:-314px;border-radius:36% 55% 37% 53% / 43% 54% 45% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panes { margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:36px; }
+  .pane { border-radius:var(--radius-xl); border:2px solid var(--border-subtle);
+    background:var(--surface-card); padding:26px 28px 24px; }
+  .pane.bad { border-color:rgba(192,57,43,0.40); }
+  .pane.good { border-color:rgba(0,139,76,0.45); }
+  .ph { display:flex; align-items:baseline; gap:12px; margin-bottom:4px; }
+  .ph .tag { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.12em;
+    text-transform:uppercase; padding:5px 12px; border-radius:var(--radius-pill); }
+  .pane.bad .ph .tag { background:rgba(192,57,43,0.10); color:#a5281c; }
+  .pane.good .ph .tag { background:rgba(0,139,76,0.12); color:var(--stbr-emerald-800); }
+  .ph .seeds { font-family:var(--font-mono); font-weight:800; font-size:19px; color:var(--text-primary); }
+  .psub { font-family:var(--font-body); font-size:15px; color:var(--text-muted); margin-bottom:20px; }
+  .wire { display:flex; align-items:center; gap:0; }
+  .players { width:186px; flex:0 0 auto; display:flex; flex-direction:column; gap:26px; }
+  .player { height:74px; box-sizing:border-box; border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); background:var(--surface-paper); display:flex;
+    flex-direction:column; justify-content:center; padding:0 18px; }
+  .player .n { display:block; font-family:var(--font-display); font-weight:900; font-size:19px; color:var(--text-primary); }
+  .player .a { display:block; font-family:var(--font-mono); font-size:13px; color:var(--text-muted); margin-top:2px; }
+  .conns { width:86px; flex:0 0 auto; display:flex; flex-direction:column; gap:26px; }
+  .conns .c { height:74px; display:flex; align-items:center; justify-content:center; }
+  .targets { flex:1; display:flex; flex-direction:column; gap:26px; }
+  .pda { height:74px; box-sizing:border-box; border-radius:var(--radius-md); display:flex;
+    flex-direction:column; justify-content:center; padding:0 20px; }
+  .pda .n { display:block; font-family:var(--font-mono); font-weight:800; font-size:19px; }
+  .pda .s { display:block; font-family:var(--font-body); font-size:13px; margin-top:2px; }
+  .pda.one { height:174px; background:var(--stbr-yellow); }
+  .pda.one .n { color:var(--text-on-accent); font-size:24px; }
+  .pda.one .s { color:var(--text-on-accent); font-weight:700; font-size:14.5px; line-height:1.3; }
+  .pda.ok { background:var(--surface-brand); }
+  .pda.ok .n { color:var(--text-on-brand); }
+  .pda.ok .s { color:var(--stbr-cream); opacity:.85; }
+  .burst { display:inline-block; margin-top:7px; font-family:var(--font-body); font-weight:800;
+    font-size:12px; letter-spacing:.1em; text-transform:uppercase; background:var(--surface-inverse);
+    color:var(--stbr-yellow); padding:5px 12px; border-radius:var(--radius-pill); }
+  .foot { margin-top:26px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:22px 30px; font-size:20px; font-weight:500; line-height:1.4; }
+  .foot b { color:var(--stbr-yellow); font-weight:800; }
+  .foot code { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">one vault for everyone versus one vault each</div>
+  <h2 class="viz-title">why the player key has to be in the seeds</h2>
+  <div class="panes">
+    <div class="pane bad">
+      <div class="ph"><span class="tag">broken</span><span class="seeds">[ b"vault" ]</span></div>
+      <div class="psub">a single constant seed &mdash; every player derives the same address</div>
+      <div class="wire">
+        <div class="players">
+          <div class="player"><span class="n">player A</span><span class="a">A's address</span></div>
+          <div class="player"><span class="n">player B</span><span class="a">B's address</span></div>
+        </div>
+        <div class="conns">
+          <div class="c"><svg width="86" height="40" viewBox="0 0 86 40"><path d="M2 20 H68" stroke="#c0392b" stroke-width="2.6" stroke-linecap="round"/><polygon points="82,20 66,13 66,27" fill="#c0392b"/></svg></div>
+          <div class="c"><svg width="86" height="40" viewBox="0 0 86 40"><path d="M2 20 H68" stroke="#c0392b" stroke-width="2.6" stroke-linecap="round"/><polygon points="82,20 66,13 66,27" fill="#c0392b"/></svg></div>
+        </div>
+        <div class="targets">
+          <div class="pda one"><span class="n">PDA X</span><span class="s">the same address for both<span class="burst">collision &mdash; one shared vault</span></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="pane good">
+      <div class="ph"><span class="tag">correct</span><span class="seeds">[ b"vault", player ]</span></div>
+      <div class="psub">the player's key joins the namespace &mdash; one vault per player</div>
+      <div class="wire">
+        <div class="players">
+          <div class="player"><span class="n">player A</span><span class="a">A's address</span></div>
+          <div class="player"><span class="n">player B</span><span class="a">B's address</span></div>
+        </div>
+        <div class="conns">
+          <div class="c"><svg width="86" height="40" viewBox="0 0 86 40"><path d="M2 20 H68" stroke="#008b4c" stroke-width="2.6" stroke-linecap="round"/><polygon points="82,20 66,13 66,27" fill="#008b4c"/></svg></div>
+          <div class="c"><svg width="86" height="40" viewBox="0 0 86 40"><path d="M2 20 H68" stroke="#008b4c" stroke-width="2.6" stroke-linecap="round"/><polygon points="82,20 66,13 66,27" fill="#008b4c"/></svg></div>
+        </div>
+        <div class="targets">
+          <div class="pda ok"><span class="n">PDA A</span><span class="s">A's vault, re-derivable</span></div>
+          <div class="pda ok"><span class="n">PDA B</span><span class="s">B's vault, re-derivable</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">A seed set is a <b>namespace</b>. Leave the player out of <code>seeds</code> and every account you "create per player" is the same account &mdash; distinctness has to be derived, not assumed.</div>
+</div>
+</body></html>

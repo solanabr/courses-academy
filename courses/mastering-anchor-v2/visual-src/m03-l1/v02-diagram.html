@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: How seeds become a program-derived address
+     purpose: show that a PDA is a deterministic hash of seeds + program ID, forced off the curve by the bump
+     data: inputs: seeds = [ b"vault", player_address (32 bytes) ]  +  program_id  +  bump byte step 1: sha256( seeds || bump || program_id || "ProgramDerivedAddress" ) step 2: is the 32-byte result a valid point on the Ed25519 curve? - on-curve  -> REJECT (a private key could exist) -> decrement bump, retry - off-curve -> ACCEPT -> this is the PDA property: same inputs always produce the same address; no key is ever generated
+     prompt: Left-to-right diagram. Left: a stack of three input chips labeled "seeds [b\"vault\", player]", "program_id", "bump". Middle: a hash box labeled "sha256". Right: a decision diamond "on the Ed25519 curve?" with two arrows: a red loop back to the bump chip labeled "on-curve: reject, bump--", and a green arrow to a final chip "PDA (off-curve, no private key)". Emphasize that the path is deterministic.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:547px;top:-315px;right:-315px;border-radius:58% 45% 54% 59% / 55% 37% 43% 57%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:467px;height:443px;left:-233px;top:150px;border-radius:54% 35% 43% 41% / 44% 45% 48% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:364px;height:466px;bottom:-239px;left:672px;border-radius:37% 43% 63% 57% / 48% 47% 65% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { margin-top:20px; display:flex; align-items:center; gap:0; }
+  .col { flex:0 0 auto; }
+  .inputs { width:360px; display:flex; flex-direction:column; gap:12px; }
+  .chip { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:14px 20px; height:76px; box-sizing:border-box;
+    display:flex; flex-direction:column; justify-content:center; }
+  .chip .k { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--text-muted); }
+  .chip .v { font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--text-primary);
+    line-height:1.25; margin-top:3px; }
+  .chip.bump { border-color:var(--stbr-emerald); }
+  .chip.bump .k { color:var(--stbr-emerald); }
+  .arrow { width:74px; display:flex; align-items:center; justify-content:center; }
+  .hash { width:220px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+    padding:24px 18px; text-align:center; }
+  .hash .t { font-family:var(--font-mono); font-weight:800; font-size:24px; color:var(--stbr-cream); }
+  .hash .s { font-family:var(--font-body); font-size:13.5px; line-height:1.35; color:var(--stbr-ink-300); margin-top:8px; }
+  .test { width:250px; background:var(--surface-brand-deep); border-radius:var(--radius-lg);
+    padding:22px 18px; text-align:center; }
+  .test .q { font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.2;
+    color:var(--stbr-cream); }
+  .test .s { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-ink-300); margin-top:9px; }
+  .out { width:274px; background:var(--stbr-yellow); border-radius:var(--radius-lg);
+    padding:22px 22px; }
+  .out .t { font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--text-on-accent); }
+  .out .s { font-family:var(--font-body); font-weight:600; font-size:15px; line-height:1.35;
+    color:var(--text-on-accent); margin-top:8px; }
+  .lab { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.08em;
+    text-transform:uppercase; text-align:center; margin-bottom:6px; }
+  .lab.g { color:var(--stbr-emerald); }
+  /* left leg rises into the bump chip (col x 0..360, centre 180);
+     right leg drops out of the curve-test box (col x 728..978, centre 853) */
+  .reject { margin-top:22px; margin-left:180px; margin-right:603px; height:64px; position:relative;
+    border:3px solid #c0392b; border-top:none; border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+  /* the label sits ON the bottom border and masks it — it must stay on ONE line,
+     or its page-coloured background wipes the whole connector out */
+  .reject .txt { position:absolute; left:0; right:0; top:22px; text-align:center;
+    font-family:var(--font-body); font-weight:800; font-size:15px; color:#a5281c;
+    white-space:nowrap; }
+  .reject .txt span { background:var(--surface-page); padding:0 18px; }
+  /* risers carry each leg up to the box it touches: the boxes are shorter than the
+     chip column, so the loop's own top edge stops well short of both of them */
+  .reject .head { position:absolute; left:-8.5px; top:-20px; border-left:7px solid transparent;
+    border-right:7px solid transparent; border-bottom:11px solid #c0392b; }
+  .reject .legL { position:absolute; left:-3px; top:-10px; width:3px; height:10px;
+    background:#c0392b; }
+  .reject .legR { position:absolute; right:-3px; top:-86px; width:3px; height:86px;
+    background:#c0392b; }
+  .rule { margin-top:14px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:22px 30px; font-size:20px; font-weight:500; line-height:1.4; }
+  .rule b { color:var(--stbr-yellow); font-weight:800; }
+  .rule code { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">seeds in, address out, no key anywhere</div>
+  <h2 class="viz-title">how seeds become a program-derived address</h2>
+  <div class="flow">
+    <div class="col inputs">
+      <div class="chip"><span class="k">seeds</span><span class="v">[ b"vault", player (32 B) ]</span></div>
+      <div class="chip"><span class="k">program id</span><span class="v">your program's address</span></div>
+      <div class="chip bump"><span class="k">bump &mdash; starts at 255</span><span class="v">one byte, counts down</span></div>
+    </div>
+    <div class="col arrow">
+      <svg width="74" height="26" viewBox="0 0 74 26"><path d="M2 13 H58" stroke="#1b231d" stroke-width="2.6" stroke-linecap="round"/><polygon points="70,13 56,6.5 56,19.5" fill="#1b231d"/></svg>
+    </div>
+    <div class="col hash">
+      <div class="t">sha256</div>
+      <div class="s">seeds &#8214; bump &#8214; program_id<br>&#8214; "ProgramDerivedAddress"</div>
+    </div>
+    <div class="col arrow">
+      <svg width="74" height="26" viewBox="0 0 74 26"><path d="M2 13 H58" stroke="#1b231d" stroke-width="2.6" stroke-linecap="round"/><polygon points="70,13 56,6.5 56,19.5" fill="#1b231d"/></svg>
+    </div>
+    <div class="col test">
+      <div class="q">on the Ed25519 curve?</div>
+      <div class="s">32 bytes &mdash; a valid point?</div>
+    </div>
+    <div class="col arrow">
+      <div>
+        <div class="lab g">off-curve</div>
+        <svg width="74" height="26" viewBox="0 0 74 26"><path d="M2 13 H58" stroke="#008b4c" stroke-width="2.6" stroke-linecap="round"/><polygon points="70,13 56,6.5 56,19.5" fill="#008b4c"/></svg>
+      </div>
+    </div>
+    <div class="col out">
+      <div class="t">the PDA</div>
+      <div class="s">off-curve &mdash; no private key can exist for it</div>
+    </div>
+  </div>
+  <div class="reject">
+    <div class="legL"></div>
+    <div class="head"></div>
+    <div class="legR"></div>
+    <div class="txt"><span>on-curve &rarr; REJECT &rarr; decrement the bump, hash again</span></div>
+  </div>
+  <div class="rule">Nothing here is random: <code>same seeds + same program ID</code> always land on the <b>same address</b>, and no keypair is ever generated along the way.</div>
+</div>
+</body></html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Why const-rent's saving is a range, not a digit
+     purpose: show the reader that the ~85-90 figure spans two source citations and carries a drift risk, so no single number is honest
+     data: const-rent saving per account-creation CPI: anchor-lang Cargo.toml feature comment: ~85 CU the V2 changelog entry for const-rent: ~90 CU drift risk: can move if the rent formula changes (SIMD-0194) contrast: a single frozen digit would imply a precision the sources do not share
+     prompt: A small horizontal range bar showing the const-rent saving spanning ~85 to ~90 CU, with two tick marks labeled "Cargo.toml comment ~85" and "changelog ~90". Add a faint dashed extension past the bar labeled "drift if rent formula changes (SIMD-0194)". Caption: "print the range + a re-verify note, never one digit". Keep it minimal, one bar.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:481px;height:457px;top:-239px;right:-239px;border-radius:44% 42% 41% 51% / 36% 37% 53% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:468px;height:415px;left:-266px;top:275px;border-radius:52% 42% 59% 38% / 43% 36% 42% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:424px;height:511px;bottom:-279px;left:540px;border-radius:47% 52% 37% 47% / 38% 46% 65% 41%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { position:relative; width:1456px; height:430px; }
+  .lay { position:absolute; top:0; left:0; z-index:0; }
+  .src { position:absolute; top:0; height:122px; box-sizing:border-box;
+         background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-lg); padding:14px 20px; z-index:1;
+         display:flex; align-items:center; }
+  .src .num { font-family:var(--font-display); font-weight:900; font-size:40px;
+              line-height:1; color:var(--stbr-emerald-800); width:118px; flex:0 0 118px; }
+  .src .txt { display:block; }
+  .src .txt .ey { display:block; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+                  letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .src .txt .bo { display:block; font-family:var(--font-body); font-size:14px; line-height:1.4;
+                  color:var(--text-secondary); margin-top:7px; }
+  .src code { font-family:var(--font-mono); font-size:0.94em; color:var(--stbr-dark); }
+  .note { position:absolute; top:330px; height:100px; box-sizing:border-box;
+          border-radius:var(--radius-lg); padding:16px 22px; z-index:1; }
+  .note .ey { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+              letter-spacing:.14em; text-transform:uppercase; }
+  .note .bo { font-family:var(--font-body); font-size:15px; line-height:1.35; margin-top:8px; }
+  .note.left { left:0; width:660px; background:var(--surface-paper);
+               border:2px solid var(--border-subtle); }
+  .note.left .ey { color:var(--text-muted); }
+  .note.left .bo { color:var(--text-secondary); }
+  .note.right { left:700px; width:756px; background:var(--surface-card);
+                border:2px dashed var(--stbr-yellow-700); }
+  .note.right .ey { color:var(--stbr-yellow-700); }
+  .note.right .bo { color:var(--text-primary); }
+  .note code { font-family:var(--font-mono); font-size:0.94em; }
+  .band { margin-top:20px; height:84px; box-sizing:border-box;
+          background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:0 30px; display:flex; align-items:center; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+              opacity:.75; width:150px; flex:0 0 150px; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:26px;
+              line-height:1.15; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">const-rent · saving per account-creation cpi</div>
+  <h2 class="viz-title">the honest answer is a range, not a digit</h2>
+
+  <div class="stage">
+    <svg class="lay" width="1456" height="430" viewBox="0 0 1456 430">
+      <rect x="120" y="212" width="900" height="44" rx="8" fill="#ede0bf"/>
+      <rect x="720" y="200" width="570" height="68" rx="8" fill="none"
+            stroke="#d9a608" stroke-width="3" stroke-dasharray="12 10"/>
+      <polygon points="1290,222 1318,234 1290,246" fill="#d9a608"/>
+      <rect x="420" y="200" width="300" height="68" rx="8" fill="#ffd23f"
+            stroke="#1b231d" stroke-width="2"/>
+      <line x1="420" y1="188" x2="420" y2="284" stroke="#1b231d" stroke-width="2"/>
+      <line x1="720" y1="188" x2="720" y2="284" stroke="#1b231d" stroke-width="2"/>
+      <line x1="420" y1="122" x2="420" y2="188" stroke="#306c40" stroke-width="2"/>
+      <line x1="720" y1="122" x2="720" y2="188" stroke="#306c40" stroke-width="2"/>
+      <line x1="120" y1="290" x2="1020" y2="290" stroke="#1b231d" stroke-width="2"/>
+      <line x1="120" y1="290" x2="120" y2="300" stroke="#1b231d" stroke-width="2"/>
+      <line x1="420" y1="290" x2="420" y2="300" stroke="#1b231d" stroke-width="2"/>
+      <line x1="720" y1="290" x2="720" y2="300" stroke="#1b231d" stroke-width="2"/>
+      <line x1="1020" y1="290" x2="1020" y2="300" stroke="#1b231d" stroke-width="2"/>
+      <text x="120" y="322" font-family="Inter, sans-serif" font-size="15"
+            font-weight="600" fill="#424a42" text-anchor="middle">80</text>
+      <text x="420" y="322" font-family="Inter, sans-serif" font-size="15"
+            font-weight="700" fill="#1b231d" text-anchor="middle">85</text>
+      <text x="720" y="322" font-family="Inter, sans-serif" font-size="15"
+            font-weight="700" fill="#1b231d" text-anchor="middle">90</text>
+      <text x="1020" y="322" font-family="Inter, sans-serif" font-size="15"
+            font-weight="600" fill="#424a42" text-anchor="middle">95</text>
+      <text x="1052" y="322" font-family="Inter, sans-serif" font-size="14"
+            font-weight="600" fill="#767f73">CU saved</text>
+      <text x="570" y="242" font-family="Archivo, sans-serif" font-size="26"
+            font-weight="900" fill="#1b231d" text-anchor="middle">~85 to 90 CU</text>
+    </svg>
+
+    <div class="src" style="left:250px; width:360px;">
+      <span class="num">~85</span>
+      <span class="txt">
+        <span class="ey">source 1</span>
+        <span class="bo"><code>anchor-lang</code> <code>Cargo.toml</code> &#8212; the feature comment</span>
+      </span>
+    </div>
+
+    <div class="src" style="left:650px; width:360px;">
+      <span class="num">~90</span>
+      <span class="txt">
+        <span class="ey">source 2</span>
+        <span class="bo">the V2 changelog entry for <code>const-rent</code></span>
+      </span>
+    </div>
+
+    <div class="note left">
+      <div class="ey">why not one number</div>
+      <div class="bo">A single frozen digit would imply a precision the two sources do not share.</div>
+    </div>
+
+    <div class="note right">
+      <div class="ey">drift, past the dashed edge</div>
+      <div class="bo">The saving can move if the rent formula changes (<code>SIMD-0194</code>) &#8212; it is not a fixed property of your program.</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="bk">so you write</span>
+    <span class="bt">print the range + a re-verify note, never one digit</span>
+  </div>
+</div>
+</body></html>

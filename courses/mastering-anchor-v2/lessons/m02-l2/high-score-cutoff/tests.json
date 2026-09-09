@@ -1,0 +1,9 @@
+[
+  { "id": "t1", "input": "vec![100, 50, 20], 75, 3", "expectedOutput": "50", "description": "a new high score evicts the lowest and becomes the new cutoff" },
+  { "id": "t2", "input": "vec![100, 50, 20], 10, 3", "expectedOutput": "20", "description": "a score below the cutoff is rejected on a full board" },
+  { "id": "t3", "input": "vec![100, 50], 75, 3", "expectedOutput": "50", "description": "a score is admitted freely while the board is under capacity" },
+  { "id": "t4", "input": "vec![], 42, 3", "expectedOutput": "42", "description": "the first score on an empty board is the cutoff" },
+  { "id": "t5", "input": "vec![30, 30, 30], 30, 3", "expectedOutput": "30", "description": "a score that only ties the cutoff leaves the cutoff exactly where it was" },
+  { "id": "t6", "input": "vec![100, 90, 80, 70, 60], 95, 3", "expectedOutput": "90", "description": "an over-capacity board must be trimmed to cap: with 95 admitted the retained top 3 are 100/95/90, so the cutoff is 90 and not the 70 an untrimmed board would report" },
+  { "id": "t7", "input": "vec![100, 90, 80, 70, 60], 5, 3", "expectedOutput": "80", "description": "the trim happens even when the new score is rejected: the retained top 3 are 100/90/80" }
+]

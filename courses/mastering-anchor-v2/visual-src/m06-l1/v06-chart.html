@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Order-of-magnitude only: an undated V1 counter for scale
+     purpose: give the reader a sense of instruction-scale CU while explicitly walling this off from V2 truth
+     data: labeled_undated_v1_counter (NOT a V2 target, NOT dated): initialize: 5095 CU increment: 1162 CU your_trade: measure it (baseline goes here after the lab)
+     prompt: A simple two-bar chart for the V1 counter (initialize 5095, increment 1162) with a third empty/ghosted bar labeled "your trade: measure it". Add a prominent caption band: "V1, undated, different program. Reference for scale only, never a target." Do not imply a trend or comparison between the V1 bars and the ghosted bar.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:475px;height:441px;top:-250px;right:-250px;border-radius:42% 38% 40% 60% / 53% 55% 39% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:510px;height:475px;left:-307px;top:140px;border-radius:57% 58% 54% 50% / 51% 45% 46% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:410px;height:468px;bottom:-231px;left:645px;border-radius:51% 36% 40% 43% / 39% 51% 47% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .metricline { font-family:var(--font-body); font-weight:700; font-size:16px;
+                color:var(--text-primary); letter-spacing:.02em; margin-bottom:18px; }
+  .plotwrap { display:flex; align-items:stretch; gap:34px; }
+  .group { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); padding:18px 30px 0; }
+  .group.v1 { flex:0 0 700px; }
+  .group.mine { flex:0 0 400px; }
+  .gtag { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+          text-transform:uppercase; color:var(--text-muted); }
+  .gtag.on { color:var(--text-secondary); }
+  .plot { height:320px; display:flex; align-items:flex-end; gap:60px; margin-top:14px; }
+  .col { display:flex; flex-direction:column; justify-content:flex-end; align-items:center; width:320px; }
+  .val { font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1;
+         color:var(--text-primary); margin-bottom:10px; }
+  .val .u { font-size:16px; font-weight:700; color:var(--text-muted); }
+  .bar { width:320px; border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+         background:var(--surface-brand); }
+  .bar.deep { background:var(--surface-brand-deep); }
+  .ghost { width:399px; height:320px; border:3px dashed var(--stbr-yellow-700);
+           border-radius:var(--radius-sm); background:rgba(255,210,63,0.16);
+           display:flex; flex-direction:column; align-items:center; justify-content:center;
+           padding:0 16px; text-align:center; }
+  .ghost .g1 { font-family:var(--font-display); font-weight:900; font-size:26px; line-height:1.12;
+               color:var(--text-primary); }
+  .ghost .g2 { font-family:var(--font-body); font-weight:700; font-size:14.5px; line-height:1.3;
+               color:var(--stbr-green-800); margin-top:10px; }
+  .axis { border-top:3px solid var(--surface-inverse); margin-top:0; }
+  .xrow { display:flex; gap:60px; padding-top:12px; padding-bottom:18px; }
+  .xlbl { width:320px; text-align:center; font-family:var(--font-mono); font-weight:700;
+          font-size:17px; color:var(--text-primary); }
+  .xlbl.wide { width:399px; }
+  .capband { margin-top:26px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+             padding:20px 30px; display:flex; align-items:center; gap:24px; }
+  .capband .ck { font-family:var(--font-body); font-weight:800; font-size:12px;
+                 letter-spacing:.14em; text-transform:uppercase; color:rgba(245,232,202,0.60);
+                 white-space:nowrap; }
+  .capband .ct { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.16;
+                 color:var(--text-on-dark); }
+  .capband .ct b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">order of magnitude only</div>
+  <h2 class="viz-title">an undated v1 counter, purely for scale</h2>
+  <div class="metricline">compute units per instruction &mdash; labeled_undated_v1_counter</div>
+  <div class="plotwrap">
+    <div class="group v1">
+      <div class="gtag">V1 counter &mdash; undated, someone else's program</div>
+      <div class="plot">
+        <div class="col">
+          <div class="val">5,095 <span class="u">CU</span></div>
+          <div class="bar" style="height:240px;"></div>
+        </div>
+        <div class="col">
+          <div class="val">1,162 <span class="u">CU</span></div>
+          <div class="bar deep" style="height:55px;"></div>
+        </div>
+      </div>
+      <div class="axis"></div>
+      <div class="xrow">
+        <div class="xlbl">initialize</div>
+        <div class="xlbl">increment</div>
+      </div>
+    </div>
+    <div class="group mine">
+      <div class="gtag on">your program &mdash; not on this scale</div>
+      <div class="plot">
+        <div class="ghost">
+          <div class="g1">your trade:<br>measure it</div>
+          <div class="g2">no value yet &mdash; the baseline goes here after the lab</div>
+        </div>
+      </div>
+      <div class="axis"></div>
+      <div class="xrow">
+        <div class="xlbl wide">your_trade</div>
+      </div>
+    </div>
+  </div>
+  <div class="capband">
+    <span class="ck">read this first</span>
+    <span class="ct">V1, undated, different program. <b>Reference for scale only, never a target</b> &mdash; and never a comparison with your number.</span>
+  </div>
+</div>
+</body></html>

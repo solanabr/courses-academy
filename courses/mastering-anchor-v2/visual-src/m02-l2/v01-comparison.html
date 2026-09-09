@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Vec<Score> in v1 versus a Slab tail in V2
+     purpose: show why the whole-list borsh round-trip is the cost the Slab removes
+     data: v1 borsh path (per touch): read: account bytes -> borsh::deserialize -> Vec<Score> on the heap mutate: push/sort on the Vec write: borsh::serialize(Vec<Score>) -> account bytes cost scales with the WHOLE list, every touch, even to read one entry V2 Slab path (per touch): read: byte cast -> &[Score] view into the account, no copy mutate: write items in place through &mut [Score] write: nothing to re-serialize; the bytes ARE the list cost is the item(s) you touch, not the list length
+     prompt: Two stacked lanes, left-to-right, same three stages (read, mutate, write). Top lane "v1 borsh" shows a full round-trip: bytes expand into a heap Vec and collapse back to bytes, with a heavy arrow on read and on write. Bottom lane "V2 Slab" shows the bytes staying put with a thin cast arrow to a slice view and in-place writes, and an empty write stage. Emphasize that top cost scales with list length and bottom cost does not.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:495px;height:458px;top:-231px;right:-231px;border-radius:44% 52% 57% 35% / 52% 50% 51% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:497px;bottom:-279px;left:-279px;border-radius:48% 40% 59% 43% / 61% 39% 49% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:530px;height:441px;bottom:-225px;left:610px;border-radius:48% 38% 45% 52% / 37% 35% 57% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lanes { display:flex; flex-direction:column; gap:14px; }
+  .lane { border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+    background:var(--surface-card); overflow:hidden; }
+  .lane .top { display:flex; align-items:center; gap:18px; padding:13px 28px;
+    border-bottom:2px solid var(--border-subtle); background:var(--surface-paper); }
+  .lane.v2 .top { background:var(--surface-brand); border-bottom-color:var(--surface-brand); }
+  .lane .name { font-family:var(--font-display); font-weight:900; font-size:25px;
+    letter-spacing:-.01em; color:var(--text-primary); }
+  .lane.v2 .name { color:var(--text-on-brand); }
+  .lane .tag { font-family:var(--font-body); font-weight:700; font-size:14px;
+    letter-spacing:.03em; text-transform:uppercase; color:var(--text-muted); }
+  .lane.v2 .tag { color:var(--stbr-cream-300); }
+  .row { display:flex; align-items:stretch; padding:22px 26px 6px; }
+  .stage { flex:1; border:2px solid var(--border-subtle); border-radius:var(--radius-md);
+    padding:14px 18px; background:var(--surface-card); }
+  .stage .st { font-family:var(--font-display); font-weight:900; font-size:15px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-emerald); margin-bottom:8px; }
+  .stage .txt { font-family:var(--font-body); font-size:16px; line-height:1.35;
+    color:var(--text-secondary); }
+  .stage .txt code { font-family:var(--font-mono); font-size:15px; color:var(--text-primary);
+    font-weight:600; }
+  .stage .txt b { color:var(--text-primary); }
+  .stage.hero { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .stage.hero .st { color:var(--stbr-dark); }
+  .stage.hero .txt, .stage.hero .txt code, .stage.hero .txt b { color:var(--stbr-dark); font-weight:600; }
+  .conn { width:104px; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:8px; }
+  .conn .cl { font-family:var(--font-body); font-weight:700; font-size:13px;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--text-muted); }
+  /* Arrows are inline <svg> with explicit width+height. A CSS bar + an absolutely
+     positioned ::after arrowhead does NOT work here: WeasyPrint drops the right/top
+     offsets and parks the head at the bar's left edge, below the line. */
+  .conn svg { display:block; }
+  .conn.heavy .cl { color:var(--text-primary); }
+  .conn.thin .cl { color:var(--stbr-emerald); }
+  .cost { margin:12px 26px 14px; padding:10px 20px; border-radius:var(--radius-sm);
+    background:var(--surface-paper); border-left:6px solid var(--stbr-ink-300);
+    font-family:var(--font-body); font-size:17px; color:var(--text-secondary); }
+  .lane.v2 .cost { border-left-color:var(--stbr-emerald); }
+  .cost b { color:var(--text-primary); font-weight:800; }
+  .band { margin-top:16px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:15px 30px; font-size:21px; font-weight:500;
+    line-height:1.35; }
+  .band b { color:var(--stbr-yellow); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">read &middot; mutate &middot; write, per touch</div>
+  <h2 class="viz-title">the round-trip the Slab deletes</h2>
+  <div class="lanes">
+    <div class="lane v1">
+      <div class="top"><span class="name">v1 &middot; Vec&lt;Score&gt; on a borsh account</span>
+        <span class="tag">full round-trip</span></div>
+      <div class="row">
+        <div class="stage"><div class="st">read</div>
+          <div class="txt">account bytes <b>&rarr;</b> <code>borsh::deserialize</code> <b>&rarr;</b> <code>Vec&lt;Score&gt;</code> on the heap</div></div>
+        <div class="conn heavy"><span class="cl">copy out</span><svg width="76" height="26" viewBox="0 0 76 26" aria-hidden="true"><rect x="0" y="7.5" width="57" height="11" fill="#1b231d"/><polygon points="55,1 76,13 55,25" fill="#1b231d"/></svg></div>
+        <div class="stage"><div class="st">mutate</div>
+          <div class="txt">push / sort on the heap <code>Vec</code></div></div>
+        <div class="conn heavy"><span class="cl">copy back</span><svg width="76" height="26" viewBox="0 0 76 26" aria-hidden="true"><rect x="0" y="7.5" width="57" height="11" fill="#1b231d"/><polygon points="55,1 76,13 55,25" fill="#1b231d"/></svg></div>
+        <div class="stage"><div class="st">write</div>
+          <div class="txt"><code>borsh::serialize(Vec&lt;Score&gt;)</code> <b>&rarr;</b> account bytes</div></div>
+      </div>
+      <div class="cost">cost scales with the <b>WHOLE list</b>, every touch &mdash; even to read one entry</div>
+    </div>
+    <div class="lane v2">
+      <div class="top"><span class="name">V2 &middot; Slab tail</span>
+        <span class="tag">the bytes stay put</span></div>
+      <div class="row">
+        <div class="stage"><div class="st">read</div>
+          <div class="txt">byte cast <b>&rarr;</b> <code>&amp;[Score]</code> view into the account &mdash; <b>no copy</b></div></div>
+        <div class="conn thin"><span class="cl">cast</span><svg width="70" height="14" viewBox="0 0 70 14" aria-hidden="true"><rect x="0" y="5.5" width="57" height="3" fill="#008b4c"/><polygon points="55,1 70,7 55,13" fill="#008b4c"/></svg></div>
+        <div class="stage"><div class="st">mutate</div>
+          <div class="txt">write items in place through <code>&amp;mut [Score]</code></div></div>
+        <div class="conn thin"><span class="cl">nothing</span><svg width="70" height="14" viewBox="0 0 70 14" aria-hidden="true"><rect x="0" y="5.5" width="57" height="3" fill="#008b4c"/><polygon points="55,1 70,7 55,13" fill="#008b4c"/></svg></div>
+        <div class="stage hero"><div class="st">write</div>
+          <div class="txt"><b>nothing to re-serialize</b> &mdash; the bytes <b>ARE</b> the list</div></div>
+      </div>
+      <div class="cost">cost is the <b>item(s) you touch</b>, not the list length</div>
+    </div>
+  </div>
+  <div class="band">The Slab does not make serialization faster. It <b>removes the step</b> &mdash; so list length stops being a per-touch price.</div>
+</div>
+</body></html>

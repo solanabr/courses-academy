@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Reading one flamegraph frame
+     purpose: teach width = cost and the harness-frame trap in one glance
+     data: [ swap_arcade_for_tickets ..................... ] <- your instruction, full width = 100% of this test's cost [ swap_out ...................... ]            <- WIDE and it is your math: this is the real hotspot [ AccountDeserialize::try_deserialize ]        <- WIDE and it is serialization: also fair game [ test_setup_mint_and_fund ...... ]              <- WIDE but it is HARNESS: ignore it, it is not the instruction
+     prompt: Render as a stylized flamegraph, not literal code. Three stacked frames under a full-width "swap_arcade_for_tickets" root, plus one separate wide frame labeled as test harness. Color the two legitimate hotspots one hue and the harness frame a muted/greyed hue with a "do not chase" tag. Width encodes cost.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:532px;height:458px;top:-265px;right:-265px;border-radius:40% 62% 61% 61% / 53% 52% 48% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:565px;height:533px;bottom:-327px;left:-327px;border-radius:60% 61% 58% 43% / 37% 64% 55% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:570px;height:481px;bottom:-300px;right:-300px;border-radius:61% 56% 62% 56% / 60% 38% 57% 61%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-xl); padding:26px 30px 24px; }
+  /* the 0%..100% rule must span exactly the 880px frame track, not the annotation
+     column — otherwise the "100%" tick lands right of the full-width root frame. */
+  .ruler { display:flex; align-items:center; gap:22px; margin-bottom:16px; }
+  .ruler .track { flex:0 0 880px; display:flex; align-items:center; gap:14px; }
+  .ruler .spacer { flex:1 1 auto; }
+  .ruler .rl { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+               text-transform:uppercase; color:rgba(245,232,202,0.62); white-space:nowrap; }
+  .ruler .rline { flex:1 1 auto; height:0; border-top:1.5px dashed rgba(245,232,202,0.30); }
+  .frow { display:flex; align-items:center; gap:22px; }
+  .frow + .frow { margin-top:11px; }
+  .gcol { flex:0 0 880px; display:flex; }
+  .frame { height:62px; border-radius:var(--radius-sm); display:flex; align-items:center;
+           padding:0 18px; font-family:var(--font-mono); font-weight:700; font-size:17px;
+           color:var(--text-on-dark); overflow:hidden; }
+  .frame.root { width:880px; background:var(--surface-brand-deep);
+                border:2px solid rgba(245,232,202,0.35); }
+  .frame.hot  { background:var(--surface-brand); font-size:16px; }
+  .frame.harn { background:var(--stbr-ink-500); color:rgba(245,232,202,0.80); }
+  .acol { flex:1 1 auto; }
+  .acol .ah { font-family:var(--font-body); font-weight:800; font-size:15px; line-height:1.28;
+              color:var(--stbr-cream); }
+  .acol .as { font-family:var(--font-body); font-size:13.5px; line-height:1.3;
+              color:rgba(245,232,202,0.66); margin-top:3px; }
+  .acol .ah .em { color:var(--stbr-yellow); }
+  .divider { display:flex; align-items:center; gap:16px; margin:18px 0 16px; }
+  .divider .dl { flex:1 1 auto; height:0; border-top:2px dashed rgba(245,232,202,0.28); }
+  .divider .dt { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+                 text-transform:uppercase; color:rgba(245,232,202,0.58); white-space:nowrap; }
+  .tag { display:inline-block; margin-top:7px; padding:5px 12px; border-radius:var(--radius-pill);
+         background:var(--surface-accent); color:var(--text-on-accent);
+         font-family:var(--font-body); font-weight:800; font-size:12.5px; }
+  .foot { margin-top:18px; font-family:var(--font-body); font-size:16px; line-height:1.35;
+          color:var(--text-secondary); }
+  .foot b { color:var(--stbr-emerald-800); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">width = cost</div>
+  <h2 class="viz-title">reading one flamegraph frame</h2>
+  <div class="panel">
+    <div class="ruler">
+      <div class="track">
+        <span class="rl">0% of this test's CU</span><span class="rline"></span>
+        <span class="rl">100%</span>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="frow">
+      <div class="gcol"><div class="frame root">swap_arcade_for_tickets</div></div>
+      <div class="acol">
+        <div class="ah">your instruction</div>
+        <div class="as">full width = 100% of this test's cost; every frame below is a slice of it</div>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="gcol"><div class="frame hot" style="width:470px;">swap_out</div></div>
+      <div class="acol">
+        <div class="ah">WIDE, and it is your math</div>
+        <div class="as">this is the real hotspot &mdash; go here first</div>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="gcol"><div class="frame hot" style="width:420px;">AccountDeserialize::try_deserialize</div></div>
+      <div class="acol">
+        <div class="ah">WIDE, and it is serialization</div>
+        <div class="as">also fair game &mdash; it is cost your instruction pays</div>
+      </div>
+    </div>
+
+    <div class="divider"><span class="dt">same SVG &mdash; different root</span><span class="dl"></span></div>
+
+    <div class="frow">
+      <div class="gcol"><div class="frame harn" style="width:520px;">test_setup_mint_and_fund</div></div>
+      <div class="acol">
+        <div class="ah">WIDE, but it is <span class="em">HARNESS</span></div>
+        <div class="as">fixture setup, not the instruction &mdash; optimising it changes nothing on chain</div>
+        <span class="tag">do not chase</span>
+      </div>
+    </div>
+  </div>
+  <div class="foot">A frame earns your attention only when it is <b>wide</b> <em>and</em> <b>yours</b>. Wide harness frames are the trap.</div>
+</div>
+</body></html>

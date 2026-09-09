@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Constraint syntax routes to exactly one hook
+     purpose: map each way of writing a namespaced constraint to the hook codegen calls
+     data: syntax -> hook (when it runs): - `ns::key = value`               -> check   (existing account, before the handler) - `init, ns::key = value`         -> init    (after the account is created) - `init_if_needed, ns::key = val` -> init on create, then check; check on an existing account - `update(ns::key = value)`       -> update  (inside an update(...) clause) - any successful path             -> exit    (during account exit, only for accounts that serialize out)
+     prompt: A left-to-right routing diagram. On the left, five syntax chips (the exact strings in data). Each routes with an arrow to one of four hook nodes on the right: init, check, update, exit. Show the init_if_needed chip forking to BOTH init and check. Label each hook node with its "when it runs" phrase. Keep init/check/update/exit visually distinct; put exit slightly apart to signal it fires on any successful path, not from a specific syntax.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:504px;top:-289px;right:-289px;border-radius:59% 44% 44% 63% / 64% 36% 61% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:528px;height:537px;bottom:-304px;left:-304px;border-radius:57% 38% 37% 54% / 55% 57% 43% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:477px;height:470px;bottom:-274px;left:574px;border-radius:50% 51% 43% 40% / 61% 59% 59% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .board { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); padding:28px 30px; }
+  .stage { position:relative; width:1388px; height:432px; }
+  .lay { position:absolute; left:0; top:0; }
+  .col { position:absolute; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+         letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .chip { position:absolute; left:0; width:396px; height:58px; border:2px solid var(--border-subtle);
+          border-radius:var(--radius-md); background:var(--surface-paper); display:flex;
+          align-items:center; padding:0 16px; font-family:var(--font-mono); font-weight:700;
+          font-size:15px; line-height:1.2; color:var(--text-primary); }
+  .chip.fork { background:var(--surface-accent); border-color:var(--stbr-yellow-700);
+               color:var(--text-on-accent); }
+  .chip.any { background:var(--surface-card); border-style:dashed; color:var(--text-secondary);
+              font-family:var(--font-body); font-weight:700; font-size:15px; }
+  .hook { position:absolute; left:880px; width:508px; border-radius:var(--radius-md);
+          background:var(--surface-brand); padding:13px 20px; }
+  .hook.exit { background:var(--surface-brand-deep); }
+  .hook .hn { font-family:var(--font-mono); font-weight:800; font-size:22px; line-height:1.1;
+              color:var(--text-on-brand); }
+  .hook .hw { font-family:var(--font-body); font-size:13.5px; line-height:1.35;
+              color:rgba(245,232,202,0.95); margin-top:5px; }
+  .forknote { position:absolute; left:442px; top:214px; width:340px; text-align:left;
+              font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.1em;
+              text-transform:uppercase; color:var(--text-primary); }
+  .foot { margin-top:18px; font-family:var(--font-body); font-size:15px; line-height:1.4;
+          color:var(--text-secondary); }
+  .foot b { color:var(--text-primary); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">syntax &rarr; codegen</div>
+  <h2 class="viz-title">which hook the macro calls, by how you write it</h2>
+
+  <div class="board">
+    <div class="stage">
+      <svg class="lay" width="1388" height="432" viewBox="0 0 1388 432">
+        <!-- ns::key = value  ->  check -->
+        <path d="M 396,39 C 600,39 660,123 872,123" fill="none" stroke="#1b231d" stroke-width="2.2"/>
+        <polygon points="880,123 868,117 868,129" fill="#1b231d"/>
+        <!-- init, ns::key = value  ->  init -->
+        <path d="M 396,119 C 600,119 660,29 872,29" fill="none" stroke="#1b231d" stroke-width="2.2"/>
+        <polygon points="880,29 868,23 868,35" fill="#1b231d"/>
+        <!-- init_if_needed  ->  init  (fork, accent) -->
+        <path d="M 396,199 C 620,199 680,49 872,49" fill="none" stroke="#d9a608" stroke-width="3"/>
+        <polygon points="880,49 868,43 868,55" fill="#d9a608"/>
+        <!-- init_if_needed  ->  check (fork, accent) -->
+        <path d="M 396,199 C 620,199 680,143 872,143" fill="none" stroke="#d9a608" stroke-width="3"/>
+        <polygon points="880,143 868,137 868,149" fill="#d9a608"/>
+        <!-- update(...)  ->  update -->
+        <path d="M 396,279 C 600,279 660,227 872,227" fill="none" stroke="#1b231d" stroke-width="2.2"/>
+        <polygon points="880,227 868,221 868,233" fill="#1b231d"/>
+        <!-- any successful path -> exit -->
+        <path d="M 396,359 C 600,359 660,374 872,374" fill="none" stroke="#306c40" stroke-width="2.2" stroke-dasharray="7 6"/>
+        <polygon points="880,374 868,368 868,380" fill="#306c40"/>
+      </svg>
+
+      <div class="col" style="left:0;top:-24px;">how you write it</div>
+      <div class="col" style="left:880px;top:-24px;">the hook codegen calls</div>
+
+      <div class="chip" style="top:10px;">ns::key = value</div>
+      <div class="chip" style="top:90px;">init, ns::key = value</div>
+      <div class="chip fork" style="top:170px;">init_if_needed, ns::key = val</div>
+      <div class="chip" style="top:250px;">update(ns::key = value)</div>
+      <div class="chip any" style="top:330px;">any successful path</div>
+
+      <div class="forknote">forks to both</div>
+
+      <div class="hook" style="top:0;height:78px;">
+        <div class="hn">init</div>
+        <div class="hw">after the account is created</div>
+      </div>
+      <div class="hook" style="top:94px;height:78px;">
+        <div class="hn">check</div>
+        <div class="hw">existing account, before the handler</div>
+      </div>
+      <div class="hook" style="top:188px;height:78px;">
+        <div class="hn">update</div>
+        <div class="hw">inside an update(&hellip;) clause</div>
+      </div>
+      <div class="hook exit" style="top:330px;height:88px;">
+        <div class="hn">exit</div>
+        <div class="hw">during account exit &mdash; only for accounts that serialize out</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><b>init_if_needed</b> is the one syntax that routes twice: <b>init</b> on create, then <b>check</b>; plain <b>check</b> on an account that already exists.</div>
+</div>
+</body></html>

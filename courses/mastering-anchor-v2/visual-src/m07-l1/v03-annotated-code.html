@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Why bare `dup` will not build on V2
+     purpose: show the compile error and the exact fix the message names
+     data: attack: two mutable InterfaceAccount<TokenAccount> reserve slots, opt-out spelled `dup` code: #[derive(Accounts)] pub struct DrainPool { #[account(mut, dup)]      // <-- bare `dup` pub reserve_a: InterfaceAccount<TokenAccount>, #[account(mut, dup)] pub reserve_b: InterfaceAccount<TokenAccount>, } error: | error: duplicate-mutable opt-out must be written `unsafe(dup)` the MUT_MASK for this instruction marks `reserve_a` and `reserve_b` mutable; to intentionally allow the same account in both, write `unsafe(dup)` fix: change `dup` to `unsafe(dup)` only if the duplication is genuinely intended
+     prompt: Annotated code card. Show the DrainPool struct with both `dup` attributes highlighted red, the compiler error block below it, and a callout arrow from `dup` to the word `unsafe(dup)` in the error. Three margin annotations as listed. Emphasis on the phrase "must be written unsafe(dup)".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:557px;height:563px;top:-303px;right:-303px;border-radius:64% 48% 47% 53% / 40% 44% 58% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:472px;height:476px;left:-268px;top:122px;border-radius:40% 43% 54% 57% / 58% 38% 43% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:412px;height:486px;bottom:-244px;left:720px;border-radius:50% 64% 51% 51% / 54% 51% 51% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 16px; }
+  .cols { display: flex; gap: 20px; align-items: stretch; }
+  .left { flex: 1 1 0; min-width: 0; }
+  .right { flex: 0 0 400px; }
+  .code { background: var(--surface-inverse); border-radius: var(--radius-lg); padding: 18px 22px; }
+  .cl { font-family: var(--font-mono); font-size: 14.5px; line-height: 1.62;
+        color: rgba(245,232,202,0.92); white-space: pre; }
+  .cl .kw { color: #7fd4a1; }
+  .cl .dim { color: rgba(245,232,202,0.42); }
+  .bad { background: rgba(255,210,63,0.20); border-bottom: 2px solid var(--stbr-yellow);
+         color: var(--stbr-yellow); font-weight: 700; padding: 0 3px; }
+  .arrow { display: flex; align-items: center; gap: 10px; margin: 8px 0 8px 30px; }
+  .achip { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .1em;
+           text-transform: uppercase; color: var(--stbr-green-800);
+           background: rgba(255,210,63,0.45); border-radius: var(--radius-pill); padding: 4px 12px; }
+  .err { background: var(--surface-card); border: 2px solid var(--border-strong);
+         border-radius: var(--radius-lg); overflow: hidden; }
+  .errh { background: var(--surface-inverse); padding: 8px 18px; display: flex; gap: 10px;
+          align-items: center; }
+  .errh span { font-family: var(--font-body); font-weight: 800; font-size: 11px;
+               letter-spacing: .12em; text-transform: uppercase; color: rgba(245,232,202,0.68); }
+  .errb { padding: 14px 18px; font-family: var(--font-mono); font-size: 14px; line-height: 1.5;
+          color: var(--text-primary); }
+  .errb .hl { background: var(--surface-accent); font-weight: 700; padding: 1px 5px;
+              border-radius: 3px; }
+  .errb .note { display: block; margin-top: 8px; font-family: var(--font-body); font-size: 13.5px;
+                line-height: 1.42; color: var(--text-secondary); }
+  .ann { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md);
+         background: var(--surface-card); padding: 13px 16px; margin-bottom: 14px;
+         border-left: 4px solid var(--stbr-emerald); }
+  .ann.fix { background: var(--surface-brand); border: none; margin-bottom: 0; }
+  .ak { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .12em;
+        text-transform: uppercase; color: var(--stbr-emerald-800); margin-bottom: 5px; }
+  .ann.fix .ak { color: rgba(245,232,202,0.92); }
+  .at { font-family: var(--font-body); font-size: 14px; line-height: 1.4; color: var(--text-primary); }
+  .ann.fix .at { color: var(--text-on-brand); font-weight: 600; }
+  .at code { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+             color: var(--stbr-emerald-800); }
+  .ann.fix .at code { color: var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">attack 2 &mdash; duplicate-mutable</div>
+  <h2 class="viz-title">bare <span style="font-family:var(--font-mono);font-size:0.8em">dup</span> will not build on V2</h2>
+
+  <div class="cols">
+    <div class="left">
+      <div class="code"><div class="cl">#[<span class="kw">derive</span>(Accounts)]
+<span class="kw">pub struct</span> DrainPool {
+    #[account(mut, <span class="bad">dup</span>)]     <span class="dim">// &lt;-- bare `dup`</span>
+    <span class="kw">pub</span> reserve_a: InterfaceAccount&lt;TokenAccount&gt;,
+
+    #[account(mut, <span class="bad">dup</span>)]
+    <span class="kw">pub</span> reserve_b: InterfaceAccount&lt;TokenAccount&gt;,
+}</div></div>
+
+      <div class="arrow">
+        <svg width="26" height="34" viewBox="0 0 26 34"><line x1="13" y1="0" x2="13" y2="22" stroke="#d9a608" stroke-width="2.6"/><polygon points="13,34 7,21 19,21" fill="#d9a608"/></svg>
+        <span class="achip">anchor build says exactly what to write instead</span>
+      </div>
+
+      <div class="err">
+        <div class="errh">
+          <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="#ffd23f" stroke-width="2"/><line x1="4.6" y1="4.6" x2="11.4" y2="11.4" stroke="#ffd23f" stroke-width="2"/><line x1="11.4" y1="4.6" x2="4.6" y2="11.4" stroke="#ffd23f" stroke-width="2"/></svg>
+          <span>compiler output</span>
+        </div>
+        <div class="errb">
+          error: duplicate-mutable opt-out <span class="hl">must be written `unsafe(dup)`</span>
+          <span class="note">the <b>MUT_MASK</b> for this instruction marks <b>reserve_a</b> and <b>reserve_b</b> mutable; to intentionally allow the same account in both, write <b>unsafe(dup)</b>.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="ann">
+        <div class="ak">the attack</div>
+        <div class="at">Two mutable <code>InterfaceAccount&lt;TokenAccount&gt;</code> reserve slots, with the opt-out spelled <code>dup</code> &mdash; pass the same reserve twice and price the pool against itself.</div>
+      </div>
+      <div class="ann">
+        <div class="ak">what V2 does</div>
+        <div class="at">It never reaches the runtime dup check. The attribute itself is rejected at build, and the error names the only spelling that would let it through.</div>
+      </div>
+      <div class="ann fix">
+        <div class="ak">the fix, named by the message</div>
+        <div class="at">Change <code>dup</code> to <code>unsafe(dup)</code> &mdash; and only if the duplication is genuinely intended. The word <code>unsafe</code> is the point: it makes the intent reviewable.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

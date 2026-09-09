@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The trust chain, and the one link nobody has proven yet
+     purpose: locate exactly where in the client-to-source chain the unproven assumption lives
+     data: LEFT TO RIGHT (each link trusts the next): kit client -> trusts -> published IDL published IDL -> trusts -> deployed program (sBPF bytes on-chain) deployed program -> trusts -> ??? your source repo The last arrow is a claim, not a proof: on-chain bytes carry no commit, no signature, no link back to source. A reader of the repo and a user of the program are trusting two different artifacts and hoping they are the same. caption: `verify-from-repo` is the tool that turns that last dashed arrow into a checked one.
+     prompt: Four boxes in a horizontal chain: kit client, published IDL, deployed program, source repo. The first three arrows are solid green "trusts" links. The final arrow from deployed program back to source repo is a red dashed line labelled "unproven" with a question mark. Emphasize that only the last link is unverified.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:559px;height:493px;top:-273px;right:-273px;border-radius:35% 65% 57% 37% / 41% 38% 57% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:454px;height:482px;bottom:-242px;left:-242px;border-radius:37% 40% 54% 40% / 38% 60% 43% 57%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:448px;height:539px;bottom:-318px;left:460px;border-radius:58% 52% 37% 42% / 46% 65% 41% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; margin: 4px 0 26px; }
+  .chain { display: grid; grid-template-columns: 1fr 116px 1fr 116px 1fr 116px 1fr;
+           align-items: center; }
+  .node { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+          background: var(--surface-card); overflow: hidden; height: 198px;
+          display: flex; flex-direction: column; }
+  .node.hot { border: 2px solid var(--stbr-yellow-700); }
+  .nh { padding: 12px 16px 14px; background: var(--surface-inverse); }
+  .node.hot .nh { background: var(--surface-accent); }
+  .nk { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+        letter-spacing: .14em; text-transform: uppercase; color: rgba(245,232,202,0.55); }
+  .node.hot .nk { color: rgba(27,35,29,0.62); }
+  .nt { font-family: var(--font-display); font-weight: 900; font-size: 23px; line-height: 1.06;
+        color: var(--text-on-dark); margin-top: 5px; }
+  .node.hot .nt { color: var(--text-on-accent); }
+  .nb { flex: 1 1 auto; padding: 14px 16px 15px; display: flex; flex-direction: column; }
+  .nx { font-family: var(--font-body); font-size: 13.5px; line-height: 1.42;
+        color: var(--text-primary); }
+  .nf { margin-top: auto; padding-top: 10px; border-top: 1.5px solid var(--border-subtle);
+        font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+  .link { display: flex; flex-direction: column; align-items: center; }
+  .lk { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .12em;
+        text-transform: uppercase; padding: 4px 11px 5px; border-radius: var(--radius-pill);
+        background: rgba(0,139,76,0.12); color: var(--stbr-emerald-800); margin-bottom: 9px; }
+  .lk.no { background: var(--surface-accent); color: var(--text-on-accent); }
+  .foot { display: grid; grid-template-columns: 1fr 470px; gap: 18px; margin-top: 26px; }
+  .band { border-radius: var(--radius-md); padding: 15px 24px; display: flex;
+          align-items: center; gap: 20px; }
+  .band.dk { background: var(--surface-inverse); }
+  .band.em { background: var(--surface-brand); }
+  .bk { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.55); white-space: nowrap; }
+  .bt { font-family: var(--font-display); font-weight: 900; font-size: 18px; line-height: 1.18;
+        color: var(--text-on-dark); }
+  .band.em .bt { color: var(--text-on-brand); }
+  .band.em .bt code { font-family: var(--font-mono); font-size: 16px; }
+</style>
+  <div class="stbr-eyebrow">client &rarr; idl &rarr; bytes &rarr; source</div>
+  <h2 class="viz-title">the trust chain, and the one link nobody has proven</h2>
+
+  <div class="chain">
+    <div class="node">
+      <div class="nh"><div class="nk">what users run</div><div class="nt">kit client</div></div>
+      <div class="nb">
+        <div class="nx">encodes instructions and decodes accounts against whatever interface it was handed</div>
+        <div class="nf">trusts the IDL</div>
+      </div>
+    </div>
+
+    <div class="link">
+      <span class="lk">trusts</span>
+      <svg width="116" height="20" viewBox="0 0 116 20">
+        <line x1="0" y1="10" x2="100" y2="10" stroke="#008b4c" stroke-width="2.5"/>
+        <polygon points="100,3 116,10 100,17" fill="#008b4c"/>
+      </svg>
+    </div>
+
+    <div class="node">
+      <div class="nh"><div class="nk">the interface</div><div class="nt">published IDL</div></div>
+      <div class="nb">
+        <div class="nx">a description of the program &mdash; accounts, args, discriminators &mdash; published beside it</div>
+        <div class="nf">trusts the bytes</div>
+      </div>
+    </div>
+
+    <div class="link">
+      <span class="lk">trusts</span>
+      <svg width="116" height="20" viewBox="0 0 116 20">
+        <line x1="0" y1="10" x2="100" y2="10" stroke="#008b4c" stroke-width="2.5"/>
+        <polygon points="100,3 116,10 100,17" fill="#008b4c"/>
+      </svg>
+    </div>
+
+    <div class="node">
+      <div class="nh"><div class="nk">on-chain</div><div class="nt">deployed program</div></div>
+      <div class="nb">
+        <div class="nx">the sBPF bytes the validator actually executes &mdash; the only artifact users touch</div>
+        <div class="nf">claims a source</div>
+      </div>
+    </div>
+
+    <div class="link">
+      <span class="lk no">? unproven</span>
+      <svg width="116" height="20" viewBox="0 0 116 20">
+        <line x1="0" y1="10" x2="100" y2="10" stroke="#d9a608" stroke-width="3"
+              stroke-dasharray="8 6"/>
+        <polygon points="100,3 116,10 100,17" fill="#d9a608"/>
+      </svg>
+    </div>
+
+    <div class="node hot">
+      <div class="nh"><div class="nk">what auditors read</div><div class="nt">your source repo</div></div>
+      <div class="nb">
+        <div class="nx">the code humans review &mdash; linked to the bytes by nothing but a claim on a README</div>
+        <div class="nf">never checked</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div class="band dk">
+      <span class="bk">the gap</span>
+      <span class="bt">On-chain bytes carry no commit, no signature, no link back to source: a repo reader and a program user are trusting two different artifacts and hoping they match.</span>
+    </div>
+    <div class="band em">
+      <span class="bt"><code>verify-from-repo</code> is what turns that last dashed arrow into a checked one.</span>
+    </div>
+  </div>
+</div>
+</body></html>

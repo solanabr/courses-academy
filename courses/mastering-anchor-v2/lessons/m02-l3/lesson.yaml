@@ -1,0 +1,106 @@
+id: lesson-mav2-m02-l3
+slug: m02-l3
+title: "The borsh escape hatch: when Pod isn't enough"
+skills:
+  - account-model
+  - anchor
+  - version-pinning
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m02-l3-q1
+        prompt: "A cabinet field must hold an arbitrary-length player-supplied username. How do you model it?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Hash the name off-chain and keep just its 32-byte digest in the Pod header instead"
+            correct: false
+            feedback: "For a field you compare but never display this is a genuinely good design, and [u8; 32] really is Pod. The spec here says the account holds the name, and a digest does not hold it: you have solved a neighbouring problem and added an off-chain lookup to render anything."
+          - id: b
+            label: "#[account(borsh)] + BorshAccount<T> — the escape hatch for unbounded data."
+            correct: true
+            feedback: "That attribute is what releases a type from the flat-layout bound: variable length, paid for on every read. A capped vector wins only where a fixed maximum genuinely satisfies the spec."
+          - id: a
+            label: "Pod with a PodVec<u8, 64> — cap the name at 64 bytes and stay on the direct cast."
+            correct: false
+            feedback: "That caps the name at 64 bytes. Fine IF you accept a fixed maximum, but the field is specified as arbitrary-length, which a PodVec cannot be."
+          - id: c
+            label: "Pod with a raw String field — Account<T> serializes the String behind the cast."
+            correct: false
+            feedback: "Account<T> never serializes anything; it casts, which is exactly why it requires T: Pod. String is a heap pointer plus a length, not a run of bytes, so this fails with the trait-bound error that opened the lesson."
+        explanation: "Pod means a fixed compile-time layout. Genuinely unbounded data needs BorshAccount<T>, which deserializes on read — you pay the cost V2 avoids by default, in exchange for variable length. A PodVec is only right if a fixed maximum is acceptable. The #[account(borsh)] attribute is what opts the type out of the T: Pod requirement and into that deserialize-on-read model; BorshAccount<T> is the wrapper you write in the accounts context where Account<T> would otherwise go."
+      - id: m02-l3-q2
+        prompt: "You move a struct with a HashMap field from borsh to V2's wincode and the on-chain bytes now differ run to run. Why?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "wincode writes a HashMap's length prefix as u64 where borsh uses u32"
+            correct: false
+            feedback: "Encoders really do disagree about prefix widths, so this is the right family of bug to suspect. wincode's BORSH_CONFIG is byte-identical to borsh on length prefixes and entry encoding; the two documented exceptions are map ordering and NaN."
+          - id: e
+            label: "NaN acceptance differs between the two encoders, not map ordering"
+            correct: false
+            feedback: "Half an answer: there are exactly two holes and this is the other one. NaN bites a struct carrying a float, and it would not produce different bytes run to run for the same logical state, which is the symptom in front of you."
+          - id: c
+            label: "wincode and borsh resolve HashMap/HashSet iteration order differently."
+            correct: true
+            feedback: "Nothing is unsupported and nothing is compressed — two encoders just answered a question the language leaves open. You'll only notice on a second run, which is what makes it a nasty one to catch."
+          - id: b
+            label: "HashMap isn't serializable under wincode's BORSH_CONFIG at all."
+            correct: false
+            feedback: "It serializes fine under BORSH_CONFIG — the type is fully supported. The hole is that std randomizes HashMap iteration order per run, so the order isn't pinned."
+          - id: a
+            label: "wincode compresses map entries, so the encoded length varies per write."
+            correct: false
+            feedback: "wincode compresses nothing — BORSH_CONFIG is byte-identical to borsh on length prefixes and entry encoding. What varies is the ORDER the entries land in, not their size."
+        explanation: "wincode's BORSH_CONFIG is byte-identical to borsh EXCEPT for exactly two things: HashMap/HashSet ordering and f32/f64 NaN acceptance. Depend on map iteration order and you get non-deterministic wire — one of the two holes to know before you rely on borsh compatibility. The root cause is that a Rust HashMap has no defined iteration order at all: std deliberately randomizes it to defend against hash-flooding, so each encoder has to resolve that non-determinism itself, and the two resolved it differently."
+      - id: m02-l3-q3
+        prompt: "After bumping a dependency, your #[account(borsh)] code stops compiling with a trait-bound error. Which real RC-era incident does this echo?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The @coral-xyz/anchor → @anchor-lang/core rename."
+            correct: false
+            feedback: "That rename is an npm client-package story about download counts and import paths. It cannot produce a Rust trait-bound error, because the TS client isn't in the crate graph that compiles #[account(borsh)]."
+          - id: a
+            label: "Issue #4937 — anchor's wincode 0.5 pin versus the wincode 0.6 that solana-address 2.7.0 requires."
+            correct: true
+            feedback: "Two majors of one crate in a single graph, and the trait bound stops resolving. Pins reconciled, issue closed, four days end to end. What you remember is the shape: green on Monday, broken on Tuesday, nothing of yours changed."
+          - id: e
+            label: "The 2026-08-12 crates.io publish of 2.0.0-rc.1, which shipped undocumented and untested for installs"
+            correct: false
+            feedback: "That publish is real and it is flagged as a red herring, so filing it under trouble is fair. Its risk is an install path nobody tests, not a type error: the compile break came from two wincode majors meeting in one dependency graph."
+          - id: c
+            label: "The Cashio exploit — an unvalidated collateral account."
+            correct: false
+            feedback: "Cashio is a runtime security incident about a missing account check — territory for the DeFi & RWA Engineering course. A missing constraint fails on-chain at execution; it never breaks a build."
+          - id: d
+            label: "The litesvm 0.11-to-0.15 jump, where the harness's SVM major moves under a test suite that was green"
+            correct: false
+            feedback: "The course warns about exactly that pin, so this is the right instinct pointed one layer off. A dev-dependency governs how your tests run and cannot break a trait bound inside the program crate; #4937 is a mismatch between two crates the program itself compiles against."
+        explanation: "Issue #4937 (filed 2026-08-16, closed 2026-08-20) is the RC's first war story: a mismatch between anchor-lang's wincode 0.5 pin and the wincode 0.6 that solana-address 2.7.0 requires produced a trait-bound error that broke #[account(borsh)] until the pins were reconciled. It's exactly why the course centralizes pins with freshness notes. Note the failure mode — not a runtime bug and not a subtle wire mismatch, but a green build on Monday and a compile error on Tuesday in a feature you never touched, which is what floating a single crate looks like."
+      - id: m02-l3-q4
+        prompt: "An account needs a fixed [u8; 32] key, a leaderboard of at most 10 scores, and a free-form description. What's the best modeling?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Make all three Pod, with the description as a raw String in the same struct."
+            correct: false
+            feedback: "String isn't Pod, so the struct won't compile at all — and merging the unbounded field into the core struct is precisely the move that forces the split in the first place."
+          - id: a
+            label: "Put all three in one BorshAccount<T> so the whole record deserializes at once."
+            correct: false
+            feedback: "Deserializing the whole record drops zero-copy on the fixed key and the bounded board for no reason, and the cost is proportional to the account's full size on EVERY touch — so the hot leaderboard path pays a tax two-thirds of the account never needed."
+          - id: d
+            label: "Split it in two and make both halves borsh, which generally reads simpler"
+            correct: false
+            feedback: "The split is the right half of the answer, and the reason for it is what the other half hangs on: you split so the hot fixed state keeps its byte cast. Make both halves borsh and a handler that only bumps the leaderboard pays a deserialize it never needed, which is the cost the split existed to avoid."
+          - id: b
+            label: "Pod core for the key and bounded board; borsh only for the description."
+            correct: true
+            feedback: "Splitting keeps the hot path off the deserializer: bump the board and you touch only the cast-in-place core. Rent falls out of it too, because the worst-case sizing now applies to one field instead of the whole record."
+        explanation: "Model fixed and bounded state as Pod for the CU win and isolate the genuinely unbounded part behind the borsh escape hatch. That mixed-tier design is the whole point: borsh where Pod can't reach, Pod everywhere else. The payoff is scoped cost — a handler that only bumps the leaderboard touches the Pod core and never deserializes anything — plus scoped rent, since a borsh account must be sized for the largest string you will ever store and splitting keeps that worst case off the hot account."

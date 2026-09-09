@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The four frontier walls and the one-line fix for each
+     purpose: give the reader a scannable failure-to-fix map for the whole install so they can self-diagnose in the lab
+     data: columns: Wall | What it looks like | The fix row 1: Wrong anchor answers | build behaves like V1; anchor --version says 1.1.2 | put ~/.cargo/bin early on PATH; check with which anchor row 2: avm won't install the RC | avm install 2.0.0-rc.1 fails on a 404 Not Found | no Release cut, so no binary to download; use the git channel instead row 3: Trusting the registry | cargo install anchor-cli --version 2.0.0-rc.1 (undocumented) | the crates.io publish is untested for CLI; use the documented git build row 4: 3.1.10 read as "current" | assuming Solana is on 3.x from the CI pin | 3.1.10 is a local-CI pin only; current stable Agave is v4.2.1 (Aug 2026) bonus: avm naming trap | the avm crate on crates.io has no anchor commands | that is an unrelated 2016 package (schultyy/avm); install avm from the Anchor repo
+     prompt: Designed three-column table. Columns "Wall", "What it looks like", "The fix". Five rows (four walls plus the bonus avm-naming-trap row visually set apart, e.g. a lighter divider above it). Left column bold as the row label; right column (the fix) accented as the payoff. Keep it dense and scannable, like a runbook the reader would screenshot.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:488px;height:526px;top:-266px;right:-266px;border-radius:43% 37% 48% 46% / 56% 59% 39% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:581px;height:564px;bottom:-318px;left:-318px;border-radius:61% 38% 47% 35% / 58% 44% 63% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:508px;height:464px;bottom:-270px;right:-270px;border-radius:65% 42% 43% 37% / 36% 53% 47% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:44px; }
+  .t4 { display:grid; grid-template-columns:322px 526px 608px;
+        border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+        background:var(--surface-card); }
+  .t4-h { background:var(--surface-inverse); padding:14px 22px;
+          font-family:var(--font-body); font-size:16px; font-weight:800;
+          letter-spacing:0.14em; text-transform:uppercase; color:var(--stbr-cream); }
+  .t4-h.a { border-radius:var(--radius-xl) 0 0 0; }
+  .t4-h.c { border-radius:0 var(--radius-xl) 0 0; color:var(--stbr-yellow); }
+
+  .t4-w { padding:15px 22px; border-top:1.5px solid var(--border-subtle);
+          font-family:var(--font-display); font-weight:900; font-size:21px;
+          color:var(--text-primary); line-height:1.2; }
+  .t4-s { padding:15px 22px; border-top:1.5px solid var(--border-subtle);
+          border-left:1.5px solid var(--border-subtle);
+          font-family:var(--font-body); font-size:17px; color:var(--text-secondary); line-height:1.35; }
+  .t4-f { padding:15px 22px; border-top:1.5px solid var(--border-subtle);
+          border-left:1.5px solid var(--border-subtle); background:#fffbee;
+          font-family:var(--font-body); font-size:17px; font-weight:600;
+          color:var(--text-primary); line-height:1.35; }
+  .t4-s code, .t4-f code, .t4-w code { font-family:var(--font-mono); font-size:16px; font-weight:700;
+                                       color:var(--stbr-emerald-800); }
+  .t4-f b { font-weight:800; color:var(--stbr-dark); border-bottom:3px solid var(--stbr-yellow); }
+
+  .t4-bonus { border-top:3px solid var(--stbr-dark) !important; background:var(--surface-paper); }
+  .t4-bonus.f { background:#fdf6e0; }
+  .t4-tag { display:inline-block; font-family:var(--font-body); font-size:13px; font-weight:800;
+            letter-spacing:0.12em; text-transform:uppercase; color:var(--stbr-cream);
+            background:var(--stbr-emerald); border-radius:var(--radius-pill);
+            padding:3px 11px; margin-bottom:6px; }
+</style>
+  <div class="stbr-eyebrow">runbook — self-diagnose in the lab</div>
+  <h2 class="viz-title">The four frontier walls and the one-line fix for each</h2>
+
+  <div class="t4">
+    <div class="t4-h a">Wall</div>
+    <div class="t4-h">What it looks like</div>
+    <div class="t4-h c">The fix</div>
+
+    <div class="t4-w">Wrong <code>anchor</code> answers</div>
+    <div class="t4-s">build behaves like V1; <code>anchor --version</code> says <code>1.1.2</code></div>
+    <div class="t4-f">put <b>~/.cargo/bin</b> early on <code>PATH</code>; check with <code>which anchor</code></div>
+
+    <div class="t4-w">avm won’t install the RC</div>
+    <div class="t4-s"><code>avm install 2.0.0-rc.1</code> fails on a 404 Not Found</div>
+    <div class="t4-f">no Release cut, so no binary to download — use the <b>git channel</b> instead</div>
+
+    <div class="t4-w">Trusting the registry</div>
+    <div class="t4-s"><code>cargo install anchor-cli --version 2.0.0-rc.1</code> — undocumented</div>
+    <div class="t4-f">the crates.io publish is untested for the CLI; use the <b>documented git build</b></div>
+
+    <div class="t4-w">3.1.10 read as “current”</div>
+    <div class="t4-s">assuming Solana is on 3.x because of the CI pin</div>
+    <div class="t4-f">3.1.10 is a <b>local-CI pin only</b>; current stable Agave is v4.2.1 (Aug 2026)</div>
+
+    <div class="t4-w t4-bonus"><span class="t4-tag">bonus</span><br>avm naming trap</div>
+    <div class="t4-s t4-bonus">the <code>avm</code> crate on crates.io has no <code>anchor</code> commands</div>
+    <div class="t4-f t4-bonus f">that is an unrelated 2016 package (<code>schultyy/avm</code>) — install avm from the <b>Anchor repo</b></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The SPL withdraw, load to token movement
+     purpose: give the runtime sequence so a reader can map any failure to the exact step that produced it
+     data: steps: 1. Anchor loads accounts and runs constraints: owner + discriminator inside load FIRST, then address = vault.owner 2. handler reads decimals off the mint and the stored bump off the vault 3. handler rebuilds signer_seeds = [b"vault", authority, bump] 4. handler builds TransferChecked with cpi_handle_mut (from, to) and cpi_handle (mint, authority) 5. CpiContext::new(token_program.address()..).with_signer(signer_seeds) 6. transfer_checked CPI: token program verifies the seeds reproduce the vault PDA 7. token program verifies the asserted decimals match the mint, then moves the balance 8. handler debits Vault.balance with checked_sub failure points: - step 1: wrong signer -> address constraint fails (or a generic IllegalOwner even earlier, in load) - step 5: missing .with_signer -> the move is unsigned, runtime rejects it - step 7: wrong decimals -> transfer_checked refuses before moving anything - step 8: `-` instead of checked_sub -> panic on underflow instead of a clean error
+     prompt: Vertical flowchart, eight numbered steps top to bottom in rounded boxes. Attach four red annotation callouts to steps 1, 5, 7, and 8 naming the failure at each. One accent color for the happy path, red only for the failure callouts. Short step labels; monospace for the API names.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:541px;height:547px;top:-314px;right:-314px;border-radius:36% 52% 61% 41% / 35% 49% 49% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:541px;height:455px;left:-314px;top:102px;border-radius:57% 63% 65% 44% / 47% 37% 56% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:564px;height:557px;bottom:-301px;right:-301px;border-radius:45% 62% 62% 40% / 58% 44% 57% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .steps { position:relative; margin-top:2px; }
+  .rail { position:absolute; left:17px; top:30px; bottom:30px; width:4px; border-radius:2px;
+          background:var(--stbr-emerald); }
+  .row { position:relative; display:flex; align-items:stretch; gap:16px; margin-bottom:9px; }
+  .row:last-child { margin-bottom:0; }
+  .num { flex:0 0 38px; height:38px; align-self:center; border-radius:50%;
+         background:var(--surface-brand); border:3px solid var(--surface-page);
+         display:flex; align-items:center; justify-content:center;
+         font-family:var(--font-display); font-weight:900; font-size:17px; color:var(--text-on-brand); }
+  .box { flex:1 1 0; min-width:0; background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-md); padding:11px 18px; display:flex; flex-direction:column;
+         justify-content:center; }
+  .bt { font-family:var(--font-body); font-weight:700; font-size:14.5px; line-height:1.35;
+        color:var(--text-primary); }
+  .bm { font-family:var(--font-mono); font-size:13px; line-height:1.38; color:var(--text-secondary);
+        margin-top:4px; }
+  .bm b { color:var(--stbr-emerald-800); font-weight:700; }
+  .fail { flex:0 0 528px; background:var(--surface-accent); border-radius:var(--radius-md);
+          padding:10px 16px; display:flex; align-items:center; gap:12px; }
+  .fail .warn { flex:0 0 auto; }
+  .fail .ft { font-family:var(--font-body); font-size:13.5px; line-height:1.34;
+              color:var(--text-on-accent); }
+  .fail .ft b { font-weight:800; }
+  .fail .ft code { font-family:var(--font-mono); font-size:12.5px; font-weight:700; }
+  /* same box model as .fail so WeasyPrint resolves both to the identical used width
+     and every .box ends on one right edge */
+  .spacer { flex:0 0 528px; padding:10px 16px; }
+  .key { display:flex; align-items:center; gap:12px; margin-top:18px; padding:12px 20px;
+         background:var(--surface-inverse); border-radius:var(--radius-md); }
+  .key .kk { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.13em;
+             text-transform:uppercase; color:rgba(245,232,202,0.62); white-space:nowrap; }
+  .key .kv { font-family:var(--font-display); font-weight:900; font-size:19px; color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">load &rarr; token movement</div>
+  <h2 class="viz-title">the spl withdraw, step by step</h2>
+  <div class="steps">
+    <div class="rail"></div>
+
+    <div class="row">
+      <div class="num">1</div>
+      <div class="box">
+        <div class="bt">Anchor loads accounts and runs constraints</div>
+        <div class="bm">owner + discriminator inside <b>load</b> FIRST, then <b>address = vault.owner</b></div>
+      </div>
+      <div class="fail">
+        <svg class="warn" width="22" height="20" viewBox="0 0 22 20"><path d="M11 1.5 21 18.5H1z" fill="none" stroke="#1b231d" stroke-width="2"/><line x1="11" y1="7" x2="11" y2="12.5" stroke="#1b231d" stroke-width="2.2"/><circle cx="11" cy="15.6" r="1.3" fill="#1b231d"/></svg>
+        <div class="ft"><b>wrong signer</b> &rarr; the address constraint fails &mdash; or a generic <code>IllegalOwner</code> even earlier, inside load</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="num">2</div>
+      <div class="box">
+        <div class="bt">handler reads what it needs</div>
+        <div class="bm"><b>decimals</b> off the mint, the stored <b>bump</b> off the vault</div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="row">
+      <div class="num">3</div>
+      <div class="box">
+        <div class="bt">handler rebuilds the seeds</div>
+        <div class="bm"><b>signer_seeds = [b"vault", authority, bump]</b></div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="row">
+      <div class="num">4</div>
+      <div class="box">
+        <div class="bt">handler builds TransferChecked</div>
+        <div class="bm"><b>cpi_handle_mut</b> (from, to) &nbsp;&middot;&nbsp; <b>cpi_handle</b> (mint, authority)</div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="row">
+      <div class="num">5</div>
+      <div class="box">
+        <div class="bt">handler attaches the signature</div>
+        <div class="bm"><b>CpiContext::new(token_program.address(), ..).with_signer(signer_seeds)</b></div>
+      </div>
+      <div class="fail">
+        <svg class="warn" width="22" height="20" viewBox="0 0 22 20"><path d="M11 1.5 21 18.5H1z" fill="none" stroke="#1b231d" stroke-width="2"/><line x1="11" y1="7" x2="11" y2="12.5" stroke="#1b231d" stroke-width="2.2"/><circle cx="11" cy="15.6" r="1.3" fill="#1b231d"/></svg>
+        <div class="ft">missing <code>.with_signer</code> &rarr; <b>the move is unsigned</b> and the runtime rejects it</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="num">6</div>
+      <div class="box">
+        <div class="bt">transfer_checked CPI fires</div>
+        <div class="bm">the token program verifies the seeds reproduce the <b>vault PDA</b></div>
+      </div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="row">
+      <div class="num">7</div>
+      <div class="box">
+        <div class="bt">token program checks decimals, then moves the balance</div>
+        <div class="bm">the asserted <b>decimals</b> must match the mint</div>
+      </div>
+      <div class="fail">
+        <svg class="warn" width="22" height="20" viewBox="0 0 22 20"><path d="M11 1.5 21 18.5H1z" fill="none" stroke="#1b231d" stroke-width="2"/><line x1="11" y1="7" x2="11" y2="12.5" stroke="#1b231d" stroke-width="2.2"/><circle cx="11" cy="15.6" r="1.3" fill="#1b231d"/></svg>
+        <div class="ft"><b>wrong decimals</b> &rarr; <code>transfer_checked</code> refuses before moving anything</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="num">8</div>
+      <div class="box">
+        <div class="bt">handler debits the vault's books</div>
+        <div class="bm"><b>Vault.balance.checked_sub(amount)</b></div>
+      </div>
+      <div class="fail">
+        <svg class="warn" width="22" height="20" viewBox="0 0 22 20"><path d="M11 1.5 21 18.5H1z" fill="none" stroke="#1b231d" stroke-width="2"/><line x1="11" y1="7" x2="11" y2="12.5" stroke="#1b231d" stroke-width="2.2"/><circle cx="11" cy="15.6" r="1.3" fill="#1b231d"/></svg>
+        <div class="ft"><code>-</code> instead of <code>checked_sub</code> &rarr; <b>panic on underflow</b> instead of a clean error</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="key">
+    <span class="kk">yellow band</span>
+    <span class="kv">the failure that step produces &mdash; match your error to the step, not to the whole instruction.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,117 @@
+id: lesson-mav2-m05-l2
+slug: m05-l2
+title: "Build the token-ticket swap"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+skills:
+  - spl-tokens
+  - checked-arithmetic
+  - anchor
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: cp-swap-out
+    type: code
+    language: rust
+    starter: cp-swap-out/starter.rs
+    solution: cp-swap-out/solution.rs
+    tests: cp-swap-out/tests.json
+    hints:
+      - "amount_in_with_fee = amount_in * 997"
+      - "out = (amount_in_with_fee * reserve_out) / (reserve_in * 1000 + amount_in_with_fee)"
+      - "promote to u128 before multiplying so u64 reserves can't overflow"
+      - "u128 is headroom, not immunity: (u64::MAX)^2 fits u128 with under a bit to spare, and the x997 fee multiplier spends it — so keep the multiplies checked and degrade to 0"
+  - key: check
+    type: quiz
+    questions:
+      - id: m05-l2-q1
+        prompt: "Your swap quote multiplies amount_in_with_fee * reserve_out on its way to a fill, and it panics on a large trade against a deep pool. Every operand is u64. What's the fix?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Promote both operands to u128 and multiply there, where the product has room and needs no check."
+            correct: false
+            feedback: "Promoting is necessary and it is still not sufficient. Two u64 factors fit u128 with under a bit to spare, and the x997 fee multiplier is a third factor that spends that sliver: a bare u128 multiply passes every reference row and dies on the u64::MAX one. Keep the multiply checked and degrade to a 0 quote."
+          - id: b
+            label: "Cast to u128 before multiplying, use checked_mul, then divide back down."
+            correct: true
+            feedback: "Widen the intermediate, not the stored fields, and keep it checked, because three factors is one more than u128 can absorb. Narrowing back down is safe: the output cannot exceed a value that already fit."
+          - id: c
+            label: "Switch reserve_in and reserve_out to i64 so an overflow wraps to a negative value you can test for."
+            correct: false
+            feedback: "Rust panics on overflow in debug and wraps in release, so there is no reliable negative to test for, and SPL token amounts are unsigned u64 anyway. A u128 intermediate with checked_mul is the pattern the lesson freezes into swap_out."
+          - id: a
+            label: "Cap each reserve at u32::MAX at init so the product of two reserves fits inside a u64."
+            correct: false
+            feedback: "It guards the wrong product. Two reserves capped at u32::MAX multiply to 18,446,744,065,119,617,025, which does fit in a u64, so reserve_in * reserve_out was never the exposure. The multiply that panicked is amount_in_with_fee * reserve_out, and amount_in is the caller's and uncapped, so capping the reserves does nothing for it while buying you a pool-depth ceiling of about 4.3 billion base units. The defect is the width of the multiply, not the size of the reserves."
+        explanation: "Two u64 amounts multiplied can exceed u64. The house pattern (and rust.md) is a u128 intermediate plus checked_mul: promote, multiply, divide back down to u64. That's exactly what the swap_out coding challenge exercises. The final cast back to u64 is safe because the output can never exceed reserve_out, which is already a u64."
+      - id: m05-l2-q2
+        prompt: "A trader sees a quote of 906 tickets, but between quote and execution the reserves shift and they'd only get 880. Your program still fills the trade. What did you forget?"
+        multiSelect: false
+        options:
+          - id: e
+            label: "You read the reserves after the pull CPI, so the output came from stale balances."
+            correct: false
+            feedback: "The handler already reads both reserves up front, and it has to: a typed read while a cpi_handle_mut() is live does not compile. Read them after the transfer instead and the quote would be fresher, not staler. The reserves in this scenario moved before the transaction landed at all, so no read ordering inside the handler could have seen it coming."
+          - id: a
+            label: "A .reload() on both reserves after the input transfer."
+            correct: false
+            feedback: "This is 0.x muscle memory, and it fixes nothing here: the reserves moved before the transaction landed, so a fresh read still returns the degraded 880. V2 also holds a borrow through the live CpiHandle, so that typed read would not compile mid-CPI."
+          - id: b
+            label: "Marking both reserve accounts unsafe(dup) so the fill is not rejected."
+            correct: false
+            feedback: "unsafe(dup) is the escape hatch for genuinely duplicated mutable accounts. reserve_arcade and reserve_ticket are distinct accounts holding different mints, so the default is already satisfied, and account aliasing has nothing to do with the price a trader receives."
+          - id: c
+            label: "The slippage guard: revert when output comes in below the trader's min_out."
+            correct: true
+            feedback: "The guard belongs between the quote and the first transfer, though be precise about why: a failed require! after the CPIs still reverts both transfers, so a bad fill never settles regardless of position. Checking early spends zero CPI compute on a doomed fill and keeps the trader's one protection standing legibly in front of the money. It is also the only trader protection this swap offers."
+          - id: d
+            label: "Integer division rounds the output the trader's way, so the fill came up short."
+            correct: false
+            feedback: "Rounding runs the other direction and at the wrong scale. Truncation drops the remainder in the pool's favor, never the trader's, and what it costs is dust rather than the 26 tickets in the scenario. That gap opened between the quote and the landing, which is a timing problem no rounding rule touches."
+        explanation: "Without a min_out the trader accepts any fill, including one degraded by ordering (a sandwich). The slippage guard reverts when computed output < min_out; its shape reuses the escrow's conditional-release logic. It's the one piece of trader protection this teaching swap offers. Run it after the quote and before either CPI, not because a late check would let a bad fill stand (a failed require! reverts the transfers; atomicity holds), but because early is cheaper and reads as the protection it is."
+      - id: m05-l2-q3
+        prompt: "You route both swap directions through the same InterfaceAccount and the program rejects the instruction as a duplicate mutable account. What's the clean fix?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Turn off the duplicate-mutable default with an anchor-lang Cargo feature, keeping one shared reserve."
+            correct: false
+            feedback: "There is no anchor-lang feature that disables the duplicate-mutable default; V2 made it the default precisely to catch this class of aliasing bug at validation time, before your handler ever runs. Fix the account layout instead."
+          - id: d
+            label: "Make one of the pool's two slots immutable so one reserve token account satisfies it."
+            correct: false
+            feedback: "That silences the checker rather than fixing the layout, and it breaks the trade: a constant-product swap debits one side and credits the other, so both reserves have to be writable. The check is not complaining that two slots are mut, it is complaining that one account arrived in both."
+          - id: b
+            label: "Add unsafe(dup) to the shared reserve field so V2 accepts one account serving both directions."
+            correct: false
+            feedback: "unsafe(dup) is an escape hatch for when duplication is genuinely intended. Collapsing both reserves into one account aliases the two sides of the curve and corrupts the k accounting: that's a design bug, not a case for opting out of the check."
+          - id: a
+            label: "Give each side of the pool its own distinct reserve token account so no real duplication exists."
+            correct: true
+            feedback: "One account per side, different mints, both under the pool's authority: the default is satisfied by the layout itself, with no opt-out anywhere. Not vault instances, though, because the authority differs."
+        explanation: "A constant-product pool needs two separate reserves, so each side is its own token account, reserve_arcade and reserve_ticket, holding different mints, both with token::authority = pool, and the duplicate-mutable default is satisfied naturally. unsafe(dup) is only for deliberately duplicated accounts; reaching for it here would paper over a design error. Note the reserves are not R2 vault instances: a vault's ATA is owned by the vault PDA, while a reserve's authority must be the pool PDA."
+      - id: m05-l2-q4
+        prompt: "Between the input transfer_checked CPI and reading the pool's new balance, you try to keep a typed reference to the vault account. V2 refuses to compile. Why is that a feature?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "transfer_checked consumes the InterfaceAccount wrapper, so the typed account is gone once the CPI returns."
+            correct: false
+            feedback: "Nothing is consumed or destroyed. The handle borrows the wrapper for the length of the call and then gives it back; that same reserve_ticket.amount() compiles unchanged on the far side of transfer_checked."
+          - id: c
+            label: "V2 requires a .reload() call before any typed .amount read, and the compiler enforces that call ordering."
+            correct: false
+            feedback: "This inverts the change. .reload() was the 0.x remedy for stale deserialized data; V2 has no reload requirement and the compiler is enforcing a borrow, not a call ordering. The structural fix is to read both reserves up front, before any cpi_handle_mut() exists."
+          - id: a
+            label: "A live CpiHandle borrows the typed account, so a typed read during it cannot compile."
+            correct: true
+            feedback: "Snapshot both balances into locals before any mutable handle exists, and the whole class stops being expressible: no remembered call, no discipline to keep."
+          - id: d
+            label: "It is the duplicate-mutable default firing, because the two live CPI handles alias the same reserve account."
+            correct: false
+            feedback: "Two of V2's new defaults are being run together here. Duplicate-mutable is an account-validation rule about one account arriving in two writable slots, and it fires at runtime before the handler starts. What stopped this build is the borrow checker holding a typed read against a live handle, and the two handles in a swap point at different reserves anyway."
+        explanation: "In v1, forgetting .reload() after a CPI meant acting on stale deserialized data. V2's CpiHandle holds a borrow, so the compiler rejects typed access during a live handle; the footgun becomes a compile error rather than a silent runtime bug that ships. You read reserves before you open the handle or after it closes, never during. That is why step 1 of the swap handler reads reserve_arcade.amount() and reserve_ticket.amount() into locals before any TransferChecked struct is built: the whole stale-read class is removed by the language, not by a call you must remember."

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The two constraint families on a token field
+     purpose: separate associated_token:: (which places an account) from mint:: (which constrains a mint) so each reads as intent, not incantation
+     data: associated_token::  (places THIS account) - associated_token::mint = mint - associated_token::authority = vault - associated_token::token_program = token_program - with init: Anchor CREATES the ATA (rent from payer) - with mut alone: Anchor VALIDATES an ATA it expects to exist mint::  (constrains the MINT itself) - mint::decimals / mint::authority / mint::freeze_authority - not needed in this upgrade: you custody an existing mint, you do not create one
+     prompt: Two-column comparison. Left header "associated_token:: (places the account)" lists the three derive lines plus the init-vs-mut split. Right header "mint:: (constrains the mint)" lists the three mint constraints, greyed with a "not used in this upgrade" tag. Thin vertical divider, monospace identifiers.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:559px;height:530px;top:-299px;right:-299px;border-radius:61% 57% 54% 53% / 36% 44% 45% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:565px;height:537px;bottom:-335px;left:-335px;border-radius:62% 57% 44% 47% / 51% 52% 48% 42%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:495px;height:499px;bottom:-263px;right:-263px;border-radius:45% 50% 65% 35% / 43% 60% 48% 38%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:24px; align-items:stretch; margin-top:4px; }
+  .col { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+         overflow:hidden; background:var(--surface-card); display:flex; flex-direction:column; }
+  .col.used { flex:1.32 1 0; border-color:var(--stbr-yellow-700); }
+  .col.unused { flex:1 1 0; background:var(--surface-paper); }
+  .ch { padding:15px 22px; }
+  .ch.used { background:var(--surface-accent); }
+  .ch.unused { background:var(--stbr-ink-100); }
+  .ck { font-family:var(--font-mono); font-weight:700; font-size:22px; line-height:1.1; }
+  .ch.used .ck { color:var(--text-on-accent); }
+  .ch.unused .ck { color:var(--text-secondary); }
+  .cs { font-family:var(--font-body); font-weight:700; font-size:13px; letter-spacing:.11em;
+        text-transform:uppercase; margin-top:7px; }
+  .ch.used .cs { color:rgba(27,35,29,0.66); }
+  .ch.unused .cs { color:var(--text-muted); }
+  .lines { padding:16px 22px 6px; }
+  .ln { font-family:var(--font-mono); font-size:16px; line-height:1.35; padding:8px 0;
+        color:var(--text-primary); display:flex; align-items:baseline; gap:11px; }
+  .unused .ln { color:var(--text-muted); }
+  .bul { flex:0 0 8px; height:8px; border-radius:2px; background:var(--stbr-yellow-700); }
+  .unused .bul { background:var(--stbr-ink-300); }
+  .split { display:flex; gap:14px; padding:8px 22px 20px; margin-top:auto; }
+  .sb { flex:1 1 0; border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+        padding:13px 16px; background:var(--surface-paper); }
+  .sk { font-family:var(--font-mono); font-weight:700; font-size:14.5px; color:var(--stbr-emerald-800);
+        margin-bottom:6px; }
+  .sv { font-family:var(--font-body); font-size:14px; line-height:1.4; color:var(--text-primary); }
+  .sv b { font-weight:800; }
+  .note { margin:auto 22px 20px; border-top:1.5px solid var(--border-subtle); padding-top:14px; }
+  .tag { display:inline-block; padding:5px 13px; border-radius:var(--radius-pill);
+         font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.1em;
+         text-transform:uppercase; background:var(--stbr-ink-300); color:var(--stbr-dark); }
+  .nt { font-family:var(--font-body); font-size:14px; line-height:1.45; color:var(--text-secondary);
+        margin-top:11px; }
+  .verdict { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">read the constraint as intent</div>
+  <h2 class="viz-title">the two constraint families on a token field</h2>
+  <div class="cols">
+
+    <div class="col used">
+      <div class="ch used">
+        <div class="ck">associated_token::</div>
+        <div class="cs">places THIS account</div>
+      </div>
+      <div class="lines">
+        <div class="ln"><span class="bul"></span>associated_token::mint = mint</div>
+        <div class="ln"><span class="bul"></span>associated_token::authority = vault</div>
+        <div class="ln"><span class="bul"></span>associated_token::token_program = token_program</div>
+      </div>
+      <div class="split">
+        <div class="sb">
+          <div class="sk">with init</div>
+          <div class="sv">Anchor <b>CREATES</b> the ATA <span style="color:var(--text-secondary)">(rent from payer)</span></div>
+        </div>
+        <div class="sb">
+          <div class="sk">with mut alone</div>
+          <div class="sv">Anchor <b>VALIDATES</b> an ATA it expects to exist</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col unused">
+      <div class="ch unused">
+        <div class="ck">mint::</div>
+        <div class="cs">constrains the MINT itself</div>
+      </div>
+      <div class="lines">
+        <div class="ln"><span class="bul"></span>mint::decimals</div>
+        <div class="ln"><span class="bul"></span>mint::authority</div>
+        <div class="ln"><span class="bul"></span>mint::freeze_authority</div>
+      </div>
+      <div class="note">
+        <span class="tag">not used in this upgrade</span>
+        <div class="nt">you custody an <b>existing</b> mint &mdash; you do not create one.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="verdict">
+    <span class="vk">the split</span>
+    <span class="vt">One family places an account. The other describes a mint. Only the first one shows up here.</span>
+  </div>
+</div>
+</body></html>

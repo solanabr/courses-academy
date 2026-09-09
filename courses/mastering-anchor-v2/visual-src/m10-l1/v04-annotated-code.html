@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: A transfer hook, 0.32 macro to 1.0 discriminator match
+     purpose: show interface-instructions collapsing into ordinary discriminator dispatch
+     data: 0.32 (unknown attribute on 1.x): #[interface(spl_transfer_hook_interface::execute)] pub fn execute(ctx: Context<Execute>, amount: u64) -> Result<()> { ... } 1.0: #[instruction(discriminator = ...SPL_DISCRIMINATOR_SLICE)] pub fn execute(ctx: Context<Execute>, amount: u64) -> Result<()> { ... } // matched by the SPL-defined discriminator slice, same machinery // every other instruction already uses
+     prompt: Two code panels. Top labeled "0.32 (breaks: unknown attribute)" with the #[interface(...)] line circled red. Bottom labeled "1.0" with #[instruction(discriminator = ...SPL_DISCRIMINATOR_SLICE)] circled green. Draw a thin arrow between them labeled "bespoke macro -> ordinary discriminator dispatch". Monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:526px;height:473px;top:-255px;right:-255px;border-radius:55% 54% 40% 37% / 37% 45% 63% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:521px;height:506px;left:-297px;top:321px;border-radius:46% 57% 45% 35% / 43% 53% 46% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:520px;bottom:-273px;right:-273px;border-radius:58% 49% 65% 57% / 47% 51% 48% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:50px; margin:4px 0 16px; }
+  .pan { background:var(--surface-inverse); border-radius:var(--radius-xl);
+         padding:20px 30px 22px; }
+  .phead { display:flex; align-items:center; border-bottom:1px solid rgba(245,232,202,0.18);
+           padding-bottom:13px; margin-bottom:13px; }
+  .pill { font-family:var(--font-display); font-weight:900; font-size:17px; line-height:1;
+          padding:8px 16px; border-radius:var(--radius-pill); }
+  .pill.v032 { background:#c0392b; color:var(--stbr-cream); }
+  .pill.v10  { background:var(--surface-accent); color:var(--text-on-accent); }
+  .phead .pnote { font-family:var(--font-body); font-weight:700; font-size:16px;
+                  color:var(--stbr-ink-300); margin-left:18px; }
+  .ln { display:flex; align-items:center; font-family:var(--font-mono); font-size:19px;
+        line-height:34px; color:var(--stbr-cream); white-space:pre;
+        border-left:4px solid transparent; padding-left:14px; }
+  .ln.bad { background:rgba(192,57,43,0.20); border-left-color:#c0392b; }
+  .ln.fix { background:rgba(255,210,63,0.16); border-left-color:var(--stbr-yellow); }
+  .ln .cd { flex:1; }
+  .cm { color:rgba(245,232,202,0.52); }
+  .tok-bad { border-bottom:2px solid #e0705f; }
+  .tok-fix { color:var(--stbr-yellow); font-weight:700; }
+  .chip { font-family:var(--font-body); font-weight:800; font-size:14px; line-height:1;
+          padding:7px 14px; border-radius:var(--radius-pill); white-space:nowrap;
+          margin-left:24px; }
+  .chip.bad { background:#c0392b; color:var(--stbr-cream); }
+  .chip.fix { background:var(--surface-accent); color:var(--text-on-accent); }
+  .hop { display:flex; align-items:center; justify-content:center; height:80px; }
+  .hop .lab { font-family:var(--font-body); font-weight:800; font-size:17px; line-height:1;
+              background:var(--surface-brand); color:var(--text-on-brand);
+              padding:11px 22px; border-radius:var(--radius-pill); margin-left:20px; }
+  .foot { display:flex; align-items:center; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:16px 30px; margin-top:20px; }
+  .foot .fk { font-family:var(--font-display); font-weight:900; font-size:15px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-brand);
+              width:140px; }
+  .foot .ft { font-family:var(--font-body); font-size:18px; line-height:1.4;
+              color:var(--text-on-brand); }
+  .foot .ft b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">transfer hook, 0.32 &rarr; 1.0</div>
+  <h2 class="viz-title">a bespoke macro became an ordinary match</h2>
+
+  <div class="pan">
+    <div class="phead">
+      <span class="pill v032">0.32</span>
+      <span class="pnote">on 1.x: error &mdash; unknown attribute</span>
+    </div>
+    <div class="ln bad"><span class="cd">#[<span class="tok-bad">interface</span>(spl_transfer_hook_interface::execute)]</span><span class="chip bad">attribute removed in 1.0</span></div>
+    <div class="ln"><span class="cd">pub fn execute(ctx: Context&lt;Execute&gt;, amount: u64) -&gt; Result&lt;()&gt; { ... }</span></div>
+  </div>
+
+  <div class="hop">
+    <svg width="44" height="60" viewBox="0 0 44 60">
+      <line x1="22" y1="0" x2="22" y2="42" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="9,40 35,40 22,60" fill="#1b231d"/>
+    </svg>
+    <span class="lab">bespoke macro &rarr; ordinary discriminator dispatch</span>
+  </div>
+
+  <div class="pan">
+    <div class="phead">
+      <span class="pill v10">1.0</span>
+      <span class="pnote">no special case left</span>
+    </div>
+    <div class="ln fix"><span class="cd">#[instruction(discriminator = <span class="tok-fix">...SPL_DISCRIMINATOR_SLICE</span>)]</span><span class="chip fix">the SPL-defined slice</span></div>
+    <div class="ln"><span class="cd">pub fn execute(ctx: Context&lt;Execute&gt;, amount: u64) -&gt; Result&lt;()&gt; { ... }</span></div>
+    <div class="ln"><span class="cd"><span class="cm">// matched by the SPL-defined discriminator slice, same machinery</span></span></div>
+    <div class="ln"><span class="cd"><span class="cm">// every other instruction already uses</span></span></div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">the edit</span>
+    <span class="ft">Drop <b>#[interface(..)]</b> and declare the discriminator explicitly. The hook is no longer a special kind of instruction &mdash; it is just an instruction whose discriminator SPL happens to define.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The six breaks as change -> reason -> fix
+     purpose: one reference row per break so the migrator can answer the gate from a single glance
+     data: Change | Reason it moved | The fix Package rename @coral-xyz/anchor -> @anchor-lang/core (#4141) | canonical name split from what the ecosystem imports | grep BOTH scopes; update imports CpiContext::new takes Pubkey not AccountInfo (#2762) | a program is its address; narrow type catches wrong-account bugs at compile | swap .to_account_info() for .key(); move to transfer_checked space = 8 + fields -> DISCRIMINATOR.len() + INIT_SPACE | hand-counted literals drift; supports custom discriminators | delete arithmetic; #[derive(InitSpace)] one #[error_code] enum per program (#4300) | two enums collide on the same offset codes | merge variants into one enum; rename dupes #[interface] removed | collapse bespoke dispatch into ordinary discriminator match | #[instruction(discriminator = ...SPL_DISCRIMINATOR_SLICE)] legacy on-chain IDL removed (#3798) | IDLs move to the Program Metadata Program | close legacy IDL account with 0.32.1 CLI before v1 deploy
+     prompt: A designed three-column reference table titled "0.32 -> 1.0: change, reason, fix", six rows as listed. Left column = the change (bold), middle = why, right = the edit (monospace where code). Clean rules, no icons; make the right column visually the actionable one.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:511px;height:474px;top:-287px;right:-287px;border-radius:36% 56% 53% 40% / 56% 50% 36% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:430px;height:479px;left:-237px;top:339px;border-radius:44% 56% 55% 44% / 42% 49% 47% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:510px;height:482px;bottom:-260px;right:-260px;border-radius:56% 59% 49% 35% / 50% 65% 64% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; margin:4px 0 16px; }
+  .tbl { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); overflow:hidden; }
+  .r { display:flex; align-items:stretch; border-top:1px solid var(--border-subtle); }
+  .r.head { border-top:0; }
+  .c1 { width:456px; padding:14px 24px; display:flex; align-items:center; }
+  .c2 { width:400px; padding:14px 22px; display:flex; align-items:center;
+        border-left:1px solid var(--border-subtle); }
+  .c3 { width:596px; padding:14px 24px; display:flex; align-items:center;
+        border-left:3px solid var(--stbr-yellow-700); background:#fffbee; }
+  .head .c1, .head .c2 { background:var(--surface-inverse); }
+  .head .c2 { border-left-color:rgba(245,232,202,0.2); }
+  .head .c3 { background:var(--surface-accent); border-left-color:var(--stbr-yellow-700); }
+  .hk { font-family:var(--font-display); font-weight:900; font-size:15px;
+        letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream); }
+  .hk.act { color:var(--text-on-accent); }
+  .ch { font-family:var(--font-display); font-weight:900; font-size:18px; line-height:1.25;
+        color:var(--text-primary); }
+  .ch code { font-family:var(--font-mono); font-size:16px; font-weight:700; }
+  .ch .ref { font-family:var(--font-body); font-weight:700; font-size:14px;
+             color:var(--text-muted); }
+  .wy { font-family:var(--font-body); font-size:15px; line-height:1.35;
+        color:var(--text-secondary); }
+  .fx { font-family:var(--font-mono); font-size:15px; line-height:1.4; font-weight:600;
+        color:var(--text-primary); }
+  .fx .lead { font-family:var(--font-body); font-weight:800; }
+  .src { display:flex; align-items:center; margin-top:16px; padding:0 6px; }
+  .src .sk { font-family:var(--font-display); font-weight:900; font-size:14px;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--brand-primary);
+             margin-right:16px; }
+  .src .st { font-family:var(--font-body); font-size:16px; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">the six breaks</div>
+  <h2 class="viz-title">0.32 &rarr; 1.0: change, reason, fix</h2>
+
+  <div class="tbl">
+    <div class="r head">
+      <div class="c1"><span class="hk">the change</span></div>
+      <div class="c2"><span class="hk">why it moved</span></div>
+      <div class="c3"><span class="hk act">the edit you make</span></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><span class="ch">Package rename <code>@coral-xyz/anchor</code> &rarr; <code>@anchor-lang/core</code> <span class="ref">(#4141)</span></span></div>
+      <div class="c2"><span class="wy">the canonical name split from what the ecosystem actually imports</span></div>
+      <div class="c3"><span class="fx"><span class="lead">grep BOTH scopes</span>, then update imports</span></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><span class="ch"><code>CpiContext::new</code> takes a <code>Pubkey</code>, not an <code>AccountInfo</code> <span class="ref">(#2762)</span></span></div>
+      <div class="c2"><span class="wy">a program is its address; the narrow type catches wrong-account bugs at compile time</span></div>
+      <div class="c3"><span class="fx">swap <span class="lead">.to_account_info()</span> for <span class="lead">.key()</span>;<br>move <code>transfer</code> &rarr; <code>transfer_checked</code></span></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><span class="ch"><code>space = 8 + fields</code> &rarr; <code>DISCRIMINATOR.len() + INIT_SPACE</code></span></div>
+      <div class="c2"><span class="wy">hand-counted literals drift; the expression also supports custom discriminators</span></div>
+      <div class="c3"><span class="fx">delete the arithmetic;<br>add <span class="lead">#[derive(InitSpace)]</span></span></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><span class="ch">one <code>#[error_code]</code> enum per program <span class="ref">(#4300)</span></span></div>
+      <div class="c2"><span class="wy">two enums collide on the same offset codes</span></div>
+      <div class="c3"><span class="fx">merge the variants into one enum;<br>rename the duplicates</span></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><span class="ch"><code>#[interface]</code> removed</span></div>
+      <div class="c2"><span class="wy">collapses bespoke dispatch into an ordinary discriminator match</span></div>
+      <div class="c3"><span class="fx">#[instruction(discriminator =<br>&nbsp;&nbsp;&nbsp;&nbsp;...SPL_DISCRIMINATOR_SLICE)]</span></div>
+    </div>
+
+    <div class="r">
+      <div class="c1"><span class="ch">legacy on-chain IDL removed <span class="ref">(#3798)</span></span></div>
+      <div class="c2"><span class="wy">IDLs move to the Program Metadata Program</span></div>
+      <div class="c3"><span class="fx"><span class="lead">close the legacy IDL account</span> with the 0.32.1 CLI, before the v1 deploy</span></div>
+    </div>
+  </div>
+
+  <div class="src">
+    <span class="sk">read the fix column first</span>
+    <span class="st">five of the six are edits in your source &mdash; the last one lives on-chain, which is why a clean build can still fail to deploy.</span>
+  </div>
+</div>
+</body></html>

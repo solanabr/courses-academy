@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The has_one deprecation is engineered, not incidental
+     purpose: show that the parser stores the keyword span so the warning can underline the exact edit
+     data: // V2 build succeeds, but: #[account(mut, has_one = authority)]   // <-- warning underlines `has_one` pub config: BorshAccount<Config>, // // warning: use of deprecated function `__deprecated_has_one`: //          `has_one` is deprecated; on the sibling field, use //          `#[account(address = owner.field)]` instead. //          -> src/lib.rs //          |  #[account(mut, has_one = authority)] //          |                 ^^^^^^^  the parser stored THIS span on purpose // // the fix the compiler is pointing at (the authority stays a Signer: // `address` swaps the equality check, never the signature requirement): #[account(address = config.authority)] pub authority: Signer,
+     prompt: A single code panel showing the deprecated attribute, then a rustc-style warning block with a caret underlining the `has_one` token, annotated "stored span, engineered warning". Below, the corrected line highlighted green. Monospace, warning block in a muted amber. No icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:509px;height:468px;top:-280px;right:-280px;border-radius:48% 53% 53% 35% / 53% 52% 60% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:510px;height:525px;bottom:-294px;left:-294px;border-radius:57% 61% 49% 58% / 52% 46% 54% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:585px;height:529px;bottom:-311px;right:-311px;border-radius:35% 40% 45% 58% / 56% 54% 62% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .plab { display:flex; align-items:baseline; margin:0 0 8px 4px; }
+  .plab .pk { font-family:var(--font-display); font-weight:900; font-size:18px;
+              color:var(--text-primary); margin-right:12px; }
+  .plab .ps { font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); }
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-lg);
+           padding:20px 26px; }
+  .ln { font-family:var(--font-mono); font-size:15px; line-height:1.7;
+        white-space:pre; color:var(--stbr-cream); }
+  .hl { background:var(--stbr-yellow); color:var(--text-on-accent); font-weight:700;
+        border-radius:3px; }
+  .warn { margin-top:16px; background:#fffaea; border:2px solid var(--status-warning);
+          border-left:8px solid var(--status-warning);
+          border-radius:var(--radius-lg); padding:18px 24px;
+          display:flex; align-items:flex-start; }
+  .wl { flex:1; }
+  .wl .ln { color:var(--text-primary); font-size:14px; line-height:1.65; }
+  .wl .ln .dim { color:var(--text-secondary); }
+  .wk { width:300px; flex:0 0 300px; padding-left:24px; }
+  .wk .chip { display:inline-block; background:var(--stbr-yellow);
+              color:var(--text-on-accent); border-radius:var(--radius-md);
+              padding:9px 14px; font-family:var(--font-body); font-weight:800;
+              font-size:12.5px; line-height:1.4; }
+  .fix { margin-top:16px; background:var(--surface-card);
+         border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+         padding:18px 24px; display:flex; align-items:center; }
+  .fix .fc { flex:1; }
+  .fix .ln { color:var(--stbr-emerald-800); font-size:15px; }
+  .fix .fn { width:520px; flex:0 0 520px; padding-left:26px;
+             font-family:var(--font-body); font-size:13px; line-height:1.45;
+             color:var(--text-secondary); }
+  .fix .fn code { font-family:var(--font-mono); font-size:12.5px; color:var(--text-primary); }
+  .tagline { font-family:var(--font-display); font-weight:900; font-size:12px;
+             letter-spacing:.13em; text-transform:uppercase; color:var(--brand-primary);
+             margin-bottom:6px; }
+</style>
+  <div class="stbr-eyebrow">the parser keeps the span on purpose</div>
+  <h2 class="viz-title">the has_one deprecation is engineered</h2>
+
+  <div class="plab"><span class="pk">V2 build succeeds</span><span class="ps">— but the compiler points at the exact token to edit</span></div>
+  <div class="panel">
+    <div class="ln">#[account(mut, <span class="hl">has_one</span> = authority)]</div>
+    <div class="ln">pub config: BorshAccount&lt;Config&gt;,</div>
+  </div>
+
+  <div class="warn">
+    <div class="wl">
+      <div class="ln"><b>warning:</b> use of deprecated function `__deprecated_has_one`:</div>
+      <div class="ln"><span class="dim">         `has_one` is deprecated; on the sibling field, use</span></div>
+      <div class="ln"><span class="dim">         `#[account(address = owner.field)]` instead.</span></div>
+      <div class="ln"><span class="dim">  --&gt; src/lib.rs</span></div>
+      <div class="ln"><span class="dim">   |  #[account(mut, </span><span class="hl">has_one</span><span class="dim"> = authority)]</span></div>
+      <div class="ln"><span class="dim">   |                 </span><b>^^^^^^^</b></div>
+    </div>
+    <div class="wk">
+      <div class="chip">the parser stored THIS span on purpose — the warning underlines the token, not the line</div>
+    </div>
+  </div>
+
+  <div class="fix">
+    <div class="fc">
+      <div class="tagline">the fix the compiler is pointing at</div>
+      <div class="ln">#[account(address = config.authority)]</div>
+      <div class="ln">pub authority: Signer,</div>
+    </div>
+    <div class="fn">The authority stays a <code>Signer</code>: <code>address</code> swaps the
+      equality check, never the signature requirement. The sibling field carries the
+      constraint now, which is why the warning names the sibling.</div>
+  </div>
+</div>
+</body></html>

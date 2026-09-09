@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The exploit-then-patch loop
+     purpose: give the reader the repeatable rhythm every class in this lesson follows
+     data: 1. pick a surviving class 2. write an exploit test that SUCCEEDS against the current code (drains / substitutes / over-withdraws) 3. run it -> it passes (the bug is real, not hypothetical) 4. name the exact missing guard 5. add the guard (one constraint or one checked op) 6. re-run: the exploit test now FAILS, and the legitimate test still passes 7. next class
+     prompt: Horizontal seven-step flowchart, left to right. Emphasize step 3 (exploit passes) in a warning tone and step 6 (exploit now fails, legit still passes) in a positive tone. A loop arrow from step 7 back to step 1.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:519px;height:438px;top:-242px;right:-242px;border-radius:42% 63% 41% 57% / 46% 47% 49% 44%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:431px;height:458px;left:-234px;top:108px;border-radius:48% 42% 56% 64% / 48% 53% 37% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:414px;height:503px;bottom:-327px;left:666px;border-radius:54% 37% 55% 44% / 39% 60% 63% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; margin: 4px 0 26px; }
+  .rail { width:1444px; margin:0 auto; }
+  .flow { display:flex; align-items:center; }
+  .n { width:184px; height:318px; border-radius:var(--radius-lg); padding:16px 15px;
+       border:2px solid var(--border-subtle); background:var(--surface-card); }
+  .n .num { font-family:var(--font-display); font-weight:900; font-size:13px;
+            letter-spacing:.1em; color:var(--text-muted); }
+  .n .t { font-family:var(--font-display); font-weight:800; font-size:18px;
+          line-height:1.18; color:var(--text-primary); margin-top:10px; }
+  .n .s { font-family:var(--font-body); font-size:13.5px; line-height:1.4;
+          color:var(--text-secondary); margin-top:9px; }
+  .n .tag { display:inline-block; margin-top:11px; font-family:var(--font-body);
+            font-weight:700; font-size:10.5px; letter-spacing:.08em;
+            text-transform:uppercase; padding:4px 9px; border-radius:var(--radius-pill); }
+  .hot { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .hot .num, .hot .t, .hot .s { color:var(--text-on-accent); }
+  .hot .tag { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .win { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .win .num { color:var(--stbr-cream); opacity:.7; }
+  .win .t { color:var(--text-on-brand); }
+  .win .s { color:var(--stbr-cream); opacity:.9; }
+  .win .tag { background:var(--stbr-cream); color:var(--stbr-emerald-800); }
+  .a { width:26px; flex:0 0 26px; text-align:center; }
+  .loopwrap { position:relative; height:96px; }
+  .loopwrap svg { position:absolute; left:0; top:0; }
+  .looplab { position:absolute; left:587px; top:52px; width:270px; text-align:center;
+             font-family:var(--font-body); font-weight:700; font-size:12.5px;
+             letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary);
+             background:var(--surface-page); padding:2px 0; }
+</style>
+  <div class="stbr-eyebrow">the rhythm of this lesson</div>
+  <h2 class="viz-title">exploit first, patch second, prove it with the test</h2>
+
+  <div class="rail">
+    <div class="flow">
+      <div class="n">
+        <div class="num">STEP 1</div>
+        <div class="t">pick a surviving class</div>
+        <div class="s">one of the seven the compiler will not catch for you</div>
+      </div>
+      <div class="a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="16" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="16,1 26,8 16,15" fill="#1b231d"/></svg></div>
+      <div class="n">
+        <div class="num">STEP 2</div>
+        <div class="t">write an exploit test that SUCCEEDS</div>
+        <div class="s">against the current code: drains / substitutes / over-withdraws</div>
+      </div>
+      <div class="a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="16" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="16,1 26,8 16,15" fill="#1b231d"/></svg></div>
+      <div class="n hot">
+        <div class="num">STEP 3</div>
+        <div class="t">run it — it passes</div>
+        <div class="s">the bug is real, not hypothetical. The attack is now a reproducible artifact.</div>
+        <div class="tag">exploit passes</div>
+      </div>
+      <div class="a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="16" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="16,1 26,8 16,15" fill="#1b231d"/></svg></div>
+      <div class="n">
+        <div class="num">STEP 4</div>
+        <div class="t">name the exact missing guard</div>
+        <div class="s">not "add validation" — the one assertion that is absent</div>
+      </div>
+      <div class="a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="16" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="16,1 26,8 16,15" fill="#1b231d"/></svg></div>
+      <div class="n">
+        <div class="num">STEP 5</div>
+        <div class="t">add the guard</div>
+        <div class="s">one constraint, or one checked op. Nothing bigger.</div>
+      </div>
+      <div class="a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="16" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="16,1 26,8 16,15" fill="#1b231d"/></svg></div>
+      <div class="n win">
+        <div class="num">STEP 6</div>
+        <div class="t">re-run: the exploit now FAILS</div>
+        <div class="s">and the legitimate test still passes — the guard is tight, not blunt</div>
+        <div class="tag">guard proven</div>
+      </div>
+      <div class="a"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="16" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="16,1 26,8 16,15" fill="#1b231d"/></svg></div>
+      <div class="n">
+        <div class="num">STEP 7</div>
+        <div class="t">next class</div>
+        <div class="s">seven times, once per surviving class</div>
+      </div>
+    </div>
+
+    <div class="loopwrap">
+      <svg width="1444" height="96" viewBox="0 0 1444 96">
+        <path d="M1352 0 V60 H92 V16" fill="none" stroke="#008b4c" stroke-width="3"/>
+        <polygon points="85,20 92,4 99,20" fill="#008b4c"/>
+      </svg>
+      <div class="looplab">repeat, class by class</div>
+    </div>
+  </div>
+</div>
+</body></html>

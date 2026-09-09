@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Getting a custom owner error, wrong way and right way
+     purpose: pair the Account<T> attempt that never surfaces your error with the UncheckedAccount fix
+     data: approach | phase the check runs in | does WrongOwner fire? | what you actually get owner = X @ WrongOwner on Account<T> | load (phase 1, owner pinned to YOUR program) | NO | IllegalOwner (built-in) constraint = acct.owner()==&X @ WrongOwner on UncheckedAccount | hook (phase 2, no owner pinned) | YES | WrongOwner note: Account<T>'s automatic owner check is the right default; UncheckedAccount is only for the custom-error edge case
+     prompt: Two-row comparison table with a header row. First row (Account<T> attempt) shaded red/amber with an X in the "fires?" cell. Second row (UncheckedAccount fix) shaded green with a check. Add the note as a full-width caption row underneath in muted text.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:478px;height:491px;top:-234px;right:-234px;border-radius:55% 64% 59% 36% / 50% 35% 43% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:556px;height:449px;left:-307px;top:184px;border-radius:35% 60% 45% 53% / 59% 48% 54% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:387px;height:511px;bottom:-270px;left:688px;border-radius:60% 47% 63% 52% / 48% 57% 49% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  /* Lift the whole card 38px above the flex-centred position so the emerald
+     eyebrow clears the top edge of the left decor blob (blob top = 184px). */
+  .viz { margin-bottom:104px; }
+  .viz-title { font-size:44px; margin:4px 0 18px; }
+
+  .k3-tbl { border-radius:var(--radius-lg); overflow:hidden;
+            border:2px solid var(--stbr-dark); }
+  .k3-r { display:flex; align-items:stretch; }
+  .k3-c1 { flex:0 0 556px; }
+  .k3-c2 { flex:0 0 344px; }
+  .k3-c3 { flex:0 0 232px; }
+  .k3-c4 { flex:1; }
+
+  .k3-head { background:var(--surface-inverse); }
+  .k3-head > div { border-right:1px solid rgba(245,232,202,0.2); }
+  .k3-head > div:last-child { border-right:0; }
+  .k3-head .pad { padding:12px 22px; font-family:var(--font-display); font-weight:900;
+                  font-size:17px; letter-spacing:0.1em; text-transform:uppercase;
+                  color:var(--stbr-cream); }
+
+  .k3-body > div { border-right:1.5px solid var(--border-subtle); }
+  .k3-body > div:last-child { border-right:0; }
+  .k3-body .pad { padding:20px 22px; }
+  .k3-bad  { background:#f7e4b4; border-top:2px solid var(--stbr-dark); }
+  .k3-good { background:var(--surface-card); border-top:2px solid var(--stbr-dark); }
+
+  .k3-code { font-family:var(--font-mono); font-size:19px; font-weight:700;
+             line-height:1.45; color:var(--stbr-dark); }
+  .k3-on { margin-top:10px; font-family:var(--font-body); font-size:17px;
+           font-weight:700; color:var(--text-secondary); }
+  .k3-on code { font-family:var(--font-mono); font-size:17px; font-weight:800;
+                color:var(--stbr-emerald-800); }
+
+  .k3-ph { font-family:var(--font-display); font-weight:900; font-size:24px;
+           color:var(--text-primary); line-height:1.1; }
+  .k3-phs { margin-top:9px; font-family:var(--font-body); font-size:17px;
+            line-height:1.3; color:var(--text-secondary); }
+
+  .k3-verd { display:flex; align-items:center; height:64px; padding:0 20px;
+             border-radius:var(--radius-md); }
+  .k3-verd .mk { font-family:var(--font-display); font-weight:900; font-size:34px;
+                 line-height:1; margin-right:14px; }
+  .k3-verd .w { font-family:var(--font-display); font-weight:900; font-size:30px;
+                letter-spacing:0.04em; }
+  .k3-no  { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700);
+            color:var(--stbr-dark); }
+  .k3-yes { background:var(--surface-brand); border:2px solid var(--stbr-emerald-800);
+            color:var(--stbr-cream); }
+
+  .k3-err { font-family:var(--font-mono); font-size:22px; font-weight:800;
+            color:var(--stbr-dark); line-height:1.25; }
+  .k3-good .k3-err { color:var(--stbr-emerald-800); }
+  .k3-tag { display:inline-block; margin-top:10px; font-family:var(--font-body);
+            font-size:14px; font-weight:800; letter-spacing:0.1em; text-transform:uppercase;
+            padding:4px 12px; border-radius:var(--radius-pill);
+            background:var(--stbr-dark); color:var(--stbr-cream); }
+
+  .k3-note { margin-top:16px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:18px 26px;
+             display:flex; align-items:center; }
+  .k3-note .lead { flex:0 0 196px; font-family:var(--font-display); font-weight:900;
+                   font-size:18px; letter-spacing:0.12em; text-transform:uppercase;
+                   color:var(--stbr-cream); }
+  .k3-note .b { flex:1; font-family:var(--font-body); font-size:21px; line-height:1.35;
+                color:var(--stbr-cream); }
+  .k3-note .b code { font-family:var(--font-mono); font-size:20px; font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">wrong way, then right way</div>
+  <h2 class="viz-title">Where a custom owner error can actually fire</h2>
+
+  <div class="k3-tbl">
+    <div class="k3-r k3-head">
+      <div class="k3-c1"><div class="pad">approach</div></div>
+      <div class="k3-c2"><div class="pad">phase the check runs in</div></div>
+      <div class="k3-c3"><div class="pad">WrongOwner fires?</div></div>
+      <div class="k3-c4"><div class="pad">what you actually get</div></div>
+    </div>
+
+    <div class="k3-r k3-body k3-bad">
+      <div class="k3-c1"><div class="pad">
+        <div class="k3-code">#[account(owner = X @ WrongOwner)]</div>
+        <div class="k3-on">on <code>Account&lt;T&gt;</code> &mdash; the attempt</div>
+      </div></div>
+      <div class="k3-c2"><div class="pad">
+        <div class="k3-ph">load &middot; phase 1</div>
+        <div class="k3-phs">owner is already pinned to YOUR program, so load rejects it first</div>
+      </div></div>
+      <div class="k3-c3"><div class="pad">
+        <div class="k3-verd k3-no"><span class="mk">&#215;</span><span class="w">NO</span></div>
+      </div></div>
+      <div class="k3-c4"><div class="pad">
+        <div class="k3-err">IllegalOwner</div>
+        <div><span class="k3-tag">built-in</span></div>
+      </div></div>
+    </div>
+
+    <div class="k3-r k3-body k3-good">
+      <div class="k3-c1"><div class="pad">
+        <div class="k3-code">#[account(constraint = acct.owner() == &amp;X<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ WrongOwner)]</div>
+        <div class="k3-on">on <code>UncheckedAccount</code> &mdash; the fix</div>
+      </div></div>
+      <div class="k3-c2"><div class="pad">
+        <div class="k3-ph">hook &middot; phase 2</div>
+        <div class="k3-phs">nothing pinned the owner, so your boolean is the first thing to judge it</div>
+      </div></div>
+      <div class="k3-c3"><div class="pad">
+        <div class="k3-verd k3-yes"><span class="mk">&#10003;</span><span class="w">YES</span></div>
+      </div></div>
+      <div class="k3-c4"><div class="pad">
+        <div class="k3-err">WrongOwner</div>
+        <div><span class="k3-tag">yours</span></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="k3-note">
+    <div class="lead">keep this in proportion</div>
+    <div class="b"><code>Account&lt;T&gt;</code>'s automatic owner check is the right default. <code>UncheckedAccount</code> is only for this custom-error edge case &mdash; you are trading a free guarantee for a nicer error string.</div>
+  </div>
+</div>
+</body></html>

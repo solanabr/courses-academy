@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The seven deltas this vault actually hits
+     purpose: give the reader a scannable before/after of every edit the port requires, grouped by how the compiler surfaces it
+     data: Mechanical (type/method/signature errors, TODO-marked): Pubkey -> Address .key() -> .address() <'info> lifetimes stripped; handler -> &mut Context<T> space: 8 + INIT_SPACE -> DISCRIMINATOR.len() + INIT_SPACE CpiContext::new(prog.key()) -> CpiContext::new(prog.address()) CPI account fields: .to_account_info() -> .cpi_handle_mut() Compiler-driven (no TODO marker): has_one = authority -> address = state.authority  [deprecation warning] account.reload()? after CPI -> delete; nothing changes underneath a loaded typed account  [E0599: no method named reload] Not triggered here (but on your map): zero_copy attribute -> gone (default layout) duplicate mutable accounts -> opt-out spelled unsafe(dup)
+     prompt: Two-column before/after comparison table, grouped into three labeled bands: "Mechanical (TODO-marked)", "Compiler-driven (no marker)", and "Not triggered here". Left column v1 syntax, right column V2 syntax, monospace for code tokens. Visually distinguish the middle band (the two hard ones) with an accent so the eye lands there. Keep the third band muted.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:511px;height:533px;top:-297px;right:-297px;border-radius:64% 36% 58% 41% / 63% 42% 49% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:517px;height:464px;bottom:-280px;left:-280px;border-radius:40% 54% 61% 60% / 62% 60% 43% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:453px;height:458px;bottom:-245px;left:473px;border-radius:46% 61% 59% 53% / 41% 55% 37% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { width:100%; border-collapse:collapse; table-layout:fixed;
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .cmp th, .cmp td { border:1.5px solid var(--border-subtle); vertical-align:middle; }
+  .cmp thead th { background:var(--surface-inverse); border-color:var(--stbr-dark);
+                  color:var(--text-on-dark); font-family:var(--font-display);
+                  font-weight:900; font-size:15px; letter-spacing:.04em;
+                  text-align:left; padding:11px 18px; }
+  .cmp thead th .sub { display:block; font-family:var(--font-mono); font-weight:400;
+                       font-size:11.5px; letter-spacing:0; opacity:.6; margin-top:2px; }
+  .bandcell { width:236px; background:var(--surface-paper); padding:12px 16px;
+              vertical-align:middle; }
+  .bandcell .bt { font-family:var(--font-display); font-weight:900; font-size:17px;
+                  line-height:1.15; color:var(--text-primary); }
+  .bandcell .bs { font-family:var(--font-body); font-size:12px; line-height:1.35;
+                  color:var(--text-muted); margin-top:5px; }
+  .cmp td.c { background:var(--surface-card); padding:9px 18px;
+              font-family:var(--font-mono); font-size:14px; line-height:1.45;
+              color:var(--text-primary); }
+  .cmp td.c .n { font-family:var(--font-body); font-size:12px; color:var(--text-muted);
+                 display:block; margin-bottom:3px; letter-spacing:.02em; }
+  /* accent band — the two the compiler argues with you about */
+  .bandcell.hot { background:var(--surface-accent); }
+  .bandcell.hot .bs { color:var(--stbr-dark); opacity:.75; }
+  td.c.hot { background:rgba(255,210,63,0.20); }
+  td.c.hot .n { color:var(--stbr-dark); opacity:.62; font-weight:600; }
+  /* muted band */
+  .bandcell.dim .bt { color:var(--text-muted); }
+  td.c.dim { background:var(--surface-paper); color:var(--text-muted); font-size:13px; }
+  .verdict { margin-top:12px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:12px 24px;
+             display:flex; align-items:center; gap:18px; }
+  .verdict .vk { font-family:var(--font-display); font-weight:900; font-size:12px;
+                 letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.7; flex:0 0 auto; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:19px;
+                 line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">before / after &middot; quarter_vault</div>
+  <h2 class="viz-title">the seven deltas this vault actually hits</h2>
+
+  <table class="cmp">
+    <thead>
+      <tr>
+        <th style="width:236px">grouped by<span class="sub">how it surfaces</span></th>
+        <th>v1<span class="sub">anchor-cli 1.1.2</span></th>
+        <th>V2<span class="sub">anchor-cli 2.0.0-rc.1</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="bandcell" rowspan="5">
+          <div class="bt">Mechanical</div>
+          <div class="bs">type / method / signature errors &mdash; each sits at a <b>TODO</b> marker</div>
+        </td>
+        <td class="c">Pubkey<br>.key()</td>
+        <td class="c">Address<br>.address()</td>
+      </tr>
+      <tr>
+        <td class="c">fn handler&lt;'info&gt;(ctx: Context&lt;T&gt;)</td>
+        <td class="c"><span class="n">&lt;'info&gt; lifetimes stripped</span>fn handler(ctx: &amp;mut Context&lt;T&gt;)</td>
+      </tr>
+      <tr>
+        <td class="c">space = 8 + T::INIT_SPACE</td>
+        <td class="c">space = T::DISCRIMINATOR.len() + T::INIT_SPACE</td>
+      </tr>
+      <tr>
+        <td class="c">CpiContext::new(prog.key())</td>
+        <td class="c">CpiContext::new(prog.address())</td>
+      </tr>
+      <tr>
+        <td class="c"><span class="n">CPI account fields</span>.to_account_info()</td>
+        <td class="c"><span class="n">CPI account fields</span>.cpi_handle_mut()</td>
+      </tr>
+
+      <tr>
+        <td class="bandcell hot" rowspan="2">
+          <div class="bt">Compiler-driven</div>
+          <div class="bs">no TODO marker &mdash; the build output is the only thing that points here</div>
+        </td>
+        <td class="c hot"><span class="n">deprecation warning</span>has_one = authority</td>
+        <td class="c hot">address = state.authority</td>
+      </tr>
+      <tr>
+        <td class="c hot"><span class="n">E0599: no method `reload`</span>account.reload()? &nbsp;// after the CPI</td>
+        <td class="c hot">delete it &mdash; nothing changes underneath a loaded typed account</td>
+      </tr>
+
+      <tr>
+        <td class="bandcell dim" rowspan="2">
+          <div class="bt">Not triggered here</div>
+          <div class="bs">this vault never hits them &mdash; but they are on your map</div>
+        </td>
+        <td class="c dim">#[account(zero_copy)]</td>
+        <td class="c dim">gone &mdash; the default layout is zero-copy</td>
+      </tr>
+      <tr>
+        <td class="c dim">duplicate mutable accounts (implicit)</td>
+        <td class="c dim">the opt-out is spelled unsafe(dup)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="verdict">
+    <div class="vk">verdict</div>
+    <div class="vt">Five the compiler types out for you. Two it argues with you about &mdash; and those two are the lesson.</div>
+  </div>
+</div>
+</body></html>

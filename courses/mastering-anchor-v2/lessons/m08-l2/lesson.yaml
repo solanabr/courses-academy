@@ -1,0 +1,109 @@
+id: lesson-mav2-m08-l2
+slug: m08-l2
+title: "Prove it: a verifiable build on devnet, and the authority trust surface"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    solana-verify: "0.5.1"
+    docker: "27.0.0"
+    solana-cli: "3.1.10"
+    anchor-cli: "2.0.0-rc.1"
+skills:
+  - program-deployment
+  - version-pinning
+  - program-security
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m08-l2-q1
+        prompt: "You ran solana-verify build, deployed to devnet, and verify-from-repo reports a match. What exactly have you proven?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "That the .so from your local build hashes the same as the deployed devnet bytes"
+            correct: false
+            feedback: "Your local artifact never enters the comparison. verify-from-repo clones the public repo, rebuilds it inside the pinned image, and puts that hash against the on-chain one, which is why the challenge's uncommitted one-line edit produces a mismatch while your laptop still holds a matching .so."
+          - id: b
+            label: "That the deployed devnet bytes were built from exactly this source at the pinned toolchain"
+            correct: true
+            feedback: "Provenance under a fixed toolchain — that's the entire claim. A faithfully reproduced program can still be a dangerous one, and who may swap those bytes tomorrow is a different question from whether these bytes match."
+          - id: a
+            label: "That the swap logic is free of exploitable bugs, because the verifier compiles and inspects the source"
+            correct: false
+            feedback: "The rebuild does compile your source, but it only hashes the output — it never reads the logic. A perfectly verifiable program can still drain its own vault; bug-freedom came from your audit and fuzz pass."
+          - id: c
+            label: "That the upgrade authority is locked, since a verified program's bytes can no longer be replaced"
+            correct: false
+            feedback: "Verification is orthogonal to authority: a verified program whose upgrade authority is still a hot keypair can be silently replaced tomorrow. Locking upgrades is a separate set-upgrade-authority or Squads step."
+        explanation: "A verifiable build is a source-to-bytes proof under a pinned, deterministic toolchain. It proves provenance, not safety, and not anything about who controls upgrades."
+      - id: m08-l2-q2
+        prompt: "You try solana-verify remote submit-job for your devnet program and it won't produce a result. Why?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The Docker daemon isn't running, so the pinned image can't start"
+            correct: false
+            feedback: "Docker is required for your local solana-verify build, and it fails fast with a daemon error. The remote job rebuilds on OtterSec's workers instead, so your daemon is not what stops it — cluster scope is."
+          - id: d
+            label: "The remote job typically takes thirty minutes; the result is not back yet"
+            correct: false
+            feedback: "That range is real for a mainnet job, and waiting is the reflex it invites. On devnet there is nothing to wait for: no worker ever picks the job up, so the answer stays empty however long you leave it."
+          - id: c
+            label: "The remote OtterSec registry path is mainnet-only and does not cover devnet"
+            correct: true
+            feedback: "The registry buys discoverability — a badge an explorer can show — not a stronger guarantee. The trustless half is the rebuild you run yourself and the two hashes you put side by side."
+          - id: a
+            label: "The program was never deployed, so there are no on-chain bytes to hash"
+            correct: false
+            feedback: "A missing deploy would break the local verify-from-repo too. Here the program is deployed and the job still returns nothing, because the constraint is cluster scope, not a missing program account."
+          - id: e
+            label: "Add -u devnet to the submit-job; without a cluster flag it defaults to the mainnet registry"
+            correct: false
+            feedback: "There is no devnet target for the flag to select. The registry itself covers mainnet, so a cluster flag would only rename the gap, and the local verify-from-repo is what proves a devnet deploy."
+        explanation: "The remote OtterSec submit-job path is mainnet-only. This course proves the build on devnet with the local verify-from-repo command; the remote flow is demonstrated and labelled beyond the course's cluster. What the registry adds is discoverability, not a stronger proof: OtterSec runs the build on their infrastructure and writes an on-chain record that explorers and wallets read for the verified badge. The trustless proof is the local one — you rebuild in the pinned image and compare the two hashes yourself."
+      - id: m08-l2-q3
+        prompt: "You're about to move upgrade authority to a Squads v4 multisig on mainnet. What's the honest trust caveat to tell your team?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Once verify-from-repo reports a match, the only trust left is in the multisig members' own keys"
+            correct: false
+            feedback: "A match removes your need to trust the builder of your program, not the builder of the framework. The pinned image, the anchor-lang crates, and the registry are all still trusted — and the match says nothing about irreversibility."
+          - id: d
+            label: "The caveat is the rung above it: setting the program authority to None is reversible by a later Squad vote"
+            correct: false
+            feedback: "None is the one move with no undo. An M-of-N proposal can vote the upgrade authority back out to any key, so the handoff itself is recoverable, but there is no authority left to vote with once it is None."
+          - id: b
+            label: "Squads v4 is upgradeable, so a bad authority move can be rolled back later by patching the multisig program itself"
+            correct: false
+            feedback: "Squads v4 has been immutable since Nov 2024 — nobody can patch it, which is the feature and also the caveat. The multisig you hand authority to cannot be swapped out from under you, and cannot be fixed either."
+          - id: a
+            label: "One steward sits under the whole verify chain, and the Squads v4 program itself is immutable — the multisig can still vote authority onward, but nobody can ever patch the multisig code"
+            correct: true
+            feedback: "It is checkable, not a rumour — one organisation builds the framework, signs the tag, publishes the crates and runs the registry. And be precise about the immutability: the Squads *program* cannot be patched, while the handoff itself stays reversible — an M-of-N proposal can execute a SetUpgradeAuthority back to any key. Only setting the authority to None is forever."
+        explanation: "Two honest caveats stack: a single steward (OtterSec) spans the framework, crates, and registry; and the Squads v4 program has been immutable since Nov 2024 — the code you hand authority to can never be fixed or swapped. The handoff itself is not the irreversible step: an M-of-N proposal can vote upgrade authority back out to any key, and only setting the authority to None is forever. Verify twice before you commit either move. The steward claim is checkable, not a rumor: OtterSec builds the Anchor framework and GPG-signs the v2 tag under trixter-osec, publishes the anchor-lang crates on crates.io and @anchor-lang/core on npm (repository field pointing at otter-sec since v1.1.1), and runs the verified-builds registry Anchor verifies against."
+      - id: m08-l2-q4
+        prompt: "The pins table lists a Solana CLI version for the verifiable-build toolchain. A reader asks, 'is that the current Solana version?'"
+        multiSelect: false
+        options:
+          - id: c
+            label: "It's cosmetic — the Docker image ignores it and compiles against whatever toolchain your host has"
+            correct: false
+            feedback: "It's the opposite: solana-verify build compiles inside the image, so the hash is a function of the image plus your source, never of your host toolchain. That pin is what makes the bytes reproducible anywhere."
+          - id: a
+            label: "Yes — the pinned toolchain always tracks the newest stable Agave release at build time"
+            correct: false
+            feedback: "The build pin (Solana 3.1.10) and current stable (Agave v4.2.1 as of writing) drift apart on purpose. A pin that chased the newest release would be a moving toolchain, which is exactly the free variable that breaks the hash."
+          - id: d
+            label: "It's the devnet cluster's own version, which is why the deploy targets 3.1.10"
+            correct: false
+            feedback: "A cluster runs its own release on its own schedule: current stable was Agave v4.2.1 while this table pinned 3.1.10. The number describes the environment the bytes were compiled in, and a deploy does not target a toolchain at all."
+          - id: b
+            label: "No — it's the local-CI/Docker toolchain pin, not a claim about the current release"
+            correct: true
+            feedback: "Compilation happens inside the image, so the hash is a function of that image and your source. Your machine never enters it, which is exactly why the pin stays frozen while the network moves on."
+        explanation: "A verifiable build needs a pinned, deterministic toolchain, so the pins table records the local-CI/Docker version — never a claim about the current Solana release, which is tracked separately and re-verified at write."

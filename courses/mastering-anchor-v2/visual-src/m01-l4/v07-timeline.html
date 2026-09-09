@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: One invocation, every discriminator in its place
+     purpose: tie global:, account:, and event: to the single timeline of a real call
+     data: 1. client prepends global:light_marquee tag to instruction data, sends tx 2. dispatcher reads 8-byte tag, matches instruction discriminator, routes to light_marquee 3. try_accounts loads Account<Marquee>: checks account:Marquee discriminator + owner 4. constraints run (init, mut); duplicate-mutable guard walks MUT_MASK fields 5. handler body runs: sets plays, checked_add safety 6. emit!(MarqueeLit): borsh + event:MarqueeLit discriminator via sol_log_data
+     prompt: Horizontal left-to-right timeline with six numbered stops. Tag stop 2 with a "global:" pill, stop 3 with an "account:" pill, and stop 6 with an "event:" pill, in three distinct accent colors. Keep stops 4 and 5 neutral. Caption: one call touches all three discriminator namespaces, each hashed for its own job.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:538px;height:532px;top:-317px;right:-317px;border-radius:50% 65% 62% 44% / 58% 59% 55% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:460px;bottom:-268px;left:-268px;border-radius:41% 55% 46% 36% / 54% 45% 50% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:539px;height:452px;bottom:-270px;right:-270px;border-radius:40% 48% 38% 58% / 53% 44% 50% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p7-lab  { display:flex; }
+  .p7-cell { flex:1; display:flex; flex-direction:column; align-items:center; height:186px; }
+  .p7-top .p7-cell { justify-content:flex-end; }
+  .p7-bot .p7-cell { justify-content:flex-start; }
+  .p7-card { width:214px; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+             border-radius:var(--radius-md); padding:12px 14px; }
+  .p7-hdr  { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
+  .p7-n    { width:28px; height:28px; border-radius:50%; background:var(--surface-brand);
+             color:var(--stbr-cream); font-family:var(--font-display); font-weight:900;
+             font-size:16px; text-align:center; line-height:28px; }
+  .p7-pill { font-family:var(--font-mono); font-weight:800; font-size:15px; padding:4px 12px;
+             border-radius:var(--radius-pill); }
+  .p7-pill-g { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .p7-pill-a { background:var(--surface-brand); color:var(--stbr-cream); }
+  .p7-pill-e { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .p7-tx   { font-family:var(--font-body); font-size:15px; line-height:1.34; color:var(--text-secondary); }
+  .p7-tx code { font-family:var(--font-mono); font-size:14px; color:var(--stbr-emerald-800); }
+  .p7-stem { width:2px; height:26px; background:var(--stbr-ink-300); }
+  .p7-rule { position:relative; display:flex; height:34px; align-items:center; }
+  .p7-line { position:absolute; left:121px; right:121px; top:16px;
+             border-top:3px solid var(--stbr-ink-300); }
+  .p7-dc   { flex:1; display:flex; justify-content:center; position:relative; }
+  .p7-dot  { width:20px; height:20px; border-radius:50%; background:var(--surface-card);
+             border:3px solid var(--stbr-emerald); }
+  .p7-dot.g{ background:var(--stbr-yellow); border-color:var(--stbr-yellow-700); }
+  .p7-dot.a{ background:var(--stbr-emerald); border-color:var(--stbr-emerald); }
+  .p7-dot.e{ background:var(--stbr-dark); border-color:var(--stbr-dark); }
+  .p7-cap  { text-align:center; font-family:var(--font-body); font-size:18px;
+             color:var(--text-secondary); margin-top:16px; }
+</style>
+  <div class="stbr-eyebrow">one invocation, end to end</div>
+  <h2 class="viz-title">Every discriminator in its place</h2>
+
+  <div class="p7-lab p7-top">
+    <div class="p7-cell">
+      <div class="p7-card">
+        <div class="p7-hdr"><span class="p7-n">1</span></div>
+        <div class="p7-tx">client prepends the <code>global:light_marquee</code> tag to the instruction data, sends tx</div>
+      </div>
+      <div class="p7-stem"></div>
+    </div>
+    <div class="p7-cell"></div>
+    <div class="p7-cell">
+      <div class="p7-card">
+        <div class="p7-hdr"><span class="p7-n">3</span><span class="p7-pill p7-pill-a">account:</span></div>
+        <div class="p7-tx"><code>try_accounts</code> loads <code>Account&lt;Marquee&gt;</code>: checks the <code>account:Marquee</code> discriminator + owner</div>
+      </div>
+      <div class="p7-stem"></div>
+    </div>
+    <div class="p7-cell"></div>
+    <div class="p7-cell">
+      <div class="p7-card">
+        <div class="p7-hdr"><span class="p7-n">5</span></div>
+        <div class="p7-tx">handler body runs: sets <code>plays</code>, <code>checked_add</code> safety</div>
+      </div>
+      <div class="p7-stem"></div>
+    </div>
+    <div class="p7-cell"></div>
+  </div>
+
+  <div class="p7-rule">
+    <div class="p7-line"></div>
+    <div class="p7-dc"><div class="p7-dot"></div></div>
+    <div class="p7-dc"><div class="p7-dot g"></div></div>
+    <div class="p7-dc"><div class="p7-dot a"></div></div>
+    <div class="p7-dc"><div class="p7-dot"></div></div>
+    <div class="p7-dc"><div class="p7-dot"></div></div>
+    <div class="p7-dc"><div class="p7-dot e"></div></div>
+  </div>
+
+  <div class="p7-lab p7-bot">
+    <div class="p7-cell"></div>
+    <div class="p7-cell">
+      <div class="p7-stem"></div>
+      <div class="p7-card">
+        <div class="p7-hdr"><span class="p7-n">2</span><span class="p7-pill p7-pill-g">global:</span></div>
+        <div class="p7-tx">dispatcher reads the 8-byte tag, matches the instruction discriminator, routes to <code>light_marquee</code></div>
+      </div>
+    </div>
+    <div class="p7-cell"></div>
+    <div class="p7-cell">
+      <div class="p7-stem"></div>
+      <div class="p7-card">
+        <div class="p7-hdr"><span class="p7-n">4</span></div>
+        <div class="p7-tx">constraints run (<code>init</code>, <code>mut</code>); the duplicate-mutable guard walks <code>MUT_MASK</code> fields</div>
+      </div>
+    </div>
+    <div class="p7-cell"></div>
+    <div class="p7-cell">
+      <div class="p7-stem"></div>
+      <div class="p7-card">
+        <div class="p7-hdr"><span class="p7-n">6</span><span class="p7-pill p7-pill-e">event:</span></div>
+        <div class="p7-tx"><code>emit!(MarqueeLit)</code>: borsh + the <code>event:MarqueeLit</code> discriminator via <code>sol_log_data</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p7-cap">One call touches all three discriminator namespaces &mdash; each hashed for its own job.</div>
+</div>
+</body></html>

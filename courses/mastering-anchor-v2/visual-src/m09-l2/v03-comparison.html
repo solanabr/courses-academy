@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: A constraint hook vs the native check it replaces
+     purpose: show the stored-authority constraint and bump as generated hooks that were hand-fused into the native handler
+     data: columns: constraint (V2 source) | what it generates | native equivalent (m09-l1) rows: - bump = state.bump | re-derive PDA from seeds + stored bump; reject mismatch | you passed the stored bump slice to invoke_signed by hand - constraint = state.owner == *authority.address() @ VaultError::Unauthorized | state.owner == authority address, else a custom error in the 6000s | an if &cfg[1..33] != authority.key() { return Err } in your gauntlet - seeds = [b"vault", authority.address()] | assert the account's address equals the derived PDA | you trusted the seeds you built for the signature where they run: a separate constraints block, after ALL fields load, before the handler body
+     prompt: Two-to-three column comparison mapping each V2 constraint to its generated action and its native hand-written twin. Add a footer band: "constraints run in their own phase, after loads, before the handler, so a check can never run too late." Keep it tabular.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:509px;height:416px;top:-224px;right:-224px;border-radius:61% 58% 44% 35% / 58% 58% 38% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:485px;height:498px;left:-284px;top:139px;border-radius:51% 53% 35% 50% / 62% 57% 46% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:405px;height:454px;bottom:-253px;left:652px;border-radius:47% 49% 36% 52% / 62% 56% 64% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .phases { display:flex; align-items:center; margin-bottom:18px; }
+  .pill { display:inline-block; font-family:var(--font-display); font-weight:800;
+          font-size:15px;
+          letter-spacing:.08em; text-transform:uppercase; padding:13px 24px;
+          border-radius:var(--radius-pill); background:var(--surface-card);
+          border:2px solid var(--border-strong); color:var(--text-primary); }
+  .pill.now { background:var(--stbr-yellow); border-color:var(--stbr-yellow-700);
+              color:var(--text-on-accent); font-weight:900; font-size:17px;
+              padding:15px 30px; }
+  .pgap { display:inline-block; width:20px; flex:0 0 20px; }
+  .pnote { display:block; font-family:var(--font-body); font-size:14px; line-height:1.35;
+           color:var(--text-secondary); padding-left:24px; }
+  .pnote b { color:var(--text-primary); }
+
+  .cmp { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); overflow:hidden; }
+  .row { display:flex; align-items:stretch; border-top:1px solid var(--border-subtle); }
+  .row.head { border-top:0; background:var(--surface-inverse); }
+  .row.alt { background:var(--surface-paper); }
+  .c1 { flex:0 0 486px; width:486px; }
+  .c2 { flex:0 0 470px; width:470px; }
+  .c3 { flex:1 1 auto; }
+  .cell { padding:16px 22px; display:flex; flex-direction:column; justify-content:center; }
+  .div1 { border-right:1px solid var(--border-subtle); }
+  .row.head .div1 { border-right-color:rgba(245,232,202,0.22); }
+  .hl { font-family:var(--font-display); font-weight:800; font-size:14px;
+        letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-cream); }
+  .src { font-family:var(--font-mono); font-size:14px; line-height:1.4;
+         color:var(--text-primary); }
+  .src .err { color:var(--stbr-emerald-800); }
+  .t { font-family:var(--font-body); font-size:15px; line-height:1.35;
+       color:var(--text-primary); }
+  .t.nat { color:var(--text-secondary); }
+  .t .mono { font-family:var(--font-mono); font-size:13.5px; color:var(--text-primary); }
+  .verdict { margin-top:18px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:18px 28px; display:flex;
+             align-items:center; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:12px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.75; flex:0 0 170px; line-height:1.3; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:22px;
+                 line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">constraint hooks · m09-l1 twin</div>
+  <h2 class="viz-title">handler checks, hoisted into a phase</h2>
+
+  <div class="phases">
+    <span class="pill">phase 1 &middot; loads</span>
+    <span class="pgap"></span>
+    <span class="pill now">phase 2 &middot; constraints</span>
+    <span class="pgap"></span>
+    <span class="pill">handler body</span>
+    <span class="pnote">Where they run: a <b>separate constraints block</b>, after ALL fields load,<br>before the handler body.</span>
+  </div>
+
+  <div class="cmp">
+    <div class="row head">
+      <div class="cell c1 div1"><div class="hl">constraint (V2 source)</div></div>
+      <div class="cell c2 div1"><div class="hl">what it generates</div></div>
+      <div class="cell c3"><div class="hl">native equivalent (m09-l1)</div></div>
+    </div>
+
+    <div class="row">
+      <div class="cell c1 div1"><div class="src">bump = state.bump</div></div>
+      <div class="cell c2 div1"><div class="t">re-derive the PDA from seeds + the stored bump; reject a mismatch</div></div>
+      <div class="cell c3"><div class="t nat">you passed the stored bump slice to <span class="mono">invoke_signed</span> by hand</div></div>
+    </div>
+
+    <div class="row alt">
+      <div class="cell c1 div1"><div class="src">constraint = state.owner<br>&nbsp;&nbsp;== *authority.address()<br>&nbsp;&nbsp;<span class="err">@ VaultError::Unauthorized</span></div></div>
+      <div class="cell c2 div1"><div class="t"><span class="mono">state.owner == authority</span> address, else a custom error in the <b>6000s</b></div></div>
+      <div class="cell c3"><div class="t nat">an <span class="mono">if &amp;cfg[1..33] != authority.key() { return Err }</span> in your gauntlet</div></div>
+    </div>
+
+    <div class="row">
+      <div class="cell c1 div1"><div class="src">seeds = [b"vault",<br>&nbsp;&nbsp;authority.address()]</div></div>
+      <div class="cell c2 div1"><div class="t">assert the account's address equals the derived PDA</div></div>
+      <div class="cell c3"><div class="t nat">you <b>trusted</b> the seeds you built for the signature</div></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the real win</span>
+    <span class="vt">constraints run in their own phase, after loads, before the handler — so a check can never run too late</span>
+  </div>
+</div>
+</body></html>

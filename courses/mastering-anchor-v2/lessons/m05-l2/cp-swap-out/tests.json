@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "input": "1000, 1000, 100",
+    "expectedOutput": "90",
+    "description": "0.3% fee plus the reserve shift on a shallow pool (naive ratio would say 100)"
+  },
+  {
+    "id": "t2",
+    "input": "1000000, 1000000, 1000",
+    "expectedOutput": "996",
+    "description": "deep pool, low slippage"
+  },
+  {
+    "id": "t3",
+    "input": "5000, 10000, 500",
+    "expectedOutput": "906",
+    "description": "asymmetric reserves"
+  },
+  {
+    "id": "t4",
+    "input": "1000, 1000, 0",
+    "expectedOutput": "0",
+    "description": "zero input yields zero output"
+  },
+  {
+    "id": "t5",
+    "input": "1000000, 1000000, 10000",
+    "expectedOutput": "9871",
+    "description": "the lesson's worked example: 10k into a balanced 1M/1M pool at 0.3%"
+  },
+  {
+    "id": "t6",
+    "input": "0, 1000000, 10000",
+    "expectedOutput": "0",
+    "description": "empty reserve_in: without the guard the denominator collapses to amount_in_with_fee and the quote hands back the whole of reserve_out"
+  },
+  {
+    "id": "t7",
+    "input": "18446744073709551615, 18446744073709551615, 18446744073709551615",
+    "expectedOutput": "0",
+    "description": "u64::MAX everywhere: the numerator runs past u128, so the CHECKED multiply must degrade to 0 \u2014 a bare u128 `*` panics here"
+  },
+  {
+    "id": "t8",
+    "input": "1000000000000000000, 1000000000000000000, 1000000000000",
+    "expectedOutput": "996999005991",
+    "description": "1e18 reserves, 1e12 in: comfortably inside u128 but far past a u64 multiply, so this is the case that forces the promotion"
+  }
+]

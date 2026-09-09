@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: v1 deserialize-then-check vs V2 Pod-typed view
+     purpose: show why the mismatch is a runtime event in v1 and a compile-time fact in V2
+     data: v1 path: account bytes -> read 8-byte discriminator -> compare to T's discriminator -> if ok, parse fields into T -> typed ref v1 seam: if the check is skipped (AccountInfo / hand-deser), a Pool flows into a FeeConfig-shaped parse V2 path: account data -> Account<T> casts bytes as Pod T (layout fixed at compile time) -> typed view V2 seam: the type T is chosen in the struct at compile time; a different T is a different Pod layout the compiler tracks
+     prompt: Two stacked horizontal pipelines. Top: v1, four stages ending in a typed ref, with a red branch at the discriminator-check stage labeled "skippable runtime check". Bottom: V2, three stages, with a green lock icon at the "cast as Pod T" stage labeled "type fixed at compile time". Keep the two pipelines visually parallel so the reader sees the check move from runtime to compile time.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:542px;height:472px;top:-254px;right:-254px;border-radius:48% 41% 65% 38% / 57% 51% 35% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:601px;height:535px;bottom:-322px;left:-322px;border-radius:45% 43% 36% 51% / 54% 58% 39% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:512px;height:567px;bottom:-303px;right:-303px;border-radius:47% 53% 41% 35% / 39% 57% 52% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 16px; }
+  .lane { background: var(--surface-card); border: 2px solid var(--border-subtle);
+          border-radius: var(--radius-lg); padding: 16px 20px 16px 16px; margin-bottom: 20px; }
+  .lrow { display: flex; align-items: stretch; }
+  .rail { flex: 0 0 96px; border-radius: var(--radius-md); padding: 12px 10px;
+          display: flex; flex-direction: column; justify-content: center; margin-right: 16px; }
+  .rail.v1 { background: var(--surface-inverse); }
+  .rail.v2 { background: var(--surface-brand); }
+  .rn { font-family: var(--font-display); font-weight: 900; font-size: 27px; line-height: 1;
+        color: var(--text-on-dark); }
+  .rk { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .11em;
+        text-transform: uppercase; color: rgba(245,232,202,0.62); margin-top: 5px; line-height: 1.25; }
+  .node { flex: 1 1 0; min-width: 0; border: 1.5px solid var(--border-subtle);
+          border-radius: var(--radius-md); background: var(--surface-paper);
+          padding: 11px 13px; display: flex; flex-direction: column; }
+  .node.io { background: var(--surface-card); border-style: dashed; }
+  .node.mark { background: var(--surface-accent); border: 2px solid var(--stbr-yellow-700); }
+  .node.lock { background: rgba(0,139,76,0.10); border: 2px solid var(--stbr-emerald); }
+  .stg { font-family: var(--font-body); font-weight: 800; font-size: 9.5px; letter-spacing: .12em;
+         text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+  .node.mark .stg { color: rgba(27,35,29,0.60); }
+  .node.lock .stg { color: var(--stbr-emerald-800); }
+  .nt { font-family: var(--font-body); font-weight: 600; font-size: 14px; line-height: 1.32;
+        color: var(--text-primary); }
+  .nt code { font-family: var(--font-mono); font-size: 13px; font-weight: 600; }
+  .badge { margin-top: auto; padding-top: 8px; display: flex; align-items: center; gap: 6px;
+           font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .09em;
+           text-transform: uppercase; }
+  .badge.y { color: var(--stbr-dark); }
+  .badge.g { color: var(--stbr-emerald-800); }
+  /* the lock node's copy wraps to two lines and fills the node, so margin-top:auto
+     collapses; give the badge its own clearance from the last text line */
+  .node.lock .nt { margin-bottom: 12px; }
+  .node.lock .badge { padding-top: 8px; }
+  .conn { flex: 0 0 40px; display: flex; align-items: center; justify-content: center; }
+  .seam { margin: 14px 0 0 112px; border-radius: var(--radius-md); padding: 10px 16px;
+          display: flex; align-items: center; gap: 12px; }
+  .seam.y { background: rgba(255,210,63,0.32); border-left: 4px solid var(--stbr-yellow-700); }
+  .seam.g { background: rgba(0,139,76,0.10); border-left: 4px solid var(--stbr-emerald); }
+  .sk { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .12em;
+        text-transform: uppercase; white-space: nowrap; }
+  .seam.y .sk { color: var(--stbr-green-800); }
+  .seam.g .sk { color: var(--stbr-emerald-800); }
+  .st { font-family: var(--font-body); font-size: 13.5px; line-height: 1.35; color: var(--text-primary); }
+  .st code { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; }
+  .verdict { background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 14px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.14;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">deserialize-then-check &rarr; pod-typed view</div>
+  <h2 class="viz-title">the same check, on a different clock</h2>
+
+  <div class="lane">
+    <div class="lrow">
+      <div class="rail v1"><div class="rn">v1</div><div class="rk">checked at<br>run time</div></div>
+      <div class="node io"><div class="stg">input</div><div class="nt">account bytes</div></div>
+      <div class="conn"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="24" y2="7" stroke="#1b231d" stroke-width="2.2"/><polygon points="34,7 23,2 23,12" fill="#1b231d"/></svg></div>
+      <div class="node"><div class="stg">stage 1</div><div class="nt">read the 8-byte discriminator</div></div>
+      <div class="conn"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="24" y2="7" stroke="#1b231d" stroke-width="2.2"/><polygon points="34,7 23,2 23,12" fill="#1b231d"/></svg></div>
+      <div class="node mark"><div class="stg">stage 2 &mdash; the seam</div><div class="nt">compare to <code>T</code>&rsquo;s discriminator</div><div class="badge y">skippable runtime check</div></div>
+      <div class="conn"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="24" y2="7" stroke="#1b231d" stroke-width="2.2"/><polygon points="34,7 23,2 23,12" fill="#1b231d"/></svg></div>
+      <div class="node"><div class="stg">stage 3</div><div class="nt">if ok, parse fields into <code>T</code></div></div>
+      <div class="conn"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="24" y2="7" stroke="#1b231d" stroke-width="2.2"/><polygon points="34,7 23,2 23,12" fill="#1b231d"/></svg></div>
+      <div class="node io"><div class="stg">output</div><div class="nt">typed ref</div></div>
+    </div>
+    <div class="seam y">
+      <span class="sk">v1 seam</span>
+      <span class="st">skip the check &mdash; hand-decode from <code>AccountInfo</code> &mdash; and a <code>Pool</code> flows straight into a <code>FeeConfig</code>-shaped parse.</span>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="lrow">
+      <div class="rail v2"><div class="rn">V2</div><div class="rk">fixed at<br>compile time</div></div>
+      <div class="node io"><div class="stg">input</div><div class="nt">account data</div></div>
+      <div class="conn"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="24" y2="7" stroke="#008b4c" stroke-width="2.2"/><polygon points="34,7 23,2 23,12" fill="#008b4c"/></svg></div>
+      <div class="node lock" style="flex:3 1 0">
+        <div class="stg">the whole middle of the pipeline</div>
+        <div class="nt"><code>Account&lt;T&gt;</code> casts the bytes as Pod <code>T</code> &mdash; the layout is fixed when the struct is written, not when the instruction runs</div>
+        <div class="badge g">
+          <svg width="13" height="15" viewBox="0 0 13 15"><path d="M3.4 6V4.2a3.1 3.1 0 0 1 6.2 0V6" fill="none" stroke="#005c33" stroke-width="1.8"/><rect x="1.4" y="5.8" width="10.2" height="8" rx="1.8" fill="#005c33"/></svg>
+          type fixed at compile time
+        </div>
+      </div>
+      <div class="conn"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="24" y2="7" stroke="#008b4c" stroke-width="2.2"/><polygon points="34,7 23,2 23,12" fill="#008b4c"/></svg></div>
+      <div class="node io"><div class="stg">output</div><div class="nt">typed view</div></div>
+    </div>
+    <div class="seam g">
+      <span class="sk">no seam</span>
+      <span class="st">a different <code>T</code> is a different Pod layout, and the compiler tracks it &mdash; there is no stage left to skip.</span>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the move</span>
+    <span class="vt">v1 asks the question every run. V2 already knows the answer before the binary exists.</span>
+  </div>
+</div>
+</body></html>

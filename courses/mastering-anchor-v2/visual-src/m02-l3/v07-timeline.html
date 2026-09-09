@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Issue #4937, how one unpinned crate broke the escape hatch
+     purpose: turn "pin your dependencies" from advice into a concrete failure you can picture
+     data: 1. anchor-lang pins wincode 0.5; #[account(borsh)] compiles and ships 2. solana-address 2.7.0 raises ITS OWN wincode requirement to 0.6 (solana-address has only ever shipped a 2.x line - never a 0.6) 3. a dependency bump pulls in that 0.6 line 4. wincode 0.5 and wincode 0.6 disagree at the trait-bound level 5. #[account(borsh)] stops compiling, trait-bound error, not a runtime bug 6. 2026-08-16: issue #4937 filed 7. 2026-08-20: pins reconciled, issue #4937 closed
+     prompt: Horizontal 7-step timeline, left to right, one node per numbered event above. Mark step 5 (the break) in an alert color and step 7 (the fix, dated 2026-08-20) in a resolved color. Short label under each node. The takeaway line beneath: "one floated crate = a compile-time break in a feature you didn't touch."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:573px;height:549px;top:-284px;right:-284px;border-radius:50% 59% 45% 36% / 37% 40% 63% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:546px;height:510px;bottom:-276px;left:-276px;border-radius:39% 55% 46% 46% / 63% 42% 37% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:576px;height:521px;bottom:-329px;right:-329px;border-radius:59% 41% 51% 35% / 65% 54% 45% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .t7-title { font-size:42px; }
+  .t7-stage { background:var(--surface-card); border:2px solid var(--border-subtle);
+              border-radius:var(--radius-xl); padding:26px 22px; }
+  .t7-row { display:flex; align-items:stretch; }
+  .t7-cell { flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; }
+  .t7-row.top .t7-cell { height:160px; justify-content:flex-end; }
+  .t7-row.bot .t7-cell { height:160px; justify-content:flex-start; }
+  .t7-card { width:186px; height:140px; box-sizing:border-box; background:var(--surface-paper);
+             border:2px solid var(--border-subtle); border-radius:var(--radius-md);
+             padding:12px 14px; }
+  .t7-card.break { background:#fff8dc; border-color:var(--stbr-yellow-700); }
+  .t7-card.fixed { background:#eef6f0; border-color:var(--surface-brand); }
+  .t7-k { display:block; height:18px; font-family:var(--font-display); font-weight:900;
+          font-size:12px; letter-spacing:.11em; text-transform:uppercase;
+          color:var(--surface-brand); }
+  .t7-card.break .t7-k { color:var(--stbr-yellow-700); }
+  .t7-t { margin-top:6px; font-family:var(--font-body); font-size:14px; line-height:1.34;
+          color:var(--text-primary); }
+  .t7-t code { font-family:var(--font-mono); font-size:13px; }
+  .t7-stem { width:2px; height:20px; background:#bdd0c3; }
+  .t7-axis { position:relative; height:56px; }
+  .t7-line { position:absolute; left:7.14%; right:7.14%; top:26px; height:4px;
+             background:#cfe0d4; border-radius:2px; }
+  .t7-dots { position:relative; display:flex; }
+  .t7-dot { flex:1 1 0; min-width:0; display:flex; justify-content:center; }
+  .t7-dot span { width:52px; height:52px; box-sizing:border-box; border-radius:999px;
+                 background:var(--surface-card); border:4px solid var(--surface-brand);
+                 font-family:var(--font-display); font-weight:900; font-size:20px;
+                 color:var(--text-primary); display:flex; align-items:center;
+                 justify-content:center; }
+  .t7-dot.break span { background:var(--surface-accent); border-color:var(--stbr-yellow-700);
+                       color:var(--stbr-dark); }
+  .t7-dot.fixed span { background:var(--surface-brand); border-color:var(--surface-brand);
+                       color:var(--stbr-cream); }
+  .t7-band { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:20px 32px; font-family:var(--font-display); font-weight:900; font-size:25px;
+             line-height:1.16; color:var(--stbr-cream); }
+  .t7-band b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">pinning, as a concrete failure</div>
+  <h2 class="viz-title t7-title">Issue #4937 &mdash; one unpinned crate broke the escape hatch</h2>
+  <div class="t7-stage">
+    <div class="t7-row top">
+      <div class="t7-cell">
+        <div class="t7-card"><span class="t7-k"></span>
+          <div class="t7-t"><code>anchor-lang</code> pins <code>wincode 0.5</code>; <code>#[account(borsh)]</code> compiles and ships.</div></div>
+        <div class="t7-stem"></div>
+      </div>
+      <div class="t7-cell"></div>
+      <div class="t7-cell">
+        <div class="t7-card"><span class="t7-k"></span>
+          <div class="t7-t">A dependency bump pulls in the <code>0.6</code> line.</div></div>
+        <div class="t7-stem"></div>
+      </div>
+      <div class="t7-cell"></div>
+      <div class="t7-cell">
+        <div class="t7-card break"><span class="t7-k">the break</span>
+          <div class="t7-t"><code>#[account(borsh)]</code> stops compiling &mdash; a trait-bound error, not a runtime bug.</div></div>
+        <div class="t7-stem"></div>
+      </div>
+      <div class="t7-cell"></div>
+      <div class="t7-cell">
+        <div class="t7-card fixed"><span class="t7-k">2026-08-20</span>
+          <div class="t7-t">Pins reconciled, issue #4937 closed.</div></div>
+        <div class="t7-stem"></div>
+      </div>
+    </div>
+    <div class="t7-axis">
+      <div class="t7-line"></div>
+      <div class="t7-dots">
+        <div class="t7-dot"><span>1</span></div>
+        <div class="t7-dot"><span>2</span></div>
+        <div class="t7-dot"><span>3</span></div>
+        <div class="t7-dot"><span>4</span></div>
+        <div class="t7-dot break"><span>5</span></div>
+        <div class="t7-dot"><span>6</span></div>
+        <div class="t7-dot fixed"><span>7</span></div>
+      </div>
+    </div>
+    <div class="t7-row bot">
+      <div class="t7-cell"></div>
+      <div class="t7-cell">
+        <div class="t7-stem"></div>
+        <div class="t7-card"><span class="t7-k"></span>
+          <div class="t7-t"><code>solana-address 2.7.0</code> raises its own <code>wincode</code> requirement to <code>0.6</code>.</div></div>
+      </div>
+      <div class="t7-cell"></div>
+      <div class="t7-cell">
+        <div class="t7-stem"></div>
+        <div class="t7-card"><span class="t7-k"></span>
+          <div class="t7-t"><code>wincode 0.5</code> vs <code>wincode 0.6</code> disagree at the trait-bound level.</div></div>
+      </div>
+      <div class="t7-cell"></div>
+      <div class="t7-cell">
+        <div class="t7-stem"></div>
+        <div class="t7-card"><span class="t7-k">2026-08-16</span>
+          <div class="t7-t">Issue #4937 filed.</div></div>
+      </div>
+      <div class="t7-cell"></div>
+    </div>
+  </div>
+  <div class="t7-band">One floated crate = a <b>compile-time break</b> in a feature you didn&rsquo;t touch.</div>
+</div>
+</body></html>

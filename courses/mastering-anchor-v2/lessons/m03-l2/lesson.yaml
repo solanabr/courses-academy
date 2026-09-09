@@ -1,0 +1,103 @@
+id: lesson-mav2-m03-l2
+slug: m03-l2
+title: "The constraint catalog (and init_if_needed, in situ)"
+skills:
+  - anchor
+  - signers
+  - program-security
+  - error-handling
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "You wrote `#[account(owner = spl_token::ID @ VaultError::WrongOwner)]` on an `Account<T>` vault and expected WrongOwner on a bad account. The test instead sees a generic IllegalOwner. Why?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "`load` checks owner and discriminator before any constraint hook runs, so the built-in IllegalOwner fires first"
+            correct: true
+            feedback: "Take the account untyped and assert ownership in the hook phase, because that is where your error can still fire. On a typed wrapper the owner is already pinned to your own program, so naming a different one was never reachable."
+          - id: b
+            label: "`owner` needs a literal `Address` constant, and `spl_token::ID` is a path the derive macro fails to resolve"
+            correct: false
+            feedback: "`owner` accepts any expression that evaluates to an address, `spl_token::ID` included. The problem is phase ordering, not resolution."
+          - id: a
+            label: "The `@` error binding is parsed on `constraint =` alone; on `address` and `owner` the macro silently drops it"
+            correct: false
+            feedback: "`@` binds a custom error on `address` and `owner` too — the macro parses it fine here. The error never fires because `load` rejected the account before the hook that would raise it."
+          - id: d
+            label: "Constraint order inside #[account(...)] decides the phase, so listing owner above seeds makes it run during load"
+            correct: false
+            feedback: "Field order really is load order, so carrying that instinct down into one field's attribute list is a fair inference. Every hook on a single field runs in the constraint phase whatever order you write them in; what runs first is the typed load, and no attribute can join it."
+        explanation: "On Account<T>, owner/discriminator validation happens during load — earlier than the constraint-hook phase where your @ error would be raised. To surface a custom owner error, drop to UncheckedAccount and assert ownership with an explicit constraint that runs in the hook phase. Read it one step further: on Account<T> the typed wrapper has already pinned the owner to your own program, so `owner = <some other program>` there is not merely error-shadowed, it is unreachable — an account owned by anyone else can never load as that type in the first place."
+      - id: q2
+        prompt: "You add `init_if_needed` so a player can 'top up or create' a vault in one instruction. What is the specific danger you must now guard, and what does V2's reuse-validation actually cover?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Nothing — V2's reuse-validation re-checks the existing account on the reuse branch, so init_if_needed is safe on its own"
+            correct: false
+            feedback: "Reuse-validation is real, but it only re-checks space, owner and discriminator. It has no notion of `credit` being a funded balance, so the overwrite risk is still yours to guard."
+          - id: c
+            label: "That `init_if_needed` sits behind a Cargo feature in V2, so the derive struct will not compile until you enable it"
+            correct: false
+            feedback: "That was the v1 stance. In V2 the keyword ships with NO feature gate and compiles freely — which is exactly why the guard discipline matters more, not less."
+          - id: d
+            label: "A different program creating the account first; reuse-validation covers the stored state, so your own credit field is safe"
+            correct: false
+            feedback: "Exactly inverted, and the inversion is worth naming out loud: ownership is the part reuse-validation does do for you, alongside space and discriminator. What it has no view of is which field holds a player's balance, so the state is the half left to your guard."
+          - id: a
+            label: "A reinitialization path that clobbers an existing vault's live `credit`; reuse-validation covers shape, not state"
+            correct: true
+            feedback: "Structural re-checks have no idea which field holds a player's money, so a funded balance and a fresh one look identical to them, which is why the create branch needs a freshness test of your own, and a += where you were about to write =."
+        explanation: "V2's reuse-validation re-checks structural properties (space, owner, discriminator) when the account already exists, but it does not know your invariants. The reinitialization attack — forcing the create-or-reuse branch to reset live state — survives, so you must guard the overwrite path yourself. Concretely: reuse-validation has no idea that `credit` is a balance a player funded, so branch on whether the account is fresh (`vault.owner == Address::default()`) before initializing any field, and only ever ADD to `credit` — never `vault.credit = amount`, which is the clobber."
+      - id: q3
+        prompt: "Porting a v1 vault, the compiler rejects `realloc::payer = payer` and warns on `has_one = authority`. What are the correct V2 forms?"
+        multiSelect: false
+        options:
+          - id: e
+            label: "`realloc_zero = payer` and `address = <the authority expression>`"
+            correct: false
+            feedback: "Both V2 spellings, wrong pairing, and the two flat names are easy to swap. realloc_zero takes a bool and decides whether the resized buffer is wiped; who funds the extra rent is realloc_payer."
+          - id: d
+            label: "`realloc::payer = payer` and `address = <authority expression>`"
+            correct: false
+            feedback: "The has_one half is right, which is also the half the compiler nags you about, so it is the one people fix first. The colon-nested realloc sub-keywords do not survive the port: V2 spells them flat, and the old form fails to compile rather than warning."
+          - id: c
+            label: "`realloc_payer = payer` and keep `has_one = authority`"
+            correct: false
+            feedback: "has_one still parses but is deprecated and warns; new V2 code should use address = parent.field."
+          - id: a
+            label: "`realloc::payer` stays; has_one becomes `owner = authority`"
+            correct: false
+            feedback: "realloc::payer is not the V2 spelling, and has_one's replacement is address=, not owner."
+          - id: b
+            label: "`realloc_payer = payer` and `address = <the authority expression>`"
+            correct: true
+            feedback: "Colons out, underscores in, and field equality moved onto a keyword that takes any expression at all. The two old spellings exit differently: `realloc::payer` is a hard reject — the colon form does not compile in V2, which is exactly what the error you hit says — while `has_one` still builds and just arrives underlined. Either way the port is mechanical."
+        explanation: "V2 flattened the realloc sub-keywords to underscore forms (realloc_payer, realloc_zero) and deprecated has_one in favor of address = parent.field, which accepts any expression. has_one still compiles with a warning so migrations aren't blocked, but new code uses address=."
+      - id: q4
+        prompt: "Your `close = player` handler runs with an empty body. What does the constraint itself accomplish, and why write it that way rather than by hand?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The rent-exempt lamports return to the player and the account is invalidated in one atomic step"
+            correct: true
+            feedback: "Sweep, zero, invalidate: one step, with no half-closed state for anyone to mistake for a live account. Doing it through the constraint also puts it in the IDL, where a reader will actually find it."
+          - id: a
+            label: "The account's data is copied into the destination account before deletion, so no vault state is lost"
+            correct: false
+            feedback: "`close` archives nothing — it zeroes the data and wipes the discriminator. If you need the state, read it in the handler before the close takes effect."
+          - id: b
+            label: "Nothing moves; `close` only wipes the discriminator, and the rent-exempt reserve stays stranded in the PDA"
+            correct: false
+            feedback: "The discriminator wipe is real, but it is only one of three steps. `close` also sweeps every lamport to the destination — stranding the reserve is the exact failure it exists to prevent."
+          - id: d
+            label: "The reserve returns to whoever funded the rent at init, whatever address close = names, and the data is zeroed"
+            correct: false
+            feedback: "Runtimes that remember a rent payer do exist, and it would be a sensible protection to inherit. Solana records no payer on the account: close sweeps the whole lamport balance to the destination you name, which is what makes naming the wrong one a real mistake rather than a no-op."
+        explanation: "close = destination returns the account's rent-exempt reserve to the named destination and invalidates the account so it can't be silently revived, all inside the derive macro. Using the constraint (rather than hand-rolling the lamport move) keeps the close atomic and visible in the IDL. Three things happen together on success: the full lamport balance moves to the destination, the data is zeroed, and the discriminator is wiped — so there is no window in which a half-closed account could be mistaken for a live vault. The handler body can be empty, because the constraint carries the whole operation."

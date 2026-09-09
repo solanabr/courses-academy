@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where the 8 bytes go (Config = Address + u64 + bool)
+     purpose: make the off-by-8 concrete by drawing the byte layout the careless port under-allocates
+     data: Full account = 49 bytes [ 0 .. 8 )   discriminator (8)  <- DISCRIMINATOR.len(), NOT part of INIT_SPACE [ 8 .. 40 )  authority: Address (32)  \ [ 40 .. 48 ) seed: u64 (8)             > INIT_SPACE = 41 [ 48 .. 49 ) active: bool (1)         / careless port allocates 41 (INIT_SPACE only) -> writes overrun by 8 bytes correct: Config::DISCRIMINATOR.len() (8) + Config::INIT_SPACE (41) = 49
+     prompt: A single horizontal byte-strip, 0 to 49, divided into four labeled segments: discriminator (8), authority (32), seed (8), active (1). Bracket the last three as "INIT_SPACE = 41". Draw a second, shorter strip beneath it starting at byte 8 to show the careless 41-byte allocation ending 8 bytes early, with a red "overrun" marker where the fields spill past it. Monospace offsets and field names.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:616px;height:564px;top:-328px;right:-328px;border-radius:59% 61% 49% 65% / 42% 56% 41% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:501px;height:388px;left:-275px;top:295px;border-radius:42% 51% 37% 36% / 37% 39% 63% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:571px;height:524px;bottom:-300px;right:-300px;border-radius:60% 47% 61% 54% / 38% 63% 39% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:30px 38px 26px; }
+  .rail { position:relative; width:1300px; margin:0 auto; }
+  .ticks { position:relative; height:28px; }
+  .tk { position:absolute; top:0; font-family:var(--font-mono); font-size:12px;
+        color:var(--text-muted); }
+  .tm { position:absolute; top:19px; width:0; height:9px;
+        border-left:1px solid var(--stbr-ink-300); }
+  .strip { display:flex; height:78px; border-radius:var(--radius-sm); overflow:hidden; }
+  .seg { display:flex; flex-direction:column; align-items:center; justify-content:center;
+         border-right:1px solid rgba(245,232,202,0.35); }
+  .seg .sn { font-family:var(--font-mono); font-size:14px; font-weight:700;
+             color:var(--stbr-cream); }
+  .seg .ss { font-family:var(--font-body); font-size:11.5px; color:var(--stbr-cream);
+             opacity:.72; margin-top:5px; }
+  .s-disc { width:212px; flex:0 0 212px; background:var(--surface-inverse); }
+  .s-auth { width:849px; flex:0 0 849px; background:var(--stbr-emerald); }
+  .s-seed { width:212px; flex:0 0 212px; background:var(--stbr-green); }
+  .s-act  { width:27px;  flex:0 0 27px;  background:var(--stbr-emerald-800); border-right:0; }
+  .brow { position:relative; height:48px; }
+  .brk { position:absolute; left:212px; width:1088px; top:0; height:14px;
+         border-left:2px solid var(--stbr-emerald); border-right:2px solid var(--stbr-emerald);
+         border-bottom:2px solid var(--stbr-emerald); }
+  .blab { position:absolute; left:212px; width:1088px; top:20px; text-align:center;
+          font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); }
+  .blab b { font-family:var(--font-mono); color:var(--stbr-emerald-800); }
+  .rowlab { font-family:var(--font-display); font-weight:900; font-size:13px;
+            letter-spacing:.12em; text-transform:uppercase; color:var(--text-secondary);
+            margin:20px 0 8px; }
+  .a-alloc { width:1088px; flex:0 0 1088px; background:var(--surface-paper);
+             border:2px dashed var(--stbr-ink-300); border-right:0;
+             display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .a-alloc .sn { color:var(--text-primary); }
+  .a-alloc .ss { color:var(--text-secondary); opacity:1; }
+  .a-over { width:212px; flex:0 0 212px; background:var(--stbr-yellow);
+            border:2px solid var(--stbr-yellow-700); border-left:0;
+            display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .a-over .sn { color:var(--text-on-accent); }
+  .a-over .ss { color:var(--text-on-accent); opacity:.8; }
+  .note { position:relative; height:26px; margin-top:8px; }
+  .note div { position:absolute; left:1088px; width:212px; text-align:center;
+              font-family:var(--font-body); font-size:12px; line-height:1.25;
+              color:var(--text-secondary); }
+  .legend { display:flex; gap:14px; margin-top:22px; }
+  .lg { flex:1; display:flex; align-items:center; border:1.5px solid var(--border-subtle);
+        border-radius:var(--radius-md); padding:9px 12px; }
+  .sw { width:16px; height:16px; flex:0 0 16px; border-radius:4px; margin-right:10px; }
+  .lg .lt { font-family:var(--font-mono); font-size:12.5px; line-height:1.3;
+            color:var(--text-primary); }
+  .verdict { margin-top:18px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:20px 30px;
+             display:flex; align-items:center; }
+  .verdict .vk { width:150px; flex:0 0 150px; font-family:var(--font-body);
+                 font-weight:800; font-size:12.5px; letter-spacing:.12em;
+                 text-transform:uppercase; color:var(--stbr-cream); opacity:.8; }
+  .verdict .vt { font-family:var(--font-mono); font-weight:700; font-size:21px;
+                 line-height:1.25; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">Config = Address + u64 + bool</div>
+  <h2 class="viz-title">where the 8 bytes go</h2>
+
+  <div class="card">
+    <div class="rail">
+      <div class="ticks">
+        <div class="tk" style="left:0;">0</div><div class="tm" style="left:0;"></div>
+        <div class="tk" style="left:205px;">8</div><div class="tm" style="left:212px;"></div>
+        <div class="tk" style="left:1052px;">40</div><div class="tm" style="left:1061px;"></div>
+        <div class="tk" style="left:1252px;">48</div><div class="tm" style="left:1273px;"></div>
+        <div class="tk" style="left:1292px;">49</div><div class="tm" style="left:1300px;"></div>
+      </div>
+
+      <div class="strip">
+        <div class="seg s-disc"><div class="sn">discriminator</div><div class="ss">8 bytes · 0..8</div></div>
+        <div class="seg s-auth"><div class="sn">authority: Address</div><div class="ss">32 bytes · 8..40</div></div>
+        <div class="seg s-seed"><div class="sn">seed: u64</div><div class="ss">8 bytes · 40..48</div></div>
+        <div class="seg s-act"></div>
+      </div>
+
+      <div class="brow">
+        <div class="brk"></div>
+        <div class="blab"><b>INIT_SPACE = 41</b> — the fields only; the discriminator is <b>not</b> in it</div>
+      </div>
+
+      <div class="rowlab">the careless port: space = Config::INIT_SPACE</div>
+      <div class="strip" style="height:78px;">
+        <div class="a-alloc"><div class="sn">allocated: 41 bytes</div><div class="ss">the account ends here</div></div>
+        <div class="a-over"><div class="sn">overrun</div><div class="ss">8 bytes</div></div>
+      </div>
+      <div class="note"><div>writes to bytes 41..49 land past the end of the account</div></div>
+
+      <div class="legend">
+        <div class="lg"><span class="sw" style="background:var(--surface-inverse);"></span>
+          <span class="lt">0..8 discriminator (8)</span></div>
+        <div class="lg"><span class="sw" style="background:var(--stbr-emerald);"></span>
+          <span class="lt">8..40 authority: Address (32)</span></div>
+        <div class="lg"><span class="sw" style="background:var(--stbr-green);"></span>
+          <span class="lt">40..48 seed: u64 (8)</span></div>
+        <div class="lg"><span class="sw" style="background:var(--stbr-emerald-800);"></span>
+          <span class="lt">48..49 active: bool (1)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the correct line</span>
+    <span class="vt">Config::DISCRIMINATOR.len() (8) + Config::INIT_SPACE (41) = 49</span>
+  </div>
+</div>
+</body></html>

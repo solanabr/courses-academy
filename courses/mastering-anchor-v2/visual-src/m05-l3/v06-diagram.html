@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where a transfer fee breaks a swap that never looked
+     purpose: trace the sent-versus-received gap into the two swap assumptions it silently voids
+     data: nodes: - amount you pass to transfer_checked  (what your program believes moved) - Token-2022 withholds the fee         (declared by the TransferFeeConfig extension) - net amount that lands in the destination account edges: - your quote was computed from pre-trade reserves and the amount you SENT - the reserve actually grew by the NET amount, which is smaller the two things that break: - the swap's invariant: k_after is computed off a reserve that grew less than you booked (R4 reads reserves live, so this is the one that bites it) - a stored ledger: R2's Vault.balance is credited from the amount SENT, so its books would claim custody of tokens the fee took the program-seat move: read the mint for a TransferFeeConfig before you trust amount == received
+     prompt: Left-to-right flow with three boxes: "amount sent" -> a narrowing funnel labeled "fee withheld by Token-2022" -> a visibly smaller box "net received". Below the funnel, two red callouts branching down, labeled "invariant computed on the wrong reserve" and "stored balance overstates custody". A single calm footer band reads "read the mint first: does it carry TransferFeeConfig?". Keep the size difference between the first and last box visually obvious.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:516px;top:-281px;right:-281px;border-radius:55% 39% 48% 36% / 54% 54% 42% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:478px;bottom:-228px;left:-228px;border-radius:57% 64% 51% 65% / 39% 43% 45% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:570px;height:509px;bottom:-296px;right:-296px;border-radius:42% 36% 49% 39% / 43% 41% 35% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { width:1400px; margin:0 auto; }
+  .flow { display:flex; align-items:center; height:170px; }
+  .c1 { width:420px; flex:0 0 420px; }
+  .c3 { width:260px; flex:0 0 260px; }
+  .c4 { width:310px; flex:0 0 310px; }
+  .amt { border-radius:var(--radius-lg); background:var(--surface-brand);
+         padding:0 22px; display:flex; flex-direction:column; justify-content:center; }
+  .a1 { height:150px; }
+  .a2 { height:96px; }
+  .amt .k { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+            letter-spacing:.15em; text-transform:uppercase; color:var(--stbr-cream);
+            opacity:.75; margin-bottom:8px; }
+  .amt .n { font-family:var(--font-display); font-weight:900; line-height:1.12;
+            color:var(--text-on-brand); }
+  .a1 .n { font-size:26px; }
+  .a2 .n { font-size:22px; }
+  .amt .s { font-family:var(--font-body); font-size:12.5px; line-height:1.35;
+            color:var(--stbr-cream); opacity:.82; margin-top:8px; }
+  .gp { width:30px; flex:0 0 30px; }
+  .fun { width:320px; flex:0 0 320px; height:150px; }
+  .fun .fl { height:54px; padding-top:10px; text-align:center; }
+  .fun .fl .t { font-family:var(--font-display); font-weight:900; font-size:15px;
+                color:var(--text-primary); line-height:1.2; }
+  .fun .fl .m { font-family:var(--font-mono); font-size:12px; color:var(--text-secondary);
+                margin-top:4px; }
+  .side { height:150px; background:var(--surface-card);
+          border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+          padding:16px 18px; display:flex; align-items:center; }
+  .side .t { font-family:var(--font-body); font-size:13.5px; line-height:1.45;
+             color:var(--text-secondary); }
+  .side .t b { color:var(--text-primary); }
+  .branch { height:60px; }
+  .outs { display:flex; height:160px; }
+  .oc { width:685px; flex:0 0 685px; }
+  .oc + .oc { margin-left:30px; }
+  .out { height:160px; background:var(--surface-card);
+         border:1.5px solid var(--border-subtle); border-left:6px solid var(--stbr-dark);
+         border-radius:var(--radius-md); padding:18px 22px; }
+  .out .chip { display:inline-block; background:var(--surface-inverse);
+               color:var(--stbr-cream); font-family:var(--font-body); font-weight:800;
+               font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+               padding:5px 11px; border-radius:var(--radius-pill); line-height:1.2; }
+  .out .h { font-family:var(--font-display); font-weight:900; font-size:20px;
+            line-height:1.18; color:var(--text-primary); margin-top:10px; }
+  .out .s { font-family:var(--font-body); font-size:13.5px; line-height:1.4;
+            color:var(--text-secondary); margin-top:8px; }
+  .out .s b { font-family:var(--font-mono); color:var(--text-primary); font-weight:600; }
+  .fbar { margin-top:24px; height:84px; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:0 30px; display:flex; align-items:center; }
+  .fbar .k { width:190px; flex:0 0 190px; font-family:var(--font-body); font-weight:800;
+             font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+             color:var(--stbr-cream); opacity:.78; }
+  .fbar .t { font-family:var(--font-display); font-weight:900; font-size:23px;
+             line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">transfer fees · the silent gap</div>
+  <h2 class="viz-title">where a transfer fee breaks a swap that never looked</h2>
+
+  <div class="wrap">
+    <div class="flow">
+      <div class="c1">
+        <div class="amt a1">
+          <div class="k">amount sent</div>
+          <div class="n">the amount you pass to transfer_checked</div>
+          <div class="s">what your program believes moved</div>
+        </div>
+      </div>
+      <div class="gp"></div>
+      <div class="fun">
+        <svg width="320" height="96" viewBox="0 0 320 96">
+          <polygon points="0,0 320,28 320,68 0,96" fill="#ffd23f" stroke="#d9a608" stroke-width="2"/>
+        </svg>
+        <div class="fl">
+          <div class="t">fee withheld by Token-2022</div>
+          <div class="m">declared by TransferFeeConfig</div>
+        </div>
+      </div>
+      <div class="gp"></div>
+      <div class="c3">
+        <div class="amt a2">
+          <div class="k">net received</div>
+          <div class="n">what lands in the destination</div>
+        </div>
+      </div>
+      <div class="gp"></div>
+      <div class="c4">
+        <div class="side">
+          <div class="t">Your quote was computed from pre-trade reserves and the amount you <b>SENT</b>. The reserve actually grew by the <b>NET</b> amount — which is smaller.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="branch">
+      <svg width="1400" height="60" viewBox="0 0 1400 60">
+        <path d="M610 0 V22 M342 22 H1058 M342 22 V46 M1058 22 V46"
+              fill="none" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="334,45 350,45 342,60" fill="#1b231d"/>
+        <polygon points="1050,45 1066,45 1058,60" fill="#1b231d"/>
+      </svg>
+    </div>
+
+    <div class="outs">
+      <div class="oc">
+        <div class="out">
+          <span class="chip">breaks</span>
+          <div class="h">the swap's invariant</div>
+          <div class="s"><b>k_after</b> is computed off a reserve that grew less than you booked. R4 reads reserves live, so this is the one that bites it.</div>
+        </div>
+      </div>
+      <div class="oc">
+        <div class="out">
+          <span class="chip">breaks</span>
+          <div class="h">a stored ledger</div>
+          <div class="s">R2's <b>Vault.balance</b> is credited from the amount SENT, so its books would claim custody of tokens the fee took.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fbar">
+      <div class="k">the program-seat move</div>
+      <div class="t">read the mint for a TransferFeeConfig before you trust amount == received</div>
+    </div>
+  </div>
+</div>
+</body></html>

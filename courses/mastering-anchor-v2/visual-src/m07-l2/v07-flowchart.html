@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: A validated CPI target versus an attacker-chosen one
+     purpose: show why a typed Program pins the callee and an untyped one lets the caller choose the program you sign for
+     data: UNVALIDATED (some_program: UncheckedAccount): caller passes some_program = ATTACKER_PROGRAM -> escrow builds CpiContext with escrow PDA as signer -> invoke_signed runs ATTACKER_PROGRAM with the escrow PDA's signature  [drain] VALIDATED (quarter_vault_program: Program<QuarterVault>): account key must equal QuarterVault::ID AND be executable -> caller cannot substitute a program -> invoke_signed runs the real vault only
+     prompt: Two horizontal pipelines. Top "unvalidated" in a warning tone ending in a red "attacker program runs with your PDA signature" node. Bottom "validated" in a positive tone, with a gate labeled "key == QuarterVault::ID && executable" before the invoke. Make the gate the visual focus.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:548px;height:501px;top:-301px;right:-301px;border-radius:60% 42% 65% 58% / 57% 57% 48% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:437px;bottom:-256px;left:-256px;border-radius:50% 63% 64% 62% / 49% 47% 41% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:440px;height:453px;bottom:-234px;right:-234px;border-radius:43% 37% 45% 46% / 42% 51% 65% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 22px; }
+  .lane { display:flex; align-items:center; border-radius:var(--radius-lg);
+          border:2px solid var(--border-subtle); background:var(--surface-card);
+          padding:18px 20px; }
+  .lane + .lane { margin-top:18px; }
+  .lab { width:180px; flex-grow:0; flex-shrink:0; padding-right:20px; }
+  .lab .lt { font-family:var(--font-display); font-weight:900; font-size:19px;
+             line-height:1.1; color:var(--text-primary); }
+  .lab .ls { font-family:var(--font-mono); font-size:11px; line-height:1.35;
+             color:var(--text-muted); margin-top:8px; }
+  .n { border-radius:var(--radius-md); border:2px solid var(--border-subtle);
+       background:var(--surface-paper); padding:14px 15px; height:104px;
+       flex-grow:0; flex-shrink:0; }
+  .n .nt { font-family:var(--font-body); font-weight:700; font-size:15px;
+           line-height:1.3; color:var(--text-primary); }
+  .n .ns { font-family:var(--font-mono); font-size:13px; line-height:1.4;
+           color:var(--text-secondary); margin-top:9px; }
+  .a { width:34px; flex-grow:0; flex-shrink:0; text-align:center; }
+  .w280 { width:258px; } .w300 { width:300px; } .w486 { width:606px; }
+  .w270 { width:270px; } .w454 { width:554px; }
+  .drain { background:#fdf1ef; border-color:#c0392b; }
+  .drain .nt, .drain .ns { color:#96271b; }
+  .drain .tag { display:inline-block; margin-top:9px; background:#c0392b;
+                color:var(--stbr-cream); font-family:var(--font-body); font-weight:700;
+                font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+                padding:4px 10px; border-radius:var(--radius-pill); }
+  .good { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .good .nt { color:var(--text-on-brand); }
+  .good .ns { color:var(--stbr-cream); opacity:.88; }
+  .gate { width:340px; flex-grow:0; flex-shrink:0; height:104px;
+          border-radius:var(--radius-md); background:var(--surface-accent);
+          border:3px solid var(--stbr-yellow-700); padding:13px 15px; }
+  .gate .gk { font-family:var(--font-display); font-weight:900; font-size:12px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-accent);
+              opacity:.75; }
+  .gate .gt { font-family:var(--font-mono); font-weight:700; font-size:16px;
+              line-height:1.35; color:var(--text-on-accent); margin-top:7px; }
+  .verdict { margin-top:18px; background:var(--surface-inverse);
+             border-radius:var(--radius-lg); padding:17px 28px; display:flex;
+             align-items:center; }
+  .verdict .k { font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                opacity:.62; width:150px; flex-grow:0; flex-shrink:0; }
+  .verdict .t { font-family:var(--font-display); font-weight:900; font-size:23px;
+                line-height:1.2; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">class 5 · arbitrary cpi</div>
+  <h2 class="viz-title">untyped program = the caller picks who your PDA signs for</h2>
+
+  <div class="lane">
+    <div class="lab">
+      <div class="lt">unvalidated</div>
+      <div class="ls">some_program:<br>UncheckedAccount</div>
+    </div>
+    <div class="n w280">
+      <div class="nt">caller picks the callee</div>
+      <div class="ns">some_program =<br>ATTACKER_PROGRAM</div>
+    </div>
+    <div class="a"><svg width="34" height="16" viewBox="0 0 34 16"><line x1="0" y1="8" x2="24" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="24,1 34,8 24,15" fill="#1b231d"/></svg></div>
+    <div class="n w300">
+      <div class="nt">escrow builds the CpiContext</div>
+      <div class="ns">signer = escrow PDA</div>
+    </div>
+    <div class="a"><svg width="34" height="16" viewBox="0 0 34 16"><line x1="0" y1="8" x2="24" y2="8" stroke="#c0392b" stroke-width="3"/><polygon points="24,1 34,8 24,15" fill="#c0392b"/></svg></div>
+    <div class="n w486 drain">
+      <div class="nt">invoke_signed runs ATTACKER_PROGRAM with the escrow PDA&rsquo;s signature</div>
+      <div class="tag">drain</div>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="lab">
+      <div class="lt">validated</div>
+      <div class="ls">quarter_vault_program:<br>Program&lt;QuarterVault&gt;</div>
+    </div>
+    <div class="gate">
+      <div class="gk">the gate &mdash; enforced by the type</div>
+      <div class="gt">key == QuarterVault::ID<br>&amp;&amp; executable</div>
+    </div>
+    <div class="a"><svg width="34" height="16" viewBox="0 0 34 16"><line x1="0" y1="8" x2="24" y2="8" stroke="#008b4c" stroke-width="3"/><polygon points="24,1 34,8 24,15" fill="#008b4c"/></svg></div>
+    <div class="n w270">
+      <div class="nt">the caller cannot substitute a program</div>
+      <div class="ns">wrong id =&gt; rejected at load</div>
+    </div>
+    <div class="a"><svg width="34" height="16" viewBox="0 0 34 16"><line x1="0" y1="8" x2="24" y2="8" stroke="#008b4c" stroke-width="3"/><polygon points="24,1 34,8 24,15" fill="#008b4c"/></svg></div>
+    <div class="n w454 good">
+      <div class="nt">invoke_signed runs the real vault only</div>
+      <div class="ns">your PDA signs for exactly one known program</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="k">the difference</span>
+    <span class="t">One typed field decides whether the program id is yours or the caller&rsquo;s.</span>
+  </div>
+</div>
+</body></html>

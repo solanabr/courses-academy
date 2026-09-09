@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The three ways an SPL redeem fails, in the order they bite
+     purpose: give the reader a symptom-to-cause lookup for their own failing build before the wrap-up
+     data: columns: What you see | What you actually did | The fix row: compile error on the transfer call, or a decimals mismatch at runtime | reached for a bare `transfer` instead of `transfer_checked` | swap it; V2 SPL moves go through transfer_checked row: transfer_checked will not build, an account is missing | you forgot the mint account, so decimals never reached the CPI | thread the mint through the accounts struct into the CPI row: runtime rejection, an unsigned PDA move | you dropped `.with_signer` | re-attach the vault PDA's seeds and stored bump takeaway: all three are custody-layer errors, none is an identity error, so the R2/R3 skeleton was right
+     prompt: A three-row diagnostic table, symptom column monospaced. Add a full-width footer band carrying the takeaway line, visually separated. Number the rows 1-3 to reinforce "in the order they usually bite".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:493px;top:-257px;right:-257px;border-radius:65% 59% 54% 64% / 36% 60% 43% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:491px;bottom:-247px;left:-247px;border-radius:57% 60% 58% 40% / 61% 62% 59% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:399px;height:501px;bottom:-270px;left:654px;border-radius:41% 56% 36% 61% / 54% 52% 64% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden;
+         background:var(--surface-card); margin-top:4px; }
+  .tr { display:flex; align-items:stretch; }
+  .tr + .tr { border-top:1.5px solid var(--border-subtle); }
+  .th { background:var(--surface-inverse); }
+  .th .c { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+           text-transform:uppercase; color:rgba(245,232,202,0.80); padding:15px 22px; }
+  .th .c.fix { background:var(--surface-accent); color:var(--text-on-accent); }
+  .c { flex:1 1 0; min-width:0; padding:20px 22px; }
+  .c.n { flex:0 0 78px; padding-left:26px; }
+  .c.saw { flex:0 0 400px; border-left:1.5px solid var(--border-subtle); }
+  .c.did { flex:0 0 470px; border-left:1.5px solid var(--border-subtle); }
+  .c.fix { border-left:1.5px solid var(--border-subtle); background:rgba(255,210,63,0.16); }
+  .th .c.saw, .th .c.did, .th .c.fix, .th .c.n { border-left-color:rgba(245,232,202,0.16); }
+  .num { font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1;
+         color:var(--stbr-emerald); }
+  .mono { font-family:var(--font-mono); font-size:14.5px; line-height:1.42; color:var(--text-primary); }
+  .body { font-family:var(--font-body); font-size:14.5px; line-height:1.45; color:var(--text-primary); }
+  .body b { font-weight:800; }
+  .body code, .mono code { font-family:var(--font-mono); font-weight:700; }
+  .foot { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:19px 28px; display:flex; align-items:center; gap:22px; }
+  .fk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .ft { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.12;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">symptom &rarr; cause &rarr; fix</div>
+  <h2 class="viz-title">the three ways an spl redeem fails</h2>
+  <div class="tbl">
+
+    <div class="tr th">
+      <div class="c n">#</div>
+      <div class="c saw">what you see</div>
+      <div class="c did">what you actually did</div>
+      <div class="c fix">the fix</div>
+    </div>
+
+    <div class="tr">
+      <div class="c n"><span class="num">1</span></div>
+      <div class="c saw"><div class="mono">compile error on the transfer call</div><div class="body" style="color:var(--text-secondary);margin-top:5px">&mdash; or a decimals mismatch at runtime</div></div>
+      <div class="c did"><div class="body">reached for a bare <code>transfer</code> instead of <code>transfer_checked</code></div></div>
+      <div class="c fix"><div class="body">swap it &mdash; <b>V2 SPL moves go through <code>transfer_checked</code></b></div></div>
+    </div>
+
+    <div class="tr">
+      <div class="c n"><span class="num">2</span></div>
+      <div class="c saw"><div class="mono">transfer_checked will not build</div><div class="body" style="color:var(--text-secondary);margin-top:5px">&mdash; an account is missing</div></div>
+      <div class="c did"><div class="body">you forgot the <b>mint</b> account, so decimals never reached the CPI</div></div>
+      <div class="c fix"><div class="body">thread the mint through the accounts struct <b>into the CPI</b></div></div>
+    </div>
+
+    <div class="tr">
+      <div class="c n"><span class="num">3</span></div>
+      <div class="c saw"><div class="mono">runtime rejection</div><div class="body" style="color:var(--text-secondary);margin-top:5px">&mdash; an unsigned PDA move</div></div>
+      <div class="c did"><div class="body">you dropped <code>.with_signer</code></div></div>
+      <div class="c fix"><div class="body">re-attach the vault PDA's <b>seeds and stored bump</b></div></div>
+    </div>
+
+  </div>
+  <div class="foot">
+    <span class="fk">the takeaway</span>
+    <span class="ft">All three are custody-layer errors. None is an identity error &mdash; the R2/R3 skeleton was right.</span>
+  </div>
+</div>
+</body></html>

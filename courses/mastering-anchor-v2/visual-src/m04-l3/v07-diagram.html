@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The life of one prize
+     purpose: show the escrow's three states and what each transition requires
+     data: state OPEN: escrow record exists; amount custodied in the R2 vault; waiting -> transition requires: caller == escrow.player AND final_score >= winning_score state RELEASED: withdraw CPI paid the player; escrow closed; rent back to maker (terminal) blocked transitions (stay OPEN): wrong caller -> rejected at load (address = escrow.player) score too low -> rejected in handler (require! before CPI) invariant across all states: escrow account holds 0 prize lamports; R2 holds them until RELEASED
+     prompt: A simple state machine with two circles: OPEN (left) and RELEASED (right, drawn as a terminal/double circle). One solid arrow OPEN -> RELEASED labeled with the two guards. Two self-loops on OPEN labeled "wrong caller: rejected at load" and "score too low: rejected in handler". A footer band states the invariant "escrow holds 0 prize lamports".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:526px;height:548px;top:-299px;right:-299px;border-radius:35% 59% 65% 65% / 60% 41% 64% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:432px;height:490px;left:-230px;top:327px;border-radius:45% 58% 47% 35% / 53% 64% 65% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:498px;bottom:-254px;right:-254px;border-radius:48% 45% 36% 63% / 51% 60% 37% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .sm { position:relative; width:1456px; height:300px; }
+  .sm .layer { position:absolute; left:0; top:0; }
+  .st { position:absolute; box-sizing:border-box; border:3px solid var(--stbr-dark);
+        border-radius:50%; background:var(--surface-card); }
+  .st .in { position:absolute; left:11px; top:11px; right:11px; bottom:11px;
+            border:3px solid var(--stbr-dark); border-radius:50%; }
+  .stbody { position:absolute; left:0; top:0; right:0; bottom:0; display:flex;
+            flex-direction:column; align-items:center; justify-content:center; text-align:center;
+            padding:0 34px; }
+  .stbody .n { font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1;
+               letter-spacing:.02em; color:var(--text-primary); }
+  .stbody .d { font-family:var(--font-body); font-size:13.5px; line-height:1.4;
+               color:var(--text-secondary); margin-top:10px; }
+  .stbody .tm { margin-top:10px; font-family:var(--font-body); font-weight:800; font-size:10.5px;
+                letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+                background:var(--surface-brand); padding:4px 10px; border-radius:var(--radius-pill); }
+  .guards { position:absolute; left:545px; top:20px; width:370px; box-sizing:border-box;
+            background:var(--surface-accent); border:2px solid var(--stbr-yellow-600);
+            border-radius:var(--radius-md); padding:11px 15px; }
+  .guards .k { font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.14em;
+               text-transform:uppercase; color:var(--stbr-dark); opacity:.7; }
+  .guards .g { font-family:var(--font-mono); font-size:15px; font-weight:700; line-height:1.5;
+               color:var(--stbr-dark); margin-top:6px; }
+  .edge { position:absolute; left:545px; top:170px; width:370px; text-align:center;
+          font-family:var(--font-body); font-weight:700; font-size:14px; color:var(--text-secondary); }
+  .mk { position:absolute; width:36px; height:36px; border-radius:var(--radius-pill);
+        background:var(--stbr-dark); color:var(--stbr-cream); font-family:var(--font-display);
+        font-weight:900; font-size:18px; display:flex; align-items:center; justify-content:center; }
+  .bh { margin-top:18px; font-family:var(--font-body); font-weight:800; font-size:12px;
+        letter-spacing:.16em; text-transform:uppercase; color:var(--text-primary); }
+  .blocked { display:flex; gap:20px; margin-top:12px; }
+  .bc { flex:1 1 0; height:126px; box-sizing:border-box; background:var(--surface-card);
+        border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+        padding:16px 20px; display:flex; align-items:center; gap:16px; }
+  .bc .no { flex:0 0 36px; width:36px; height:36px; border-radius:var(--radius-pill);
+            background:var(--stbr-dark); color:var(--stbr-cream); font-family:var(--font-display);
+            font-weight:900; font-size:18px; display:flex; align-items:center; justify-content:center; }
+  .bc .t { font-family:var(--font-body); font-weight:800; font-size:19px; color:var(--text-primary); }
+  .bc .s { font-family:var(--font-body); font-size:15px; color:var(--text-secondary); margin-top:6px; }
+  .bc .s code { font-family:var(--font-mono); font-size:14px; color:var(--text-primary); }
+  .bc .lp { margin-top:9px; display:inline-block; font-family:var(--font-body); font-weight:800;
+            font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+            color:var(--stbr-cream); background:var(--surface-brand-deep);
+            padding:4px 10px; border-radius:var(--radius-pill); }
+  .inv { margin-top:18px; height:82px; box-sizing:border-box; background:var(--surface-brand);
+         border-radius:var(--radius-lg); display:flex; align-items:center; padding:0 30px; gap:20px; }
+  .inv .w { flex:0 0 118px; font-family:var(--font-display); font-weight:900; font-size:14px;
+            letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream); opacity:.85; }
+  .inv .t { font-family:var(--font-body); font-size:19px; font-weight:600; color:var(--stbr-cream); }
+  .inv .t b { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">the life of one prize</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 10px;">two states, and what it costs to move</h2>
+
+  <div class="sm">
+    <svg class="layer" width="1456" height="300" viewBox="0 0 1456 300">
+      <line x1="505" y1="150" x2="936" y2="150" stroke="#1B231D" stroke-width="4"/>
+      <polygon points="952,150 934,141 934,159" fill="#1B231D"/>
+      <path d="M 237 70 C 120 10, 40 80, 185 123" fill="none" stroke="#1B231D" stroke-width="3"/>
+      <polygon points="185,123 169.9,124.8 173.3,113.3" fill="#1B231D"/>
+      <path d="M 237 230 C 120 290, 40 220, 185 177" fill="none" stroke="#1B231D" stroke-width="3"/>
+      <polygon points="185,177 173.3,186.8 169.9,175.3" fill="#1B231D"/>
+    </svg>
+
+    <div class="st" style="left:180px; top:45px; width:320px; height:210px;">
+      <div class="stbody">
+        <div class="n">OPEN</div>
+        <div class="d">escrow record exists · amount custodied in the R2 vault · waiting</div>
+      </div>
+    </div>
+
+    <div class="st" style="left:960px; top:45px; width:340px; height:210px;">
+      <div class="in"></div>
+      <div class="stbody">
+        <div class="n">RELEASED</div>
+        <div class="d">withdraw CPI paid the player · escrow closed · rent back to maker</div>
+        <div class="tm">terminal</div>
+      </div>
+    </div>
+
+    <div class="guards">
+      <div class="k">transition requires both</div>
+      <div class="g">caller == escrow.player<br>final_score &gt;= winning_score</div>
+    </div>
+    <div class="edge">redeem(final_score)</div>
+
+    <div class="mk" style="left:62px; top:30px;">1</div>
+    <div class="mk" style="left:62px; top:236px;">2</div>
+  </div>
+
+  <div class="bh">blocked transitions — the escrow stays OPEN</div>
+  <div class="blocked">
+    <div class="bc">
+      <div class="no">1</div>
+      <div>
+        <div class="t">wrong caller</div>
+        <div class="s">rejected at load, by <code>address = escrow.player</code></div>
+        <div class="lp">self-loop · no state change</div>
+      </div>
+    </div>
+    <div class="bc">
+      <div class="no">2</div>
+      <div>
+        <div class="t">score too low</div>
+        <div class="s">rejected in the handler, by <code>require!</code> before the CPI</div>
+        <div class="lp">self-loop · no state change</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="inv">
+    <div class="w">invariant</div>
+    <div class="t">in every state the escrow account holds <b>0 prize lamports</b> — R2 holds them until RELEASED.</div>
+  </div>
+</div>
+</body></html>

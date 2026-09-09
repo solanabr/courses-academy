@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The rename clock the 40-to-1 gap is measured against
+     purpose: anchor the "roughly eight months" figure to the actual dates so the scene is not a vague number
+     data: 2025-12-19  @anchor-lang/core package created on npm (empty shell) 2026-01-06  first real publish: 0.32.1 under the new name 2026-04-02  Anchor 1.0.0 released 2026-08-21  ~8 months after the new name went live, old name still ~40:1 ahead
+     prompt: Horizontal timeline, four dated markers left to right as listed. Emphasize the span from 2026-01-06 to 2026-08-21 with a bracket labeled "~8 months". Put the 1.0.0 release as a distinct milestone marker between them. Plain, dated, monospace labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:592px;top:-335px;right:-335px;border-radius:56% 64% 39% 54% / 64% 52% 44% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:523px;height:493px;bottom:-269px;left:-269px;border-radius:51% 60% 46% 61% / 36% 48% 39% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:514px;bottom:-273px;right:-273px;border-radius:37% 44% 49% 51% / 61% 42% 46% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:52px; margin:4px 0 18px; }
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-2xl); padding:34px 52px 30px; }
+  .rail { position:relative; width:1240px; margin:0 auto; }
+  .above { position:relative; height:124px; }
+  .below { position:relative; height:118px; }
+  .lab { position:absolute; }
+  .above .lab { bottom:0; }
+  .below .lab { top:0; }
+  .dt { font-family:var(--font-mono); font-size:17px; font-weight:700; line-height:1;
+        color:var(--brand-primary); margin-bottom:9px; }
+  .tx { font-family:var(--font-body); font-size:17px; line-height:1.35;
+        color:var(--text-primary); }
+  .tx b { font-weight:800; }
+  .stem { width:2px; background:var(--stbr-ink-300); }
+  .above .stem { margin:10px 0 -17px; height:39px; }
+  .below .stem { margin:-17px 0 10px; height:39px; }
+  .track { position:relative; height:38px; }
+  .line { position:absolute; top:17px; left:0; width:1240px; height:4px;
+          background:var(--stbr-dark); border-radius:2px; }
+  .dot { position:absolute; top:5px; width:20px; height:20px; border-radius:50%;
+         background:var(--surface-brand); border:4px solid var(--stbr-dark); }
+  .mile { position:absolute; top:-1px; width:32px; height:32px;
+          background:var(--surface-brand); border:4px solid var(--stbr-dark);
+          transform:rotate(45deg); }
+  .milelab { position:absolute; top:-2px; font-family:var(--font-display); font-weight:900;
+             font-size:14px; letter-spacing:.12em; text-transform:uppercase;
+             color:var(--brand-primary); }
+  .brk { position:relative; height:114px; }
+  .bracket { position:absolute; top:0; left:91px; width:1149px; height:20px;
+             border-left:4px solid var(--stbr-yellow-700);
+             border-right:4px solid var(--stbr-yellow-700);
+             border-bottom:4px solid var(--stbr-yellow-700);
+             border-radius:0 0 10px 10px; }
+  .bchip { position:absolute; top:32px; left:310px; width:660px; text-align:center; }
+  .bchip .big { display:inline-block; font-family:var(--font-display); font-weight:900;
+                font-size:26px; line-height:1; background:var(--surface-accent);
+                color:var(--text-on-accent); padding:11px 24px;
+                border-radius:var(--radius-pill); }
+  .bchip .sub { font-family:var(--font-body); font-size:16px; color:var(--text-secondary);
+                margin-top:9px; }
+  .foot { display:flex; align-items:center; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:16px 30px; margin-top:18px; }
+  .foot .fk { font-family:var(--font-display); font-weight:900; font-size:15px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-brand);
+              width:160px; }
+  .foot .ft { font-family:var(--font-body); font-size:18px; line-height:1.4;
+              color:var(--text-on-brand); }
+  .foot .ft b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">the rename clock</div>
+  <h2 class="viz-title">what the 40-to-1 gap is measured against</h2>
+
+  <div class="card">
+    <div class="rail">
+      <div class="above">
+        <div class="lab" style="left:91px; width:330px;">
+          <div class="tx"><b>first real publish</b><br>0.32.1 ships under the new name</div>
+          <div class="dt" style="margin:9px 0 0;">2026-01-06</div>
+          <div class="stem"></div>
+        </div>
+        <div class="lab" style="left:900px; width:340px; text-align:right;">
+          <div class="tx"><b>~8 months on</b><br>the old name is still <b>&asymp;40:1</b> ahead</div>
+          <div class="dt" style="margin:9px 0 0;">2026-08-21</div>
+          <div class="stem" style="margin-left:auto;"></div>
+        </div>
+      </div>
+
+      <div class="track">
+        <div class="line"></div>
+        <div class="dot" style="left:-14px;"></div>
+        <div class="dot" style="left:77px;"></div>
+        <div class="mile" style="left:506px;"></div>
+        <div class="milelab" style="left:556px;">milestone</div>
+        <div class="dot" style="left:1226px;"></div>
+      </div>
+
+      <div class="below">
+        <div class="lab" style="left:0; width:300px;">
+          <div class="stem"></div>
+          <div class="dt">2025-12-19</div>
+          <div class="tx"><b>@anchor-lang/core created</b><br>an empty shell on npm</div>
+        </div>
+        <div class="lab" style="left:526px; width:320px;">
+          <div class="stem"></div>
+          <div class="dt">2026-04-02</div>
+          <div class="tx"><b>Anchor 1.0.0 released</b></div>
+        </div>
+      </div>
+
+      <div class="brk">
+        <div class="bracket"></div>
+        <div class="bchip">
+          <span class="big">&asymp; 8 months</span>
+          <div class="sub">from the first real publish under the new name to the download count above</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span class="fk">why it matters</span>
+    <span class="ft">The gap is not a fresh-rename artifact. The canonical name has been live for <b>eight months</b> and the ecosystem still imports the old one &mdash; so grep both.</span>
+  </div>
+</div>
+</body></html>

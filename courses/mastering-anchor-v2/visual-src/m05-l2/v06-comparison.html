@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The .reload() footgun became a compile error
+     purpose: contrast the v1 stale-data trap with V2's borrow-checked handle
+     data: Axis, v1 (0.x line), V2 After a CPI mutated an account: deserialized copy was stale until you called .reload(), silent Forgetting .reload(): you acted on old balances, a real bug shipped to mainnet more than once Holding a typed ref across a CPI: allowed by the compiler, unsafe in practice V2 model: CpiHandle borrows the typed wrapper, so typed access during a live handle won't compile Net: the stale-read class moves from runtime footgun to compile-time error
+     prompt: Two-column comparison table. Left column "v1 (.reload())", right column "V2 (CpiHandle borrow)". Rows: stale data behavior, cost of forgetting, compiler stance, where the bug is caught. Accent the last row ("caught at compile time" vs "caught in production, maybe"). Clean, no icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:458px;height:470px;top:-240px;right:-240px;border-radius:45% 60% 55% 36% / 54% 48% 60% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:541px;height:509px;bottom:-256px;left:-256px;border-radius:53% 38% 45% 36% / 44% 60% 35% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:412px;height:540px;bottom:-330px;left:676px;border-radius:47% 58% 61% 37% / 49% 38% 54% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .k6-title { font-size:46px; }
+  /* WeasyPrint sizes a flex-basis as the CONTENT box, so a 595 basis + 2px borders
+     renders 599 wide: 240 gutter + 599 + 18 gap + 599 = 1456 = the full .viz width,
+     which lines the columns' outer edges up with the title and the verdict band. */
+  .k6-grid { display:flex; align-items:flex-start; justify-content:flex-start; }
+  .k6-gutter { width:240px; flex:0 0 240px; }
+  .k6-col { width:595px; flex:0 0 595px; background:var(--surface-card);
+            border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+            overflow:hidden; }
+  .k6-col.b { margin-left:18px; }
+  .k6-head { height:84px; box-sizing:border-box; padding:0 26px; display:flex;
+             flex-direction:column; justify-content:center; }
+  .k6-col.a .k6-head { background:var(--surface-inverse); }
+  .k6-col.b .k6-head { background:var(--surface-brand); }
+  .k6-head .k { font-family:var(--font-body); font-weight:800; font-size:13px;
+                letter-spacing:.14em; text-transform:uppercase;
+                color:rgba(245,232,202,0.66); }
+  .k6-head .n { font-family:var(--font-display); font-weight:900; font-size:26px;
+                line-height:1.08; margin-top:4px; color:var(--stbr-cream); }
+  .k6-cell { height:96px; box-sizing:border-box; padding:0 26px; display:flex;
+             align-items:center; border-top:1.5px solid var(--border-subtle); }
+  .k6-cell p { margin:0; font-family:var(--font-body); font-size:17px; line-height:1.34;
+               color:var(--text-primary); }
+  .k6-cell p b { font-weight:800; }
+  .k6-cell p code { font-family:var(--font-mono); font-size:15.5px; }
+  .k6-col.b .k6-cell { background:#f4faf6; }
+  .k6-cell.hot { background:var(--surface-accent); border-top-color:var(--stbr-yellow-700); }
+  .k6-col.b .k6-cell.hot { background:var(--surface-accent); }
+  .k6-cell.hot p { font-family:var(--font-display); font-weight:900; font-size:23px;
+                   line-height:1.14; color:var(--stbr-dark); }
+  .k6-cell.cold { background:var(--surface-paper); }
+  .k6-cell.cold p { font-family:var(--font-display); font-weight:900; font-size:23px;
+                    line-height:1.14; color:var(--text-secondary); }
+
+  .k6-lab { height:96px; display:flex; align-items:center; justify-content:flex-end;
+            padding-right:22px; }
+  .k6-lab span { font-family:var(--font-display); font-weight:800; font-size:16px;
+                 letter-spacing:.09em; text-transform:uppercase; color:var(--text-muted);
+                 text-align:right; line-height:1.2; }
+  .k6-spacer { height:84px; }
+
+  .k6-verdict { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+                padding:20px 32px; display:flex; align-items:center; gap:26px; }
+  .k6-verdict .vk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                    letter-spacing:.14em; text-transform:uppercase;
+                    color:rgba(245,232,202,0.75); white-space:nowrap; }
+  .k6-verdict .vt { font-family:var(--font-display); font-weight:900; font-size:24px;
+                    line-height:1.15; color:var(--stbr-cream); }
+  .k6-verdict .vt b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">the stale-read class, before and after</div>
+  <h2 class="viz-title k6-title">The .reload() footgun became a compile error</h2>
+  <div class="k6-grid">
+    <div class="k6-gutter">
+      <div class="k6-spacer"></div>
+      <div class="k6-lab"><span>after a CPI<br>mutates state</span></div>
+      <div class="k6-lab"><span>cost of<br>forgetting</span></div>
+      <div class="k6-lab"><span>typed ref held<br>across a CPI</span></div>
+      <div class="k6-lab"><span>where the bug<br>is caught</span></div>
+    </div>
+
+    <div class="k6-col a">
+      <div class="k6-head"><span class="k">the 0.x line</span><span class="n">v1 &mdash; .reload()</span></div>
+      <div class="k6-cell"><span><p>the deserialized copy stayed <b>stale</b> until you called <code>.reload()</code> &mdash; silently</p></span></div>
+      <div class="k6-cell"><p>you acted on old balances &mdash; a real bug <b>shipped to mainnet more than once</b></p></div>
+      <div class="k6-cell"><p><b>allowed</b> by the compiler, unsafe in practice</p></div>
+      <div class="k6-cell cold"><p>in production, maybe</p></div>
+    </div>
+
+    <div class="k6-col b">
+      <div class="k6-head"><span class="k">the V2 model</span><span class="n">V2 &mdash; CpiHandle borrow</span></div>
+      <div class="k6-cell"><p><code>CpiHandle</code> <b>borrows the typed wrapper</b> &mdash; there is no second copy to go stale</p></div>
+      <div class="k6-cell"><span><p>nothing to forget: no <code>.reload()</code> call exists to omit</p></span></div>
+      <div class="k6-cell"><p>typed access during a live handle <b>won&rsquo;t compile</b></p></div>
+      <div class="k6-cell hot"><p>at compile time</p></div>
+    </div>
+  </div>
+  <div class="k6-verdict">
+    <span class="vk">net</span>
+    <span class="vt">The stale-read class moves from a runtime footgun to <b>a compile-time error</b> &mdash; the borrow checker is doing the reviewing.</span>
+  </div>
+</div>
+</body></html>

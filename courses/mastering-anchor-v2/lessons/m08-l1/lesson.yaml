@@ -1,0 +1,100 @@
+id: lesson-mav2-m08-l1
+slug: m08-l1
+title: "Ship a client: the IDL, Program Metadata, and a Codama/kit client"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/system": "0.13.0"
+    "@solana-program/token": "0.15.0"
+skills:
+  - idl
+  - solana-kit
+  - program-deployment
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: wire-kit-swap-client
+    type: code
+    language: typescript
+    starter: wire-kit-swap-client/starter.ts
+    solution: wire-kit-swap-client/solution.ts
+    tests: wire-kit-swap-client/tests.json
+    hints:
+      - "The kit major comes from splPeer ('^7.0.0' -> 7), never from kitLatest."
+      - "Don't rebuild the instruction — call the provided swapInstruction(owner, amountIn, minOut)."
+  - key: check
+    type: quiz
+    questions:
+      - id: m08-l1-q1
+        prompt: "You just generated the swap's kit client. Your package.json already has @solana-program/token@0.15.0 (which peers on ^7.0.0), and you're about to add @solana/kit. What do you pin?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "'latest' so npm always resolves the newest kit for you"
+            correct: false
+            feedback: "'latest' is exactly what the durable rule forbids: a kit major bump can break your peers overnight — kit 8 became latest the day it shipped."
+          - id: e
+            label: ">=7, so npm can be trusted to move up once @solana-program does"
+            correct: false
+            feedback: "An open-ended range resolves to the newest version that satisfies it, which today is kit 8.0.0, so `>=7` hits the same ERESOLVE that pinning 'latest' does. Moving a major is a decision you take after checking that the peer ranges moved too."
+          - id: a
+            label: "^8 — pin the newest kit (8.0.0) so the client stays current"
+            correct: false
+            feedback: "kit 8.0.0 is npm latest, but @solana-program/token 0.15.0 peers on @solana/kit ^7.0.0; pinning ^8 breaks the peer graph and the install fails."
+          - id: d
+            label: "^6, because one repo should settle on a single kit major"
+            correct: false
+            feedback: "The pin is a property of the workspace's dependency graph, not of the repository. Two workspaces in one repo legitimately pin different kit majors, because each one matches the peers its own dependencies declare."
+          - id: b
+            label: "^7 — match the major your @solana-program deps peer on"
+            correct: true
+            feedback: "Per workspace, not per repository: read the peer ranges your own dependencies declare and match that major. What npm calls latest has no bearing on whether the graph resolves."
+        explanation: "The durable rule (CF4): pin @solana/kit to the major your @solana-program dependencies declare, never to 'latest'. Today that major is 7, even though kit 8.0.0 is the newest published version."
+      - id: m08-l1-q2
+        prompt: "A teammate says 'skip Codama — just import @anchor-lang/core for the V2 client.' What's actually wrong with that?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "It just needs @solana/kit installed next to it, which is what moves 1.1.2 onto the kit line"
+            correct: false
+            feedback: "Listing @solana/kit in your package.json does not change what @anchor-lang/core imports. At 1.1.2 it still pulls @solana/web3.js v1, so you would be shipping both SDK lines in one bundle rather than moving off one."
+          - id: b
+            label: "It works, but only inside a bundler; Node send scripts need the Codama client instead"
+            correct: false
+            feedback: "Runtime environment isn't the issue — @anchor-lang/core imports fine in a Node script. The problem is the SDK line underneath it: web3.js v1, not @solana/kit."
+          - id: a
+            label: "Nothing — @anchor-lang/core 1.1.2 is the official Anchor V2 client for @solana/kit"
+            correct: false
+            feedback: "@anchor-lang/core is real and official — it's the renamed successor to @coral-xyz/anchor — but npm latest 1.1.2 still depends on @solana/web3.js v1. It's the v1-era client wearing a new name, not a kit client."
+          - id: c
+            label: "There's no official V2 TS package; @anchor-lang/core is still on the web3.js v1 line"
+            correct: true
+            feedback: "Two steps through Codama — convert, then generate — and you have a typed kit client off your own IDL. Pick the package whose name looks official instead and you are quietly back on the SDK line the rewrite exists to leave."
+        explanation: "The honest TS state: no official V2 package exists. @anchor-lang/core (npm latest 1.1.2) is the v1-era client. The first-party path is anchor codama convert + generate -l js, which renders a typed @solana/kit client. Reaching for the package that looks official quietly pins you back to web3.js v1 — the exact SDK line V2 exists to move off of."
+      - id: m08-l1-q3
+        prompt: "You want any client — not just yours — to be able to read your program's interface on-chain. Which step does that?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Commit target/idl/token_ticket_swap.json and serve it from GitHub"
+            correct: false
+            feedback: "A repo file only serves people who already have your repo — a wallet or explorer holding nothing but a program id can't resolve it. The Program Metadata Program stores the IDL at a canonical PDA any client derives from the program id alone."
+          - id: e
+            label: "Run anchor idl init from any funded wallet, since Program Metadata writes are permissionless"
+            correct: false
+            feedback: "Reading that account is permissionless; writing it is not. The Program Metadata entry is writable only by the program's upgrade authority, so signing with any other key fails on authority no matter how well funded it is."
+          - id: d
+            label: "Pass --no-idl to anchor deploy so the IDL ships with the program bytes"
+            correct: false
+            feedback: "--no-idl does the opposite of that. The RC's deploy uploads target/idl/<name>.json by default, and the flag turns that upload off, which is precisely why this lab's publish stays an explicit `anchor idl init` two lines later."
+          - id: a
+            label: "Publish it with anchor idl init through the Program Metadata Program"
+            correct: true
+            feedback: "Worth knowing what you are signing up for: an account you now pay rent on, and a second copy of your interface that is only true for as long as somebody keeps republishing it. Which flow you are on decides who that somebody is — the RC's plain `anchor deploy` upserts the IDL for you, so the staleness bites on the explicit `--no-idl` flow this lab uses, where the re-publish is a step you have to remember."
+          - id: c
+            label: "Embed the IDL as a #[constant] so callers read it from the binary"
+            correct: false
+            feedback: "Nothing in v2 ships the IDL inside the executable — #[constant] only surfaces a value in the generated IDL JSON, it doesn't make the binary self-describing. The on-chain copy lives in a separate Program Metadata account."
+        explanation: "anchor idl init (and anchor idl upgrade for later edits) writes the IDL to the Program Metadata Program at the canonical [program, seed] PDA — permissionless to read, writable only by the program's upgrade authority — so any client can resolve your interface from the chain. Anchor removed its own built-in IDL instructions in 1.0 and V2 inherits that removal. The trade-off: the IDL account costs rent, and the on-chain copy is only as current as its last publish — which on this lab's `--no-idl` flow means your last `idl upgrade`, and on a plain `anchor deploy` means the deploy itself, because the RC uploads the IDL by default."

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The benchmark that revised itself down (PR #4914, 2026-08-13)
+     purpose: show the self-correction as a credibility signal, not a downgrade of the case
+     data: Deployed bytecode reduction: 95% (initial) -> 94% (revised) Average CU reduction: 9.9x (initial) -> 8.8x (revised) note: the page states values can move as codegen and pinocchio change
+     prompt: Two small paired before/after bars (or two labeled arrows), one for bytecode reduction (95% to 94%) and one for CU reduction (9.9x to 8.8x). The point is the downward revision, so make the "revised down" direction unmistakable. Add a one-line footnote that the figures remain alpha-caveated.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:508px;height:520px;top:-266px;right:-266px;border-radius:65% 37% 55% 52% / 52% 49% 58% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:505px;bottom:-320px;left:-320px;border-radius:51% 56% 42% 46% / 46% 40% 49% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:608px;height:563px;bottom:-331px;right:-331px;border-radius:53% 57% 63% 64% / 50% 55% 50% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panels { display:flex; gap:32px; margin-top:4px; }
+  .panel { flex:1 1 0; min-width:0; height:392px; border-radius:var(--radius-lg);
+           border:2px solid var(--border-subtle); background:var(--surface-card);
+           padding:26px 30px; display:block; }
+  .mk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.14em;
+        text-transform:uppercase; color:var(--text-muted); }
+  .mt { font-family:var(--font-display); font-weight:900; font-size:27px; line-height:1.08;
+        color:var(--text-primary); margin-top:6px; }
+  .bars { margin-top:22px; }
+  .brow { margin-bottom:16px; }
+  .blab { display:flex; align-items:baseline; justify-content:space-between; }
+  .bn { font-family:var(--font-body); font-weight:700; font-size:13.5px; color:var(--text-secondary); }
+  .bv { font-family:var(--font-display); font-weight:900; font-size:24px; color:var(--text-primary); }
+  .track { height:34px; background:var(--surface-paper); border-radius:var(--radius-sm);
+           border:1.5px solid var(--border-subtle); margin-top:7px; }
+  .fill { height:100%; border-radius:5px 0 0 5px; }
+  .fill.was { background:var(--stbr-emerald); }
+  .fill.now { background:var(--stbr-yellow); }
+  .axis { display:flex; justify-content:space-between; font-family:var(--font-body);
+          font-size:11.5px; color:var(--text-muted); margin-top:4px; }
+  .delta { margin-top:22px; display:flex; align-items:center; gap:13px;
+           background:var(--surface-accent); border-radius:var(--radius-md); padding:12px 18px; }
+  .dv { font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-on-accent); }
+  .dt { font-family:var(--font-body); font-weight:700; font-size:13.5px; line-height:1.35;
+        color:rgba(27,35,29,0.78); }
+  .foot { margin-top:20px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+          padding:18px 28px; display:flex; align-items:center; gap:20px; }
+  .fk { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.62); white-space:nowrap; }
+  .ft { font-family:var(--font-body); font-size:16px; line-height:1.4; color:var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">PR #4914 &middot; 2026-08-13</div>
+  <h2 class="viz-title">the benchmark that revised itself down</h2>
+
+  <div class="panels">
+
+    <div class="panel">
+      <span class="mk">metric 1</span>
+      <div class="mt">deployed bytecode reduction</div>
+      <div class="bars">
+        <div class="brow">
+          <div class="blab"><span class="bn">initial claim</span><span class="bv">95%</span></div>
+          <div class="track"><div class="fill was" style="width:95%"></div></div>
+        </div>
+        <div class="brow">
+          <div class="blab"><span class="bn">revised figure</span><span class="bv">94%</span></div>
+          <div class="track"><div class="fill now" style="width:94%"></div></div>
+          <div class="axis"><span>0%</span><span>scale: 0&ndash;100%</span><span>100%</span></div>
+        </div>
+      </div>
+      <div class="delta">
+        <svg width="22" height="26" viewBox="0 0 22 26"><line x1="11" y1="0" x2="11" y2="15" stroke="#1b231d" stroke-width="3"/><polygon points="11,26 3,13 19,13" fill="#1b231d"/></svg>
+        <span class="dv">&minus;1 pt</span>
+        <span class="dt">revised <b>down</b>, by the project itself</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <span class="mk">metric 2</span>
+      <div class="mt">average CU reduction</div>
+      <div class="bars">
+        <div class="brow">
+          <div class="blab"><span class="bn">initial claim</span><span class="bv">9.9&times;</span></div>
+          <div class="track"><div class="fill was" style="width:99%"></div></div>
+        </div>
+        <div class="brow">
+          <div class="blab"><span class="bn">revised figure</span><span class="bv">8.8&times;</span></div>
+          <div class="track"><div class="fill now" style="width:88%"></div></div>
+          <div class="axis"><span>0&times;</span><span>scale: 0&ndash;10&times;</span><span>10&times;</span></div>
+        </div>
+      </div>
+      <div class="delta">
+        <svg width="22" height="26" viewBox="0 0 22 26"><line x1="11" y1="0" x2="11" y2="15" stroke="#1b231d" stroke-width="3"/><polygon points="11,26 3,13 19,13" fill="#1b231d"/></svg>
+        <span class="dv">&minus;1.1&times;</span>
+        <span class="dt">revised <b>down</b>, by the project itself</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot">
+    <span class="fk">read the footnote</span>
+    <span class="ft">The page itself states these values can move again as codegen and pinocchio change &mdash; every figure here stays alpha-caveated.</span>
+  </div>
+</div>
+</body></html>

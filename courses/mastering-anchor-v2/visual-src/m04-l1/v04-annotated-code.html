@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The PDA-signed System transfer, part by part
+     purpose: name each token in the V2 CpiContext::new + with_signer + transfer call
+     data: let owner = *ctx.accounts.authority.address(); let signer_seeds: &[&[&[u8]]] = &[&[b"sol", owner.as_ref(), &[ctx.accounts.state.sol_bump]]]; let cpi = CpiContext::new( ctx.accounts.system_program.address(), Transfer { from: ctx.accounts.sol_vault.cpi_handle_mut(), to:   ctx.accounts.authority.cpi_handle_mut(), }, ).with_signer(signer_seeds); transfer(cpi, amount)?; notes: - "*owner.address()       -> .address() returns &Address; the deref copies it into an owned value BEFORE any cpi_handle is built" - "signer_seeds           -> the SOL vault's OWN seeds + its STORED canonical bump (state.sol_bump)" - "system_program.address() -> CpiContext::new takes the TARGET program directly as the &Address .address() returns, no local binding needed" - "from/to: .cpi_handle_mut() -> CpiHandle borrow-tracked handles; both accounts are written, so _mut" - ".with_signer(seeds)    -> attaches the PDA signer; this is invoke_signed under the hood" - "transfer(cpi, amount)  -> the System Program helper; moves `amount` lamports SOL vault -> player" freshness: shapes verified against the 2.0.0-rc.1 extensibility surface (crates.io); this is a release candidate, re-read the crate when you build
+     prompt: Show the code block on the left, monospace, and lead a callout line from each highlighted token to its note on the right: *owner.address(), signer_seeds, system_program.address(), cpi_handle_mut (both from and to), with_signer, transfer. Add a small "release candidate: re-verify" ribbon near the top. Keep it a code-annotation layout, not a flow diagram.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:545px;height:483px;top:-270px;right:-270px;border-radius:43% 51% 59% 58% / 46% 36% 48% 65%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:514px;height:517px;bottom:-290px;left:-290px;border-radius:45% 37% 57% 45% / 61% 54% 63% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:465px;height:428px;bottom:-232px;right:-232px;border-radius:59% 41% 42% 40% / 50% 59% 40% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ac-ribbon { display:flex; align-items:center; gap:12px; background:var(--surface-inverse);
+               color:var(--stbr-cream); border-radius:var(--radius-pill); padding:8px 20px;
+               margin-bottom:16px; }
+  .ac-ribbon .dot { width:12px; height:12px; border-radius:50%; background:var(--stbr-yellow); }
+  .ac-ribbon .t { font-family:var(--font-display); font-weight:900; font-size:13px;
+                  letter-spacing:0.15em; text-transform:uppercase; }
+  .ac-ribbon .s { font-family:var(--font-body); font-size:15px; opacity:0.85; }
+  .ac-wrap { display:flex; gap:24px; align-items:flex-start; }
+  .ac-code { width:832px; box-sizing:border-box; background:var(--surface-inverse);
+             border-radius:var(--radius-lg); padding:18px 22px; }
+  .ac-ln { display:flex; align-items:center; min-height:27px; }
+  .ac-ln code { font-family:var(--font-mono); font-size:16px; line-height:1.5;
+                color:var(--stbr-cream); white-space:pre; }
+  .ac-ln .c { color:#8fb79c; }
+  .ac-ln .k { color:#7fd8a6; }
+  .ac-ln .y { color:var(--stbr-yellow); font-weight:700; }
+  .mk { flex:0 0 24px; width:24px; height:24px; border-radius:50%; margin-left:auto;
+        background:var(--stbr-yellow); color:var(--stbr-dark); text-align:center;
+        font-family:var(--font-mono); font-weight:700; font-size:14px; line-height:24px; }
+  .ac-notes { width:600px; }
+  .ac-note { display:flex; gap:12px; align-items:flex-start; border-radius:var(--radius-sm);
+             border:1.5px solid var(--border-subtle); background:var(--surface-card);
+             padding:9px 13px; margin-bottom:9px; }
+  .ac-note .mk { margin-left:0; }
+  .ac-note .tx { flex:1; }
+  .ac-note .tk { font-family:var(--font-mono); font-weight:700; font-size:15px;
+                 color:var(--stbr-emerald-800); }
+  .ac-note .ds { font-family:var(--font-body); font-size:14px; line-height:1.32;
+                 color:var(--text-secondary); margin-top:2px; }
+</style>
+  <div class="stbr-eyebrow">the PDA-signed System transfer</div>
+  <h2 class="viz-title">Part by part</h2>
+
+  <div class="ac-ribbon">
+    <span class="dot"></span>
+    <span class="t">release candidate</span>
+    <span class="s">shapes verified against the 2.0.0-rc.1 extensibility surface (crates.io) &mdash; re-read the crate when you build.</span>
+  </div>
+
+  <div class="ac-wrap">
+    <div class="ac-code">
+      <div class="ac-ln"><code><span class="k">let</span> owner = <span class="y">*</span>ctx.accounts.authority.<span class="y">address()</span>;</code><span class="mk">1</span></div>
+      <div class="ac-ln"><code><span class="k">let</span> <span class="y">signer_seeds</span>: &amp;[&amp;[&amp;[u8]]] =</code><span class="mk">2</span></div>
+      <div class="ac-ln"><code>    &amp;[&amp;[b"sol", owner.as_ref(), &amp;[ctx.accounts.state.<span class="y">sol_bump</span>]]];</code></div>
+      <div class="ac-ln"><code><span class="k">let</span> cpi = CpiContext::new(</code></div>
+      <div class="ac-ln"><code>    <span class="y">ctx.accounts.system_program.address()</span>,</code><span class="mk">3</span></div>
+      <div class="ac-ln"><code>    Transfer {</code></div>
+      <div class="ac-ln"><code>        from: ctx.accounts.sol_vault.<span class="y">cpi_handle_mut()</span>,</code><span class="mk">4</span></div>
+      <div class="ac-ln"><code>        to:   ctx.accounts.authority.<span class="y">cpi_handle_mut()</span>,</code><span class="mk">4</span></div>
+      <div class="ac-ln"><code>    },</code></div>
+      <div class="ac-ln"><code>).<span class="y">with_signer</span>(signer_seeds);</code><span class="mk">5</span></div>
+      <div class="ac-ln"><code><span class="y">transfer</span>(cpi, amount)?;</code><span class="mk">6</span></div>
+    </div>
+
+    <div class="ac-notes">
+      <div class="ac-note"><span class="mk">1</span><div class="tx">
+        <div class="tk">*ctx.accounts.authority.address()</div>
+        <div class="ds"><code>.address()</code> returns <code>&amp;Address</code>; the deref (<code>*</code>) copies it into an owned value BEFORE any <code>cpi_handle</code> is built.</div></div></div>
+      <div class="ac-note"><span class="mk">2</span><div class="tx">
+        <div class="tk">signer_seeds</div>
+        <div class="ds">The SOL vault&rsquo;s OWN seeds + its STORED canonical bump (<code>state.sol_bump</code>).</div></div></div>
+      <div class="ac-note"><span class="mk">3</span><div class="tx">
+        <div class="tk">system_program.address()</div>
+        <div class="ds"><code>CpiContext::new</code> takes the TARGET program directly as the <code>&amp;Address</code> that <code>.address()</code> returns &mdash; no local binding needed.</div></div></div>
+      <div class="ac-note"><span class="mk">4</span><div class="tx">
+        <div class="tk">from / to: .cpi_handle_mut()</div>
+        <div class="ds">CpiHandle borrow-tracked handles; both accounts are written, so <code>_mut</code>.</div></div></div>
+      <div class="ac-note"><span class="mk">5</span><div class="tx">
+        <div class="tk">.with_signer(seeds)</div>
+        <div class="ds">Attaches the PDA signer &mdash; this is <code>invoke_signed</code> under the hood.</div></div></div>
+      <div class="ac-note"><span class="mk">6</span><div class="tx">
+        <div class="tk">transfer(cpi, amount)</div>
+        <div class="ds">The System Program helper; moves <code>amount</code> lamports SOL vault &rarr; player.</div></div></div>
+    </div>
+  </div>
+</div>
+</body></html>

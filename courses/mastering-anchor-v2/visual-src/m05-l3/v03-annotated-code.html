@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Where the bytes live in a Token-2022 mint
+     purpose: show the base-plus-TLV-tail layout so the variable length stops being mysterious
+     data: bytes   0..82   [ base mint layout ]      <- same fields as a classic SPL mint bytes  82..165  [ zero padding ]          <- pads the mint out to the 165-byte account size byte      165   [ account_type = 1 ]      <- 1 = Mint, so a reader can tell mint from token account bytes 166..866  [ TLV extension tail ]    \ TLV entry: MintCloseAuthority            \ TLV entry: PermanentDelegate              > 8 entries on PYUSD, TLV entry: TransferFeeConfig              > 700 bytes of tail TLV entry: TransferHook  <- type/length/value TLV entry: MetadataPointer               / ... and the rest                        / total observed length (PYUSD, live) = 866 bytes
+     prompt: Vertical stacked memory-layout diagram with a byte-offset gutter down the left edge. Top block "base mint layout, bytes 0-82" in a muted color, labeled "same as classic SPL mint". Below it a thin hatched block "padding to 165". Below that a single-byte sliver "account_type = 1 (Mint)". Then a bracket grouping several thin TLV-entry rows labeled "extension tail, bytes 166-866 (TLV: type / length / value)". Highlight the "TransferHook" row in the accent color. Right-edge annotation: "total = 866 bytes, read live, not assumed."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:566px;height:534px;top:-289px;right:-289px;border-radius:38% 35% 50% 36% / 49% 36% 54% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:543px;height:467px;left:-306px;top:153px;border-radius:38% 58% 36% 63% / 60% 47% 62% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:471px;bottom:-260px;right:-260px;border-radius:63% 42% 38% 43% / 44% 58% 53% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { width:1420px; margin:0 auto; background:var(--surface-inverse);
+           border-radius:var(--radius-xl); padding:32px; display:flex; }
+  .gut { width:150px; flex:0 0 150px; margin-right:16px; }
+  .gut .g { display:flex; align-items:center; justify-content:flex-end;
+            font-family:var(--font-mono); font-size:14px; color:var(--stbr-cream);
+            opacity:.72; padding-right:12px; border-right:2px solid rgba(245,232,202,0.28); }
+  .gut .g + .g { margin-top:8px; }
+  .stack { width:780px; flex:0 0 780px; }
+  .blk { border-radius:var(--radius-md); padding:0 20px; display:flex;
+         align-items:center; }
+  .blk + .blk { margin-top:8px; }
+  .blk .bn { font-family:var(--font-mono); font-size:17px; font-weight:600; }
+  .blk .bs { font-family:var(--font-body); font-size:13px; margin-top:4px; }
+  .b-base { height:92px; background:var(--surface-brand); display:block; padding-top:20px; }
+  .b-base .bn { color:var(--text-on-brand); }
+  .b-base .bs { color:var(--stbr-cream); opacity:.85; }
+  .b-pad { height:54px; border:1.5px dashed rgba(245,232,202,0.45);
+           background:repeating-linear-gradient(45deg,
+             rgba(245,232,202,0.24) 0 9px, rgba(245,232,202,0.05) 9px 18px);
+           justify-content:space-between; }
+  .b-pad .bn { font-size:15px; color:var(--stbr-cream); opacity:.9; }
+  .b-pad .bx { font-family:var(--font-body); font-size:13px; color:var(--stbr-cream); opacity:.7; }
+  .b-type { height:34px; background:var(--surface-paper); justify-content:space-between;
+            border-radius:var(--radius-sm); }
+  .b-type .bn { font-size:15px; color:var(--text-primary); }
+  .b-type .bx { font-family:var(--font-body); font-size:13px; color:var(--text-secondary); }
+  .tlv { height:320px; margin-top:8px; border:2px solid rgba(245,232,202,0.28);
+         border-radius:var(--radius-md); padding:14px 16px; }
+  .tlv .th { height:28px; display:flex; align-items:center; justify-content:space-between;
+             margin-bottom:8px; }
+  .tlv .th .a { font-family:var(--font-display); font-weight:800; font-size:16px;
+                color:var(--stbr-cream); }
+  .tlv .th .b { font-family:var(--font-mono); font-size:12px; color:var(--stbr-cream); opacity:.65; }
+  .e { height:38px; border-radius:var(--radius-sm); padding:0 14px; display:flex;
+       align-items:center; justify-content:space-between;
+       background:rgba(245,232,202,0.08); }
+  .e + .e { margin-top:5px; }
+  .e .en { font-family:var(--font-mono); font-size:14px; color:var(--stbr-cream); }
+  .e .ex { font-family:var(--font-body); font-size:12px; color:var(--stbr-cream); opacity:.6; }
+  .e.hot { background:var(--surface-accent); }
+  .e.hot .en { color:var(--text-on-accent); font-weight:700; }
+  .e.hot .ex { color:var(--text-on-accent); opacity:.85; font-weight:600; }
+  .ann { width:386px; flex:0 0 386px; margin-left:24px; }
+  .ann .sp { height:204px; }
+  .ann .box { height:320px; border-left:6px solid var(--surface-accent);
+              background:rgba(245,232,202,0.07); border-radius:0 var(--radius-md) var(--radius-md) 0;
+              padding:24px 22px; }
+  .ann .big { font-family:var(--font-display); font-weight:900; font-size:52px;
+              line-height:1; color:var(--stbr-cream); }
+  .ann .cap { font-family:var(--font-body); font-size:14px; line-height:1.4;
+              color:var(--stbr-cream); opacity:.78; margin-top:10px; }
+  .ann .rule { height:1.5px; background:rgba(245,232,202,0.25); margin:18px 0; }
+  .ann .note { font-family:var(--font-body); font-size:13.5px; line-height:1.45;
+               color:var(--stbr-cream); opacity:.85; }
+  .ann .note + .note { margin-top:12px; }
+  .ann .note b { font-family:var(--font-mono); font-weight:600; opacity:1; }
+</style>
+  <div class="stbr-eyebrow">memory map · PYUSD mint</div>
+  <h2 class="viz-title">where the bytes live in a Token-2022 mint</h2>
+
+  <div class="panel">
+    <div class="gut">
+      <div class="g" style="height:92px;">0 &nbsp;·&nbsp; 82</div>
+      <div class="g" style="height:54px;">82 &nbsp;·&nbsp; 165</div>
+      <div class="g" style="height:34px;">165</div>
+      <div class="g" style="height:320px;">166 &nbsp;·&nbsp; 866</div>
+    </div>
+
+    <div class="stack">
+      <div class="blk b-base">
+        <div class="bn">base mint layout</div>
+        <div class="bs">the same fields as a classic SPL mint — supply, decimals, authorities</div>
+      </div>
+      <div class="blk b-pad">
+        <div class="bn">zero padding</div>
+        <div class="bx">pads the mint out to the 165-byte account size</div>
+      </div>
+      <div class="blk b-type">
+        <div class="bn">account_type = 1</div>
+        <div class="bx">1 = Mint — how a reader tells a mint from a token account</div>
+      </div>
+      <div class="tlv">
+        <div class="th">
+          <span class="a">TLV extension tail</span>
+          <span class="b">type / length / value</span>
+        </div>
+        <div class="e"><span class="en">MintCloseAuthority</span><span class="ex">entry 1</span></div>
+        <div class="e"><span class="en">PermanentDelegate</span><span class="ex">entry 2</span></div>
+        <div class="e"><span class="en">TransferFeeConfig</span><span class="ex">entry 3</span></div>
+        <div class="e hot"><span class="en">TransferHook</span><span class="ex">the entry that can add accounts to a transfer</span></div>
+        <div class="e"><span class="en">MetadataPointer</span><span class="ex">entry 5</span></div>
+        <div class="e"><span class="en">… and the rest</span><span class="ex">8 entries on PYUSD · ~700 bytes of tail</span></div>
+      </div>
+    </div>
+
+    <div class="ann">
+      <div class="sp"></div>
+      <div class="box">
+        <div class="big">866 bytes</div>
+        <div class="cap">total observed length (PYUSD, live) — read, not assumed.</div>
+        <div class="rule"></div>
+        <div class="note">The first 165 bytes are constant. Everything after <b>account_type</b> is a tail whose size is set by which extensions the mint carries.</div>
+        <div class="note">So a length check against 82 or 165 is not a validation — it is a guess that happens to hold on classic mints.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

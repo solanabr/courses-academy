@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The exploit branch, commit by commit
+     purpose: show the four attempts and their build outcomes as a sequence, then the restore
+     data: commits (left to right): 1. attack 1: type cosplay        -> build FAILS (E0277 trait bound not satisfied) 2. attack 2: duplicate-mutable    -> build FAILS (must be unsafe(dup)) 3. attack 3: CPI aliasing         -> build FAILS (E0502 borrow of reserve_ticket) 4. attack 4: bump recalculation   -> build SUCCEEDS, runtime no-op 5. restore R4 clean               -> anchor test GREEN
+     prompt: Horizontal timeline of five commit nodes. Nodes 1-3 red with "build fails" and the error code. Node 4 amber with "builds, inert". Node 5 green with "tests pass". A thin caption under nodes 1-4 reads "three refused, one hollow"; under node 5 "R4 restored".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:535px;height:524px;top:-312px;right:-312px;border-radius:64% 65% 48% 53% / 53% 47% 42% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:482px;bottom:-271px;left:-271px;border-radius:44% 43% 37% 38% / 37% 60% 50% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:425px;height:505px;bottom:-297px;left:634px;border-radius:44% 50% 62% 54% / 62% 47% 48% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; margin: 4px 0 22px; }
+  .row { display: flex; gap: 18px; }
+  .card { flex: 1 1 0; min-width: 0;
+          border-radius: var(--radius-lg); border: 1.5px solid var(--border-subtle);
+          background: var(--surface-card); overflow: hidden; height: 268px;
+          display: flex; flex-direction: column; }
+  .card.hot { border: 2px solid var(--stbr-yellow-700); }
+  .card.ok { border: 2px solid var(--stbr-emerald); }
+  .ch { padding: 11px 15px; background: var(--surface-inverse); }
+  .card.hot .ch { background: var(--surface-accent); }
+  .card.ok .ch { background: var(--surface-brand); }
+  .cn { font-family: var(--font-body); font-weight: 800; font-size: 10px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.58); }
+  .card.hot .cn { color: rgba(27,35,29,0.60); }
+  .ct { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.08;
+        color: var(--text-on-dark); margin-top: 4px; }
+  .card.hot .ct { color: var(--text-on-accent); }
+  .cb { flex: 1 1 auto; padding: 14px 15px; display: flex; flex-direction: column; }
+  .status { display: flex; align-items: center; gap: 8px; font-family: var(--font-display);
+            font-weight: 900; font-size: 19px; line-height: 1.06; color: var(--text-primary); }
+  .status.y { color: var(--stbr-green-800); }
+  .status.g { color: var(--stbr-emerald-800); }
+  .code { font-family: var(--font-mono); font-size: 12.5px; line-height: 1.4;
+          color: var(--text-secondary); margin-top: 9px; }
+  .note { font-family: var(--font-body); font-size: 12.5px; line-height: 1.38;
+          color: var(--text-muted); margin-top: auto; padding-top: 10px;
+          border-top: 1.5px solid var(--border-subtle); }
+  /* align-self keeps the pill hugging its text: as a flex child it would otherwise
+     be stretched to the full column width and read as a bar */
+  .pill { display: inline-block; align-self: flex-start; margin-top: 9px; margin-bottom: 6px;
+          padding: 4px 11px; border-radius: var(--radius-pill);
+          font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .1em;
+          text-transform: uppercase; background: var(--surface-accent); color: var(--text-on-accent); }
+  .axis { height: 34px; }
+  .capbar { background: var(--surface-inverse); border-radius: var(--radius-md);
+            padding: 9px 10px 9px 22px; display: flex; align-items: center; gap: 14px; }
+  .ck { font-family: var(--font-body); font-weight: 800; font-size: 10.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.55); white-space: nowrap; }
+  .cx { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.1;
+        color: var(--text-on-dark); }
+  .rchip { margin-left: auto; background: var(--surface-brand); border-radius: var(--radius-pill);
+           padding: 8px 26px; font-family: var(--font-display); font-weight: 900; font-size: 18px;
+           line-height: 1.1; color: var(--text-on-brand); white-space: nowrap; }
+</style>
+  <div class="stbr-eyebrow">the exploit branch, commit by commit</div>
+  <h2 class="viz-title">four attempts, one build</h2>
+
+  <div class="row">
+    <div class="card">
+      <div class="ch"><div class="cn">commit 1</div><div class="ct">attack 1<br>type cosplay</div></div>
+      <div class="cb">
+        <div class="status"><svg width="15" height="15" viewBox="0 0 15 15"><line x1="2.5" y1="2.5" x2="12.5" y2="12.5" stroke="#1b231d" stroke-width="2.8"/><line x1="12.5" y1="2.5" x2="2.5" y2="12.5" stroke="#1b231d" stroke-width="2.8"/></svg> build fails</div>
+        <div class="code">E0277<br>trait bound not satisfied</div>
+        <div class="note">the laundering cast never reaches a binary</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><div class="cn">commit 2</div><div class="ct">attack 2<br>duplicate-mutable</div></div>
+      <div class="cb">
+        <div class="status"><svg width="15" height="15" viewBox="0 0 15 15"><line x1="2.5" y1="2.5" x2="12.5" y2="12.5" stroke="#1b231d" stroke-width="2.8"/><line x1="12.5" y1="2.5" x2="2.5" y2="12.5" stroke="#1b231d" stroke-width="2.8"/></svg> build fails</div>
+        <div class="code">must be written<br>unsafe(dup)</div>
+        <div class="note">the attribute is rejected before the dispatcher exists</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ch"><div class="cn">commit 3</div><div class="ct">attack 3<br>CPI aliasing</div></div>
+      <div class="cb">
+        <div class="status"><svg width="15" height="15" viewBox="0 0 15 15"><line x1="2.5" y1="2.5" x2="12.5" y2="12.5" stroke="#1b231d" stroke-width="2.8"/><line x1="12.5" y1="2.5" x2="2.5" y2="12.5" stroke="#1b231d" stroke-width="2.8"/></svg> build fails</div>
+        <div class="code">E0502<br>borrow of reserve_ticket</div>
+        <div class="note">the stale read is a borrow-check error, not a runtime surprise</div>
+      </div>
+    </div>
+
+    <div class="card hot">
+      <div class="ch"><div class="cn">commit 4</div><div class="ct">attack 4<br>bump recalculation</div></div>
+      <div class="cb">
+        <div class="status y"><svg width="15" height="15" viewBox="0 0 15 15"><polyline points="1.5,8 5.5,12 13,3.5" fill="none" stroke="#1d4327" stroke-width="2.8"/></svg> build succeeds</div>
+        <div class="code">runtime: no-op</div>
+        <span class="pill">builds, inert</span>
+        <div class="note">it re-derives the bump the account already stored</div>
+      </div>
+    </div>
+
+    <div class="card ok">
+      <div class="ch"><div class="cn">commit 5</div><div class="ct">restore<br>R4 clean</div></div>
+      <div class="cb">
+        <div class="status g"><svg width="15" height="15" viewBox="0 0 15 15"><polyline points="1.5,8 5.5,12 13,3.5" fill="none" stroke="#005c33" stroke-width="2.8"/></svg> tests pass</div>
+        <div class="code">anchor test<br>GREEN</div>
+        <div class="note">the branch ends where it started &mdash; nothing to revert in production</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="axis">
+      <svg width="1456" height="34" viewBox="0 0 1456 34">
+        <line x1="138" y1="17" x2="1318" y2="17" stroke="#1b231d" stroke-width="2.5"/>
+        <circle cx="138.4" cy="17" r="9" fill="#1b231d"/>
+        <circle cx="433.2" cy="17" r="9" fill="#1b231d"/>
+        <circle cx="728" cy="17" r="9" fill="#1b231d"/>
+        <circle cx="1022.8" cy="17" r="11" fill="#ffd23f" stroke="#d9a608" stroke-width="2.5"/>
+        <circle cx="1317.6" cy="17" r="11" fill="#008b4c"/>
+      </svg>
+  </div>
+
+  <div class="capbar">
+    <span class="ck">commits 1&ndash;4</span>
+    <span class="cx">three refused, one hollow</span>
+    <span class="rchip">R4 restored</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The let-the-compiler-drive loop
+     purpose: show the port as a repeatable edit/build/read-the-error loop rather than a one-shot rewrite
+     data: step 1: pin the RC toolchain (verify anchor --version = 2.0.0-rc.1, not 1.1.2) step 2: apply mechanical deltas at TODO markers (rows 1-5) step 3: build -> read type/method/signature errors -> fix -> repeat until they clear step 4: build -> read DEPRECATION warning (has_one) -> apply address = state.authority -> warnings to 0 step 5: build -> read the MISSING-METHOD error, E0599 no method named reload -> drop the reload, restructure the reads around the call -> compiles step 6: anchor test (LiteSVM) green + cargo build deprecation count = 0 -> done loop invariant: never guess; the next edit is whatever the compiler just printed
+     prompt: Horizontal timeline of six steps left to right, with a looping arrow between the build steps (3, 4, 5) back to "build again" to convey iteration. Mark steps 4 and 5 with distinct accent badges ("warning-driven", "error-driven"). End node is a green "gate passed" marker. Include the loop invariant as a caption under the middle of the track. Keep it clean and process-focused.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:418px;top:-228px;right:-228px;border-radius:51% 43% 55% 57% / 44% 43% 44% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:576px;height:503px;bottom:-312px;left:-312px;border-radius:46% 61% 43% 65% / 57% 38% 36% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:560px;height:538px;bottom:-330px;right:-330px;border-radius:59% 43% 57% 51% / 43% 38% 40% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { display:flex; align-items:stretch; }
+  .tconn { flex:0 0 26px; display:flex; align-items:center; justify-content:center; }
+  .st { flex:1; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+        border-radius:var(--radius-lg); padding:14px 15px 16px; min-height:224px; }
+  .st .dot { width:30px; height:30px; border-radius:50%; background:var(--surface-inverse);
+             color:var(--stbr-cream); font-family:var(--font-display); font-weight:900;
+             font-size:15px; line-height:30px; text-align:center; margin-bottom:10px; }
+  .st .h { font-family:var(--font-display); font-weight:900; font-size:17px;
+           line-height:1.18; color:var(--text-primary); }
+  .st .m { font-family:var(--font-mono); font-size:12px; line-height:1.45;
+           color:var(--text-secondary); margin-top:8px; }
+  .chip { display:inline-block; font-family:var(--font-display); font-weight:900;
+          font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+          padding:3px 9px; border-radius:var(--radius-pill); margin-bottom:8px;
+          background:var(--surface-inverse); color:var(--stbr-cream); }
+  .chip.e { background:var(--surface-brand-deep); }
+  .st.gate { background:var(--surface-brand); border-color:var(--stbr-emerald); }
+  .st.gate .dot { background:var(--stbr-cream); color:var(--stbr-dark); }
+  .st.gate .h { color:var(--text-on-brand); }
+  .st.gate .m { color:var(--stbr-cream); opacity:.85; }
+  .loopband { margin-left:576px; width:551px; background:var(--surface-accent);
+              border-radius:var(--radius-pill); padding:9px 20px;
+              display:flex; align-items:center; justify-content:center; gap:14px;
+              box-sizing:border-box; }
+  .loopband .lt { font-family:var(--font-display); font-weight:900; font-size:16px;
+                  color:var(--stbr-dark); line-height:1.2; }
+  .inv { margin-top:16px; text-align:center; font-family:var(--font-display);
+         font-weight:900; font-size:18px; color:var(--text-primary); }
+  .inv .q { color:var(--text-secondary); font-family:var(--font-body);
+            font-weight:400; font-size:16px; }
+</style>
+  <div class="stbr-eyebrow">let the compiler drive</div>
+  <h2 class="viz-title">the port is a loop, not a rewrite</h2>
+
+  <div class="tl">
+    <div class="st">
+      <div class="dot">1</div>
+      <div class="h">pin the RC toolchain</div>
+      <div class="m">anchor --version<br>= 2.0.0-rc.1<br>not 1.1.2</div>
+    </div>
+    <div class="tconn"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="15" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="14,1 26,8 14,15" fill="#1b231d"/></svg></div>
+
+    <div class="st">
+      <div class="dot">2</div>
+      <div class="h">apply the mechanical deltas</div>
+      <div class="m">every TODO marker,<br>rows 1&ndash;5</div>
+    </div>
+    <div class="tconn"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="15" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="14,1 26,8 14,15" fill="#1b231d"/></svg></div>
+
+    <div class="st">
+      <div class="dot">3</div>
+      <span class="chip">type-driven</span>
+      <div class="h">build &rarr; read type / method / signature errors</div>
+      <div class="m">fix, repeat until they clear</div>
+    </div>
+    <div class="tconn"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="15" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="14,1 26,8 14,15" fill="#1b231d"/></svg></div>
+
+    <div class="st">
+      <div class="dot">4</div>
+      <span class="chip e">warning-driven</span>
+      <div class="h">build &rarr; read the DEPRECATION warning</div>
+      <div class="m">has_one &rarr;<br>address = state.authority<br>warnings to 0</div>
+    </div>
+    <div class="tconn"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="15" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="14,1 26,8 14,15" fill="#1b231d"/></svg></div>
+
+    <div class="st">
+      <div class="dot">5</div>
+      <span class="chip">error-driven</span>
+      <div class="h">build &rarr; read the MISSING-METHOD error</div>
+      <div class="m">E0599: no method<br>named .reload() &rarr;<br>drop the reload,<br>restructure the reads</div>
+    </div>
+    <div class="tconn"><svg width="26" height="16" viewBox="0 0 26 16"><line x1="0" y1="8" x2="15" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="14,1 26,8 14,15" fill="#008b4c"/></svg></div>
+
+    <div class="st gate">
+      <div class="dot">6</div>
+      <div class="h">gate passed</div>
+      <div class="m">anchor test (LiteSVM) green<br>+ cargo build deprecation<br>count = 0 &rarr; done</div>
+    </div>
+  </div>
+
+  <svg width="1456" height="30" viewBox="0 0 1456 30">
+    <path d="M1099 0 L1099 22 L604 22 L604 9" stroke="#1b231d" stroke-width="3" fill="none"/>
+    <polygon points="595,11 613,11 604,0" fill="#1b231d"/>
+  </svg>
+
+  <div class="loopband">
+    <div class="lt">build again &mdash; steps 3&ndash;5 are one loop</div>
+  </div>
+
+  <div class="inv">loop invariant: <span class="q">never guess &mdash; the next edit is whatever the compiler just printed.</span></div>
+</div>
+</body></html>

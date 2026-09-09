@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What you keep, what you lose, moving to zero-copy-by-default
+     purpose: hold the trade-off in view so the CU win is never sold without its cost
+     data: You gain: fewer CU per account access (roughly 8.8x average as of 2026-08-13, alpha, moves); smaller bytecode (~94%); the fast path is now the default path. You pay:  account types must be Pod (flat bytes, alignment-clean): no in-place Vec/String; layout/alignment discipline you usually skip in Rust; V2 is an unaudited RC/alpha: speed now vs stability later. Unchanged: signer, owner, and discriminator checks all still run. Security is not the trade.
+     prompt: A two-column comparison card, left column "Gain" and right column "Pay", each with the bullet items above as short rows. Below both columns a full-width strip labeled "Unchanged: same safety checks run on both paths". Keep the alpha caveat visible as a small footnote on the 8.8x figure.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:603px;height:547px;top:-321px;right:-321px;border-radius:36% 60% 37% 45% / 38% 35% 38% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:400px;left:-257px;top:243px;border-radius:63% 38% 55% 35% / 65% 43% 53% 62%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:512px;bottom:-251px;right:-251px;border-radius:54% 37% 48% 54% / 37% 62% 38% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:40px; }
+  .col { width:708px; height:402px; background:var(--surface-card);
+         border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+         overflow:hidden; }
+  .chead { height:60px; padding:0 26px; display:flex; align-items:center;
+           font-family:var(--font-display); font-weight:900; font-size:24px;
+           letter-spacing:.02em; }
+  .chead.gain { background:var(--surface-brand); color:var(--text-on-brand); }
+  .chead.pay  { background:var(--surface-accent); color:var(--text-on-accent); }
+  .row { height:112px; padding:20px 26px; display:flex; align-items:center; }
+  .row + .row { border-top:2px solid var(--border-subtle); }
+  .mk { width:38px; height:38px; flex:0 0 38px; border-radius:var(--radius-pill);
+        margin-right:18px; font-family:var(--font-display); font-weight:900;
+        font-size:22px; line-height:38px; text-align:center; }
+  .mk.g { background:var(--surface-brand); color:var(--text-on-brand); }
+  .mk.p { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .rt { font-family:var(--font-display); font-weight:900; font-size:22px;
+        line-height:1.15; color:var(--text-primary); }
+  .rs { font-family:var(--font-body); font-size:16px; line-height:1.35;
+        color:var(--text-secondary); margin-top:6px; }
+  .rs code { font-family:var(--font-mono); font-size:15px; color:var(--text-primary); }
+  .rs b { color:var(--text-primary); font-weight:800; }
+  .sup { font-family:var(--font-body); font-weight:700; font-size:13px;
+         color:var(--stbr-yellow-700); }
+  .verdict { margin-top:22px; height:104px; background:var(--surface-brand);
+             border-radius:var(--radius-xl); padding:0 34px; display:flex;
+             align-items:center; }
+  .verdict .vk { width:170px; flex:0 0 170px; font-family:var(--font-body);
+                 font-weight:800; font-size:13px; letter-spacing:.14em;
+                 text-transform:uppercase; color:var(--stbr-cream); opacity:.75; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:27px;
+                 line-height:1.15; color:var(--text-on-brand); }
+  .fnote { margin-top:14px; font-family:var(--font-body); font-size:15px;
+           line-height:1.35; color:var(--text-secondary); }
+  .fnote b { color:var(--text-primary); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">the whole trade, both sides</div>
+  <h2 class="viz-title">what zero-copy-by-default costs you</h2>
+
+  <div class="cols">
+    <div class="col">
+      <div class="chead gain">you gain</div>
+      <div class="row">
+        <div class="mk g">+</div>
+        <div>
+          <div class="rt">fewer CU per account access</div>
+          <div class="rs">roughly <b>8.8&times; average</b> <span class="sup">*</span> &mdash; alpha figure, it moves</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mk g">+</div>
+        <div>
+          <div class="rt">smaller bytecode</div>
+          <div class="rs">about <b>94%</b> reduction</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mk g">+</div>
+        <div>
+          <div class="rt">the fast path is now the default path</div>
+          <div class="rs">nothing to opt into</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="chead pay">you pay</div>
+      <div class="row">
+        <div class="mk p">&minus;</div>
+        <div>
+          <div class="rt">account types must be Pod</div>
+          <div class="rs">flat bytes, alignment-clean &mdash; no in-place <code>Vec</code> / <code>String</code></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mk p">&minus;</div>
+        <div>
+          <div class="rt">layout &amp; alignment discipline</div>
+          <div class="rs">the part of Rust you usually get to skip</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="mk p">&minus;</div>
+        <div>
+          <div class="rt">V2 is an unaudited RC / alpha</div>
+          <div class="rs">speed now vs stability later</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">unchanged</span>
+    <span class="vt">signer, owner and discriminator checks all still run &mdash; security is not the trade</span>
+  </div>
+
+  <div class="fnote">
+    <b>*</b> average CU improvement per Anchor benchmark PR #4914 (2026-08-13). V2 is alpha &mdash; re-verify the figure before you quote it.
+  </div>
+</div>
+</body></html>

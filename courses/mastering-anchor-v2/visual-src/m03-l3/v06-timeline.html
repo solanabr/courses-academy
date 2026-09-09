@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: How the constraint list became a trait
+     purpose: place today's open trait in the lineage of the V2 rewrite and the pressure behind it
+     data: - v1 era: constraints are a CLOSED keyword list baked into the derive macro; custom rules fall to handler ifs - community pressure: ChewingGlass in discussion #3742 ("Boilerplate kills new devs because they don't know the sacred incantations", and "But borsh is kind of terrible" in its Codama sub-thread); design issue #4390 makes the same case in its own words ("the default serialization should probably behave more like zero-copy but with better UX") - V2 rewrite: no_std, pinocchio-based; the framework is torn down to the studs - V2 result: constraints dispatch through public traits (AnchorAccount, Id, Discriminator, AccountConstraint) - today: token::* / mint::* stay the ONE built-in exception the core derive handles itself; every other namespace, anchor-spl's future ones and your quarters::min_balance alike, goes through the open trait
+     prompt: A horizontal timeline, five stops left to right as in data. Style the first stop (closed list) as a constraint, the middle stop (community pressure) as a quote callout, and the last two stops (open traits, the built-in token exception) as the payoff. Draw a thin through-line connecting "Boilerplate kills new devs" to the final stop.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:482px;height:458px;top:-259px;right:-259px;border-radius:36% 61% 56% 48% / 65% 53% 53% 36%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:508px;height:405px;left:-282px;top:223px;border-radius:61% 60% 44% 36% / 57% 45% 37% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:443px;height:491px;bottom:-301px;left:702px;border-radius:56% 59% 65% 52% / 54% 51% 52% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .board { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); padding:26px 30px 24px; }
+  .tl { position:relative; width:1388px; }
+  .rail { position:absolute; left:9px; width:1106px; top:56px; height:3px;
+          background:var(--stbr-ink-300); }
+  .stops { position:relative; display:flex; gap:14px; }
+  .stop { position:relative; display:flex; flex-direction:column; }
+  .era { height:42px; font-family:var(--font-display); font-weight:900; font-size:17px;
+         line-height:1.1; color:var(--text-primary); }
+  .era .yr { display:block; font-family:var(--font-body); font-weight:800; font-size:11px;
+             letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted);
+             margin-bottom:4px; }
+  .dotrow { height:30px; display:flex; align-items:center; }
+  .dot { width:18px; height:18px; border-radius:var(--radius-pill); background:var(--surface-card);
+         border:4px solid var(--stbr-emerald); }
+  .dot.closed { border-color:var(--stbr-dark); }
+  .dot.hot { border-color:var(--stbr-yellow-700); background:var(--surface-accent); }
+  .card { height:318px; border-radius:var(--radius-md); padding:16px 18px; overflow:hidden; }
+  .card.closed { background:var(--surface-inverse); }
+  .card.plain { background:var(--surface-paper); border:2px solid var(--border-subtle); }
+  .card.pay { background:var(--surface-brand); }
+  .card.pay2 { background:var(--surface-brand-deep); }
+  .ct { font-family:var(--font-body); font-size:14px; line-height:1.4; color:var(--text-primary); }
+  .ct b { font-weight:800; }
+  .card.closed .ct { color:rgba(245,232,202,0.9); }
+  .card.closed .ct b { color:var(--stbr-cream); }
+  .card.pay .ct, .card.pay2 .ct { color:rgba(245,232,202,0.97); }
+  .card.pay .ct b, .card.pay2 .ct b { color:var(--stbr-cream); }
+  .kick { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+          text-transform:uppercase; margin-bottom:8px; color:var(--stbr-emerald); }
+  .card.closed .kick { color:var(--stbr-yellow); }
+  .card.pay .kick, .card.pay2 .kick { color:rgba(245,232,202,0.95); }
+  .quote { border-left:5px solid var(--stbr-yellow-700); padding:2px 0 2px 12px; margin-bottom:12px; }
+  .quote.soft { border-left-color:var(--stbr-ink-300); }
+  .quote .qq { font-family:var(--font-body); font-style:italic; font-size:13.5px; line-height:1.38;
+               color:var(--text-primary); }
+  .quote .qa { font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted); margin-top:5px; }
+  .mono { font-family:var(--font-mono); font-size:13px; }
+  .thru { position:relative; height:52px; }
+  .thru svg { position:absolute; left:0; top:0; display:block; }
+  .thrulab { position:absolute; left:470px; top:30px; width:730px; text-align:center;
+             font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+             text-transform:uppercase; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">how the list became a trait</div>
+  <h2 class="viz-title">the lineage behind today's open constraint</h2>
+
+  <div class="board">
+    <div class="tl">
+      <div class="rail"></div>
+      <div class="stops">
+
+        <div class="stop" style="width:240px;">
+          <div class="era"><span class="yr">stop 1</span>v1 era</div>
+          <div class="dotrow"><span class="dot closed"></span></div>
+          <div class="card closed">
+            <div class="kick">the constraint</div>
+            <div class="ct">Constraints are a <b>CLOSED keyword list</b> baked into the derive macro.<br><br>Custom rules fall to <b>handler ifs</b>.</div>
+          </div>
+        </div>
+
+        <div class="stop" style="width:330px;">
+          <div class="era"><span class="yr">stop 2</span>community pressure</div>
+          <div class="dotrow"><span class="dot hot"></span></div>
+          <div class="card plain">
+            <div class="kick">discussion #3742</div>
+            <div class="quote">
+              <div class="qq">&ldquo;Boilerplate kills new devs because they don't know the sacred incantations.&rdquo;</div>
+              <div class="qa">ChewingGlass</div>
+            </div>
+            <div class="quote soft">
+              <div class="qq">&ldquo;But borsh is kind of terrible.&rdquo;</div>
+              <div class="qa">Codama sub-thread</div>
+            </div>
+            <div class="quote soft">
+              <div class="qq">&ldquo;The default serialization should probably behave more like zero-copy but with better UX.&rdquo;</div>
+              <div class="qa">design issue #4390</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stop" style="width:220px;">
+          <div class="era"><span class="yr">stop 3</span>V2 rewrite</div>
+          <div class="dotrow"><span class="dot"></span></div>
+          <div class="card plain">
+            <div class="kick">torn to the studs</div>
+            <div class="ct"><span class="mono">no_std</span>, <span class="mono">pinocchio</span>-based.<br><br>The framework is rebuilt from the ground up.</div>
+          </div>
+        </div>
+
+        <div class="stop" style="width:260px;">
+          <div class="era"><span class="yr">stop 4</span>V2 result</div>
+          <div class="dotrow"><span class="dot"></span></div>
+          <div class="card pay">
+            <div class="kick">the payoff</div>
+            <div class="ct">Constraints dispatch through <b>public traits</b>:<br><br><span class="mono">AnchorAccount</span><br><span class="mono">Id</span><br><span class="mono">Discriminator</span><br><span class="mono">AccountConstraint</span></div>
+          </div>
+        </div>
+
+        <div class="stop" style="width:282px;">
+          <div class="era"><span class="yr">stop 5</span>today</div>
+          <div class="dotrow"><span class="dot"></span></div>
+          <div class="card pay2">
+            <div class="kick">the payoff, in practice</div>
+            <div class="ct"><span class="mono">token::*</span> / <span class="mono">mint::*</span> stay the <b>ONE built-in exception</b> the core derive handles itself.<br><br>Every other namespace &mdash; anchor-spl's future ones and your <span class="mono">quarters::min_balance</span> alike &mdash; goes through the <b>open trait</b>.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="thru">
+      <svg width="1388" height="40" viewBox="0 0 1388 40">
+        <path d="M 419,2 V 22 H 1247 V 12" fill="none" stroke="#d9a608" stroke-width="3"/>
+        <polygon points="1247,2 1240,15 1254,15" fill="#d9a608"/>
+      </svg>
+      <div class="thrulab">the pressure that landed</div>
+    </div>
+  </div>
+</div>
+</body></html>

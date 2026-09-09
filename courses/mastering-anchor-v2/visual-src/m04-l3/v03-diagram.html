@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where the duplicate-mutable check actually runs
+     purpose: separate the compile-time MUT_MASK const from the runtime dispatcher bitvec check
+     data: compile time (derive macro): from #[derive(Accounts)] -> MUT_MASK: associated const, 256-bit bit set for each field marked mut (or mut, unsafe(dup) opts a field out of the alias check) run time (dispatcher, before handler): load accounts in order; maintain a bitvec of addresses seen for each mut field per MUT_MASK: if its address already seen mut -> ConstraintDuplicateMutableAccount result: distinct mut accounts pass; the same account twice under two mut names fails
+     prompt: Left box "compile time": the Accounts derive producing a 256-bit MUT_MASK bitmask, show a few bits lit for mutable fields. Right box "run time": the dispatcher iterating accounts, comparing against MUT_MASK, raising ConstraintDuplicateMutableAccount on a collision. A divider down the middle labeled "shape decided here | values decided here".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:474px;height:433px;top:-220px;right:-220px;border-radius:49% 37% 61% 53% / 56% 43% 55% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:577px;height:464px;left:-334px;top:100px;border-radius:54% 38% 45% 47% / 65% 40% 44% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:503px;height:427px;bottom:-225px;right:-225px;border-radius:35% 58% 42% 57% / 62% 44% 41% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .split { display:flex; align-items:stretch; }
+  .col { flex:0 0 634px; background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); padding:22px 26px; box-sizing:border-box; height:556px; }
+  .spine { flex:0 0 76px; display:flex; align-items:center; justify-content:center; }
+  .spine .bar { width:8px; height:520px; background:var(--surface-accent);
+                border-radius:var(--radius-pill); }
+  .ch { display:flex; align-items:center; justify-content:space-between; height:40px; }
+  .ch .t { flex:0 0 auto; white-space:nowrap; font-family:var(--font-display); font-weight:900; font-size:26px;
+           color:var(--text-primary); letter-spacing:-.015em; }
+  .ch .p { flex:0 0 auto; white-space:nowrap; font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.06em;
+           background:var(--surface-accent); color:var(--stbr-dark);
+           padding:6px 12px; border-radius:var(--radius-pill); }
+  .ch .sub { font-family:var(--font-body); font-size:13px; color:var(--text-muted); }
+  .drv { margin-top:18px; height:58px; box-sizing:border-box; background:var(--surface-inverse);
+         border-radius:var(--radius-md); display:flex; align-items:center; padding:0 20px;
+         font-family:var(--font-mono); font-size:20px; color:var(--stbr-cream); }
+  .down { display:flex; justify-content:center; padding:10px 0; }
+  .mask { border:2px solid var(--stbr-dark); border-radius:var(--radius-lg); padding:18px 20px; }
+  .mask .h { font-family:var(--font-mono); font-size:22px; font-weight:700;
+             color:var(--text-primary); }
+  .mask .h2 { font-family:var(--font-body); font-size:14px; color:var(--text-secondary);
+              margin-top:5px; }
+  .bits { display:flex; align-items:center; gap:8px; margin:18px 0 4px; }
+  .bit { width:34px; height:34px; border-radius:8px; border:2px solid var(--stbr-ink-300);
+         background:var(--surface-paper); box-sizing:border-box; }
+  .bit.on { background:var(--surface-brand); border-color:var(--stbr-emerald-800); }
+  .bit.dup { background:var(--surface-card); border:2px dashed var(--stbr-dark); }
+  .bits .ell { font-family:var(--font-mono); font-size:20px; color:var(--text-muted); padding:0 2px; }
+  .bits .end { font-family:var(--font-body); font-size:12px; color:var(--text-muted); }
+  .lg { display:flex; align-items:center; gap:10px; margin-top:11px; }
+  .lg .sw { width:20px; height:20px; border-radius:6px; box-sizing:border-box; flex:0 0 20px; }
+  .lg .tx { font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); }
+  .lg .tx code { font-family:var(--font-mono); font-size:13px; color:var(--text-primary); }
+  .step { display:flex; align-items:center; gap:14px; height:78px; border:2px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:0 18px; margin-top:14px; box-sizing:border-box; }
+  .step .no { flex:0 0 40px; height:40px; border-radius:var(--radius-pill);
+              background:var(--surface-brand); color:var(--stbr-cream);
+              font-family:var(--font-display); font-weight:900; font-size:19px;
+              display:flex; align-items:center; justify-content:center; }
+  .step .tx { font-family:var(--font-body); font-size:15.5px; line-height:1.3;
+              color:var(--text-primary); }
+  .step .tx code { font-family:var(--font-mono); font-size:14.5px; }
+  .out { display:flex; gap:14px; margin-top:18px; }
+  .out .o { flex:0 0 278px; border-radius:var(--radius-md); padding:14px 16px; box-sizing:border-box;
+            height:104px; }
+  .out .pass { background:var(--surface-brand); }
+  .out .fail { background:var(--surface-inverse); }
+  .out .k { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.14em;
+            text-transform:uppercase; color:var(--stbr-cream); opacity:.8; }
+  .out .v { font-family:var(--font-body); font-size:14px; color:var(--stbr-cream); margin-top:7px;
+            line-height:1.3; }
+  .out .v code { font-family:var(--font-mono); font-size:13.5px; }
+</style>
+  <div class="stbr-eyebrow">duplicate mutable accounts</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 14px;">shape is decided at compile time, values at run time</h2>
+
+  <div class="split">
+    <div class="col">
+      <div class="ch"><div class="t">compile time</div><div class="p">shape decided here</div></div>
+      <div class="ch" style="height:22px;"><div class="sub">the derive macro, once, per Accounts struct</div></div>
+      <div class="drv">#[derive(Accounts)]</div>
+      <div class="down">
+        <svg width="16" height="36" viewBox="0 0 16 36"><line x1="8" y1="0" x2="8" y2="22" stroke="#1B231D" stroke-width="3"/><polygon points="1,22 8,36 15,22" fill="#1B231D"/></svg>
+      </div>
+      <div class="mask">
+        <div class="h">MUT_MASK</div>
+        <div class="h2">an associated const — a 256-bit bit set, one bit per account field</div>
+        <div class="bits">
+          <div class="bit on"></div><div class="bit"></div><div class="bit on"></div>
+          <div class="bit dup"></div><div class="bit"></div><div class="bit on"></div>
+          <div class="bit"></div><div class="bit on"></div><div class="bit"></div>
+          <div class="bit"></div><div class="bit on"></div><div class="bit"></div>
+          <div class="ell">…</div><div class="end">bit 255</div>
+        </div>
+        <div class="lg"><div class="sw" style="background:#008B4C;border:2px solid #005c33;"></div>
+          <div class="tx">field marked <code>mut</code> — bit set, joins the alias check</div></div>
+        <div class="lg"><div class="sw" style="background:#FFFFFF;border:2px dashed #1B231D;"></div>
+          <div class="tx"><code>mut, unsafe(dup)</code> — opts the field out of the check</div></div>
+        <div class="lg"><div class="sw" style="background:#faf3e3;border:2px solid #b8bdb6;"></div>
+          <div class="tx">immutable field — bit clear, never compared</div></div>
+      </div>
+    </div>
+
+    <div class="spine"><div class="bar"></div></div>
+
+    <div class="col">
+      <div class="ch"><div class="t">run time</div><div class="p">values decided here</div></div>
+      <div class="ch" style="height:22px;"><div class="sub">the dispatcher, every call, before the handler</div></div>
+      <div class="step"><div class="no">1</div><div class="tx">load the accounts in the order they were passed</div></div>
+      <div class="step"><div class="no">2</div><div class="tx">maintain a bitvec of the addresses already seen</div></div>
+      <div class="step"><div class="no">3</div><div class="tx">for each <code>mut</code> field per <code>MUT_MASK</code>: is its address already seen as <code>mut</code>?</div></div>
+      <div class="out">
+        <div class="o pass">
+          <div class="k">no collision</div>
+          <div class="v">distinct <code>mut</code> accounts — the handler runs</div>
+        </div>
+        <div class="o fail">
+          <div class="k">collision</div>
+          <div class="v">the same account twice under two <code>mut</code> names →<br><code>ConstraintDuplicateMutableAccount</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

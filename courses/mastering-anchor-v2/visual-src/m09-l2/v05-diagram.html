@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: MUT_MASK is present in the derive, absent in your native vault
+     purpose: show the duplicate-mutable guard as a guard the framework adds and native code lacks entirely
+     data: V2 (generated): compile time -> MUT_MASK: 256-bit const, one bit per mutable field  (the SHAPE) runtime      -> dispatcher walks MUT_MASK fields into a bitvec of addresses two mutable fields, same address -> ConstraintDuplicateMutableAccount opt-out      -> #[account(mut, unsafe(dup))]; plain `dup` is a compile error Native pinocchio (m09-l1): compile time -> (nothing) runtime      -> ONE hand-written comparison (gate 6), covering the one pair you chose; any pair you did not think of is accepted bug class closed by construction in the derive, closed only where you looked in native
+     prompt: Two stacked lanes. Top lane "V2 generated" showing the compile-time MUT_MASK const feeding a runtime bitvec walk that rejects an alias, plus the unsafe(dup) opt-out. Bottom lane "native pinocchio" showing both compile-time and runtime slots empty, with a red note that the aliased call is accepted. Caption: the derive closes this class; the native version does not.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:460px;top:-248px;right:-248px;border-radius:47% 47% 35% 40% / 35% 46% 36% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:485px;height:365px;left:-300px;top:395px;border-radius:57% 40% 36% 56% / 45% 51% 51% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:533px;height:549px;bottom:-314px;right:-314px;border-radius:61% 35% 51% 48% / 52% 60% 35% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lane { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:20px 24px; display:flex;
+          align-items:center; }
+  .lane + .lane { margin-top:16px; }
+  .key { flex:0 0 176px; width:176px; padding-right:14px; }
+  .key .kn { font-family:var(--font-display); font-weight:900; font-size:27px;
+             line-height:1.05; color:var(--text-primary); }
+  .key .kn.brand { color:var(--stbr-emerald); }
+  .key .ks { font-family:var(--font-body); font-size:13px; line-height:1.3;
+             color:var(--text-secondary); margin-top:6px; }
+  .gap { flex:0 0 16px; width:16px; }
+  .slot { flex:0 0 372px; width:372px; }
+  .slotr { flex:0 0 430px; width:430px; }
+  .slote { flex:0 0 300px; width:300px; }
+  .arrw { flex:0 0 74px; width:74px; text-align:center; }
+  .box { border-radius:var(--radius-md); padding:14px 16px; min-height:118px; }
+  .box .bl { font-family:var(--font-display); font-weight:800; font-size:11px;
+             letter-spacing:.14em; text-transform:uppercase; margin-bottom:8px; }
+  .box .bt { font-family:var(--font-body); font-size:14px; line-height:1.35; }
+  .box .bt .mono { font-family:var(--font-mono); font-size:13px; }
+  .box.mask { background:var(--stbr-yellow); border:2px solid var(--stbr-yellow-700); }
+  .box.mask .bl { color:var(--stbr-yellow-700); }
+  .box.mask .bt { color:var(--text-on-accent); }
+  .box.mask .bh { font-family:var(--font-mono); font-weight:700; font-size:20px;
+                  color:var(--text-on-accent); margin-bottom:6px; }
+  .box.ok { background:var(--surface-paper); border:2px solid var(--stbr-emerald); }
+  .box.ok .bl { color:var(--stbr-emerald-800); }
+  .box.ok .bt { color:var(--text-primary); }
+  .box.dark { background:var(--surface-inverse); border:2px solid var(--surface-inverse); }
+  .box.dark .bl { color:var(--stbr-yellow); }
+  .box.dark .bt { color:var(--stbr-cream); }
+  .box.empty { background:var(--surface-paper); border:2px dashed var(--stbr-ink-300);
+               display:flex; flex-direction:column; justify-content:center; }
+  .box.empty .bl { color:var(--text-muted); }
+  .box.empty .bh { font-family:var(--font-display); font-weight:900; font-size:26px;
+                   color:var(--stbr-ink-300); }
+  .box.plain { background:var(--surface-card); border:2px solid var(--border-strong); }
+  .box.plain .bl { color:var(--text-secondary); }
+  .box.plain .bt { color:var(--text-primary); }
+  .box.bad { background:var(--surface-card); border:2px solid #c0392b; }
+  .box.bad .bl { color:#c0392b; }
+  .box.bad .bh { font-family:var(--font-display); font-weight:900; font-size:19px;
+                 color:#c0392b; line-height:1.1; margin-bottom:6px; }
+  .box.bad .bt { color:var(--text-secondary); }
+  .al { font-family:var(--font-body); font-weight:700; font-size:11px;
+        letter-spacing:.06em; text-transform:uppercase; color:var(--text-secondary);
+        margin-bottom:6px; line-height:1.2; }
+  .verdict { margin-top:16px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:18px 28px; display:flex;
+             align-items:center; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:12px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.75; flex:0 0 130px; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:22px;
+                 line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">duplicate-mutable guard &middot; MUT_MASK</div>
+  <h2 class="viz-title">present in the derive, absent in your vault</h2>
+
+  <div class="lane">
+    <div class="key">
+      <div class="kn brand">V2</div>
+      <div class="ks">generated by<br>#[derive(Accounts)]</div>
+    </div>
+    <div class="slot">
+      <div class="box mask">
+        <div class="bl">compile time</div>
+        <div class="bh">MUT_MASK</div>
+        <div class="bt">a 256-bit const, one bit per mutable field &mdash; <b>the SHAPE</b></div>
+      </div>
+    </div>
+    <div class="arrw">
+      <div class="al">feeds</div>
+      <svg width="74" height="20" viewBox="0 0 74 20">
+        <line x1="0" y1="10" x2="58" y2="10" stroke="#1b231d" stroke-width="4"/>
+        <polygon points="58,2 74,10 58,18" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="slotr">
+      <div class="box ok">
+        <div class="bl">runtime</div>
+        <div class="bt">the dispatcher walks the MUT_MASK fields into a <b>bitvec of addresses</b>.<br>
+          Two mutable fields, same address &rarr;<br>
+          <span class="mono"><b>ConstraintDuplicateMutableAccount</b></span></div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="slote">
+      <div class="box dark">
+        <div class="bl">opt-out</div>
+        <div class="bt"><span class="mono">#[account(mut, unsafe(dup))]</span><br><br>
+          plain <span class="mono">dup</span> is a <b>compile error</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="key">
+      <div class="kn">native</div>
+      <div class="ks">pinocchio vault<br>(m09-l1)</div>
+    </div>
+    <div class="slot">
+      <div class="box empty">
+        <div class="bl">compile time</div>
+        <div class="bh">(nothing)</div>
+      </div>
+    </div>
+    <div class="arrw">
+      <div class="al">&nbsp;</div>
+      <svg width="74" height="20" viewBox="0 0 74 20">
+        <line x1="0" y1="10" x2="58" y2="10" stroke="#b8bdb6" stroke-width="4"
+              stroke-dasharray="7 6"/>
+        <polygon points="58,2 74,10 58,18" fill="#b8bdb6"/>
+      </svg>
+    </div>
+    <div class="slotr">
+      <div class="box plain">
+        <div class="bl">runtime</div>
+        <div class="bt"><b>ONE</b> hand-written comparison (gate 6), covering the one pair you chose.</div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="slote">
+      <div class="box bad">
+        <div class="bl">the hole</div>
+        <div class="bh">accepted</div>
+        <div class="bt">any pair you did not think of goes straight through</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">bug class</span>
+    <span class="vt">the derive closes it by construction &mdash; the native version closes it only where you looked</span>
+  </div>
+</div>
+</body></html>

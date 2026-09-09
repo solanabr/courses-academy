@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The check hook, walked line by line
+     purpose: explain what each part of the AccountConstraint::check impl does
+     data: fn check(vault: &Account<Vault>, floor: &u64) -> Result<()> { require_gte!(vault.credit, *floor, VaultError::BelowFloor); Ok(()) } notes: - "vault: &Account<Vault>  -> the LOADED account, read-only; check never mutates" - "floor: &u64    -> the value from `= 100`; this is Self::Value by reference" - "*floor         -> deref to compare the u64 by value; the floor is inclusive (>=)" - "require_gte!   -> returns VaultError::BelowFloor if vault.credit < *floor" - "reached before the handler runs, on EVERY instruction that declares this constraint" - "the NAME is load-bearing: `quarters::min_balance` resolves to `quarters::MinBalanceConstraint`, snake_case key -> PascalCase marker type, plus a mandatory Constraint suffix, inside a module path that must be in scope"
+     prompt: Show the three-line check function as code on the left with callout lines on the right pointing to each token: the &Account<Vault> parameter (loaded, read-only), the &u64 floor (Self::Value), the deref, the require_gte! macro (the inclusive gate), and a banner noting it runs before the handler on every matching instruction. Keep it a code-annotation layout, not a flowchart.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:576px;height:499px;top:-303px;right:-303px;border-radius:43% 46% 39% 43% / 36% 38% 55% 53%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:492px;height:407px;left:-299px;top:226px;border-radius:40% 39% 48% 58% / 56% 60% 36% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:550px;height:544px;bottom:-323px;right:-323px;border-radius:36% 37% 46% 38% / 56% 45% 44% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .main { display:flex; gap:24px; align-items:flex-start; }
+  .code { flex:0 0 792px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+          padding:24px 26px; }
+  .code .cl { font-family:var(--font-mono); font-size:17px; line-height:2.05;
+              color:rgba(245,232,202,0.92); white-space:nowrap; }
+  .code .cl .ind { color:rgba(245,232,202,0.28); }
+  .code .kw { color:#7fd1a5; }
+  .mk { display:inline-block; width:22px; height:22px; border-radius:var(--radius-pill);
+        background:var(--stbr-yellow); color:var(--stbr-dark); font-family:var(--font-body);
+        font-weight:800; font-size:13px; line-height:22px; text-align:center;
+        margin:0 2px; vertical-align:middle; }
+  .mk.on { background:var(--surface-accent); }
+  .notes { flex:1 1 auto; display:flex; flex-direction:column; gap:11px; }
+  .n { display:flex; align-items:flex-start; gap:13px; background:var(--surface-card);
+       border:2px solid var(--border-subtle); border-radius:var(--radius-md); padding:11px 15px; }
+  .n .nm { flex:0 0 24px; width:24px; height:24px; border-radius:var(--radius-pill);
+           background:var(--surface-inverse); color:var(--stbr-yellow); font-family:var(--font-body);
+           font-weight:800; font-size:13px; line-height:24px; text-align:center; }
+  .n .nb { font-family:var(--font-body); font-size:14.5px; line-height:1.35; color:var(--text-secondary); }
+  .n .nb .tok { font-family:var(--font-mono); font-weight:700; color:var(--text-primary); }
+  .n .nb b { color:var(--text-primary); font-weight:700; }
+  .banner { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+            padding:17px 28px; display:flex; align-items:center; gap:24px; }
+  .banner .bk { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.14em;
+                text-transform:uppercase; color:rgba(245,232,202,0.92); white-space:nowrap; }
+  .banner .bt { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.14;
+                color:var(--text-on-brand); }
+  .name { margin-top:14px; border:2px solid var(--border-subtle); border-left:6px solid var(--surface-brand-deep);
+          border-radius:var(--radius-md); background:var(--surface-card); padding:14px 20px;
+          font-family:var(--font-body); font-size:15px; line-height:1.42; color:var(--text-secondary); }
+  .name .nk { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.13em;
+              text-transform:uppercase; color:var(--stbr-emerald); margin-bottom:5px; }
+  .name .tok { font-family:var(--font-mono); font-weight:700; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">the check hook, line by line</div>
+  <h2 class="viz-title">what every token in the impl is doing</h2>
+
+  <div class="main">
+    <div class="code">
+      <div class="cl"><span class="kw">fn</span> check(vault: &amp;Account&lt;Vault&gt;<span class="mk">1</span>, floor: &amp;u64<span class="mk">2</span>) -&gt; Result&lt;()&gt; {</div>
+      <div class="cl"><span class="ind">&nbsp;&nbsp;&nbsp;&nbsp;</span>require_gte!<span class="mk">4</span>(vault.credit, *floor<span class="mk">3</span>,</div>
+      <div class="cl"><span class="ind">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>VaultError::BelowFloor);</div>
+      <div class="cl"><span class="ind">&nbsp;&nbsp;&nbsp;&nbsp;</span>Ok(())</div>
+      <div class="cl">}</div>
+    </div>
+
+    <div class="notes">
+      <div class="n">
+        <span class="nm">1</span>
+        <span class="nb"><span class="tok">vault: &amp;Account&lt;Vault&gt;</span> &mdash; the <b>LOADED</b> account, read-only; <b>check never mutates</b>.</span>
+      </div>
+      <div class="n">
+        <span class="nm">2</span>
+        <span class="nb"><span class="tok">floor: &amp;u64</span> &mdash; the value from <span class="tok">= 100</span>; this is <span class="tok">Self::Value</span> by reference.</span>
+      </div>
+      <div class="n">
+        <span class="nm">3</span>
+        <span class="nb"><span class="tok">*floor</span> &mdash; deref to compare the <span class="tok">u64</span> by value; the floor is <b>inclusive</b> (&ge;).</span>
+      </div>
+      <div class="n">
+        <span class="nm">4</span>
+        <span class="nb"><span class="tok">require_gte!</span> &mdash; returns <span class="tok">VaultError::BelowFloor</span> if <span class="tok">vault.credit &lt; *floor</span>.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner">
+    <span class="bk">when it runs</span>
+    <span class="bt">reached before the handler runs, on EVERY instruction that declares this constraint.</span>
+  </div>
+
+  <div class="name">
+    <div class="nk">the name is load-bearing</div>
+    <span class="tok">quarters::min_balance</span> resolves to <span class="tok">quarters::MinBalanceConstraint</span> &mdash; snake_case key &rarr; PascalCase marker type, plus a mandatory <b>Constraint</b> suffix, inside a module path that must be <b>in scope</b>.
+  </div>
+</div>
+</body></html>

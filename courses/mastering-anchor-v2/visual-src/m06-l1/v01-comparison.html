@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The four V2 instruments and what each one answers
+     purpose: fix in the reader's head that these are four lenses on one artifact, not four separate workflows
+     data: Instrument              | Question it answers          | Output                                  | Build type   | Gates the run? anchor test --profile   | Where did the CU go?         | one flamegraph SVG per test             | debug (DWARF)| no anchor debugger         | What happens instruction by instruction? | interactive ratatui TUI (+ --gdb stub) | debug        | no anchor coverage         | Which branches never ran?    | LCOV report from SBF register traces    | instrumented | no Mollusk CU test         | Exactly how many CU?         | pass/fail assertion + CU integer        | release-like | yes (it is a test)
+     prompt: A four-row comparison card. One row per instrument. Columns: Instrument, Question, Output, Build type, Gates the run. Emphasize the "Gates the run?" column: only the Mollusk row is a hard yes, the other three are soft "reports, does not fail the build". Keep the instrument names in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:448px;top:-231px;right:-231px;border-radius:38% 58% 39% 57% / 54% 53% 36% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:564px;height:547px;bottom:-326px;left:-326px;border-radius:43% 44% 49% 40% / 49% 49% 55% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:541px;height:585px;bottom:-323px;right:-323px;border-radius:51% 39% 39% 41% / 48% 38% 37% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ctab { width:100%; border-collapse:separate; border-spacing:0; table-layout:fixed;
+          background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); overflow:hidden; }
+  .ctab th { background:var(--surface-inverse); color:var(--text-on-dark);
+             font-family:var(--font-body); font-weight:800; font-size:13px;
+             letter-spacing:.13em; text-transform:uppercase; text-align:left;
+             padding:16px 20px; }
+  .ctab th.gate { background:var(--stbr-dark-700); }
+  .ctab td { padding:18px 20px; vertical-align:top; border-top:1.5px solid var(--border-subtle); }
+  /* WeasyPrint does not clip table cell backgrounds to the table's border-radius —
+     round the four corner cells explicitly so the header/tint fills follow the card. */
+  .ctab tr:first-child th:first-child { border-top-left-radius:26px; }
+  .ctab tr:first-child th:last-child  { border-top-right-radius:26px; }
+  .ctab tr:last-child  td:first-child { border-bottom-left-radius:26px; }
+  .ctab tr:last-child  td:last-child  { border-bottom-right-radius:26px; }
+  .ctab tr.first td { border-top:none; }
+  .inst { font-family:var(--font-mono); font-weight:700; font-size:17px; line-height:1.25;
+          color:var(--text-primary); }
+  .q { font-family:var(--font-body); font-weight:700; font-size:16px; line-height:1.3;
+       color:var(--stbr-emerald-800); }
+  .o { font-family:var(--font-body); font-size:15.5px; line-height:1.35; color:var(--text-secondary); }
+  .b { font-family:var(--font-mono); font-size:14.5px; line-height:1.3; color:var(--text-muted); }
+  .gcell { background:var(--surface-paper); }
+  .gcell.hit { background:rgba(255,210,63,0.30); }
+  .chip { display:inline-block; padding:6px 13px; border-radius:var(--radius-pill);
+          font-family:var(--font-body); font-weight:800; font-size:12.5px; line-height:1.2; }
+  .chip.soft { background:rgba(0,139,76,0.12); color:var(--stbr-emerald-800); }
+  .chip.hard { background:var(--surface-accent); color:var(--text-on-accent); }
+  .gsub { font-family:var(--font-body); font-size:13px; line-height:1.3;
+          color:var(--text-muted); margin-top:7px; }
+  .gsub.on { color:var(--stbr-green-800); font-weight:700; }
+  .verdict { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:20px 30px; display:flex; align-items:center; gap:26px; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                 letter-spacing:.13em; text-transform:uppercase;
+                 color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:26px;
+                 line-height:1.1; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">four lenses on one artifact</div>
+  <h2 class="viz-title">the four v2 instruments &mdash; and what each one answers</h2>
+  <table class="ctab">
+    <colgroup>
+      <col style="width:250px"><col style="width:300px"><col style="width:390px">
+      <col style="width:180px"><col>
+    </colgroup>
+    <tr>
+      <th>Instrument</th><th>Question it answers</th><th>Output</th>
+      <th>Build type</th><th class="gate">Gates the run?</th>
+    </tr>
+    <tr class="first">
+      <td><span class="inst">anchor test&nbsp;--profile</span></td>
+      <td><span class="q">Where did the CU go?</span></td>
+      <td><span class="o">one flamegraph SVG per test</span></td>
+      <td><span class="b">debug (DWARF)</span></td>
+      <td class="gcell"><span class="chip soft">no</span>
+        <div class="gsub">reports &mdash; does not fail the build</div></td>
+    </tr>
+    <tr>
+      <td><span class="inst">anchor debugger</span></td>
+      <td><span class="q">What happens instruction by instruction?</span></td>
+      <td><span class="o">interactive ratatui TUI (+ --gdb stub)</span></td>
+      <td><span class="b">debug</span></td>
+      <td class="gcell"><span class="chip soft">no</span>
+        <div class="gsub">reports &mdash; does not fail the build</div></td>
+    </tr>
+    <tr>
+      <td><span class="inst">anchor coverage</span></td>
+      <td><span class="q">Which branches never ran?</span></td>
+      <td><span class="o">LCOV report from SBF register traces</span></td>
+      <td><span class="b">instrumented</span></td>
+      <td class="gcell"><span class="chip soft">no</span>
+        <div class="gsub">reports &mdash; does not fail the build</div></td>
+    </tr>
+    <tr>
+      <td><span class="inst">Mollusk CU test</span></td>
+      <td><span class="q">Exactly how many CU?</span></td>
+      <td><span class="o">pass/fail assertion + CU integer</span></td>
+      <td><span class="b">release-like</span></td>
+      <td class="gcell hit"><span class="chip hard">YES</span>
+        <div class="gsub on">it is a test &mdash; it fails the build</div></td>
+    </tr>
+  </table>
+  <div class="verdict">
+    <span class="vk">the takeaway</span>
+    <span class="vt">Four lenses on one artifact, not four workflows &mdash; and only one of them can stop a merge.</span>
+  </div>
+</div>
+</body></html>

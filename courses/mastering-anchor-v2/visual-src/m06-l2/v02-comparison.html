@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The two levers, and what each one actually costs
+     purpose: contrast guardrails-off (strips checks) with const-rent-on (folds a constant) so the reader sees the trade-offs point opposite ways
+     data: Axis | guardrails OFF | const-rent ON What it changes | removes default-on runtime safety nets | folds the rent constant at compile time What it buys | CU back on every run + ~300 bytes binary | ~85 to 90 CU per account-creation CPI Which instruction it helps | the HOT path (the trade handler, every call) | account-creation CPIs (init, colder, once per account) The cost | you removed real checks | the folded constant goes stale if the rent formula changes How to ship it safely | write the invariant argument yourself | carry a re-verify note tied to SIMD-0194 Direction of risk | correctness (you own the checks now) | staleness (a governance change can drift it)
+     prompt: Two-column comparison card, one column per lever, six labeled rows down the left. Accent the "The cost" row in both columns. Use a warning tone on guardrails' cost ("removed real checks") and a clock/drift tone on const-rent's cost ("goes stale"). Monospace the flag names guardrails and const-rent in the headers.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:544px;top:-301px;right:-301px;border-radius:60% 63% 58% 52% / 57% 37% 64% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:469px;bottom:-243px;left:-243px;border-radius:54% 40% 37% 48% / 50% 52% 38% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:436px;height:451px;bottom:-223px;right:-223px;border-radius:35% 37% 55% 49% / 59% 62% 58% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { display:flex; }
+  .colk { width:300px; flex:0 0 300px; margin-right:12px; }
+  .col  { width:566px; flex:0 0 566px; }
+  .col.b { margin-left:12px; }
+  .hd { height:84px; box-sizing:border-box; border-radius:var(--radius-md) var(--radius-md) 0 0;
+        padding:0 20px; display:flex; flex-direction:column; justify-content:center; }
+  .hd.k { background:var(--surface-paper); }
+  .hd.k .ht { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .hd.a, .hd.c { background:var(--surface-inverse); }
+  .hd .flag { font-family:var(--font-mono); font-weight:700; font-size:23px;
+              color:var(--stbr-cream); line-height:1.1; }
+  .hd .flag em { font-style:normal; color:#7fd6a4; }
+  .hd .sub { font-family:var(--font-body); font-size:13px; color:var(--stbr-cream);
+             opacity:.72; margin-top:6px; }
+  .r { height:68px; box-sizing:border-box; padding:0 20px; display:flex;
+       align-items:center; border-bottom:1px solid var(--border-subtle); }
+  .col .r { background:var(--surface-card); }
+  .colk .r { background:var(--surface-paper); }
+  .col .r:last-child, .colk .r:last-child { border-bottom:none;
+       border-radius:0 0 var(--radius-md) var(--radius-md); }
+  .rk { font-family:var(--font-display); font-weight:800; font-size:16px; line-height:1.2;
+        color:var(--text-primary); }
+  .rv { font-family:var(--font-body); font-size:15px; line-height:1.3;
+        color:var(--text-secondary); }
+  .rv b { color:var(--text-primary); font-weight:700; }
+  .rv code { font-family:var(--font-mono); font-size:14px; color:var(--stbr-emerald-800); }
+  .cost .rk, .cost .rv { color:var(--stbr-dark); }
+  .colk .r.cost, .col .r.cost { background:var(--surface-accent); }
+  .cost .rk { font-weight:900; }
+  .cost .rv b { color:var(--stbr-dark); }
+  .verdict { margin-top:20px; height:80px; box-sizing:border-box;
+             background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:0 30px; display:flex; align-items:center; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:12px;
+                 letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.75; width:132px; flex:0 0 132px; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:25px;
+                 line-height:1.15; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">two levers · opposite risks</div>
+  <h2 class="viz-title">what each lever actually costs you</h2>
+
+  <div class="tbl">
+    <div class="colk">
+      <div class="hd k"><div class="ht">axis</div></div>
+      <div class="r"><span class="rk">What it changes</span></div>
+      <div class="r"><span class="rk">What it buys</span></div>
+      <div class="r"><span class="rk">Which instruction it helps</span></div>
+      <div class="r cost"><span class="rk">The cost</span></div>
+      <div class="r"><span class="rk">How to ship it safely</span></div>
+      <div class="r"><span class="rk">Direction of risk</span></div>
+    </div>
+
+    <div class="col a">
+      <div class="hd a">
+        <div class="flag"><em>guardrails</em> OFF</div>
+        <div class="sub">the hot-path lever</div>
+      </div>
+      <div class="r"><span class="rv">removes default-on runtime safety nets</span></div>
+      <div class="r"><span class="rv">CU back on <b>every run</b> + ~300 bytes of binary</span></div>
+      <div class="r"><span class="rv">the <b>HOT path</b> &#8212; the trade handler, every call</span></div>
+      <div class="r cost"><span class="rv"><b>you removed real checks</b></span></div>
+      <div class="r"><span class="rv">write the invariant argument yourself</span></div>
+      <div class="r"><span class="rv"><b>correctness</b> &#8212; you own the checks now</span></div>
+    </div>
+
+    <div class="col b">
+      <div class="hd c">
+        <div class="flag"><em>const-rent</em> ON</div>
+        <div class="sub">the account-creation lever</div>
+      </div>
+      <div class="r"><span class="rv">folds the rent constant at compile time</span></div>
+      <div class="r"><span class="rv">~85 to 90 CU per account-creation CPI</span></div>
+      <div class="r"><span class="rv">account-creation CPIs (<code>init</code>) &#8212; colder, once per account</span></div>
+      <div class="r cost"><span class="rv"><b>the folded constant goes stale</b> if the rent formula changes</span></div>
+      <div class="r"><span class="rv">carry a re-verify note tied to <code>SIMD-0194</code></span></div>
+      <div class="r"><span class="rv"><b>staleness</b> &#8212; a governance change can drift it</span></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">read it as</span>
+    <span class="vt">the two costs point opposite ways &#8212; one risks correctness, one risks staleness</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Anchor's trajectory, and what each step paid down
+     purpose: frame V2 as the latest move in a framework that keeps re-examining its own tradeoffs
+     data: early Anchor (0.x): macro-heavy, ergonomic, compute-hungry; developer comfort bought with runtime cost 1.0 / 1.1.2 line: stabilized, under OtterSec stewardship, still the maintained production line today 2.0 line (2.0.0-rc.1, anchor-next): Pod-by-default accounts, a macro-time bump const for all-literal seeds (the typed bumps struct itself is 0.29), borrow-tracked CPIs; ergonomics moved into the compiler
+     prompt: Horizontal three-stop timeline, left to right, using the three labels above. Under each stop, one short line naming the tradeoff that stop addressed. Emphasize that the 1.0/1.1.2 stop is still live (not superseded). Plain style.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:600px;height:558px;top:-340px;right:-340px;border-radius:38% 53% 46% 36% / 57% 47% 47% 43%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:509px;height:468px;left:-261px;top:325px;border-radius:41% 44% 44% 42% / 65% 50% 49% 44%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:612px;height:553px;bottom:-325px;right:-325px;border-radius:64% 59% 64% 60% / 43% 57% 57% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .heads { display:flex; gap:32px; }
+  .head { flex:1 1 0; min-width:0; text-align:center; padding:0 8px 14px; }
+  .hk { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.14em;
+        text-transform:uppercase; color:var(--text-muted); }
+  .hn { font-family:var(--font-display); font-weight:900; font-size:30px; line-height:1.06;
+        color:var(--text-primary); margin-top:7px; }
+  .hn.live { color:var(--stbr-green-800); }
+  .rail { position:relative; height:34px; }
+  .line { position:absolute; left:8px; right:8px; top:15px; height:4px;
+          background:var(--stbr-emerald); border-radius:2px; }
+  .dot { position:absolute; top:2px; width:30px; height:30px; border-radius:50%;
+         background:var(--surface-card); border:5px solid var(--stbr-emerald); }
+  .dot.live { background:var(--surface-accent); border-color:var(--stbr-dark); }
+  .cards { display:flex; gap:32px; margin-top:14px; }
+  .card { flex:1 1 0; min-width:0; height:306px; border-radius:var(--radius-lg);
+          border:2px solid var(--border-subtle); background:var(--surface-card);
+          padding:24px 26px; display:block; }
+  .card.live { border:2px solid var(--stbr-yellow-700); background:var(--surface-paper); }
+  .tag { display:inline-block; padding:5px 13px;
+         border-radius:var(--radius-pill); font-family:var(--font-body); font-weight:800;
+         font-size:11px; letter-spacing:.13em; text-transform:uppercase;
+         background:var(--stbr-ink-100); color:var(--text-secondary); }
+  .tag.now { background:var(--surface-accent); color:var(--text-on-accent); }
+  .tag.new { background:var(--surface-brand); color:var(--text-on-brand); }
+  .what { font-family:var(--font-body); font-size:16px; line-height:1.45;
+          color:var(--text-primary); margin-top:16px; min-height:70px; }
+  .what code { font-family:var(--font-mono); font-size:14.5px; font-weight:700;
+               color:var(--stbr-emerald-800); }
+  .sep { border-top:1.5px solid var(--border-subtle); margin:16px 0 13px; }
+  .trk { font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.13em;
+         text-transform:uppercase; color:var(--text-muted); }
+  .trv { font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.18;
+         color:var(--stbr-green-800); margin-top:6px; }
+  .card.live .trv { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">each step paid down a different debt</div>
+  <h2 class="viz-title">anchor&rsquo;s trajectory, in three stops</h2>
+
+  <div class="heads">
+    <div class="head"><div class="hk">stop 1</div><div class="hn">early Anchor (0.x)</div></div>
+    <div class="head"><div class="hk">stop 2 &middot; still live</div><div class="hn live">1.0 / 1.1.2 line</div></div>
+    <div class="head"><div class="hk">stop 3</div><div class="hn">2.0 line (anchor-next)</div></div>
+  </div>
+
+  <div class="rail">
+    <div class="line"></div>
+    <div class="dot" style="left:217px"></div>
+    <div class="dot live" style="left:713px"></div>
+    <div class="dot" style="left:1209px"></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <span class="tag">superseded</span>
+      <div class="what">Macro-heavy and ergonomic, but compute-hungry: the framework spent CU so you didn&rsquo;t have to spend attention.</div>
+      <div class="sep"></div>
+      <div class="trk">the tradeoff it took</div>
+      <div class="trv">developer comfort bought with runtime cost</div>
+    </div>
+
+    <div class="card live">
+      <span class="tag now">the production line today</span>
+      <div class="what">Stabilized and under OtterSec stewardship &mdash; <b>not superseded</b>. This is the maintained line real value still runs on.</div>
+      <div class="sep"></div>
+      <div class="trk">the tradeoff it took</div>
+      <div class="trv">froze the surface so it could be trusted and maintained</div>
+    </div>
+
+    <div class="card">
+      <span class="tag new">2.0.0-rc.1</span>
+      <div class="what">Pod-by-default accounts, a macro-time bump const for all-literal seeds, borrow-tracked CPIs.</div>
+      <div class="sep"></div>
+      <div class="trk">the tradeoff it took</div>
+      <div class="trv">ergonomics moved into the compiler</div>
+    </div>
+  </div>
+</div>
+</body></html>

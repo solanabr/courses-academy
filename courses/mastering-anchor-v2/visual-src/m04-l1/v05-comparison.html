@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: invoke vs invoke_signed, mapped to deposit and withdraw
+     purpose: tie the two CPI functions to who owns the source account and who signs
+     data: columns: handler | lamports flow | source account owned by | who must sign for the source | CPI call rows: - deposit  | player -> SOL vault | the player (a wallet) | the player, who already signed the outer tx | invoke: CpiContext::new(&sys, Transfer{..})  (no seeds) - withdraw | SOL vault -> player | the System Program (keyless PDA) | the program, on behalf of the PDA | invoke_signed: CpiContext::new(&sys, Transfer{..}).with_signer(seeds) under the hood: invoke == invoke_signed with an empty seeds array; the ONLY difference is whether you pass signer_seeds privilege rule: a CPI can add a PDA as signer ONLY via invoke_signed with the seeds; it can never escalate a writable/signer privilege the caller did not have
+     prompt: A two-row comparison. Row 1 deposit (invoke, no seeds), row 2 withdraw (invoke_signed, with seeds). Columns as in data. Put a full-width band under both rows stating "invoke == invoke_signed with empty seeds; the difference is the seeds". Visually stress that only withdraw's source is keyless and therefore only withdraw needs with_signer.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:469px;top:-237px;right:-237px;border-radius:64% 53% 58% 56% / 64% 37% 39% 62%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:419px;bottom:-236px;left:-236px;border-radius:36% 52% 43% 55% / 64% 62% 58% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:433px;bottom:-224px;right:-224px;border-radius:51% 43% 37% 48% / 53% 64% 63% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .iv { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; margin-top:20px; }
+  .iv th { padding:13px 18px; font-family:var(--font-display); font-weight:900; font-size:13px;
+           letter-spacing:0.11em; text-transform:uppercase; text-align:left;
+           background:var(--surface-inverse); color:var(--stbr-cream); }
+  .iv th:first-child { border-top-left-radius:var(--radius-md); }
+  .iv th:last-child  { border-top-right-radius:var(--radius-md); }
+  .iv td { padding:16px 18px; border-bottom:2px solid var(--border-subtle);
+           border-right:2px solid var(--border-subtle); background:var(--surface-card);
+           vertical-align:top; }
+  .iv td:last-child { border-right:0; }
+  .iv tr:last-child td:first-child { border-bottom-left-radius:var(--radius-md); }
+  .iv tr:last-child td:last-child  { border-bottom-right-radius:var(--radius-md); }
+  .iv td.hd { background:var(--surface-paper); }
+  .iv .h1 { font-family:var(--font-display); font-weight:900; font-size:24px;
+            color:var(--text-primary); line-height:1.1; }
+  .iv .h2s { font-family:var(--font-body); font-weight:700; font-size:14px;
+             color:var(--stbr-emerald-800); margin-top:5px; }
+  .iv .mono { font-family:var(--font-mono); font-size:15px; line-height:1.36;
+              color:var(--text-primary); }
+  .iv .bd { font-family:var(--font-body); font-size:15px; line-height:1.34;
+            color:var(--text-secondary); }
+  .iv .tag { display:inline-block; font-family:var(--font-display); font-weight:900;
+             font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+             padding:4px 11px; border-radius:var(--radius-pill); margin-bottom:7px; }
+  .tag-plain { background:rgba(0,139,76,0.12); color:var(--stbr-emerald-800); }
+  .tag-key   { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .iv td.keyless { background:var(--surface-inverse); border-right-color:var(--surface-inverse); }
+  .keyless .mono, .keyless .bd { color:var(--stbr-cream); }
+  .keyless .bd { opacity:0.84; }
+  .iv td.hero { background:var(--stbr-yellow); border-right-color:var(--stbr-yellow-700);
+                border-bottom-color:var(--stbr-yellow-700); }
+  .hero .mono, .hero .bd { color:var(--stbr-dark); }
+  .hero .mono b { color:var(--stbr-dark); border-bottom:3px solid var(--stbr-dark); }
+  .iv-band { margin-top:18px; background:var(--surface-brand); color:var(--stbr-cream);
+             border-radius:var(--radius-md); padding:16px 26px; font-family:var(--font-display);
+             font-weight:900; font-size:22px; line-height:1.24; letter-spacing:-0.01em; }
+  .iv-band b { color:var(--stbr-yellow); }
+  .iv-rule { margin-top:11px; font-family:var(--font-body); font-size:15px;
+             line-height:1.34; color:var(--text-secondary); }
+  .iv-rule b { color:var(--stbr-emerald-800); }
+</style>
+  <div class="stbr-eyebrow">the two CPI calls, side by side</div>
+  <h2 class="viz-title">invoke vs invoke_signed</h2>
+  <table class="iv">
+    <tr>
+      <th style="width:206px">handler</th>
+      <th style="width:236px">lamports flow</th>
+      <th style="width:270px">source account owned by</th>
+      <th style="width:288px">who must sign for the source</th>
+      <th>CPI call</th>
+    </tr>
+    <tr>
+      <td class="hd">
+        <div class="h1">deposit</div>
+        <div class="h2s">a wallet pays in</div>
+      </td>
+      <td><div class="mono">player &rarr; SOL vault</div></td>
+      <td>
+        <div class="mono">the player</div>
+        <div class="bd" style="margin-top:5px;">an ordinary wallet, with a private key</div>
+      </td>
+      <td>
+        <div class="mono">the player</div>
+        <div class="bd" style="margin-top:5px;">already signed the outer transaction &mdash; nothing extra to do</div>
+      </td>
+      <td>
+        <span class="tag tag-plain">invoke</span>
+        <div class="mono">CpiContext::new(&amp;sys, Transfer{..})</div>
+        <div class="bd" style="margin-top:5px;">no seeds passed</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="hd">
+        <div class="h1">withdraw</div>
+        <div class="h2s">the PDA pays out</div>
+      </td>
+      <td><div class="mono">SOL vault &rarr; player</div></td>
+      <td class="keyless">
+        <div class="mono">the System Program</div>
+        <div class="bd" style="margin-top:5px;">a keyless PDA &mdash; no private key exists, so nobody can sign for it</div>
+      </td>
+      <td>
+        <div class="mono">the program</div>
+        <div class="bd" style="margin-top:5px;">on behalf of the PDA, by presenting its seeds</div>
+      </td>
+      <td class="hero">
+        <span class="tag tag-key">invoke_signed</span>
+        <div class="mono">CpiContext::new(&amp;sys, Transfer{..})<br><b>.with_signer(seeds)</b></div>
+        <div class="bd" style="margin-top:5px;">the seeds are the whole difference</div>
+      </td>
+    </tr>
+  </table>
+  <div class="iv-band">invoke == invoke_signed with an empty seeds array &mdash; <b>the difference is the seeds</b>.</div>
+  <div class="iv-rule"><b>Privilege rule:</b> a CPI can add a PDA as signer ONLY via invoke_signed with the seeds; it can never escalate a writable or signer privilege the caller did not already have.</div>
+</div>
+</body></html>

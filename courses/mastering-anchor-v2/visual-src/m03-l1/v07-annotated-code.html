@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The seeds and bump constraint pair, walked field by field
+     purpose: explain each line of the init constraint that derives and checks the PDA
+     data: #[account( init,                                       // create the account this instruction payer = player,                             // player funds the rent space = Vault::DISCRIMINATOR.len() + Vault::INIT_SPACE, // 8 (discriminator) + the Pod body seeds = [b"vault", player.address().as_ref()], // the namespace: prefix + per-player key bump,                                        // no value = macro finds & supplies the canonical bump )] pub vault: Account<Vault>, notes: - "seeds and bump are a required pair; neither works alone" - "bump with no `= expr` means: derive the canonical bump now, store it in ctx.bumps.vault" - "space uses DISCRIMINATOR.len() + INIT_SPACE in V2, never a magic 8"
+     prompt: Show the Rust attribute block as code on the left, with callout lines on the right pointing to each constraint: init, payer, space, seeds, bump. Emphasize the seeds line (the namespace) and the bare `bump` (macro supplies the canonical value). Keep it a code-annotation layout, not a flowchart.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:556px;height:591px;top:-330px;right:-330px;border-radius:64% 44% 62% 40% / 62% 46% 52% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:478px;height:476px;bottom:-239px;left:-239px;border-radius:46% 60% 40% 60% / 35% 42% 37% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:395px;height:522px;bottom:-311px;left:674px;border-radius:36% 51% 47% 50% / 42% 56% 40% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .body7 { margin-top:2px; display:grid; grid-template-columns:720px 1fr; gap:32px;
+    align-items:start; }
+  .code { background:var(--surface-inverse); border-radius:var(--radius-xl);
+    padding:0 0 22px; overflow:hidden; }
+  .cbar { display:flex; align-items:center; gap:10px; padding:12px 26px;
+    border-bottom:1px solid var(--border-on-dark); font-family:var(--font-body);
+    font-size:12px; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--stbr-ink-300); }
+  .cbar .pip { width:9px; height:9px; border-radius:50%; background:var(--stbr-emerald); }
+  .cl { display:flex; align-items:center; justify-content:space-between; gap:14px;
+    height:31px; padding:0 22px 0 26px; }
+  .cl .t { font-family:var(--font-mono); font-size:16px; line-height:31px;
+    white-space:pre; color:var(--stbr-cream); }
+  .cl.dim .t { color:var(--stbr-ink-300); }
+  .cl.hi { background:rgba(255,210,63,0.10); }
+  .cl.hi .t { color:var(--stbr-yellow); font-weight:700; }
+  .m { flex:0 0 auto; width:24px; height:24px; border-radius:50%;
+    font-family:var(--font-body); font-size:13px; font-weight:800; text-align:center;
+    line-height:24px; background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .cl.hi .m { background:var(--stbr-yellow); color:var(--text-on-accent); }
+
+  .cos { display:block; }
+  .co { display:flex; align-items:flex-start; gap:14px; margin-bottom:12px;
+    background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-left:6px solid var(--stbr-emerald); border-radius:var(--radius-lg); padding:12px 18px; }
+  .co.hi { border-left-color:var(--stbr-yellow); border-color:rgba(255,210,63,0.55); }
+  .co .num { flex:0 0 auto; width:24px; height:24px; margin-top:1px; border-radius:50%;
+    background:var(--stbr-emerald); color:var(--stbr-cream); font-family:var(--font-body);
+    font-size:13px; font-weight:800; text-align:center; line-height:24px; }
+  .co.hi .num { background:var(--stbr-yellow); color:var(--text-on-accent); }
+  .co .cot { font-family:var(--font-mono); font-size:16px; font-weight:800;
+    color:var(--text-primary); line-height:20px; }
+  .co .cob { font-family:var(--font-body); font-size:14.5px; line-height:1.36;
+    color:var(--text-secondary); margin-top:3px; }
+  .co .cob b { color:var(--text-primary); font-weight:800; }
+  .foot7 { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:18px 28px; font-family:var(--font-body);
+    font-size:19px; font-weight:500; line-height:1.35; }
+  .foot7 code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">the init constraint, line by line</div>
+  <h2 class="viz-title">seeds and bump: a required pair</h2>
+  <div class="body7">
+    <div class="code">
+      <div class="cbar"><span class="pip"></span>#[account(...)] on the vault field</div>
+      <div class="cl dim"><span class="t">#[account(</span></div>
+      <div class="cl"><span class="t">    init,</span><span class="m">1</span></div>
+      <div class="cl"><span class="t">    payer = player,</span><span class="m">2</span></div>
+      <div class="cl"><span class="t">    space = Vault::DISCRIMINATOR.len()</span><span class="m">3</span></div>
+      <div class="cl"><span class="t">          + Vault::INIT_SPACE,</span></div>
+      <div class="cl hi"><span class="t">    seeds = [b"vault", player.address().as_ref()],</span><span class="m">4</span></div>
+      <div class="cl hi"><span class="t">    bump,</span><span class="m">5</span></div>
+      <div class="cl dim"><span class="t">)]</span></div>
+      <div class="cl dim"><span class="t">pub vault: Account&lt;Vault&gt;,</span></div>
+    </div>
+    <div class="cos">
+      <div class="co"><span class="num">1</span><div><div class="cot">init</div>
+        <div class="cob">create the account inside this instruction.</div></div></div>
+      <div class="co"><span class="num">2</span><div><div class="cot">payer = player</div>
+        <div class="cob">the player's lamports fund the rent for the new account.</div></div></div>
+      <div class="co"><span class="num">3</span><div><div class="cot">space = DISCRIMINATOR.len() + INIT_SPACE</div>
+        <div class="cob">8 bytes of discriminator plus the Pod body. In V2 you write it this way &mdash; <b>never a magic 8</b>.</div></div></div>
+      <div class="co hi"><span class="num">4</span><div><div class="cot">seeds = [b"vault", player.address().as_ref()]</div>
+        <div class="cob">the namespace: a constant prefix plus the per-player key. This is what makes the address distinct and re-derivable.</div></div></div>
+      <div class="co hi"><span class="num">5</span><div><div class="cot">bump</div>
+        <div class="cob">bare, with no <b>= expr</b>: derive the canonical bump now and hand it to the handler as <b>ctx.bumps.vault</b>.</div></div></div>
+    </div>
+  </div>
+  <div class="foot7"><code>seeds</code> names the address, <code>bump</code> proves it is the canonical one &mdash; they are a required pair, and neither one works alone.</div>
+</div>
+</body></html>

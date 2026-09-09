@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The ship-a-client path, in dependency order
+     purpose: show why the four moves must run in this order, each feeding the next
+     data: nodes: A: anchor idl build  ->  target/idl/token_ticket_swap.json B: anchor idl init / upgrade  ->  IDL published on-chain (Program Metadata Program) C: anchor codama generate -l js  ->  typed @solana/kit client  (convert is a separate subcommand you rarely need) D: pin @solana/kit ^7  ->  npm install succeeds E: kit pipe  ->  one swap lands on devnet edges: A -> B (the JSON is what gets published) A -> C (the same JSON is what gets converted) C -> D (the generated client peers on @solana-program/*, which peers on kit ^7) D -> E (only a resolvable install can run the send)
+     prompt: Left-to-right flowchart with five labeled nodes A through E as above. Draw the two arrows out of A (to B and to C) as a fork, showing the IDL feeds both publishing and generation. Then C -> D -> E as a straight chain. Annotate the A->C edge "same JSON" and the C->D edge "peer graph". No icons, clean boxes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:474px;height:467px;top:-243px;right:-243px;border-radius:60% 44% 35% 45% / 43% 54% 52% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:458px;height:506px;left:-263px;top:201px;border-radius:60% 52% 39% 57% / 42% 58% 51% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:531px;bottom:-298px;left:508px;border-radius:52% 38% 42% 38% / 37% 49% 54% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 18px; }
+  .flow { display: flex; align-items: flex-start; }
+  .colA { flex: 0 0 auto; width: 250px; height: 390px; }
+  .fork { flex: 0 0 auto; width: 176px; height: 390px; display: flex; flex-direction: column; }
+  .fcell { height: 170px; display: flex; flex-direction: column;
+           align-items: center; justify-content: center; }
+  .fcell.top { margin-bottom: 50px; }
+  .colR { flex: 1 1 0; min-width: 0; height: 390px; display: flex; flex-direction: column; }
+  .rowB { height: 170px; margin-bottom: 50px; display: flex; align-items: stretch; }
+  .rowC { height: 170px; display: flex; align-items: stretch; }
+
+  .node { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md);
+          background: var(--surface-card); padding: 14px 18px;
+          display: flex; flex-direction: column; justify-content: center; }
+  .node.src { background: var(--surface-inverse); border: none; height: 100%; }
+  .node.goal { background: var(--surface-accent); border: none; }
+  .tag { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+         letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+  .node.src .tag { color: rgba(245,232,202,0.55); }
+  .node.goal .tag { color: rgba(27,35,29,0.58); }
+  .cmd { font-family: var(--font-mono); font-weight: 700; font-size: 16.5px;
+         line-height: 1.24; color: var(--text-primary); margin-top: 6px; }
+  .node.src .cmd { color: var(--text-on-dark); }
+  .out { font-family: var(--font-body); font-size: 12.5px; line-height: 1.36;
+         color: var(--text-secondary); margin-top: 7px; }
+  .node.src .out { color: rgba(245,232,202,0.72); }
+  .node.goal .out { color: rgba(27,35,29,0.78); font-weight: 600; }
+  .aside { font-family: var(--font-body); font-size: 11px; line-height: 1.32;
+           color: var(--text-muted); margin-top: 6px; }
+
+  .wB { flex: 0 0 auto; width: 306px; }
+  .wC { flex: 0 0 auto; width: 320px; }
+  .wC .cmd { font-size: 15px; }
+  .wD { flex: 0 0 auto; width: 250px; }
+  .wE { flex: 0 0 auto; width: 240px; }
+  .conn { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .cn1 { flex: 0 0 auto; width: 110px; }
+  .cn2 { flex: 0 0 auto; width: 100px; }
+  .chip { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+          letter-spacing: .1em; text-transform: uppercase; color: var(--stbr-green-800);
+          background: rgba(0,139,76,0.13); border-radius: var(--radius-pill);
+          padding: 5px 11px; text-align: center; line-height: 1.32;
+          max-width: 168px; margin-bottom: 9px; }
+  .chip.q { background: rgba(0,139,76,0.28); }
+
+  .caption { margin-top: 20px; background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 15px 26px; display: flex; align-items: center; gap: 22px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 23px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">module 7 &rarr; module 8 &middot; dependency order</div>
+  <h2 class="viz-title">the ship-a-client path</h2>
+
+  <div class="flow">
+    <div class="colA">
+      <div class="node src">
+        <div class="tag">A &middot; source of truth</div>
+        <div class="cmd">anchor idl build</div>
+        <div class="out">&rarr; target/idl/<br>token_ticket_swap.json</div>
+      </div>
+    </div>
+
+    <div class="fork">
+      <div class="fcell top">
+        <div class="chip">the JSON is what gets published</div>
+        <svg width="176" height="14" viewBox="0 0 176 14"><line x1="0" y1="7" x2="164" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="176,7 163,2 163,12" fill="#1b231d"/></svg>
+      </div>
+      <div class="fcell">
+        <div class="chip q">same JSON</div>
+        <svg width="176" height="14" viewBox="0 0 176 14"><line x1="0" y1="7" x2="164" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="176,7 163,2 163,12" fill="#1b231d"/></svg>
+      </div>
+    </div>
+
+    <div class="colR">
+      <div class="rowB">
+        <div class="node wB">
+          <div class="tag">B &middot; publish</div>
+          <div class="cmd">anchor idl init / upgrade</div>
+          <div class="out">IDL published on-chain &mdash; Program Metadata Program</div>
+        </div>
+      </div>
+
+      <div class="rowC">
+        <div class="node wC">
+          <div class="tag">C &middot; generate</div>
+          <div class="cmd">anchor codama generate -l js</div>
+          <div class="out">typed <b>@solana/kit</b> client</div>
+          <div class="aside">convert is a separate subcommand you rarely need</div>
+        </div>
+
+        <div class="conn cn1">
+          <div class="chip q">peer graph</div>
+          <svg width="110" height="14" viewBox="0 0 110 14"><line x1="0" y1="7" x2="98" y2="7" stroke="#1b231d" stroke-width="2.4"/><polygon points="110,7 97,2 97,12" fill="#1b231d"/></svg>
+        </div>
+
+        <div class="node wD">
+          <div class="tag">D &middot; resolve</div>
+          <div class="cmd">pin @solana/kit ^7</div>
+          <div class="out">npm install succeeds &mdash; @solana-program/* peers on kit ^7</div>
+        </div>
+
+        <div class="conn cn2">
+          <svg width="100" height="14" viewBox="0 0 100 14"><line x1="0" y1="7" x2="88" y2="7" stroke="#d9a608" stroke-width="3"/><polygon points="100,7 87,2 87,12" fill="#d9a608"/></svg>
+        </div>
+
+        <div class="node goal wE">
+          <div class="tag">E &middot; the payoff</div>
+          <div class="cmd">kit pipe</div>
+          <div class="out">one swap lands on devnet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caption">
+    <span class="vk">each move feeds the next</span>
+    <span class="vt">Skip a step and the one after it has nothing to consume.</span>
+  </div>
+</div>
+</body></html>

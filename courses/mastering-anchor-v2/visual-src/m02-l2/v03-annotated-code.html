@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The bare-struct alignment trap and the wrapper fix
+     purpose: show why repr(packed) is the hazard and the Pod wrappers are the fix
+     data: BROKEN: #[repr(C)] with native u64 fields, used as a TAIL item -> the tail starts after the header + len field, at no guaranteed alignment -> &score.points would be a misaligned reference (UB); the cast bails WORSE "fix": #[repr(packed)] -> removes padding BUT taking &score.points is now guaranteed misaligned -> this CREATES the hazard, it does not remove it FIX: PodU64 fields + #[derive(bytemuck::Pod, bytemuck::Zeroable)] -> each field is [u8; N] with .get() / From, alignment 1 -> reads correctly from any offset; the byte cast is sound -> the derive is the struct blessing; #[pod_wrapper] is for ENUMS and V2 rejects it on a struct
+     prompt: Three vertically stacked code-annotation panels labeled BROKEN, WORSE FIX, and FIX. Each shows a tiny Score struct variant with a callout arrow to the problem or the resolution. Red annotations on the first two (misaligned reference; packed makes it worse), green on the third (alignment 1, sound cast). Emphasize that repr(packed) is a trap, not a remedy.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:507px;height:417px;top:-234px;right:-234px;border-radius:63% 42% 45% 37% / 39% 53% 48% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:503px;bottom:-268px;left:-268px;border-radius:57% 58% 65% 65% / 50% 43% 63% 44%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:547px;height:552px;bottom:-304px;right:-304px;border-radius:63% 43% 51% 58% / 59% 39% 41% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stack { display:flex; flex-direction:column; gap:16px; }
+  .panel { display:flex; align-items:stretch; gap:0; border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-card); }
+  .rail { width:158px; padding:16px 18px; display:flex; flex-direction:column;
+    justify-content:center; background:var(--surface-paper);
+    border-right:2px solid var(--border-subtle); }
+  .rail .n { font-family:var(--font-display); font-weight:900; font-size:15px;
+    letter-spacing:.12em; color:var(--text-muted); }
+  .rail .l { font-family:var(--font-display); font-weight:900; font-size:22px;
+    letter-spacing:.02em; line-height:1.1; margin-top:4px; }
+  .panel.bad .rail { background:rgba(192,57,43,0.09); border-right-color:rgba(192,57,43,0.35); }
+  .panel.bad .rail .l { color:#a5281c; }
+  .panel.good .rail { background:var(--surface-accent); border-right-color:var(--stbr-yellow-700); }
+  .panel.good .rail .l, .panel.good .rail .n { color:var(--stbr-dark); }
+  .code { width:614px; background:var(--surface-inverse); padding:16px 22px;
+    font-family:var(--font-mono); font-size:15.5px; line-height:1.5; color:var(--stbr-cream);
+    display:flex; flex-direction:column; justify-content:center; }
+  .code .k { color:var(--stbr-yellow); }
+  .code .c { color:var(--stbr-ink-300); }
+  .code .g { color:#6fd39b; }
+  .ann { flex:1; position:relative; padding:16px 24px 16px 30px;
+    display:flex; flex-direction:column; justify-content:center;
+    font-family:var(--font-body); font-size:16.5px; line-height:1.38; }
+  .ann::before { content:""; position:absolute; left:-1px; top:44%;
+    border-top:11px solid transparent; border-bottom:11px solid transparent;
+    border-right:14px solid var(--stbr-dark); }
+  .panel.bad .ann { background:rgba(192,57,43,0.06); color:#8f2418; }
+  .panel.bad .ann::before { border-right-color:#c0392b; }
+  .panel.good .ann { background:rgba(0,139,76,0.07); color:var(--stbr-emerald-800); }
+  .panel.good .ann::before { border-right-color:var(--stbr-emerald); }
+  .ann b { font-weight:800; }
+  .ann .hdr { font-family:var(--font-display); font-weight:900; font-size:17px;
+    letter-spacing:.02em; margin-bottom:5px; }
+  .ann code { font-family:var(--font-mono); font-size:15.5px; font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">tail items land at any offset</div>
+  <h2 class="viz-title">repr(packed) is the trap, not the remedy</h2>
+  <div class="stack">
+    <div class="panel bad">
+      <div class="rail"><div class="n">01</div><div class="l">BROKEN</div></div>
+      <div class="code">
+        <div><span class="k">#[repr(C)]</span></div>
+        <div><span class="k">struct</span> Score { player: Pubkey, points: <span class="k">u64</span> }</div>
+        <div><span class="c">// used as a Slab TAIL item</span></div>
+      </div>
+      <div class="ann">
+        <div class="hdr">the tail starts at no guaranteed alignment</div>
+        <div>It begins after the header <b>+ the len field</b>, so <code>&amp;score.points</code> would be a <b>misaligned reference (UB)</b> &mdash; the cast bails.</div>
+      </div>
+    </div>
+    <div class="panel bad">
+      <div class="rail"><div class="n">02</div><div class="l">WORSE &ldquo;FIX&rdquo;</div></div>
+      <div class="code">
+        <div><span class="k">#[repr(packed)]</span> <span class="c">// &ldquo;just drop the padding&rdquo;</span></div>
+        <div><span class="k">struct</span> Score { player: Pubkey, points: <span class="k">u64</span> }</div>
+        <div><span class="c">// &amp;score.points is now GUARANTEED misaligned</span></div>
+      </div>
+      <div class="ann">
+        <div class="hdr">this creates the hazard</div>
+        <div>Packing removes padding, but taking <code>&amp;score.points</code> is now <b>guaranteed</b> misaligned. It does not remove the problem &mdash; it locks it in.</div>
+      </div>
+    </div>
+    <div class="panel good">
+      <div class="rail"><div class="n">03</div><div class="l">FIX</div></div>
+      <div class="code">
+        <div><span class="k">#[derive(bytemuck::Pod, bytemuck::Zeroable)]</span></div>
+        <div><span class="k">#[repr(C)]</span></div>
+        <div><span class="k">struct</span> Score { player: Pubkey, points: <span class="g">PodU64</span> }</div>
+        <div><span class="c">// every field is [u8; N] &mdash; .get() / From</span></div>
+      </div>
+      <div class="ann">
+        <div class="hdr">alignment 1, from any offset</div>
+        <div>Byte-array fields read correctly wherever the tail lands, so the <b>byte cast is sound</b>.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

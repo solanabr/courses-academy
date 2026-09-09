@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Lab checkpoints, match versus mismatch
+     purpose: give the reader a symptom table so they can tell a real proof from a broken setup
+     data: columns: Step | Success looks like | If it is wrong rows: - "build" | "target/deploy/token_ticket_swap.so written" | "docker not running -> start it (not a source bug)" - "get-executable-hash" | "64-char sha256 printed" | "no .so -> rerun build" - "deploy -u devnet" | "Program Id printed" | "insufficient devnet SOL -> airdrop" - "get-program-hash vs executable-hash" | "the two hashes are equal" | "unequal -> you deployed a stale binary; redeploy" - "verify-from-repo -u devnet" | "verified: match" | "mismatch -> on-chain bytes != repo (expected after an edit)"
+     prompt: A five-row table with three columns (step, success, failure-and-fix). Keep the success column green and the failure column with its fix in a muted red. This is a diagnostic table, not decorative. Header: "Read the failure, not the panic."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:554px;height:572px;top:-331px;right:-331px;border-radius:57% 36% 46% 48% / 53% 42% 65% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:513px;height:476px;left:-337px;top:314px;border-radius:38% 39% 46% 57% / 52% 49% 60% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:495px;height:468px;bottom:-280px;right:-280px;border-radius:50% 55% 57% 49% / 40% 47% 38% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; margin: 4px 0 22px; }
+  .wrap { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);
+          overflow: hidden; background: var(--surface-card); }
+  table.diag { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .diag th { background: var(--surface-inverse); padding: 13px 20px 15px; text-align: left;
+             vertical-align: middle; }
+  .hk { display: block; font-family: var(--font-body); font-weight: 800; font-size: 10px;
+        letter-spacing: .14em; text-transform: uppercase; color: rgba(245,232,202,0.52); }
+  .ht { display: block; font-family: var(--font-display); font-weight: 900; font-size: 18px;
+        line-height: 1.1; color: var(--text-on-dark); margin-top: 4px; }
+  .diag td { padding: 15px 20px 16px; vertical-align: top;
+             border-top: 1.5px solid var(--border-subtle); }
+  .cmd { font-family: var(--font-mono); font-weight: 700; font-size: 15px; line-height: 1.25;
+         color: var(--text-primary); }
+  .cmdn { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: .13em;
+          text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+  td.ok { background: rgba(0,139,76,0.075); border-left: 3px solid var(--stbr-emerald); }
+  td.bad { background: var(--surface-paper); border-left: 3px solid var(--status-danger); }
+  tr.key td.ok { background: rgba(255,210,63,0.30); border-left: 3px solid var(--stbr-yellow-700); }
+  tr.key td.bad { background: rgba(255,210,63,0.16); border-left: 3px solid var(--stbr-yellow-700); }
+  .line { display: flex; align-items: flex-start; gap: 10px; }
+  .gl { flex: 0 0 auto; margin-top: 2px; }
+  .txt { font-family: var(--font-body); font-size: 14px; line-height: 1.35; color: var(--text-primary); }
+  .txt code { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+              color: var(--stbr-emerald-800); }
+  .fix { display: block; font-family: var(--font-body); font-weight: 700; font-size: 13px;
+         color: var(--text-secondary); margin-top: 4px; }
+  .band { margin-top: 20px; background: var(--surface-brand); border-radius: var(--radius-md);
+          padding: 15px 26px 16px; display: flex; align-items: center; gap: 22px; }
+  .bk { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.75); white-space: nowrap; }
+  .bt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">lab checkpoints &middot; match vs mismatch</div>
+  <h2 class="viz-title">read the failure, not the panic</h2>
+
+  <div class="wrap">
+    <table class="diag">
+      <tr>
+        <th style="width:26%"><span class="hk">checkpoint</span><span class="ht">step</span></th>
+        <th style="width:33%"><span class="hk">keep going</span><span class="ht">success looks like</span></th>
+        <th style="width:41%"><span class="hk">diagnose</span><span class="ht">if it is wrong</span></th>
+      </tr>
+
+      <tr>
+        <td><div class="cmdn">step 1</div><div class="cmd">build</div></td>
+        <td class="ok"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><polyline points="1.5,9 6,13.5 15.5,3" fill="none" stroke="#005c33" stroke-width="2.6"/></svg></span><span class="txt"><code>target/deploy/token_ticket_swap.so</code> written</span></div></td>
+        <td class="bad"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><line x1="3" y1="3" x2="14" y2="14" stroke="#c0392b" stroke-width="2.6"/><line x1="14" y1="3" x2="3" y2="14" stroke="#c0392b" stroke-width="2.6"/></svg></span><span class="txt">Docker is not running<span class="fix">&rarr; start it. This is not a source bug.</span></span></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="cmdn">step 2</div><div class="cmd">get-executable-hash</div></td>
+        <td class="ok"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><polyline points="1.5,9 6,13.5 15.5,3" fill="none" stroke="#005c33" stroke-width="2.6"/></svg></span><span class="txt">a 64-char sha256 is printed</span></div></td>
+        <td class="bad"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><line x1="3" y1="3" x2="14" y2="14" stroke="#c0392b" stroke-width="2.6"/><line x1="14" y1="3" x2="3" y2="14" stroke="#c0392b" stroke-width="2.6"/></svg></span><span class="txt">no <code>.so</code> to hash<span class="fix">&rarr; rerun the build step.</span></span></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="cmdn">step 3</div><div class="cmd">deploy -u devnet</div></td>
+        <td class="ok"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><polyline points="1.5,9 6,13.5 15.5,3" fill="none" stroke="#005c33" stroke-width="2.6"/></svg></span><span class="txt">a <code>Program Id</code> is printed</span></div></td>
+        <td class="bad"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><line x1="3" y1="3" x2="14" y2="14" stroke="#c0392b" stroke-width="2.6"/><line x1="14" y1="3" x2="3" y2="14" stroke="#c0392b" stroke-width="2.6"/></svg></span><span class="txt">insufficient devnet SOL<span class="fix">&rarr; airdrop, then deploy again.</span></span></div></td>
+      </tr>
+
+      <tr>
+        <td><div class="cmdn">step 4</div><div class="cmd">get-program-hash<br>vs executable-hash</div></td>
+        <td class="ok"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><polyline points="1.5,9 6,13.5 15.5,3" fill="none" stroke="#005c33" stroke-width="2.6"/></svg></span><span class="txt">the two hashes are equal</span></div></td>
+        <td class="bad"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><line x1="3" y1="3" x2="14" y2="14" stroke="#c0392b" stroke-width="2.6"/><line x1="14" y1="3" x2="3" y2="14" stroke="#c0392b" stroke-width="2.6"/></svg></span><span class="txt">unequal &mdash; you deployed a stale binary<span class="fix">&rarr; redeploy the binary you just hashed.</span></span></div></td>
+      </tr>
+
+      <tr class="key">
+        <td><div class="cmdn">step 5 &mdash; the proof</div><div class="cmd">verify-from-repo<br>-u devnet</div></td>
+        <td class="ok"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><polyline points="1.5,9 6,13.5 15.5,3" fill="none" stroke="#1b231d" stroke-width="2.6"/></svg></span><span class="txt"><b>verified: match</b></span></div></td>
+        <td class="bad"><div class="line"><span class="gl"><svg width="17" height="17" viewBox="0 0 17 17"><line x1="3" y1="3" x2="14" y2="14" stroke="#1b231d" stroke-width="2.6"/><line x1="14" y1="3" x2="3" y2="14" stroke="#1b231d" stroke-width="2.6"/></svg></span><span class="txt"><b>mismatch</b> &mdash; the on-chain bytes are not this repo<span class="fix">&rarr; expected after an edit; it is the tool working, not breaking.</span></span></div></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="band">
+    <span class="bk">the yellow row is the point</span>
+    <span class="bt">Four of these five failures are setup, not proof. Only the last row is telling you something about your bytes.</span>
+  </div>
+</div>
+</body></html>

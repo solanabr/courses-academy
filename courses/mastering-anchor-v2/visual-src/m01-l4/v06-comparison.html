@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Anchor error-code ranges
+     purpose: let the reader place any code and predict a custom variant's number
+     data: >= 100  : instruction error codes >= 1000 : IDL error codes >= 2000 : constraint error codes (ConstraintHasOne = 2001; ConstraintDuplicateMutableAccount here) >= 3000 : account error codes >= 4100 : misc error codes >= 5000 : deprecated error codes >= 6000 : custom #[error_code] errors start here (variant index 0 = 6000) override: #[error_code(offset = N)] moves the custom base
+     prompt: Vertical number-line style band chart, each range as a labeled segment from 100 up to 6000+, stacked. Highlight the 2000 constraint band (with ConstraintHasOne = 2001 called out) and the 6000 custom band (with "variant 0 = 6000" called out). Make clear the framework bands sit below 6000 and custom sits at and above.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:474px;height:498px;top:-242px;right:-242px;border-radius:42% 44% 55% 63% / 39% 39% 62% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:540px;height:479px;left:-327px;top:312px;border-radius:48% 63% 44% 49% / 64% 40% 57% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:541px;height:569px;bottom:-315px;right:-315px;border-radius:55% 59% 48% 57% / 59% 50% 37% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p6-row  { display:flex; align-items:stretch; margin-bottom:8px; height:62px; }
+  .p6-num  { flex:0 0 152px; display:flex; align-items:center; justify-content:flex-end;
+             padding-right:18px; font-family:var(--font-mono); font-weight:700; font-size:23px;
+             color:var(--text-secondary); }
+  .p6-band { flex:1; display:flex; align-items:center; justify-content:space-between;
+             padding:0 22px; border-radius:var(--radius-md); background:var(--surface-card);
+             border:1.5px solid var(--border-subtle); border-left:8px solid rgba(0,139,76,0.30); }
+  .p6-lab  { font-family:var(--font-body); font-weight:600; font-size:21px; color:var(--text-secondary); }
+  .p6-call { font-family:var(--font-mono); font-weight:700; font-size:17px; padding:6px 14px;
+             border-radius:var(--radius-pill); }
+  .p6-em   { background:var(--surface-brand); border-color:var(--surface-brand);
+             border-left:8px solid var(--stbr-emerald-800); }
+  .p6-em .p6-lab { color:var(--stbr-cream); font-weight:700; }
+  .p6-em .p6-call{ background:rgba(245,232,202,0.16); color:var(--stbr-cream); }
+  .p6-row.p6-emr .p6-num { color:var(--stbr-emerald-800); }
+  .p6-hi   { background:var(--stbr-yellow); border-color:var(--stbr-yellow);
+             border-left:8px solid var(--stbr-yellow-700); }
+  .p6-hi .p6-lab { color:var(--stbr-dark); font-weight:800; }
+  .p6-hi .p6-call{ background:var(--stbr-dark); color:var(--stbr-cream); }
+  .p6-row.p6-hir .p6-num { color:var(--stbr-dark); font-weight:800; }
+  .p6-split{ display:flex; align-items:center; height:34px; }
+  .p6-sp1  { flex:0 0 152px; }
+  .p6-sp2  { flex:1; display:flex; align-items:center; gap:14px; }
+  .p6-spl  { flex:1; border-top:2px dashed var(--stbr-ink-300); }
+  .p6-spt  { font-family:var(--font-body); font-weight:700; font-size:15px; letter-spacing:0.08em;
+             text-transform:uppercase; color:var(--text-muted); }
+  .p6-foot { margin-top:14px; display:flex; align-items:center; gap:14px;
+             border:1.5px dashed var(--stbr-ink-300); border-radius:var(--radius-md); padding:12px 20px; }
+  .p6-foot .k { font-family:var(--font-mono); font-weight:700; font-size:19px;
+                color:var(--stbr-emerald-800); }
+  .p6-foot .v { font-family:var(--font-body); font-size:18px; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">read any anchor error number</div>
+  <h2 class="viz-title">Where every error code lives</h2>
+
+  <div class="p6-row p6-hir">
+    <div class="p6-num">&ge; 6000</div>
+    <div class="p6-band p6-hi">
+      <span class="p6-lab">custom #[error_code] errors start here</span>
+      <span class="p6-call">variant index 0 = 6000</span>
+    </div>
+  </div>
+
+  <div class="p6-split">
+    <div class="p6-sp1"></div>
+    <div class="p6-sp2">
+      <span class="p6-spt">yours, at and above</span>
+      <span class="p6-spl"></span>
+      <span class="p6-spt">framework, below</span>
+    </div>
+  </div>
+
+  <div class="p6-row">
+    <div class="p6-num">&ge; 5000</div>
+    <div class="p6-band"><span class="p6-lab">deprecated error codes</span></div>
+  </div>
+  <div class="p6-row">
+    <div class="p6-num">&ge; 4100</div>
+    <div class="p6-band"><span class="p6-lab">misc error codes</span></div>
+  </div>
+  <div class="p6-row">
+    <div class="p6-num">&ge; 3000</div>
+    <div class="p6-band"><span class="p6-lab">account error codes</span></div>
+  </div>
+  <div class="p6-row p6-emr">
+    <div class="p6-num">&ge; 2000</div>
+    <div class="p6-band p6-em">
+      <span class="p6-lab">constraint error codes</span>
+      <span class="p6-call">ConstraintHasOne = 2001 &middot; ConstraintDuplicateMutableAccount</span>
+    </div>
+  </div>
+  <div class="p6-row">
+    <div class="p6-num">&ge; 1000</div>
+    <div class="p6-band"><span class="p6-lab">IDL error codes</span></div>
+  </div>
+  <div class="p6-row">
+    <div class="p6-num">&ge; 100</div>
+    <div class="p6-band"><span class="p6-lab">instruction error codes</span></div>
+  </div>
+
+  <div class="p6-foot">
+    <span class="k">#[error_code(offset = N)]</span>
+    <span class="v">moves the custom base off 6000.</span>
+  </div>
+</div>
+</body></html>

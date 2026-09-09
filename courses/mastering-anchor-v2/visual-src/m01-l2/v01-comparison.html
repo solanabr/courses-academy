@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The two Anchor lines you are tracking at once
+     purpose: show that v1 and v2 are parallel channels, not a version staircase, and that each has a different install path
+     data: Column A, Stable line: version: 1.1.2 channel: avm / crates.io (anchor-lang) install: avm install 1.1.2 (prebuilt binary from its GitHub Release) audience: most of the ecosystem, today on your machine: yes, already Column B, Frontier line (this course): version: 2.0.0-rc.1 channel: git branch anchor-next (otter-sec fork) + crates.io publish 2026-08-12 (undocumented for CLI) install: cargo install --git ... --branch anchor-next anchor-cli --locked --force audience: weeks-early V2 builders on your machine: not yet, you build it this lesson label tension: crates.io tags it "rc"; the project's own benchmarks page calls it "alpha"
+     prompt: Two-column side-by-side comparison card. Left column "Stable 1.1.2", right column "Frontier 2.0.0-rc.1". Each column lists: channel, install command (shortened), audience, and "on your machine?" as labeled rows aligned across both columns so the reader reads each attribute as a pair. Put a thin vertical divider between the columns, not a merge. Add a small footnote strip under the right column for the rc-vs-alpha label tension. No icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:516px;top:-270px;right:-270px;border-radius:47% 36% 48% 62% / 54% 57% 47% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:399px;height:393px;left:-224px;top:312px;border-radius:38% 54% 38% 44% / 50% 46% 46% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:457px;height:434px;bottom:-253px;left:707px;border-radius:65% 53% 43% 35% / 47% 43% 42% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; }
+  .c1-grid { display:grid; grid-template-columns:236px 610px 610px;
+             border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+             background:var(--surface-card); }
+  .c1-hl { background:var(--surface-inverse); border-radius:var(--radius-xl) 0 0 0; }
+  .c1-ha { background:var(--surface-inverse); padding:16px 24px; }
+  .c1-hb { background:var(--surface-accent); padding:16px 24px;
+           border-radius:0 var(--radius-xl) 0 0; }
+  .c1-ha .v { font-family:var(--font-display); font-weight:900; font-size:30px;
+              color:var(--stbr-cream); line-height:1.1; }
+  .c1-hb .v { font-family:var(--font-display); font-weight:900; font-size:30px;
+              color:var(--stbr-dark); line-height:1.1; }
+  .c1-ha .k, .c1-hb .k { font-family:var(--font-body); font-size:15px; font-weight:700;
+                         letter-spacing:0.13em; text-transform:uppercase; margin-bottom:4px; }
+  .c1-ha .k { color:rgba(245,232,202,0.72); }
+  .c1-hb .k { color:rgba(27,35,29,0.66); }
+  .c1-lab { background:var(--surface-paper); padding:18px 22px; border-top:1.5px solid var(--border-subtle);
+            font-family:var(--font-body); font-size:17px; font-weight:700; color:var(--text-secondary);
+            letter-spacing:0.05em; text-transform:uppercase; }
+  .c1-a { padding:18px 24px; border-top:1.5px solid var(--border-subtle);
+          border-left:1.5px solid var(--border-subtle); background:var(--surface-card); }
+  .c1-b { padding:18px 24px; border-top:1.5px solid var(--border-subtle);
+          border-left:2px solid var(--stbr-yellow-600); background:#fffbee; }
+  .c1-main { font-family:var(--font-body); font-size:21px; font-weight:700;
+             color:var(--text-primary); line-height:1.25; }
+  .c1-sub { font-family:var(--font-body); font-size:16px; color:var(--text-secondary);
+            line-height:1.35; margin-top:5px; }
+  .c1-cmd { font-family:var(--font-mono); font-size:18px; font-weight:700; line-height:1.35;
+            color:var(--stbr-emerald-800); background:rgba(0,139,76,0.09);
+            border:1.5px solid rgba(0,139,76,0.28); border-radius:var(--radius-sm);
+            padding:8px 12px; }
+  .c1-b .c1-cmd { color:var(--stbr-dark); background:rgba(255,210,63,0.34);
+                  border-color:var(--stbr-yellow-600); }
+  .c1-yes { font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--stbr-emerald); }
+  .c1-not { font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--stbr-dark); }
+  .c1-foot { display:flex; margin-top:20px; }
+  .c1-spacer { width:846px; }
+  .c1-strip { width:610px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+              padding:16px 24px; font-family:var(--font-body); font-size:17px; line-height:1.4;
+              color:var(--stbr-cream); }
+  .c1-strip b { color:var(--stbr-yellow); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">two channels, not a staircase</div>
+  <h2 class="viz-title">The two Anchor lines you are tracking at once</h2>
+
+  <div class="c1-grid">
+    <div class="c1-hl"></div>
+    <div class="c1-ha"><div class="k">stable line</div><div class="v">1.1.2</div></div>
+    <div class="c1-hb"><div class="k">frontier line — this course</div><div class="v">2.0.0-rc.1</div></div>
+
+    <div class="c1-lab">channel</div>
+    <div class="c1-a"><div class="c1-main">avm / crates.io</div><div class="c1-sub">the <code>anchor-lang</code> registry release</div></div>
+    <div class="c1-b"><div class="c1-main">git branch <code>anchor-next</code></div><div class="c1-sub">otter-sec fork · a crates.io publish exists (2026-08-12) but is undocumented for the CLI</div></div>
+
+    <div class="c1-lab">install</div>
+    <div class="c1-a"><div class="c1-cmd">avm install 1.1.2</div><div class="c1-sub">prebuilt binary from its Release</div></div>
+    <div class="c1-b"><div class="c1-cmd">cargo install --git … --branch anchor-next<br>anchor-cli --locked --force</div></div>
+
+    <div class="c1-lab">audience</div>
+    <div class="c1-a"><div class="c1-main">most of the ecosystem, today</div></div>
+    <div class="c1-b"><div class="c1-main">weeks-early V2 builders</div></div>
+
+    <div class="c1-lab">on your machine?</div>
+    <div class="c1-a"><div class="c1-yes">Yes — already there</div></div>
+    <div class="c1-b"><div class="c1-not">Not yet — you build it this lesson</div></div>
+  </div>
+
+  <div class="c1-foot">
+    <div class="c1-spacer"></div>
+    <div class="c1-strip">Label tension: crates.io tags it <b>“rc”</b>; the project’s own benchmarks page calls it <b>“alpha”</b>.</div>
+  </div>
+</div>
+</body></html>

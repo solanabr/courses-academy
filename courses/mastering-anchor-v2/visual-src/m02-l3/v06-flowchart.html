@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The BorshAccount CPI protocol, call by call
+     purpose: turn the two-call discipline into a sequence the reader can check their own code against
+     data: step 1: mutate the deserialized value in memory step 2: release_borrow() -> serializes your mutations back into the buffer, drops the guard step 3: invoke the CPI -> it sees your changes and may take the account step 4: reacquire_borrow_mut() -> re-runs owner/size/discriminator checks, re-deserializes result: the value you read is the union of your pre-CPI mutations and the CPI's rejected: a CPI that reassigned the account or swapped its discriminator -> IllegalOwner or InvalidAccountData not this: reacquire_guard_only() refreshes the guard without re-reading data; realloc path only
+     prompt: A four-step horizontal flow with numbered nodes, the CPI node visually distinct (dashed border, "foreign code" label). Below step 4, two outcome chips: a green "union of both sets of mutations" and a red "IllegalOwner / InvalidAccountData". Off to the side, a greyed-out node for reacquire_guard_only() marked "realloc only, not after a CPI".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:490px;height:430px;top:-224px;right:-224px;border-radius:50% 62% 35% 61% / 58% 45% 47% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:514px;height:408px;left:-312px;top:243px;border-radius:65% 52% 56% 64% / 41% 53% 44% 46%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:554px;height:476px;bottom:-283px;right:-283px;border-radius:45% 50% 45% 53% / 52% 54% 60% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .f6-title { font-size:46px; }
+  .f6-flow { display:flex; align-items:stretch; }
+  .f6-node { flex:1 1 0; min-width:0; height:188px; background:var(--surface-card);
+             border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+             overflow:hidden; }
+  .f6-node.foreign { border:2px dashed var(--stbr-yellow-700); }
+  .f6-hd { height:44px; padding:0 18px; display:flex; align-items:center;
+           background:var(--surface-brand); }
+  .f6-node.foreign .f6-hd { background:var(--surface-accent); }
+  .f6-hd span { font-family:var(--font-display); font-weight:900; font-size:13.5px;
+                letter-spacing:.13em; text-transform:uppercase; color:var(--stbr-cream); }
+  .f6-node.foreign .f6-hd span { color:var(--stbr-dark); }
+  .f6-bd { padding:17px 18px 0; }
+  .f6-call { font-family:var(--font-mono); font-weight:700; font-size:18px;
+             color:var(--text-primary); line-height:1.2; }
+  .f6-call.plain { font-family:var(--font-display); font-weight:900; font-size:20px; }
+  .f6-sub { margin-top:11px; font-family:var(--font-body); font-size:15px; line-height:1.38;
+            color:var(--text-secondary); }
+  .f6-arrow { flex:0 0 52px; height:188px; display:flex; align-items:center;
+              justify-content:center; }
+  .f6-out { margin-top:30px; display:flex; gap:22px; align-items:stretch; }
+  .f6-card { flex:1 1 0; min-width:0; height:176px; border-radius:var(--radius-lg);
+             padding:22px 26px; }
+  .f6-card.good { background:#eef6f0; border:2px solid var(--surface-brand); }
+  .f6-card.bad  { background:var(--surface-inverse); }
+  .f6-card .k { font-family:var(--font-display); font-weight:900; font-size:13.5px;
+                letter-spacing:.13em; text-transform:uppercase; display:block; }
+  .f6-card.good .k { color:var(--surface-brand); }
+  .f6-card.bad  .k { color:rgba(245,232,202,0.62); }
+  .f6-card .t { margin-top:13px; font-family:var(--font-body); font-size:19px; line-height:1.4; }
+  .f6-card.good .t { color:var(--text-primary); }
+  .f6-card.bad  .t { color:var(--stbr-cream); }
+  .f6-card .t b { font-weight:800; }
+  .f6-card .err { display:block; margin-top:12px; font-family:var(--font-mono); font-size:17px;
+                  color:var(--stbr-cream); }
+  .f6-side { flex:0 0 344px; height:176px; background:var(--surface-paper);
+             border:2px dashed var(--border-subtle); border-radius:var(--radius-lg);
+             padding:22px 24px; }
+  .f6-side .k { font-family:var(--font-display); font-weight:900; font-size:13.5px;
+                letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted); }
+  .f6-side .c { margin-top:12px; font-family:var(--font-mono); font-size:16.5px;
+                color:var(--text-muted); }
+  .f6-side .t { margin-top:10px; font-family:var(--font-body); font-size:15px; line-height:1.38;
+                color:var(--text-muted); }
+</style>
+  <div class="stbr-eyebrow">two calls bracket every cpi</div>
+  <h2 class="viz-title f6-title">The BorshAccount CPI protocol, call by call</h2>
+  <div class="f6-flow">
+    <div class="f6-node">
+      <div class="f6-hd"><span>step 1</span></div>
+      <div class="f6-bd">
+        <div class="f6-call plain">mutate in memory</div>
+        <div class="f6-sub">Change the deserialized value. Your edits live only in the handler&rsquo;s memory.</div>
+      </div>
+    </div>
+    <div class="f6-arrow"><svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="29" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="29,2 40,8 29,14" fill="#1b231d"/></svg></div>
+    <div class="f6-node">
+      <div class="f6-hd"><span>step 2</span></div>
+      <div class="f6-bd">
+        <div class="f6-call">release_borrow()</div>
+        <div class="f6-sub">Serializes your mutations back into the buffer, then drops the guard.</div>
+      </div>
+    </div>
+    <div class="f6-arrow"><svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="29" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="29,2 40,8 29,14" fill="#1b231d"/></svg></div>
+    <div class="f6-node foreign">
+      <div class="f6-hd"><span>step 3 &middot; foreign code</span></div>
+      <div class="f6-bd">
+        <div class="f6-call plain">invoke the CPI</div>
+        <div class="f6-sub">It sees your changes &mdash; and it may take the account.</div>
+      </div>
+    </div>
+    <div class="f6-arrow"><svg width="40" height="16" viewBox="0 0 40 16"><line x1="0" y1="8" x2="29" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="29,2 40,8 29,14" fill="#1b231d"/></svg></div>
+    <div class="f6-node">
+      <div class="f6-hd"><span>step 4</span></div>
+      <div class="f6-bd">
+        <div class="f6-call">reacquire_borrow_mut()</div>
+        <div class="f6-sub">Re-runs the owner / size / discriminator checks, then re-deserializes.</div>
+      </div>
+    </div>
+  </div>
+  <div class="f6-out">
+    <div class="f6-card good">
+      <span class="k">step 4 hands back</span>
+      <div class="t">The value you read is the <b>union</b> of your pre-CPI mutations and the CPI&rsquo;s.</div>
+    </div>
+    <div class="f6-card bad">
+      <span class="k">step 4 rejects</span>
+      <div class="t">A CPI that reassigned the account or swapped its discriminator.</div>
+      <span class="err">IllegalOwner &nbsp;/&nbsp; InvalidAccountData</span>
+    </div>
+    <div class="f6-side">
+      <span class="k">not this</span>
+      <div class="c">reacquire_guard_only()</div>
+      <div class="t">Refreshes the guard without re-reading data &mdash; realloc path only, never after a CPI.</div>
+    </div>
+  </div>
+</div>
+</body></html>

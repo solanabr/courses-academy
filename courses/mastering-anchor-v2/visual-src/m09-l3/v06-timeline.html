@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Verification versus distribution: what your gate proves, and what is mainnet-only
+     purpose: separate the reproducibility proof (in cluster, real) from the distribution and authority steps (mainnet-only, demonstrated)
+     data: in-cluster, real proof (you run this): - solana-verify build (deterministic bytecode in Docker) - verify-from-repo -u devnet: local build hash == on-chain devnet hash mainnet-only, demonstrated not executed on this course's cluster: - solana-verify verify-from-repo --remote (submits the job to OtterSec's registry) - Squads v4 multisig execution (upgrade authority under an M-of-N approval flow) note: the remote job is DISTRIBUTION (publishing to a registry); the multisig is AUTHORITY. Neither is the verification proof itself.
+     prompt: A two-track horizontal timeline. Top track "in-cluster, real proof" with the two local solana-verify steps. Bottom track "mainnet-only, demonstrated" with the remote OtterSec submission and the Squads v4 execution, visually greyed/dashed to signal they are shown but not run here. A divider label clarifies the top track is the proof and the bottom track is distribution + authority.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:474px;top:-285px;right:-285px;border-radius:47% 42% 55% 52% / 51% 57% 57% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:480px;height:364px;left:-304px;top:358px;border-radius:47% 63% 41% 62% / 64% 62% 65% 56%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:528px;height:496px;bottom:-295px;right:-295px;border-radius:42% 41% 58% 35% / 42% 63% 53% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz, .viz * { box-sizing: border-box; }
+  .viz-title { font-size: 44px; margin: 4px 0 18px; }
+
+  .lane { display: flex; align-items: stretch; height: 205px; }
+  .lbl { flex: 0 0 262px; padding-right: 26px; margin-right: 26px;
+         border-right: 2px solid var(--border-subtle);
+         display: flex; flex-direction: column; justify-content: center; }
+  .lk { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+        letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+  .ln { font-family: var(--font-display); font-weight: 900; font-size: 26px;
+        line-height: 1.08; color: var(--text-primary); margin: 6px 0 10px; }
+  .chip { align-self: flex-start; border-radius: var(--radius-pill); padding: 4px 12px;
+          font-family: var(--font-body); font-weight: 800; font-size: 10px;
+          letter-spacing: .12em; text-transform: uppercase; }
+  .chip.real { background: var(--surface-brand); color: var(--text-on-brand); }
+  .chip.demo { background: var(--surface-paper); color: var(--text-secondary);
+               border: 2px dashed var(--stbr-ink-500); }
+
+  .track { flex: 1 1 0; display: flex; align-items: stretch; }
+  .cell { flex: 1 1 0; min-width: 0; padding-right: 30px; }
+  .rail { display: flex; align-items: center; height: 26px; }
+  .dot { flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%;
+         background: var(--stbr-emerald); }
+  .line { flex: 1 1 auto; height: 3px; background: var(--stbr-emerald); }
+  .demo .dot { background: var(--stbr-ink-300); }
+  .demo .line { height: 0; border-top: 3px dashed var(--stbr-ink-300); background: none; }
+
+  .card { height: 155px; margin-top: 12px; border-radius: var(--radius-lg);
+          padding: 14px 18px; background: var(--surface-card);
+          border: 2px solid var(--border-subtle);
+          display: flex; flex-direction: column; justify-content: space-between; }
+  .demo .card { background: var(--surface-paper); border: 2px dashed var(--stbr-ink-500); }
+  .sk { font-family: var(--font-body); font-weight: 800; font-size: 9.5px;
+        letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+  .cmd { font-family: var(--font-mono); font-weight: 700; font-size: 17px; line-height: 1.28;
+         color: var(--text-primary); margin-top: 6px; }
+  .desc { font-family: var(--font-body); font-size: 13.5px; line-height: 1.38;
+          color: var(--text-secondary); border-top: 1.5px solid var(--border-subtle);
+          padding-top: 9px; }
+  .demo .desc { border-top-color: var(--stbr-ink-300); color: var(--text-muted); }
+  .demo .cmd { color: var(--text-secondary); }
+
+  .cell.proof .dot { background: var(--stbr-yellow-700); }
+  .cell.proof .card { background: var(--surface-accent); border-color: var(--stbr-yellow-700); }
+  .cell.proof .sk { color: var(--stbr-dark); opacity: .72; }
+  .cell.proof .desc { color: var(--stbr-dark); border-top-color: rgba(27,35,29,0.28); }
+  .pflag { align-self: flex-start; background: var(--stbr-dark); color: var(--stbr-yellow);
+           border-radius: var(--radius-pill); padding: 3px 11px;
+           font-family: var(--font-body); font-weight: 800; font-size: 10px;
+           letter-spacing: .12em; text-transform: uppercase; margin-top: 8px; }
+
+  .split { margin: 16px 0; height: 62px; background: var(--surface-inverse);
+           border-radius: var(--radius-lg); padding: 0 26px;
+           display: flex; align-items: center; }
+  .sp { font-family: var(--font-body); font-weight: 800; font-size: 13px;
+        color: var(--text-on-dark); letter-spacing: .02em; }
+  .sp em { font-style: normal; color: var(--stbr-yellow); }
+  .spdiv { width: 2px; height: 30px; background: rgba(245,232,202,0.28); margin: 0 26px; }
+
+  .verdict { margin-top: 18px; background: var(--surface-brand-deep);
+             border-radius: var(--radius-lg); padding: 14px 26px;
+             display: flex; align-items: center; }
+  .vk { flex: 0 0 auto; font-family: var(--font-body); font-weight: 800; font-size: 11.5px;
+        letter-spacing: .13em; text-transform: uppercase; color: rgba(245,232,202,0.72); }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-dark); margin-left: 22px; }
+</style>
+  <div class="stbr-eyebrow">two tracks, one proof</div>
+  <h2 class="viz-title">what your gate proves &mdash; and what is mainnet-only</h2>
+
+  <div class="lane">
+    <div class="lbl">
+      <div class="lk">track one</div>
+      <div class="ln">in-cluster,<br>real proof</div>
+      <span class="chip real">you run this</span>
+    </div>
+    <div class="track">
+      <div class="cell">
+        <div class="rail"><span class="dot"></span><span class="line"></span></div>
+        <div class="card">
+          <div>
+            <div class="sk">step 1</div>
+            <div class="cmd">solana-verify build</div>
+          </div>
+          <div class="desc">Deterministic bytecode, built inside Docker so the same source always yields the same binary.</div>
+        </div>
+      </div>
+      <div class="cell proof">
+        <div class="rail"><span class="dot"></span><span class="line"></span></div>
+        <div class="card">
+          <div>
+            <div class="sk">step 2</div>
+            <div class="cmd">verify-from-repo -u devnet</div>
+          </div>
+          <span class="pflag">this is the proof</span>
+          <div class="desc">Local build hash <b>==</b> on-chain devnet hash. Nothing else on this page proves reproducibility.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="split">
+    <span class="sp">&uarr; above the line: the <em>verification proof</em> itself</span>
+    <span class="spdiv"></span>
+    <span class="sp">&darr; below the line: distribution + authority &mdash; neither one is the proof</span>
+  </div>
+
+  <div class="lane demo">
+    <div class="lbl">
+      <div class="lk">track two</div>
+      <div class="ln">mainnet-only,<br>demonstrated</div>
+      <span class="chip demo">shown, not run here</span>
+    </div>
+    <div class="track">
+      <div class="cell">
+        <div class="rail"><span class="dot"></span><span class="line"></span></div>
+        <div class="card">
+          <div>
+            <div class="sk">distribution</div>
+            <div class="cmd">verify-from-repo --remote</div>
+          </div>
+          <div class="desc">Submits the job to OtterSec&rsquo;s registry &mdash; publishing your result, not producing it.</div>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="rail"><span class="dot"></span><span class="line"></span></div>
+        <div class="card">
+          <div>
+            <div class="sk">authority</div>
+            <div class="cmd">Squads v4 multisig execution</div>
+          </div>
+          <div class="desc">Upgrade authority held under an M-of-N approval flow &mdash; who may deploy, not what was deployed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the line that matters</span>
+    <div class="vt">The hash match on devnet is the whole proof. The remote submission distributes it and the multisig governs it &mdash; useful, but not evidence.</div>
+  </div>
+</div>
+</body></html>

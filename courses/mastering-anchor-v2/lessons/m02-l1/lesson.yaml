@@ -1,0 +1,85 @@
+id: lesson-mav2-m02-l1
+slug: m02-l1
+title: "Account<T> is zero-copy by default"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-cli: "2.0.0-rc.1"
+    anchor-lang: "2.0.0-rc.1"
+    wincode: "0.5.5"
+    solana-address: "2.6.1"
+    bytemuck: "1.25.2"
+skills:
+  - account-model
+  - anchor
+  - program-testing
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m02-l1-q1
+        prompt: "You add a plain bool field to your Pod cabinet struct and the program suddenly won't compile. What's the real reason, and the fix?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The 8-byte sha256 discriminator has to be re-derived by hand whenever a struct's field layout changes."
+            correct: false
+            feedback: "The discriminator is derived from the type name, not from its fields, and it is a runtime tag on the first 8 bytes — it could never surface as a compile error about a field's type."
+          - id: a
+            label: "Account<T> = Slab<T, HeaderOnly> admits only fixed-width numeric fields, so a bool is banned outright."
+            correct: false
+            feedback: "The bound is Pod-ness, not numeric-ness. Slab happily holds any Pod field, including the one-byte PodBool wrapper, so booleans are not banned — bare bool just isn't castable."
+          - id: d
+            label: "A 1-byte bool after a PodU64 usually opens 7 bytes of padding, and Pod forbids padding; reorder the fields"
+            correct: false
+            feedback: "Padding is a real Pod failure and field order is a real fix for it, which is exactly why this reads correctly. It is the wrong failure here: a bare bool is rejected because 254 of its 256 byte patterns are undefined, so no ordering makes it castable. PodBool does."
+          - id: b
+            label: "bool isn't Pod because not every bit pattern is a valid bool, so bytemuck rejects it — use PodBool."
+            correct: true
+            feedback: "Two of 256 byte values are a legal bool, and Pod wants all 256 to mean something. Wrap it in a byte whose whole range is defined and the contract holds again. Booleans were never the problem."
+        explanation: "Pod requires every possible bit pattern to be a valid value. bool has only two valid bytes (0 and 1), so bytemuck refuses to treat arbitrary bytes as a bool. PodBool wraps a u8 whose every pattern is defined, keeping the direct byte cast sound — the alignment/no-padding discipline in miniature."
+      - id: m02-l1-q2
+        prompt: "Your LiteSVM test reads account.data and the fields look shifted by 8 bytes from what you wrote. What happened?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "bytemuck::from_bytes dropped the struct's first PodU64 field."
+            correct: false
+            feedback: "from_bytes reinterprets a byte range in place; it never drops or reorders fields. Nothing was lost — you're just reading from the wrong offset."
+          - id: b
+            label: "LiteSVM writes PodU64 fields big-endian; the runtime writes them little-endian."
+            correct: false
+            feedback: "LiteSVM is the same SVM, byte for byte, and PodU64 stores little-endian in both. An endianness flip would scramble each value, not slide every field down by eight bytes."
+          - id: c
+            label: "The 8-byte discriminator still precedes the Pod body — you must cast from data[8..]."
+            correct: true
+            feedback: "The header survived the rewrite untouched, and the flat body begins immediately behind it. Skip those eight bytes on the test side and every offset realigns; nothing was dropped or reordered."
+          - id: d
+            label: "get_account hands back the runtime's own account header ahead of your data"
+            correct: false
+            feedback: "Account metadata and account data are easy to blur, and a fixed-size preamble is the right shape for the symptom you are seeing. The lamports, owner and executable flag ride outside .data; the eight bytes in front of your fields are the discriminator your own program wrote."
+        explanation: "V2 keeps the sha256 discriminator unchanged and Account<T> = Slab<T, HeaderOnly> lays the Pod body immediately after that 8-byte header. Cast from data[8..] with bytemuck::from_bytes and the fields line up."
+      - id: m02-l1-q3
+        prompt: "A teammate says V2 made their two-field counter 8.8x cheaper. How should your own docs report that figure?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "As a figure that kicks in once the account exceeds the 10,240-byte zero-copy init limit."
+            correct: false
+            feedback: "That 10,240-byte limit governs how large an account init can create, not where CU savings appear. There is no size gate on the benchmark — tiny programs simply have the least deserialize cost to erase."
+          - id: d
+            label: "As the 94% smaller-bytecode figure instead, since a size number does not drift the way a CU average does"
+            correct: false
+            feedback: "Reaching for the sturdier-looking metric is a sound instinct when a number keeps moving. Both numbers moved in the same commit, 95% to 94% alongside 9.9x to 8.8x, so the size figure needs the same date stamp and the same hedge the CU one does."
+          - id: b
+            label: "As a guaranteed per-instruction speedup a V2 program inherits just by compiling on the RC."
+            correct: false
+            feedback: "It's an average across a benchmark family, not a per-program guarantee; the benchmark page itself warns the alpha values move as codegen changes, and a two-field counter is its worst case."
+          - id: a
+            label: "As an approximate benchmark-family average, already revised down once and expected to keep moving."
+            correct: true
+            feedback: "A number whose own authors have already trimmed it once should travel with that history attached. Pin it to one program and you will be wrong in the least forgiving direction: the leanest handlers gain least."
+        explanation: "PR #4914 revised the headline down to 8.8x average CU and 94% bytecode, and the benchmark page warns the alpha values can move. Small programs see little benefit. Report it as an approximate, moving average — the same reason the course centralizes and freshness-notes every number. Concretely, in your own docs: cite it as an average across a benchmark family rather than a per-instruction promise, note that it was revised down from 9.9x, and never attach it to a specific program — least of all a two-field counter, which is the worst case for the gain."

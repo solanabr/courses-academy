@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Positional accounts, by hand vs generated
+     purpose: show the failure mode generation removes: the positional account list
+     data: Rust #[derive(Accounts)] SwapArcadeForTickets (fixed order the runtime matches by slot): 0 trader          signer 1 pool            PDA [b"pool"]        (derived) 2 mintArcade 3 mintTicket 4 reserveArcade   writable 5 reserveTicket   writable 6 traderArcade    writable 7 traderTicket    writable 8 tokenProgram                          (default) By hand: retype all 9 into an AccountMeta[] in this order, set each writable/signer flag right -> a swapped slot 4/5 or a wrong flag compiles, fails on-chain. Generated: getSwapArcadeForTicketsInstructionAsync({ trader, mintArcade... }) -> order + flags come from the IDL; pool derived; tokenProgram defaulted.
+     prompt: Two-column comparison. Left column "By hand": the numbered 0-8 account list as a fragile ordered stack, with slots 4 and 5 (reserveArcade/reserveTicket) marked in a warning accent and a note "swap these two: compiles, fails on-chain". Right column "Generated": the same accounts as named keys in an object, unordered, with pool and tokenProgram greyed and tagged "derived"/"default". Make the right side read calmer than the left.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:450px;top:-237px;right:-237px;border-radius:58% 42% 65% 40% / 57% 39% 41% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:457px;height:458px;left:-234px;top:345px;border-radius:48% 36% 53% 45% / 40% 36% 64% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:472px;height:518px;bottom:-283px;left:397px;border-radius:60% 47% 41% 60% / 55% 40% 47% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .cols { display: flex; gap: 26px; align-items: flex-start; }
+  .col { flex: 1 1 0; min-width: 0; height: 462px; border-radius: var(--radius-lg);
+         overflow: hidden; display: flex; flex-direction: column; }
+  .col.hand { border: 2px solid var(--stbr-yellow-700); background: var(--surface-card); }
+  .col.gen  { border: 2px solid var(--border-strong); background: var(--surface-card); }
+  .ch { height: 62px; padding: 0 20px; display: flex; align-items: center; gap: 12px; }
+  .col.hand .ch { background: rgba(255,210,63,0.28); }
+  .col.gen  .ch { background: var(--surface-brand); }
+  .cht { font-family: var(--font-display); font-weight: 900; font-size: 22px;
+         color: var(--text-primary); }
+  .col.gen .cht { color: var(--text-on-brand); }
+  .chs { font-family: var(--font-body); font-weight: 700; font-size: 11.5px;
+         letter-spacing: .1em; text-transform: uppercase; color: rgba(27,35,29,0.60); }
+  .col.gen .chs { color: rgba(245,232,202,0.72); }
+  .cb { flex: 1 1 auto; padding: 14px 20px; display: flex; flex-direction: column; }
+
+  .ar { height: 34px; display: flex; align-items: center; gap: 12px;
+        border-bottom: 1px solid var(--border-subtle); }
+  .ar:last-of-type { border-bottom: none; }
+  .ar.slot { background: rgba(255,210,63,0.30); margin: 0 -20px; padding: 0 20px; }
+  .ix { flex: 0 0 26px; font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+        color: var(--text-muted); }
+  .ar.slot .ix { color: var(--stbr-green-800); }
+  .an { flex: 1 1 0; min-width: 0; font-family: var(--font-mono); font-weight: 600;
+        font-size: 14.5px; color: var(--text-primary); }
+  .fl { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: .11em;
+        text-transform: uppercase; color: var(--text-muted);
+        background: rgba(27,35,29,0.06); border-radius: var(--radius-pill); padding: 4px 10px; }
+  .fl.sig { background: rgba(0,139,76,0.15); color: var(--stbr-emerald-800); }
+
+  .warn { margin-top: 12px; background: var(--surface-inverse); border-radius: var(--radius-md);
+          padding: 11px 15px; display: flex; align-items: center; gap: 11px; }
+  .warn .wt { font-family: var(--font-body); font-size: 13px; line-height: 1.36;
+              color: var(--stbr-yellow); font-weight: 600; }
+
+  .code { background: var(--surface-inverse); border-radius: var(--radius-md);
+          padding: 15px 18px; }
+  .cl { font-family: var(--font-mono); font-size: 13.5px; line-height: 1.62;
+        color: rgba(245,232,202,0.92); white-space: pre; }
+  .cl .fn { color: #9fd9b6; }
+  .cl .off { color: rgba(245,232,202,0.34); }
+  .cl .tg { color: rgba(245,232,202,0.34); font-size: 12px; }
+  .gnote { margin-top: 12px; border: 1.5px solid var(--border-subtle);
+           border-left: 4px solid var(--stbr-emerald); border-radius: var(--radius-md);
+           background: var(--surface-paper); padding: 11px 15px;
+           font-family: var(--font-body); font-size: 13px; line-height: 1.4;
+           color: var(--text-secondary); }
+  .gnote b { color: var(--text-primary); }
+  .spacer { flex: 1 1 auto; }
+
+  .band { margin-top: 18px; background: var(--surface-brand); border-radius: var(--radius-lg);
+          padding: 15px 26px; display: flex; align-items: center; gap: 24px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 22px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">the swap instruction &middot; nine account slots</div>
+  <h2 class="viz-title">positional by hand, named by generation</h2>
+
+  <div class="cols">
+    <div class="col hand">
+      <div class="ch"><span class="cht">by hand</span><span class="chs">order matters &middot; you own it</span></div>
+      <div class="cb">
+        <div class="ar"><span class="ix">0</span><span class="an">trader</span><span class="fl sig">signer</span></div>
+        <div class="ar"><span class="ix">1</span><span class="an">pool</span><span class="fl">PDA [b"pool"]</span></div>
+        <div class="ar"><span class="ix">2</span><span class="an">mintArcade</span></div>
+        <div class="ar"><span class="ix">3</span><span class="an">mintTicket</span></div>
+        <div class="ar slot"><span class="ix">4</span><span class="an">reserveArcade</span><span class="fl">writable</span></div>
+        <div class="ar slot"><span class="ix">5</span><span class="an">reserveTicket</span><span class="fl">writable</span></div>
+        <div class="ar"><span class="ix">6</span><span class="an">traderArcade</span><span class="fl">writable</span></div>
+        <div class="ar"><span class="ix">7</span><span class="an">traderTicket</span><span class="fl">writable</span></div>
+        <div class="ar"><span class="ix">8</span><span class="an">tokenProgram</span></div>
+        <div class="warn">
+          <svg width="20" height="18" viewBox="0 0 20 18"><path d="M10 1 L19 17 H1 Z" fill="none" stroke="#ffd23f" stroke-width="2"/><line x1="10" y1="7" x2="10" y2="12" stroke="#ffd23f" stroke-width="2"/><circle cx="10" cy="14.6" r="1.1" fill="#ffd23f"/></svg>
+          <span class="wt">Swap slots 4 and 5 &mdash; or get one flag wrong &mdash; and it compiles, then fails on-chain.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col gen">
+      <div class="ch"><span class="cht">generated</span><span class="chs">named keys &middot; the IDL owns it</span></div>
+      <div class="cb">
+        <div class="code"><div class="cl"><span class="fn">getSwapArcadeForTicketsInstructionAsync</span>({
+  trader,
+  mintArcade,
+  mintTicket,
+  reserveArcade,
+  reserveTicket,
+  traderArcade,
+  traderTicket,
+  <span class="off">pool,</span><span class="tg">           // derived for you</span>
+  <span class="off">tokenProgram,</span><span class="tg">   // defaulted for you</span>
+})</div></div>
+        <div class="gnote">Order and writable/signer flags come from the IDL. <b>pool</b> is derived, <b>tokenProgram</b> is defaulted &mdash; you never pass either, and there is no slot to swap.</div>
+        <div class="spacer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="vk">what generation removes</span>
+    <span class="vt">The account order is data in the IDL. Reading it beats retyping it.</span>
+  </div>
+</div>
+</body></html>

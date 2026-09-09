@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Deserialize-and-copy (v1) vs cast-in-place (V2)
+     purpose: show that both do the same read but v1 materializes an owned struct while V2 views the bytes where they sit
+     data: Path A, v1 Account<T> (deserialize): account bytes --copy 40B-> owned Counter struct in program memory -> read .count every access re-materializes; the copy costs CU Path B, V2 Account<T> (zero-copy cast): account bytes  <--typed &Counter view (same bytes)--  read .count no copy; reading a field is a pointer offset Same inputs both paths: 32B authority + 8B count = 40B account. Same safety checks run on both (signer, owner, discriminator).
+     prompt: Two stacked horizontal lanes labeled "v1: deserialize (copy)" and "V2: zero-copy (cast in place)". Top lane: a byte-buffer box on the left, a thick arrow labeled "copy 40 bytes" to a separate struct box on the right, then a read arrow. Bottom lane: one byte-buffer box with a thin bracket labeled "typed &Counter view over the same bytes" and a read arrow pointing back into it, no second box. Annotate both lanes "signer + owner + discriminator checks: identical". Emphasize the absent second box in the bottom lane as the whole point.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:527px;height:524px;top:-299px;right:-299px;border-radius:43% 52% 41% 41% / 44% 63% 64% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:480px;height:481px;bottom:-263px;left:-263px;border-radius:48% 36% 56% 38% / 61% 47% 65% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:485px;height:502px;bottom:-273px;right:-273px;border-radius:59% 51% 63% 40% / 51% 61% 36% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lane { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:0 26px; height:212px;
+          display:flex; align-items:center; }
+  .lane + .lane { margin-top:18px; }
+  .lane.tall { height:252px; }
+  .key { width:196px; padding-right:20px; }
+  .key .kn { font-family:var(--font-display); font-weight:900; font-size:30px;
+             line-height:1; color:var(--text-primary); }
+  .key .ks { font-family:var(--font-body); font-size:14px; line-height:1.35;
+             color:var(--text-secondary); margin-top:8px; }
+  .cell { flex:0 0 auto; }
+  .w250 { width:250px; } .w150 { width:150px; } .w260 { width:260px; } .w350 { width:350px; }
+  .shifted { margin-top:54px; }
+  .gap { width:18px; flex:0 0 18px; }
+  .bytes { background:var(--surface-brand); border-radius:var(--radius-md);
+           padding:14px 16px; height:104px; }
+  .bytes .bt { font-family:var(--font-display); font-weight:800; font-size:19px;
+               color:var(--text-on-brand); line-height:1.1; }
+  .bytes .bs { font-family:var(--font-mono); font-size:13px; color:var(--stbr-cream);
+               opacity:.85; margin-top:8px; line-height:1.4; }
+  .owned { border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+           padding:14px 16px; height:104px; background:var(--surface-paper); }
+  .owned .bt { font-family:var(--font-display); font-weight:800; font-size:19px;
+               color:var(--text-primary); line-height:1.1; }
+  .owned .bs { font-family:var(--font-body); font-size:13px; color:var(--text-secondary);
+               margin-top:8px; line-height:1.35; }
+  .ghost { border:3px dashed var(--stbr-yellow-700); border-radius:var(--radius-md);
+           background:var(--stbr-yellow); padding:14px 16px; height:104px; }
+  .ghost .bt { font-family:var(--font-display); font-weight:900; font-size:19px;
+               color:var(--text-on-accent); line-height:1.1; }
+  .ghost .bs { font-family:var(--font-body); font-size:13px; color:var(--text-on-accent);
+               margin-top:8px; line-height:1.35; }
+  .arr { text-align:center; }
+  .arr .al { font-family:var(--font-body); font-weight:700; font-size:12px;
+             letter-spacing:.06em; text-transform:uppercase; color:var(--text-secondary);
+             margin-bottom:7px; line-height:1.25; }
+  .note { font-family:var(--font-body); font-size:14px; line-height:1.4;
+          color:var(--text-secondary); }
+  .note b { color:var(--text-primary); }
+  .view { margin-top:10px; border:2px solid var(--stbr-emerald); border-radius:var(--radius-sm);
+          padding:7px 10px; font-family:var(--font-body); font-weight:600; font-size:12px;
+          line-height:1.3; color:var(--stbr-emerald-800); }
+  .verdict { margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:20px 30px; display:flex; align-items:center; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:13px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.8; width:150px; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:25px;
+                 line-height:1.15; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">same read · two mechanics</div>
+  <h2 class="viz-title">one copies the bytes, one just looks at them</h2>
+
+  <div class="lane">
+    <div class="key">
+      <div class="kn">v1</div>
+      <div class="ks">deserialize<br>(copy out)</div>
+    </div>
+    <div class="cell w250">
+      <div class="bytes">
+        <div class="bt">account bytes</div>
+        <div class="bs">32 B authority<br>+ 8 B count = 40 B</div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w150 arr">
+      <div class="al">copy 40 bytes</div>
+      <svg width="150" height="22" viewBox="0 0 150 22">
+        <line x1="0" y1="11" x2="132" y2="11" stroke="#1b231d" stroke-width="5"/>
+        <polygon points="132,2 150,11 132,20" fill="#1b231d"/>
+      </svg>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w260">
+      <div class="owned">
+        <div class="bt">owned Counter struct</div>
+        <div class="bs">a second copy living in program memory</div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w150 arr">
+      <div class="al">read .count</div>
+      <svg width="150" height="22" viewBox="0 0 150 22">
+        <line x1="0" y1="11" x2="132" y2="11" stroke="#306c40" stroke-width="3"/>
+        <polygon points="132,3 150,11 132,19" fill="#306c40"/>
+      </svg>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w350">
+      <div class="note">Every access re&#8209;materializes the struct.<br><b>The copy costs CU.</b></div>
+    </div>
+  </div>
+
+  <div class="lane tall">
+    <div class="key">
+      <div class="kn">V2</div>
+      <div class="ks">zero&#8209;copy<br>(cast in place)</div>
+    </div>
+    <div class="cell w250 shifted">
+      <div class="bytes">
+        <div class="bt">account bytes</div>
+        <div class="bs">32 B authority<br>+ 8 B count = 40 B</div>
+      </div>
+      <div class="view">typed &amp;Counter view over the same bytes</div>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w150 arr">
+      <div class="al">read .count</div>
+      <svg width="150" height="22" viewBox="0 0 150 22">
+        <line x1="18" y1="11" x2="150" y2="11" stroke="#306c40" stroke-width="3"/>
+        <polygon points="18,3 0,11 18,19" fill="#306c40"/>
+      </svg>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w260">
+      <div class="ghost">
+        <div class="bt">no second box</div>
+        <div class="bs">nothing is copied — this absence is the whole point</div>
+      </div>
+    </div>
+    <div class="gap"></div>
+    <div class="cell w150"></div>
+    <div class="gap"></div>
+    <div class="cell w350">
+      <div class="note">Reading a field is a <b>pointer offset</b> into bytes that never moved.</div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">unchanged</span>
+    <span class="vt">signer + owner + discriminator checks run identically on both paths</span>
+  </div>
+</div>
+</body></html>

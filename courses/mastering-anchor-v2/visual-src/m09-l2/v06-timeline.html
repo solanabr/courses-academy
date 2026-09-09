@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The stale-read footgun, closed at compile time
+     purpose: contrast v1 .reload() discipline and the native no-guard case against V2's CpiHandle borrow
+     data: v1 / native: read typed field -> CPI mutates account -> read the SAME field again -> STALE unless you remembered (.reload / re-borrow); a runtime bug V2:          take CpiHandle (borrow) -> CPI runs -> handle drops -> read typed field; reading DURING the live handle is a COMPILE error, never a runtime surprise bug class closed by the derive, open in native: stale account state after a CPI
+     prompt: Two horizontal timelines stacked. Top "v1 / native pinocchio": three beats ending in a red "stale read (runtime bug)" gated only by developer memory. Bottom "V2 CpiHandle": a borrow bar spanning the CPI, a drop, then a green live read, with a note that a read during the borrow is a compile error. Emphasize the move from runtime discipline to compile-time guarantee.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:604px;height:527px;top:-332px;right:-332px;border-radius:61% 56% 58% 50% / 61% 40% 59% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:506px;height:380px;left:-272px;top:267px;border-radius:43% 53% 56% 50% / 50% 46% 43% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:477px;height:515px;bottom:-254px;right:-254px;border-radius:60% 57% 46% 36% / 45% 44% 53% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lane { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:18px 26px 20px; display:flex;
+          align-items:center; }
+  .lane + .lane { margin-top:16px; }
+  .key { flex:0 0 200px; width:200px; padding-right:16px; }
+  .key .kn { font-family:var(--font-display); font-weight:900; font-size:25px;
+             line-height:1.05; color:var(--text-primary); }
+  .key .kn.brand { color:var(--stbr-emerald); }
+  .key .ks { font-family:var(--font-body); font-size:13px; line-height:1.3;
+             color:var(--text-secondary); margin-top:6px; }
+  .tl { flex:1 1 auto; min-width:0; padding-right:52px; }
+  .rowl { display:flex; min-width:0; }
+  /* WeasyPrint adds a flex item's horizontal padding ON TOP of a percentage
+     flex-basis, so a padded 25% cell renders wider than 25% and the label row
+     drifts right of the 25% .dot cells it must sit over. Keep .cellq padding at
+     0 and inset the contents instead. */
+  .cellq { flex:1 1 0; min-width:0; padding:0; text-align:center; }
+  .cellq > * { margin-left:8px; margin-right:8px; }
+  .top { height:76px; display:flex; flex-direction:column; justify-content:flex-end; }
+  .bot { min-height:76px; }
+  .bl { font-family:var(--font-body); font-weight:700; font-size:15px; line-height:1.3;
+        color:var(--text-primary); }
+  .bs { font-family:var(--font-body); font-size:12.5px; line-height:1.3;
+        color:var(--text-secondary); margin-top:4px; }
+  .bad { display:block; max-width:100%; border:2px solid #c0392b;
+         border-radius:var(--radius-md); padding:9px 13px; text-align:left; }
+  .bad .bt { display:block; font-family:var(--font-display); font-weight:900;
+             font-size:16px; color:#c0392b; line-height:1.15; }
+  .bad .bx { display:block; font-family:var(--font-body); font-size:12px;
+             line-height:1.25; color:var(--text-secondary); margin-top:4px; }
+  .good { display:block; max-width:100%; background:var(--surface-brand);
+          border-radius:var(--radius-md); padding:10px 14px; text-align:left; }
+  .good .bt { display:block; font-family:var(--font-display); font-weight:900;
+              font-size:16px; color:var(--text-on-brand); line-height:1.15; }
+  .good .bx { display:block; font-family:var(--font-body); font-size:12px;
+              line-height:1.25; color:var(--stbr-cream); opacity:.85; margin-top:3px; }
+  .track { position:relative; height:40px; margin:8px 0; }
+  .rule { position:absolute; left:12.5%; right:12.5%; top:18px; height:4px;
+          background:var(--stbr-ink-300); }
+  .bar { position:absolute; left:12.5%; width:50%; top:10px; height:20px;
+         background:var(--stbr-yellow); border:2px solid var(--stbr-yellow-700);
+         border-radius:var(--radius-pill); }
+  .barlab { display:inline-block; font-family:var(--font-display); font-weight:900;
+            font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+            color:var(--text-on-accent); background:var(--stbr-yellow);
+            border:2px solid var(--stbr-yellow-700); border-radius:var(--radius-pill);
+            padding:5px 14px; }
+  .dots { position:relative; z-index:2; display:flex; height:40px; align-items:center; }
+  .dot { flex:1 1 0; min-width:0; display:flex; justify-content:center; }
+  .dot i { display:block; width:20px; height:20px; border-radius:50%;
+           background:var(--surface-card); border:4px solid var(--stbr-ink-500); }
+  .dot i.on { border-color:var(--stbr-emerald); }
+  .dot i.err { border-color:#c0392b; background:#c0392b; }
+  .dot i.acc { border-color:var(--stbr-yellow-700); background:var(--stbr-yellow); }
+  .note { margin-top:8px; display:flex; align-items:center;
+          border:2px solid var(--stbr-yellow-700); background:rgba(255,210,63,0.26);
+          border-radius:var(--radius-md); padding:9px 16px; }
+  .note .nk { display:block; font-family:var(--font-display); font-weight:900;
+              font-size:11px;
+              letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-yellow-700);
+              flex:0 0 215px; padding-right:14px; line-height:1.3; }
+  .note .nt { font-family:var(--font-body); font-size:14px; line-height:1.3;
+              color:var(--text-primary); }
+  .note .nt .mono { font-family:var(--font-mono); font-size:13px; }
+  .verdict { margin-top:16px; background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:16px 28px; display:flex;
+             align-items:center; }
+  .verdict .vk { font-family:var(--font-body); font-weight:800; font-size:12px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-cream);
+                 opacity:.75; flex:0 0 130px; }
+  .verdict .vt { font-family:var(--font-display); font-weight:900; font-size:21px;
+                 line-height:1.2; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">stale reads after a CPI</div>
+  <h2 class="viz-title">runtime discipline becomes a compile-time rule</h2>
+
+  <div class="lane">
+    <div class="key">
+      <div class="kn">v1 / native</div>
+      <div class="ks">pinocchio &mdash; raw borrows,<br>no guard</div>
+    </div>
+    <div class="tl">
+      <div class="rowl">
+        <div class="cellq top"><div class="bl">read a typed field</div></div>
+        <div class="cellq top"></div>
+        <div class="cellq top"><div class="bl">read the SAME field again</div></div>
+        <div class="cellq top"></div>
+      </div>
+      <div class="track">
+        <div class="rule"></div>
+        <div class="dots">
+          <div class="dot"><i></i></div>
+          <div class="dot"><i></i></div>
+          <div class="dot"><i></i></div>
+          <div class="dot"><i class="err"></i></div>
+        </div>
+      </div>
+      <div class="rowl">
+        <div class="cellq bot"></div>
+        <div class="cellq bot"><div class="bl">CPI mutates the account</div></div>
+        <div class="cellq bot"></div>
+        <div class="cellq bot"><span class="bad"><span class="bt">stale read &middot; runtime bug</span>
+          <span class="bx">unless you remembered <b>.reload()</b> / a re-borrow</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lane">
+    <div class="key">
+      <div class="kn brand">V2</div>
+      <div class="ks">CpiHandle borrow model</div>
+    </div>
+    <div class="tl">
+      <div class="rowl">
+        <div class="cellq top"><div class="bl">take a CpiHandle</div><div class="bs">the borrow starts</div></div>
+        <div class="cellq top"><span class="barlab">borrow live</span></div>
+        <div class="cellq top"><div class="bl">the handle drops</div><div class="bs">the borrow ends</div></div>
+        <div class="cellq top"></div>
+      </div>
+      <div class="track">
+        <div class="rule"></div>
+        <div class="bar"></div>
+        <div class="dots">
+          <div class="dot"><i class="acc"></i></div>
+          <div class="dot"><i class="acc"></i></div>
+          <div class="dot"><i class="acc"></i></div>
+          <div class="dot"><i class="on"></i></div>
+        </div>
+      </div>
+      <div class="rowl">
+        <div class="cellq bot"></div>
+        <div class="cellq bot"><div class="bl">the CPI runs</div></div>
+        <div class="cellq bot"></div>
+        <div class="cellq bot"><span class="good"><span class="bt">read the typed field</span>
+          <span class="bx">fresh, by construction</span></span></div>
+      </div>
+      <div class="note">
+        <span class="nk">while the bar is live</span>
+        <span class="nt">a typed read during the live handle is a <b>COMPILE error</b> &mdash; never a runtime surprise</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">bug class</span>
+    <span class="vt">stale account state after a CPI: open in native, closed by the derive</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: How InterfaceAccount<T> became an alias of Account<T>
+     purpose: give the historical reason the interface types collapsed into the base account type in V2
+     data: - Pre-V2: Account<T> eagerly deserialized on every load. The community named it "the slow path" and "the #1 performance complaint from Anchor developers." - Anchor issue #4390, the "zero-copy account deserialization by default" manifesto: make the base Account<T> lazy/zero-copy so nobody pays for deserialization they do not use. - Result in V2: Account<T> is now the fast path. There is no longer a separate faster interface type to reach for, so InterfaceAccount<T> is defined AS an alias of Account<T>.
+     prompt: Horizontal three-stop timeline, left to right. Stop 1 "The slow path" (pre-V2), stop 2 "#4390: zero-copy by default" (the manifesto), stop 3 "Account<T> IS the fast path, InterfaceAccount<T> aliases it" (V2). Each stop a labeled node with a one-line caption. Muted-to-bright color ramp left to right so it reads as improvement over time.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:538px;height:520px;top:-296px;right:-296px;border-radius:45% 62% 63% 59% / 64% 61% 57% 56%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:442px;height:474px;left:-227px;top:324px;border-radius:48% 53% 36% 64% / 64% 48% 62% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:504px;bottom:-243px;right:-243px;border-radius:39% 44% 52% 64% / 37% 38% 54% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { position:relative; margin-top:14px; }
+  .rail { position:absolute; left:234px; right:234px; top:60px; height:6px; border-radius:3px;
+          background:linear-gradient(90deg, #b8bdb6 0%, #008b4c 55%, #ffd23f 100%); }
+  .stops { position:relative; display:flex; gap:26px; }
+  .stop { flex:1 1 0; }
+  .era { height:44px; display:flex; align-items:center; justify-content:center;
+         font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.14em;
+         text-transform:uppercase; }
+  .era.e1 { color:var(--text-muted); }
+  .era.e2 { color:var(--stbr-emerald); }
+  .era.e3 { color:var(--stbr-green-800); }
+  .dotrow { height:38px; display:flex; align-items:center; justify-content:center; }
+  .card { margin-top:10px; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); overflow:hidden; }
+  .card.c1 { background:var(--surface-paper); }
+  .card.c3 { border-color:var(--stbr-yellow-700); }
+  .cbar { padding:14px 22px; }
+  .cbar.b1 { background:var(--stbr-ink-100); }
+  .cbar.b2 { background:var(--surface-brand); }
+  .cbar.b3 { background:var(--surface-accent); }
+  .ctt { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.1; }
+  .cbar.b1 .ctt { color:var(--text-secondary); }
+  .cbar.b2 .ctt { color:var(--text-on-brand); }
+  .cbar.b3 .ctt { color:var(--text-on-accent); }
+  .cbody { padding:17px 22px; font-family:var(--font-body); font-size:15px; line-height:1.46; min-height:144px; }
+  .c1 .cbody { color:var(--text-secondary); }
+  .cbody { color:var(--text-primary); }
+  .cbody code { font-family:var(--font-mono); font-size:13.5px; font-weight:600;
+                color:var(--stbr-emerald-800); }
+  .c1 .cbody code { color:var(--text-muted); }
+  .quote { display:block; margin-top:9px; padding-top:9px; border-top:1.5px solid var(--border-subtle);
+           font-size:13.5px; color:var(--text-muted); }
+  .verdict { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:18px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">why the interface types collapsed</div>
+  <h2 class="viz-title">how <span style="font-family:var(--font-mono);font-size:0.8em">InterfaceAccount&lt;T&gt;</span> became an alias</h2>
+  <div class="tl">
+    <div class="rail"></div>
+    <div class="stops">
+
+      <div class="stop">
+        <div class="era e1">pre-v2</div>
+        <div class="dotrow"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#767f73" stroke="#f5e8ca" stroke-width="4"/></svg></div>
+        <div class="card c1">
+          <div class="cbar b1"><div class="ctt">the slow path</div></div>
+          <div class="cbody"><code>Account&lt;T&gt;</code> eagerly deserialized on every load.
+            <span class="quote">the community named it &ldquo;the slow path&rdquo; and &ldquo;the #1 performance complaint from Anchor developers.&rdquo;</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="era e2">the manifesto</div>
+        <div class="dotrow"><svg width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="#008b4c" stroke="#f5e8ca" stroke-width="4"/></svg></div>
+        <div class="card">
+          <div class="cbar b2"><div class="ctt">#4390: zero-copy by default</div></div>
+          <div class="cbody">Anchor issue #4390 &mdash; make the base <code>Account&lt;T&gt;</code> lazy / zero-copy.
+            <span class="quote">so nobody pays for deserialization they do not use.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="era e3">v2</div>
+        <div class="dotrow"><svg width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#ffd23f" stroke="#1b231d" stroke-width="4"/></svg></div>
+        <div class="card c3">
+          <div class="cbar b3"><div class="ctt">Account&lt;T&gt; <em style="font-style:normal">is</em> the fast path</div></div>
+          <div class="cbody">There is no longer a separate, faster interface type to reach for.
+            <span class="quote">so <code>InterfaceAccount&lt;T&gt;</code> is defined AS an alias of <code>Account&lt;T&gt;</code>.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="verdict">
+    <span class="vk">read it as</span>
+    <span class="vt">the interface type did not disappear &mdash; the base type caught up with it.</span>
+  </div>
+</div>
+</body></html>

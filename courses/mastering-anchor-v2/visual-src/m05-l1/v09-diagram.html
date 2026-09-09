@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Why the escrow barely changed
+     purpose: show that custody delegation localizes the SPL upgrade to the vault CPI, leaving escrow policy untouched
+     data: R3 quarter_prize (policy, UNCHANGED): - Escrow { maker, player, vault, amount, winning_score, bump } - reserve records policy; redeem checks final_score >= winning_score - caller pinned: address = escrow.player - signs as escrow PDA: [b"escrow", maker, player, bump] the edge (CHANGED, one place): - reserve -> vault_cpi::initialize + deposit now carry mint + maker/vault token accounts - redeem  -> vault_cpi::release now carries mint + vault/winner token accounts R2 quarter_vault (custody, upgraded in the lab): - the vault ATA holds the prize; release is a PDA-signed transfer_checked
+     prompt: Three horizontal bands. Top band "R3 policy" green, marked UNCHANGED, listing the four policy items. Middle band "the CPI edge" amber, marked "the one place that changed", showing reserve->initialize+deposit and redeem->release each gaining "+ mint + token accounts". The reserve edge is vault_cpi::initialize, NOT init_vault: the SPL upgrade renamed the vault's init instruction and the re-harvested IDL generates the new name. Bottom band "R2 custody" listing the token account and transfer_checked. Down-arrows connect R3 -> edge -> R2. Monospace for identifiers.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:548px;height:513px;top:-303px;right:-303px;border-radius:61% 37% 63% 48% / 54% 40% 57% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:473px;height:499px;left:-273px;top:337px;border-radius:51% 52% 49% 37% / 51% 49% 57% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:362px;height:454px;bottom:-244px;left:430px;border-radius:58% 35% 51% 35% / 49% 50% 62% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .band { display:flex; align-items:stretch; border-radius:var(--radius-lg); overflow:hidden;
+          border:2px solid var(--border-subtle); background:var(--surface-card); }
+  .band.edge { border-color:var(--stbr-yellow-700); }
+  .band.base { border-color:var(--stbr-dark); background:var(--surface-inverse); }
+  .bl { flex:0 0 336px; padding:16px 22px; display:flex; flex-direction:column; justify-content:center; }
+  .bl.top { background:var(--surface-brand); }
+  .bl.edge { background:var(--surface-accent); }
+  .bl.base { background:var(--stbr-dark-900); }
+  .bn { font-family:var(--font-mono); font-weight:700; font-size:17px; line-height:1.15; }
+  .bt { font-family:var(--font-display); font-weight:900; font-size:22px; line-height:1.1; margin-top:5px; }
+  .bl.top .bn, .bl.top .bt { color:var(--text-on-brand); }
+  .bl.edge .bn, .bl.edge .bt { color:var(--text-on-accent); }
+  .bl.base .bn, .bl.base .bt { color:var(--text-on-dark); }
+  .tag { display:inline-block; align-self:flex-start; margin-top:10px; padding:4px 12px;
+         border-radius:var(--radius-pill); font-family:var(--font-body); font-weight:800;
+         font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+  .tag.keep { background:rgba(245,232,202,0.92); color:var(--stbr-emerald-800); }
+  .tag.chg  { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .br { flex:1 1 0; min-width:0; padding:14px 24px; display:flex; flex-direction:column;
+        justify-content:center; }
+  .li { display:flex; align-items:flex-start; gap:11px; padding:5px 0; }
+  .li .d { flex:0 0 8px; height:8px; margin-top:7px; border-radius:2px; background:var(--stbr-emerald); }
+  .band.edge .li .d { background:var(--stbr-yellow-700); }
+  .band.base .li .d { background:var(--stbr-yellow); }
+  .li .x { font-family:var(--font-body); font-size:14.5px; line-height:1.42; color:var(--text-primary); }
+  .band.base .li .x { color:var(--text-on-dark); }
+  .li .x code { font-family:var(--font-mono); font-size:13.5px; font-weight:600;
+                color:var(--stbr-emerald-800); }
+  .band.base .li .x code { color:var(--stbr-cream-300); }
+  .plus { font-family:var(--font-mono); font-weight:700; color:var(--stbr-green-800); }
+  .arrow { display:flex; justify-content:center; padding:7px 0; }
+</style>
+  <div class="stbr-eyebrow">custody delegation localizes the upgrade</div>
+  <h2 class="viz-title">why the escrow barely changed</h2>
+
+  <div class="band">
+    <div class="bl top">
+      <div class="bn">R3 quarter_prize</div>
+      <div class="bt">policy</div>
+      <span class="tag keep">unchanged</span>
+    </div>
+    <div class="br">
+      <div class="li"><span class="d"></span><span class="x"><code>Escrow { maker, player, vault, amount, winning_score, bump }</code></span></div>
+      <div class="li"><span class="d"></span><span class="x"><code>reserve</code> records policy; <code>redeem</code> checks <code>final_score &gt;= winning_score</code></span></div>
+      <div class="li"><span class="d"></span><span class="x">caller pinned: <code>address = escrow.player</code></span></div>
+      <div class="li"><span class="d"></span><span class="x">signs as the escrow PDA: <code>[b"escrow", maker, player, bump]</code></span></div>
+    </div>
+  </div>
+
+  <div class="arrow"><svg width="20" height="30" viewBox="0 0 20 30"><line x1="10" y1="0" x2="10" y2="20" stroke="#1b231d" stroke-width="2.5"/><polygon points="10,30 3,18 17,18" fill="#1b231d"/></svg></div>
+
+  <div class="band edge">
+    <div class="bl edge">
+      <div class="bn">the CPI edge</div>
+      <div class="bt">the one place<br>that changed</div>
+      <span class="tag chg">changed</span>
+    </div>
+    <div class="br">
+      <div class="li"><span class="d"></span><span class="x"><code>reserve &rarr; vault_cpi::initialize + deposit</code> now carry <span class="plus">+ mint</span> <span class="plus">+ maker/vault token accounts</span></span></div>
+      <div class="li"><span class="d"></span><span class="x"><code>redeem &nbsp;&rarr; vault_cpi::release</code> now carries <span class="plus">+ mint</span> <span class="plus">+ vault/winner token accounts</span></span></div>
+    </div>
+  </div>
+
+  <div class="arrow"><svg width="20" height="30" viewBox="0 0 20 30"><line x1="10" y1="0" x2="10" y2="20" stroke="#1b231d" stroke-width="2.5"/><polygon points="10,30 3,18 17,18" fill="#1b231d"/></svg></div>
+
+  <div class="band base">
+    <div class="bl base">
+      <div class="bn">R2 quarter_vault</div>
+      <div class="bt">custody</div>
+      <span class="tag keep">upgraded in the lab</span>
+    </div>
+    <div class="br">
+      <div class="li"><span class="d"></span><span class="x">the vault <b>ATA</b> holds the prize</span></div>
+      <div class="li"><span class="d"></span><span class="x"><code>release</code> is a PDA-signed <code>transfer_checked</code></span></div>
+    </div>
+  </div>
+</div>
+</body></html>

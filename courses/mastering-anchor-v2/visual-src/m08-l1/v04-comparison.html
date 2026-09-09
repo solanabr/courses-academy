@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three ways to get a V2 client, scored honestly
+     purpose: rule out the two tempting-but-wrong paths and land on Codama
+     data: Axes: SDK line | who maintains it | failure mode | verdict @anchor-lang/core 1.1.2 | Anchor's own pkg, v1-era | web3.js v1 | wrong SDK line, not a V2 client | NO Hand-rolled client     | you, forever        | @solana/kit | account-order/borsh bugs that compile clean | AVOID anchor codama generate | Anchor CLI (pins Codama 1.6.0) | @solana/kit | stale if you skip regeneration | YES
+     prompt: Three-row comparison table, columns SDK line / maintainer / failure mode / verdict. Render the verdict cells as small pills: NO in muted red, AVOID in amber, YES in green. Keep the two rejected rows visually lighter than the accepted row so the eye lands on Codama.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:479px;height:458px;top:-231px;right:-231px;border-radius:55% 51% 37% 58% / 40% 50% 56% 58%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:500px;height:482px;left:-323px;top:216px;border-radius:56% 63% 51% 44% / 38% 65% 35% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:561px;height:528px;bottom:-282px;right:-282px;border-radius:57% 35% 46% 53% / 46% 63% 54% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin: 4px 0 20px; }
+  .tbl { border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+         overflow: hidden; background: var(--surface-card); }
+  .tr { display: flex; align-items: stretch; }
+  .thead { background: var(--surface-inverse); }
+  .th { padding: 13px 20px; font-family: var(--font-body); font-weight: 800; font-size: 10.5px;
+        letter-spacing: .14em; text-transform: uppercase; color: rgba(245,232,202,0.62);
+        display: flex; align-items: center; }
+  .td { padding: 18px 20px; border-top: 1.5px solid var(--border-subtle);
+        display: flex; flex-direction: column; justify-content: center; }
+  .c1 { flex: 0 0 auto; width: 390px; }
+  .c2 { flex: 0 0 auto; width: 290px; }
+  .c3 { flex: 0 0 auto; width: 240px; }
+  .c4 { flex: 1 1 0; min-width: 0; }
+  .c5 { flex: 0 0 auto; width: 210px; align-items: flex-start; }
+
+  .tr.rej .td { background: var(--surface-paper); }
+  .tr.win .td { background: rgba(255,210,63,0.22); }
+  .tr.win .c1 { border-left: 6px solid var(--stbr-yellow); padding-left: 14px; }
+
+  .nm { font-family: var(--font-mono); font-weight: 700; font-size: 17px; line-height: 1.2;
+        color: var(--text-primary); }
+  .tr.rej .nm { color: var(--text-secondary); }
+  .sub { font-family: var(--font-body); font-size: 11.5px; line-height: 1.35;
+         color: var(--text-muted); margin-top: 6px; }
+  .cell { font-family: var(--font-body); font-size: 13.5px; line-height: 1.4;
+          color: var(--text-primary); }
+  .tr.rej .cell { color: var(--text-secondary); }
+  .sdk { font-family: var(--font-mono); font-size: 13.5px; font-weight: 600; }
+
+  .pill { font-family: var(--font-body); font-weight: 800; font-size: 12px;
+          letter-spacing: .12em; text-transform: uppercase; border-radius: var(--radius-pill);
+          padding: 7px 18px; }
+  .pill.no { background: #c0392b; color: var(--stbr-cream); }
+  .pill.av { background: var(--surface-card); color: var(--text-secondary);
+             border: 2px solid var(--stbr-ink-300); padding: 5px 16px; }
+  .pill.ye { background: var(--surface-brand); color: var(--text-on-brand); }
+
+  .verdict { margin-top: 20px; background: var(--surface-brand); border-radius: var(--radius-lg);
+             padding: 16px 26px; display: flex; align-items: center; gap: 24px; }
+  .vk { font-family: var(--font-body); font-weight: 800; font-size: 11.5px; letter-spacing: .13em;
+        text-transform: uppercase; color: rgba(245,232,202,0.78); white-space: nowrap; }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 23px; line-height: 1.16;
+        color: var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">three ways to get a v2 client</div>
+  <h2 class="viz-title">two are tempting. one is right.</h2>
+
+  <div class="tbl">
+    <div class="tr thead">
+      <div class="th c1">approach</div>
+      <div class="th c2">who maintains it</div>
+      <div class="th c3">sdk line</div>
+      <div class="th c4">failure mode</div>
+      <div class="th c5">verdict</div>
+    </div>
+
+    <div class="tr rej">
+      <div class="td c1">
+        <div class="nm">@anchor-lang/core 1.1.2</div>
+        <div class="sub">Anchor's own package &mdash; but v1-era</div>
+      </div>
+      <div class="td c2"><div class="cell">Anchor's own pkg, v1-era</div></div>
+      <div class="td c3"><div class="cell sdk">web3.js v1</div></div>
+      <div class="td c4"><div class="cell">Wrong SDK line &mdash; it is not a V2 client at all.</div></div>
+      <div class="td c5"><span class="pill no">no</span></div>
+    </div>
+
+    <div class="tr rej">
+      <div class="td c1">
+        <div class="nm">Hand-rolled client</div>
+        <div class="sub">AccountMeta arrays you type yourself</div>
+      </div>
+      <div class="td c2"><div class="cell">you, forever</div></div>
+      <div class="td c3"><div class="cell sdk">@solana/kit</div></div>
+      <div class="td c4"><div class="cell">Account-order and borsh bugs that <b>compile clean</b> and fail on-chain.</div></div>
+      <div class="td c5"><span class="pill av">avoid</span></div>
+    </div>
+
+    <div class="tr win">
+      <div class="td c1">
+        <div class="nm">anchor codama generate</div>
+        <div class="sub">typed builders straight from the IDL</div>
+      </div>
+      <div class="td c2"><div class="cell">Anchor CLI &mdash; pins Codama 1.6.0</div></div>
+      <div class="td c3"><div class="cell sdk">@solana/kit</div></div>
+      <div class="td c4"><div class="cell">Goes stale only if you skip regeneration &mdash; a habit, not a bug class.</div></div>
+      <div class="td c5"><span class="pill ye">yes</span></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the honest score</span>
+    <span class="vt">The only failure mode you can fix with a habit beats the two you cannot see.</span>
+  </div>
+</div>
+</body></html>

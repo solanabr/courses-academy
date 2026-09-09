@@ -1,0 +1,44 @@
+[
+  {
+    "id": "t1",
+    "description": "Subgoal 1: pin kit to the @solana-program peer major (^7.0.0 -> 7), not the latest kit (8.0.0)",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1000000n, 900000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '8.0.0'",
+    "expectedOutput": "result.pinnedKitMajor === 7"
+  },
+  {
+    "id": "t2",
+    "description": "Subgoal 1 (robust): the pin follows splPeer even when a newer kit exists",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1000000n, 900000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '9.9.9'",
+    "expectedOutput": "result.pinnedKitMajor === 7"
+  },
+  {
+    "id": "t3",
+    "description": "Subgoal 2: the fee payer is the owner",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1000000n, 900000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '8.0.0'",
+    "expectedOutput": "result.feePayer === 'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'"
+  },
+  {
+    "id": "t4",
+    "description": "Subgoal 3: the transaction lifetime is the recent blockhash",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1000000n, 900000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '8.0.0'",
+    "expectedOutput": "result.lifetime === 'B1ockhash11111111111111111111111111111111AA'"
+  },
+  {
+    "id": "t5",
+    "description": "Subgoal 4: exactly one instruction, the generated swap, with the owner signing first",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1000000n, 900000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '8.0.0'",
+    "expectedOutput": "result.instructions.length === 1 && result.instructions[0].accounts[0].address === 'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' && result.instructions[0].accounts[0].role === 'writable-signer'"
+  },
+  {
+    "id": "t6",
+    "description": "Subgoal 4: the swap instruction carries both amountIn and the slippage floor minOut",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 2500000n, 2300000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '8.0.0'",
+    "expectedOutput": "result.instructions[0].data.amountIn === 2500000n && result.instructions[0].data.minOut === 2300000n"
+  },
+  {
+    "id": "t7",
+    "description": "Subgoal 4 (no hand-rolling): the instruction is the generated builder's — swap program id, four accounts, both vaults, the token program",
+    "input": "'P-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 1000000n, 900000n, 'B1ockhash11111111111111111111111111111111AA', '^7.0.0', '8.0.0'",
+    "expectedOutput": "result.instructions[0].program === 'QSwapPr0gram11111111111111111111111111111111' && result.instructions[0].accounts.length === 4 && result.instructions[0].accounts[1].address === 'TokVP-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAA' && result.instructions[0].accounts[2].address === 'TktVP-1ayerWa11etAAAAAAAAAAAAAAAAAAAAAAAAAA' && result.instructions[0].accounts[3].address === 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'"
+  }
+]

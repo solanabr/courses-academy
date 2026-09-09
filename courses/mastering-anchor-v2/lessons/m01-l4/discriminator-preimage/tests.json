@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "description": "an account struct hashes from the account: namespace",
+    "input": "\"account\", \"CabinetCounter\"",
+    "expectedOutput": "\"account:CabinetCounter\""
+  },
+  {
+    "id": "t2",
+    "description": "an instruction handler hashes from global:, not instruction:",
+    "input": "\"instruction\", \"increment\"",
+    "expectedOutput": "\"global:increment\""
+  },
+  {
+    "id": "t3",
+    "description": "an event struct hashes from the event: namespace",
+    "input": "\"event\", \"HighScore\"",
+    "expectedOutput": "\"event:HighScore\""
+  },
+  {
+    "id": "t4",
+    "description": "the SAME name under a different item kind takes a different namespace: the prefix comes from item_kind, never from the name",
+    "input": "\"account\", \"HighScore\"",
+    "expectedOutput": "\"account:HighScore\""
+  },
+  {
+    "id": "t5",
+    "description": "a second instruction handler is also global:, so the mapping is on the kind rather than on one special-cased name",
+    "input": "\"instruction\", \"initialize\"",
+    "expectedOutput": "\"global:initialize\""
+  }
+]

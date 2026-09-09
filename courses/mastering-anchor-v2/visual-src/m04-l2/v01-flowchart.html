@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The v1 stale-read, step by step
+     purpose: show exactly where the deserialized copy diverges from the live account and why .reload() was needed
+     data: 1. instruction start -> Anchor deserializes vault bytes into a typed copy (amount = 100) 2. token::transfer CPI -> the chain updates the vault's REAL bytes (amount = 40) 3. your copy is untouched -> ctx.accounts.vault.amount still reads 100 (STALE) 4a. WITHOUT reload -> require!(100 >= floor) decides on a dead number -> silent bug ships 4b. WITH reload -> ctx.accounts.vault.reload() re-reads bytes -> copy = 40 -> correct
+     prompt: Vertical flowchart. A single "vault" lane on the right showing its real value going 100 -> 40 at the CPI. A "your copy" lane on the left staying at 100. At step 4 the path forks: a red branch "no reload -> silent bug" and a green branch "reload() -> refreshed to 40 -> correct". Emphasize that the two lanes diverge at the CPI and only reload reconverges them.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:573px;height:509px;top:-315px;right:-315px;border-radius:35% 36% 36% 41% / 64% 63% 61% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:512px;height:487px;bottom:-291px;left:-291px;border-radius:38% 44% 54% 42% / 39% 46% 57% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:579px;height:483px;bottom:-290px;right:-290px;border-radius:56% 38% 35% 42% / 36% 52% 52% 52%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .lanes { border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+           overflow:hidden; background:var(--surface-card); }
+  .lanes .row { display:grid; grid-template-columns:296px 1fr 1fr; align-items:stretch; }
+  .lanes .body .row { border-top:1.5px solid var(--border-subtle); }
+  .lanes .hd .step { background:var(--surface-inverse); }
+  .lanes .hd .lane { background:var(--surface-inverse); color:var(--text-on-dark);
+    font-family:var(--font-display); font-weight:900; font-size:15px; letter-spacing:.08em;
+    text-transform:uppercase; padding:16px 26px; border-left:1.5px solid rgba(245,232,202,.2); }
+  .lanes .hd .lane small { display:block; font-family:var(--font-body); font-weight:600;
+    font-size:12px; letter-spacing:.02em; text-transform:none; color:rgba(245,232,202,.62); margin-top:3px; }
+  .lanes .hd .step-lbl { background:var(--surface-inverse); color:var(--text-on-dark);
+    font-family:var(--font-display); font-weight:800; font-size:14px; letter-spacing:.08em;
+    text-transform:uppercase; padding:16px 24px; display:flex; align-items:center; }
+  .lanes .step { background:var(--surface-paper); border-left:4px solid var(--stbr-emerald);
+    padding:16px 24px; display:flex; align-items:center; gap:14px; }
+  .lanes .num { flex:0 0 30px; height:30px; border-radius:999px; background:var(--stbr-emerald);
+    color:#fff; font-family:var(--font-display); font-weight:900; font-size:15px;
+    display:flex; align-items:center; justify-content:center; }
+  .lanes .step span { font-family:var(--font-body); font-weight:800; font-size:16px;
+    color:var(--text-secondary); line-height:1.25; }
+  .lanes .cell { padding:16px 26px; border-left:1.5px solid var(--border-subtle);
+    display:flex; align-items:center; gap:12px; font-size:17px; line-height:1.3;
+    color:var(--text-primary); }
+  .lanes .cell code { font-family:var(--font-mono); font-weight:700; font-size:15px; }
+  .val { flex:0 0 auto; font-family:var(--font-mono); font-weight:800; font-size:16px;
+    padding:5px 12px; border-radius:var(--radius-sm); background:rgba(0,139,76,.10);
+    color:var(--stbr-emerald-800); border:1.5px solid rgba(0,139,76,.32); }
+  .val.stale { background:var(--stbr-yellow); color:var(--text-on-accent); border-color:var(--stbr-yellow-700); }
+  .val.dim { background:var(--surface-paper); color:var(--text-muted); border-color:var(--border-subtle); }
+  .fork { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:20px; }
+  .br { border-radius:var(--radius-lg); padding:18px 26px; }
+  .br .tag { font-family:var(--font-display); font-weight:900; font-size:14px;
+    letter-spacing:.09em; text-transform:uppercase; margin-bottom:7px; }
+  .br p { margin:0; font-size:17px; line-height:1.35; }
+  .br code { font-family:var(--font-mono); font-weight:700; }
+  .br.bad { background:var(--stbr-yellow); color:var(--text-on-accent); }
+  .br.bad .tag { color:var(--stbr-dark); }
+  .br.good { background:var(--surface-brand); color:var(--text-on-brand); }
+  .br.good .tag { color:#fff; }
+</style>
+  <div class="stbr-eyebrow">where the copy and the account diverge</div>
+  <h2 class="viz-title">the v1 stale-read, step by step</h2>
+  <div class="lanes">
+    <div class="row hd">
+      <div class="step-lbl">step</div>
+      <div class="lane">your copy<small>the deserialized struct in memory</small></div>
+      <div class="lane">the vault<small>the real bytes on chain</small></div>
+    </div>
+    <div class="body">
+      <div class="row">
+        <div class="step"><div class="num">1</div><span>instruction start</span></div>
+        <div class="cell"><span class="val">amount = 100</span>Anchor deserializes the vault bytes into a typed copy</div>
+        <div class="cell"><span class="val">amount = 100</span>untouched so far</div>
+      </div>
+      <div class="row">
+        <div class="step"><div class="num">2</div><span>token::transfer CPI</span></div>
+        <div class="cell"><span class="val dim">still 100</span>your copy is never notified</div>
+        <div class="cell"><span class="val">amount = 40</span>the chain updates the vault's REAL bytes</div>
+      </div>
+      <div class="row">
+        <div class="step"><div class="num">3</div><span>you read the field</span></div>
+        <div class="cell"><span class="val stale">100 &nbsp;STALE</span><code>ctx.accounts.vault.amount</code></div>
+        <div class="cell"><span class="val">amount = 40</span>the lanes have diverged</div>
+      </div>
+    </div>
+  </div>
+  <div class="fork">
+    <div class="br bad">
+      <div class="tag">4a · without reload</div>
+      <p><code>require!(100 &gt;= floor)</code> decides on a dead number — a silent bug ships.</p>
+    </div>
+    <div class="br good">
+      <div class="tag">4b · with reload</div>
+      <p><code>vault.reload()</code> re-reads the bytes — copy = 40, the check is correct.</p>
+    </div>
+  </div>
+</div>
+</body></html>

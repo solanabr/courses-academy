@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The 1.1.2 line versus the 2.0.0-rc.1 line, on the axes that decide adoption
+     purpose: put the two live options side by side on the facts that actually drive the call
+     data: columns: Anchor 1.1.2 (v1 line) | Anchor 2.0.0-rc.1 (V2 line) Release status: stable, production-proven | labeled BOTH "rc" AND "alpha" Security assurance: no framework-wide audit either, but years of production exposure and known-bug history | no audit AND no production history; the docs say "not audited" in their own words Committed stable date: n/a, it is already stable | none committed anywhere Still maintained: yes, actively shipping | yes, active development Bytecode / CU story: baseline | ~94% less deployed bytecode, ~8.8x average CU reduction (alpha-caveated)
+     prompt: Two-column comparison table using the columns and rows above. Do not visually favor either column, this is a balanced tradeoff, not a winner. Render the contradictory "rc AND alpha" cell so the contradiction is legible.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:590px;height:565px;top:-339px;right:-339px;border-radius:48% 35% 37% 41% / 50% 64% 58% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:447px;height:439px;bottom:-222px;left:-222px;border-radius:54% 44% 55% 40% / 37% 42% 37% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:414px;height:488px;bottom:-275px;left:380px;border-radius:54% 51% 54% 37% / 37% 61% 64% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden;
+         background:var(--surface-card); margin-top:2px; }
+  .tr { display:flex; align-items:stretch; }
+  .tr + .tr { border-top:1.5px solid var(--border-subtle); }
+  .ax { flex:0 0 300px; padding:16px 24px; background:var(--surface-paper);
+        display:flex; flex-direction:column; justify-content:center; }
+  .axl { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.09em;
+         text-transform:uppercase; color:var(--text-secondary); line-height:1.3; }
+  .cl { flex:1 1 0; min-width:0; padding:16px 26px; border-left:1.5px solid var(--border-subtle);
+        display:flex; flex-direction:column; justify-content:center; }
+  .th { background:var(--surface-inverse); }
+  .th .ax { background:var(--stbr-dark-900); }
+  .th .axl { color:rgba(245,232,202,0.62); }
+  .th .cl { border-left-color:rgba(245,232,202,0.16); padding-top:18px; padding-bottom:18px; }
+  .cn { font-family:var(--font-display); font-weight:900; font-size:26px; line-height:1.08;
+        color:var(--text-on-dark); }
+  .cv { font-family:var(--font-mono); font-weight:700; font-size:13px;
+        color:rgba(245,232,202,0.60); margin-top:6px; }
+  .txt { font-family:var(--font-body); font-size:15.5px; line-height:1.42; color:var(--text-primary); }
+  .txt b { font-weight:800; }
+  .sub { font-family:var(--font-body); font-size:13.5px; line-height:1.38;
+         color:var(--text-muted); margin-top:5px; }
+  .cl.clash { background:rgba(255,210,63,0.20); }
+  .kv { display:flex; align-items:center; gap:11px; }
+  .lab { display:inline-block; padding:6px 15px; border-radius:var(--radius-sm);
+         background:var(--surface-accent); color:var(--text-on-accent);
+         font-family:var(--font-mono); font-weight:700; font-size:16px; }
+  .amp { font-family:var(--font-display); font-weight:900; font-size:15px;
+         letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-green-800); }
+  .clashnote { font-family:var(--font-body); font-weight:700; font-size:13px;
+               color:var(--stbr-green-800); margin-top:7px; }
+  .verdict { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:19px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.14;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">both lines are live &middot; neither is the winner</div>
+  <h2 class="viz-title" style="font-size:46px">the axes that actually decide adoption</h2>
+  <div class="tbl">
+
+    <div class="tr th">
+      <div class="ax"><span class="axl">the axis</span></div>
+      <div class="cl"><div class="cn">Anchor 1.1.2</div><div class="cv">the v1 line</div></div>
+      <div class="cl"><div class="cn">Anchor 2.0.0-rc.1</div><div class="cv">the V2 line</div></div>
+    </div>
+
+    <div class="tr">
+      <div class="ax"><span class="axl">release status</span></div>
+      <div class="cl"><div class="txt">stable, production-proven</div></div>
+      <div class="cl clash">
+        <div class="kv"><span class="lab">rc</span><span class="amp">and</span><span class="lab">alpha</span></div>
+        <div class="clashnote">labeled BOTH, in the same breath &mdash; the contradiction is the signal</div>
+      </div>
+    </div>
+
+    <div class="tr">
+      <div class="ax"><span class="axl">security assurance</span></div>
+      <div class="cl"><div class="txt">no framework-wide audit either</div><div class="sub">but years of production exposure and a known-bug history</div></div>
+      <div class="cl"><div class="txt">no audit <b>and</b> no production history</div><div class="sub">the docs say &ldquo;not audited&rdquo; in their own words</div></div>
+    </div>
+
+    <div class="tr">
+      <div class="ax"><span class="axl">committed stable date</span></div>
+      <div class="cl"><div class="txt">n/a &mdash; it is already stable</div></div>
+      <div class="cl"><div class="txt">none committed anywhere</div></div>
+    </div>
+
+    <div class="tr">
+      <div class="ax"><span class="axl">still maintained</span></div>
+      <div class="cl"><div class="txt">yes &mdash; actively shipping</div></div>
+      <div class="cl"><div class="txt">yes &mdash; active development</div></div>
+    </div>
+
+    <div class="tr">
+      <div class="ax"><span class="axl">bytecode / CU story</span></div>
+      <div class="cl"><div class="txt">baseline</div></div>
+      <div class="cl"><div class="txt">~94% less deployed bytecode, ~8.8&times; average CU reduction</div><div class="sub">alpha-caveated figures</div></div>
+    </div>
+
+  </div>
+  <div class="verdict">
+    <span class="vk">the call</span>
+    <span class="vt">Two live lines, not a winner and a loser &mdash; the axis that decides is what you are risking.</span>
+  </div>
+</div>
+</body></html>

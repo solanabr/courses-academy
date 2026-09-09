@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The three Rust shapes this lesson leans on
+     purpose: fix the trait / marker type / associated type vocabulary before the argument uses it
+     data: three shapes, mapped to the concrete constraint: - TRAIT: AccountConstraint<A>  -> the promise: a set of hooks (init/check/update/exit) a type agrees to provide - MARKER TYPE: pub struct MinBalanceConstraint;  -> a fieldless name to hang one rule's behavior on - ASSOCIATED TYPE: type Value = u64;  -> the type of the value on the right of `=` (the 100 in min_balance = 100) binding: impl AccountConstraint<Account<Vault>> for MinBalanceConstraint { type Value = u64; ... } reads as: "here is what the MinBalanceConstraint rule does when applied to a loaded Vault, and its value is a u64"
+     prompt: Three stacked cards, one per shape (trait, marker type, associated type), each with its one-line role and its concrete example from the data. Below the cards, show the single impl line that binds all three together, with thin connectors from each card to the matching token in that impl line (AccountConstraint<Account<Vault>> -> trait card, MinBalanceConstraint -> marker card, type Value = u64 -> associated card).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:563px;height:507px;top:-311px;right:-311px;border-radius:43% 39% 48% 47% / 41% 59% 38% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:473px;height:491px;left:-248px;top:256px;border-radius:59% 57% 63% 47% / 40% 51% 58% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:503px;bottom:-262px;right:-262px;border-radius:40% 44% 54% 57% / 43% 57% 63% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .shapes { display:flex; gap:24px; }
+  .shape { flex:1 1 0; height:192px; background:var(--surface-card);
+           border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); overflow:hidden; display:flex; flex-direction:column; }
+  .shape .sk { background:var(--surface-brand); padding:11px 20px; font-family:var(--font-body);
+               font-weight:800; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+               color:var(--text-on-brand); }
+  .shape .stok { padding:18px 20px 12px; font-family:var(--font-mono); font-weight:700;
+                 font-size:21px; line-height:1.2; color:var(--text-primary); }
+  .shape .srole { padding:0 20px 18px; font-family:var(--font-body); font-size:15px;
+                  line-height:1.42; color:var(--text-secondary); }
+  .shape .srole b { color:var(--text-primary); font-weight:700; }
+  .conns { display:flex; gap:24px; }
+  .conn { flex:1 1 0; display:flex; justify-content:center; }
+  .conn svg { display:block; }
+  .bind { display:flex; background:var(--surface-inverse); border-radius:var(--radius-lg);
+          overflow:hidden; }
+  .bcell { flex:1 1 0; padding:22px 12px; text-align:center; font-family:var(--font-mono);
+           font-weight:700; font-size:20px; line-height:1.25; color:rgba(245,232,202,0.55); }
+  .bcell em { font-style:normal; color:var(--stbr-yellow); }
+  .bindkey { margin-top:8px; display:flex; gap:24px; }
+  .bindkey .bk { flex:1 1 0; text-align:center; font-family:var(--font-body); font-weight:700;
+                 font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+                 color:var(--text-secondary); }
+  .reads { margin-top:18px; border-left:5px solid var(--surface-brand); padding:4px 0 4px 18px;
+           font-family:var(--font-body); font-size:16px; line-height:1.4; color:var(--text-primary); }
+  .reads span { font-weight:800; letter-spacing:.1em; text-transform:uppercase; font-size:11.5px;
+                color:var(--stbr-emerald); display:block; margin-bottom:4px; }
+</style>
+  <div class="stbr-eyebrow">vocabulary before the argument</div>
+  <h2 class="viz-title">three rust shapes, one binding line</h2>
+
+  <div class="shapes">
+    <div class="shape">
+      <div class="sk">trait</div>
+      <div class="stok">AccountConstraint&lt;A&gt;</div>
+      <div class="srole">the <b>promise</b> &mdash; a set of hooks (<b>init / check / update / exit</b>) a type agrees to provide</div>
+    </div>
+    <div class="shape">
+      <div class="sk">marker type</div>
+      <div class="stok">pub struct MinBalanceConstraint;</div>
+      <div class="srole">a <b>fieldless name</b> to hang one rule's behaviour on</div>
+    </div>
+    <div class="shape">
+      <div class="sk">associated type</div>
+      <div class="stok">type Value = u64;</div>
+      <div class="srole">the type of the value on the right of <b>=</b> &mdash; the <b>100</b> in <b>min_balance = 100</b></div>
+    </div>
+  </div>
+
+  <div class="conns">
+    <div class="conn"><svg width="16" height="44"><line x1="8" y1="0" x2="8" y2="33" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,44 1,31 15,31" fill="#008b4c"/></svg></div>
+    <div class="conn"><svg width="16" height="44"><line x1="8" y1="0" x2="8" y2="33" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,44 1,31 15,31" fill="#008b4c"/></svg></div>
+    <div class="conn"><svg width="16" height="44"><line x1="8" y1="0" x2="8" y2="33" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,44 1,31 15,31" fill="#008b4c"/></svg></div>
+  </div>
+
+  <div class="bind">
+    <div class="bcell">impl <em>AccountConstraint&lt;Account&lt;Vault&gt;&gt;</em></div>
+    <div class="bcell">for <em>MinBalanceConstraint</em></div>
+    <div class="bcell">{ <em>type Value = u64;</em> &hellip; }</div>
+  </div>
+  <div class="bindkey">
+    <div class="bk">the promise</div>
+    <div class="bk">the name</div>
+    <div class="bk">the value's type</div>
+  </div>
+
+  <div class="reads">
+    <span>reads as</span>
+    here is what the <b>MinBalanceConstraint</b> rule does when applied to a loaded <b>Vault</b>, and its value is a <b>u64</b>
+  </div>
+</div>
+</body></html>

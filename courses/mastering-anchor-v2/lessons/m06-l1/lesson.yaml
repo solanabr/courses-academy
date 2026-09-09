@@ -1,0 +1,110 @@
+id: lesson-mav2-m06-l1
+slug: m06-l1
+title: "Turn the instruments on: profile, debug, and cover the swap"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    mollusk-svm: "0.15.1"
+    mollusk-svm-programs-token: "0.15.1"
+    solana-sdk: "4.0.0"
+    solana-address: "2.6.1"
+    solana-cli: "3.1.10"
+skills:
+  - compute-budget
+  - program-testing
+  - anchor
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: profile-output
+        prompt: "You ran `anchor test --profile` on the swap and the run finished green. Where do the per-test flamegraphs land, and what kind of build produced them?"
+        multiSelect: false
+        options:
+          - id: e
+            label: "Under target/anchor-v2-profile/, one SVG for the run, debug build."
+            correct: false
+            feedback: "One SVG for the whole run would fold every test's transactions into a single chart, which is exactly the confusion the per-test split avoids: your fixture's mint-and-fund transactions get their own roots, often fatter than the trade. The profiler writes one file per test so the roots you are ignoring are at least in someone else's file."
+          - id: d
+            label: "Under target/anchor-v2-profile/, one SVG per test, a release build."
+            correct: false
+            feedback: "Right path, right granularity, wrong build. A release build strips the DWARF symbols the profiler needs to name a frame, so `--profile` compiles in debug on purpose and you pay for it in inflated CU figures that are only good for comparing frames against each other."
+          - id: b
+            label: "Under target/deploy/, one SVG per program, from a release build."
+            correct: false
+            feedback: "target/deploy/ holds the compiled .so only. The profiler writes to its own directory, emits one SVG per test rather than per program, and builds in debug so DWARF survives."
+          - id: a
+            label: "Only as text tables in stdout, since V2 dropped the v1-era flamegraph SVGs."
+            correct: false
+            feedback: "Backwards: the flamegraph SVG is V2's addition, and `--profile` is the flag that writes it. There is no v1 SVG being retired here."
+          - id: c
+            label: "Under target/anchor-v2-profile/, one SVG per test, a debug build."
+            correct: true
+            feedback: "Debug is chosen so symbols survive. Strip them and every frame reads as a hex address. The cost is that the CU numbers on it are relative shape, never the release figure you would ship."
+        explanation: "`anchor test --profile` compiles a debug build (for DWARF symbols) and emits one flamegraph SVG per test under target/anchor-v2-profile/. Because it is a debug build, treat the CU it shows as relative shape, not your release cost. DWARF is the debug-info format that maps compiled instructions back to your function names; without it the profiler would label every frame with a raw hex address instead of `swap_out`."
+      - id: step-instruction
+        prompt: "One swap instruction fails and you want to walk it sBPF instruction by instruction, inspecting registers as you go. Which tool does that?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "gdb attached by hand to the built .so, since no Anchor subcommand shows sBPF registers."
+            correct: false
+            feedback: "Anchor does not leave you to wire this yourself. The debugger's TUI shows the registers changing as you step, and if you want gdb proper, `anchor debugger --gdb` exposes the solana-sbpf stub on 127.0.0.1:9001 for you to attach to. Reaching for bare gdb means doing by hand what a subcommand already hosts."
+          - id: a
+            label: "anchor debugger, a ratatui TUI that steps sBPF instructions and shows registers."
+            correct: true
+            feedback: "It doesn't run a suite: one named test is rebuilt, its transaction replayed, and you land on your program's first instruction. There is a gdb stub behind a flag too, if you would rather break on symbol names."
+          - id: c
+            label: "anchor test --profile: the flamegraph pauses at the failing frame so you can read registers."
+            correct: false
+            feedback: "The flamegraph is a static SVG written after the whole run finishes. Frame width tells you where cost accumulated; there is no live frame to pause on and no register state captured in the file."
+          - id: b
+            label: "anchor coverage: it replays the failing test and halts on the uncovered line for inspection."
+            correct: false
+            feedback: "Tempting because coverage does point at code your tests never reached, but it never runs interactively: it reconstructs line and branch hits from SBF register traces and drops an LCOV file. Nothing halts, and there is no register view."
+        explanation: "anchor debugger is the instruction-level ratatui TUI; it is the only one of the four that lets you step and inspect, while the others produce reports after the fact. It does not run your suite; it builds the named test, replays its transaction, and halts at your program's first instruction. Passing `--gdb` additionally exposes the solana-sbpf gdb stub on 127.0.0.1:9001, so you can attach real gdb and set breakpoints by symbol name."
+      - id: cu-precise-unit
+        prompt: "You want CU-precise assertions on the trade instruction without standing up a validator, and you want to know how the testing thread escalates from here."
+        multiSelect: false
+        options:
+          - id: a
+            label: "Surfpool localnet: the CU-precise unit harness, no validator needed."
+            correct: false
+            feedback: "Surfpool is itself a localnet validator, forking real cluster state, which is exactly the stand-up this question rules out. It arrives later, at the capstone, for full-floor integration rather than per-instruction CU."
+          - id: b
+            label: "Mollusk (anza-xyz/mollusk): an in-process minified SVM with CU-precise checks."
+            correct: true
+            feedback: "Unaffiliated, third-party, pinned in this lab: one instruction, no validator, no async anywhere in it. The testing thread climbs here from the earlier harness, and localnet comes later."
+          - id: c
+            label: "anchor coverage: its LCOV report carries CU per line to assert on."
+            correct: false
+            feedback: "LCOV records `DA:` line hits and `BRDA:` branch hits, counts of how often code ran rather than what it cost. Coverage also reports rather than gates, so there is nothing there to assert against."
+          - id: d
+            label: "The LiteSVM harness from module 2, since it already reports compute units."
+            correct: false
+            feedback: "LiteSVM is the right shape and the wrong rung. It answers whether the instruction did the right thing, in process and fast, and this module escalates past it precisely because the next question is how many compute units the right thing took. That assertion is the one Mollusk adds."
+        explanation: "Mollusk gives CU-precise, in-process unit assertions on a single instruction. The module's testing thread escalates from the LiteSVM harness (m02) up to Mollusk here; Surfpool comes later for full-floor integration. Mollusk is a third-party crate with no Anchor affiliation, pinned at 0.15.1 in this lab, and it runs one instruction with no validator, no localnet, and no async: you build the instruction, hand it accounts, and assert `Check::success()` plus `Check::compute_units(N)`."
+      - id: coverage-output
+        prompt: "You ran `anchor coverage` on the swap to find untested branches. What does it produce, and from what?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "An HTML site of line coverage, rendered from the swap's test run."
+            correct: false
+            feedback: "You can get that page, but not from this command. `anchor coverage` writes raw LCOV, a machine format of `DA:` and `BRDA:` records with no source in it, and turning that into something browsable is a second step you run yourself with genhtml or an editor extension."
+          - id: a
+            label: "A flamegraph SVG of CU cost per function, one per test, under target/deploy/."
+            correct: false
+            feedback: "That describes `anchor test --profile`, and even then the SVGs land under target/anchor-v2-profile/, not target/deploy/. Coverage is about which code ran, not how expensive it was."
+          - id: c
+            label: "An LCOV report of line and branch coverage, from SBF register traces."
+            correct: true
+            feedback: "The artifact is a hit-count file with no source in it; something has to render it before you can read anything. Which lines ran, never what they cost."
+          - id: b
+            label: "A hard gate that fails the build when coverage drops below a threshold."
+            correct: false
+            feedback: "Coverage hands you a report and walks away; it never fails a build. A coverage floor is CI policy you write on top of the LCOV file yourself."
+        explanation: "anchor coverage reconstructs line/branch coverage as LCOV from SBF register traces, so you can see which swap branches your tests never exercised. It reports; it does not decide or gate. The raw file at target/anchor-v2-coverage/lcov.info is a machine format of `DA:` and `BRDA:` records with no source in it, so render it with `genhtml` (or point an editor extension at it) to read the red branches against your own lib.rs."

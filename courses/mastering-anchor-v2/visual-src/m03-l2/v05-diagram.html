@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: init_if_needed, what reuse-validation covers and what survives
+     purpose: separate the structural checks V2 runs from the business-state guard you still owe
+     data: init_if_needed on an existing account -> V2 reuse-validation runs: COVERED (framework): space matches, owner == program, discriminator == Vault NOT COVERED (you): credit is a live balance, owner field is a real player, any invariant the surviving attack: attacker sends the "create or top up" ix on a vault that already has credit -> naive handler does `vault.credit = 0` thinking it just created the account -> live balance clobbered the guard: branch on "is this fresh?" (owner == default) and NEVER reset live fields
+     prompt: A two-zone diagram. Left zone "reuse-validation (framework covers)" lists space/owner/discriminator with green checks. Right zone "your invariants (survive)" lists credit balance / owner identity with amber warning tags. Below, a short horizontal attack strip: existing vault -> naive reset -> red "balance clobbered". A final green node: "guard: branch on fresh vs existing".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:503px;height:533px;top:-280px;right:-280px;border-radius:64% 59% 42% 57% / 53% 55% 56% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:524px;height:447px;left:-305px;top:261px;border-radius:36% 35% 37% 62% / 44% 50% 43% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:552px;height:499px;bottom:-286px;right:-286px;border-radius:46% 60% 35% 60% / 51% 61% 43% 65%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:42px; margin:4px 0 16px; }
+
+  .z5-row { display:flex; align-items:stretch; margin-bottom:20px; }
+  .z5-zone { flex:0 0 706px; border-radius:var(--radius-lg); overflow:hidden;
+             background:var(--surface-card); border:2px solid var(--stbr-emerald-800); }
+  .z5-zone.own { margin-left:32px; border-color:var(--stbr-yellow-700); }
+  .z5-h { height:50px; display:flex; align-items:center; padding:0 22px;
+          background:var(--surface-brand); }
+  .z5-zone.own .z5-h { background:var(--surface-accent); }
+  .z5-h .t { font-family:var(--font-display); font-weight:900; font-size:20px;
+             letter-spacing:0.06em; text-transform:uppercase; color:var(--stbr-cream); }
+  .z5-zone.own .z5-h .t { color:var(--stbr-dark); }
+  .z5-h .s { margin-left:auto; font-family:var(--font-body); font-size:15px;
+             font-weight:700; color:rgba(245,232,202,0.88); }
+  .z5-zone.own .z5-h .s { color:rgba(27,35,29,0.72); }
+
+  .z5-b { padding:16px 22px; }
+  .z5-i { display:flex; align-items:center; height:56px; margin-bottom:8px;
+          border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+          padding:0 16px; }
+  .z5-i.last { margin-bottom:0; }
+  .z5-mk { flex:0 0 34px; height:34px; border-radius:50%; margin-right:16px;
+           font-family:var(--font-display); font-weight:900; font-size:18px;
+           text-align:center; line-height:34px;
+           background:var(--surface-brand); color:var(--stbr-cream); }
+  .z5-zone.own .z5-mk { background:var(--surface-accent); color:var(--stbr-dark);
+                        border:1.5px solid var(--stbr-yellow-700); line-height:31px; }
+  .z5-t { flex:1; font-family:var(--font-body); font-size:20px; color:var(--text-primary); }
+  .z5-t code { font-family:var(--font-mono); font-size:19px; font-weight:700;
+               color:var(--stbr-emerald-800); }
+
+  .z5-att { border-radius:var(--radius-lg); border:2px solid var(--stbr-dark);
+            background:var(--surface-paper); padding:14px 20px 16px; }
+  .z5-alab { font-family:var(--font-display); font-weight:900; font-size:16px;
+             letter-spacing:0.14em; text-transform:uppercase;
+             color:var(--text-secondary); margin-bottom:10px; }
+  .z5-arow { display:flex; align-items:center; }
+  .z5-n { flex:1; height:78px; display:flex; align-items:center; padding:0 18px;
+          border-radius:var(--radius-md); background:var(--surface-card);
+          border:1.5px solid var(--border-subtle); }
+  .z5-n .t { font-family:var(--font-body); font-size:18px; line-height:1.25;
+             color:var(--text-primary); }
+  .z5-n .t code { font-family:var(--font-mono); font-size:17px; font-weight:700;
+                  color:var(--stbr-emerald-800); }
+  .z5-n.hit { background:var(--surface-inverse); border-color:var(--stbr-dark); }
+  .z5-n.hit .t { font-family:var(--font-display); font-weight:900; font-size:22px;
+                 color:var(--stbr-yellow); }
+  .z5-ar { flex:0 0 58px; text-align:center; }
+
+  .z5-guard { margin-top:18px; height:72px; display:flex; align-items:center;
+              padding:0 26px; border-radius:var(--radius-lg);
+              background:var(--surface-brand); }
+  .z5-guard .lead { flex:0 0 158px; font-family:var(--font-display); font-weight:900;
+                    font-size:19px; letter-spacing:0.12em; text-transform:uppercase;
+                    color:var(--stbr-cream); }
+  .z5-guard .b { flex:1; font-family:var(--font-body); font-size:20px; line-height:1.3;
+                 color:var(--stbr-cream); }
+  .z5-guard .b code { font-family:var(--font-mono); font-size:19px; font-weight:800;
+                      color:var(--stbr-cream); }
+  .z5-guard .b b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">init_if_needed, on an account that already exists</div>
+  <h2 class="viz-title">Reuse-validation covers the shape, not the balance</h2>
+
+  <div class="z5-row">
+    <div class="z5-zone cov">
+      <div class="z5-h"><span class="t">covered &middot; the framework re-checks</span><span class="s">V2 reuse-validation</span></div>
+      <div class="z5-b">
+        <div class="z5-i"><div class="z5-mk">&#10003;</div><div class="z5-t">space matches</div></div>
+        <div class="z5-i"><div class="z5-mk">&#10003;</div><div class="z5-t"><code>owner == program</code></div></div>
+        <div class="z5-i last"><div class="z5-mk">&#10003;</div><div class="z5-t"><code>discriminator == Vault</code></div></div>
+      </div>
+    </div>
+
+    <div class="z5-zone own">
+      <div class="z5-h"><span class="t">not covered &middot; still yours</span><span class="s">business state</span></div>
+      <div class="z5-b">
+        <div class="z5-i"><div class="z5-mk">&#9650;</div><div class="z5-t"><code>credit</code> is a live balance</div></div>
+        <div class="z5-i"><div class="z5-mk">&#9650;</div><div class="z5-t"><code>owner</code> field is a real player</div></div>
+        <div class="z5-i last"><div class="z5-mk">&#9650;</div><div class="z5-t">any invariant you defined yourself</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="z5-att">
+    <div class="z5-alab">the attack that survives</div>
+    <div class="z5-arow">
+      <div class="z5-n"><div class="t">attacker re-sends the &ldquo;create or top up&rdquo; ix on a vault that <b>already has credit</b></div></div>
+      <div class="z5-ar"><svg width="58" height="16"><line x1="0" y1="8" x2="43" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="58,8 42,2 42,14" fill="#1b231d"/></svg></div>
+      <div class="z5-n"><div class="t">naive handler runs <code>vault.credit = 0</code>, assuming it just created the account</div></div>
+      <div class="z5-ar"><svg width="58" height="16"><line x1="0" y1="8" x2="43" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="58,8 42,2 42,14" fill="#1b231d"/></svg></div>
+      <div class="z5-n hit"><div class="t">live balance clobbered</div></div>
+    </div>
+  </div>
+
+  <div class="z5-guard">
+    <div class="lead">the guard</div>
+    <div class="b">Branch on &ldquo;is this fresh?&rdquo; (<code>owner == default</code>) and <b>never</b> reset a live field on the existing-account path.</div>
+  </div>
+</div>
+</body></html>

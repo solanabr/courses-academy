@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The CPI line, V1 versus V2
+     purpose: show field by field what changed in the CPI call between the pre-1.0/1.0 line and V2
+     data: columns: piece | pre-1.0 and 1.0 line | V2 (2.0.0-rc.1) rows: - program id argument | CpiContext::new(program.key()..) as a Pubkey (older docs still show to_account_info) | CpiContext::new(program.address()..) as an &Address - the accounts you pass | deserialized AccountInfo clones, read once at the top of the handler | CpiHandle values from .cpi_handle() / .cpi_handle_mut(), live borrows - staleness after the call | you must remember to call .reload() or read a stale copy | reload no longer exists; the borrow makes a stale typed read a compile error - PDA-signed variant | CpiContext::new_with_signer(program, accounts, seeds) | CpiContext::new(program.address(), accounts).with_signer(seeds) or new_with_signer note: the middle column is the footgun era; the right column is why V2 exists
+     prompt: A three-column comparison table. Left column names the piece of the CPI call. Middle column is the older line. Right column is the V2 line. Stress the third row (staleness), since that is the load-bearing change: from a discipline you had to remember to a compile error you cannot forget.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:479px;height:512px;top:-273px;right:-273px;border-radius:63% 46% 36% 52% / 37% 48% 42% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:520px;height:480px;left:-281px;top:157px;border-radius:57% 51% 51% 57% / 54% 42% 48% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:510px;height:435px;bottom:-246px;right:-246px;border-radius:46% 35% 43% 62% / 58% 56% 40% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .tbl { background: var(--surface-card); border: 2px solid var(--border-subtle);
+         border-radius: var(--radius-lg); overflow: hidden; }
+  .tr { display: flex; align-items: stretch; border-top: 1.5px solid var(--border-subtle); }
+  .tr.head { border-top: 0; }
+  .c1 { flex: 0 0 286px; padding: 14px 20px; background: var(--surface-paper);
+        border-right: 1.5px solid var(--border-subtle);
+        display: flex; flex-direction: column; justify-content: center; }
+  .c2, .c3 { flex: 1 1 0; min-width: 0; padding: 14px 22px;
+             display: flex; flex-direction: column; justify-content: center; }
+  .c2 { border-right: 1.5px solid var(--border-subtle); }
+  .head .c1 { background: var(--stbr-dark-900); }
+  .head .c2, .head .c3 { padding: 12px 22px; }
+  .head .c2 { background: var(--surface-inverse); }
+  .head .c3 { background: var(--surface-brand); }
+  .hk { font-family: var(--font-body); font-weight: 800; font-size: 10px;
+        letter-spacing: .14em; text-transform: uppercase; color: rgba(245,232,202,0.55); }
+  .ht { font-family: var(--font-display); font-weight: 900; font-size: 21px; line-height: 1.12;
+        color: var(--text-on-dark); margin-top: 3px; }
+  .head .c3 .hk { color: rgba(245,232,202,0.72); }
+  .head .c3 .ht { color: var(--text-on-brand); }
+  .rk { font-family: var(--font-body); font-weight: 800; font-size: 13.5px; line-height: 1.3;
+        color: var(--text-primary); }
+  .rn { font-family: var(--font-body); font-size: 11px; color: var(--text-muted);
+        margin-top: 4px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+  .cd { font-family: var(--font-mono); font-size: 13.5px; line-height: 1.4;
+        color: var(--text-primary); }
+  .cd b { font-weight: 700; color: var(--stbr-emerald-800); }
+  .note { font-family: var(--font-body); font-size: 12.5px; line-height: 1.35;
+          color: var(--text-secondary); margin-top: 6px; }
+  .r-stale { background: #fff8e0; }
+  .r-stale .c1 { background: var(--surface-accent); border-right-color: var(--stbr-yellow-600); }
+  .r-stale .c1 .rn { color: var(--stbr-dark); opacity: .72; }
+  .r-stale .cd { font-family: var(--font-body); font-weight: 700; font-size: 14px; }
+  .flag { align-self: flex-start; background: var(--stbr-dark); color: var(--stbr-yellow);
+          border-radius: var(--radius-pill); padding: 3px 10px; font-family: var(--font-body);
+          font-weight: 800; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+          margin-top: 8px; }
+  .verdict { margin-top: 18px; background: var(--surface-brand-deep);
+             border-radius: var(--radius-lg); padding: 14px 26px;
+             display: flex; align-items: center; }
+  .vk { flex: 0 0 auto; font-family: var(--font-body); font-weight: 800; font-size: 11.5px;
+        letter-spacing: .13em; text-transform: uppercase; color: rgba(245,232,202,0.72); }
+  .vt { font-family: var(--font-display); font-weight: 900; font-size: 20px; line-height: 1.16;
+        color: var(--text-on-dark); margin-left: 22px; }
+</style>
+  <div class="stbr-eyebrow">field by field</div>
+  <h2 class="viz-title">the CPI line, pre-1.0 &amp; 1.0 versus V2</h2>
+
+  <div class="tbl">
+    <div class="tr head">
+      <div class="c1"><div class="hk">the piece</div><div class="ht">of the CPI call</div></div>
+      <div class="c2"><div class="hk">the footgun era</div><div class="ht">pre-1.0 and 1.0 line</div></div>
+      <div class="c3"><div class="hk">why V2 exists</div><div class="ht">V2 (2.0.0-rc.1)</div></div>
+    </div>
+
+    <div class="tr">
+      <div class="c1"><div class="rk">program id argument</div></div>
+      <div class="c2">
+        <div class="cd">CpiContext::new(<b>program.key()</b>, ..)</div>
+        <div class="note">a <code style="font-family:var(--font-mono)">Pubkey</code> &mdash; older docs still show <code style="font-family:var(--font-mono)">to_account_info()</code></div>
+      </div>
+      <div class="c3">
+        <div class="cd">CpiContext::new(<b>program.address()</b>, ..)</div>
+        <div class="note">an <code style="font-family:var(--font-mono)">&amp;Address</code></div>
+      </div>
+    </div>
+
+    <div class="tr">
+      <div class="c1"><div class="rk">the accounts you pass</div></div>
+      <div class="c2">
+        <div class="cd">deserialized <b>AccountInfo</b> clones</div>
+        <div class="note">read once at the top of the handler</div>
+      </div>
+      <div class="c3">
+        <div class="cd"><b>CpiHandle</b> values from .cpi_handle() / .cpi_handle_mut()</div>
+        <div class="note">live borrows, not copies</div>
+      </div>
+    </div>
+
+    <div class="tr r-stale">
+      <div class="c1">
+        <div class="rk">staleness after the call</div>
+        <div class="rn">the load-bearing change</div>
+      </div>
+      <div class="c2">
+        <div class="cd">you must remember to call <code style="font-family:var(--font-mono);font-weight:700">.reload()</code></div>
+        <div class="note">forget it and you read a stale copy &mdash; silently</div>
+        <span class="flag">a discipline you had to remember</span>
+      </div>
+      <div class="c3">
+        <div class="cd"><code style="font-family:var(--font-mono);font-weight:700">reload</code> no longer exists</div>
+        <div class="note">the borrow makes a stale typed read a compile error</div>
+        <span class="flag">a rule you cannot forget</span>
+      </div>
+    </div>
+
+    <div class="tr">
+      <div class="c1"><div class="rk">PDA-signed variant</div></div>
+      <div class="c2">
+        <div class="cd">CpiContext::<b>new_with_signer</b>(program, accounts, seeds)</div>
+      </div>
+      <div class="c3">
+        <div class="cd">CpiContext::new(program.address(), accounts)<br>&nbsp;&nbsp;&nbsp;&nbsp;<b>.with_signer</b>(seeds)</div>
+        <div class="note">or <code style="font-family:var(--font-mono)">new_with_signer(..)</code>, still available</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the whole point</span>
+    <div class="vt">The middle column is the footgun era. The right column is why V2 exists &mdash; the staleness bug moved from your memory into the compiler.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What a check hook costs, once it is yours to own
+     purpose: separate the cost that is a wash from the cost that compounds, so the reader knows which mistake to fear
+     data: columns: Property | Handler `if` you wrote once | check hook on the account field row: Where the rule lives | one handler's opening lines | the derive struct, attached to the field row: New instruction loads the same account | you must remember to re-write the check | the rule comes along for free row: Visible in the IDL | no | yes row: Cost of a cheap comparison | one comparison, in this handler | one comparison, in every matching instruction, a wash row: Cost of an expensive hook | contained to the handler you slowed down | paid on every matching instruction, on a hot path, forever row: Failure mode when the rule is wrong | a bug in one handler | a bug hidden behind a green "passes constraints"
+     prompt: Two-column comparison with the property names down the left. Render the last three rows in a distinct band labelled "the part you now own", with the cheap-comparison row marked neutral (a wash) and the expensive-hook and wrong-rule rows marked as the real hazards.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:500px;height:508px;top:-252px;right:-252px;border-radius:48% 36% 62% 50% / 55% 41% 53% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:368px;left:-255px;top:235px;border-radius:35% 44% 46% 37% / 49% 62% 65% 45%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:535px;height:535px;bottom:-330px;right:-330px;border-radius:41% 43% 47% 43% / 55% 57% 56% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden;
+         background:var(--surface-card); }
+  .r { display:flex; align-items:stretch; border-top:1.5px solid var(--border-subtle); }
+  .r.hd { border-top:0; background:var(--surface-inverse); }
+  .p { flex:0 0 344px; padding:13px 22px; display:flex; align-items:center;
+       border-right:1.5px solid var(--border-subtle); font-family:var(--font-body);
+       font-weight:700; font-size:15px; line-height:1.3; color:var(--text-primary); }
+  .cell { flex:1 1 0; padding:13px 22px; display:flex; flex-direction:column;
+          justify-content:center; align-items:flex-start;
+          border-right:1.5px solid var(--border-subtle); }
+  .cell .t { font-family:var(--font-body); font-size:15px; line-height:1.35;
+             color:var(--text-secondary); }
+  .cell:last-child { border-right:0; }
+  .cell .t b { color:var(--text-primary); font-weight:700; }
+  .r.hd .p, .r.hd .cell { border-right-color:rgba(245,232,202,0.20); }
+  .r.hd .p { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.14em;
+             text-transform:uppercase; color:rgba(245,232,202,0.62); }
+  .r.hd .cell { font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.15;
+                color:var(--text-on-dark); }
+  .r.hd .cell .cs { font-family:var(--font-mono); font-weight:600; font-size:12.5px;
+                    color:rgba(245,232,202,0.6); margin-top:4px; }
+  .band { display:flex; align-items:center; gap:16px; background:var(--surface-brand);
+          padding:10px 22px; }
+  .band .bt { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.14em;
+              text-transform:uppercase; color:var(--text-on-brand); }
+  .band .bs { font-family:var(--font-body); font-size:13.5px; color:rgba(245,232,202,0.95); }
+  .r.own { background:var(--surface-paper); }
+  .r.hazard { background:rgba(255,210,63,0.22); }
+  .r.hazard .cell .t, .r.own .cell .t { color:var(--text-primary); }
+  .tag { align-self:flex-start; margin-top:7px; padding:3px 11px; border-radius:var(--radius-pill);
+         font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+         text-transform:uppercase; }
+  .tag.wash { background:rgba(0,139,76,0.14); color:var(--stbr-emerald-800); }
+  .tag.haz  { background:var(--surface-inverse); color:var(--stbr-yellow); }
+  .rowtag { flex:0 0 152px; display:flex; align-items:center; justify-content:center;
+            border-left:1.5px solid var(--border-subtle); font-family:var(--font-body);
+            font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+            color:var(--text-muted); text-align:center; line-height:1.25; }
+  .r.hazard .rowtag { color:var(--text-primary); border-left-color:rgba(27,35,29,0.16); }
+  .r.own .rowtag { border-left-color:rgba(27,35,29,0.10); }
+  .r.hd .rowtag { border-left-color:rgba(245,232,202,0.20); color:rgba(245,232,202,0.62); }
+</style>
+  <div class="stbr-eyebrow">the bill for owning a hook</div>
+  <h2 class="viz-title">handler <span style="font-family:var(--font-mono);font-size:0.8em">if</span> versus a check hook</h2>
+
+  <div class="tbl">
+    <div class="r hd">
+      <div class="p">property</div>
+      <div class="cell">Handler `if` you wrote once</div>
+      <div class="cell">check hook on the account field<div class="cs">#[account(quarters::min_balance = 100)]</div></div>
+      <div class="rowtag">verdict</div>
+    </div>
+
+    <div class="r">
+      <div class="p">Where the rule lives</div>
+      <div class="cell"><div class="t">one handler's opening lines</div></div>
+      <div class="cell"><div class="t">the <b>derive struct</b>, attached to the field</div></div>
+      <div class="rowtag">&mdash;</div>
+    </div>
+
+    <div class="r">
+      <div class="p">New instruction loads the same account</div>
+      <div class="cell"><div class="t">you must remember to <b>re-write the check</b></div></div>
+      <div class="cell"><div class="t">the rule <b>comes along for free</b></div></div>
+      <div class="rowtag">&mdash;</div>
+    </div>
+
+    <div class="r">
+      <div class="p">Visible in the IDL</div>
+      <div class="cell"><div class="t">no</div></div>
+      <div class="cell"><div class="t"><b>yes</b></div></div>
+      <div class="rowtag">&mdash;</div>
+    </div>
+
+    <div class="band">
+      <span class="bt">the part you now own</span>
+      <span class="bs">one of these three is a wash. two of them compound.</span>
+    </div>
+
+    <div class="r own">
+      <div class="p">Cost of a cheap comparison</div>
+      <div class="cell"><div class="t">one comparison, in this handler</div></div>
+      <div class="cell"><div class="t">one comparison, in every matching instruction</div><span class="tag wash">a wash</span></div>
+      <div class="rowtag">neutral</div>
+    </div>
+
+    <div class="r hazard">
+      <div class="p">Cost of an expensive hook</div>
+      <div class="cell"><div class="t">contained to the handler you slowed down</div></div>
+      <div class="cell"><div class="t">paid on <b>every matching instruction</b>, on a hot path, forever</div><span class="tag haz">hazard</span></div>
+      <div class="rowtag"><span>the real<br>hazard</span></div>
+    </div>
+
+    <div class="r hazard">
+      <div class="p">Failure mode when the rule is wrong</div>
+      <div class="cell"><div class="t">a bug in one handler</div></div>
+      <div class="cell"><div class="t">a bug hidden behind a green <b>&ldquo;passes constraints&rdquo;</b></div><span class="tag haz">hazard</span></div>
+      <div class="rowtag"><span>the real<br>hazard</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

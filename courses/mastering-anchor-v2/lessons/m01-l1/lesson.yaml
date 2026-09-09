@@ -1,0 +1,78 @@
+id: lesson-mav2-m01-l1
+slug: m01-l1
+title: "Your Account<T> is the slow path"
+skills:
+  - anchor
+  - account-model
+  - compute-budget
+  - rpc-reads
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l1-q1
+        prompt: "You invoked the v1 and v2 twins and watched v2 spend far fewer CUs on the same call. What root cause is V2's design actually targeting?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "V2 shrinks the 8-byte sha256 discriminator to a single-byte tag, so each account load compares fewer bytes"
+            correct: false
+            feedback: "Tempting because pinocchio-style programs really do use one-byte tags, and V2 is built on pinocchio. But V2's discriminator is unchanged — still the 8-byte sha256 of \"account:<Name>\" — and a discriminator compare was never the expensive part. The copy was."
+          - id: a
+            label: "v1's Account<T> deserializes the account bytes into an owned struct on every access; V2 casts them in place"
+            correct: true
+            feedback: "Fewer copies, identical checks — and because the saving tracks copy volume, two twins this small leave almost nothing on the table for you to measure."
+          - id: d
+            label: "V2 memoizes each account's deserialized struct after the first read, so later field accesses in the instruction are free"
+            correct: false
+            feedback: "The instinct is right that a copy paid once beats a copy paid many times, which is why caching is the first thing anyone reaches for. V2 does not pay it at all: the wrapper is a typed view laid over the account's own bytes, so a field read is a pointer offset and there is no decoded struct anywhere to memoize."
+          - id: c
+            label: "V2 drops the owner and signer checks that v1 runs on every account, spending its compute on the read instead"
+            correct: false
+            feedback: "The exact misread the design was careful not to invite. Both twins run identical signer, owner, and discriminator validation; dropping any of it would be a security regression, not an optimization. The savings are copies that no longer happen."
+        explanation: "Issue #4390 names Account<T> the slow path: v1 copies bytes into a struct, V2 makes zero-copy Pod the default. Same safety checks, far fewer copies. Zero-copy means literally zero copies of the account buffer: V2 hands you a typed &Counter view laid over the account's own bytes, so reading a field is a pointer offset rather than a decode. The price is that account types must be Pod — flat, alignment-clean bytes with no Vec or String hiding a heap pointer inside."
+      - id: m01-l1-q2
+        prompt: "A teammate cites the docs' '9.9x average CU improvement.' What is the accurate current figure, and what does the gap teach?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "9.9x is the CU figure and 8.8x the bytecode one, so quote whichever metric your claim needs"
+            correct: false
+            feedback: "Two numbers moved in the same commit on 2026-08-13, and filing one under each metric is a tidy way to remember them wrongly. Both are before-and-after pairs: bytecode went 95% to 94%, and average CU went 9.9x to 8.8x. Neither figure belongs to the other metric."
+          - id: c
+            label: "50.4x — that is the average CU reduction across every program in the benchmark suite"
+            correct: false
+            feedback: "50.4x is real but it is the single LARGEST reduction in the set, not the average — quoting the best case as the typical case is precisely what PR #4914 was fixing. The current average is 8.8x."
+          - id: a
+            label: "9.9x — the published docs are canonical, so quoting their headline figure is always safe"
+            correct: false
+            feedback: "Reasonable-sounding, and wrong in the direction that bites: docs lag the benchmark source. Benchmark PR #4914 (2026-08-13) revised the headline DOWN to 8.8x, so 9.9x is a stale number still sitting in prose."
+          - id: b
+            label: "8.8x average — revised down from 9.9x in benchmark PR #4914; never freeze a multiplier"
+            correct: true
+            feedback: "Nobody trims a marketing number downward by accident — that is the tell it was measured rather than chosen. Where it bites is your own prose six months on, still quoting the figure you wrote down today."
+        explanation: "The headline dropped 9.9x to 8.8x (and 95% to 94% bytecode) in one honest self-correction; the alpha caveat says values can still move. That is the lesson behind the number: a benchmark multiplier is a snapshot with a date on it, never a promise, and the win scales with how much copying a given program was doing — which is why the Lab has you measure the twins yourself instead of memorizing a figure."
+      - id: m01-l1-q3
+        prompt: "A colleague asks you where to learn V2 properly. What can you actually tell them?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Helius's flagship Anchor intro now installs the 2.0.0-rc.1 toolchain and teaches V2"
+            correct: false
+            feedback: "Helius writes genuinely good Anchor material, so the guess is fair — but that intro's install block still pins 0.29.0 in 2026 and never touches 2.0.0-rc.1. Version rot, not V2 coverage."
+          - id: c
+            label: "As of 2026-08, a search turned up no dedicated V2 course or long-form guide"
+            correct: true
+            feedback: "A negative like this can't be proven, only bounded. The defensible sentence is 'a real search found nothing,' never 'none exists.'"
+          - id: a
+            label: "The official solana.com/developers/courses path already covers V2 end to end"
+            correct: false
+            feedback: "It is the first place anyone looks, which is what makes it dangerous: the URL 308-redirects into an archived content repo frozen on 2025-01-24, roughly 0.30-era Anchor. A tombstone with a nice headstone, not V2 coverage."
+          - id: d
+            label: "anchor-lang.com typically tracks the RC, so the V2 guide it ships is current"
+            correct: false
+            feedback: "The project's own site is the reasonable next stop after the Foundation path, and it is the same site whose CPI page still shows the pre-1.0 AccountInfo form. The survey turned up no long-form V2 guide there or anywhere else."
+        explanation: "The survey found none (search-budget-bounded, phrased as a finding not an absolute); the corpus's universal version rot is exactly the moat. That gap is why this course exists: it is not competing with the official on-ramp, it is replacing one that stopped breathing."

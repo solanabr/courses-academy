@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Weight the win by how often the instruction runs
+     purpose: show that the same CU delta is worth very different amounts on the hot trade path versus the cold init path
+     data: Axis | Hot path (trade) | Cold path (pool init) Runs how often | every swap, thousands of times | once per pool, then never Which lever helps it | guardrails off | const-rent on A saved CU is worth | saved on every trade, compounds with volume | saved exactly once When to spend effort here | first, while a fat frame remains | after the hot path is handled The failure mode | leaving the hot frame fat | polishing the cold path for a one-time gain
+     prompt: A two-column comparison. Left "Hot path (trade)", right "Cold path (init)". Rows as labeled. Visually weight the hot column heavier (bolder header or a "x thousands" badge) to encode that a saved CU compounds there. Caption: "rank by frequency x delta, not delta alone".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:507px;top:-308px;right:-308px;border-radius:49% 42% 52% 55% / 60% 39% 48% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:483px;left:-323px;top:155px;border-radius:59% 53% 48% 53% / 63% 53% 43% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:404px;height:480px;bottom:-270px;left:796px;border-radius:56% 60% 35% 52% / 54% 43% 53% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { display:flex; }
+  .ck { width:300px; flex:0 0 300px; margin-right:12px; }
+  .cc { width:566px; flex:0 0 566px; }
+  .cc.cold { margin-left:12px; }
+  .hd { height:100px; box-sizing:border-box; padding:0 22px; display:flex;
+        align-items:center; border-radius:var(--radius-md) var(--radius-md) 0 0; }
+  .ck .hd { background:var(--surface-paper); }
+  .ck .hd .ht { font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.14em; text-transform:uppercase; color:var(--text-muted); }
+  .hot .hd { background:var(--surface-accent); border:3px solid var(--stbr-dark);
+             border-bottom:none; }
+  .cold .hd { background:var(--surface-brand); }
+  .hd .name { font-family:var(--font-display); font-weight:900; font-size:28px;
+              line-height:1.1; }
+  .hot .hd .name { color:var(--stbr-dark); }
+  .cold .hd .name { color:var(--text-on-brand); }
+  .hd .name small { display:block; font-family:var(--font-body); font-weight:600;
+                    font-size:13px; margin-top:5px; }
+  .hot .hd .name small { color:var(--stbr-green-800); }
+  .cold .hd .name small { color:var(--stbr-cream); opacity:.75; }
+  .mult { margin-left:auto; background:var(--surface-inverse); color:var(--text-on-dark);
+          font-family:var(--font-display); font-weight:900; font-size:19px;
+          padding:9px 16px; border-radius:var(--radius-pill); line-height:1; }
+  .once { display:block; margin-left:auto; border:2px solid var(--stbr-cream);
+          color:var(--stbr-cream); font-family:var(--font-display); font-weight:800;
+          font-size:15px; padding:8px 14px; border-radius:var(--radius-pill);
+          line-height:1; white-space:nowrap; }
+  .r { height:76px; box-sizing:border-box; padding:0 22px; display:flex;
+       align-items:center; border-bottom:1px solid var(--border-subtle); }
+  .cc .r { background:var(--surface-card); }
+  .hot .r { border-left:3px solid var(--stbr-dark); border-right:3px solid var(--stbr-dark); }
+  .ck .r { background:var(--surface-paper); }
+  .cc .r:last-child, .ck .r:last-child { border-bottom:none;
+       border-radius:0 0 var(--radius-md) var(--radius-md); }
+  .hot .r:last-child { border-bottom:3px solid var(--stbr-dark); }
+  .rk { font-family:var(--font-display); font-weight:800; font-size:16px; line-height:1.2;
+        color:var(--text-primary); }
+  .rv { font-family:var(--font-body); font-size:16px; line-height:1.3;
+        color:var(--text-secondary); }
+  .hot .rv { font-weight:600; color:var(--text-primary); }
+  .rv code { font-family:var(--font-mono); font-size:0.94em; color:var(--stbr-emerald-800); }
+  .band { margin-top:20px; height:84px; box-sizing:border-box;
+          background:var(--surface-inverse); border-radius:var(--radius-lg);
+          padding:0 30px; display:flex; align-items:center; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+              opacity:.6; width:132px; flex:0 0 132px; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:26px;
+              line-height:1.15; color:var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">frequency × delta</div>
+  <h2 class="viz-title">the same CU saved is not worth the same amount</h2>
+
+  <div class="tbl">
+    <div class="ck">
+      <div class="hd"><span class="ht">axis</span></div>
+      <div class="r"><span class="rk">Runs how often</span></div>
+      <div class="r"><span class="rk">Which lever helps it</span></div>
+      <div class="r"><span class="rk">A saved CU is worth</span></div>
+      <div class="r"><span class="rk">When to spend effort here</span></div>
+      <div class="r"><span class="rk">The failure mode</span></div>
+    </div>
+
+    <div class="cc hot">
+      <div class="hd">
+        <span class="name">Hot path<small>the trade handler</small></span>
+        <span class="mult">&#215; thousands</span>
+      </div>
+      <div class="r"><span class="rv">every swap, thousands of times</span></div>
+      <div class="r"><span class="rv"><code>guardrails</code> off</span></div>
+      <div class="r"><span class="rv">saved on every trade &#8212; compounds with volume</span></div>
+      <div class="r"><span class="rv">first, while a fat frame remains</span></div>
+      <div class="r"><span class="rv">leaving the hot frame fat</span></div>
+    </div>
+
+    <div class="cc cold">
+      <div class="hd">
+        <span class="name">Cold path<small>pool init</small></span>
+        <span class="once">&#215; once</span>
+      </div>
+      <div class="r"><span class="rv">once per pool, then never</span></div>
+      <div class="r"><span class="rv"><code>const-rent</code> on</span></div>
+      <div class="r"><span class="rv">saved exactly once</span></div>
+      <div class="r"><span class="rv">after the hot path is handled</span></div>
+      <div class="r"><span class="rv">polishing the cold path for a one-time gain</span></div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="bk">so you rank</span>
+    <span class="bt">by frequency &#215; delta, never by delta alone</span>
+  </div>
+</div>
+</body></html>

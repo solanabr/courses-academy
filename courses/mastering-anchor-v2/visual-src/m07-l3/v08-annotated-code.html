@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The seeded overflow, line by line
+     purpose: show exactly where and why the constant product silently breaks
+     data: line: let k = reserve_in * reserve_out; annotation 1 (reserve_in, reserve_out): both u64; realistic pool reserves are large annotation 2 (the * operator): raw multiply; in --release, overflow WRAPS, no panic annotation 3 (result k): when the true product exceeds u64::MAX, k becomes a tiny wrapped value consequence: new_reserve_out = k / new_reserve_in is far too small, so amount_out is far too large -> pool drained fix: compute k as (reserve_in as u128).checked_mul(reserve_out as u128)?
+     prompt: Single line of code centered: "let k = reserve_in * reserve_out;". Draw three callout annotations pointing at reserve_in/reserve_out, the * operator, and k, with the annotation text above. Below, a one-line "consequence" band in a warning tone and a one-line "fix" band in a calm tone. Monospace code.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:607px;height:511px;top:-324px;right:-324px;border-radius:54% 46% 65% 50% / 47% 60% 41% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:478px;height:414px;left:-283px;top:115px;border-radius:42% 40% 38% 50% / 49% 41% 42% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:482px;height:425px;bottom:-235px;left:509px;border-radius:50% 39% 43% 40% / 64% 40% 63% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin: 4px 0 16px; }
+  .panel { background: var(--surface-inverse); border-radius: var(--radius-lg);
+           height: 152px; display: flex; align-items: center; justify-content: center; }
+  .line { font-family: var(--font-mono); font-size: 33px; font-weight: 600;
+          color: var(--text-on-dark); white-space: nowrap; }
+  .tok { display: inline-block; padding: 3px 9px 5px; border-radius: var(--radius-sm);
+         position: relative; }
+  .tok.op { border: 2px solid var(--stbr-emerald); background: rgba(0,139,76,0.24); }
+  .tok.res { border: 2px solid var(--stbr-emerald); background: rgba(0,139,76,0.24); }
+  .tok.mul { border: 3px solid var(--stbr-yellow); background: var(--surface-accent);
+             color: var(--text-on-accent); font-weight: 700; }
+  .bdg { display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+         font-family: var(--font-body); font-weight: 800; font-size: 13px; line-height: 22px;
+         text-align: center; vertical-align: super; margin-left: 4px; }
+  .bdg.g { background: var(--stbr-emerald); color: var(--stbr-cream); }
+  .bdg.y { background: var(--stbr-yellow); color: var(--stbr-dark); }
+  .cards { display: flex; gap: 18px; margin-top: 18px; }
+  .c { flex: 1 1 0; min-width: 0; background: var(--surface-card); border-radius: var(--radius-lg);
+       border: 2px solid var(--border-subtle); padding: 16px 20px; height: 132px; }
+  .c.hot { border: 3px solid var(--stbr-yellow-700); background: rgba(255,210,63,0.20); }
+  .chead2 { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+  .cn { width: 26px; height: 26px; border-radius: 50%; font-family: var(--font-body);
+        font-weight: 800; font-size: 14px; line-height: 26px; text-align: center; flex: 0 0 26px; }
+  .cn.g { background: var(--stbr-emerald); color: var(--stbr-cream); }
+  .cn.y { background: var(--stbr-yellow-700); color: var(--stbr-dark); }
+  .ctok { font-family: var(--font-mono); font-size: 15px; font-weight: 700;
+          color: var(--text-primary); }
+  .cbody { font-family: var(--font-body); font-size: 14px; line-height: 1.42;
+           color: var(--text-secondary); }
+  .cbody b { color: var(--text-primary); font-weight: 700; }
+  .c.hot .cbody { color: var(--text-primary); }
+  .band { margin-top: 16px; border-radius: var(--radius-lg); padding: 14px 24px;
+          display: flex; align-items: center; gap: 20px; }
+  .band.cons { background: var(--surface-inverse); }
+  .band.fix  { background: var(--surface-brand); }
+  .bk2 { font-family: var(--font-body); font-weight: 800; font-size: 11px; letter-spacing: .13em;
+         text-transform: uppercase; white-space: nowrap; flex: 0 0 118px; }
+  .band.cons .bk2 { color: var(--stbr-yellow); }
+  .band.fix  .bk2 { color: rgba(245,232,202,0.75); }
+  .bt2 { font-family: var(--font-body); font-size: 15px; line-height: 1.35;
+         color: var(--text-on-dark); }
+  .bt2 code { font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+              color: var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">the seeded bug, line by line</div>
+  <h2 class="viz-title">where the constant product silently breaks</h2>
+
+  <div class="panel">
+    <div class="line">let <span class="tok op">k</span><span class="bdg g">3</span> = <span class="tok res">reserve_in</span><span class="bdg g">1</span> <span class="tok mul">*</span><span class="bdg y">2</span> <span class="tok res">reserve_out</span><span class="bdg g">1</span>;</div>
+  </div>
+
+  <div class="cards">
+    <div class="c">
+      <div class="chead2"><span class="cn g">1</span><span class="ctok">reserve_in, reserve_out</span></div>
+      <div class="cbody">Both <b>u64</b>. Realistic pool reserves are large &mdash; large enough that their true product does not fit.</div>
+    </div>
+    <div class="c hot">
+      <div class="chead2"><span class="cn y">2</span><span class="ctok">the * operator</span></div>
+      <div class="cbody">Raw multiply. In <b>--release</b>, overflow <b>WRAPS</b> &mdash; no panic, no error, no signal at all.</div>
+    </div>
+    <div class="c">
+      <div class="chead2"><span class="cn g">3</span><span class="ctok">k</span></div>
+      <div class="cbody">When the true product exceeds <b>u64::MAX</b>, <b>k</b> becomes a tiny wrapped value.</div>
+    </div>
+  </div>
+
+  <div class="band cons">
+    <span class="bk2">consequence</span>
+    <span class="bt2"><code>new_reserve_out = k / new_reserve_in</code> comes out far too small, so <code>amount_out</code> comes out far too large &mdash; the pool drains.</span>
+  </div>
+
+  <div class="band fix">
+    <span class="bk2">fix</span>
+    <span class="bt2"><code>let k = (reserve_in as u128).checked_mul(reserve_out as u128)?;</code></span>
+  </div>
+</div>
+</body></html>

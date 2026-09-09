@@ -1,0 +1,86 @@
+id: lesson-mav2-m05-l1
+slug: m05-l1
+title: "token_interface & transfer_checked: upgrade the vault and escrow to SPL"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "2.0.0-rc.1"
+    anchor-v2-testing: "2.0.0-rc.1"
+    litesvm: "0.11.0"
+    solana-address: "2.6.1"
+    wincode: "0.5.5"
+skills:
+  - spl-tokens
+  - token-2022
+  - cpi
+  - pdas
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m05-l1-q1
+        prompt: "You upgraded the quarter-vault from lamport custody to SPL and the withdraw test now fails to compile, pointing at your transfer CPI. What is the most likely cause in Anchor V2?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Your mint is an InterfaceAccount<Mint> where the CPI wants a plain Account<Mint> for its decimals."
+            correct: false
+            feedback: "In V2 those two are the same type: InterfaceAccount<T> is literally an alias of Account<T>, so no wrapper swap could ever be the type error you are staring at. What decides program compatibility is the module T was imported from, and neither wrapper changes the arity of the call."
+          - id: b
+            label: "You called a bare transfer; V2's token seat expects transfer_checked, which needs the mint and its decimals."
+            correct: true
+            feedback: "Identity survives the upgrade intact: seeds, stored bump, authority constraint, all of it. Only the vehicle changes, and the checked variant wants two arguments the bare one never did."
+          - id: c
+            label: "You kept the [b\"vault\", authority] seeds, and a token account's authority PDA now derives under the token program's id."
+            correct: false
+            feedback: "Tempting because seeds::program does exist for PDAs another program owns, but the vault's authority PDA still belongs to your program, so it derives under your id with the same seeds and stored bump. Custody changes; identity doesn't."
+          - id: a
+            label: "You signed with the vault PDA's seeds, and a token program honors keypair signatures, so custody needs an approve-and-delegate step."
+            correct: false
+            feedback: "PDA-signed token transfers are exactly how program-owned vaults move funds. .with_signer over the stored bump grants the PDA signer privilege for a token CPI the same way it did for the System Program transfer, and no approve/delegate step is involved."
+        explanation: "The whole point of the upgrade lab is that the PDA/CPI skeleton is untouched: seeds, bump, and address auth stay. What changes is the custody layer: the system-program lamport transfer becomes a PDA-signed transfer_checked, which in V2 carries the mint account and decimals. Forgetting those is the classic first compile error."
+      - id: m05-l1-q2
+        prompt: "Why does the upgrade use InterfaceAccount<T> for the vault's token account instead of Account<TokenAccount>?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Account<TokenAccount> was removed in V2; InterfaceAccount<T> replaced it."
+            correct: false
+            feedback: "InterfaceAccount<T> is an alias of Account<T>, not a replacement for it; Account<T> is very much alive, and Account<TokenAccount> with a token_interface import behaves identically. The reason is program compatibility, not removal."
+          - id: d
+            label: "The wrapper is what makes ATA derivation program-aware, so a Token-2022 ATA resolves correctly."
+            correct: false
+            feedback: "The account wrapper has no say in where an ATA sits. What makes that derivation program-aware is the associated_token::token_program = token_program line reading an Interface-typed program account, so the address is computed against whichever token program actually owns the mint. Hardcode the classic program there and the derivation goes wrong no matter which wrapper the token account carries."
+          - id: a
+            label: "InterfaceAccount<T> skips the owner check on load, so it costs fewer CUs."
+            correct: false
+            feedback: "Owner and discriminator checks still run inside load either way. The V2 speedup came from making Account<T> itself zero-copy, and InterfaceAccount<T> is an alias of it, so there is no CU difference to buy."
+          - id: c
+            label: "InterfaceAccount<T> serves classic SPL Token and Token-2022 from one code path."
+            correct: true
+            feedback: "What admits both programs is the module the type was imported from, not the wrapper's name: the non-interface types stay hardwired to the classic program. The capability is free, since that wrapper is already the fast path."
+        explanation: "token_interface exists so a single program works against both the SPL Token program and the Token-2022 program. InterfaceAccount<T>, an alias of Account<T>, is what lets the same account type validate either. Hardcoding Account<TokenAccount> to one program is the trap m05-l3 teaches you to diagnose from a live Token-2022 mint, the read that shows where a hardwired wrapper would refuse it. The payoff of the one code path is that your program is never hardcoded to a single token program: the same instruction takes a classic mint today and a Token-2022 mint tomorrow. And you pay nothing for the capability, because Account<T> is already the zero-copy fast path in V2, so the compatible path and the fast path are now the same path. Note the real mechanism is which module T came from, not the wrapper: the token_interface types accept either program, the plain token types pin the classic one."
+      - id: m05-l1-q3
+        prompt: "You want a custom error when the escrow's authority account has the wrong owner, so you write address = maker @ EscrowErr::BadAuthority on an Account<T>. It returns a generic IllegalOwner instead of your error. Why?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "has_one replaced address in V2, so the constraint never compiled into the accounts struct."
+            correct: false
+            feedback: "It's the reverse: has_one is the deprecated spelling and address = parent.field is its V2 replacement. The constraint compiled and executed fine; a load-time owner check simply preceded it."
+          - id: b
+            label: "address = compares keys and has no @ error slot, so V2 substitutes its own built-in error."
+            correct: false
+            feedback: "address = maker @ EscrowErr::BadAuthority compiles and does raise your error on a key mismatch, so the @ slot is real. The issue is ordering: the load-time owner check fires before the address comparison ever runs."
+          - id: a
+            label: "Owner and discriminator checks run inside load, ahead of any constraint hook."
+            correct: true
+            feedback: "Loading is not a hook; it happens first, and the account is refused before your annotation gets a look in. The way out is an untyped account and an ownership assertion you write."
+          - id: d
+            label: "Your address constraint ran ahead of load, so the generic owner error came from a later step."
+            correct: false
+            feedback: "That is the ordering inverted. Load is not a hook and it does not queue behind one: reading the bytes, checking the owner, and checking the discriminator all happen first, and the account is refused there. Nothing you attach to the field runs until load has handed the typed account over."
+        explanation: "Because those checks sit inside load, the generic owner error fires first and your custom message never gets a chance to surface. On Account<T>, load runs the owner and discriminator checks before any constraint hook, so an owner mismatch surfaces as ProgramError::IllegalOwner and your custom message never appears. When you need a custom owner error, drop to UncheckedAccount and assert owner explicitly, a footgun worth flagging inline while wiring escrow auth."

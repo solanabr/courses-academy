@@ -1,0 +1,103 @@
+id: lesson-mav2-m07-l1
+slug: m07-l1
+title: "What V2 kills at compile time"
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-cli: "2.0.0-rc.1"
+    anchor-lang: "2.0.0-rc.1"
+skills:
+  - program-security
+  - anchor
+  - account-model
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "You mark two mutable Account<T> parameters in one instruction and spell the opt-out as plain `dup` (no `unsafe`), then run `anchor build` in V2. What happens?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The program fails to compile: plain `dup` is rejected and the error tells you to write `unsafe(dup)`."
+            correct: true
+            feedback: "Mask and runtime walk are both still there. The build just never gets far enough to use either, and the diagnostic hands you the spelling, which is rather the point of demanding it."
+          - id: d
+            label: "The build usually succeeds, because plain `dup` is accepted as an alias for the unsafe spelling."
+            correct: false
+            feedback: "The ugliness is the feature. If the safe-looking spelling built, you could opt out of duplicate-mutable protection by typo and never know, which is how v1 programs lost the check by accident. V2 refuses the short spelling outright so that a green build means nobody disabled this without writing the word unsafe."
+          - id: c
+            label: "It compiles with a warning, because MUT_MASK is computed only for `zero_copy` accounts and skips ordinary slots."
+            correct: false
+            feedback: "MUT_MASK is a compile-time const over every account the instruction declares, and on V2 defaults every `Account<T>` is already a Pod zero-copy view, so there is no ordinary slot for it to skip. The missing `unsafe` is a hard error, not a warning."
+          - id: b
+            label: "It compiles, and the duplicate-mutable check simply fires at runtime in the dispatcher, exactly as it did in v1."
+            correct: false
+            feedback: "Tempting because the dispatcher's runtime dup check really does still exist in V2, but you never reach it, because the bare-`dup` spelling fails the build before a binary exists."
+        explanation: "In V2, opting out of duplicate-mutable protection is spelled `unsafe(dup)`; writing bare `dup` is a compile error that names the fix. The MUT_MASK bitset is computed at compile time; the duplicate check itself still runs in the dispatcher, but the compiler blocks the unsafe spelling before you ever get there."
+      - id: q2
+        prompt: "You try the classic type-cosplay attack: load a Pool account's bytes as a FeeConfig in V2. Why does it no longer type-check?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "`Account<T>` requires `T: Pod`, so the declared type fixes the layout and the types never interconvert."
+            correct: true
+            feedback: "At load the runtime tag check still rejects the swap, exactly as it always did. What the rewrite adds is closing the loose-slice route, so the only path left is a deliberate cast one grep away from any reviewer."
+          - id: c
+            label: "`Account<T>` writes the type's name into the header and compares it against `T` on every load."
+            correct: false
+            feedback: "This was one of the naive v1-era fixes the lesson rules out: it stores an extra field and still checks at runtime. V2 stores no type names. Discriminators remain the sha256 default, and the new guarantee is Pod typing at compile time."
+          - id: a
+            label: "V2 re-checks the discriminator on every field access, so the mismatch is caught as you read a field."
+            correct: false
+            feedback: "The block is at compile time, not a new per-field runtime check; discriminators are unchanged by default."
+          - id: d
+            label: "V2 moved the discriminator check into the type system, so a mismatched account tag now fails the build instead of the load."
+            correct: false
+            feedback: "That is the overclaim this class invites. The discriminator is still a runtime check at load, and it still rejects a Pool handed to an `Account<FeeConfig>` slot exactly as v1 did. What moved to compile time is the Pod typing that closes the byte-level route around that check, not the check itself."
+        explanation: "V2's Account<T> is zero-copy and requires T: Pod; the bytes are cast to the declared type. Two clocks are running here, and the runtime one is what stops a smuggled account: at load, a Pool handed to an `Account<FeeConfig>` slot is still rejected by the runtime discriminator check exactly as in v1. What V2 adds is closing the byte-level escape hatch: with `Account<T>` as a Pod view there is no `try_from_slice` on a loose slice to reach for, and the deliberate `bytemuck::from_bytes::<FeeConfig>(&data[8..])` cast you would need instead is something a reviewer can grep for in one pass."
+      - id: q3
+        prompt: "You hold a typed reference to an account and try to read its fields while a `CpiHandle` for that account is still live. What does V2 do?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Runtime panic: V2 detects the aliasing borrow when the CPI returns and aborts before the stale read."
+            correct: false
+            feedback: "Plausible if you picture CpiHandle as a RefCell-style runtime guard like v1's account borrows. It is not: the borrow is an ordinary Rust borrow the compiler tracks, so the read is rejected at build time and no CPI ever runs."
+          - id: c
+            label: "Compile error: the CpiHandle holds a Rust borrow that excludes typed data access until the handle is dropped."
+            correct: true
+            feedback: "An ordinary compile-time borrow, not a runtime cell. Nothing executes and no invocation is issued at all. A class that used to need a remembered call is simply not writable now."
+          - id: b
+            label: "It works, and as in v1 you must call `.reload()` on the account after the CPI to see the updated bytes."
+            correct: false
+            feedback: "This is exactly the v1 muscle memory V2 retires. The stale read no longer compiles while the handle is live, and once the handle is dropped the typed view is already fresh, so there is no `.reload()` step to remember."
+          - id: d
+            label: "It compiles: the handle is dropped when the CPI returns, and V2 refreshes the typed account for you."
+            correct: false
+            feedback: "Nothing gets refreshed on your behalf, and the read you wrote sits inside the handle's borrow window rather than after it. The class is not solved by the framework doing the reload silently; it is solved by the read not building until the handle is gone, at which point the typed view was never stale to begin with."
+        explanation: "A CpiHandle is a borrow-tracked handle; while it is alive it holds a Rust borrow that prevents typed access to the same data. The stale-after-CPI class that `.reload()` used to paper over is now a compile error."
+      - id: q4
+        prompt: "A teammate concludes 'V2 is secure by default, so we can skip the audit.' Grounded in this lesson, what is the best response?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Agree in part: with those four classes dead, the audit can typically narrow to the arithmetic and logic bugs the compiler misses."
+            correct: false
+            feedback: "Narrowing is exactly the move that compounds the risk, and the arithmetic is off too: three classes are compile errors and the fourth still builds, out of eleven in the taxonomy. Signer and owner checks and account substitution are not on your shortlist and they are where escrows drain. Compile-time wins reallocate where you look; they do not license looking at less."
+          - id: c
+            label: "Wrong direction: V2 removes no vulnerability classes; the 8.8x figure in PR #4914 was a compute benchmark, not a security claim."
+            correct: false
+            feedback: "The 8.8x number really is a CU benchmark and should never be cited as security, which is what makes this tempting, but V2 does convert type cosplay, dup-mut, and CPI aliasing into compile errors. The point is that it does not convert all eleven classes."
+          - id: b
+            label: "That is right: type cosplay, dup-mut, CPI aliasing, and bump recalc are all ruled out by the V2 defaults, so review adds little."
+            correct: false
+            feedback: "Three of those are genuine compile errors and bump recalc merely re-derives the canonical bump the account stored, but missing signer/owner checks, account substitution, and arithmetic bugs all still compile and run, and the framework itself is unaudited."
+          - id: a
+            label: "Three of the four became compile errors and the fourth is inert, but V2 is an unaudited alpha, so the audit stands."
+            correct: true
+            feedback: "Four of eleven classes touched; the other seven compile and run exactly as before. What compounds is cultural: a compiler you trust thins review precisely where it cannot see."
+        explanation: "V2 turns type cosplay, dup-mut, and CPI aliasing into compile errors, and leaves bump recalculation compiling but inert, a real gain. But it is an unaudited alpha, one whose own README leans the other way ('v2 is secure by default for users'), so the defaults-are-no-substitute-for-review discipline has to come from you, not the project, and whole classes (signer/owner, arithmetic, logic) survive. Compile-time wins narrow the attack surface; they do not retire the audit. Keep the ratio in view: four of the Solana Foundation's eleven taxonomy classes were re-run here, and the headline numbers from PR #4914 (94% bytecode, 8.8x compute, both revised down) are size-and-speed claims, never security ones. The second-order risk is worse than any single bug: a team that believes the compiler catches its security bugs reviews less precisely exactly where the compiler is silent, which is where the money leaves."
