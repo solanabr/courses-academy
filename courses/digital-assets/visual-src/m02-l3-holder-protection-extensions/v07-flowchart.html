@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The m02-l3 gate, end to end
+     purpose: preview what verify-protections.ts builds and proves so each lab step has a known destination
+     data: Step nodes in order: 1 "fund payer + alice (airdrop)" -> 2 "create soulbound badge mint (NonTransferable)" -> 3 "create alice + bob ATAs, mint 1 badge to alice" -> 4 "ASSERT: alice's account TLV carries ImmutableOwner + NonTransferableAccount" -> 5 "ASSERT REVERT: badge transfer (0x25)" -> 6 "ASSERT REVERT: owner reassignment (0x22)" -> 7 "create treasury, enable MemoTransfer; ASSERT REVERT memo-less deposit (0x24); memo deposit lands" -> 8 "enable CpiGuard on sender; ASSERT present" -> "gate: green"
+     prompt: A single horizontal pipeline of the eight numbered step nodes ending in a green terminal node. Render the three revert-assertion steps in red outline to signal that failure is the expected proof. Compact labels as in data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:531px;height:451px;top:-254px;right:-254px;border-radius:37% 61% 37% 38% / 36% 47% 62% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:480px;height:550px;bottom:-304px;left:665px;border-radius:58% 63% 56% 62% / 50% 52% 58% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:50px; }
+  .prow { display:flex; align-items:stretch; }
+  .snode { background:var(--surface-card); border:2px solid var(--stbr-emerald);
+           border-radius:var(--radius-lg); padding:13px 15px; }
+  .snode.rev { border:3px solid var(--stbr-yellow-700); background:#fff7d9; }
+  .snode .num { width:30px; height:30px; border-radius:var(--radius-pill);
+                background:var(--surface-brand); color:var(--text-on-brand);
+                font-family:var(--font-display); font-weight:900; font-size:16px;
+                line-height:30px; text-align:center; }
+  .snode.rev .num { background:var(--surface-accent); color:var(--text-on-accent);
+                    border:2px solid var(--stbr-yellow-700); line-height:26px; }
+  .snode .txt { font-family:var(--font-body); font-size:14.5px; line-height:1.35;
+                color:var(--text-primary); margin-top:8px; }
+  .snode .txt code { font-family:var(--font-mono); font-size:13px; font-weight:700; }
+  .snode .revtag { display:inline-block; font-family:var(--font-body); font-weight:800;
+                   font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+                   color:var(--stbr-yellow-700); margin-top:6px; }
+  .w320 { width:286px; flex:0 0 286px; }
+  .w280 { width:246px; flex:0 0 246px; }
+  .parr { flex:0 0 44px; width:44px; display:flex; align-items:center;
+          justify-content:center; }
+  .term { width:130px; flex:0 0 130px; background:var(--surface-brand);
+          border-radius:var(--radius-lg); display:flex; align-items:center;
+          justify-content:center; text-align:center;
+          font-family:var(--font-display); font-weight:900; font-size:21px;
+          color:var(--text-on-brand); padding:10px; }
+</style>
+  <div class="stbr-eyebrow">what verify-protections.ts builds and proves</div>
+  <h2 class="viz-title">the m02-l3 gate, end to end</h2>
+
+  <div class="prow">
+    <div class="snode w320"><div class="num">1</div>
+      <div class="txt">fund payer + alice (airdrop)</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#1b231d"/></svg></div>
+    <div class="snode w320"><div class="num">2</div>
+      <div class="txt">create soulbound badge mint (<code>NonTransferable</code>)</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#1b231d"/></svg></div>
+    <div class="snode w320"><div class="num">3</div>
+      <div class="txt">create alice + bob ATAs, mint 1 badge to alice</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#1b231d"/></svg></div>
+    <div class="snode w320"><div class="num">4</div>
+      <div class="txt">ASSERT: alice&rsquo;s account TLV carries <code>ImmutableOwner</code> +
+        <code>NonTransferableAccount</code></div></div>
+  </div>
+
+  <svg width="1456" height="46" viewBox="0 0 1456 46" style="display:block;">
+    <path d="M1252 4 L1252 23 L140 23 L140 32" fill="none" stroke="#008b4c"
+          stroke-width="3" stroke-dasharray="4 7" stroke-linecap="round"/>
+    <polygon points="128,30 152,30 140,44" fill="#008b4c"/>
+  </svg>
+
+  <div class="prow">
+    <div class="snode rev w280"><div class="num">5</div>
+      <div class="txt">badge transfer &rarr; <code>0x25</code></div>
+      <div class="revtag">assert revert &middot; failure is the proof</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#1b231d"/></svg></div>
+    <div class="snode rev w280"><div class="num">6</div>
+      <div class="txt">owner reassignment &rarr; <code>0x22</code></div>
+      <div class="revtag">assert revert &middot; failure is the proof</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#1b231d"/></svg></div>
+    <div class="snode rev w280"><div class="num">7</div>
+      <div class="txt">create treasury, enable <code>MemoTransfer</code>; memo-less deposit
+        &rarr; <code>0x24</code>; memo deposit lands</div>
+      <div class="revtag">assert revert &middot; then success</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#1b231d"/></svg></div>
+    <div class="snode w280"><div class="num">8</div>
+      <div class="txt">enable <code>CpiGuard</code> on sender; ASSERT present</div></div>
+    <div class="parr"><svg width="44" height="18" viewBox="0 0 44 18">
+      <line x1="0" y1="9" x2="30" y2="9" stroke="#008b4c" stroke-width="3"/>
+      <polygon points="30,2 44,9 30,16" fill="#008b4c"/></svg></div>
+    <div class="term">gate:<br>green</div>
+  </div>
+</div>
+</body></html>

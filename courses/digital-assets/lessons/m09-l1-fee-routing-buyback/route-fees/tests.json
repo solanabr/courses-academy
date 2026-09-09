@@ -1,0 +1,32 @@
+[
+  {
+    "id": "split-and-buyback",
+    "input": "1000000n, 2000, 5000000000n, 1000000n",
+    "expectedOutput": "result.burnedFromFees === 200000n && result.toTreasury === 800000n && result.buyback === 5000n",
+    "description": "20% of 1,000,000 burns 200,000; 800,000 stays; 5,000,000,000 lamports / 1,000,000 buys 5,000 SPROUT"
+  },
+  {
+    "id": "zero-burn-share",
+    "input": "1000000n, 0, 0n, 1000000n",
+    "expectedOutput": "result.burnedFromFees === 0n && result.toTreasury === 1000000n && result.buyback === 0n",
+    "description": "a 0 bps burn share burns nothing; the whole harvest stays; no SOL means no buyback"
+  },
+  {
+    "id": "all-burned",
+    "input": "777n, 10000, 3000000n, 1000000n",
+    "expectedOutput": "result.burnedFromFees === 777n && result.toTreasury === 0n && result.buyback === 3n",
+    "description": "a 100% burn share burns the whole harvest; 3,000,000 lamports buys 3 SPROUT to burn"
+  },
+  {
+    "id": "buyback-floors",
+    "input": "0n, 5000, 2999999n, 1000000n",
+    "expectedOutput": "result.buyback === 2n && result.toTreasury === 0n",
+    "description": "2,999,999 / 1,000,000 floors to 2 SPROUT: you cannot buy a fractional base unit"
+  },
+  {
+    "id": "conservation-holds",
+    "input": "123457n, 3300, 0n, 1n",
+    "expectedOutput": "result.burnedFromFees === 40740n && result.toTreasury === 82717n && result.burnedFromFees + result.toTreasury === 123457n",
+    "description": "33% of 123,457 floors to 40,740 burned; 82,717 stays; the split conserves the harvest exactly"
+  }
+]

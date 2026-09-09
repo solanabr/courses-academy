@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The probe's three possible outcomes, and what each one would prove
+     purpose: frame the empirical challenge as a differential test before the reader runs it, so any result maps to a conclusion
+     data: start: "attempt the init: spl-token create-token with NonTransferable + a transfer fee" outcome 1: "CLI refuses before sending" -> conclusion: "the 'conflict' lives in a client tool, not in consensus" outcome 2: "program rejects the transaction" -> conclusion: "the conflict IS enforced on-chain; the extracted five rules missed something: re-read the source" outcome 3: "transaction succeeds" -> next step: "decode the new mint with your own inspector" -> conclusion: "only if BOTH extensions are in the bytes does 'the docs are wrong about enforcement' hold" caption: exit code 0 proves outcome 3's first half only; the decoded account settles it
+     prompt: A flowchart with one start node fanning into three outcome branches per the data, each branch terminating in its conclusion box. Give outcome 3 an extra intermediate node for the decode step before its conclusion. Render the three conclusion boxes as equal-weight findings, not one highlighted as expected. Caption from data underneath.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:438px;height:459px;top:-223px;right:-223px;border-radius:44% 54% 55% 49% / 35% 38% 36% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:480px;left:-336px;top:229px;border-radius:36% 48% 39% 51% / 52% 56% 41% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 48px 32px; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; column-gap: 28px; }
+  .onode { border: 2px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-card);
+           padding: 12px 18px; text-align: center; }
+  .onode .t { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: 17px; color: var(--text-primary); }
+  .onode .s { font-family: var(--font-body); font-size: 12.5px; color: var(--text-secondary); margin-top: 2px; }
+  .concl { border-radius: var(--radius-lg); background: var(--surface-brand-deep); padding: 14px 18px;
+           font-family: var(--font-body); font-size: 14px; color: var(--text-on-brand); line-height: 1.45; text-align: center; }
+  .vstem { display: flex; flex-direction: column; align-items: center; }
+  .vstem .st { width: 2.5px; background: var(--stbr-dark); }
+  .vstem .hd { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--stbr-dark); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">a differential test, framed before you run it</div>
+  <h2 class="viz-title" style="margin-bottom:10px;">three possible outcomes, and what each would prove</h2>
+
+  <!-- start node -->
+  <div style="display:flex;justify-content:center;">
+    <div class="onode" style="background:var(--surface-inverse);border-color:var(--surface-inverse);max-width:640px;">
+      <div class="t" style="color:var(--text-on-dark);">attempt the init</div>
+      <div class="s" style="color:var(--text-on-dark);opacity:0.85;font-family:var(--font-mono);font-size:12px;">spl-token create-token · NonTransferable + a transfer fee</div>
+    </div>
+  </div>
+  <!-- fan-out connector -->
+  <div class="vstem"><div class="st" style="height:14px;"></div></div>
+  <div style="margin:0 auto;width:66%;height:2.5px;background:var(--stbr-dark);"></div>
+  <div class="cols3" style="margin-bottom:2px;">
+    <div class="vstem"><div class="st" style="height:12px;"></div><div class="hd"></div></div>
+    <div class="vstem"><div class="st" style="height:12px;"></div><div class="hd"></div></div>
+    <div class="vstem"><div class="st" style="height:12px;"></div><div class="hd"></div></div>
+  </div>
+
+  <!-- three branches -->
+  <div class="cols3">
+    <div style="display:flex;flex-direction:column;">
+      <div class="onode"><div class="t">1 · CLI refuses before sending</div></div>
+      <div class="vstem"><div class="st" style="height:88px;"></div><div class="hd"></div></div>
+      <div class="concl">the "conflict" lives in a <strong>client tool</strong>, not in consensus</div>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <div class="onode"><div class="t">2 · program rejects the transaction</div></div>
+      <div class="vstem"><div class="st" style="height:88px;"></div><div class="hd"></div></div>
+      <div class="concl">the conflict <strong>is</strong> enforced on-chain; the extracted five rules missed something: re-read the source</div>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <div class="onode"><div class="t">3 · transaction succeeds</div></div>
+      <div class="vstem"><div class="st" style="height:10px;"></div><div class="hd"></div></div>
+      <div class="onode" style="background:var(--surface-accent);border-color:var(--surface-accent);padding:8px 14px;">
+        <div class="t" style="color:var(--text-on-accent);font-size:15px;">decode the new mint with your own inspector</div>
+      </div>
+      <div class="vstem"><div class="st" style="height:10px;"></div><div class="hd"></div></div>
+      <div class="concl">only if <strong>both</strong> extensions are in the bytes does "the docs are wrong about enforcement" hold</div>
+    </div>
+  </div>
+
+  <div style="margin-top:18px;border-top:1px solid var(--border-subtle);padding-top:10px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);text-align:center;">
+    exit code 0 proves outcome 3's first half only; <strong style="color:var(--text-primary);">the decoded account settles it</strong>.
+  </div>
+</div>
+</div>
+</body></html>

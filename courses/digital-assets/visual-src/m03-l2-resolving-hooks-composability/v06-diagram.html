@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Four states of the hook slot, and when the tax starts
+     purpose: show that integrators owe the resolution tax the moment a program id occupies the slot, regardless of what its Execute does
+     data: state 1, extension absent: no TransferHook on the mint -> no tax, and no option to add one later state 2, configured but null (PYUSD): extension present, programId = 32 zero bytes -> no tax today, issuer keeps the option state 3, armed with a no-op (pump.fun): real program id in the slot, Execute contains nothing -> full resolution tax on every transfer state 4, armed with logic (harvest-hook): real program id, real Execute -> full tax plus the hook's own policy the tax line falls between states 2 and 3: the program id charges it, not the logic behind it
+     prompt: A horizontal spectrum of four labeled stages: "absent", "configured, null (PYUSD)", "no-op program (pump.fun)", "armed with logic (harvest-hook)". Under each stage two short lines: what the mint carries, and what integrators owe. A bold vertical divider between stages two and three labeled "the tax starts here: a program id lands in the slot". Shade the two rightmost stages to mark where every integrator owes resolution on every transfer.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:479px;height:504px;right:-292px;top:98px;border-radius:44% 61% 52% 42% / 50% 50% 57% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:488px;bottom:-260px;left:408px;border-radius:41% 46% 36% 54% / 60% 64% 50% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:38px 48px 34px;}
+  .spec{position:relative;}
+  .stages{display:flex;gap:14px;align-items:stretch;}
+  .taxgap{flex:0 0 14px;}
+  .stage{flex:1;border-radius:16px;border:2px solid var(--border-subtle);background:var(--surface-card);
+         padding:18px 20px 20px;}
+  .stage.taxed{background:rgba(0,139,76,.09);border-color:var(--stbr-emerald);}
+  .snum{font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--text-muted);}
+  .sname{font-family:var(--font-display);font-weight:900;font-size:23px;color:var(--text-primary);
+         line-height:1.1;margin:4px 0 2px;}
+  .swho{font-family:var(--font-body);font-size:14px;color:var(--text-muted);margin-bottom:14px;}
+  .sline{font-family:var(--font-body);font-size:14.5px;color:var(--text-primary);line-height:1.35;margin-top:10px;}
+  .sline b{font-family:var(--font-display);font-weight:800;font-size:12.5px;letter-spacing:.09em;
+           text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:3px;}
+  .divider{position:absolute;left:calc(50% - 7px);top:-10px;bottom:54px;width:14px;
+           background:var(--stbr-yellow);border-radius:7px;}
+  .taxrow{display:flex;justify-content:center;margin-top:16px;}
+  .taxchip{position:relative;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;
+           font-size:17px;border-radius:999px;padding:10px 26px;}
+  .foot{text-align:center;font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);margin-top:12px;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">when the resolution tax starts</div>
+  <h2 class="viz-title">four states of the hook slot</h2>
+  <div class="spec">
+    <div class="divider"></div>
+    <div class="stages">
+      <div class="stage">
+        <div class="snum">state 1</div>
+        <div class="sname">absent</div>
+        <div class="swho">no TransferHook on the mint</div>
+        <div class="sline"><b>the mint carries</b>no extension at all</div>
+        <div class="sline"><b>integrators owe</b>nothing &mdash; and there is no option to add a hook later</div>
+      </div>
+      <div class="stage">
+        <div class="snum">state 2</div>
+        <div class="sname">configured, null</div>
+        <div class="swho">PYUSD</div>
+        <div class="sline"><b>the mint carries</b>extension present, programId = 32 zero bytes</div>
+        <div class="sline"><b>integrators owe</b>nothing today &mdash; the issuer keeps the option</div>
+      </div>
+      <div class="taxgap"></div>
+      <div class="stage taxed">
+        <div class="snum">state 3</div>
+        <div class="sname">no-op program</div>
+        <div class="swho">pump.fun</div>
+        <div class="sline"><b>the mint carries</b>a real program id; Execute contains nothing</div>
+        <div class="sline"><b>integrators owe</b>the full resolution tax on every transfer</div>
+      </div>
+      <div class="stage taxed">
+        <div class="snum">state 4</div>
+        <div class="sname">armed with logic</div>
+        <div class="swho">harvest-hook</div>
+        <div class="sline"><b>the mint carries</b>a real program id and a real Execute</div>
+        <div class="sline"><b>integrators owe</b>the full tax, plus the hook&rsquo;s own policy</div>
+      </div>
+    </div>
+    <div class="taxrow">
+      <div class="taxchip">the tax starts here &mdash; a program id lands in the slot</div>
+    </div>
+    <div class="foot">the program id charges the tax, not the logic behind it.</div>
+  </div>
+</div>
+</div>
+</body></html>

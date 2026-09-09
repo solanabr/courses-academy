@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The compress-or-not decision, by workload shape
+     purpose: give the reader the four-row matrix the lab's tool encodes, so the verdict is reproducible rather than intuitive
+     data: Columns: Workload | Lifetime writes per account | Bytes per access | Same-block updates | Verdict | Binding reason Row 1: Compost airdrop, 100k recipients | 1 | ~128 | no | COMPRESS | 1 write is far under the 376-write break-even; 1.03 SOL versus about 200 SOL Row 2: In-game currency ledger, 12k players | ~4,000 | ~128 | no | KEEP CLASSIC | past break-even by an order of magnitude; 254 SOL versus 24 SOL Row 3: SPROUT/SOL pool state | ~900,000 | ~400 | YES | KEEP CLASSIC | same-block updates invalidate the proof the next tx was built with Row 4: Crafting-recipe blob, 5k recipes | 2 | 4,096 | no | KEEP CLASSIC | over the ~1 KB per-access guideline, even though the lamport math favors it Caption: rows 3 and 4 are disqualified before the arithmetic runs. Cheapest is not the same as eligible.
+     prompt: Six-column data table with the four rows above. Style the Verdict column as badges, green for COMPRESS and neutral-grey for KEEP CLASSIC. Highlight the cell that carries the binding reason in each row with a subtle left border. Place the caption directly beneath the table.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:528px;height:505px;top:-310px;right:-310px;border-radius:65% 49% 36% 57% / 58% 48% 36% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:455px;height:511px;left:-262px;top:185px;border-radius:47% 57% 39% 56% / 57% 35% 52% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">the matrix the lab&rsquo;s tool encodes</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 18px;color:var(--stbr-dark);">The compress-or-not decision, by workload shape</h2>
+
+    <table style="width:100%;border-collapse:collapse;font-family:var(--font-body);">
+      <thead>
+        <tr style="background:var(--surface-inverse,#1B231D);">
+          <th style="text-align:left;padding:12px 16px;color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:15px;border-radius:10px 0 0 0;">Workload</th>
+          <th style="text-align:right;padding:12px 14px;color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:15px;">Lifetime writes / acct</th>
+          <th style="text-align:right;padding:12px 14px;color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:15px;">Bytes / access</th>
+          <th style="text-align:center;padding:12px 14px;color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:15px;">Same-block updates</th>
+          <th style="text-align:center;padding:12px 14px;color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:15px;">Verdict</th>
+          <th style="text-align:left;padding:12px 16px;color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:15px;border-radius:0 10px 0 0;">Binding reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border-subtle,#e5decb);">
+          <td style="padding:13px 16px;font-weight:700;font-size:15px;color:var(--stbr-dark);">Compost airdrop, 100k recipients</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">1</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">~128</td>
+          <td style="padding:13px 14px;text-align:center;font-size:14px;color:var(--text-secondary,#4a5a4e);">no</td>
+          <td style="padding:13px 14px;text-align:center;"><span style="display:inline-block;background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.05em;padding:5px 14px;border-radius:999px;">COMPRESS</span></td>
+          <td style="padding:13px 16px;font-size:13.5px;line-height:1.4;color:var(--stbr-dark);background:rgba(255,210,63,0.16);border-left:4px solid var(--stbr-yellow);">1 write is far under the 376-write break-even; <b>1.03 SOL vs about 200 SOL</b></td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border-subtle,#e5decb);background:var(--surface-paper,#faf5e6);">
+          <td style="padding:13px 16px;font-weight:700;font-size:15px;color:var(--stbr-dark);">In-game currency ledger, 12k players</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">~4,000</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">~128</td>
+          <td style="padding:13px 14px;text-align:center;font-size:14px;color:var(--text-secondary,#4a5a4e);">no</td>
+          <td style="padding:13px 14px;text-align:center;"><span style="display:inline-block;background:#e6e2d6;color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.05em;padding:5px 12px;border-radius:999px;">KEEP CLASSIC</span></td>
+          <td style="padding:13px 16px;font-size:13.5px;line-height:1.4;color:var(--stbr-dark);background:rgba(255,210,63,0.16);border-left:4px solid var(--stbr-yellow);">past break-even by an order of magnitude; <b>254 SOL vs 24 SOL</b></td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border-subtle,#e5decb);">
+          <td style="padding:13px 16px;font-weight:700;font-size:15px;color:var(--stbr-dark);">SPROUT/SOL pool state</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">~900,000</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">~400</td>
+          <td style="padding:13px 14px;text-align:center;font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-dark);">YES</td>
+          <td style="padding:13px 14px;text-align:center;"><span style="display:inline-block;background:#e6e2d6;color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.05em;padding:5px 12px;border-radius:999px;">KEEP CLASSIC</span></td>
+          <td style="padding:13px 16px;font-size:13.5px;line-height:1.4;color:var(--stbr-dark);background:rgba(255,210,63,0.16);border-left:4px solid var(--stbr-yellow);">same-block updates invalidate the proof the next tx was built with</td>
+        </tr>
+        <tr style="border-bottom:1.5px solid var(--border-strong,#c9c2ad);background:var(--surface-paper,#faf5e6);">
+          <td style="padding:13px 16px;font-weight:700;font-size:15px;color:var(--stbr-dark);">Crafting-recipe blob, 5k recipes</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">2</td>
+          <td style="padding:13px 14px;text-align:right;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">4,096</td>
+          <td style="padding:13px 14px;text-align:center;font-size:14px;color:var(--text-secondary,#4a5a4e);">no</td>
+          <td style="padding:13px 14px;text-align:center;"><span style="display:inline-block;background:#e6e2d6;color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.05em;padding:5px 12px;border-radius:999px;">KEEP CLASSIC</span></td>
+          <td style="padding:13px 16px;font-size:13.5px;line-height:1.4;color:var(--stbr-dark);background:rgba(255,210,63,0.16);border-left:4px solid var(--stbr-yellow);">over the ~1 KB per-access guideline &mdash; even though the lamport math favors it</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:16px;background:var(--stbr-emerald);border-radius:12px;padding:12px 20px;font-family:var(--font-body);font-weight:600;font-size:16px;color:var(--stbr-cream);">rows 3 and 4 are disqualified <b>before the arithmetic runs</b> &mdash; cheapest is not the same as eligible</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,7 @@
+[
+  { "id": "t1", "input": "true, false, 1000", "expectedOutput": "1000", "description": "Destination allowlisted and hook not paused: the transfer passes and the amount flows through." },
+  { "id": "t2", "input": "false, false, 1000", "expectedOutput": "-1", "description": "Destination not on the treasury allowlist: the hook rejects with -1." },
+  { "id": "t3", "input": "true, true, 1000", "expectedOutput": "-2", "description": "Hook paused: even an allowlisted destination is rejected with -2." },
+  { "id": "t4", "input": "false, true, 500", "expectedOutput": "-2", "description": "Pause takes precedence over the allowlist check." },
+  { "id": "t5", "input": "true, false, 0", "expectedOutput": "0", "description": "A zero-amount allowed transfer passes through as 0." }
+]

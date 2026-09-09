@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What a distributor's leaf actually hashes
+     purpose: make the proof concrete, so the reader can compute a root that the on-chain verifier will agree with
+     data: node = sha256( claimant_pubkey[32] || unlocked_amount_u64_le[8] || locked_amount_u64_le[8] ) leaf = sha256( 0x00 || node[32] ) internal(a, b) = sha256( 0x01 || min(a,b) || max(a,b) )     // pairs sorted by byte value root = fold internal() up the tree; an odd node at a level is paired with itself verify(proof, root, leaf): fold the proof siblings into leaf with internal(), compare to root prefixes: 0x00 = leaf, 0x01 = internal. They exist to stop a leaf being read as a node pair. source: jito-foundation/distributor, merkle-tree/src/merkle_tree.rs and programs/merkle-distributor/src/instructions/new_claim.rs, read 2026-08-22
+     prompt: Annotated pseudo-code panel with the five formula lines stacked in order, each with a right-side annotation callout explaining its role. Highlight the two prefix bytes in both the leaf and internal lines and connect them to a single callout about second-preimage resistance. Add the source line as a small footer.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:431px;height:504px;right:-248px;top:214px;border-radius:46% 55% 42% 52% / 58% 64% 52% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:367px;height:477px;bottom:-287px;left:704px;border-radius:42% 38% 56% 48% / 38% 46% 60% 63%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .ac { display:flex; gap:16px; margin-top:6px; align-items:stretch; }
+  .code { flex:1 1 0; background:var(--surface-inverse); border-radius:var(--radius-xl);
+          padding:20px 28px 14px; display:flex; flex-direction:column; }
+  .cl { height:80px; display:flex; align-items:center; font-family:var(--font-mono);
+        font-size:15px; line-height:1.45; color:var(--stbr-cream); }
+  .cl + .cl { border-top:1px solid var(--border-on-dark); }
+  .cl .kw { color:var(--stbr-yellow); font-weight:700; }
+  .cl .cm { color:rgba(245,232,202,0.55); }
+  .pfx { background:var(--stbr-yellow); color:var(--stbr-dark); font-weight:700;
+         padding:1px 6px; border-radius:5px; }
+  .src { border-top:1px solid var(--border-on-dark); padding-top:9px; margin-top:2px;
+         font-family:var(--font-mono); font-size:12px; color:rgba(245,232,202,0.6); }
+  .notes { flex:0 0 424px; display:flex; flex-direction:column; }
+  .nt { display:flex; align-items:center; font-family:var(--font-body); font-size:14.5px;
+        line-height:1.35; color:var(--text-primary); background:var(--surface-card);
+        border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+        padding:10px 18px; }
+  .nt b { font-weight:800; color:var(--stbr-emerald); }
+  .nt.h1 { height:80px; margin-top:20px; }
+  .nt.pf { height:170px; margin-top:11px; background:var(--stbr-yellow);
+           border:2.5px solid var(--stbr-dark); color:var(--stbr-dark); }
+  .nt.pf b { color:var(--stbr-dark); }
+  .nt.h4 { height:80px; margin-top:11px; }
+  .nt.h5 { height:80px; margin-top:11px; }
+</style>
+  <div class="stbr-eyebrow">make the proof concrete</div>
+  <h2 class="viz-title">what a distributor&rsquo;s leaf actually hashes</h2>
+  <div class="ac">
+    <div class="code">
+      <div class="cl"><span><span class="kw">node</span> = sha256( claimant_pubkey[32] || unlocked_amount_u64_le[8] || locked_amount_u64_le[8] )</span></div>
+      <div class="cl"><span><span class="kw">leaf</span> = sha256( <span class="pfx">0x00</span> || node[32] )</span></div>
+      <div class="cl"><span><span class="kw">internal</span>(a, b) = sha256( <span class="pfx">0x01</span> || min(a,b) || max(a,b) )&nbsp;&nbsp;<span class="cm">// pairs sorted by byte value</span></span></div>
+      <div class="cl"><span><span class="kw">root</span> = fold internal() up the tree&nbsp;&nbsp;<span class="cm">// an odd node at a level is paired with itself</span></span></div>
+      <div class="cl"><span><span class="kw">verify</span>(proof, root, leaf): fold the proof siblings into leaf with internal(), compare to root</span></div>
+      <div class="src">source: jito-foundation/distributor &mdash; merkle_tree.rs &middot; instructions/new_claim.rs (read 2026-08-22)</div>
+    </div>
+    <div class="notes">
+      <div class="nt h1"><span>the claim itself: <b>who</b>, how much <b>unlocked</b>, how much <b>locked</b> &mdash; change any byte and the hash changes</span></div>
+      <div class="nt pf"><span>the prefix bytes: <b>0x00 = leaf, 0x01 = internal.</b> They exist to stop a leaf being read as a node pair &mdash; second-preimage resistance for the tree</span></div>
+      <div class="nt h4"><span>sorted pairs mean the verifier needs no left/right flags; folding is order-free</span></div>
+      <div class="nt h5"><span>the on-chain check: rebuild the root from the proof and compare &mdash; agree with this and your root verifies</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

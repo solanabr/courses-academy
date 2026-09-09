@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What the equality proof welds together
+     purpose: make cheat one concrete by showing the chain's post-debit ciphertext and the sender's claimed remainder as two separate objects until the equality proof binds them
+     data: left object: chain side, the available_balance ciphertext after homomorphic subtraction (the real books, which nobody can open) right object: sender side, the remainder commitment the sender supplies for the range proof (a claim, freely fabricated without this proof) bridge: CiphertextCommitmentEqualityProof certifies both commit to the same hidden value without the bridge: a sender holding 3 range-proves an invented remainder of 10 while the true balance wraps negative underneath
+     prompt: Two boxes side by side. Left box: "chain's post-debit ciphertext" tagged "real, unopenable". Right box: "sender's remainder commitment" tagged "a claim". A bold bridge arrow between them labeled "CiphertextCommitmentEqualityProof: same hidden value". Below, a faded broken-bridge variant labeled "no proof: the claim floats free while the real balance wraps negative underneath".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:443px;height:492px;right:-220px;top:325px;border-radius:49% 59% 39% 50% / 50% 45% 55% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:443px;height:497px;bottom:-301px;left:434px;border-radius:57% 47% 39% 44% / 58% 44% 52% 37%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .weld-row { display:flex; align-items:stretch; gap:0; margin-top:8px; }
+  .obj { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-2xl); padding:22px 26px; display:flex; flex-direction:column; gap:9px; }
+  .obj-side { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+              text-transform:uppercase; color:var(--stbr-green); }
+  .obj-name { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.12;
+              color:var(--text-primary); }
+  .obj-tag { align-self:flex-start; font-family:var(--font-body); font-weight:800; font-size:14px;
+             padding:5px 14px; border-radius:var(--radius-pill); }
+  .tag-real { background:var(--stbr-emerald); color:#F5E8CA; }
+  .tag-claim { background:var(--surface-paper); border:2px solid var(--stbr-dark); color:var(--stbr-dark); }
+  .obj-sub { font-family:var(--font-body); font-weight:700; font-size:14px; line-height:1.35;
+             color:var(--text-secondary); }
+  .bridge { flex:0 0 330px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .bridge-chip { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+                 display:flex; flex-direction:column; align-items:center; gap:4px;
+                 background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+                 border-radius:var(--radius-lg); padding:12px 15px; width:272px; z-index:3; }
+  .bridge-name { font-family:var(--font-mono); font-weight:700; font-size:14px; color:var(--stbr-dark);
+                 text-align:center; line-height:1.25; }
+  .bridge-sub { font-family:var(--font-body); font-weight:800; font-size:13px; color:var(--stbr-dark); }
+  .broken-row { display:flex; align-items:stretch; gap:0; margin-top:26px; }
+  .broken-row .obj { border-width:2px; border-color:var(--text-muted); background:var(--surface-card); }
+  .broken-row .obj-side { color:var(--text-muted); }
+  .broken-row .obj-name { color:var(--text-secondary); }
+  .broken-chip { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+                 background:var(--surface-paper); border:2px dashed var(--text-muted);
+                 border-radius:var(--radius-lg); padding:8px 14px; width:264px; z-index:3;
+                 font-family:var(--font-body); font-weight:800; font-size:13.5px; text-align:center;
+                 line-height:1.3; color:var(--text-primary); }
+  .cheat-cap { margin-top:14px; font-family:var(--font-body); font-weight:700; font-size:15.5px;
+               color:var(--text-primary); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">CLOSING CHEAT #1</div>
+  <h2 class="viz-title">what the equality proof welds together</h2>
+  <div class="weld-row">
+    <div class="obj">
+      <span class="obj-side">chain side</span>
+      <span class="obj-name">the chain's post-debit ciphertext</span>
+      <span class="obj-tag tag-real">real, unopenable</span>
+      <span class="obj-sub"><span style="font-family:var(--font-mono);">available_balance</span> after homomorphic subtraction &mdash; the actual books, which nobody can open</span>
+    </div>
+    <div class="bridge">
+      <svg width="330" height="70" viewBox="0 0 330 70">
+        <line x1="14" y1="35" x2="316" y2="35" stroke="#1B231D" stroke-width="5"/>
+        <polygon points="2,35 20,25 20,45" fill="#1B231D"/>
+        <polygon points="328,35 310,25 310,45" fill="#1B231D"/>
+      </svg>
+      <div class="bridge-chip">
+        <span class="bridge-name">CiphertextCommitment<br>EqualityProof</span>
+        <span class="bridge-sub">same hidden value</span>
+      </div>
+    </div>
+    <div class="obj">
+      <span class="obj-side">sender side</span>
+      <span class="obj-name">the sender's remainder commitment</span>
+      <span class="obj-tag tag-claim">a claim</span>
+      <span class="obj-sub">supplied for the range proof &mdash; freely fabricated without this proof</span>
+    </div>
+  </div>
+  <div class="broken-row">
+    <div class="obj">
+      <span class="obj-side">chain side</span>
+      <span class="obj-name" style="font-size:19px;">true balance wraps negative underneath</span>
+    </div>
+    <div class="bridge">
+      <svg width="330" height="70" viewBox="0 0 330 70">
+        <line x1="14" y1="35" x2="118" y2="35" stroke="#5c6b5f" stroke-width="4" stroke-dasharray="10 8"/>
+        <line x1="212" y1="35" x2="316" y2="35" stroke="#5c6b5f" stroke-width="4" stroke-dasharray="10 8"/>
+        <line x1="152" y1="21" x2="180" y2="49" stroke="#5c6b5f" stroke-width="4"/>
+        <line x1="180" y1="21" x2="152" y2="49" stroke="#5c6b5f" stroke-width="4"/>
+      </svg>
+      <div class="broken-chip">no proof: the claim floats free</div>
+    </div>
+    <div class="obj">
+      <span class="obj-side">sender side</span>
+      <span class="obj-name" style="font-size:19px;">holding 3, range-proves an invented remainder of 10</span>
+    </div>
+  </div>
+  <div class="cheat-cap">without the weld, the range proof happily certifies a number that has nothing to do with the real balance.</div>
+</div>
+</body></html>

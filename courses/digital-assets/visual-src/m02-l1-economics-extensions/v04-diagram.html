@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where the fee sits the instant a transfer confirms
+     purpose: land the lesson's core reveal, that fees accrue on recipient accounts and no treasury is involved
+     data: actors: seller ATA (sends 250 SPROUT) -> buyer ATA buyer ATA after transfer: amount = 247.5 SPROUT spendable; TransferFeeAmount.withheld = 2.5 SPROUT (locked) treasury account: 0. not referenced by the transfer. does not exist as far as the program knows. mint (TransferFeeConfig): fee schedule 100 bps, cap 5 SPROUT; withheld_amount on mint = 0 until a harvest caption: the fee never leaves the recipient's account on its own
+     prompt: Three-panel diagram. Left panel: seller account sending 250 SPROUT along an arrow. Center panel: the buyer's token account drawn as a box with two compartments, a large one labeled "247.5 spendable" and a small locked one labeled "2.5 withheld (TransferFeeAmount)". Right panel: a treasury box rendered empty and greyed out with the label "0, not involved". Mint state shown as a small card above with the fee schedule. Caption from data along the bottom.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:466px;right:-282px;top:210px;border-radius:43% 53% 49% 44% / 58% 43% 37% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:461px;height:491px;bottom:-249px;left:356px;border-radius:60% 59% 62% 42% / 37% 49% 61% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v04-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:34px 48px 36px; overflow:hidden; }
+  .v04-mint { margin:2px auto 18px; width:760px; background:var(--surface-inverse); color:var(--text-on-dark);
+    border-radius:var(--radius-md); padding:12px 22px; font-family:var(--font-mono); font-size:15px;
+    line-height:1.4; text-align:center; }
+  .v04-mint .h { font-family:var(--font-display); font-weight:800; font-size:13px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--stbr-yellow); margin-bottom:3px; }
+  .v04-row { display:grid; grid-template-columns:1fr 140px 1.45fr 120px 1fr; gap:0; align-items:stretch; }
+  .v04-panel { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); padding:18px 20px;
+    display:flex; flex-direction:column; }
+  .v04-panel .h { font-family:var(--font-display); font-weight:900; font-size:19px; margin-bottom:10px; }
+  .v04-seller { border-color:var(--stbr-emerald); }
+  .v04-seller .h { color:var(--stbr-emerald); }
+  .v04-seller .body { font-family:var(--font-body); font-size:16px; color:var(--text-secondary); line-height:1.4; }
+  .v04-seller .amt { font-family:var(--font-mono); font-size:26px; font-weight:700; color:var(--text-primary); margin:10px 0 6px; }
+  .v04-buyer { border-color:var(--stbr-dark); }
+  .v04-comp { border-radius:var(--radius-md); padding:12px 16px; font-family:var(--font-body); }
+  .v04-comp .n { font-family:var(--font-mono); font-size:24px; font-weight:700; }
+  .v04-comp .l { font-size:14px; margin-top:2px; }
+  .v04-spend { flex:1; background:rgba(0,139,76,.10); border:1px solid var(--stbr-emerald);
+    color:var(--text-primary); margin-bottom:10px; }
+  .v04-spend .l { color:var(--stbr-emerald); font-weight:700; }
+  .v04-held { background:var(--stbr-yellow); color:var(--stbr-dark); border:1px solid var(--stbr-yellow-700); }
+  .v04-held .l { font-weight:800; }
+  .v04-treasury { border-style:dashed; border-color:var(--stbr-ink-300); color:var(--text-muted); }
+  .v04-treasury .h { color:var(--text-muted); }
+  .v04-treasury .n { font-family:var(--font-mono); font-size:34px; font-weight:700; color:var(--stbr-ink-300); margin:6px 0 8px; }
+  .v04-treasury .body { font-family:var(--font-body); font-size:15px; line-height:1.45; }
+  .v04-arrowcell { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:0 8px; }
+  .v04-arrow { width:100%; height:4px; background:var(--stbr-emerald); position:relative; }
+  .v04-arrow::after { content:""; position:absolute; right:-2px; top:-7px;
+    border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:12px solid var(--stbr-emerald); }
+  .v04-chip { font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--stbr-emerald);
+    border:1px solid var(--stbr-emerald); border-radius:var(--radius-pill); padding:3px 10px; white-space:nowrap; }
+  .v04-noline { width:100%; height:0; border-top:3px dashed var(--stbr-ink-300); }
+  .v04-nochip { font-family:var(--font-body); font-size:13px; font-weight:700; color:var(--text-muted);
+    text-align:center; line-height:1.3; }
+  .v04-cap { margin-top:18px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:14px 24px; font-family:var(--font-body); font-size:18px; font-weight:600; }
+</style>
+  <div class="v04-card">
+    <div class="stbr-eyebrow">no treasury in sight</div>
+    <h2 class="viz-title">where the fee sits the instant a transfer confirms</h2>
+    <div class="v04-mint">
+      <div class="h">mint &middot; TransferFeeConfig</div>
+      fee schedule 100 bps &middot; cap 5 SPROUT &middot; withheld_amount = 0 until a harvest
+    </div>
+    <div class="v04-row">
+      <div class="v04-panel v04-seller">
+        <div class="h">seller ATA</div>
+        <div class="amt">&minus;250 SPROUT</div>
+        <div class="body">sends the full 250; the sender's balance is debited exactly what was asked</div>
+      </div>
+      <div class="v04-arrowcell">
+        <div class="v04-chip">250 SPROUT</div>
+        <div class="v04-arrow"></div>
+      </div>
+      <div class="v04-panel v04-buyer">
+        <div class="h">buyer ATA &mdash; after transfer</div>
+        <div class="v04-comp v04-spend">
+          <div class="n">247.5 SPROUT</div>
+          <div class="l">spendable &middot; amount</div>
+        </div>
+        <div class="v04-comp v04-held">
+          <div class="n">2.5 SPROUT</div>
+          <div class="l">withheld &middot; TransferFeeAmount (locked)</div>
+        </div>
+      </div>
+      <div class="v04-arrowcell">
+        <div class="v04-noline"></div>
+        <div class="v04-nochip">no arrow<br>ever fires</div>
+      </div>
+      <div class="v04-panel v04-treasury">
+        <div class="h">treasury account</div>
+        <div class="n">0</div>
+        <div class="body">not referenced by the transfer &mdash; it does not exist as far as the program knows</div>
+      </div>
+    </div>
+    <div class="v04-cap">the fee never leaves the recipient's account on its own.</div>
+  </div>
+</div>
+</body></html>

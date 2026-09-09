@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of a Core asset account
+     purpose: show the reader exactly which bytes the lab's verification script will read back
+     data: Single account, top to bottom: discriminator (1 byte, AssetV1) -> owner (32 bytes) -> updateAuthority enum (None | Address | Collection{address}) -> name (string) -> uri (string) -> plugin header + plugin registry -> plugins appended in sequence: Royalties {basisPoints, creators[], ruleSet} · Edition {number} · PermanentFreezeDelegate {frozen} · Attributes {key/value list}. Annotation: updateAuthority = Collection{...} IS verified membership; no separate verified flag exists.
+     prompt: Vertical account-layout diagram, one tall rounded rectangle. Base fields as stacked slots with byte annotations, then a divider labeled "plugin registry", then four plugin slots with their key fields inline. Call out the updateAuthority slot with a side note "the membership field: Collection arm = verified".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:494px;height:486px;top:-225px;right:-225px;border-radius:36% 55% 35% 42% / 46% 53% 37% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:387px;height:450px;bottom:-261px;left:608px;border-radius:41% 50% 48% 53% / 39% 47% 42% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .anat-row { display:flex; gap:0; margin-top:4px; align-items:flex-start; }
+  .acct { flex:0 0 860px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-xl); overflow:hidden; }
+  .acct-head { height:50px; background:var(--stbr-dark); color:var(--stbr-cream);
+               display:flex; align-items:center; gap:14px; padding:0 24px;
+               font-family:var(--font-display); font-weight:900; font-size:20px; }
+  .acct-head .tag { margin-left:auto; font-family:var(--font-mono); font-weight:700;
+                    font-size:14px; background:rgba(245,232,202,0.15); color:var(--stbr-cream);
+                    padding:3px 12px; border-radius:var(--radius-pill); }
+  .slot { height:46px; display:flex; align-items:center; gap:14px; padding:0 24px;
+          border-top:1.5px solid var(--border-subtle); }
+  .slot-name { font-family:var(--font-mono); font-weight:700; font-size:17px;
+               color:var(--text-primary); }
+  .slot-bytes { font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.08em; text-transform:uppercase; color:var(--stbr-emerald);
+                border:1.5px solid rgba(0,139,76,0.45); padding:2px 10px;
+                border-radius:var(--radius-pill); }
+  .slot-sub { margin-left:auto; font-family:var(--font-body); font-size:14px;
+              color:var(--text-muted); }
+  .slot.hot { background:var(--stbr-yellow); border-top:2px solid var(--stbr-dark);
+              border-bottom:2px solid var(--stbr-dark); }
+  .slot.hot .slot-name, .slot.hot .slot-sub { color:var(--stbr-dark); }
+  .slot.hot .slot-bytes { color:var(--stbr-dark); border-color:var(--stbr-dark); }
+  .divider { height:40px; display:flex; align-items:center; gap:12px; padding:0 24px;
+             background:var(--stbr-emerald); color:var(--stbr-cream);
+             font-family:var(--font-display); font-weight:800; font-size:15px;
+             letter-spacing:.08em; text-transform:uppercase; }
+  .slot.plugin { background:rgba(0,139,76,0.05); height:48px; }
+  .side { flex:1 1 auto; position:relative; min-height:400px; }
+  .note { position:absolute; left:64px; top:96px; width:440px;
+          background:var(--surface-inverse); color:var(--text-on-dark);
+          border-radius:var(--radius-lg); padding:20px 24px; }
+  .note-eyebrow { font-family:var(--font-body); font-weight:800; font-size:12px;
+                  letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-yellow);
+                  margin-bottom:8px; }
+  .note-body { font-family:var(--font-body); font-weight:600; font-size:16.5px;
+               line-height:1.45; color:var(--stbr-cream); }
+  .note-body code { font-family:var(--font-mono); font-size:15px; color:var(--stbr-yellow); }
+  .conn { position:absolute; left:0; top:153px; }
+</style>
+  <div class="stbr-eyebrow">the bytes the lab reads back</div>
+  <h2 class="viz-title">anatomy of a Core asset account</h2>
+  <div class="anat-row">
+    <div class="acct">
+      <div class="acct-head">Core asset account <span class="tag">AssetV1</span></div>
+      <div class="slot"><span class="slot-name">discriminator</span><span class="slot-bytes">1 byte</span><span class="slot-sub">AssetV1</span></div>
+      <div class="slot"><span class="slot-name">owner</span><span class="slot-bytes">32 bytes</span><span class="slot-sub">who holds the asset</span></div>
+      <div class="slot hot"><span class="slot-name">updateAuthority</span><span class="slot-bytes">enum</span><span class="slot-sub">None | Address | Collection{address}</span></div>
+      <div class="slot"><span class="slot-name">name</span><span class="slot-bytes">string</span></div>
+      <div class="slot"><span class="slot-name">uri</span><span class="slot-bytes">string</span></div>
+      <div class="divider">plugin header + plugin registry</div>
+      <div class="slot plugin"><span class="slot-name">Royalties</span><span class="slot-sub">{ basisPoints, creators[], ruleSet }</span></div>
+      <div class="slot plugin"><span class="slot-name">Edition</span><span class="slot-sub">{ number }</span></div>
+      <div class="slot plugin"><span class="slot-name">PermanentFreezeDelegate</span><span class="slot-sub">{ frozen }</span></div>
+      <div class="slot plugin"><span class="slot-name">Attributes</span><span class="slot-sub">{ key/value list }</span></div>
+    </div>
+    <div class="side">
+      <svg class="conn" width="72" height="24" viewBox="0 0 72 24">
+        <line x1="14" y1="12" x2="72" y2="12" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="2,12 18,4 18,20" fill="#1B231D"/>
+      </svg>
+      <div class="note">
+        <div class="note-eyebrow">the membership field</div>
+        <div class="note-body"><code>updateAuthority = Collection{&hellip;}</code> IS verified membership &mdash; no separate <code>verified</code> flag exists.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How routability-report.ts gates itself
+     purpose: show the report pipeline consuming both prior artifacts and refusing to emit a dishonest or non-routable set
+     data: Inputs: LAUNCH_SET -> [tagOf via predict-routability.ts] and [checkCombo via check-combo.ts] Pipeline: tag rows -> combo check -> whole-set predictor verdict -> emit four report sections Gate chain after emit: any refused tag in launch set? -> exit 1 combo invalid? -> exit 1 predictor verdict REJECTED? -> exit 1 verify-yourself list empty? -> exit 1 ("a report with nothing to verify is frozen") else -> exit 0, report ships
+     prompt: Left-to-right pipeline flowchart: two input artifact nodes (predict-routability.ts, check-combo.ts) feeding a processing spine (tag rows, combo check, verdict, emit), then a vertical chain of four gate diamonds each with an exit-1 branch, ending in an exit-0 "report ships" terminal. Annotate the empty-verify-list gate with its quote.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:530px;height:473px;top:-272px;right:-272px;border-radius:56% 41% 59% 44% / 41% 45% 50% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:493px;bottom:-246px;left:-246px;border-radius:62% 43% 61% 42% / 53% 40% 44% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p9 { position:relative; width:1456px; height:540px; margin:0 auto; }
+  .p9 svg.wires { position:absolute; top:0; left:0; }
+  .nd { position:absolute; box-sizing:border-box; border-radius:var(--radius-md);
+        display:flex; flex-direction:column; justify-content:center; padding:8px 14px; }
+  .nd .t { font-family:var(--font-body); font-weight:700; font-size:15px;
+           line-height:1.2; color:var(--text-primary); }
+  .nd .s { font-family:var(--font-mono); font-weight:600; font-size:12.5px;
+           color:var(--stbr-emerald); margin-top:2px; }
+  .launchset { left:0; top:66px; width:150px; height:60px;
+               background:var(--stbr-dark); align-items:center; text-align:center; }
+  .launchset .t { color:var(--stbr-cream); font-family:var(--font-mono); font-size:14px; }
+  .art { left:200px; width:240px; height:76px; background:var(--surface-card);
+         border:2px solid var(--stbr-emerald); }
+  .art .t { font-family:var(--font-mono); font-size:14.5px; }
+  .sp { top:58px; width:190px; height:76px; background:var(--surface-card);
+        border:2px solid var(--stbr-dark); align-items:center; text-align:center; }
+  .sp .t { font-family:var(--font-display); font-weight:800; font-size:16px; }
+  .gate { top:252px; width:270px; height:110px; background:var(--surface-card);
+          border:2.5px solid var(--stbr-dark); border-radius:var(--radius-lg); }
+  .gate .g { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+             letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-green);
+             margin-bottom:4px; }
+  .gate .t { font-family:var(--font-display); font-weight:800; font-size:17px;
+             line-height:1.18; }
+  .gate.hot { background:var(--stbr-yellow); }
+  .gate.hot .g { color:var(--stbr-dark); }
+  .exit1 { position:absolute; top:398px; width:90px; height:34px; box-sizing:border-box;
+           background:var(--status-danger); color:#fff; border-radius:var(--radius-pill);
+           font-family:var(--font-mono); font-weight:700; font-size:14px;
+           display:flex; align-items:center; justify-content:center; }
+  .ship { position:absolute; left:1240px; top:262px; width:216px; height:90px;
+          box-sizing:border-box; background:var(--stbr-emerald);
+          border-radius:var(--radius-lg); display:flex; flex-direction:column;
+          justify-content:center; padding:10px 18px; }
+  .ship .t { font-family:var(--font-mono); font-weight:700; font-size:15px;
+             color:var(--stbr-yellow); }
+  .ship .s { font-family:var(--font-display); font-weight:900; font-size:20px;
+             color:var(--stbr-cream); margin-top:2px; }
+  .quote { position:absolute; left:880px; top:454px; width:390px; box-sizing:border-box;
+           background:var(--surface-card); border:2px solid var(--stbr-yellow-600);
+           border-radius:var(--radius-lg); padding:10px 16px;
+           font-family:var(--font-body); font-weight:600; font-style:italic;
+           font-size:14px; line-height:1.35; color:var(--text-secondary); }
+  .wl { position:absolute; background:var(--surface-card);
+        border:1.5px solid var(--stbr-dark); border-radius:var(--radius-pill);
+        font-family:var(--font-body); font-weight:800; font-size:12px;
+        color:var(--stbr-dark); padding:2px 10px; white-space:nowrap; }
+</style>
+  <div class="stbr-eyebrow">the honest-exit contract</div>
+  <h2 class="viz-title" style="font-size:44px;">how routability-report.ts gates itself</h2>
+  <div class="p9">
+    <svg class="wires" width="1456" height="540" viewBox="0 0 1456 540">
+      <!-- LAUNCH_SET -> both artifacts -->
+      <path d="M150,96 H170 V48 H186" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="200,48 186,41 186,55" fill="#1b231d"/>
+      <path d="M150,96 H170 V144 H186" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="200,144 186,137 186,151" fill="#1b231d"/>
+      <!-- artifacts -> spine -->
+      <path d="M440,48 H462 V80 H476" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="490,80 476,73 476,87" fill="#008b4c"/>
+      <path d="M440,144 H462 V112 H476" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="490,112 476,105 476,119" fill="#008b4c"/>
+      <!-- spine arrows -->
+      <line x1="680" y1="96" x2="710" y2="96" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="724,96 710,89 710,103" fill="#1b231d"/>
+      <line x1="914" y1="96" x2="944" y2="96" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="958,96 944,89 944,103" fill="#1b231d"/>
+      <line x1="1148" y1="96" x2="1178" y2="96" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1192,96 1178,89 1178,103" fill="#1b231d"/>
+      <!-- emit -> gate chain (elbow) -->
+      <path d="M1287,134 V200 H175 V238" fill="none" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="175,252 167,238 183,238" fill="#1b231d"/>
+      <!-- gate pass-through arrows -->
+      <line x1="310" y1="307" x2="326" y2="307" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="340,307 326,300 326,314" fill="#008b4c"/>
+      <line x1="610" y1="307" x2="626" y2="307" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="640,307 626,300 626,314" fill="#008b4c"/>
+      <line x1="910" y1="307" x2="926" y2="307" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="940,307 926,300 926,314" fill="#008b4c"/>
+      <line x1="1210" y1="307" x2="1226" y2="307" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="1240,307 1226,300 1226,314" fill="#008b4c"/>
+      <!-- exit-1 drops -->
+      <line x1="175" y1="362" x2="175" y2="392" stroke="#c0392b" stroke-width="2.5"/>
+      <polygon points="175,398 168,386 182,386" fill="#c0392b"/>
+      <line x1="475" y1="362" x2="475" y2="392" stroke="#c0392b" stroke-width="2.5"/>
+      <polygon points="475,398 468,386 482,386" fill="#c0392b"/>
+      <line x1="775" y1="362" x2="775" y2="392" stroke="#c0392b" stroke-width="2.5"/>
+      <polygon points="775,398 768,386 782,386" fill="#c0392b"/>
+      <line x1="1075" y1="362" x2="1075" y2="392" stroke="#c0392b" stroke-width="2.5"/>
+      <polygon points="1075,398 1068,386 1082,386" fill="#c0392b"/>
+    </svg>
+    <div class="nd launchset"><div class="t">LAUNCH_SET</div></div>
+    <div class="nd art" style="top:10px;"><div class="t">predict-routability.ts</div><div class="s">tagOf</div></div>
+    <div class="nd art" style="top:106px;"><div class="t">check-combo.ts</div><div class="s">checkCombo</div></div>
+    <div class="nd sp" style="left:490px;"><div class="t">tag rows</div></div>
+    <div class="nd sp" style="left:724px;"><div class="t">combo check</div></div>
+    <div class="nd sp" style="left:958px;"><div class="t">whole-set predictor verdict</div></div>
+    <div class="nd sp" style="left:1192px;"><div class="t">emit four report sections</div></div>
+
+    <div class="nd gate" style="left:40px;"><div class="g">gate 1</div><div class="t">any refused tag in the launch set?</div></div>
+    <div class="nd gate" style="left:340px;"><div class="g">gate 2</div><div class="t">combo invalid?</div></div>
+    <div class="nd gate" style="left:640px;"><div class="g">gate 3</div><div class="t">predictor verdict REJECTED?</div></div>
+    <div class="nd gate hot" style="left:940px;"><div class="g">gate 4</div><div class="t">verify-yourself list empty?</div></div>
+
+    <div class="exit1" style="left:130px;">exit 1</div>
+    <div class="exit1" style="left:430px;">exit 1</div>
+    <div class="exit1" style="left:730px;">exit 1</div>
+    <div class="exit1" style="left:1030px;">exit 1</div>
+
+    <div class="wl" style="left:298px; top:280px;">no</div>
+    <div class="wl" style="left:598px; top:280px;">no</div>
+    <div class="wl" style="left:898px; top:280px;">no</div>
+    <div class="wl" style="left:1198px; top:280px;">no</div>
+    <div class="wl" style="left:187px; top:366px;">yes</div>
+    <div class="wl" style="left:487px; top:366px;">yes</div>
+    <div class="wl" style="left:787px; top:366px;">yes</div>
+    <div class="wl" style="left:1087px; top:366px;">yes</div>
+
+    <div class="ship"><div class="t">exit 0</div><div class="s">report ships</div></div>
+    <div class="quote">gate 4: "a report with nothing to verify is frozen"</div>
+  </div>
+</div>
+</body></html>

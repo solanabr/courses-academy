@@ -1,0 +1,115 @@
+id: lesson-date-m01-l4-decision-framework-conflict-matrix
+slug: m01-l4-decision-framework-conflict-matrix
+title: "Classic SPL vs Token-2022: the decision framework + the conflict matrix"
+skills:
+  - token-2022
+  - solana-programs
+  - account-model
+  - error-handling
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    tsx: "4.20.5"
+    "@types/node": "26.2.0"
+    spl-token-cli: "5.6.1"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check-combo
+    type: code
+    language: typescript
+    starter: check-combo/starter.ts
+    solution: check-combo/solution.ts
+    tests: check-combo/tests.json
+    hints:
+      - "Rule 3: ConfidentialMintBurn requires ConfidentialTransferMint; reject it if the set has the former without the latter."
+      - "Rule 5 is a conditional: NonTransferable + ConfidentialTransferMint is only legal when ConfidentialMintBurn is also present."
+      - "Each rule is a guard that returns {valid:false, reason} on violation; if none fire, return {valid:true}."
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l4-q1
+        prompt: "A product needs a token with confidential balances AND a transfer fee. You run check-combo on [TransferFeeConfig, ConfidentialTransferMint] and it rejects the set. Which rule fired, and what is the fix?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Transfer fees and confidential balances are simply incompatible; you must drop one of them"
+            correct: false
+            feedback: "They are compatible; the rule requires a third extension (ConfidentialTransferFeeConfig) rather than forbidding the pair."
+          - id: a
+            label: "The fee + confidential pair requires ConfidentialTransferFeeConfig; add it to be legal"
+            correct: true
+            feedback: "Rule 2 is the mirror of rule 1: the pair is incomplete rather than forbidden, and the fix adds an extension instead of dropping a requirement."
+          - id: d
+            label: "Rule 1 fired, the guard against an incomplete confidential-fee bridge; the fix is to add ConfidentialTransferFeeConfig"
+            correct: false
+            feedback: "The fix is right and the rule number is not, which is the whole point of naming guards: rule 1 keys on the bridge being present without both endpoints, and this set has no bridge in it yet."
+          - id: c
+            label: "The set needs ConfidentialMintBurn added, since confidential supply accounting is what lets the program assess a fee on an encrypted amount"
+            correct: false
+            feedback: "ConfidentialMintBurn is a different rule (confidential supply); the missing piece for a confidential fee is ConfidentialTransferFeeConfig."
+        explanation: "Rule 2: TransferFeeConfig + ConfidentialTransferMint together require ConfidentialTransferFeeConfig. The pair is legal, but only once you add the extension that makes fees work under encryption; the fix is additive, not subtractive."
+      - id: m01-l4-q2
+        prompt: "A teammate copies a conflict list from solana.com/docs and it has no PermissionedBurn entry, so they leave it out of the validator. Why is that a bug?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The source ExtensionType enum has 29 production variants including PermissionedBurn; the docs catalog lags the code, and the matrix must be derived from source"
+            correct: true
+            feedback: "The count comes from a pinned commit with the test-only variants subtracted, so the validator inherits a claim you can date and re-derive rather than a page's mood on one afternoon."
+          - id: a
+            label: "PermissionedBurn was removed from Token-2022 in a later release, so keeping it in the matrix is the actual error"
+            correct: false
+            feedback: "It was not removed; it is one of the newest production variants in the source enum. The docs omission is the lag, not a removal."
+          - id: d
+            label: "The page has since added PermissionedBurn, so the omission was a timing accident and re-copying the docs later fixes the validator"
+            correct: false
+            feedback: "That page carries no version stamp, so a copy of it cannot say which world it describes; the enum at a named commit can, which is why the matrix is derived and not transcribed."
+          - id: c
+            label: "PermissionedBurn is a test-only variant behind a cfg flag, so both the docs and the validator should omit it"
+            correct: false
+            feedback: "The three test-only variants are separate; PermissionedBurn is a real production extension. The 29-variant count already excludes the test-only ones."
+        explanation: "There is no official current matrix, and doc catalogs lag the code: the course's 2026-08-21 sweep caught solana.com with no PermissionedBurn page while solana-program.com already carried one, and the gap closed within a day. The source enum's 29 production variants are the truth, which is the whole reason this artifact is derived from check_for_invalid_mint_extension_combinations rather than copied from a page."
+      - id: m01-l4-q3
+        prompt: "Your check-combo validator accepts [TransferFeeConfig, MetadataPointer, PermanentDelegate]. A colleague says 'great, it will trade on Raydium then.' What is the precise gap in that reasoning?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "DEX allowlists apply these same five source rules before they pool a mint, so a set your validator accepts will route on Raydium unless a guard fires there too"
+            correct: false
+            feedback: "A venue's allowlist is policy, not the init function: it can refuse an extension whose behavior the venue did not model, however cleanly the set clears all five guards."
+          - id: a
+            label: "The validator is wrong to accept that set; PermanentDelegate is one of the five source rules' hard conflicts, so the init itself would fail"
+            correct: false
+            feedback: "PermanentDelegate does not violate the five init rules; the set is legal to initialize. The gap is about venue acceptance, not init legality."
+          - id: b
+            label: "check-combo only proves the docs allow the set; the five rules are advisory lint from the interface crate, and the on-chain program never enforces them at init"
+            correct: false
+            feedback: "The five rules are code-enforced at initialization, not advisory. The validator does prove init legality. What it does not prove is downstream routability."
+          - id: c
+            label: "check-combo proves the set is LEGAL to initialize, not that a venue accepts it; DEX allowlists reject extensions like PermanentDelegate separately"
+            correct: true
+            feedback: "Init legality is the floor the program enforces; whether a pool will hold the mint is a separate policy question per venue, and Module 5 takes that gate apart."
+        explanation: "Legality is a floor, not routability. The five rules decide whether the program will initialize the mint; whether a DEX will pool it is a separate question governed by that venue's allowlist, and PermanentDelegate is exactly the kind of power extension Raydium refuses. That legal-versus-tradeable gap is the thesis Module 5 builds on."
+      - id: m01-l4-q4
+        prompt: "The docs call NonTransferable + TransferFeeConfig incompatible, but your extracted code rules never reject that pair. How should the lesson (and your validator) treat this?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "As a typo in the docs: no code rule backs the claim, so drop the line and move on without testing it"
+            correct: false
+            feedback: "It is not dismissible as a typo: a doc-level 'makes no sense' and a code-level init-invalid are different classes; the honest move is to test the init, not to ignore the signal."
+          - id: a
+            label: "As an unresolved docs-vs-code delta: lab-test the actual init rather than asserting the doc-level conflict"
+            correct: true
+            feedback: "Two claim classes, two names: makes-no-sense is a doc caution, init-invalid is what the program enforces, and a terminal is the thing that decides which one you are looking at."
+          - id: d
+            label: "Treat the docs claim as the enforced one and expect the program to reject the pair at initialization"
+            correct: false
+            feedback: "The challenge probe settles it the other way: create-token succeeded, and the decoded mint carries both entries at 282 bytes, so the docs are making a semantic point about dead configuration."
+          - id: b
+            label: "As a sixth hard rule: the docs come from the program's maintainers, so encode the conflict in check-combo and reject the pair"
+            correct: false
+            feedback: "The extracted code rules do not list it, and the course derives the matrix from code; adding a rule the init function does not enforce would make the validator disagree with the program."
+        explanation: "A doc-level 'makes no sense' and a code-enforced init rejection are different classes of claim. The five extracted rules do not include NonTransferable + TransferFeeConfig, so the validator follows the code, and the lesson resolves the delta by attempting the init in a lab rather than freezing a rule the program does not actually enforce."

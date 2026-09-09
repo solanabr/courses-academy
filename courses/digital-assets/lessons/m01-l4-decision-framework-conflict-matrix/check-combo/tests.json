@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "input": "'TransferFeeConfig', 'MetadataPointer'",
+    "expectedOutput": "result.valid === true",
+    "description": "A legal pairing (fee + metadata) passes."
+  },
+  {
+    "id": "t2",
+    "input": "'ScaledUiAmount', 'InterestBearingConfig'",
+    "expectedOutput": "result.valid === false",
+    "description": "Rule 4: ScaledUiAmount and InterestBearingConfig are mutually exclusive."
+  },
+  {
+    "id": "t3",
+    "input": "'ConfidentialMintBurn', 'MetadataPointer'",
+    "expectedOutput": "result.valid === false",
+    "description": "Rule 3: ConfidentialMintBurn requires ConfidentialTransferMint."
+  },
+  {
+    "id": "t4",
+    "input": "'TransferFeeConfig', 'ConfidentialTransferMint'",
+    "expectedOutput": "result.valid === false",
+    "description": "Rule 2: the fee + confidential pair requires ConfidentialTransferFeeConfig."
+  },
+  {
+    "id": "t5",
+    "input": "'NonTransferable', 'ConfidentialTransferMint'",
+    "expectedOutput": "result.valid === false",
+    "description": "Rule 5: NonTransferable + ConfidentialTransferMint needs ConfidentialMintBurn."
+  },
+  {
+    "id": "t6",
+    "input": "'NonTransferable', 'ConfidentialTransferMint', 'ConfidentialMintBurn'",
+    "expectedOutput": "result.valid === true",
+    "description": "Rule 5 is satisfied once ConfidentialMintBurn is present."
+  }
+]

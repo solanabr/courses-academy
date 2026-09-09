@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: From an ignorable field to a transfer funnel
+     purpose: reconstruct the derivation; each failed fix narrows the problem until the pNFT design is forced
+     data: Status quo: seller_fee_basis_points = a request the runtime never reads -> Fix 1: social pressure on marketplaces -> fails (economics beat norms; zero-royalty venues win volume, 2022) -> Fix 2: marketplace-side enforcement -> fails (the enforcer is the party incentivized to defect; sellers route around) -> Narrowed requirement: the ASSET must refuse to move except via approved programs -> Forced design: permanent freeze + mandatory TM transfer ix + rule set (pNFT, 2023) -> Residual question: who maintains the approved list, and what happens when they stop?
+     prompt: Vertical flowchart, five stacked stages connected by downward arrows. Stage boxes as listed in data; the two failed fixes rendered with a red "fails because..." side tag. The final stage split into two: a green box "pNFT design (forced)" and an amber box "residual question: who maintains the list?". Emphasis on the narrowing shape, wider boxes at top, narrower toward the forced design.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:524px;height:434px;bottom:-250px;right:-250px;border-radius:38% 65% 50% 41% / 40% 57% 45% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:425px;height:460px;left:-245px;top:137px;border-radius:49% 57% 51% 37% / 60% 46% 61% 41%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:44px; margin:4px 0 14px; }
+  .flow { display:flex; flex-direction:column; align-items:center; }
+  .srow { display:flex; align-items:center; justify-content:center; }
+  .stagebox { background:var(--surface-card); border:2px solid var(--border-strong);
+              border-radius:var(--radius-lg); padding:11px 24px; display:flex;
+              align-items:center; gap:18px; }
+  .stagebox .k { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+                 letter-spacing:.09em; text-transform:uppercase; color:var(--stbr-emerald);
+                 flex:0 0 132px; }
+  .stagebox .t { font-family:var(--font-body); font-weight:700; font-size:16.5px;
+                 line-height:1.28; color:var(--text-primary); }
+  .stagebox .t code { font-family:var(--font-mono); font-size:15px; }
+  .failtag { margin-left:14px; background:var(--status-danger); color:#fff;
+             border-radius:var(--radius-md); padding:8px 14px; max-width:330px;
+             font-family:var(--font-body); font-size:12.5px; line-height:1.3; }
+  .failtag b { font-weight:800; text-transform:uppercase; font-size:11px; letter-spacing:.06em; }
+  .down { width:0; height:0; border-top:14px solid var(--stbr-dark);
+          border-left:9px solid transparent; border-right:9px solid transparent;
+          margin:3px 0 4px; position:relative; }
+  .stem { width:3px; height:9px; background:var(--stbr-dark); margin-top:4px; }
+  .final { display:flex; gap:22px; margin-top:2px; }
+  .forced { background:var(--surface-brand); color:var(--text-on-brand);
+            border-radius:var(--radius-lg); padding:14px 24px; width:480px; }
+  .forced .k { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+               letter-spacing:.09em; text-transform:uppercase; color:var(--stbr-yellow);
+               margin-bottom:5px; }
+  .forced .t { font-family:var(--font-body); font-weight:700; font-size:15.5px; line-height:1.32; }
+  .resid { background:var(--stbr-yellow); color:var(--stbr-dark); border:2.5px solid var(--stbr-dark);
+           border-radius:var(--radius-lg); padding:14px 24px; width:480px; }
+  .resid .k { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+              letter-spacing:.09em; text-transform:uppercase; margin-bottom:5px; }
+  .resid .t { font-family:var(--font-body); font-weight:800; font-size:15.5px; line-height:1.32; }
+</style>
+  <div class="stbr-eyebrow">how the pNFT design was forced</div>
+  <h2 class="viz-title">from an ignorable field to a transfer funnel</h2>
+  <div class="flow">
+    <div class="srow">
+      <div class="stagebox" style="width:1100px;">
+        <div class="k">status quo</div>
+        <div class="t"><code>seller_fee_basis_points</code> = a request the runtime never reads</div>
+      </div>
+    </div>
+    <div class="stem"></div><div class="down"></div>
+    <div class="srow">
+      <div class="stagebox" style="width:640px;">
+        <div class="k">fix 1</div>
+        <div class="t">social pressure on marketplaces</div>
+      </div>
+      <div class="failtag"><b>fails</b> &mdash; economics beat norms; zero-royalty venues win volume (2022)</div>
+    </div>
+    <div class="stem"></div><div class="down"></div>
+    <div class="srow">
+      <div class="stagebox" style="width:640px;">
+        <div class="k">fix 2</div>
+        <div class="t">marketplace-side enforcement</div>
+      </div>
+      <div class="failtag"><b>fails</b> &mdash; the enforcer is the party incentivized to defect; sellers route around</div>
+    </div>
+    <div class="stem"></div><div class="down"></div>
+    <div class="srow">
+      <div class="stagebox" style="width:840px; border-width:2.5px;">
+        <div class="k">narrowed requirement</div>
+        <div class="t">the <b>asset itself</b> must refuse to move except via approved programs</div>
+      </div>
+    </div>
+    <div class="stem"></div><div class="down"></div>
+    <div class="final">
+      <div class="forced">
+        <div class="k">forced design &mdash; pNFT, 2023</div>
+        <div class="t">permanent freeze + mandatory TM Transfer instruction + rule set</div>
+      </div>
+      <div class="resid">
+        <div class="k">residual question</div>
+        <div class="t">who maintains the approved list &mdash; and what happens when they stop?</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

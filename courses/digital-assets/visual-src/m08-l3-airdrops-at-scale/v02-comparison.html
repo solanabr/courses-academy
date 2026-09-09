@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The cost model's four rows, and which side of the trade pays
+     purpose: make the sender-versus-claimant split visible, since it is the axis that decides the method more often than raw cost
+     data: Every RENT cell here is bytes x a per-byte rate, and the rate is a network parameter SIMD-0437 is stepping down, so the figures below carry theirs: 6,333 lamports/byte, mainnet-beta, read 2026-09-06. They match cost-model.ts's LAMPORTS_PER_BYTE exactly. The fee and compressed cells are NOT rent and do not move with it. Columns: row | sender lamports per recipient | claimant lamports per recipient | refundable? | reads need a compression RPC? Classic ATA push | 1,855,569 (293 bytes x 6,333) | 0 | yes, the full rent on close | no Compressed push | 10,300 (5,000 create + 5,300 write; not rent) | 0 | no | yes AirShip transaction side | 1,000 (15,000 per tx / 15 recipients; fees, not rent) | 0 | no | yes Merkle claim (distributor) | fixed setup / N, effectively 0 | 1,220,936 (5,000 fee + 1,215,936 ClaimStatus rent, 192 bytes x 6,333) | ClaimStatus rent only if the program's close path lets the claimant reclaim it (unverified; see prose) | no Note row: these are the cost model's four ROWS, not the prose's four methods: the AirShip row is a transaction-cost scope slice that stacks on top of the compressed push's 10,300 state cost, and Light Claim is absent because no first-party cost constants exist to price it.
+     prompt: Comparison table with five columns as listed. Emphasize the two extreme cells: the classic sender cell (1,855,569) and the merkle-claim claimant cell (1,220,936). Print the derivation under each of those two cells so neither reads as a constant, and carry the rate, its cluster and its date under the title. Add a bottom note row carrying the rows-versus-methods clarification verbatim. Keep numbers right-aligned with thousands separators.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:439px;height:352px;right:-254px;top:233px;border-radius:56% 52% 36% 44% / 58% 35% 42% 47%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:500px;height:484px;bottom:-256px;left:-256px;border-radius:53% 44% 58% 40% / 57% 46% 45% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">who pays decides the method more often than raw cost</div>
+    <h2 class="viz-title" style="font-size:36px;margin:6px 0 4px;color:var(--stbr-dark);">The cost model&rsquo;s four rows &mdash; and which side of the trade pays</h2>
+    <div style="font-family:var(--font-body);font-size:13.5px;font-weight:600;color:var(--text-secondary,#4a5a4e);margin:0 0 16px;">the two rent cells are <span style="font-family:var(--font-mono);">bytes &times; 6,333 lamports/byte</span> &mdash; mainnet-beta, read 2026-09-06, the same <span style="font-family:var(--font-mono);">LAMPORTS_PER_BYTE</span> your <span style="font-family:var(--font-mono);">cost-model.ts</span> sets. Change it and both move; the fee and compressed cells do not, because they are not rent.</div>
+
+    <!-- header -->
+    <div style="display:flex;background:var(--surface-inverse,#1B231D);border-radius:12px 12px 0 0;padding:12px 18px;gap:16px;">
+      <div style="flex:none;width:250px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-cream);">row</div>
+      <div style="flex:none;width:250px;text-align:right;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-cream);">sender lamports<br>per recipient</div>
+      <div style="flex:none;width:230px;text-align:right;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-cream);">claimant lamports<br>per recipient</div>
+      <div style="flex:1;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-cream);">refundable?</div>
+      <div style="flex:none;width:150px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-cream);">reads need a<br>compression RPC?</div>
+    </div>
+    <!-- row 1 -->
+    <div style="display:flex;align-items:center;border-bottom:1px solid var(--border-subtle,#e5decb);padding:13px 18px;gap:16px;">
+      <div style="flex:none;width:250px;font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--stbr-dark);">Classic ATA push</div>
+      <div style="flex:none;width:250px;text-align:right;"><span style="background:var(--stbr-yellow);border-radius:6px;padding:3px 10px;font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--stbr-dark);">1,855,569</span><br><span style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted,#6b7a6f);">293 bytes &times; 6,333</span></div>
+      <div style="flex:none;width:230px;text-align:right;font-family:var(--font-mono);font-size:15px;color:var(--text-secondary,#4a5a4e);">0</div>
+      <div style="flex:1;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);">yes &mdash; the full rent on close</div>
+      <div style="flex:none;width:150px;font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-dark);">no</div>
+    </div>
+    <!-- row 2 -->
+    <div style="display:flex;align-items:center;border-bottom:1px solid var(--border-subtle,#e5decb);padding:13px 18px;gap:16px;background:var(--surface-paper,#faf5e6);">
+      <div style="flex:none;width:250px;font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--stbr-dark);">Compressed push</div>
+      <div style="flex:none;width:250px;text-align:right;font-family:var(--font-mono);font-size:15px;color:var(--stbr-dark);">10,300 <span style="font-size:12px;color:var(--text-muted,#6b7a6f);">(5,000 create + 5,300 write &mdash; not rent)</span></div>
+      <div style="flex:none;width:230px;text-align:right;font-family:var(--font-mono);font-size:15px;color:var(--text-secondary,#4a5a4e);">0</div>
+      <div style="flex:1;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);">no</div>
+      <div style="flex:none;width:150px;font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-dark);">yes</div>
+    </div>
+    <!-- row 3 -->
+    <div style="display:flex;align-items:center;border-bottom:1px solid var(--border-subtle,#e5decb);padding:13px 18px;gap:16px;">
+      <div style="flex:none;width:250px;font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--stbr-dark);">AirShip transaction side</div>
+      <div style="flex:none;width:250px;text-align:right;font-family:var(--font-mono);font-size:15px;color:var(--stbr-dark);">1,000 <span style="font-size:12px;color:var(--text-muted,#6b7a6f);">(15,000 per tx / 15 recipients &mdash; fees, not rent)</span></div>
+      <div style="flex:none;width:230px;text-align:right;font-family:var(--font-mono);font-size:15px;color:var(--text-secondary,#4a5a4e);">0</div>
+      <div style="flex:1;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);">no</div>
+      <div style="flex:none;width:150px;font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-dark);">yes</div>
+    </div>
+    <!-- row 4 -->
+    <div style="display:flex;align-items:center;border-bottom:1px solid var(--border-subtle,#e5decb);padding:13px 18px;gap:16px;background:var(--surface-paper,#faf5e6);">
+      <div style="flex:none;width:250px;font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--stbr-dark);">Merkle claim (distributor)</div>
+      <div style="flex:none;width:250px;text-align:right;font-family:var(--font-mono);font-size:15px;color:var(--stbr-dark);">fixed setup / N <span style="font-size:12px;color:var(--text-muted,#6b7a6f);">&mdash; effectively 0</span></div>
+      <div style="flex:none;width:230px;text-align:right;"><span style="background:var(--stbr-yellow);border-radius:6px;padding:3px 10px;font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--stbr-dark);">1,220,936</span><br><span style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted,#6b7a6f);">5,000 fee + 1,215,936 rent<br>(192-byte ClaimStatus &times; 6,333)</span></div>
+      <div style="flex:1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--stbr-dark);">ClaimStatus rent only if the program&rsquo;s close path lets the claimant reclaim it <span style="color:var(--text-muted,#6b7a6f);">(unverified; see prose)</span></div>
+      <div style="flex:none;width:150px;font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-dark);">no</div>
+    </div>
+    <!-- note row -->
+    <div style="display:flex;align-items:center;gap:14px;background:var(--stbr-emerald);border-radius:0 0 12px 12px;padding:13px 18px;margin-top:2px;">
+      <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.08em;color:var(--stbr-cream);">NOTE</div>
+      <div style="font-family:var(--font-body);font-size:13.5px;line-height:1.45;color:var(--stbr-cream);">these are the cost model&rsquo;s four ROWS, not the prose&rsquo;s four methods: the AirShip row is a transaction-cost scope slice that stacks on top of the compressed push&rsquo;s 10,300 state cost, and Light Claim is absent because no first-party cost constants exist to price it.</div>
+    </div>
+  </div>
+</div>
+</body></html>

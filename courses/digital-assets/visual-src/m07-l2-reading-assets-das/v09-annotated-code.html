@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What a passing read-any-asset run is asserting
+     purpose: turn the output block into an explicit checklist so the student can self-grade the gate without ambiguity
+     data: Line 1 SPROUT: interface FungibleToken or FungibleAsset -> category fungible, das-rpc=false, price absent is CORRECT (SPROUT is not in the top-10k priced set). Line 2 ALMANAC: interface MplCoreAsset -> category nft, das-rpc=false, because a Core asset is one ordinary account. Line 3 CRATE: interface MplBubblegumV2 with compression.compressed true -> category compressed-nft, das-rpc=true. This is the only true in the column. Line 4 crate leaf: tree address plus leaf id, the PDA inputs from the previous lesson. Line 5 PROBE: a real price_per_token from token_info.price_info, read via the provider's MAINNET endpoint (the priced set does not exist on devnet), cached up to 600s. Line 6 OWNER: getAssetsByOwner found the Almanac asset, so ownership indexing works. Lines 7+: per-extension ACTIVE or DORMANT read from the raw mint, not from the index (two ACTIVE metadata rows for the metadata-only devnet SPROUT; DORMANT rows show up on the PYUSD self-check).
+     prompt: Reproduce the seven output lines as a monospace block on the left, with numbered callout annotations on the right, one per line, carrying the text above. Highlight the das-rpc column across all three asset lines and annotate it "true exactly once". Highlight the PROBE number and annotate it "the gate's printed price".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:518px;height:434px;right:-285px;top:151px;border-radius:51% 64% 62% 40% / 63% 55% 40% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:511px;height:475px;bottom:-260px;left:-260px;border-radius:38% 53% 50% 35% / 48% 58% 45% 44%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .run { display:flex; gap:26px; margin-top:12px; align-items:stretch; }
+  .term { flex:0 0 660px; background:var(--surface-inverse); border-radius:var(--radius-xl);
+          padding:22px 24px; display:flex; flex-direction:column; justify-content:space-between; }
+  .tline { font-family:var(--font-mono); font-weight:600; font-size:14.5px; line-height:1.4;
+           color:#F5E8CA; white-space:pre; display:flex; align-items:baseline; gap:10px;
+           padding:9px 0; border-bottom:1px solid rgba(245,232,202,0.12); }
+  .tline:last-child { border-bottom:0; }
+  .ln { flex:0 0 22px; font-weight:800; color:rgba(245,232,202,0.5); font-size:13px; }
+  .das-t { color:var(--stbr-dark); background:var(--stbr-yellow); font-weight:800;
+           padding:1px 7px; border-radius:6px; }
+  .das-f { color:var(--stbr-yellow); font-weight:700; }
+  .price { color:#F5E8CA; background:rgba(0,139,76,0.55); font-weight:800;
+           padding:1px 7px; border-radius:6px; }
+  .notes { flex:1 1 0; display:flex; flex-direction:column; gap:7px; }
+  .note { display:flex; align-items:flex-start; gap:12px; background:var(--surface-card);
+          border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+          padding:9px 14px; }
+  .n-num { flex:0 0 28px; height:28px; border-radius:50%; background:var(--stbr-emerald);
+           color:#F5E8CA; font-family:var(--font-display); font-weight:900; font-size:15px;
+           display:flex; align-items:center; justify-content:center; }
+  .n-txt { font-family:var(--font-body); font-weight:600; font-size:13.5px; line-height:1.4;
+           color:var(--text-secondary); }
+  .n-txt b { color:var(--text-primary); font-weight:800; }
+  .n-chip { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:12px;
+            color:var(--stbr-dark); background:var(--stbr-yellow);
+            border:1.5px solid var(--stbr-dark); border-radius:var(--radius-pill);
+            padding:1px 10px; margin-left:6px; }
+  .n-chip.g { background:var(--surface-card); color:var(--stbr-green);
+              border-color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">self-grade the gate</div>
+  <h2 class="viz-title" style="font-size:44px;">what a passing read-any-asset run is asserting</h2>
+  <div class="run">
+    <div class="term">
+      <div class="tline"><span><span class="ln">1</span>SPROUT   FungibleToken   fungible        <span class="das-f">das-rpc=false</span> price absent</span></div>
+      <div class="tline"><span class="ln">2</span>ALMANAC  MplCoreAsset    nft             <span class="das-f">das-rpc=false</span></div>
+      <div class="tline"><span><span class="ln">3</span>CRATE    MplBubblegumV2  compressed-nft  <span class="das-t">das-rpc=true</span> compressed</span></div>
+      <div class="tline"><span class="ln">4</span>leaf     tree=&lt;tree address&gt;  leaf_id=&lt;id&gt;</div>
+      <div class="tline"><span><span class="ln">5</span>PROBE    <span class="price">price_per_token=&lt;live&gt;</span>  mainnet &middot; cache &le;600s</span></div>
+      <div class="tline"><span class="ln">6</span>OWNER    getAssetsByOwner &rarr; found ALMANAC</div>
+      <div class="tline"><span class="ln">7</span>EXT      metadata-pointer ACTIVE &middot; token-metadata ACTIVE</div>
+    </div>
+    <div class="notes">
+      <div class="note"><span class="n-num">1</span><span class="n-txt"><b>fungible, das-rpc=false.</b> price absent is CORRECT &mdash; SPROUT is not in the top-10k priced set.</span></div>
+      <div class="note"><span class="n-num">2</span><span class="n-txt"><b>MplCoreAsset &rarr; nft.</b> a Core asset is one ordinary account &mdash; no DAS requirement.</span></div>
+      <div class="note"><span class="n-num">3</span><span class="n-txt"><b>compression.compressed = true &rarr; compressed-nft.</b><span class="n-chip">das-rpc: true exactly once</span></span></div>
+      <div class="note"><span class="n-num">4</span><span class="n-txt"><b>tree address + leaf id</b> &mdash; the PDA inputs from the previous lesson.</span></div>
+      <div class="note"><span class="n-num">5</span><span class="n-txt"><b>a real price from token_info.price_info</b> via the provider&rsquo;s MAINNET endpoint (the priced set does not exist on devnet), cached up to 600s.<span class="n-chip g">the gate&rsquo;s printed price</span></span></div>
+      <div class="note"><span class="n-num">6</span><span class="n-txt"><b>getAssetsByOwner found the Almanac asset</b> &mdash; ownership indexing works.</span></div>
+      <div class="note"><span class="n-num">7</span><span class="n-txt"><b>ACTIVE / DORMANT read from the raw mint, not the index.</b> two ACTIVE metadata rows on the metadata-only devnet SPROUT; DORMANT rows show up on the PYUSD self-check.</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

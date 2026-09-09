@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Bare vs extended: where the 866 bytes actually live
+     purpose: show the full extended layout with the padding, discriminator, and TLV region in their real positions
+     data: Two horizontal layout bars. Bar 1, "bare classic mint (82 bytes)": [82-byte base]. Ends. Bar 2, "PYUSD extended mint (866 bytes)": [0-81: same 82-byte base] [82-164: zero padding] [165: account type = 1 (Mint)] [166-865: TLV region, 700 bytes, 8 entries]. Annotation on padding: "pads past 165, the classic token-account length, so length can never type-pun a mint into a token account" Annotation on byte 165: "1 = mint, 2 = token account"
+     prompt: Two stacked horizontal byte bars sharing a left edge, from the data above. Top bar short (82 units), bottom bar long (866 units), with the first 82 units visually identical in both. Distinct fills for padding (82-164), the single discriminator byte at 165 (make it a thin highlighted sliver with a callout), and the TLV region (166-865). Include both annotations as callouts. Keep proportions roughly true so the TLV region dominates.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:462px;right:-232px;top:338px;border-radius:55% 41% 46% 52% / 63% 40% 38% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:371px;height:494px;bottom:-254px;left:575px;border-radius:43% 59% 40% 55% / 38% 60% 35% 60%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:40px 48px 34px;}
+  .card .viz-title{font-size:48px;}
+  .bars{position:relative;width:1306px;margin:8px auto 0;}
+  .blabel{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-primary);margin:0 0 6px;}
+  .bbar{display:flex;height:88px;border-radius:10px;overflow:hidden;}
+  .bseg{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border-left:2px solid var(--surface-card);}
+  .bseg:first-child{border-left:0;}
+  .bnm{font-family:var(--font-display);font-weight:800;font-size:19px;color:#F5E8CA;}
+  .bty{font-family:var(--font-body);font-size:13px;color:#F5E8CA;opacity:.85;margin-top:4px;}
+  .gap{height:20px;position:relative;}
+  .same{position:absolute;left:132px;top:1px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-muted);white-space:nowrap;}
+  .guide{position:absolute;width:0;border-left:2px dashed var(--border-strong);}
+  .padseg{background:var(--surface-paper,#FAF3E3);border-top:2px solid var(--border-strong);border-bottom:2px solid var(--border-strong);}
+  .padseg .bnm{color:var(--text-primary);font-size:16px;}
+  .padseg .bty{color:var(--text-secondary);}
+  .endcap{display:flex;align-items:center;margin-left:10px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-secondary);white-space:nowrap;}
+  .ruler{position:relative;height:24px;margin-top:6px;}
+  .rtick{position:absolute;transform:translateX(-50%);font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text-muted);}
+  .callouts{position:relative;height:112px;margin-top:2px;}
+  .anno{position:absolute;border-radius:12px;padding:10px 16px;font-family:var(--font-body);font-size:15px;line-height:1.35;color:var(--text-primary);}
+  .anno-pad{background:var(--surface-paper,#FAF3E3);border:2px solid var(--border-strong);}
+  .anno-165{background:var(--stbr-yellow);color:var(--text-on-accent,#1B231D);font-weight:600;}
+  .anno b{font-weight:700;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the full extended layout, in its real positions</div>
+  <h2 class="viz-title">bare vs extended: where the 866 bytes actually live</h2>
+  <div class="bars">
+    <div class="guide" style="left:0;top:34px;height:96px;"></div>
+    <div class="guide" style="left:123px;top:34px;height:96px;"></div>
+    <div class="blabel">bare classic mint (82 bytes)</div>
+    <div style="display:flex;">
+      <div class="bbar" style="width:123px;">
+        <div class="bseg" style="width:123px;background:var(--stbr-emerald);"><div class="bnm" style="font-size:15px;">82-byte base</div></div>
+      </div>
+      <div class="endcap">&#9646; ends at 82 &mdash; nothing follows</div>
+    </div>
+    <div class="gap"><div class="same">&darr; the same 82 bytes &darr;</div></div>
+    <div class="blabel">PYUSD extended mint (866 bytes)</div>
+    <div class="bbar" style="width:1306px;">
+      <div class="bseg" style="width:123px;background:var(--stbr-emerald);"><div class="bnm" style="font-size:15px;">82-byte base</div><div class="bty">bytes 0&ndash;81</div></div>
+      <div class="bseg padseg" style="width:125px;"><div class="bnm">zero padding</div><div class="bty">bytes 82&ndash;164</div></div>
+      <div class="bseg" style="width:8px;background:var(--stbr-yellow);"></div>
+      <div class="bseg" style="width:1050px;background:var(--stbr-dark);"><div class="bnm">TLV region</div><div class="bty">bytes 166&ndash;865 &middot; 700 bytes &middot; 8 entries</div></div>
+    </div>
+    <div class="ruler">
+      <div class="rtick" style="left:0;">0</div>
+      <div class="rtick" style="left:123px;">82</div>
+      <div class="rtick" style="left:252px;">165</div>
+      <div class="rtick" style="left:1306px;">866</div>
+    </div>
+    <div class="callouts">
+      <svg width="1306" height="112" style="position:absolute;left:0;top:0;">
+        <path d="M 185 0 L 185 26" fill="none" stroke="#1B231D" stroke-width="2"/>
+        <path d="M 252 0 L 252 12 L 700 12 L 700 26" fill="none" stroke="#1B231D" stroke-width="2"/>
+      </svg>
+      <div class="anno anno-pad" style="left:30px;top:26px;width:480px;">pads past <b>165</b>, the classic token-account length, so length can never type-pun a mint into a token account</div>
+      <div class="anno anno-165" style="left:560px;top:26px;">byte <b>165</b> &mdash; account type: <b>1 = mint, 2 = token account</b></div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

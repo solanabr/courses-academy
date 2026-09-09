@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The one moment the allowlist runs, and everything it never revisits
+     purpose: show that admission is a single-point check on extension types, so the reader stops treating a created pool as ongoing proof of anything
+     data: t0 mint creation: extension SET is fixed forever (Token-2022 rule from m01); configuration inside each extension is not t1 pool creation: CP-Swap walks the TLV once. Bypasses first, then every extension against the five. Reverts or creates. t2 after the pool exists: transfer_fee_config_authority arms a new fee schedule for a future epoch. No re-check. t3 after the pool exists: any other mint-level authority acts within its powers. No re-check. counterfactual t4: if a hooked mint HAD been admitted, its hook program could be upgraded here. Also no re-check. takeaway: the check is a gate at the door, not a guard inside the room
+     prompt: Horizontal timeline with five markers in the order given. Mark t1 as the only point where a check icon appears; the later markers carry a struck-through check to signal "no re-check". Render the counterfactual t4 marker in a dashed style with the word counterfactual in its label. Takeaway line runs under the timeline as a caption.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:507px;height:469px;top:-279px;right:-279px;border-radius:62% 53% 64% 42% / 46% 39% 39% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:539px;height:513px;bottom:-302px;left:-302px;border-radius:43% 35% 47% 52% / 55% 52% 49% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">admission is a single-point check</div>
+    <h2 class="viz-title" style="font-size:40px;margin:6px 0 8px;color:var(--stbr-dark);">The one moment the allowlist runs</h2>
+
+    <div style="position:relative;height:470px;">
+      <!-- the rule -->
+      <div style="position:absolute;left:20px;right:20px;top:232px;height:3px;background:var(--stbr-green);border-radius:2px;"></div>
+
+      <!-- t0 (label above) -->
+      <div style="position:absolute;left:0;top:0;width:262px;">
+        <div style="border:1.5px solid var(--border-strong,#c9c2ad);border-radius:12px;padding:10px 14px;height:130px;">
+          <div style="font-family:var(--font-display);font-weight:900;font-size:15px;color:var(--stbr-dark);margin-bottom:4px;">t0 &middot; mint creation</div>
+          <div style="font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">extension <b>SET</b> is fixed forever (Token-2022 rule from m01); configuration <em>inside</em> each extension is not</div>
+        </div>
+        <div style="width:2px;height:88px;background:var(--border-strong,#c9c2ad);margin:0 auto;"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:var(--stbr-green);margin:0 auto;"></div>
+      </div>
+
+      <!-- t1: THE check (label below, yellow) -->
+      <div style="position:absolute;left:277px;top:212px;width:262px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--stbr-yellow);border:3px solid var(--stbr-dark);margin:0 auto;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">&#10003;</div>
+        <div style="width:2px;height:32px;background:var(--stbr-dark);margin:0 auto;"></div>
+        <div style="background:var(--stbr-yellow);border-radius:12px;padding:10px 14px;min-height:130px;">
+          <div style="font-family:var(--font-display);font-weight:900;font-size:15px;color:var(--stbr-dark);margin-bottom:4px;">t1 &middot; pool creation &mdash; the only check</div>
+          <div style="font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--stbr-dark);">CP-Swap walks the TLV <b>once</b>. Bypasses first, then every extension against the five. Reverts or creates.</div>
+        </div>
+      </div>
+
+      <!-- t2 (label above) -->
+      <div style="position:absolute;left:554px;top:0;width:262px;">
+        <div style="border:1.5px solid var(--border-strong,#c9c2ad);border-radius:12px;padding:10px 14px;height:130px;">
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;"><span style="font-family:var(--font-display);font-weight:900;font-size:15px;color:var(--stbr-dark);">t2 &middot; after the pool exists</span><span style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-green);text-decoration:line-through;">&#10003;</span></div>
+          <div style="font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--text-secondary,#4a5a4e);"><span style="font-family:var(--font-mono);font-size:12px;">transfer_fee_config_authority</span> arms a new fee schedule for a future epoch. <b>No re-check.</b></div>
+        </div>
+        <div style="width:2px;height:88px;background:var(--border-strong,#c9c2ad);margin:0 auto;"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:var(--stbr-green);margin:0 auto;"></div>
+      </div>
+
+      <!-- t3 (label below) -->
+      <div style="position:absolute;left:831px;top:225px;width:262px;">
+        <div style="width:16px;height:16px;border-radius:50%;background:var(--stbr-green);margin:0 auto;"></div>
+        <div style="width:2px;height:33px;background:var(--border-strong,#c9c2ad);margin:0 auto;"></div>
+        <div style="border:1.5px solid var(--border-strong,#c9c2ad);border-radius:12px;padding:10px 14px;min-height:130px;">
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;"><span style="font-family:var(--font-display);font-weight:900;font-size:15px;color:var(--stbr-dark);">t3 &middot; after the pool exists</span><span style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-green);text-decoration:line-through;">&#10003;</span></div>
+          <div style="font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">any other mint-level authority acts within its powers. <b>No re-check.</b></div>
+        </div>
+      </div>
+
+      <!-- t4 counterfactual (label above, dashed) -->
+      <div style="position:absolute;left:1108px;top:0;width:262px;">
+        <div style="border:2px dashed var(--stbr-green);border-radius:12px;padding:10px 14px;height:130px;">
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;"><span style="font-family:var(--font-display);font-weight:900;font-size:15px;color:var(--stbr-dark);">t4 &middot; counterfactual</span><span style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-green);text-decoration:line-through;">&#10003;</span></div>
+          <div style="font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">if a hooked mint HAD been admitted, its hook program could be upgraded here. <b>Also no re-check.</b></div>
+        </div>
+        <div style="width:2px;height:86px;background:var(--border-strong,#c9c2ad);margin:0 auto;"></div>
+        <div style="width:16px;height:16px;border-radius:50%;border:2.5px dashed var(--stbr-green);background:var(--surface-card);margin:0 auto;"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;background:var(--stbr-emerald);border-radius:12px;padding:12px 22px;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--stbr-cream);text-align:center;">
+      the check is a gate at the door, not a guard inside the room
+    </div>
+  </div>
+</div>
+</body></html>

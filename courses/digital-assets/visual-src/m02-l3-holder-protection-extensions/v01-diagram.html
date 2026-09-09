@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Mint powers versus account vetoes
+     purpose: fix the lesson's core flip: m02-l2 extensions act ON the holder, m02-l3 extensions let the holder's account refuse
+     data: Left box "Mint TLV (m02-l2): powers over the holder" containing: PermanentDelegate, Pausable, DefaultAccountState, PermissionedBurn, MintCloseAuthority Right box "Account TLV (m02-l3): what the account refuses" containing: NonTransferableAccount, MemoTransfer, CpiGuard, ImmutableOwner Bridge arrow between boxes labeled "NonTransferable (a MINT extension) forces NonTransferableAccount + ImmutableOwner into every holder account" Caption: both sides are TLV entries on a 165-byte base + type byte
+     prompt: Two side-by-side rounded boxes with the extension names listed inside each, headers as labeled in data. One arrow crossing from the left box to the right box carrying the forced-pair label. Keep the caption as a footer line. Emphasize the right box (this lesson's territory).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:548px;top:-311px;right:-311px;border-radius:49% 50% 35% 47% / 64% 48% 41% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:507px;height:542px;bottom:-303px;left:632px;border-radius:50% 49% 63% 46% / 38% 42% 41% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; align-items:stretch; }
+  .tlv { width:480px; flex:0 0 480px; background:var(--surface-card);
+         border:2px solid var(--stbr-ink-300); border-radius:var(--radius-2xl);
+         padding:24px 28px; }
+  .tlv.hero { border:3px solid var(--stbr-emerald); }
+  .tlv .hd { font-family:var(--font-display); font-weight:900; font-size:26px;
+             line-height:1.1; color:var(--text-primary); }
+  .tlv .sub { font-family:var(--font-body); font-size:16px; color:var(--text-secondary);
+              margin-top:5px; margin-bottom:14px; }
+  .ext { font-family:var(--font-mono); font-size:17px; font-weight:600;
+         color:var(--text-primary); background:var(--surface-paper);
+         border:1px solid var(--border-subtle); border-radius:var(--radius-md);
+         padding:10px 16px; margin-top:10px; }
+  .tlv.hero .ext { background:#e7f2ea; border-color:var(--stbr-emerald); }
+  .lchip { display:inline-block; font-family:var(--font-body); font-weight:800;
+           font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+           border-radius:var(--radius-pill); padding:6px 14px;
+           background:var(--surface-accent); color:var(--text-on-accent);
+           margin-left:12px; vertical-align:3px; }
+  .bridge { width:310px; flex:0 0 310px; display:flex; flex-direction:column;
+            justify-content:center; align-items:center; padding:0 14px; }
+  .blabel { font-family:var(--font-body); font-size:14.5px; line-height:1.45;
+            color:var(--text-primary); background:var(--surface-card);
+            border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+            padding:13px 15px; margin-top:12px; text-align:center; }
+  .blabel code { font-family:var(--font-mono); font-size:13.5px; font-weight:700;
+                 color:var(--stbr-emerald-800); }
+  .cap { margin-top:22px; font-family:var(--font-body); font-size:16px;
+         color:var(--text-secondary); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">the lesson's core flip</div>
+  <h2 class="viz-title">mint powers versus account vetoes</h2>
+  <div class="cols">
+    <div class="tlv">
+      <div class="hd">Mint TLV (m02-l2)</div>
+      <div class="sub">powers over the holder</div>
+      <div class="ext">PermanentDelegate</div>
+      <div class="ext">Pausable</div>
+      <div class="ext">DefaultAccountState</div>
+      <div class="ext">PermissionedBurn</div>
+      <div class="ext">MintCloseAuthority</div>
+    </div>
+    <div class="bridge">
+      <svg width="312" height="40" viewBox="0 0 312 40">
+        <line x1="0" y1="20" x2="288" y2="20" stroke="#008b4c" stroke-width="4"/>
+        <polygon points="288,8 312,20 288,32" fill="#008b4c"/>
+      </svg>
+      <div class="blabel"><code>NonTransferable</code> (a MINT extension) forces
+        <code>NonTransferableAccount</code> + <code>ImmutableOwner</code> into every
+        holder account</div>
+    </div>
+    <div class="tlv hero">
+      <div class="hd">Account TLV (m02-l3)<span class="lchip">this lesson</span></div>
+      <div class="sub">what the account refuses</div>
+      <div class="ext">NonTransferableAccount</div>
+      <div class="ext">MemoTransfer</div>
+      <div class="ext">CpiGuard</div>
+      <div class="ext">ImmutableOwner</div>
+    </div>
+  </div>
+  <div class="cap">both sides are TLV entries on the same 165-byte base account + a type byte</div>
+</div>
+</body></html>

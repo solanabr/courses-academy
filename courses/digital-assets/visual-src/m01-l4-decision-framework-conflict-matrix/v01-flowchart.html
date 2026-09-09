@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The decision framework, from requirement to extension set
+     purpose: show that the classic-vs-2022 choice is one gate, and the real work is choosing and validating a set
+     data: start: "product requirement list" gate 1: "does any requirement name an extension-only behavior (fees, interest, confidential, hooks, non-transferable, native metadata, pausable)?" no -> "classic SPL: cheapest, universally routable, frozen interface" yes -> "Token-2022: draft the extension SET" then -> "validate the set against the five source rules (check-combo)" then -> "legal set -> initialize mint (set is permanent at init)" side note on validate step: "no official conflict matrix exists; rules live in check_for_invalid_mint_extension_combinations"
+     prompt: Vertical flowchart, five nodes top to bottom with one decision diamond after the start node. The "no" branch exits left to a terminal classic-SPL node; the "yes" branch continues down through "draft the extension set" then "validate against the five source rules" then "initialize (permanent)". Annotate the validate node with a small callout reading "rules live in source, not docs". Keep labels short, use the exact extension behaviors listed in data as a small caption under the decision diamond.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:487px;top:-265px;right:-265px;border-radius:54% 42% 58% 39% / 62% 57% 55% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:540px;height:375px;left:-339px;top:321px;border-radius:64% 35% 60% 50% / 41% 38% 50% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 48px 30px; }
+  .frow { display: flex; align-items: center; }
+  .fl { width: 400px; flex: 0 0 400px; display: flex; align-items: center; justify-content: flex-end; }
+  .fc { width: 560px; flex: 0 0 560px; display: flex; align-items: center; justify-content: center; }
+  .fr { width: 360px; flex: 0 0 360px; display: flex; align-items: center; }
+  .node { width: 100%; border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+          background: var(--surface-card); padding: 12px 20px; text-align: center; }
+  .node .t { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: 19px; color: var(--text-primary); }
+  .node .s { font-family: var(--font-body); font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .darr { display: flex; flex-direction: column; align-items: center; height: 30px; justify-content: flex-end; }
+  .darr .stem { width: 2px; height: 18px; background: var(--stbr-dark); }
+  .darr .head { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
+                border-top: 9px solid var(--stbr-dark); }
+  .lbl { font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+         text-transform: uppercase; color: var(--stbr-emerald); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">one gate, then the real work</div>
+  <h2 class="viz-title" style="margin-bottom:14px;">from requirement to extension set</h2>
+
+  <!-- start -->
+  <div class="frow"><div class="fl"></div><div class="fc">
+    <div class="node" style="background:var(--surface-paper);"><div class="t">product requirement list</div></div>
+  </div><div class="fr"></div></div>
+  <div class="frow"><div class="fl"></div><div class="fc"><div class="darr"><div class="stem"></div><div class="head"></div></div></div><div class="fr"></div></div>
+
+  <!-- decision + no branch -->
+  <div class="frow">
+    <div class="fl">
+      <div class="node" style="width:330px;border-color:var(--stbr-green);">
+        <div class="t" style="font-size:17px;">classic SPL</div>
+        <div class="s">cheapest · universally routable · frozen interface</div>
+      </div>
+      <div style="display:flex;align-items:center;margin:0 0 0 8px;">
+        <div style="width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:9px solid var(--stbr-dark);"></div>
+        <div style="width:34px;height:2px;background:var(--stbr-dark);"></div>
+        <div class="lbl" style="margin:0 6px;">no</div>
+      </div>
+    </div>
+    <div class="fc">
+      <div class="node" style="background:var(--surface-brand);border-color:var(--surface-brand);">
+        <div class="t" style="color:var(--text-on-brand);font-size:17px;">does any requirement name an extension-only behavior?</div>
+        <div class="s" style="color:var(--text-on-brand);opacity:0.85;">fees · interest · confidential · hooks · non-transferable · native metadata · pausable</div>
+      </div>
+    </div>
+    <div class="fr"></div>
+  </div>
+  <div class="frow"><div class="fl"></div><div class="fc" style="flex-direction:column;">
+    <div class="lbl" style="margin-top:2px;">yes</div>
+    <div class="darr" style="height:22px;"><div class="stem" style="height:10px;"></div><div class="head"></div></div>
+  </div><div class="fr"></div></div>
+
+  <!-- draft set -->
+  <div class="frow"><div class="fl"></div><div class="fc">
+    <div class="node"><div class="t" style="font-size:18px;">Token-2022: draft the extension SET</div></div>
+  </div><div class="fr"></div></div>
+  <div class="frow"><div class="fl"></div><div class="fc"><div class="darr"><div class="stem"></div><div class="head"></div></div></div><div class="fr"></div></div>
+
+  <!-- validate (the accent) -->
+  <div class="frow">
+    <div class="fl"></div>
+    <div class="fc">
+      <div class="node" style="background:var(--surface-accent);border-color:var(--surface-accent);">
+        <div class="t" style="color:var(--text-on-accent);font-size:18px;">validate the set against the five source rules</div>
+        <div class="s" style="color:var(--text-on-accent);">check-combo</div>
+      </div>
+    </div>
+    <div class="fr">
+      <div style="display:flex;align-items:center;">
+        <div style="width:26px;height:2px;background:var(--stbr-green);"></div>
+        <div style="border:2px solid var(--stbr-green);border-radius:var(--radius-md);padding:8px 14px;margin-left:6px;max-width:300px;">
+          <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--stbr-green);">rules live in source, not docs</div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);margin-top:2px;">check_for_invalid_mint_extension_combinations</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="frow"><div class="fl"></div><div class="fc"><div class="darr"><div class="stem"></div><div class="head"></div></div></div><div class="fr"></div></div>
+
+  <!-- init -->
+  <div class="frow"><div class="fl"></div><div class="fc">
+    <div class="node" style="background:var(--surface-inverse);border-color:var(--surface-inverse);">
+      <div class="t" style="color:var(--text-on-dark);font-size:18px;">legal set → initialize mint</div>
+      <div class="s" style="color:var(--text-on-dark);opacity:0.8;">the set is permanent at init</div>
+    </div>
+  </div><div class="fr"></div></div>
+</div>
+</div>
+</body></html>

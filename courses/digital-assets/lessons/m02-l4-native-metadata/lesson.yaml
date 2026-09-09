@@ -1,0 +1,92 @@
+id: lesson-date-m02-l4-native-metadata
+slug: m02-l4-native-metadata
+title: "Native metadata: MetadataPointer + TokenMetadata TLV"
+skills:
+  - token-2022
+  - solana-kit
+  - token-metadata
+  - account-model
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    "@solana-program/system": "0.13.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1-pointer-target
+        prompt: "You add native metadata to SPROUT. Where should the MetadataPointer point, and why?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "To the mint itself (self-referential), so nothing else can spoof its metadata."
+            correct: true
+            feedback: "Pointer and data in the same account makes the trust loop one account long: to change what SPROUT claims to be you would need write access to SPROUT's own mint."
+          - id: d
+            label: "To a PDA derived from the mint that your own program owns, so you control updates"
+            correct: false
+            feedback: "Aiming the pointer anywhere but the mint reopens the indirection the attack lives in, and edit rights already have a home: the update_authority field inside the metadata entry."
+          - id: c
+            label: "To the Token-2022 program address, which stores all metadata centrally."
+            correct: false
+            feedback: "The program doesn't store per-mint metadata centrally; the metadata lives in the mint's own TLV data."
+          - id: a
+            label: "To a separate Metaplex metadata PDA, for maximum wallet compatibility."
+            correct: false
+            feedback: "That's the older separate-account model, not the native pattern, and it reintroduces the spoofing surface the native design avoids."
+        explanation: "The native pattern sets MetadataPointer self-referential: the mint points at itself and stores the TokenMetadata TLV inline. Because the pointer and the data are the same account, no third account can masquerade as SPROUT's metadata; that's the anti-spoofing rationale."
+      - id: q2-where-fields-live
+        prompt: "In the Token-2022-native metadata pattern, what actually holds SPROUT's name, symbol, and uri?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The MetadataPointer entry, which holds them inline"
+            correct: false
+            feedback: "That entry is a fixed 64 bytes, an optional authority plus an optional address, with no room for a string. It names where the strings live; it does not hold them."
+          - id: a
+            label: "A Metaplex on-chain Data struct owned by the Token Metadata program."
+            correct: false
+            feedback: "That's the Metaplex model, a different program and account. Native metadata doesn't use it."
+          - id: b
+            label: "An off-chain JSON file that the pointer links to, with nothing stored on-chain."
+            correct: false
+            feedback: "The uri points off-chain, but name and symbol are stored on-chain in the TLV; not everything lives in the JSON."
+          - id: e
+            label: "A PDA the Token-2022 program derives from the mint address"
+            correct: false
+            feedback: "There is no side account in the native pattern, and no derivation for a wallet to know. That two-account shape is the Metaplex model this design replaced."
+          - id: c
+            label: "A TokenMetadata TLV entry stored on the mint itself."
+            correct: true
+            feedback: "name and symbol are Borsh strings inside the mint's own bytes, so a wallet renders SPROUT from one getAccountInfo and no HTTP fetch at all."
+        explanation: "The TokenMetadata TLV (spl_token_metadata_interface: update_authority, mint, name, symbol, uri, additional_metadata) lives in the mint's own TLV data. name and symbol are on-chain; the uri references off-chain JSON for the richer fields."
+      - id: q3-configured-vs-active
+        prompt: "PYUSD ships both a MetadataPointer and a TokenMetadata extension. When you read it back on-chain, what does that reinforce about 'configured' versus 'active' state?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "A TLV entry present in the bytes is an extension in use"
+            correct: false
+            feedback: "That is the module-1 trap in reverse. The same mint carries a hook slot whose programId is null, so an entry existing and an entry doing something stay two separate reads."
+          - id: b
+            label: "Every extension PYUSD carries is dormant, its metadata included."
+            correct: false
+            feedback: "Some of PYUSD's extensions are dormant (its hook is unset, its fee is 0 bps), but its metadata is live and populated; presence alone tells you nothing until you read the values."
+          - id: c
+            label: "Native metadata can only be read through a Metaplex indexer, never directly."
+            correct: false
+            feedback: "Native metadata is in the mint's TLV and reads directly from getAccountInfo; no Metaplex indexer required."
+          - id: a
+            label: "Presence can come with real, in-use values; read the mint to confirm."
+            correct: true
+            feedback: "PYUSD is the mixed case, some entries live and some dormant on one mint, so the discipline is to read the values rather than infer behaviour from the extension list."
+          - id: e
+            label: "A self-referential MetadataPointer is the extension's unset default value"
+            correct: false
+            feedback: "Unset is an empty option, zeroed inside the 64-byte value. A pointer that names its own mint is a deliberate write, and the metadata entry beside it carries a real name and symbol."
+        explanation: "PYUSD's metadata extensions are configured AND in use, while other extensions it carries are configured-but-dormant. The discipline is the same one from m01: read the mint's TLV on-chain and confirm which values are actually set, rather than inferring behavior from an extension's mere presence."

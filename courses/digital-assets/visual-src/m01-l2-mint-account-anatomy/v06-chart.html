@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: What a mint weighs, by extension set
+     purpose: anchor the account-length model with the four sizes the reader has now verified
+     data: Horizontal bar chart, bytes per mint account, four bars: bare classic mint: 82 Token-2022 + NonTransferable (zero-length marker): 170 Token-2022 + TransferFeeConfig (108-byte value): 278 PYUSD (8 extensions): 866 Reference line at 165+1 = 166: the floor every extended mint pays before its first extension byte. Source: computed via the account-length model and read from live mainnet, 2026-08-22.
+     prompt: A horizontal bar chart with the four labeled bars from the data above, values printed at bar ends, plus a dashed vertical reference line at 166 labeled as the extended-base floor. Make the gap between 82 and the 166 floor visually obvious so the padding cost reads at a glance.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:439px;height:454px;top:-231px;right:-231px;border-radius:47% 49% 57% 62% / 61% 51% 38% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:544px;height:502px;left:-338px;top:267px;border-radius:53% 55% 56% 44% / 41% 57% 43% 48%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:40px 48px 34px;}
+  .card .viz-title{font-size:50px;}
+  .chart{position:relative;margin-top:10px;}
+  .crow{display:flex;align-items:center;height:84px;}
+  .clab{width:330px;padding-right:20px;}
+  .clab .n{font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-primary);}
+  .clab .d{font-family:var(--font-body);font-size:14px;color:var(--text-muted);margin-top:4px;}
+  .ctrack{position:relative;width:1030px;height:84px;}
+  .cbarfill{position:absolute;left:0;top:22px;height:40px;background:var(--stbr-emerald);border-radius:0 8px 8px 0;}
+  .cval{position:absolute;top:31px;font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--text-primary);white-space:nowrap;}
+  .plot{position:absolute;left:330px;top:0;width:1030px;bottom:58px;}
+  .floorband{position:absolute;left:97px;top:34px;bottom:0;width:99px;background:var(--stbr-yellow);opacity:0.25;}
+  .floorline{position:absolute;left:196px;top:34px;bottom:0;width:0;border-left:3px dashed var(--stbr-dark);}
+  .floorchip{position:absolute;left:196px;top:0;transform:translateX(-50%);background:var(--stbr-yellow);color:var(--text-on-accent,#1B231D);font-family:var(--font-body);font-size:14px;font-weight:700;padding:6px 14px;border-radius:999px;white-space:nowrap;}
+  .bandchip{position:absolute;left:220px;top:0;background:var(--surface-paper,#FAF3E3);border:2px solid var(--border-strong);color:var(--text-primary);font-family:var(--font-body);font-size:14px;font-weight:600;padding:6px 14px;border-radius:999px;white-space:nowrap;}
+  .axis{display:flex;height:26px;}
+  .axsp{width:330px;}
+  .axln{position:relative;width:1030px;border-top:2px solid var(--border-strong);}
+  .axt{position:absolute;top:4px;transform:translateX(-50%);font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text-muted);}
+  .src{margin-top:8px;font-family:var(--font-body);font-size:14px;color:var(--text-muted);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">anchor the account-length model with sizes you have verified</div>
+  <h2 class="viz-title">what a mint weighs, by extension set</h2>
+  <div class="chart">
+    <div style="position:relative;height:44px;">
+      <div class="floorchip" style="left:526px;top:6px;">extended-base floor &middot; 165 + 1 = 166 bytes</div>
+    </div>
+    <div style="position:relative;">
+      <div class="crow">
+        <div class="clab"><div class="n">bare classic mint</div></div>
+        <div class="ctrack">
+          <div class="cbarfill" style="width:97px;"></div>
+          <div class="cval" style="left:109px;">82</div>
+        </div>
+      </div>
+      <div class="crow">
+        <div class="clab"><div class="n">Token-2022 + NonTransferable</div><div class="d">zero-length marker</div></div>
+        <div class="ctrack">
+          <div class="cbarfill" style="width:201px;"></div>
+          <div class="cval" style="left:213px;">170</div>
+        </div>
+      </div>
+      <div class="crow">
+        <div class="clab"><div class="n">Token-2022 + TransferFeeConfig</div><div class="d">108-byte value</div></div>
+        <div class="ctrack">
+          <div class="cbarfill" style="width:329px;"></div>
+          <div class="cval" style="left:341px;">278</div>
+        </div>
+      </div>
+      <div class="crow">
+        <div class="clab"><div class="n">PYUSD</div><div class="d">8 extensions</div></div>
+        <div class="ctrack">
+          <div class="cbarfill" style="width:1024px;background:var(--stbr-green);"></div>
+          <div class="cval" style="left:952px;color:#F5E8CA;">866</div>
+        </div>
+      </div>
+      <div style="position:absolute;left:330px;top:0;bottom:0;width:1030px;">
+        <div style="position:absolute;left:97px;top:0;bottom:0;width:99px;background:var(--stbr-yellow);opacity:0.22;"></div>
+        <div style="position:absolute;left:196px;top:-16px;bottom:0;width:0;border-left:3px dashed var(--stbr-dark);"></div>
+        <div style="position:absolute;left:212px;top:26px;background:var(--surface-paper,#FAF3E3);border:2px solid var(--border-strong);color:var(--text-primary);font-family:var(--font-body);font-size:14px;font-weight:600;padding:6px 14px;border-radius:999px;white-space:nowrap;">+84 bytes every extended mint pays before its first extension byte</div>
+      </div>
+    </div>
+    <div class="axis">
+      <div class="axsp"></div>
+      <div class="axln">
+        <div class="axt" style="left:0;">0</div>
+        <div class="axt" style="left:196px;">166</div>
+        <div class="axt" style="left:1024px;">866 bytes</div>
+      </div>
+    </div>
+    <div class="src">Computed via the account-length model and read from live mainnet, 2026-08-22. Dashed line: the floor every extended mint pays before its first extension byte.</div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The four fields that decide whether PYUSD's extensions do anything
+     purpose: show that the verdict comes from values inside the extension bodies, never from the extension list
+     data: Live jsonParsed read of mint 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo (2026-09-01), Token-2022, 866 bytes, 6 decimals, 8 TLV extensions. Annotated fields: 1. transferHook.programId = null            -> no program is CPI'd on transfer 2. transferFeeConfig.newerTransferFee = { epoch 605, transferFeeBasisPoints 0, maximumFee 0 } -> nothing withheld 3. confidentialTransferMint.autoApproveNewAccounts = false, auditorElgamalPubkey = null -> no account self-enrolls 4. confidentialTransferFeeConfig.withheldAmount = all-zero ciphertext -> nothing ever collected Contrast field: permanentDelegate.delegate = 2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk -> a live seizure power
+     prompt: Show a trimmed JSON body of a Token-2022 mint's extensions array with five call-out annotations pointing at the five field lines listed above. Four annotations read "inert value" and one reads "live power". Put the extension names in a left gutter so the reader sees the list and the values side by side. Structure only; no chart.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:458px;height:450px;top:-240px;right:-240px;border-radius:46% 45% 51% 38% / 55% 40% 38% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:503px;height:344px;left:-281px;top:408px;border-radius:54% 40% 36% 59% / 36% 49% 58% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:32px;padding:32px 48px 26px;}
+  .card .viz-title{font-size:40px;margin:4px 0 16px;}
+  .card .stbr-eyebrow{font-size:17px;}
+  .grid{display:grid;grid-template-columns:296px 1fr 236px;grid-template-rows:32px 56px 56px 72px 72px 72px 56px 56px 56px;}
+  .gh{display:flex;align-items:center;justify-content:flex-end;padding-right:18px;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+  .ch{background:var(--surface-inverse);color:#F5E8CA;display:flex;align-items:center;padding:0 22px;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:14px 14px 0 0;opacity:1;}
+  .ah{display:flex;align-items:center;padding-left:16px;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+  .g{display:flex;align-items:center;justify-content:flex-end;padding-right:18px;border-top:1px solid var(--border-subtle);font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--text-primary);}
+  .code{background:var(--surface-inverse);display:flex;flex-direction:column;justify-content:center;padding:6px 22px;border-top:1px solid rgba(245,232,202,0.13);font-family:var(--font-mono);font-size:14.5px;color:#F5E8CA;line-height:1.4;}
+  .code.last{border-radius:0 0 14px 14px;}
+  .code .dim{color:rgba(245,232,202,0.55);font-size:13px;}
+  .an{display:flex;align-items:center;padding-left:0;border-top:1px solid var(--border-subtle);}
+  .an .tri{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;}
+  .an.inert .tri{border-right:10px solid var(--stbr-emerald);}
+  .an.live .tri{border-right:10px solid var(--stbr-yellow);}
+  .an .chip{margin-left:0;padding:6px 16px;border-radius:999px;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:.04em;text-transform:uppercase;}
+  .an.inert .chip{background:var(--stbr-emerald);color:#F5E8CA;}
+  .an.live .chip{background:var(--stbr-yellow);color:#1B231D;}
+  .meta{margin-top:14px;text-align:center;font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);}
+  .meta code{font-family:var(--font-mono);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the verdict lives in the values, never in the extension list</div>
+  <h2 class="viz-title">the four fields that decide whether PYUSD&rsquo;s extensions do anything</h2>
+  <div class="grid">
+    <div class="gh">extension (TLV list)</div><div class="ch">value on mainnet &middot; jsonParsed &middot; 2026-09-01</div><div class="ah">verdict</div>
+    <div class="g" style="border-top:none;">mintCloseAuthority</div><div class="code" style="border-top:none;">"closeAuthority": "2apB&hellip;YJjk"</div><div class="an" style="border-top:none;"></div>
+    <div class="g">permanentDelegate</div><div class="code">"delegate": "2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk"</div><div class="an live"><div class="tri"></div><div class="chip">live power</div></div>
+    <div class="g">transferFeeConfig</div><div class="code"><div>"newerTransferFee": { "epoch": 605,</div><div>&nbsp;&nbsp;"transferFeeBasisPoints": 0, "maximumFee": 0 }</div></div><div class="an inert"><div class="tri"></div><div class="chip">inert value</div></div>
+    <div class="g">confidentialTransferMint</div><div class="code"><div>"autoApproveNewAccounts": false,</div><div>"auditorElgamalPubkey": null</div></div><div class="an inert"><div class="tri"></div><div class="chip">inert value</div></div>
+    <div class="g">confidentialTransferFeeConfig</div><div class="code"><div>"withheldAmount": "0000&hellip;0000"</div><div class="dim">all-zero ciphertext &mdash; nothing ever collected</div></div><div class="an inert"><div class="tri"></div><div class="chip">inert value</div></div>
+    <div class="g">transferHook</div><div class="code">"programId": null</div><div class="an inert"><div class="tri"></div><div class="chip">inert value</div></div>
+    <div class="g">metadataPointer</div><div class="code">"metadataAddress": "2b1k&hellip;GXo"</div><div class="an"></div>
+    <div class="g">tokenMetadata</div><div class="code last">"name": "PayPal USD", "symbol": "PYUSD"</div><div class="an"></div>
+  </div>
+  <div class="meta">mint <code>2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo</code> &middot; Token-2022 &middot; 866 bytes &middot; 6 decimals &middot; 8 TLV extensions &mdash; four inert values, one live seizure power</div>
+</div>
+</div>
+</body></html>

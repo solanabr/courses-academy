@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What CpiGuard actually requires during a CPI
+     purpose: derive from the extension's stated rule why an owner is blocked and a delegate is not
+     data: CpiGuard, when enabled, during CPI (Token-2022 extension guide): Transfer          -> the signing authority must be the account delegate Burn              -> the signing authority must be the account delegate Approve           -> prohibited Close Account     -> the lamport destination must be the account owner Set Owner         -> always prohibited, including outside CPI Error when the rule is violated (TokenError::CpiGuardTransferBlocked): "CPI Guard is enabled, and a program attempted to transfer user funds via CPI without using a delegate" Owner-signed CPI move:   authority = the OWNER, who is not a delegate -> BLOCKED Permanent-delegate move: the guide's own note -> "the permanent delegate may always burn or transfer tokens, bypassing CPI Guard"                      -> PROCEEDS
+     prompt: A rule panel listing the five CpiGuard effects during CPI, with the two "must be the account delegate" rows for Transfer and Burn emphasized. Below it, the verbatim error string in a monospace error box. Beside the panel, two evaluation rows. Row 1 "owner-signed CPI move": annotate "the owner is not a delegate", result "BLOCKED" in red. Row 2 "permanent-delegate move": annotate with the guide's bypass note, result "PROCEEDS" in green.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:482px;height:476px;top:-220px;right:-220px;border-radius:56% 39% 50% 41% / 60% 56% 56% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:459px;height:452px;bottom:-228px;left:-228px;border-radius:38% 61% 58% 35% / 54% 36% 61% 64%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:22px; align-items:stretch; }
+  .rules { flex:1.25 1 0; min-width:0; background:var(--surface-inverse);
+           border-radius:var(--radius-lg); padding:22px 26px; }
+  .rlabel { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.14em;
+            text-transform:uppercase; color:rgba(245,232,202,0.60); margin-bottom:12px; }
+  .rrow { display:flex; gap:14px; align-items:baseline; padding:8px 12px; border-left:4px solid var(--stbr-dark-700);
+          margin-bottom:6px; }
+  .rrow.em { border-left-color:var(--stbr-yellow); background:rgba(255,210,63,0.10); }
+  .op { font-family:var(--font-mono); font-weight:600; font-size:16px; color:var(--text-on-dark);
+        flex:0 0 168px; }
+  .req { font-family:var(--font-mono); font-size:14.5px; line-height:1.35; color:rgba(245,232,202,0.80); }
+  .rrow.em .req { color:var(--stbr-yellow); }
+  .errbox { margin-top:16px; border:2px solid var(--status-danger); border-radius:var(--radius-md);
+            padding:13px 16px; }
+  .errname { font-family:var(--font-mono); font-weight:700; font-size:14px; color:#e57368;
+             margin-bottom:5px; }
+  .errmsg { font-family:var(--font-mono); font-size:13px; line-height:1.4; color:rgba(245,232,202,0.85); }
+  .evals { flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:18px; }
+  .ev { background:var(--surface-card); border:2px solid var(--border-subtle);
+        border-radius:var(--radius-lg); padding:20px 24px; flex:1 1 0; }
+  .evt { font-family:var(--font-display); font-weight:900; font-size:21px; color:var(--text-primary);
+         margin-bottom:8px; }
+  .eva { font-family:var(--font-body); font-size:14.5px; line-height:1.42; color:var(--text-secondary);
+         margin-bottom:12px; }
+  .eva em { font-style:italic; }
+  .stamp { display:inline-block; font-family:var(--font-display); font-weight:900; font-size:19px;
+           letter-spacing:.06em; padding:7px 18px; border-radius:var(--radius-sm); }
+  .stamp.blocked { background:var(--status-danger); color:#fff; }
+  .stamp.proceeds { background:var(--surface-brand); color:var(--text-on-brand); }
+  .why { font-family:var(--font-mono); font-size:12.5px; color:var(--text-muted); margin-left:12px; }
+</style>
+  <div class="stbr-eyebrow">cpi guard &middot; the rule as written</div>
+  <h2 class="viz-title">what CpiGuard actually requires during a CPI</h2>
+
+  <div class="cols">
+    <div class="rules">
+      <div class="rlabel">when enabled, during CPI &mdash; Token-2022 extension guide</div>
+      <div class="rrow em"><span class="op">Transfer</span><span class="req">&rarr; the signing authority must be the account delegate</span></div>
+      <div class="rrow em"><span class="op">Burn</span><span class="req">&rarr; the signing authority must be the account delegate</span></div>
+      <div class="rrow"><span class="op">Approve</span><span class="req">&rarr; prohibited</span></div>
+      <div class="rrow"><span class="op">Close Account</span><span class="req">&rarr; the lamport destination must be the account owner</span></div>
+      <div class="rrow"><span class="op">Set Owner</span><span class="req">&rarr; always prohibited, including outside CPI</span></div>
+      <div class="errbox">
+        <div class="errname">TokenError::CpiGuardTransferBlocked</div>
+        <div class="errmsg">"CPI Guard is enabled, and a program attempted to transfer user funds via CPI without using a delegate"</div>
+      </div>
+    </div>
+
+    <div class="evals">
+      <div class="ev">
+        <div class="evt">owner-signed CPI move</div>
+        <div class="eva">authority = the <strong>owner</strong> &mdash; and the owner is not a delegate</div>
+        <span class="stamp blocked">BLOCKED</span><span class="why">CpiGuardTransferBlocked</span>
+      </div>
+      <div class="ev">
+        <div class="evt">permanent-delegate move</div>
+        <div class="eva">the guide's own note: <em>"the permanent delegate may always burn or transfer tokens, bypassing CPI Guard"</em></div>
+        <span class="stamp proceeds">PROCEEDS</span><span class="why">tokens leave the account</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

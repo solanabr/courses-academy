@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The four holder protections at a glance
+     purpose: one scannable reference row per protection: what it refuses, who opts in, the observed error, and the exported cost
+     data: Columns: Extension (TLV type) | Lives on | Enabled | What it refuses | Observed revert | Who pays the cost Row 1: NonTransferable (9, mint) + NonTransferableAccount (13, account) | mint, pair forced onto accounts | at mint creation only | any transfer of the token | 0x25 (37) | secondary markets: nobody can trade it Row 2: ImmutableOwner (7) | account | at account creation (ATAs: always) | reassigning the owner authority | 0x22 (34) | ~nobody: universal default Row 3: MemoTransfer (8) | account | owner-signed, post-creation, toggleable | incoming transfers without a preceding memo | 0x24 (36), "No memo in previous instruction" | every sender, forever (Meteora checklist tax) Row 4: CpiGuard (11) | account | owner-signed, post-creation, toggleable | CPI-invoked authority ops (transfer/approve/close-dest via program) | n/a in this lab (needs a CPI caller) | composability with programs; PermanentDelegate still bypasses
+     prompt: A four-row comparison table using exactly the columns and cell text in data. Highlight the "Who pays the cost" column as the takeaway. Keep error codes monospaced. Row order as given.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:406px;right:-270px;top:269px;border-radius:52% 53% 42% 49% / 47% 45% 35% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:482px;height:500px;bottom:-266px;left:770px;border-radius:47% 60% 40% 45% / 55% 41% 39% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; }
+  table.cmp { width:100%; border-collapse:collapse; background:var(--surface-card);
+              border-radius:var(--radius-lg); overflow:hidden; }
+  .cmp th { background:var(--surface-inverse); color:var(--text-on-dark);
+            font-family:var(--font-body); font-weight:800; font-size:13.5px;
+            letter-spacing:.08em; text-transform:uppercase; text-align:left;
+            padding:13px 14px; }
+  .cmp th.cost { background:var(--surface-accent); color:var(--text-on-accent); }
+  .cmp td { font-family:var(--font-body); font-size:15px; line-height:1.35;
+            color:var(--text-primary); padding:14px; vertical-align:top;
+            border-top:1px solid var(--border-subtle); }
+  .cmp td.ext { font-family:var(--font-mono); font-weight:700; font-size:14.5px; }
+  .cmp td.ext small { display:block; font-family:var(--font-body); font-weight:500;
+                      font-size:12.5px; color:var(--text-secondary); margin-top:2px; }
+  .cmp td code { font-family:var(--font-mono); font-size:13.5px; font-weight:700; }
+  .cmp td.cost { background:#fff3c9; font-weight:700; }
+  .cmp tr.alt td { background:var(--surface-paper); }
+  .cmp tr.alt td.cost { background:#fff3c9; }
+  .c1 { width:230px; } .c2 { width:165px; } .c3 { width:195px; }
+  .c4 { width:265px; } .c5 { width:230px; } .c6 { width:315px; }
+</style>
+  <div class="stbr-eyebrow">one row per protection</div>
+  <h2 class="viz-title">the four holder protections at a glance</h2>
+
+  <table class="cmp">
+    <tr>
+      <th class="c1">Extension (TLV type)</th>
+      <th class="c2">Lives on</th>
+      <th class="c3">Enabled</th>
+      <th class="c4">What it refuses</th>
+      <th class="c5">Observed revert</th>
+      <th class="c6 cost">Who pays the cost</th>
+    </tr>
+    <tr>
+      <td class="ext">NonTransferable (9, mint)<small>+ NonTransferableAccount (13, account)</small></td>
+      <td>mint; pair forced onto accounts</td>
+      <td>at mint creation only</td>
+      <td>any transfer of the token</td>
+      <td><code>0x25 (37)</code></td>
+      <td class="cost">secondary markets: nobody can trade it</td>
+    </tr>
+    <tr class="alt">
+      <td class="ext">ImmutableOwner (7)</td>
+      <td>account</td>
+      <td>at account creation (ATAs: always)</td>
+      <td>reassigning the owner authority</td>
+      <td><code>0x22 (34)</code></td>
+      <td class="cost">~nobody: universal default</td>
+    </tr>
+    <tr>
+      <td class="ext">MemoTransfer (8)</td>
+      <td>account</td>
+      <td>owner-signed, post-creation, toggleable</td>
+      <td>incoming transfers without a preceding memo</td>
+      <td><code>0x24 (36)</code>, &ldquo;No memo in previous instruction&rdquo;</td>
+      <td class="cost">every sender, forever (Meteora checklist tax)</td>
+    </tr>
+    <tr class="alt">
+      <td class="ext">CpiGuard (11)</td>
+      <td>account</td>
+      <td>owner-signed, post-creation, toggleable</td>
+      <td>CPI-invoked authority ops (transfer / approve / close-dest via program)</td>
+      <td>n/a in this lab (needs a CPI caller)</td>
+      <td class="cost">composability with programs; PermanentDelegate still bypasses</td>
+    </tr>
+  </table>
+</div>
+</body></html>

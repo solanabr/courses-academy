@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One balance, two encryptions, two masters
+     purpose: separate the chain-facing ElGamal ciphertext from the owner-facing AES cache so the reader never conflates them
+     data: center: the true balance (a number nobody stores in plaintext) left path: encrypted under account's ElGamal pubkey -> available_balance -> used by validators for homomorphic arithmetic and proof checks -> slow for the owner to decrypt (discrete log) right path: encrypted under owner's AES key -> decryptable_available_balance -> read instantly by the wallet -> ignored by all on-chain logic rule: chain copy is authoritative; AES copy is a cache the owner refreshes on every balance change
+     prompt: Center node "true balance (never stored in plaintext)". Two branches. Left branch: lock icon labeled "Twisted ElGamal, account pubkey" flowing to "available_balance" with tags "validators compute on it" and "slow owner decryption". Right branch: key icon labeled "AES, owner's key" flowing to "decryptable_available_balance" with tags "instant wallet read" and "ignored on-chain". Footer rule: "chain copy authoritative; AES copy is the owner's cache".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:490px;height:424px;bottom:-221px;right:-221px;border-radius:58% 36% 43% 37% / 42% 36% 51% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:524px;height:465px;left:-283px;top:92px;border-radius:61% 48% 54% 39% / 60% 44% 36% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .true-bal { width:640px; margin:6px auto 0; background:var(--stbr-yellow);
+              border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+              padding:16px 28px; text-align:center; }
+  .true-bal-name { font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--stbr-dark); }
+  .true-bal-sub { font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--stbr-dark);
+                  margin-top:3px; }
+  .fork-svg { display:block; margin:0 auto; }
+  .cols { display:flex; gap:56px; }
+  .enc-col { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column;
+             height:322px; }
+  .enc-head { padding:13px 24px; display:flex; align-items:center; gap:12px; }
+  .enc-head.emerald { background:var(--stbr-emerald); }
+  .enc-head.deep { background:var(--stbr-green); }
+  .enc-head-name { font-family:var(--font-display); font-weight:900; font-size:21px; color:#F5E8CA; }
+  .enc-body { padding:16px 24px 18px; display:flex; flex-direction:column; gap:11px; }
+  .field-chip { align-self:flex-start; font-family:var(--font-mono); font-weight:700; font-size:17px;
+                color:#F5E8CA; background:var(--stbr-dark); padding:7px 16px;
+                border-radius:var(--radius-md); }
+  .enc-tag { display:flex; align-items:center; gap:9px; font-family:var(--font-body); font-weight:700;
+             font-size:14.5px; color:var(--text-primary); }
+  .dot { width:9px; height:9px; border-radius:50%; background:var(--stbr-emerald); flex:0 0 auto; }
+  .role-band { margin-top:auto; padding:9px 24px; font-family:var(--font-body); font-weight:800;
+               font-size:13px; letter-spacing:.09em; text-transform:uppercase; }
+  .role-band.auth { background:rgba(0,139,76,0.12); color:var(--stbr-green); }
+  .role-band.cache { background:var(--surface-paper); color:var(--text-muted); }
+  .rule-band { margin-top:18px; background:var(--stbr-dark); border-radius:var(--radius-2xl);
+               padding:15px 30px; font-family:var(--font-body); font-weight:800; font-size:17.5px;
+               color:#F5E8CA; text-align:center; }
+</style>
+  <div class="stbr-eyebrow">ELGAMAL FOR THE CHAIN, AES FOR THE OWNER</div>
+  <h2 class="viz-title">one balance, two encryptions, two masters</h2>
+  <div class="true-bal">
+    <div class="true-bal-name">the true balance</div>
+    <div class="true-bal-sub">a number nobody stores in plaintext &mdash; encrypted twice, once per audience</div>
+  </div>
+  <svg class="fork-svg" width="1456" height="62" viewBox="0 0 1456 62">
+    <line x1="728" y1="0" x2="386" y2="50" stroke="#1B231D" stroke-width="3"/>
+    <polygon points="376,56 396,50 388,40" fill="#1B231D"/>
+    <line x1="728" y1="0" x2="1070" y2="50" stroke="#1B231D" stroke-width="3"/>
+    <polygon points="1080,56 1060,50 1068,40" fill="#1B231D"/>
+  </svg>
+  <div class="cols">
+    <div class="enc-col">
+      <div class="enc-head emerald">
+        <svg width="20" height="24" viewBox="0 0 20 24">
+          <rect x="2" y="10" width="16" height="12" rx="3" fill="#F5E8CA"/>
+          <path d="M5 10 V7 a5 5 0 0 1 10 0 v3" fill="none" stroke="#F5E8CA" stroke-width="2.5"/>
+        </svg>
+        <span class="enc-head-name">Twisted ElGamal &middot; account pubkey</span>
+      </div>
+      <div class="enc-body">
+        <span class="field-chip">available_balance</span>
+        <div class="enc-tag"><span class="dot"></span>validators compute on it &mdash; homomorphic arithmetic + proof checks</div>
+        <div class="enc-tag"><span class="dot"></span>slow for the owner to decrypt (discrete log)</div>
+      </div>
+      <div class="role-band auth">the chain's copy &mdash; authoritative</div>
+    </div>
+    <div class="enc-col">
+      <div class="enc-head deep">
+        <svg width="24" height="24" viewBox="0 0 24 24">
+          <circle cx="8" cy="8" r="5" fill="none" stroke="#F5E8CA" stroke-width="2.5"/>
+          <line x1="11.5" y1="11.5" x2="21" y2="21" stroke="#F5E8CA" stroke-width="2.5"/>
+          <line x1="17" y1="21" x2="21" y2="21" stroke="#F5E8CA" stroke-width="2.5"/>
+          <line x1="18" y1="17" x2="21" y2="17" stroke="#F5E8CA" stroke-width="2.5"/>
+        </svg>
+        <span class="enc-head-name">AES &middot; owner's key</span>
+      </div>
+      <div class="enc-body">
+        <span class="field-chip">decryptable_available_balance</span>
+        <div class="enc-tag"><span class="dot"></span>read instantly by the wallet</div>
+        <div class="enc-tag"><span class="dot"></span>ignored by all on-chain logic</div>
+      </div>
+      <div class="role-band cache">the owner's cache &mdash; refreshed on every balance change</div>
+    </div>
+  </div>
+  <div class="rule-band">rule: the chain copy is authoritative &mdash; the AES copy is a cache the owner refreshes on every balance change</div>
+</div>
+</body></html>

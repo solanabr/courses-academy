@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The per-extension launch decision
+     purpose: give the reader the decision procedure for each candidate extension in a launch set
+     data: Start: "Do we actually need this extension?" no -> DROP (footgun: 'just in case' silently costs venues) yes -> "Is it on the target venue's allowlist?" yes -> KEEP on the tradeable mint no -> "Is the need issuer-side or holder-side?" issuer-side -> MOVE to a non-pooled issuer variant holder-side -> ACCEPT the smaller venue surface, name it in the report Annotation on DROP branch: DefaultAccountState 'for safety' is the classic just-in-case trap
+     prompt: Top-down flowchart, four decision diamonds and four terminal boxes (DROP, KEEP, MOVE to issuer variant, ACCEPT smaller surface + document). Terminal boxes visually distinct. Carry the 'just in case' annotation on the DROP branch as a small warning note. Labels short, question text verbatim from data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:556px;height:447px;right:-322px;top:264px;border-radius:56% 43% 58% 40% / 39% 51% 53% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:482px;height:423px;bottom:-225px;left:-225px;border-radius:37% 56% 56% 64% / 54% 48% 46% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .fc3 { position:relative; width:1456px; height:586px; margin:0 auto; }
+  .fc3 svg.wires { position:absolute; top:0; left:0; }
+  .q { position:absolute; left:60px; width:430px; height:96px; box-sizing:border-box;
+       background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+       border-radius:var(--radius-lg); padding:14px 20px; display:flex;
+       align-items:center; }
+  .q .qt { font-family:var(--font-display); font-weight:800; font-size:20px;
+           line-height:1.2; color:var(--text-primary); }
+  .q .qmark { flex:none; width:34px; height:34px; border-radius:50%;
+              background:var(--stbr-emerald); color:#fff; font-family:var(--font-display);
+              font-weight:900; font-size:20px; display:flex; align-items:center;
+              justify-content:center; margin-right:16px; }
+  .term { position:absolute; left:700px; width:330px; height:96px; box-sizing:border-box;
+          border-radius:var(--radius-lg); padding:12px 20px; display:flex;
+          flex-direction:column; justify-content:center; }
+  .term .tv { font-family:var(--font-display); font-weight:900; font-size:21px;
+              letter-spacing:.03em; }
+  .term .td { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+              line-height:1.3; margin-top:2px; }
+  .term.drop { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark); }
+  .term.drop .tv, .term.drop .td { color:var(--stbr-dark); }
+  .term.keep { background:var(--stbr-emerald); }
+  .term.keep .tv, .term.keep .td { color:var(--stbr-cream); }
+  .term.move { background:var(--stbr-green); }
+  .term.move .tv, .term.move .td { color:var(--stbr-cream); }
+  .term.accept { background:var(--surface-card); border:2.5px solid var(--stbr-green); }
+  .term.accept .tv { color:var(--stbr-green); }
+  .term.accept .td { color:var(--text-secondary); }
+  .warn { position:absolute; left:1086px; top:6px; width:370px; box-sizing:border-box;
+          background:var(--surface-card); border:2px solid var(--stbr-yellow-600);
+          border-radius:var(--radius-lg); padding:12px 16px;
+          font-family:var(--font-body); font-weight:600; font-size:14px;
+          line-height:1.35; color:var(--text-secondary); }
+  .warn b { color:var(--text-primary); }
+  .lbl { position:absolute; background:var(--surface-card);
+         border:1.5px solid var(--stbr-dark); border-radius:var(--radius-pill);
+         font-family:var(--font-body); font-weight:800; font-size:13px;
+         color:var(--stbr-dark); padding:3px 12px; white-space:nowrap; }
+</style>
+  <div class="stbr-eyebrow">launch-set design</div>
+  <h2 class="viz-title" style="font-size:44px;">the per-extension launch decision</h2>
+  <div class="fc3">
+    <svg class="wires" width="1456" height="586" viewBox="0 0 1456 586">
+      <!-- Q1 -> DROP -->
+      <line x1="490" y1="54" x2="686" y2="54" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="700,54 684,46 684,62" fill="#1b231d"/>
+      <!-- Q1 -> Q2 -->
+      <line x1="275" y1="102" x2="275" y2="158" stroke="#008b4c" stroke-width="3"/>
+      <polygon points="275,172 267,156 283,156" fill="#008b4c"/>
+      <!-- Q2 -> KEEP -->
+      <line x1="490" y1="220" x2="686" y2="220" stroke="#008b4c" stroke-width="3"/>
+      <polygon points="700,220 684,212 684,228" fill="#008b4c"/>
+      <!-- Q2 -> Q3 -->
+      <line x1="275" y1="268" x2="275" y2="324" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="275,338 267,322 283,322" fill="#1b231d"/>
+      <!-- Q3 -> MOVE -->
+      <line x1="490" y1="386" x2="686" y2="386" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="700,386 684,378 684,394" fill="#1b231d"/>
+      <!-- Q3 -> ACCEPT (elbow) -->
+      <path d="M275,434 V528 H686" fill="none" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="700,528 684,520 684,536" fill="#1b231d"/>
+    </svg>
+    <div class="q" style="top:6px;"><div class="qmark">1</div><div class="qt">Do we actually need this extension?</div></div>
+    <div class="q" style="top:172px;"><div class="qmark">2</div><div class="qt">Is it on the target venue's allowlist?</div></div>
+    <div class="q" style="top:338px;"><div class="qmark">3</div><div class="qt">Is the need issuer-side or holder-side?</div></div>
+
+    <div class="term drop" style="top:6px;"><div class="tv">DROP</div><div class="td">"just in case" silently costs venues</div></div>
+    <div class="term keep" style="top:172px;"><div class="tv">KEEP</div><div class="td">on the tradeable mint</div></div>
+    <div class="term move" style="top:338px;"><div class="tv">MOVE</div><div class="td">to a non-pooled issuer variant</div></div>
+    <div class="term accept" style="top:480px;"><div class="tv">ACCEPT</div><div class="td">the smaller venue surface, name it in the report</div></div>
+
+    <div class="lbl" style="left:560px; top:24px;">no</div>
+    <div class="lbl" style="left:293px; top:116px;">yes</div>
+    <div class="lbl" style="left:560px; top:190px;">yes</div>
+    <div class="lbl" style="left:293px; top:282px;">no</div>
+    <div class="lbl" style="left:522px; top:356px;">issuer-side</div>
+    <div class="lbl" style="left:420px; top:498px;">holder-side</div>
+
+    <div class="warn"><b>&#9888; on the DROP branch:</b> DefaultAccountState "for safety" is the classic just-in-case trap</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three things a client can hand your gate
+     purpose: fix the trust boundary before any code, by naming what each piece of evidence actually proves
+     data: Signed message ("I hold the crate"): proves = control of a keypair at signing time does NOT prove = current ownership of any asset spoofable? no, but irrelevant: a past holder signs just as validly Client-cached token list / wallet adapter state: proves = what the browser was told, whenever it was last told does NOT prove = anything about chain state spoofable? yes, trivially, by the applicant DAS read of the owner's assets (getAssetsByOwner / getAsset): proves = an independent index resolves this asset to this owner does NOT prove = freshness to the current slot (indexers lag) spoofable? not by the applicant; the request never touches their machine
+     prompt: Three stacked evidence cards, each with the claim on the left and three labeled rows (proves / does not prove / spoofable by applicant). Mark the first two cards with a rejected treatment and the third as accepted. Under the third card add a single caveat strip reading "accepted, with a freshness bill: the index lags the chain".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:457px;height:431px;top:-240px;right:-240px;border-radius:45% 64% 49% 61% / 65% 60% 42% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:533px;height:462px;left:-289px;top:274px;border-radius:61% 52% 42% 43% / 56% 46% 54% 36%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .ev-stack { display:flex; flex-direction:column; gap:13px; margin-top:6px; }
+  .ev { display:flex; align-items:stretch; background:var(--surface-card);
+        border:2px solid var(--stbr-ink-500); border-radius:var(--radius-xl); overflow:hidden; }
+  .ev-claim { flex:0 0 430px; padding:14px 22px; display:flex; flex-direction:column;
+              justify-content:center; gap:7px; border-right:1.5px solid var(--border-subtle); }
+  .ev-claim .nm { font-family:var(--font-display); font-weight:900; font-size:21px;
+                  line-height:1.12; color:var(--text-primary); }
+  .pill { display:inline-block; align-self:flex-start; font-family:var(--font-body); font-weight:800; font-size:11px;
+          letter-spacing:.1em; text-transform:uppercase; padding:3px 11px;
+          border-radius:var(--radius-pill); }
+  .pill.no  { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .pill.yes { background:var(--stbr-yellow); color:var(--stbr-dark); border:1.5px solid var(--stbr-dark); }
+  .ev-rows { flex:1 1 0; display:flex; flex-direction:column; justify-content:center; }
+  .ev-row { display:flex; align-items:center; gap:14px; padding:6px 22px; }
+  .ev-row + .ev-row { border-top:1px solid var(--border-subtle); }
+  .ev-row .lb { flex:0 0 190px; font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.07em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .ev-row .vl { font-family:var(--font-body); font-size:15.5px; line-height:1.28;
+                color:var(--text-primary); }
+  .ev.rejected .ev-claim .nm { color:var(--text-secondary); }
+  .ev.accepted { border:3px solid var(--stbr-dark); background:rgba(255,210,63,0.12); }
+  .ev.accepted .ev-claim { background:rgba(255,210,63,0.30); border-right-color:rgba(27,35,29,0.15); }
+  .caveat { display:flex; align-items:center; background:var(--stbr-emerald);
+            border-radius:var(--radius-lg); padding:11px 24px; }
+  .caveat span { font-family:var(--font-display); font-weight:800; font-size:18px;
+                 color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">fix the trust boundary first</div>
+  <h2 class="viz-title">three things a client can hand your gate</h2>
+  <div class="ev-stack">
+    <div class="ev rejected">
+      <div class="ev-claim">
+        <span class="pill no">rejected</span>
+        <span class="nm">Signed message &mdash; &ldquo;I hold the crate&rdquo;</span>
+      </div>
+      <div class="ev-rows">
+        <div class="ev-row"><span class="lb">proves</span><span class="vl">control of a keypair at signing time</span></div>
+        <div class="ev-row"><span class="lb">does not prove</span><span class="vl">current ownership of any asset</span></div>
+        <div class="ev-row"><span class="lb">spoofable by applicant?</span><span class="vl">no &mdash; but irrelevant: a past holder signs just as validly</span></div>
+      </div>
+    </div>
+    <div class="ev rejected">
+      <div class="ev-claim">
+        <span class="pill no">rejected</span>
+        <span class="nm">Client-cached token list / wallet adapter state</span>
+      </div>
+      <div class="ev-rows">
+        <div class="ev-row"><span class="lb">proves</span><span class="vl">what the browser was told, whenever it was last told</span></div>
+        <div class="ev-row"><span class="lb">does not prove</span><span class="vl">anything about chain state</span></div>
+        <div class="ev-row"><span class="lb">spoofable by applicant?</span><span class="vl">yes &mdash; trivially, by the applicant</span></div>
+      </div>
+    </div>
+    <div class="ev accepted">
+      <div class="ev-claim">
+        <span class="pill yes">accepted</span>
+        <span class="nm">DAS read of the owner&rsquo;s assets<br><span style="font-family:var(--font-mono);font-weight:600;font-size:14.5px;">getAssetsByOwner / getAsset</span></span>
+      </div>
+      <div class="ev-rows">
+        <div class="ev-row"><span class="lb">proves</span><span class="vl">an independent index resolves this asset to this owner</span></div>
+        <div class="ev-row"><span class="lb">does not prove</span><span class="vl">freshness to the current slot &mdash; indexers lag</span></div>
+        <div class="ev-row"><span class="lb">spoofable by applicant?</span><span class="vl">not by the applicant &mdash; the request never touches their machine</span></div>
+      </div>
+    </div>
+    <div class="caveat"><span>accepted, with a freshness bill: the index lags the chain</span></div>
+  </div>
+</div>
+</body></html>

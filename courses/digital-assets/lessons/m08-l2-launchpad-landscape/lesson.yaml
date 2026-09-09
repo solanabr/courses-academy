@@ -1,0 +1,82 @@
+id: lesson-date-m08-l2-launchpad-landscape
+slug: m08-l2-launchpad-landscape
+title: "The launchpad landscape, anti-snipe & what graduation seeds"
+skills:
+  - solana-fundamentals
+  - rpc-reads
+  - token-2022
+  - version-pinning
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    tsx: "4.23.12"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m08l2-q1-platform-pda
+        prompt: "You notice LetsBonk transactions and LaunchLab transactions hit the same program id. What does that tell you?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "One of them is a thin wrapper program that CPIs into the other, which is why the same id shows up in both transactions."
+            correct: false
+            feedback: "A wrapper would be its own program id invoking a second one, and you would see two. The probe returned one 32-byte key for both names, which is identity rather than delegation."
+          - id: c
+            label: "LaunchLab's Platform PDA lets third parties run branded launchpads on the same program with their own fee structure."
+            correct: true
+            feedback: "One kitchen, several signs. The franchisee sets the branding and the till; what they cannot change is the fryer, which here means the curve and the graduation AMM."
+          - id: a
+            label: "LetsBonk forked LaunchLab's open-source code and redeployed it under its own upgrade authority, keeping the instruction layout byte-compatible."
+            correct: false
+            feedback: "A fork would deploy at a different program id; sharing the id means they share the program, not the source."
+          - id: b
+            label: "It is a coincidence of vanity addresses, since the two teams happened to grind for similar-looking prefixes."
+            correct: false
+            feedback: "Program ids are exact 32-byte keys: a shared id is identity, not resemblance."
+        explanation: "LaunchLab exposes a Platform PDA so anyone can run a branded front-end and fee split on the shared program. LetsBonk is one such skin. Recognizing this collapses several 'competing' launchpads into one curve with resellers, and it tells you their mechanics and graduation AMM are LaunchLab's."
+      - id: m08l2-q2-docs-vs-code
+        prompt: "Meteora DBC's docs say the curve supports up to 16 segments; the on-chain config struct says up to 20. You are building against DBC. Which do you trust?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The docs' 16 segments, because published documentation is the interface contract integrators are entitled to rely on when the source disagrees."
+            correct: false
+            feedback: "The 16 happens to match the validated cap, but 'trust the docs' is the wrong habit and misses the second constant: the account still reserves 20 slots, and a deserializer sized to 16 mis-reads the layout."
+          - id: c
+            label: "Neither, because DBC runs one constant-product curve like pump.fun, so both segment counts describe a feature the venue does not have."
+            correct: false
+            feedback: "DBC is explicitly piecewise over multiple (sqrt_price, liquidity) segments; that flexibility is its whole pitch."
+          - id: d
+            label: "The struct's 20 slots, because on a live protocol the source usually beats the docs, so size the curve you submit to the array the account reserves."
+            correct: false
+            feedback: "Right instinct, wrong constant. Reading the source is the habit; reading enough of it to see which constant guards which surface is the skill, and twenty points is what the instruction rejects."
+          - id: a
+            label: "Both, because they govern different surfaces: MAX_CURVE_POINT = 16 caps the curve an instruction will validate, while the 20-slot array is account-layout headroom your deserializer must size for; re-verify both at write time."
+            correct: true
+            feedback: "The const_assert between the two constants is the giveaway: the source itself declares one a ceiling under the other, so each number governs a different surface."
+        explanation: "Read the source, and read enough of it to know which constant governs which surface: constants.rs declares MAX_CURVE_POINT = 16 with a const_assert pinning it under MAX_CURVE_POINT_CONFIG = 20. Trust only the docs and you mis-size a deserializer against the 20-slot array; trust only the struct width and you pass 20 points into an instruction that validates 16. Same habit that produced the extension conflict matrix — and the exact numbers get re-verified at write time."
+      - id: m08l2-q3-venue-rejects-extension
+        prompt: "SPROUT carries a TransferHook extension. You choose a graduation AMM whose allowlist rejects hooks. What happens, and what is the fix?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The launchpad automatically strips the TransferHook extension from the mint during migration so the graduation pool can be created without it."
+            correct: false
+            feedback: "A launchpad cannot remove a mint-level extension: extensions are fixed at mint creation. The venue must accept it or you must not ship it."
+          - id: d
+            label: "Pool creation succeeds because allowlists are additive: the AMM accepts the extensions it knows and ignores the rest."
+            correct: false
+            feedback: "An allowlist is a whitelist, not a preference list. One off-list extension is enough to refuse the mint, which is the same shape the airdrop tool's supported-extension table has."
+          - id: a
+            label: "The token graduates fine, because an AMM ignores any mint extension it does not recognize."
+            correct: false
+            feedback: "The allowlist reverts pool creation on any off-list extension; it does not silently ignore it."
+          - id: b
+            label: "Pool creation reverts on the off-allowlist extension; pick a venue that accepts your set."
+            correct: true
+            feedback: "The curve was never the risk; the last instruction was. Two fixes and no third: match the venue to the token, or drop the extension so the token matches the venue."
+        explanation: "The routable extension set from R6 is not advisory: it decides which graduation AMMs are legal. A hook-bearing SPROUT reverts on Raydium's allowlist but has a documented path on Meteora DBC, whose docs describe transfer-hook base tokens — a claim the lesson filed as documented-but-unverified, so verify it before you launch on it. Choose the venue to match the token, or change the token."

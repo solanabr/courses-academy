@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The five-instruction order that creates a named mint
+     purpose: fix the create-time vs post-init seam and where the realloc happens
+     data: 1. getCreateAccountInstruction (@solana-program/system): space = 234 (pointer only), lamports = rent(394) 2. InitializeMetadataPointer: authority + metadataAddress = the mint itself  [create-time zone] 3. InitializeMint: decimals, mint authority, freeze authority  [the seam] 4. InitializeTokenMetadata: program follows pointer to itself, REALLOCS 234 -> 394, writes name/symbol/uri  [post-init zone] 5. UpdateTokenMetadataField: writes additional_metadata "harvest_season" = "spring" (may realloc again) Annotation: steps 1-2 must precede 3; steps 4-5 must follow 3; extra lamports from step 1 are consumed by the realloc in step 4.
+     prompt: Vertical five-step flowchart, one node per instruction in the listed order. Shade the background in two zones split at step 3: "before InitializeMint: fixed-size, create-time extensions" above, "after InitializeMint: variable-size metadata, realloc" below. Annotate node 1 with "allocate 234, fund 394" and node 4 with "realloc 234 to 394". A thin side-arrow from node 1's lamports to node 4 labeled "pre-funded rent claimed here".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:541px;height:490px;top:-280px;right:-280px;border-radius:54% 51% 44% 38% / 50% 63% 59% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:490px;height:344px;left:-259px;top:306px;border-radius:61% 54% 55% 62% / 62% 65% 35% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin-bottom: 14px; }
+  .flow { position:relative; }
+  .col { width:1060px; }
+  .zone { border-radius:var(--radius-xl); padding:12px 18px 14px; }
+  .zone.pre { background:var(--surface-card); border:2px solid var(--stbr-green); }
+  .zone.post { background:var(--surface-card); border:2px solid var(--stbr-emerald); }
+  .zl { font-family:var(--font-body); font-weight:800; font-size:12px;
+        letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-green);
+        margin-bottom:8px; }
+  .ins { display:flex; align-items:center; background:var(--surface-paper);
+         border:1.5px solid var(--stbr-green); border-radius:var(--radius-lg);
+         padding:10px 16px; min-height:52px; }
+  .ins .n { width:34px; height:34px; flex:0 0 34px; border-radius:var(--radius-pill);
+            background:var(--surface-brand); color:var(--text-on-brand);
+            font-family:var(--font-display); font-weight:900; font-size:17px;
+            line-height:34px; text-align:center; margin-right:14px; }
+  .ins .b { flex:1; }
+  .ins .in { font-family:var(--font-mono); font-weight:700; font-size:17px;
+             color:var(--text-primary); }
+  .ins .id { font-family:var(--font-body); font-size:13px; line-height:1.3;
+             color:var(--text-secondary); margin-top:2px; }
+  .tag { flex:0 0 auto; margin-left:14px; font-family:var(--font-body); font-weight:800;
+         font-size:12.5px; border-radius:var(--radius-pill); padding:5px 13px; }
+  .tag.y { background:var(--stbr-yellow); color:var(--stbr-dark);
+           border:1.5px solid var(--stbr-dark); }
+  .seam { display:flex; align-items:center; background:var(--surface-brand);
+          border-radius:var(--radius-lg); padding:10px 16px; min-height:52px; }
+  .seam .n { width:34px; height:34px; flex:0 0 34px; border-radius:var(--radius-pill);
+             background:var(--stbr-cream); color:var(--stbr-emerald);
+             font-family:var(--font-display); font-weight:900; font-size:17px;
+             line-height:34px; text-align:center; margin-right:14px; }
+  .seam .in { font-family:var(--font-mono); font-weight:700; font-size:17px;
+              color:var(--text-on-brand); }
+  .seam .id { font-family:var(--font-body); font-size:13px; color:var(--text-on-brand);
+              opacity:.85; margin-top:2px; }
+  .seam .st { margin-left:auto; font-family:var(--font-display); font-weight:900;
+              font-size:14px; letter-spacing:.06em; color:var(--stbr-cream);
+              border:1.5px solid var(--stbr-cream); border-radius:var(--radius-pill);
+              padding:4px 13px; }
+  .va { height:22px; display:flex; justify-content:center; align-items:center; }
+  .rail { position:absolute; left:1040px; top:0; width:416px; height:560px; }
+  .railchip { position:absolute; left:150px; top:150px; width:250px;
+              font-family:var(--font-body); font-weight:700; font-size:14.5px;
+              line-height:1.35; color:var(--text-primary); background:var(--surface-card);
+              border:2px dashed var(--stbr-green); border-radius:var(--radius-lg);
+              padding:12px 16px; }
+</style>
+  <div class="stbr-eyebrow">one transaction, strict order</div>
+  <h2 class="viz-title">the five instructions that create a named mint</h2>
+
+  <div class="flow">
+    <div class="col">
+      <div class="zone pre">
+        <div class="zl">before InitializeMint &mdash; fixed-size, create-time extensions</div>
+        <div class="ins">
+          <div class="n">1</div>
+          <div class="b"><div class="in">getCreateAccountInstruction</div>
+            <div class="id">space = 234 (pointer only) &middot; lamports = rent(394)</div></div>
+          <div class="tag y">allocate 234, fund 394</div>
+        </div>
+        <div class="va"><svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="10" stroke="#1b231d" stroke-width="3"/><polygon points="1,10 15,10 8,20" fill="#1b231d"/></svg></div>
+        <div class="ins">
+          <div class="n">2</div>
+          <div class="b"><div class="in">InitializeMetadataPointer</div>
+            <div class="id">authority + metadataAddress = the mint itself</div></div>
+        </div>
+      </div>
+      <div class="va"><svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="10" stroke="#1b231d" stroke-width="3"/><polygon points="1,10 15,10 8,20" fill="#1b231d"/></svg></div>
+      <div class="seam">
+        <div class="n">3</div>
+        <div class="b"><div class="in">InitializeMint</div>
+          <div class="id">decimals &middot; mint authority &middot; freeze authority</div></div>
+        <div class="st">the seam</div>
+      </div>
+      <div class="va"><svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="10" stroke="#1b231d" stroke-width="3"/><polygon points="1,10 15,10 8,20" fill="#1b231d"/></svg></div>
+      <div class="zone post">
+        <div class="zl" style="color:var(--stbr-emerald);">after InitializeMint &mdash; variable-size metadata, realloc</div>
+        <div class="ins" style="border-color:var(--stbr-emerald);">
+          <div class="n">4</div>
+          <div class="b"><div class="in">InitializeTokenMetadata</div>
+            <div class="id">follows the pointer to itself &middot; writes name / symbol / uri</div></div>
+          <div class="tag y">realloc 234 &rarr; 394</div>
+        </div>
+        <div class="va"><svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="10" stroke="#1b231d" stroke-width="3"/><polygon points="1,10 15,10 8,20" fill="#1b231d"/></svg></div>
+        <div class="ins" style="border-color:var(--stbr-emerald);">
+          <div class="n">5</div>
+          <div class="b"><div class="in">UpdateTokenMetadataField</div>
+            <div class="id">additional_metadata: harvest_season = &quot;spring&quot; (may realloc again)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rail">
+      <svg width="416" height="560" viewBox="0 0 416 560">
+        <path d="M18 64 C 110 64, 110 64, 110 180 L 110 300 C 110 353, 70 353, 34 353"
+              fill="none" stroke="#306c40" stroke-width="3" stroke-dasharray="9 6"/>
+        <polygon points="34,345 34,361 18,353" fill="#306c40"/>
+      </svg>
+      <div class="railchip">extra lamports from step 1 sit idle&hellip; then the realloc in step 4 claims the pre-funded rent here</div>
+    </div>
+  </div>
+</div>
+</body></html>

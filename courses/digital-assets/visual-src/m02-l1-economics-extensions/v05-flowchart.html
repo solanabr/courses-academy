@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The fee-routing lifecycle, from transfer to treasury
+     purpose: give the reader the full two-leg harvest pipeline plus the direct route, with permissions marked
+     data: node 1: "transfer fires" -> node 2: "fee withheld on RECIPIENT token account (TransferFeeAmount slot)" node 2 -> node 3: "harvest_withheld_tokens_to_mint (PERMISSIONLESS): sweep accounts -> mint.withheld_amount" node 3 -> node 4: "withdraw_withheld_tokens_from_mint (withdraw_withheld_authority): mint -> treasury token account" direct route: node 2 -> node 4 via "withdraw_withheld_tokens_from_accounts (withdraw_withheld_authority): accounts -> destination, one hop" annotation: "nothing on this chart happens automatically; every arrow after the first is a job you own"
+     prompt: Left-to-right flowchart, four main nodes as in data, the two-leg path drawn as the primary flow and the direct accounts-to-destination route as a bypass arc underneath. Mark the harvest arrow with a green "permissionless" badge and both withdraw arrows with a lock badge naming withdraw_withheld_authority. Footer annotation from data across the bottom.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:440px;height:368px;right:-253px;top:128px;border-radius:65% 47% 39% 39% / 36% 47% 40% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:448px;height:441px;bottom:-225px;left:-225px;border-radius:51% 52% 45% 42% / 57% 62% 41% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v05-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:36px 48px 36px; overflow:hidden; }
+  .v05-flow { display:grid; grid-template-columns:0.85fr 50px 1.15fr 50px 1.3fr 50px 1.25fr; align-items:stretch; margin-top:6px; }
+  .v05-node { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px 18px;
+    font-family:var(--font-body); font-size:15px; line-height:1.35; color:var(--text-primary);
+    display:flex; flex-direction:column; gap:8px; }
+  .v05-node .h { font-family:var(--font-display); font-weight:900; font-size:17px; line-height:1.2; }
+  .v05-node code { font-family:var(--font-mono); font-size:14px; font-weight:700; }
+  .v05-n1 { background:var(--surface-inverse); border-color:var(--surface-inverse); color:var(--text-on-dark);
+    justify-content:center; }
+  .v05-n1 .h { color:var(--text-on-dark); font-size:20px; }
+  .v05-n2 { background:var(--stbr-yellow); border-color:var(--stbr-yellow); font-weight:600; }
+  .v05-badge { align-self:flex-start; font-family:var(--font-body); font-size:12px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; border-radius:var(--radius-pill); padding:3px 10px; }
+  .v05-badge.free { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .v05-badge.lock { background:var(--stbr-dark); color:var(--stbr-cream); text-transform:none; letter-spacing:0;
+    font-family:var(--font-mono); font-size:12px; }
+  .v05-ar { display:flex; align-items:center; padding:0 5px; }
+  .v05-ar .ln { width:100%; height:4px; background:var(--stbr-dark); position:relative; }
+  .v05-ar .ln::after { content:""; position:absolute; right:-2px; top:-6px;
+    border-top:8px solid transparent; border-bottom:8px solid transparent; border-left:11px solid var(--stbr-dark); }
+  .v05-bypass { position:relative; height:112px; margin-top:0; }
+  .v05-arc { position:absolute; left:470px; right:150px; top:0; height:56px;
+    border-left:3px solid var(--stbr-green); border-right:3px solid var(--stbr-green);
+    border-bottom:3px solid var(--stbr-green); border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+  .v05-arc::after { content:""; position:absolute; right:-7px; top:-10px;
+    border-left:6px solid transparent; border-right:6px solid transparent; border-bottom:10px solid var(--stbr-green); }
+  .v05-arclab { position:absolute; left:0; right:0; top:34px; display:flex; justify-content:center; }
+  .v05-arclab .inner { background:var(--surface-card); border:2px solid var(--stbr-green);
+    border-radius:var(--radius-md); padding:8px 16px; font-family:var(--font-body); font-size:14px;
+    color:var(--text-primary); display:flex; align-items:center; gap:12px; }
+  .v05-arclab code { font-family:var(--font-mono); font-size:13.5px; font-weight:700; }
+  .v05-foot { margin-top:12px; background:var(--surface-inverse); color:var(--text-on-dark);
+    border-radius:var(--radius-lg); padding:14px 24px; font-family:var(--font-body); font-size:17px; }
+  .v05-foot b { color:var(--stbr-yellow); }
+</style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">two legs or one hop &mdash; you drive both</div>
+    <h2 class="viz-title">the fee-routing lifecycle, from transfer to treasury</h2>
+    <div class="v05-flow">
+      <div class="v05-node v05-n1"><div class="h">transfer fires</div></div>
+      <div class="v05-ar"><div class="ln"></div></div>
+      <div class="v05-node v05-n2">
+        <div class="h">fee withheld on the RECIPIENT token account</div>
+        <span>sits in the <code>TransferFeeAmount</code> slot until moved</span>
+      </div>
+      <div class="v05-ar"><div class="ln"></div></div>
+      <div class="v05-node">
+        <span class="v05-badge free">permissionless</span>
+        <div class="h"><code>harvest_withheld_tokens_to_mint</code></div>
+        <span>sweep accounts &rarr; <code>mint.withheld_amount</code></span>
+      </div>
+      <div class="v05-ar"><div class="ln"></div></div>
+      <div class="v05-node">
+        <span class="v05-badge lock">withdraw_withheld_authority</span>
+        <div class="h"><code>withdraw_withheld_tokens_from_mint</code></div>
+        <span>mint &rarr; treasury token account</span>
+      </div>
+    </div>
+    <div class="v05-bypass">
+      <div class="v05-arc"></div>
+      <div class="v05-arclab">
+        <div class="inner">
+          <span class="v05-badge lock">withdraw_withheld_authority</span>
+          <span>direct route: <code>withdraw_withheld_tokens_from_accounts</code> &mdash; accounts &rarr; destination, one hop</span>
+        </div>
+      </div>
+    </div>
+    <div class="v05-foot">nothing on this chart happens automatically &mdash; <b>every arrow after the first is a job you own</b>.</div>
+  </div>
+</div>
+</body></html>

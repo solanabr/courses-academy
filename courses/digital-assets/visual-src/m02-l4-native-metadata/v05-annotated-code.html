@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: SPROUT's TokenMetadata TLV entry, byte by byte
+     purpose: connect the Borsh layout to the 234-to-394 realloc arithmetic the lab pre-funds
+     data: [type: u16 = 19] [length: u16 = 156] then the value: update_authority: 32 bytes (pubkey, all-zero = none) mint:             32 bytes (pubkey, the anti-spoof back-reference) name:             4-byte len + "SPROUT" (6)   = 10 symbol:           4-byte len + "SPRT" (4)     = 8 uri:              4-byte len + 38-char URI    = 42 additional_metadata: 4-byte count = 1, then key   "harvest_season": 4 + 14 = 18 value "spring":         4 + 6  = 10 value total 156 + header 4 = 160; mint-with-pointer 234 + 160 = 394 bytes funded.
+     prompt: Annotated byte-layout card. A horizontal byte strip segmented per the data rows, each segment labeled with field name and size; the two pubkey segments visually wider, string segments showing their 4-byte length prefix as a thin sub-segment. Below the strip, one summing annotation line: 156 value + 4 header, and 234 + 160 = 394 with the label "the size the lab pre-funds".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:566px;height:515px;top:-327px;right:-327px;border-radius:52% 36% 51% 55% / 61% 59% 35% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:507px;bottom:-267px;left:-267px;border-radius:60% 60% 35% 57% / 59% 43% 60% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin-bottom: 18px; }
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-2xl);
+           padding:30px 32px 26px; }
+  .groups { display:flex; margin-bottom:8px; }
+  .grp { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+         letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-cream);
+         opacity:.75; border-bottom:2px solid var(--stbr-cream); padding-bottom:5px; }
+  .strip { display:flex; height:118px; border-radius:var(--radius-md); overflow:hidden; }
+  .seg { display:flex; flex-direction:column; justify-content:center; padding:0 10px; }
+  .seg + .seg { border-left:2px solid #1b231d; }
+  .seg.hdr { background:var(--stbr-green); }
+  .seg.pk  { background:var(--stbr-emerald); }
+  .seg.str { background:#0f5e38; padding:0; flex-direction:row; }
+  .seg .fn { font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+             color:var(--stbr-cream); line-height:1.25; }
+  .seg .fb { font-family:var(--font-display); font-weight:900; font-size:15px;
+             line-height:1.25; color:var(--stbr-cream); margin-top:5px; }
+  .seg .fx { font-family:var(--font-body); font-size:11px; line-height:1.3;
+             color:var(--stbr-cream); opacity:.8; margin-top:4px; }
+  .lenp { width:27px; flex:0 0 27px; background:#1b231d; display:flex; flex-direction:column;
+          align-items:center; justify-content:center; }
+  .lenp span { font-family:var(--font-mono); font-size:10px; color:var(--stbr-cream);
+               opacity:.85; }
+  .lenp b { font-family:var(--font-mono); font-size:13px; color:var(--stbr-cream); }
+  .pay { flex:1; display:flex; flex-direction:column; justify-content:center;
+         padding:0 9px; }
+  .brace { display:flex; margin-top:8px; }
+  .brlab { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+           color:var(--stbr-cream); opacity:.8; border-top:2px solid var(--stbr-cream);
+           padding-top:5px; text-align:center; }
+  .sum { display:flex; align-items:center; margin-top:24px; }
+  .sum .eq { font-family:var(--font-mono); font-size:21px; color:var(--stbr-cream); }
+  .sum .pill { font-family:var(--font-mono); font-weight:700; font-size:22px;
+               background:var(--stbr-yellow); color:var(--stbr-dark);
+               border-radius:var(--radius-pill); padding:4px 16px; margin:0 10px; }
+  .sum .why { font-family:var(--font-body); font-weight:700; font-size:15px;
+              color:var(--stbr-yellow); margin-left:14px; }
+</style>
+  <div class="stbr-eyebrow">borsh, byte by byte</div>
+  <h2 class="viz-title">SPROUT's TokenMetadata TLV entry &mdash; and the realloc math</h2>
+
+  <div class="panel">
+    <div class="groups">
+      <div class="grp" style="width:112px;">header &middot; 4 B</div>
+      <div style="width:16px;"></div>
+      <div class="grp" style="width:1264px;">value &middot; 156 B</div>
+    </div>
+    <div class="strip">
+      <div class="seg hdr" style="width:60px;"><div class="fn">type<br>u16</div><div class="fb">19</div></div>
+      <div class="seg hdr" style="width:60px;"><div class="fn">len<br>u16</div><div class="fb">156</div></div>
+      <div class="seg pk" style="width:230px;"><div class="fn">update_authority</div><div class="fb">32 B &middot; pubkey</div><div class="fx">all-zero = none</div></div>
+      <div class="seg pk" style="width:230px;"><div class="fn">mint</div><div class="fb">32 B &middot; pubkey</div><div class="fx">the anti-spoof back-reference</div></div>
+      <div class="seg str" style="width:122px;"><div class="lenp"><span>len</span><b>4</b></div><div class="pay"><div class="fn">name</div><div class="fb">&quot;SPROUT&quot;</div><div class="fx">6 ch &middot; 10 B</div></div></div>
+      <div class="seg str" style="width:106px;"><div class="lenp"><span>len</span><b>4</b></div><div class="pay"><div class="fn">symbol</div><div class="fb">&quot;SPRT&quot;</div><div class="fx">4 ch &middot; 8 B</div></div></div>
+      <div class="seg str" style="width:268px;"><div class="lenp"><span>len</span><b>4</b></div><div class="pay"><div class="fn">uri</div><div class="fb">38-char URI</div><div class="fx">= 42 B</div></div></div>
+      <div class="seg hdr" style="width:64px;"><div class="fn">count<br>u32</div><div class="fb">1</div></div>
+      <div class="seg str" style="width:138px;"><div class="lenp"><span>len</span><b>4</b></div><div class="pay"><div class="fn">key</div><div class="fb">&quot;harvest_<br>season&quot;</div><div class="fx">14 ch &middot; 18 B</div></div></div>
+      <div class="seg str" style="width:114px;"><div class="lenp"><span>len</span><b>4</b></div><div class="pay"><div class="fn">value</div><div class="fb">&quot;spring&quot;</div><div class="fx">6 ch &middot; 10 B</div></div></div>
+    </div>
+    <div class="brace">
+      <div style="width:1076px;"></div>
+      <div class="brlab" style="width:316px;">additional_metadata &middot; 1 pair</div>
+    </div>
+    <div class="sum">
+      <span class="eq">value 156 + header 4 = 160&nbsp;&nbsp;&middot;&nbsp;&nbsp;mint-with-pointer 234 + 160 =</span>
+      <span class="pill">394 bytes</span>
+      <span class="why">the size the lab pre-funds</span>
+    </div>
+  </div>
+</div>
+</body></html>

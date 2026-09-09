@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The Royalties plugin config, field by field
+     purpose: give the reader the exact shape they must fill in the lab, with the two mint-enforced invariants marked
+     data: { type: "Royalties", basisPoints: 500,            // integer 0..10000; 500 = 5% creators: [ { address: creatorA, percentage: 60 }, { address: creatorB, percentage: 40 },   // shares MUST sum to exactly 100 ],                                          // duplicate addresses rejected ruleSet: ruleSet("None"),    // None | ProgramAllowList | ProgramDenyList } Invariant 1: basisPoints in 0..10000. Invariant 2: percentages sum to 100, no duplicate creator addresses. Violate either and the mint reverts.
+     prompt: Annotated code card: the config object rendered as code with three callout arrows, one per field, carrying the annotations from the data. A red badge on the creators callout reading "sum = 100 or the mint reverts" and a neutral badge on ruleSet reading "None = recorded, not enforced".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:360px;right:-335px;top:212px;border-radius:49% 47% 48% 38% / 55% 36% 46% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:539px;bottom:-331px;left:390px;border-radius:42% 60% 54% 56% / 36% 50% 50% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .code-wrap { display:flex; align-items:flex-start; margin-top:6px; }
+  .panel { flex:0 0 740px; background:var(--surface-inverse); border-radius:var(--radius-xl);
+           padding:28px 32px; }
+  .cl { display:block; height:44px; line-height:44px; font-family:var(--font-mono);
+        font-size:20px; color:var(--stbr-cream); white-space:pre; }
+  .cl .k { color:var(--stbr-yellow); }
+  .cl .s { color:#7fd7ab; }
+  .cl.mark { background:rgba(255,210,63,0.14); border-radius:6px; margin:0 -12px;
+             padding:0 12px; }
+  .callouts { flex:1 1 auto; position:relative; height:464px; }
+  .cline { position:absolute; left:0; height:3px; background:var(--stbr-emerald); }
+  .co { position:absolute; left:64px; right:0; border-radius:var(--radius-lg);
+        padding:12px 18px; background:var(--surface-card);
+        border:2px solid var(--stbr-emerald); }
+  .co.hot { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark); }
+  .co-t { font-family:var(--font-mono); font-weight:700; font-size:15px;
+          color:var(--stbr-emerald); }
+  .co.hot .co-t { color:var(--stbr-dark); }
+  .co-b { font-family:var(--font-body); font-weight:600; font-size:15px;
+          line-height:1.35; color:var(--text-primary); margin-top:3px; }
+  .co-badge { display:inline-block; margin-top:7px; font-family:var(--font-body);
+              font-weight:800; font-size:12.5px; padding:4px 12px;
+              border-radius:var(--radius-pill); }
+  .co-badge.danger { background:var(--status-danger); color:#fff; }
+  .co-badge.neutral { background:var(--surface-paper); color:var(--text-secondary);
+                      border:1.5px solid var(--border-subtle); }
+  .inv { margin-top:16px; display:flex; gap:14px; align-items:center; }
+  .inv-chip { font-family:var(--font-body); font-weight:700; font-size:14.5px;
+              background:var(--surface-card); border:2px solid var(--stbr-dark);
+              border-radius:var(--radius-pill); padding:8px 18px; color:var(--text-primary); }
+  .inv-end { font-family:var(--font-display); font-weight:900; font-size:15px;
+             color:var(--status-danger); }
+</style>
+  <div class="stbr-eyebrow">the exact shape the lab fills in</div>
+  <h2 class="viz-title">the Royalties plugin config, field by field</h2>
+  <div class="code-wrap">
+    <div class="panel">
+      <span class="cl">{</span>
+      <span class="cl">  type: <span class="s">"Royalties"</span>,</span>
+      <span class="cl">  <span class="k">basisPoints</span>: 500,</span>
+      <span class="cl mark">  <span class="k">creators</span>: [</span>
+      <span class="cl mark">    { address: creatorA, percentage: 60 },</span>
+      <span class="cl mark">    { address: creatorB, percentage: 40 },</span>
+      <span class="cl mark">  ],</span>
+      <span class="cl">  <span class="k">ruleSet</span>: ruleSet(<span class="s">"None"</span>),</span>
+      <span class="cl">}</span>
+    </div>
+    <div class="callouts">
+      <div class="cline" style="top:136px;width:64px;"></div>
+      <div class="co" style="top:96px;">
+        <div class="co-t">basisPoints</div>
+        <div class="co-b">integer 0..10000 &mdash; 500 = 5%. Out of range? The mint reverts.</div>
+      </div>
+      <div class="cline" style="top:246px;width:64px;"></div>
+      <div class="co hot" style="top:206px;">
+        <div class="co-t">creators[]</div>
+        <div class="co-b">shares MUST sum to exactly 100; duplicate addresses rejected.</div>
+        <span class="co-badge danger">sum = 100 or the mint reverts</span>
+      </div>
+      <div class="cline" style="top:356px;width:64px;"></div>
+      <div class="co" style="top:316px;">
+        <div class="co-t">ruleSet</div>
+        <div class="co-b">None | ProgramAllowList | ProgramDenyList</div>
+        <span class="co-badge neutral">None = recorded, not enforced</span>
+      </div>
+    </div>
+  </div>
+  <div class="inv">
+    <span class="inv-chip">invariant 1 &middot; basisPoints in 0..10000</span>
+    <span class="inv-chip">invariant 2 &middot; percentages sum to 100, no duplicate creators</span>
+    <span class="inv-end">violate either &rarr; the mint reverts</span>
+  </div>
+</div>
+</body></html>

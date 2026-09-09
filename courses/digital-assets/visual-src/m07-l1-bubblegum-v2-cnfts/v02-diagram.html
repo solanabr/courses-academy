@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: A Merkle proof is one sibling hash per level
+     purpose: make the proof mechanism concrete before the cost analysis prices it
+     data: Tree of depth 20 holds 2^20 = 1,048,576 leaves; only the path for one leaf is drawn. Path: your leaf (the crate's 32-byte hash) -> hashed with sibling S1 -> parent -> hashed with sibling S2 -> grandparent -> continues for 20 levels -> root (32 bytes, on-chain) Proof = the 20 sibling hashes S1 through S20, 32 bytes each, 640 bytes total Verify: recompute the root from the leaf plus the siblings, compare to the on-chain root Doubling supply to 2,097,152 leaves: one more level, one more sibling, 32 more proof bytes
+     prompt: Vertical binary-tree diagram showing a single path from one highlighted leaf at the bottom to the root at the top, with the sibling node at each level shaded and labeled S1 through S20, using an ellipsis for the middle levels rather than drawing all twenty. Annotate the root "32 bytes, on-chain" and the leaf "your crate's hash". A side strip lists the proof as S1 through S20 totaling 640 bytes, and a footer note reads "one more level per doubling of supply". Do not attempt to draw the full million-leaf tree.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:487px;height:461px;bottom:-231px;right:-231px;border-radius:41% 39% 52% 36% / 41% 58% 54% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:459px;height:491px;left:-249px;top:169px;border-radius:47% 65% 48% 40% / 60% 46% 46% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .mp-row { display:flex; gap:30px; align-items:stretch; margin-top:2px; }
+  .mp-path { flex:1 1 auto; background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); padding:20px 30px 16px;
+             display:flex; flex-direction:column; align-items:center; }
+  .mp-root { align-self:stretch; background:var(--stbr-emerald); color:var(--text-on-brand);
+             border-radius:var(--radius-lg); padding:10px 22px; text-align:center;
+             font-family:var(--font-display); font-weight:900; font-size:21px; }
+  .mp-root small { display:block; font-family:var(--font-body); font-weight:600;
+                   font-size:13px; margin-top:1px; }
+  .mp-up { display:flex; align-items:center; gap:8px; height:34px; padding:4px 0; }
+  .mp-tri { width:16px; height:13px; position:relative; }
+  .mp-tri::after { content:""; position:absolute; left:0; top:0; width:0; height:0;
+                   border-left:8px solid transparent; border-right:8px solid transparent;
+                   border-bottom:13px solid var(--stbr-dark); }
+  .mp-stem { display:none; }
+  .mp-hashlbl { font-family:var(--font-body); font-weight:700; font-size:11.5px;
+                letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
+  .mp-pair { display:flex; align-items:center; gap:12px; }
+  .mp-node { border:2.5px solid var(--stbr-dark); border-radius:var(--radius-md);
+             background:var(--surface-card); padding:7px 18px; min-width:220px; text-align:center;
+             font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--text-primary); }
+  .mp-node small { display:block; font-weight:500; font-size:12px; color:var(--text-muted); }
+  .mp-node.leaf { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .mp-plus { font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--stbr-emerald); }
+  .mp-sib { border:2.5px dashed var(--stbr-green); border-radius:var(--radius-md);
+            background:rgba(48,108,64,0.08); padding:7px 16px; min-width:120px; text-align:center;
+            font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--stbr-green); }
+  .mp-sib small { display:block; font-weight:500; font-size:11.5px; color:var(--text-muted); }
+  .mp-dots { font-family:var(--font-body); font-weight:600; font-size:14px;
+             color:var(--text-muted); padding:2px 0; }
+  .mp-side { flex:0 0 420px; display:flex; flex-direction:column; gap:16px; }
+  .mp-proof { background:var(--surface-inverse); color:var(--text-on-dark);
+              border-radius:var(--radius-2xl); padding:22px 26px; flex:1 1 auto; }
+  .mp-proof h3 { font-family:var(--font-display); font-weight:900; font-size:22px;
+                 margin:0 0 10px; color:var(--stbr-cream); }
+  .mp-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .mp-chip { border:1.5px solid rgba(245,232,202,0.55); border-radius:var(--radius-pill);
+             padding:4px 13px; font-family:var(--font-mono); font-size:14px; color:var(--stbr-cream); }
+  .mp-total { font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--stbr-cream); }
+  .mp-total small { display:block; font-family:var(--font-body); font-weight:500; font-size:13px;
+                    color:rgba(245,232,202,0.8); margin-top:2px; }
+  .mp-verify { border-top:1.5px solid rgba(245,232,202,0.3); margin-top:12px; padding-top:10px;
+               font-family:var(--font-body); font-size:14px; line-height:1.4; color:rgba(245,232,202,0.92); }
+  .mp-verify b { color:var(--stbr-cream); }
+  .mp-foot { margin-top:16px; background:var(--surface-card); border:2px solid var(--stbr-dark);
+             border-radius:var(--radius-pill); padding:9px 24px; text-align:center;
+             font-family:var(--font-body); font-weight:600; font-size:15px; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">the proof mechanism, before the price tag</div>
+  <h2 class="viz-title">a Merkle proof is one sibling hash per level</h2>
+  <div class="mp-row">
+    <div class="mp-path">
+      <div class="mp-root">root &mdash; 32 bytes<small>the only hash stored on-chain</small></div>
+      <div class="mp-up"><span class="mp-tri"></span><span class="mp-stem"></span><span class="mp-hashlbl">hash</span></div>
+      <div class="mp-pair">
+        <div class="mp-node">level-19 ancestor</div>
+        <div class="mp-plus">+</div>
+        <div class="mp-sib">S20<small>sibling, 32 B</small></div>
+      </div>
+      <div class="mp-up"><span class="mp-tri"></span><span class="mp-stem"></span><span class="mp-hashlbl">hash</span></div>
+      <div class="mp-dots">&hellip; 17 more levels, one sibling each &hellip;</div>
+      <div class="mp-up"><span class="mp-tri"></span><span class="mp-stem"></span><span class="mp-hashlbl">hash</span></div>
+      <div class="mp-pair">
+        <div class="mp-node">parent</div>
+        <div class="mp-plus">+</div>
+        <div class="mp-sib">S2<small>sibling, 32 B</small></div>
+      </div>
+      <div class="mp-up"><span class="mp-tri"></span><span class="mp-stem"></span><span class="mp-hashlbl">hash</span></div>
+      <div class="mp-pair">
+        <div class="mp-node leaf">your leaf<small>your crate&rsquo;s 32-byte hash</small></div>
+        <div class="mp-plus">+</div>
+        <div class="mp-sib">S1<small>sibling, 32 B</small></div>
+      </div>
+    </div>
+    <div class="mp-side">
+      <div class="mp-proof">
+        <h3>the proof you ship</h3>
+        <div class="mp-chips">
+          <span class="mp-chip">S1</span><span class="mp-chip">S2</span><span class="mp-chip">S3</span>
+          <span class="mp-chip">&hellip;</span><span class="mp-chip">S20</span>
+        </div>
+        <div class="mp-total">20 &times; 32 B = 640 bytes<small>one sibling per level of a depth-20 tree &mdash; 2&sup2;&#8304; = 1,048,576 leaves</small></div>
+        <div class="mp-verify"><b>verify:</b> recompute the root from the leaf plus the 20 siblings, compare to the on-chain root</div>
+      </div>
+    </div>
+  </div>
+  <div class="mp-foot">doubling supply to 2,097,152 leaves adds one level, one sibling, 32 more proof bytes &mdash; one extra level per doubling</div>
+</div>
+</body></html>

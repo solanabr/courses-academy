@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The derived conflict matrix, five rules over seven extensions
+     purpose: give the reader the matrix the docs never published, as derived from the pinned source
+     data: rows (rules, source order): rule 1 | ConfidentialTransferFeeConfig | requires BOTH TransferFeeConfig AND ConfidentialTransferMint | class: bridge needs both endpoints rule 2 | TransferFeeConfig + ConfidentialTransferMint | together REQUIRE ConfidentialTransferFeeConfig | class: pair demands a third (additive fix) rule 3 | ConfidentialMintBurn | requires ConfidentialTransferMint | class: one-way dependency rule 4 | ScaledUiAmount + InterestBearingConfig | mutually exclusive | class: true conflict, no fix rule 5 | NonTransferable + ConfidentialTransferMint | invalid UNLESS ConfidentialMintBurn present | class: conditional, trio is legal footer: source = check_for_invalid_mint_extension_combinations, interface/src/extension/mod.rs lines 1326-1374, solana-program/token-2022 @ 426400f (committed 2026-08-17, read 2026-08-22). All other pairs among the 29 production variants: legal at init.
+     prompt: Designed data table, five rows, four columns: Rule, Extensions involved, Constraint, Class. Color-code the Class column: additive-fix rows in one accent, the single true mutual exclusion (rule 4) in a stronger warning accent, the conditional (rule 5) in a third. Footer band carries the source citation from data verbatim. Title the table "derived, not copied".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:484px;height:355px;right:-238px;top:240px;border-radius:38% 53% 45% 41% / 61% 50% 58% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:363px;height:467px;bottom:-292px;left:500px;border-radius:62% 58% 55% 38% / 60% 56% 47% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 48px 34px; }
+  table.mx { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .mx th { background: var(--surface-inverse); color: var(--text-on-dark); font-family: var(--font-display);
+           font-weight: var(--weight-bold); font-size: 15px; text-align: left; padding: 12px 16px;
+           letter-spacing: 0.04em; text-transform: uppercase; }
+  .mx th:first-child { border-radius: var(--radius-md) 0 0 0; }
+  .mx th:last-child { border-radius: 0 var(--radius-md) 0 0; }
+  .mx td { border-bottom: 1px solid var(--border-subtle); padding: 11px 16px; vertical-align: middle;
+           font-family: var(--font-body); font-size: 15px; color: var(--text-primary); }
+  .mx .ext { font-family: var(--font-mono); font-size: 13.5px; color: var(--text-primary); }
+  .badge { display: inline-block; border-radius: var(--radius-pill); padding: 4px 14px; font-family: var(--font-body);
+           font-size: 13px; font-weight: 700; white-space: nowrap; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">derived, not copied</div>
+  <h2 class="viz-title" style="margin-bottom:12px;">the conflict matrix the docs never published</h2>
+  <table class="mx">
+    <tr><th style="width:90px;">rule</th><th style="width:470px;">extensions involved</th><th>constraint</th><th style="width:280px;">class</th></tr>
+    <tr>
+      <td style="font-family:var(--font-display);font-weight:700;">1</td>
+      <td class="ext">ConfidentialTransferFeeConfig</td>
+      <td>requires <strong>both</strong> TransferFeeConfig <strong>and</strong> ConfidentialTransferMint</td>
+      <td><span class="badge" style="background:var(--surface-brand);color:var(--text-on-brand);">bridge needs both endpoints</span></td>
+    </tr>
+    <tr>
+      <td style="font-family:var(--font-display);font-weight:700;">2</td>
+      <td class="ext">TransferFeeConfig + ConfidentialTransferMint</td>
+      <td>together <strong>require</strong> ConfidentialTransferFeeConfig</td>
+      <td><span class="badge" style="background:var(--surface-brand);color:var(--text-on-brand);">pair demands a third (additive fix)</span></td>
+    </tr>
+    <tr>
+      <td style="font-family:var(--font-display);font-weight:700;">3</td>
+      <td class="ext">ConfidentialMintBurn</td>
+      <td>requires ConfidentialTransferMint</td>
+      <td><span class="badge" style="background:var(--surface-brand-deep);color:var(--text-on-brand);">one-way dependency</span></td>
+    </tr>
+    <tr style="background:#FFF6D6;">
+      <td style="font-family:var(--font-display);font-weight:700;">4</td>
+      <td class="ext">ScaledUiAmount + InterestBearingConfig</td>
+      <td><strong>mutually exclusive</strong></td>
+      <td><span class="badge" style="background:var(--surface-accent);color:var(--text-on-accent);">true conflict, no fix</span></td>
+    </tr>
+    <tr>
+      <td style="font-family:var(--font-display);font-weight:700;">5</td>
+      <td class="ext">NonTransferable + ConfidentialTransferMint</td>
+      <td>invalid <strong>unless</strong> ConfidentialMintBurn present</td>
+      <td><span class="badge" style="border:2px solid var(--stbr-green);color:var(--stbr-green);">conditional, trio is legal</span></td>
+    </tr>
+  </table>
+  <div style="margin-top:18px;background:var(--surface-paper);border-radius:var(--radius-md);padding:12px 18px;">
+    <div style="font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary);line-height:1.5;">
+      source = check_for_invalid_mint_extension_combinations, interface/src/extension/mod.rs lines 1326-1374,
+      solana-program/token-2022 @ 426400f (committed 2026-08-17, read 2026-08-22).
+    </div>
+    <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-primary);margin-top:4px;font-weight:600;">
+      all other pairs among the 29 production variants: legal at init.
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

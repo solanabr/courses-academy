@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: What a drop costs, classic accounts versus compressed
+     purpose: show that the ratio is constant while the absolute bill goes from irrelevant to unaffordable
+     data: Grouped bars on a log Y axis, lamports converted to SOL. The classic column is DERIVED, not pasted: a classic SPL token account is 165 bytes of data + the 128-byte account header = 293 bytes, times the per-byte rent rate of the cluster you will pay on. Rate used here: 6,333 lamports/byte, mainnet-beta, read 2026-09-06 (SIMD-0437's first step landed 2026-09-03; devnet was already a step further down at 5,080 and a surfpool fork still served the old 6,960). 293 x 6,333 = 1,855,569 lamports per classic recipient. 1,000 recipients: classic 1.86 SOL, compressed 0.0103 SOL 10,000 recipients: classic 18.56 SOL, compressed 0.103 SOL 100,000 recipients: classic 185.56 SOL, compressed 1.03 SOL 1,000,000 recipients: classic 1,855.57 SOL, compressed 10.30 SOL Per recipient: classic 1,855,569 lamports (rent, refundable on close, and it moves with the rate); compressed 10,300 lamports (5,000 create + 5,300 one write, spent, and NOT rent so it does not move). Annotation on the 1,000,000 classic bar: "about $278,000 at $150 SOL". Footnote: saving is 99.4% at this rate, at every scale.
+     prompt: Grouped bar chart, four groups on the X axis labeled 1k / 10k / 100k / 1M recipients, two bars per group labeled "classic SPL ATAs" and "compressed". Logarithmic Y axis in SOL so all eight bars are legible. Print the SOL value above each bar. Add a callout on the tallest classic bar reading "about $278,000 at $150 SOL". Carry the rent rate, its cluster and its date on the card itself, right under the title, so the classic column is never read as a constant. Add a footnote line: "99.4% saved at every scale; classic rent is refundable on close, compressed state cost is spent."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:548px;height:487px;right:-328px;top:286px;border-radius:58% 39% 63% 57% / 60% 41% 47% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:484px;height:473px;bottom:-270px;left:411px;border-radius:55% 44% 36% 64% / 65% 61% 39% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:30px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">the ratio is constant &mdash; the absolute bill is not</div>
+    <h2 class="viz-title" style="font-size:36px;margin:6px 0 4px;color:var(--stbr-dark);">What a drop costs: classic accounts vs compressed</h2>
+    <div style="font-family:var(--font-body);font-size:13.5px;font-weight:600;color:var(--text-secondary,#4a5a4e);margin:0 0 16px;">classic column = <span style="font-family:var(--font-mono);">293 bytes &times; 6,333 lamports/byte = 1,855,569</span> per recipient &mdash; mainnet-beta, read 2026-09-06. The rate is a network parameter SIMD-0437 is stepping down; re-read it (<span style="font-family:var(--font-mono);">solana rent 0</span>, &divide; 128) and this whole column moves with you.</div>
+
+    <div style="display:flex;gap:14px;">
+      <!-- y axis -->
+      <div style="flex:none;width:88px;position:relative;height:470px;">
+        <div style="position:absolute;top:-2px;right:0;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--text-muted,#6b7a6f);">SOL (log)</div>
+        <div style="position:absolute;bottom:13px;right:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">0.01</div>
+        <div style="position:absolute;bottom:86px;right:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">0.1</div>
+        <div style="position:absolute;bottom:158px;right:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">1</div>
+        <div style="position:absolute;bottom:231px;right:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">10</div>
+        <div style="position:absolute;bottom:304px;right:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">100</div>
+        <div style="position:absolute;bottom:376px;right:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">1,000</div>
+      </div>
+      <!-- plot -->
+      <div style="flex:1;position:relative;height:470px;border-left:2px solid var(--border-strong,#c9c2ad);border-bottom:2px solid var(--border-strong,#c9c2ad);">
+        <div style="position:absolute;left:0;right:0;bottom:22px;height:1px;background:var(--border-subtle,#e5decb);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:95px;height:1px;background:var(--border-subtle,#e5decb);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:167px;height:1px;background:var(--border-subtle,#e5decb);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:240px;height:1px;background:var(--border-subtle,#e5decb);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:313px;height:1px;background:var(--border-subtle,#e5decb);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:385px;height:1px;background:var(--border-subtle,#e5decb);"></div>
+        <div style="position:absolute;left:0;right:0;top:0;bottom:0;display:flex;justify-content:space-around;align-items:flex-end;">
+          <!-- 1k -->
+          <div style="display:flex;gap:10px;align-items:flex-end;">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">1.86</div>
+              <div style="width:58px;height:187px;background:var(--stbr-green);border-radius:6px 6px 0 0;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">0.0103</div>
+              <div style="width:58px;height:23px;background:var(--stbr-emerald);border-radius:6px 6px 0 0;"></div>
+            </div>
+          </div>
+          <!-- 10k -->
+          <div style="display:flex;gap:10px;align-items:flex-end;">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">18.56</div>
+              <div style="width:58px;height:259px;background:var(--stbr-green);border-radius:6px 6px 0 0;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">0.103</div>
+              <div style="width:58px;height:96px;background:var(--stbr-emerald);border-radius:6px 6px 0 0;"></div>
+            </div>
+          </div>
+          <!-- 100k -->
+          <div style="display:flex;gap:10px;align-items:flex-end;">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">185.56</div>
+              <div style="width:58px;height:332px;background:var(--stbr-green);border-radius:6px 6px 0 0;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">1.03</div>
+              <div style="width:58px;height:168px;background:var(--stbr-emerald);border-radius:6px 6px 0 0;"></div>
+            </div>
+          </div>
+          <!-- 1M -->
+          <div style="display:flex;gap:10px;align-items:flex-end;">
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="background:var(--stbr-yellow);border-radius:8px;padding:4px 10px;font-family:var(--font-body);font-weight:700;font-size:12.5px;color:var(--stbr-dark);margin-bottom:5px;white-space:nowrap;">&asymp; $278,000 at $150 SOL</div>
+              <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--stbr-dark);margin-bottom:3px;">1,855.57</div>
+              <div style="width:58px;height:404px;background:var(--stbr-green);border-radius:6px 6px 0 0;"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">
+              <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);margin-bottom:3px;">10.30</div>
+              <div style="width:58px;height:241px;background:var(--stbr-emerald);border-radius:6px 6px 0 0;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- x labels -->
+    <div style="display:flex;justify-content:space-around;padding-left:104px;margin-top:8px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">1k</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">10k</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">100k</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">1M recipients</div>
+    </div>
+    <!-- legend + footnote -->
+    <div style="display:flex;align-items:center;gap:24px;margin-top:14px;border-top:1px solid var(--border-subtle,#e5decb);padding-top:12px;">
+      <div style="display:flex;align-items:center;gap:8px;"><div style="width:16px;height:16px;background:var(--stbr-green);border-radius:4px;"></div><div style="font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-dark);">classic SPL ATAs</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><div style="width:16px;height:16px;background:var(--stbr-emerald);border-radius:4px;"></div><div style="font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-dark);">compressed</div></div>
+      <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary,#4a5a4e);">99.4% saved at every scale; classic rent (1,855,569 lamports/recipient at this rate) is refundable on close, compressed state cost (10,300 = 5,000 create + 5,300 one write) is not rent, does not move with the rate, and is spent.</div>
+    </div>
+  </div>
+</div>
+</body></html>

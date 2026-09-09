@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: From merged proposal to live engine
+     purpose: fix the sequence and the lag between the document trail and the chain state, so the reader never confuses the two again
+     data: 2026-03-13: SIMD-0266 merged (front-matter status still reads "Review" today; the header lags) slot 419,472,000 (first slot of epoch 971): feature gate ptokF...nSdP activates; p-token becomes the engine at TokenkegQ... network-wide in one slot 2026-08-22 (today): gate re-probed live while writing this lesson; still active, same 9 bytes
+     prompt: Horizontal timeline with three milestone markers as in the data, left to right. Under the first marker add a small callout: "document status header still says Review". Under the second: "one slot, every validator, no mixed-engine window". Under the third: "chain state is the truth; re-probed". Keep it to three markers; the point is the ordering and the lag, not density.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:527px;height:514px;bottom:-309px;right:-309px;border-radius:57% 39% 55% 38% / 42% 46% 40% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:479px;height:347px;left:-255px;top:417px;border-radius:51% 64% 43% 56% / 37% 53% 52% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { display:flex; margin-top:34px; }
+  .mcol { flex:1; display:flex; flex-direction:column; }
+  .mtop { height:190px; display:flex; flex-direction:column; justify-content:flex-end;
+          padding:0 26px 16px; }
+  .mdate { font-family:var(--font-mono); font-weight:700; font-size:16px; color:var(--stbr-emerald);
+           margin-bottom:6px; }
+  .mtitle { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.12;
+            color:var(--text-primary); }
+  .track { height:36px; display:flex; align-items:center; position:relative; }
+  .seg { position:absolute; top:15px; height:6px; background:var(--stbr-green); opacity:.45; }
+  .seg.hot { background:var(--surface-brand); opacity:1; }
+  .dot { position:absolute; left:50%; top:4px; margin-left:-14px; width:28px; height:28px;
+         border-radius:50%; background:var(--surface-brand); border:4px solid var(--surface-page); }
+  .dot.hot { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .mbot { padding:18px 26px 0; }
+  .callout { background:var(--surface-card); border:2px solid var(--border-subtle);
+             border-radius:var(--radius-lg); padding:14px 18px; font-family:var(--font-body);
+             font-size:16px; line-height:1.35; color:var(--text-secondary); }
+  .callout b { color:var(--text-primary); }
+  .callout.hot { border-color:var(--stbr-emerald); color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">from merged proposal to live engine</div>
+  <h2 class="viz-title">the document trail lags the chain state</h2>
+  <div class="tl">
+    <div class="mcol">
+      <div class="mtop">
+        <div class="mdate">2026-03-13</div>
+        <div class="mtitle">SIMD-0266 merged</div>
+      </div>
+      <div class="track">
+        <div class="seg" style="left:50%; right:0;"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="mbot"><div class="callout">document status header <b>still says &ldquo;Review&rdquo;</b> &mdash; the header lags reality</div></div>
+    </div>
+    <div class="mcol">
+      <div class="mtop">
+        <div class="mdate">slot 419,472,000 &middot; first slot of epoch 971</div>
+        <div class="mtitle">feature gate ptokF&hellip;nSdP activates &mdash; p-token becomes the engine at TokenkegQ&hellip;</div>
+      </div>
+      <div class="track">
+        <div class="seg" style="left:0; right:50%;"></div>
+        <div class="seg hot" style="left:50%; right:0;"></div>
+        <div class="dot hot"></div>
+      </div>
+      <div class="mbot"><div class="callout hot"><b>one slot, every validator</b> &mdash; no mixed-engine window</div></div>
+    </div>
+    <div class="mcol">
+      <div class="mtop">
+        <div class="mdate">2026-08-22 &middot; today</div>
+        <div class="mtitle">gate re-probed live while writing this lesson</div>
+      </div>
+      <div class="track">
+        <div class="seg hot" style="left:0; right:50%;"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="mbot"><div class="callout"><b>chain state is the truth</b> &mdash; still active, same 9 bytes</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

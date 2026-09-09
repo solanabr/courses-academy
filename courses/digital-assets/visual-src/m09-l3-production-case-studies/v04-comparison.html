@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Arm the slot on day one, or migrate the token later
+     purpose: show why a compliance-shaped issuer arms extensions it has no intention of firing
+     data: Constraint driving the choice: Token-2022 extensions are creation-time only. No instruction adds transferHook or transferFeeConfig to a mint that shipped without them. Path A, arm at creation: cost = a larger mint account (PYUSD 866 bytes against a classic mint's 82) plus rent on it, forever; integrator scrutiny of every armed slot; some venues refuse extension sets they have not modelled. Time to use later = one instruction. Path B, ship minimal and migrate later: cost = new mint address, every holder migrated, relisting on every venue, every hardcoded integration updated, value stranded in contracts nobody updates. Time to use later = a coordinated migration. Verdict: the option premium is bytes; the alternative is an ecosystem-wide migration.
+     prompt: Two-column comparison, Path A on the left and Path B on the right, each with rows: what it costs now, what it costs to use the capability later, who bears the friction. Add a single verdict bar underneath spanning both columns with the verdict line as given. Keep the byte figures visible.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:453px;height:469px;top:-230px;right:-230px;border-radius:57% 40% 45% 61% / 49% 42% 61% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:493px;bottom:-233px;left:-233px;border-radius:44% 48% 42% 59% / 60% 44% 60% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:32px;padding:30px 48px 28px;}
+  .card .viz-title{font-size:38px;margin:4px 0 14px;}
+  .card .stbr-eyebrow{font-size:16px;}
+  .constraint{background:var(--surface-paper,#FBF6E9);border:1px solid var(--border-subtle);border-radius:14px;padding:10px 20px;font-family:var(--font-body);font-size:14.5px;color:var(--text-primary);margin-bottom:18px;}
+  .constraint b{font-family:var(--font-display);font-weight:800;}
+  .cols{display:flex;gap:22px;}
+  .path{flex:1;border:1px solid var(--border-subtle);border-radius:20px;overflow:hidden;}
+  .ph{height:58px;display:flex;align-items:center;padding:0 22px;font-family:var(--font-display);font-weight:900;font-size:20px;}
+  .ph-a{background:var(--stbr-emerald);color:#F5E8CA;}
+  .ph-b{background:var(--surface-inverse);color:#F5E8CA;}
+  .sect{box-sizing:border-box;padding:12px 22px;border-top:1px solid var(--border-subtle);}
+  .sl{font-family:var(--font-body);font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;}
+  .sv{font-family:var(--font-body);font-size:14.5px;color:var(--text-primary);line-height:1.42;}
+  .sv b{font-family:var(--font-mono);font-weight:700;}
+  .s-now{height:168px;}
+  .s-later{height:132px;}
+  .s-who{height:84px;}
+  .hl{display:inline-block;background:var(--stbr-yellow);color:#1B231D;border-radius:8px;padding:3px 10px;font-family:var(--font-display);font-weight:900;font-size:16px;}
+  .verdict{margin-top:20px;background:var(--stbr-emerald);border-radius:16px;padding:16px 26px;text-align:center;font-family:var(--font-display);font-weight:900;font-size:21px;color:#F5E8CA;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">why a compliance-shaped issuer arms slots it may never fire</div>
+  <h2 class="viz-title">arm the slot on day one, or migrate the token later</h2>
+  <div class="constraint"><b>The constraint:</b> Token-2022 extensions are creation-time only &mdash; no instruction adds transferHook or transferFeeConfig to a mint that shipped without them.</div>
+  <div class="cols">
+    <div class="path">
+      <div class="ph ph-a">Path A &mdash; arm at creation</div>
+      <div class="sect s-now"><div class="sl">what it costs now</div><div class="sv">A larger mint account &mdash; PYUSD is <b>866 bytes</b> against a classic mint&rsquo;s <b>82</b> &mdash; plus rent on it, forever. Integrator scrutiny of every armed slot; some venues refuse extension sets they have not modelled.</div></div>
+      <div class="sect s-later"><div class="sl">what it costs to use the capability later</div><div class="sv"><span class="hl">one instruction</span></div></div>
+      <div class="sect s-who"><div class="sl">who bears the friction</div><div class="sv">The issuer, up front &mdash; bytes, rent, and integrators&rsquo; questions at listing time.</div></div>
+    </div>
+    <div class="path">
+      <div class="ph ph-b">Path B &mdash; ship minimal, migrate later</div>
+      <div class="sect s-now"><div class="sl">what it costs now</div><div class="sv">Nothing extra &mdash; a minimal mint, small and familiar to every venue.</div></div>
+      <div class="sect s-later"><div class="sl">what it costs to use the capability later</div><div class="sv">A coordinated migration: a <b>new mint address</b>, every holder migrated, relisting on every venue, every hardcoded integration updated, value stranded in contracts nobody updates.</div></div>
+      <div class="sect s-who"><div class="sl">who bears the friction</div><div class="sv">Everyone, later &mdash; every holder, every venue, every integration, all at once.</div></div>
+    </div>
+  </div>
+  <div class="verdict">the option premium is bytes; the alternative is an ecosystem-wide migration</div>
+</div>
+</div>
+</body></html>

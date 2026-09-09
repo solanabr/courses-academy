@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Measured CU per lab transaction, one surfnet run
+     purpose: show the real relative costs of the lifecycle steps and reinforce measure-it-not-quote-it
+     data: bars (simulated CU, author's run, surfpool 1.2.1 / solana-core 3.1.10, 2026-08-22): create + init mint (4 ix): 4332 create 2 ATAs + mintTo: 37798 ten transfer_checked (10 ix): 32470, ~3247 per fee transfer harvest_withheld_tokens_to_mint (1 source): 1207 create treasury ATA + withdraw_from_mint: 18731 caption: no published per-extension CU table exists; these are one machine's measurements, dated, and the lab reprints yours on every run. The two account-creating bars move between runs on the same machine (36,298-37,798 and 18,731-21,731); the mint, transfer, and harvest bars reproduced exactly.
+     prompt: Horizontal bar chart, five bars as in data, labeled with both the transaction description and the CU value at bar end. Order bars as listed (lifecycle order, not sorted by size). Include the caption from data as a footnote band; add a small callout on the transfers bar noting "~3,247 CU per fee transfer".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:460px;top:-259px;right:-259px;border-radius:53% 62% 53% 57% / 59% 48% 45% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:476px;bottom:-279px;left:-279px;border-radius:51% 50% 35% 41% / 64% 35% 41% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v08-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:36px 48px 36px; overflow:hidden; }
+  .v08-prov { font-family:var(--font-mono); font-size:14px; color:var(--text-muted); margin:-6px 0 18px; }
+  .v08-rows { display:flex; flex-direction:column; gap:15px; }
+  .v08-row { display:flex; align-items:center; gap:18px; }
+  .v08-lab { flex:none; width:400px; text-align:right; font-family:var(--font-body); font-size:16px;
+    line-height:1.25; color:var(--text-primary); }
+  .v08-lab code { font-family:var(--font-mono); font-size:14.5px; font-weight:700; }
+  .v08-track { flex:1; display:flex; align-items:center; gap:12px; }
+  .v08-bar { flex:none; height:36px; background:var(--stbr-emerald); border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+  .v08-bar.hot { background:var(--stbr-yellow); }
+  .v08-val { font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--text-primary); white-space:nowrap; }
+  .v08-callout { font-family:var(--font-body); font-size:14px; font-weight:700; color:var(--text-primary);
+    border:2px solid var(--stbr-yellow-700); border-radius:var(--radius-pill); padding:4px 12px; white-space:nowrap; }
+  .v08-foot { margin-top:20px; background:var(--surface-paper); border:1px solid var(--border-subtle);
+    border-radius:var(--radius-lg); padding:14px 22px; font-family:var(--font-body);
+    font-size:15px; line-height:1.45; color:var(--text-secondary); }
+  .v08-foot b { color:var(--text-primary); }
+</style>
+  <div class="v08-card">
+    <div class="stbr-eyebrow">measure it, don't quote it</div>
+    <h2 class="viz-title">measured CU per lab transaction, one surfnet run</h2>
+    <div class="v08-prov">simulated CU &middot; author's run &middot; surfpool 1.2.1 / solana-core 3.1.10 &middot; 2026-08-22</div>
+    <div class="v08-rows">
+      <div class="v08-row">
+        <div class="v08-lab">create + init mint (4 ix)</div>
+        <div class="v08-track"><div class="v08-bar" style="width:8.6%;"></div><span class="v08-val">4,332</span></div>
+      </div>
+      <div class="v08-row">
+        <div class="v08-lab">create 2 ATAs + mintTo</div>
+        <div class="v08-track"><div class="v08-bar" style="width:75.2%;"></div><span class="v08-val">37,798</span></div>
+      </div>
+      <div class="v08-row">
+        <div class="v08-lab">ten <code>transfer_checked</code> (10 ix)</div>
+        <div class="v08-track"><div class="v08-bar hot" style="width:64.6%;"></div><span class="v08-val">32,470</span><span class="v08-callout">~3,247 CU per fee transfer</span></div>
+      </div>
+      <div class="v08-row">
+        <div class="v08-lab"><code>harvest_withheld_tokens_to_mint</code> (1 source)</div>
+        <div class="v08-track"><div class="v08-bar" style="width:2.4%;"></div><span class="v08-val">1,207</span></div>
+      </div>
+      <div class="v08-row">
+        <div class="v08-lab">create treasury ATA + <code>withdraw_from_mint</code></div>
+        <div class="v08-track"><div class="v08-bar" style="width:37.3%;"></div><span class="v08-val">18,731</span></div>
+      </div>
+    </div>
+    <div class="v08-foot">no published per-extension CU table exists; these are <b>one machine's measurements, dated</b> &mdash; the lab reprints yours on every run. The two account-creating bars move between runs on the same machine (36,298&ndash;37,798 and 18,731&ndash;21,731); the mint, transfer, and harvest bars reproduced exactly.</div>
+  </div>
+</div>
+</body></html>

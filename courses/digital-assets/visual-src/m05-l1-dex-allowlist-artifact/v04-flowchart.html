@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: CP-Swap's actual accept-or-reject path, bypasses first
+     purpose: fix the ORDER of the decision in the reader's head before they write the predictor, since the bypass branches run before the extension walk
+     data: start: pool-create called with a mint q1: is the mint owned by the classic SPL Token program? -> yes: ACCEPT (no TLV to walk) q1 no -> q2: is the mint in the hardcoded MINT_WHITELIST (4 entries, token.rs L18-23)? -> yes: ACCEPT q2 no -> q3: does the mint carry an initialized mint-association account? -> yes: ACCEPT q3 no -> q4: is EVERY extension in {TransferFeeConfig, MetadataPointer, TokenMetadata, InterestBearingConfig, ScaledUiAmount}? -> yes: ACCEPT q4 no -> REJECT: pool creation reverts (the check returns Ok(false)) note: the three bypasses are why a whitelisted PermanentDelegate stablecoin routes
+     prompt: Vertical decision flowchart, four diamond decision nodes in the order given, each with a yes-branch exiting right into a shared ACCEPT terminal and a no-branch continuing down. The final no-branch lands in a REJECT terminal. Group the first three diamonds inside a labelled bracket reading "bypasses: extension set never inspected". Footnote carries the note line.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:488px;height:340px;right:-283px;top:181px;border-radius:42% 39% 39% 61% / 64% 48% 65% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:554px;height:576px;bottom:-334px;left:-334px;border-radius:64% 53% 41% 64% / 48% 49% 46% 41%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">order matters: bypasses run first</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 16px;color:var(--stbr-dark);">CP-Swap's accept-or-reject path</h2>
+
+    <div style="position:relative;height:502px;">
+      <!-- bypass bracket, spans q1-q3 -->
+      <div style="position:absolute;left:0;top:66px;height:260px;width:112px;">
+        <div style="position:absolute;right:0;top:0;bottom:0;width:14px;border-left:3px solid var(--stbr-green);border-top:3px solid var(--stbr-green);border-bottom:3px solid var(--stbr-green);"></div>
+        <div style="position:absolute;left:0;top:70px;width:92px;font-family:var(--font-body);font-size:13px;font-weight:600;line-height:1.35;color:var(--stbr-green);">bypasses: extension set never inspected</div>
+      </div>
+
+      <!-- ACCEPT terminal, spans q1-q4 -->
+      <div style="position:absolute;left:1128px;top:66px;width:200px;height:296px;background:var(--stbr-emerald);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:30px;letter-spacing:.06em;color:var(--stbr-cream);">ACCEPT</div>
+      </div>
+
+      <!-- flow column -->
+      <div style="position:absolute;left:140px;top:0;width:640px;">
+        <!-- start -->
+        <div style="height:44px;background:var(--stbr-dark);border-radius:999px;display:flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:16px;font-weight:600;color:var(--stbr-cream);">pool-create called with a mint</div>
+        <div style="position:relative;height:22px;"><div style="position:absolute;left:319px;top:0;width:2.5px;height:14px;background:var(--stbr-dark);"></div><div style="position:absolute;left:313px;top:14px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+        <!-- q1 -->
+        <div style="position:relative;height:54px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);display:flex;align-items:center;gap:12px;padding:0 18px;">
+          <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--stbr-emerald);">Q1</div>
+          <div style="font-family:var(--font-body);font-size:15.5px;color:var(--stbr-dark);">is the mint owned by the classic SPL Token program? <span style="color:var(--text-muted,#6b7a6f);">(no TLV to walk)</span></div>
+          <div style="position:absolute;left:636px;top:24px;width:341px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:977px;top:17px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:760px;top:8px;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:999px;padding:2px 10px;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-emerald);">yes</div>
+        </div>
+        <div style="position:relative;height:22px;"><div style="position:absolute;left:319px;top:0;width:2.5px;height:14px;background:var(--stbr-dark);"></div><div style="position:absolute;left:313px;top:14px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-dark);"></div><div style="position:absolute;left:336px;top:0;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-dark);">no</div></div>
+        <!-- q2 -->
+        <div style="position:relative;height:54px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);display:flex;align-items:center;gap:12px;padding:0 18px;">
+          <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--stbr-emerald);">Q2</div>
+          <div style="font-family:var(--font-body);font-size:15.5px;color:var(--stbr-dark);">is the mint in the hardcoded <span style="font-family:var(--font-mono);font-size:14px;">MINT_WHITELIST</span>? <span style="color:var(--text-muted,#6b7a6f);">(4 entries, token.rs L18&ndash;23)</span></div>
+          <div style="position:absolute;left:636px;top:24px;width:341px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:977px;top:17px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:760px;top:8px;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:999px;padding:2px 10px;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-emerald);">yes</div>
+        </div>
+        <div style="position:relative;height:22px;"><div style="position:absolute;left:319px;top:0;width:2.5px;height:14px;background:var(--stbr-dark);"></div><div style="position:absolute;left:313px;top:14px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-dark);"></div><div style="position:absolute;left:336px;top:0;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-dark);">no</div></div>
+        <!-- q3 -->
+        <div style="position:relative;height:54px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);display:flex;align-items:center;gap:12px;padding:0 18px;">
+          <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--stbr-emerald);">Q3</div>
+          <div style="font-family:var(--font-body);font-size:15.5px;color:var(--stbr-dark);">does the mint carry an initialized mint-association account?</div>
+          <div style="position:absolute;left:636px;top:24px;width:341px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:977px;top:17px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:760px;top:8px;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:999px;padding:2px 10px;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-emerald);">yes</div>
+        </div>
+        <div style="position:relative;height:22px;"><div style="position:absolute;left:319px;top:0;width:2.5px;height:14px;background:var(--stbr-dark);"></div><div style="position:absolute;left:313px;top:14px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-dark);"></div><div style="position:absolute;left:336px;top:0;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-dark);">no</div></div>
+        <!-- q4: the extension walk -->
+        <div style="position:relative;height:64px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);display:flex;align-items:center;gap:12px;padding:0 18px;">
+          <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--stbr-emerald);">Q4</div>
+          <div style="font-family:var(--font-body);font-size:15px;line-height:1.3;color:var(--stbr-dark);">is EVERY extension in {<span style="font-family:var(--font-mono);font-size:12.5px;">TransferFeeConfig, MetadataPointer, TokenMetadata, InterestBearingConfig, ScaledUiAmount</span>}?</div>
+          <div style="position:absolute;left:636px;top:29px;width:341px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:977px;top:22px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-emerald);"></div>
+          <div style="position:absolute;left:760px;top:13px;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:999px;padding:2px 10px;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-emerald);">yes</div>
+        </div>
+        <div style="position:relative;height:22px;"><div style="position:absolute;left:319px;top:0;width:2.5px;height:14px;background:var(--stbr-dark);"></div><div style="position:absolute;left:313px;top:14px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-dark);"></div><div style="position:absolute;left:336px;top:0;font-family:var(--font-body);font-size:12.5px;font-weight:700;color:var(--stbr-dark);">no</div></div>
+        <!-- reject -->
+        <div style="height:50px;background:var(--stbr-yellow);border-radius:999px;display:flex;align-items:center;justify-content:center;gap:12px;">
+          <div style="font-family:var(--font-display);font-weight:900;font-size:19px;letter-spacing:.05em;color:var(--stbr-dark);">REJECT</div>
+          <div style="font-family:var(--font-body);font-size:14px;color:var(--stbr-dark);">pool creation reverts &mdash; the check returns <span style="font-family:var(--font-mono);font-size:13px;">Ok(false)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:6px;font-family:var(--font-body);font-size:13.5px;color:var(--text-muted,#6b7a6f);border-top:1px solid var(--border-subtle);padding-top:10px;">
+      note: the three bypasses are why a whitelisted PermanentDelegate stablecoin routes &mdash; its extension set is never inspected.
+    </div>
+  </div>
+</div>
+</body></html>

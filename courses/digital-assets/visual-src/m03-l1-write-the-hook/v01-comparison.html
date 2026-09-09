@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The three instructions of the transfer-hook interface
+     purpose: separate the one instruction the runtime calls from the two the issuer calls, and fix each discriminator
+     data: spl-transfer-hook-interface:execute | disc 692565c54bfb661a | caller: Token-2022, on every transfer | data: u64 amount | accounts: source, mint, destination, authority, validation account, then N resolved extras | power: return Ok or Err spl-transfer-hook-interface:initialize-extra-account-metas | disc 2b220d31a758ebeb | caller: the issuer, once per mint | accounts: validation account [w], mint, authority [s], system program | effect: creates and writes the ExtraAccountMetaList spl-transfer-hook-interface:update-extra-account-metas | disc 9d692a926655f1ae | caller: the issuer, whenever the account needs change | accounts: validation account [w], mint, authority [s] | effect: overwrites the list in place
+     prompt: Three-column comparison card, one column per instruction, headers "execute", "initialize-extra-account-metas", "update-extra-account-metas". Rows: discriminator (monospace hex), who calls it, accounts, effect. Visually separate the first column (mark it "runtime-invoked, hot path") from the other two (mark them "issuer-invoked, cold path"). Emphasize the hex row.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:559px;height:541px;top:-292px;right:-292px;border-radius:41% 58% 38% 63% / 56% 62% 44% 63%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:454px;height:518px;left:-249px;top:295px;border-radius:64% 62% 58% 51% / 57% 50% 54% 56%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v1 .cols{display:flex;gap:18px;margin-top:2px}
+    .v1 .col{flex:1;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+    .v1 .col.hot{border:3px solid var(--stbr-yellow)}
+    .v1 .colhead{background:var(--surface-inverse);color:var(--text-on-dark);padding:14px 18px 12px}
+    .v1 .col.hot .colhead{background:var(--stbr-emerald)}
+    .v1 .colname{font-family:var(--font-mono);font-size:19px;font-weight:700}
+    .v1 .badge{display:inline-block;margin-top:8px;font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:rgba(245,232,202,.16);color:var(--stbr-cream)}
+    .v1 .col.hot .badge{background:var(--stbr-yellow);color:var(--stbr-dark)}
+    .v1 .row{padding:9px 18px;border-top:1px solid var(--border-subtle)}
+    .v1 .lbl{font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px}
+    .v1 .val{font-family:var(--font-body);font-size:14.5px;line-height:1.35;color:var(--text-primary)}
+    .v1 .r-disc{min-height:58px;background:var(--surface-paper)}
+    .v1 .r-caller{min-height:56px}
+    .v1 .r-data{min-height:44px}
+    .v1 .r-accts{min-height:128px}
+    .v1 .r-effect{min-height:76px}
+    .v1 .hex{display:inline-block;font-family:var(--font-mono);font-size:16px;font-weight:700;padding:4px 10px;border-radius:8px;background:var(--surface-inverse);color:var(--stbr-cream);letter-spacing:.02em}
+    .v1 .col.hot .hex{background:var(--stbr-yellow);color:var(--stbr-dark)}
+    .v1 .mono{font-family:var(--font-mono);font-size:13.5px}
+    .v1 .verdict{margin-top:16px;background:var(--surface-brand);color:var(--text-on-brand);border-radius:14px;padding:14px 22px;font-family:var(--font-display);font-weight:700;font-size:18px;line-height:1.3}
+  </style>
+  <div class="v1">
+    <div class="stbr-eyebrow">spl-transfer-hook-interface</div>
+    <h2 class="viz-title" style="font-size:40px">the three instructions of the transfer-hook interface</h2>
+    <div class="cols">
+      <div class="col hot">
+        <div class="colhead">
+          <div class="colname">execute</div>
+          <span class="badge">runtime-invoked &middot; hot path</span>
+        </div>
+        <div class="row r-disc"><div class="lbl">discriminator</div><span class="hex">692565c54bfb661a</span></div>
+        <div class="row r-caller"><div class="lbl">who calls it</div><div class="val">Token-2022 &mdash; on <strong>every transfer</strong></div></div>
+        <div class="row r-data"><div class="lbl">instruction data</div><div class="val mono">u64 amount</div></div>
+        <div class="row r-accts"><div class="lbl">accounts</div><div class="val">source, mint, destination, authority, validation&nbsp;account,<br>then <span class="mono">N</span> resolved extras</div></div>
+        <div class="row r-effect"><div class="lbl">power</div><div class="val">return <span class="mono">Ok</span> or <span class="mono">Err</span> &mdash; a veto, nothing more</div></div>
+      </div>
+      <div class="col">
+        <div class="colhead">
+          <div class="colname">initialize-extra-account-metas</div>
+          <span class="badge">issuer-invoked &middot; cold path</span>
+        </div>
+        <div class="row r-disc"><div class="lbl">discriminator</div><span class="hex">2b220d31a758ebeb</span></div>
+        <div class="row r-caller"><div class="lbl">who calls it</div><div class="val">the issuer &mdash; once per mint</div></div>
+        <div class="row r-data"><div class="lbl">instruction data</div><div class="val" style="color:var(--text-muted)">&mdash;</div></div>
+        <div class="row r-accts"><div class="lbl">accounts</div><div class="val">validation account <span class="mono">[w]</span>, mint, authority <span class="mono">[s]</span>,<br>system program</div></div>
+        <div class="row r-effect"><div class="lbl">effect</div><div class="val">creates and writes the <span class="mono">ExtraAccountMetaList</span></div></div>
+      </div>
+      <div class="col">
+        <div class="colhead">
+          <div class="colname">update-extra-account-metas</div>
+          <span class="badge">issuer-invoked &middot; cold path</span>
+        </div>
+        <div class="row r-disc"><div class="lbl">discriminator</div><span class="hex">9d692a926655f1ae</span></div>
+        <div class="row r-caller"><div class="lbl">who calls it</div><div class="val">the issuer &mdash; whenever the account needs change</div></div>
+        <div class="row r-data"><div class="lbl">instruction data</div><div class="val" style="color:var(--text-muted)">&mdash;</div></div>
+        <div class="row r-accts"><div class="lbl">accounts</div><div class="val">validation account <span class="mono">[w]</span>, mint, authority <span class="mono">[s]</span></div></div>
+        <div class="row r-effect"><div class="lbl">effect</div><div class="val">overwrites the list in place</div></div>
+      </div>
+    </div>
+    <div class="verdict">token-2022 invokes execute on every transfer &mdash; the hot path. the issuer invokes the other two: once to create the list, again only to change it.</div>
+  </div>
+</div>
+</body></html>

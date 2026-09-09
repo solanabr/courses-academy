@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: De-escalation at the hook boundary
+     purpose: contrast the privileges the transfer's accounts have in the outer instruction with what Execute receives
+     data: outer TransferChecked: source = writable | mint = readonly | destination = writable | owner = SIGNER hook Execute (CPI):    source = readonly, non-signer | mint = readonly, non-signer | destination = readonly, non-signer | owner = readonly, NON-signer unchanged for the hook: its OWN extra accounts keep whatever the metas declared (the treasury log stays writable)
+     prompt: Two stacked panels joined by a downward arrow labeled "CPI: privileges only narrow". Top panel "TransferChecked (outer)": four account chips: source [writable], mint [readonly], destination [writable], owner [signer]. Bottom panel "Execute (hook)": the same four chips all stamped [readonly, non-signer], visually greyed. To the side of the bottom panel, one highlighted chip: treasury log [writable] with the caption "the hook's own extras keep their declared flags".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:527px;height:516px;bottom:-259px;right:-259px;border-radius:59% 53% 58% 52% / 56% 58% 46% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:540px;height:453px;left:-325px;top:316px;border-radius:59% 45% 48% 37% / 42% 38% 57% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:38px 48px 36px;}
+  .cols{display:flex;gap:36px;align-items:stretch;}
+  .main{flex:1;display:flex;flex-direction:column;}
+  .panel{border-radius:18px;padding:20px 24px 22px;}
+  .panel.outer{background:var(--surface-paper,#FAF3E3);border:2px solid var(--stbr-emerald);}
+  .panel.inner{background:#EFEDE6;border:2px solid var(--border-subtle);}
+  .ptitle{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-primary);margin-bottom:14px;}
+  .ptitle span{font-family:var(--font-body);font-weight:400;font-size:14px;color:var(--text-muted);margin-left:8px;}
+  .chips{display:flex;gap:14px;}
+  .acct{flex:1;background:var(--surface-card);border:2px solid var(--border-strong);border-radius:12px;
+        padding:12px 12px 13px;text-align:center;}
+  .acct .nm{font-family:var(--font-body);font-weight:700;font-size:16.5px;color:var(--text-primary);}
+  .acct .fl{display:inline-block;margin-top:8px;font-family:var(--font-mono);font-weight:700;font-size:12.5px;
+            border-radius:999px;padding:3px 12px;}
+  .fl.w{background:var(--stbr-emerald);color:#F5E8CA;}
+  .fl.r{background:transparent;border:1.5px solid var(--border-strong);color:var(--text-secondary);}
+  .fl.s{background:var(--stbr-dark);color:#F5E8CA;}
+  .inner .acct{background:#F7F6F1;border-color:var(--border-subtle);}
+  .inner .acct .nm{color:var(--text-muted);}
+  .inner .fl{background:transparent;border:1.5px solid var(--border-subtle);color:var(--text-muted);}
+  .cpirow{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0;}
+  .cpilab{font-family:var(--font-display);font-weight:800;font-size:16px;background:var(--stbr-dark);
+          color:#F5E8CA;border-radius:999px;padding:7px 18px;}
+  .side{flex:0 0 330px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:6px;}
+  .hl{background:var(--stbr-yellow);border-radius:14px;padding:16px 18px;text-align:center;}
+  .hl .nm{font-family:var(--font-body);font-weight:700;font-size:17px;color:var(--stbr-dark);}
+  .hl .fl2{display:inline-block;margin-top:8px;font-family:var(--font-mono);font-weight:700;font-size:13px;
+           background:var(--stbr-dark);color:var(--stbr-yellow);border-radius:999px;padding:3px 14px;}
+  .sidecap{font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);line-height:1.4;
+           margin-top:12px;text-align:center;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">what Execute actually receives</div>
+  <h2 class="viz-title">de-escalation at the hook boundary</h2>
+  <div class="cols">
+    <div class="main">
+      <div class="panel outer">
+        <div class="ptitle">TransferChecked <span>outer instruction</span></div>
+        <div class="chips">
+          <div class="acct"><div class="nm">source</div><div class="fl w">writable</div></div>
+          <div class="acct"><div class="nm">mint</div><div class="fl r">readonly</div></div>
+          <div class="acct"><div class="nm">destination</div><div class="fl w">writable</div></div>
+          <div class="acct"><div class="nm">owner</div><div class="fl s">SIGNER</div></div>
+        </div>
+      </div>
+      <div class="cpirow">
+        <svg width="12" height="34"><line x1="6" y1="0" x2="6" y2="22" stroke="#1B231D" stroke-width="2.5"/><polygon points="0,22 12,22 6,34" fill="#1B231D"/></svg>
+        <div class="cpilab">CPI: privileges only narrow</div>
+      </div>
+      <div class="panel inner">
+        <div class="ptitle" style="color:var(--text-muted);">Execute <span>hook&rsquo;s frame</span></div>
+        <div class="chips">
+          <div class="acct"><div class="nm">source</div><div class="fl">readonly &middot; non-signer</div></div>
+          <div class="acct"><div class="nm">mint</div><div class="fl">readonly &middot; non-signer</div></div>
+          <div class="acct"><div class="nm">destination</div><div class="fl">readonly &middot; non-signer</div></div>
+          <div class="acct"><div class="nm">owner</div><div class="fl">readonly &middot; NON-signer</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="hl">
+        <div class="nm">treasury log</div>
+        <div class="fl2">writable</div>
+      </div>
+      <div class="sidecap">the hook&rsquo;s OWN extras keep whatever the metas declared &mdash; only the transfer&rsquo;s accounts are stripped.</div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

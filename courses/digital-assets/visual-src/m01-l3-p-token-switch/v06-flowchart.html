@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Where does your token feature go in 2026?
+     purpose: turn the frozen/feature-complete rule into the decision the reader will actually face
+     data: Start: "You need token behavior X" Q1: Does classic SPL already do X? -> yes -> use classic SPL (now running p-token; nothing to change) -> no -> Q2: Is X operational plumbing p-token added (batch, withdraw_excess_lamports, unwrap_lamports)? -> yes -> classic SPL, new instruction -> no -> Token-2022: X is extension territory (hooks, confidential, metadata, fees...) Note on classic path: classic SPL is feature-complete; no new capabilities will land there
+     prompt: Top-down flowchart with one start node and two decision diamonds as in the data. Terminal nodes: "classic SPL (p-token engine)" twice and "Token-2022 extensions" once. Attach a small annotation to the classic terminal: "feature-complete: frozen". Keep it to five nodes plus annotations; this is a decision aid, not an architecture diagram.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:489px;height:476px;top:-283px;right:-283px;border-radius:52% 37% 51% 48% / 59% 65% 45% 63%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:456px;height:371px;left:-252px;top:241px;border-radius:61% 50% 35% 40% / 60% 64% 39% 41%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { display:flex; flex-direction:column; margin-top:22px; }
+  .frow { display:flex; align-items:center; }
+  .lane { width:600px; flex:none; display:flex; justify-content:center; }
+  .vrow { display:flex; align-items:center; }
+  .vline { display:flex; justify-content:center; width:600px; flex:none; position:relative; }
+  .vchip { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.1em;
+           text-transform:uppercase; color:var(--text-secondary);
+           position:absolute; left:50%; margin-left:18px; top:7px; }
+  .start { background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-pill);
+           padding:13px 34px; font-family:var(--font-display); font-weight:900; font-size:22px; }
+  .q { background:var(--surface-card); border:2.5px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+       padding:14px 26px; width:100%; text-align:center; }
+  .q .qk { font-weight:800; font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+           color:var(--stbr-emerald); margin-bottom:3px; }
+  .q .qt { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.15; color:var(--text-primary); }
+  .q .qs { font-family:var(--font-mono); font-size:14px; color:var(--text-secondary); margin-top:4px; }
+  .harrow { display:flex; align-items:center; gap:8px; padding:0 14px; flex:none; }
+  .yes { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.1em;
+         text-transform:uppercase; color:var(--stbr-emerald); }
+  .term { flex:1; border-radius:var(--radius-lg); padding:13px 22px; }
+  .term .tt { font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.12; color:var(--text-primary); }
+  .term .ts { font-family:var(--font-body); font-size:14px; line-height:1.3; color:var(--text-secondary); margin-top:3px; }
+  .classic { background:rgba(0,139,76,0.08); border:2px solid var(--stbr-emerald); }
+  .t22 { background:var(--stbr-yellow); }
+  .t22 .tt, .t22 .ts { color:var(--stbr-dark); }
+  .frozen-chip { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:11px;
+                 letter-spacing:.09em; text-transform:uppercase; color:var(--text-on-brand);
+                 background:var(--stbr-green); border-radius:var(--radius-pill); padding:3px 10px; margin-top:6px; }
+</style>
+  <div class="stbr-eyebrow">where does your token feature go in 2026?</div>
+  <h2 class="viz-title">classic is frozen; new behavior lives in Token-2022</h2>
+  <div class="flow">
+    <div class="frow">
+      <div class="lane"><div class="start">you need token behavior X</div></div>
+    </div>
+    <div class="vrow"><div class="vline"><svg width="14" height="30"><line x1="7" y1="0" x2="7" y2="18" stroke="#306C40" stroke-width="2.5"/><polygon points="1,18 13,18 7,30" fill="#306C40"/></svg></div></div>
+    <div class="frow">
+      <div class="lane"><div class="q">
+        <div class="qk">decision 1</div>
+        <div class="qt">does classic SPL already do X?</div>
+      </div></div>
+      <div class="harrow"><span class="yes">yes</span><svg width="56" height="18"><line x1="0" y1="9" x2="40" y2="9" stroke="#008B4C" stroke-width="2.5"/><polygon points="40,2 56,9 40,16" fill="#008B4C"/></svg></div>
+      <div class="term classic">
+        <div class="tt">classic SPL (p-token engine)</div>
+        <div class="ts">nothing to change</div>
+        <div class="frozen-chip">feature-complete: frozen</div>
+      </div>
+    </div>
+    <div class="vrow"><div class="vline"><svg width="14" height="30"><line x1="7" y1="0" x2="7" y2="18" stroke="#306C40" stroke-width="2.5"/><polygon points="1,18 13,18 7,30" fill="#306C40"/></svg><span class="vchip">no</span></div></div>
+    <div class="frow">
+      <div class="lane"><div class="q">
+        <div class="qk">decision 2</div>
+        <div class="qt">is X operational plumbing p-token added?</div>
+        <div class="qs">batch &middot; withdraw_excess_lamports &middot; unwrap_lamports</div>
+      </div></div>
+      <div class="harrow"><span class="yes">yes</span><svg width="56" height="18"><line x1="0" y1="9" x2="40" y2="9" stroke="#008B4C" stroke-width="2.5"/><polygon points="40,2 56,9 40,16" fill="#008B4C"/></svg></div>
+      <div class="term classic">
+        <div class="tt">classic SPL, new instruction</div>
+        <div class="ts">the only additions classic will ever get</div>
+        <div class="frozen-chip">feature-complete: frozen</div>
+      </div>
+    </div>
+    <div class="vrow"><div class="vline"><svg width="14" height="30"><line x1="7" y1="0" x2="7" y2="18" stroke="#306C40" stroke-width="2.5"/><polygon points="1,18 13,18 7,30" fill="#306C40"/></svg><span class="vchip">no</span></div></div>
+    <div class="frow">
+      <div class="lane"><div class="term t22" style="flex:none; width:100%;">
+        <div class="tt">Token-2022: X is extension territory</div>
+        <div class="ts">transfer hooks &middot; confidential &middot; metadata &middot; fees &hellip;</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What lives on the mint and what lives behind the URI
+     purpose: separate the enforced on-chain identity fields from the convention-only off-chain JSON so the reader stops conflating the two layers
+     data: On-chain, in the mint's TLV, read with one getAccountInfo: update_authority, mint, name "SPROUT", symbol "SPRT", the uri string itself, additional_metadata pairs such as harvest_season = "spring". Off-chain, behind the uri, one HTTP fetch, convention only, zero on-chain enforcement: JSON with name, symbol, description, image, attributes array. Seam risks: the on-chain name and the JSON name can drift apart, and the host serving the JSON is a live dependency of the token's rendered appearance.
+     prompt: Two-layer diagram. Upper box labeled "on the mint, Token-2022 stores this" listing the six TLV fields from the data. Lower box labeled "behind the URI, convention with no enforcement" listing the five JSON fields. One arrow from the uri field in the upper box down to the lower box labeled "one HTTP fetch, images and rich fields only". Two warning tags on the lower box: "names can drift out of sync" and "host outage breaks the render".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:580px;height:562px;bottom:-309px;right:-309px;border-radius:50% 62% 51% 65% / 51% 43% 39% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:471px;height:361px;left:-289px;top:289px;border-radius:64% 41% 56% 36% / 50% 40% 45% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin-bottom: 16px; }
+  .layer { border-radius:var(--radius-2xl); padding:20px 28px 24px; }
+  .layer.on { background:var(--surface-card); border:2.5px solid var(--stbr-emerald); }
+  .layer.off { background:var(--surface-paper); border:2.5px dashed var(--border-strong); }
+  .lh { display:flex; align-items:baseline; margin-bottom:14px; }
+  .lh .lt { font-family:var(--font-display); font-weight:900; font-size:23px;
+            color:var(--text-primary); }
+  .lh .ls { font-family:var(--font-body); font-weight:700; font-size:14px;
+            color:var(--text-secondary); margin-left:14px; }
+  .fields { display:flex; }
+  .f { flex:1; background:var(--surface-paper); border:1.5px solid var(--stbr-green);
+       border-radius:var(--radius-md); padding:10px 12px; min-height:74px; }
+  .f + .f { margin-left:14px; }
+  .f .fn { font-family:var(--font-mono); font-weight:700; font-size:14px;
+           color:var(--text-primary); }
+  .f .fv { font-family:var(--font-body); font-size:12.5px; line-height:1.3;
+           color:var(--text-secondary); margin-top:4px; }
+  .f.hot { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .f.hot .fn, .f.hot .fv { color:var(--stbr-dark); }
+  .layer.off .f { background:var(--surface-card); border-color:var(--border-strong); }
+  .seam { position:relative; height:78px; }
+  .seam svg { position:absolute; top:0; left:0; }
+  .seamlab { position:absolute; top:24px; left:706px; font-family:var(--font-body);
+             font-weight:800; font-size:14px; background:var(--surface-brand);
+             color:var(--text-on-brand); border-radius:var(--radius-pill);
+             padding:6px 16px; }
+  .warns { display:flex; margin-top:16px; }
+  .warn { display:flex; align-items:center; background:var(--surface-inverse);
+          border-radius:var(--radius-pill); padding:7px 16px; }
+  .warn + .warn { margin-left:14px; }
+  .warn svg { margin-right:9px; }
+  .warn span { font-family:var(--font-body); font-weight:700; font-size:13.5px;
+               color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">two layers of truth</div>
+  <h2 class="viz-title">what lives on the mint &mdash; and what hides behind the URI</h2>
+
+  <div class="layer on">
+    <div class="lh"><div class="lt">on the mint &mdash; Token-2022 stores this</div>
+      <div class="ls">in the TLV &middot; one getAccountInfo</div></div>
+    <div class="fields">
+      <div class="f"><div class="fn">update_authority</div><div class="fv">who may edit</div></div>
+      <div class="f"><div class="fn">mint</div><div class="fv">anti-spoof back-reference</div></div>
+      <div class="f"><div class="fn">name</div><div class="fv">&quot;SPROUT&quot;</div></div>
+      <div class="f"><div class="fn">symbol</div><div class="fv">&quot;SPRT&quot;</div></div>
+      <div class="f hot"><div class="fn">uri</div><div class="fv">the string itself is on-chain</div></div>
+      <div class="f"><div class="fn">additional_metadata</div><div class="fv">harvest_season = &quot;spring&quot;</div></div>
+    </div>
+  </div>
+
+  <div class="seam">
+    <svg width="1456" height="78" viewBox="0 0 1456 78">
+      <line x1="1082" y1="0" x2="1082" y2="58" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="1074,58 1090,58 1082,76" fill="#1b231d"/>
+    </svg>
+    <div class="seamlab">one HTTP fetch &mdash; images and rich fields only</div>
+  </div>
+
+  <div class="layer off">
+    <div class="lh"><div class="lt">behind the URI &mdash; convention with no enforcement</div>
+      <div class="ls">off-chain JSON &middot; zero on-chain guarantees</div></div>
+    <div class="fields">
+      <div class="f"><div class="fn">name</div><div class="fv">can drift from the on-chain name</div></div>
+      <div class="f"><div class="fn">symbol</div><div class="fv">duplicate of the mint's</div></div>
+      <div class="f"><div class="fn">description</div><div class="fv">rich text</div></div>
+      <div class="f"><div class="fn">image</div><div class="fv">what wallets actually show</div></div>
+      <div class="f"><div class="fn">attributes[]</div><div class="fv">trait array</div></div>
+    </div>
+    <div class="warns">
+      <div class="warn"><svg width="20" height="18" viewBox="0 0 20 18"><polygon points="10,0 20,18 0,18" fill="#ffd23f"/><text x="10" y="15" text-anchor="middle" font-family="Inter" font-size="12" font-weight="800" fill="#1b231d">!</text></svg><span>the on-chain name and the JSON name can drift out of sync</span></div>
+      <div class="warn"><svg width="20" height="18" viewBox="0 0 20 18"><polygon points="10,0 20,18 0,18" fill="#ffd23f"/><text x="10" y="15" text-anchor="middle" font-family="Inter" font-size="12" font-weight="800" fill="#1b231d">!</text></svg><span>the JSON host is a live dependency &mdash; an outage breaks the render</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

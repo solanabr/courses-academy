@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Buyback policy, and what each option actually costs
+     purpose: turn the slippage lesson into a decision the reader can make with their own measured numbers
+     data: columns: policy | price impact | crank cost | predictability to MEV row "one large buy per month": highest, order size dominates a thin pool | lowest, twelve transactions a year | highest, large and scheduled is the easiest order to front-run row "small buys, continuous": lowest per order | highest, a cron plus its failure modes plus its fees | lowest, small orders are poor sandwich targets row "opportunistic, on volume spikes": medium, you trade when the pool is deep | medium, needs a trigger and a monitor | medium, timing is not public footer: measure price impact on YOUR pool at YOUR order size before choosing; depth decides this, not preference
+     prompt: Three-row by four-column decision table with the footer note rendered as an emphasized caption underneath. Color-code each cell qualitatively (low/medium/high) without inventing numbers.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:515px;height:461px;top:-241px;right:-241px;border-radius:45% 45% 45% 38% / 49% 47% 35% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:563px;height:557px;bottom:-319px;left:-319px;border-radius:56% 63% 57% 58% / 35% 42% 38% 36%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:30px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;font-size:16px;">a decision, not a default</div>
+    <h2 class="viz-title" style="font-size:36px;margin:4px 0 20px;color:var(--stbr-dark);">Buyback policy, and what each option actually costs</h2>
+
+    <div style="display:grid;grid-template-columns:250px 1fr 1fr 1fr;border:2px solid var(--border-strong,#1B231D);border-radius:14px;overflow:hidden;">
+      <!-- header -->
+      <div style="background:var(--surface-inverse,#1B231D);padding:12px 16px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;">policy</div>
+      <div style="background:var(--surface-inverse,#1B231D);padding:12px 16px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;border-left:1px solid rgba(245,232,202,0.25);">price impact</div>
+      <div style="background:var(--surface-inverse,#1B231D);padding:12px 16px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;border-left:1px solid rgba(245,232,202,0.25);">crank cost</div>
+      <div style="background:var(--surface-inverse,#1B231D);padding:12px 16px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;border-left:1px solid rgba(245,232,202,0.25);">predictability to MEV</div>
+
+      <!-- row 1: one large buy per month -->
+      <div style="padding:14px 16px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);border-top:1px solid var(--border-subtle,#d8d2c0);">one large buy per month</div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:rgba(255,210,63,0.20);">
+        <div style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">HIGHEST</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">order size dominates a thin pool</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:rgba(0,139,76,0.08);">
+        <div style="display:inline-block;background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">LOWEST</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">twelve transactions a year</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:rgba(255,210,63,0.20);">
+        <div style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">HIGHEST</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">large and scheduled is the easiest order to front-run</div>
+      </div>
+
+      <!-- row 2: small buys, continuous -->
+      <div style="padding:14px 16px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);border-top:1px solid var(--border-subtle,#d8d2c0);">small buys, continuous</div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:rgba(0,139,76,0.08);">
+        <div style="display:inline-block;background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">LOWEST</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">per order</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:rgba(255,210,63,0.20);">
+        <div style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">HIGHEST</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">a cron plus its failure modes plus its fees</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:rgba(0,139,76,0.08);">
+        <div style="display:inline-block;background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">LOWEST</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">small orders are poor sandwich targets</div>
+      </div>
+
+      <!-- row 3: opportunistic, on volume spikes -->
+      <div style="padding:14px 16px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);border-top:1px solid var(--border-subtle,#d8d2c0);">opportunistic, on volume spikes</div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:var(--surface-paper,#faf6ea);">
+        <div style="display:inline-block;background:var(--stbr-green);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">MEDIUM</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">you trade when the pool is deep</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:var(--surface-paper,#faf6ea);">
+        <div style="display:inline-block;background:var(--stbr-green);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">MEDIUM</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">needs a trigger and a monitor</div>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);background:var(--surface-paper,#faf6ea);">
+        <div style="display:inline-block;background:var(--stbr-green);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:0.08em;border-radius:999px;padding:2px 10px;">MEDIUM</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.4;margin-top:5px;">timing is not public</div>
+      </div>
+    </div>
+
+    <!-- emphasized footer caption -->
+    <div style="margin-top:18px;background:var(--stbr-emerald);border-radius:12px;padding:12px 24px;font-family:var(--font-display);font-weight:800;font-size:16px;color:#F5E8CA;text-align:center;">measure price impact on YOUR pool at YOUR order size before choosing &mdash; depth decides this, not preference</div>
+  </div>
+</div>
+</body></html>

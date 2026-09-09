@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How a fee gets chosen on every single trade
+     purpose: show that the fee is a runtime lookup against editable account data, not a constant
+     data: trade arrives (buy or sell against the curve) -> compute market cap from the curve's own reserves: marketCap = virtualQuoteReserves * mintSupply / virtualTokenReserves -> is a FeeConfig account present? no  -> fall back to Global.fee_basis_points and Global.creator_fee_basis_points yes -> walk FeeConfig.fee_tiers, select the tier whose market_cap_lamports_threshold the market cap has passed -> selected tier yields Fees { lp_fee_bps, protocol_fee_bps, creator_fee_bps } -> fee charged; protocol share routed to one of 8 rotating recipients (fee_recipient + fee_recipients[7]) -> Cashback coins: creator share redirected to traders via volume-accumulator PDAs Editable at any time by the FeeConfig admin: the tier thresholds and every bps value.
+     prompt: Top-to-bottom flowchart. Single entry node "trade arrives", then a compute node for market cap showing the formula, then a diamond decision "FeeConfig present?" with a short "no" branch to the Global fallback and a longer "yes" branch through tier selection to the three-way Fees split, converging on a "fee charged" node with two outputs: rotating recipients, and the Cashback redirect. Draw a dashed boundary around the tier-selection nodes labeled "account data, admin-editable".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:488px;height:480px;bottom:-270px;right:-270px;border-radius:44% 52% 45% 41% / 38% 52% 60% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:533px;height:459px;left:-304px;top:220px;border-radius:46% 64% 60% 50% / 38% 46% 54% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:24px 44px 22px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">a runtime lookup, not a constant</div>
+    <h2 class="viz-title" style="font-size:32px;margin:4px 0 12px;color:var(--stbr-dark);">How a fee gets chosen on every single trade</h2>
+
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <div style="width:560px;border:2px solid var(--stbr-emerald);border-radius:12px;padding:7px 18px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--stbr-dark);">trade arrives (buy or sell against the curve)</div>
+      <div style="height:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:9px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+
+      <div style="width:760px;border:2px solid var(--stbr-emerald);border-radius:12px;padding:7px 18px;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">compute market cap from the curve's own reserves</div>
+        <div style="font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">marketCap = virtualQuoteReserves &times; mintSupply / virtualTokenReserves</div>
+      </div>
+      <div style="height:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:9px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+
+      <div style="width:400px;background:var(--stbr-dark);border-radius:999px;padding:8px 18px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:15.5px;color:#F5E8CA;">FeeConfig account present?</div>
+
+      <!-- branch row -->
+      <div style="width:1310px;display:flex;gap:28px;margin-top:8px;align-items:stretch;">
+        <div style="width:420px;display:flex;flex-direction:column;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:var(--font-body);font-weight:700;font-size:12px;color:var(--stbr-green);">no</span><div style="width:2px;height:8px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+          <div style="flex:1;border:2px solid var(--stbr-green);border-radius:12px;padding:12px 18px;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">fall back to Global</div>
+            <div style="font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">Global.fee_basis_points<br>Global.creator_fee_basis_points</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><span style="font-family:var(--font-body);font-weight:700;font-size:12px;color:var(--stbr-green);">yes</span><div style="width:2px;height:8px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+          <div style="flex:1;border:2.5px dashed var(--stbr-yellow);background:rgba(255,210,63,0.10);border-radius:14px;padding:10px 16px;position:relative;">
+            <div style="position:absolute;top:-13px;right:18px;background:var(--stbr-yellow);border-radius:999px;padding:2px 14px;font-family:var(--font-body);font-weight:700;font-size:12px;color:var(--stbr-dark);">account data &mdash; admin-editable at any time (tier thresholds + every bps value)</div>
+            <div style="display:flex;gap:16px;align-items:center;margin-top:6px;">
+              <div style="flex:1;background:#ffffff;border:1.5px solid var(--border-strong,#c9bd9d);border-radius:10px;padding:9px 14px;">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">walk FeeConfig.fee_tiers</div>
+                <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">select the tier whose market_cap_lamports_threshold the market cap has passed</div>
+              </div>
+              <div style="display:flex;align-items:center;"><div style="width:16px;height:2px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--stbr-dark);"></div></div>
+              <div style="flex:1;background:#ffffff;border:1.5px solid var(--border-strong,#c9bd9d);border-radius:10px;padding:9px 14px;">
+                <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">selected tier yields</div>
+                <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">Fees { lp_fee_bps, protocol_fee_bps, creator_fee_bps }</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:9px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+      <div style="width:360px;background:var(--stbr-emerald);border-radius:12px;padding:8px 18px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:16px;color:#F5E8CA;">fee charged</div>
+
+      <div style="width:1100px;display:flex;gap:28px;margin-top:8px;">
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:2px;height:8px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+          <div style="border:1.5px solid var(--border-strong,#c9bd9d);border-radius:12px;padding:8px 16px;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">protocol share &rarr; 8 rotating recipients</div>
+            <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted,#6b7a6f);margin-top:2px;">fee_recipient + fee_recipients[7]</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><div style="width:2px;height:8px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);"></div></div>
+          <div style="border:1.5px solid var(--border-strong,#c9bd9d);border-radius:12px;padding:8px 16px;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">Cashback coins: creator share &rarr; traders</div>
+            <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted,#6b7a6f);margin-top:2px;">redirected via volume-accumulator PDAs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

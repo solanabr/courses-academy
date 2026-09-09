@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The fee formula, from spec to bigint
+     purpose: fix the exact rounding and capping behavior before the reader implements it twice (lab, then challenge)
+     data: formula: fee = min( ceil(amount x basisPoints / 10000), maximumFee ); fee = 0 if basisPoints == 0 or amount == 0 typescript: if (basisPoints === 0 || amount === 0n) return 0n; const raw = (amount * BigInt(basisPoints) + 9_999n) / 10_000n; return raw < maximumFee ? raw : maximumFee; annotations: 1. "+ 9_999n then integer-divide by 10_000n = ceiling division on bigints" 2. "rounds UP: 1,001 units at 100 bps withholds 11, not 10" 3. "cap check is min(), applied AFTER the ceiling" 4. "zero bps or zero amount short-circuits to 0n before any math"
+     prompt: Annotated code panel: the one-line formula on top as a banner, the four-line TypeScript implementation below it, four numbered callouts connecting the annotation lines in data to the matching code fragments. Emphasize callout 2 (the ceiling example with concrete numbers) as the behavior people get wrong.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:481px;height:429px;top:-234px;right:-234px;border-radius:61% 46% 62% 52% / 45% 58% 36% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:539px;height:566px;bottom:-331px;left:-331px;border-radius:48% 62% 57% 42% / 39% 38% 62% 47%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .v01-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 52px 44px; overflow:hidden; }
+  .v01-formula { display:flex; align-items:center; gap:22px; background:var(--surface-brand);
+    border-radius:var(--radius-lg); padding:16px 26px; }
+  .v01-formula .tag { flex:none; font-family:var(--font-body); font-size:13px; font-weight:700;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-on-brand);
+    border:1px solid var(--border-on-dark); border-radius:var(--radius-pill); padding:5px 14px; }
+  .v01-formula .fx { font-family:var(--font-mono); color:var(--text-on-brand); }
+  .v01-formula .f1 { font-size:22px; font-weight:700; }
+  .v01-formula .f2 { font-size:16px; opacity:.85; margin-top:4px; }
+  .v01-cols { display:grid; grid-template-columns:1.3fr 1fr; gap:26px; margin-top:24px; align-items:start; }
+  .v01-code { background:var(--surface-inverse); border-radius:var(--radius-lg); padding:22px 26px; }
+  .v01-ln { font-family:var(--font-mono); font-size:17px; color:var(--text-on-dark); line-height:1.45;
+    padding:11px 0; border-bottom:1px solid var(--border-on-dark); }
+  .v01-ln:last-child { border-bottom:none; }
+  .v01-ln .k { color:var(--stbr-yellow); font-weight:700; }
+  .v01-b { display:inline-block; vertical-align:2px; width:24px; height:24px; border-radius:50%;
+    background:var(--stbr-emerald); color:var(--stbr-cream); font-family:var(--font-body);
+    font-weight:800; font-size:14px; text-align:center; line-height:24px; margin-left:8px; }
+  .v01-b.hot { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .v01-notes { display:flex; flex-direction:column; gap:12px; }
+  .v01-note { display:flex; gap:12px; align-items:flex-start; background:var(--surface-paper);
+    border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:13px 16px;
+    font-family:var(--font-body); font-size:16px; color:var(--text-primary); line-height:1.35; }
+  .v01-note .v01-b { flex:none; margin:1px 0 0 0; }
+  .v01-note.hot { background:var(--stbr-yellow); border-color:var(--stbr-yellow); font-weight:700; }
+</style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">transfer fee math, pinned down</div>
+    <h2 class="viz-title">the fee formula, from spec to bigint</h2>
+    <div class="v01-formula">
+      <span class="tag">formula</span>
+      <span class="fx">
+        <div class="f1">fee = min( ceil(amount &times; basisPoints / 10000), maximumFee )</div>
+        <div class="f2">fee = 0 if basisPoints == 0 or amount == 0</div>
+      </span>
+    </div>
+    <div class="v01-cols">
+      <div class="v01-code">
+        <div class="v01-ln">if (basisPoints === 0 || amount === 0n) return 0n;<span class="v01-b">4</span></div>
+        <div class="v01-ln">const raw = (amount * BigInt(basisPoints) <span class="k">+ 9_999n) / 10_000n</span>;<span class="v01-b">1</span><span class="v01-b hot">2</span></div>
+        <div class="v01-ln">return raw &lt; maximumFee ? raw : maximumFee;<span class="v01-b">3</span></div>
+      </div>
+      <div class="v01-notes">
+        <div class="v01-note"><span class="v01-b">1</span><span><b>+ 9_999n</b> then integer-divide by <b>10_000n</b> = ceiling division on bigints</span></div>
+        <div class="v01-note hot"><span class="v01-b hot">2</span><span>rounds UP: 1,001 units at 100 bps withholds <b>11, not 10</b> &mdash; the behavior people get wrong</span></div>
+        <div class="v01-note"><span class="v01-b">3</span><span>the cap check is <b>min()</b>, applied AFTER the ceiling</span></div>
+        <div class="v01-note"><span class="v01-b">4</span><span>zero bps or zero amount short-circuits to <b>0n</b> before any math</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

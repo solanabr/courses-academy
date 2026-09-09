@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One account, one guard, two transfers, two outcomes
+     purpose: land the flagship result visually: same account and guard, opposite outcomes by signer identity
+     data: ownerAccount: holds SPROUT-PD tokens, owner = Alice, CpiGuard ENABLED Transfer A: Alice (owner) signs, wrapped in padding program -> CPI -> guard demands a delegate signer, the owner is not one -> BLOCKED (CpiGuardTransferBlocked) Transfer B: Permanent delegate signs, wrapped in padding program -> CPI -> the permanent delegate is carved out by name -> PROCEEDS (tokens leave the account) Takeaway: the guard is honest and working; the delegate simply operates above its jurisdiction
+     prompt: Center a single account box labeled "ownerAccount (Alice, CpiGuard ON)". Two arrows leave it. Top arrow "Transfer A: signer = Alice (owner)" passes through a shield icon that STOPS it, red "BLOCKED". Bottom arrow "Transfer B: signer = permanent delegate" passes the SAME shield untouched, green "PROCEEDS -> tokens move". Annotate the shield: "demands a delegate signer; the permanent delegate is carved out by name". Make clear both arrows hit the identical guard.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:456px;height:465px;bottom:-233px;right:-233px;border-radius:60% 45% 60% 54% / 53% 44% 42% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:527px;height:362px;left:-291px;top:264px;border-radius:51% 45% 41% 53% / 50% 46% 35% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .grid { display:grid; grid-template-columns: 285px 1fr 175px 1fr 330px; gap:0 14px;
+          grid-template-rows: 175px 175px; align-items:center; }
+  .acct { grid-column:1; grid-row:1 / 3; background:var(--surface-card); border:2.5px solid var(--stbr-emerald);
+          border-radius:var(--radius-lg); padding:20px 22px; }
+  .an { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.05;
+        color:var(--text-primary); margin-bottom:10px; }
+  .ar { font-family:var(--font-body); font-size:14px; line-height:1.5; color:var(--text-secondary); }
+  .ar code { font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--stbr-emerald-800); }
+  .guardtag { display:inline-block; margin-top:10px; background:var(--surface-accent);
+              border-radius:var(--radius-pill); padding:5px 12px; font-family:var(--font-body);
+              font-weight:800; font-size:12px; letter-spacing:.07em; color:var(--text-on-accent); }
+  .lane { align-self:center; }
+  .arr { position:relative; height:16px; }
+  .arr .ln { position:absolute; left:0; right:14px; top:6.5px; height:3px; }
+  .arr .hd { position:absolute; right:0; top:0; width:0; height:0;
+             border-top:8px solid transparent; border-bottom:8px solid transparent;
+             border-left:18px solid #1b231d; }
+  .lchip { background:var(--surface-inverse); border-radius:var(--radius-md); padding:9px 14px;
+           font-family:var(--font-body); font-size:13.5px; line-height:1.35; color:var(--text-on-dark);
+           margin-bottom:8px; }
+  .lchip strong { font-weight:800; }
+  .lchip .who { color:var(--stbr-yellow); font-weight:700; }
+  .shield { grid-column:3; grid-row:1 / 3; text-align:center; }
+  .snote { margin-top:10px; font-family:var(--font-body); font-size:12.5px; line-height:1.35;
+           color:var(--text-secondary); }
+  .snote strong { font-weight:800; color:var(--text-primary); }
+  .stop { display:flex; align-items:center; gap:10px; }
+  .stoptxt { font-family:var(--font-body); font-weight:700; font-size:13px; color:var(--status-danger); }
+  .out { border-radius:var(--radius-lg); padding:16px 20px; align-self:center; }
+  .out.blocked { background:var(--surface-card); border:2.5px solid var(--status-danger); }
+  .out.ok { background:var(--surface-brand); }
+  .ot { font-family:var(--font-display); font-weight:900; font-size:23px; margin-bottom:5px; }
+  .out.blocked .ot { color:var(--status-danger); }
+  .out.ok .ot { color:var(--text-on-brand); }
+  .os { font-family:var(--font-mono); font-size:12.5px; line-height:1.4; }
+  .out.blocked .os { color:var(--text-secondary); }
+  .out.ok .os { color:rgba(245,232,202,0.82); }
+  .takeaway { margin-top:20px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+              padding:16px 28px; display:flex; align-items:center; gap:22px; }
+  .tk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.60); white-space:nowrap; }
+  .tt { font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.12;
+        color:var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">cpi guard &middot; the flagship result</div>
+  <h2 class="viz-title">one account, one guard, two outcomes</h2>
+
+  <div class="grid">
+    <div class="acct">
+      <div class="an">ownerAccount</div>
+      <div class="ar">holds <code>SPROUT-PD</code> tokens<br>owner = <strong>Alice</strong></div>
+      <span class="guardtag">CpiGuard ENABLED</span>
+    </div>
+
+    <div class="lane" style="grid-column:2; grid-row:1;">
+      <div class="lchip"><strong>Transfer A</strong> &middot; signer = <span class="who">Alice (owner)</span><br>wrapped in a padding program &rarr; CPI</div>
+      <div class="arr" style="margin-right:-46px">
+        <div class="ln" style="background:#1b231d"></div>
+        <div class="hd"></div>
+      </div>
+    </div>
+
+    <div class="shield">
+      <svg width="120" height="140" viewBox="0 0 60 70">
+        <path d="M30 1 58 11v22c0 17.5-12.5 28.5-28 35C14.5 61.5 2 50.5 2 33V11Z" fill="#ffd23f" stroke="#d9a608" stroke-width="2.5"/>
+        <text x="30" y="33" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="9" fill="#1b231d">SAME</text>
+        <text x="30" y="44" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="900" font-size="9" fill="#1b231d">GUARD</text>
+      </svg>
+      <div class="snote"><strong>demands a delegate signer;</strong> the permanent delegate is carved out by name</div>
+    </div>
+
+    <div class="lane stop" style="grid-column:4; grid-row:1;">
+      <svg width="34" height="34" viewBox="0 0 34 34">
+        <line x1="5" y1="5" x2="29" y2="29" stroke="#c0392b" stroke-width="5"/>
+        <line x1="29" y1="5" x2="5" y2="29" stroke="#c0392b" stroke-width="5"/>
+      </svg>
+      <span class="stoptxt">stopped at the guard:<br>the owner is not a delegate</span>
+    </div>
+
+    <div class="out blocked" style="grid-column:5; grid-row:1;">
+      <div class="ot">BLOCKED</div>
+      <div class="os">CpiGuardTransferBlocked</div>
+    </div>
+
+    <div class="lane" style="grid-column:2; grid-row:2;">
+      <div class="lchip"><strong>Transfer B</strong> &middot; signer = <span class="who">permanent delegate</span><br>wrapped in a padding program &rarr; CPI</div>
+      <div class="arr" style="margin-right:-46px">
+        <div class="ln" style="background:#008b4c"></div>
+        <div class="hd" style="border-left-color:#008b4c"></div>
+      </div>
+    </div>
+
+    <div class="lane" style="grid-column:4; grid-row:2;">
+      <div class="arr" style="margin-right:-16px">
+        <div class="ln" style="background:#008b4c"></div>
+        <div class="hd" style="border-left-color:#008b4c"></div>
+      </div>
+    </div>
+
+    <div class="out ok" style="grid-column:5; grid-row:2;">
+      <div class="ot">PROCEEDS</div>
+      <div class="os">tokens leave the account &mdash; carved out by name</div>
+    </div>
+  </div>
+
+  <div class="takeaway">
+    <span class="tk">the takeaway</span>
+    <span class="tt">The guard is honest and working &mdash; the delegate simply operates above its jurisdiction.</span>
+  </div>
+</div>
+</body></html>

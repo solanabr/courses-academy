@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: PYUSD's eight extensions, dormant switches vs live metadata
+     purpose: reinforce the configured-vs-active discipline on the exact mint the lesson probes
+     data: Eight rows, from the live read of 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo on 2026-08-22: MintCloseAuthority: configured | PermanentDelegate: configured | TransferFeeConfig: configured, 0 bps, dormant | ConfidentialTransferMint: configured | ConfidentialTransferFee: configured | TransferHook: configured, programId null, dormant | MetadataPointer: LIVE, resolves to the mint itself | TokenMetadata: LIVE, name "PayPal USD", symbol "PYUSD", uri at token-metadata.paxos.com
+     prompt: Two-column comparison card. Left column titled "installed for later": the six dormant/control extensions as muted rows, with "0 bps" and "programId: null" called out on their rows. Right column titled "live right now": MetadataPointer and TokenMetadata as highlighted rows showing the self-referential arrow and the name/symbol values. Footer line: "presence tells you nothing, values do: read the mint."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:497px;height:440px;top:-253px;right:-253px;border-radius:50% 48% 62% 40% / 40% 42% 36% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:479px;height:404px;left:-265px;top:268px;border-radius:61% 42% 57% 36% / 38% 65% 52% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 44px; margin-bottom: 6px; }
+  .sub { font-family:var(--font-mono); font-size:14px; color:var(--text-secondary);
+         margin-bottom: 16px; }
+  .cols { display:flex; align-items:stretch; }
+  .card { border-radius:var(--radius-2xl); background:var(--surface-card);
+          padding:18px 24px 20px; }
+  .card.dorm { width:760px; border:2px solid var(--border-strong); }
+  .card.live { width:656px; border:2.5px solid var(--stbr-emerald); margin-left:40px; }
+  .ch { font-family:var(--font-display); font-weight:900; font-size:22px;
+        color:var(--text-primary); margin-bottom:12px; }
+  .drow { display:flex; align-items:center; border-top:1px solid var(--border-subtle);
+          padding:9px 4px; min-height:47px; }
+  .drow .dn { font-family:var(--font-mono); font-weight:700; font-size:16px;
+              color:var(--text-muted); flex:1; }
+  .drow .ds { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+              color:var(--text-muted); background:var(--surface-paper);
+              border:1px solid var(--border-subtle); border-radius:var(--radius-pill);
+              padding:3px 12px; }
+  .drow .dx { font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+              color:var(--text-primary); background:var(--surface-paper);
+              border:1.5px solid var(--stbr-green); border-radius:var(--radius-pill);
+              padding:3px 12px; margin-right:10px; }
+  .lrow { border-top:1px solid var(--border-subtle); padding:12px 4px 14px; }
+  .lhead { display:flex; align-items:center; }
+  .lhead .ln { font-family:var(--font-mono); font-weight:700; font-size:17px;
+               color:var(--text-primary); flex:1; }
+  .lhead .lb { font-family:var(--font-display); font-weight:900; font-size:13px;
+               letter-spacing:.08em; background:var(--stbr-yellow); color:var(--stbr-dark);
+               border:1.5px solid var(--stbr-dark); border-radius:var(--radius-pill);
+               padding:4px 14px; }
+  .lval { display:flex; align-items:center; margin-top:9px; }
+  .lval .lv { font-family:var(--font-body); font-size:14.5px; line-height:1.4;
+              color:var(--text-secondary); }
+  .lval .lv b { color:var(--text-primary); }
+  .selfarrow { flex:0 0 62px; margin-right:12px; }
+  .verdict { margin-top:22px; background:var(--surface-brand);
+             border-radius:var(--radius-xl); padding:15px 28px;
+             font-family:var(--font-display); font-weight:900; font-size:24px;
+             color:var(--text-on-brand); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">PYUSD, straight off the chain</div>
+  <h2 class="viz-title">eight extensions: dormant switches vs live metadata</h2>
+  <div class="sub">2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo &middot; read 2026-08-22</div>
+
+  <div class="cols">
+    <div class="card dorm">
+      <div class="ch">installed for later</div>
+      <div class="drow"><div class="dn">MintCloseAuthority</div><div class="ds">configured</div></div>
+      <div class="drow"><div class="dn">PermanentDelegate</div><div class="ds">configured</div></div>
+      <div class="drow"><div class="dn">TransferFeeConfig</div><div class="dx">0 bps</div><div class="ds">configured &middot; dormant</div></div>
+      <div class="drow"><div class="dn">ConfidentialTransferMint</div><div class="ds">configured</div></div>
+      <div class="drow"><div class="dn">ConfidentialTransferFee</div><div class="ds">configured</div></div>
+      <div class="drow"><div class="dn">TransferHook</div><div class="dx">programId: null</div><div class="ds">configured &middot; dormant</div></div>
+    </div>
+
+    <div class="card live">
+      <div class="ch">live right now</div>
+      <div class="lrow">
+        <div class="lhead"><div class="ln">MetadataPointer</div><div class="lb">LIVE</div></div>
+        <div class="lval">
+          <div class="selfarrow"><svg width="62" height="34" viewBox="0 0 62 34"><path d="M8 30 C 8 6, 48 6, 48 22" fill="none" stroke="#1b231d" stroke-width="2.5"/><polygon points="42,20 54,20 48,32" fill="#1b231d"/></svg></div>
+          <div class="lv"><b>resolves to the mint itself</b> &mdash; the self-referential pointer</div>
+        </div>
+      </div>
+      <div class="lrow">
+        <div class="lhead"><div class="ln">TokenMetadata</div><div class="lb">LIVE</div></div>
+        <div class="lval">
+          <div class="lv">name <b>&quot;PayPal USD&quot;</b> &middot; symbol <b>&quot;PYUSD&quot;</b><br>uri at <b>token-metadata.paxos.com</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="verdict">presence tells you nothing, values do: read the mint.</div>
+</div>
+</body></html>

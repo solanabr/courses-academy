@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where a compressed token balance actually lives
+     purpose: show that "no account" means state split across a tree root, the ledger, and an indexer, so the read path is a dependency and not a convenience
+     data: On chain: state tree account (holds the root) + address tree account (hands out unique compressed-account addresses) + the compressed-token program. No per-holder token account exists. In the ledger: the compressed account's full contents, emitted as transaction data. Off chain: Photon indexer (Helius; also served by Alchemy) reconstructs balances and serves the 128-byte validity proof per write. Write path: client asks Photon for account + proof -> builds tx with the 128-byte proof -> program verifies proof, hashes new state, updates root (about 292,000 CU). Read path: client asks Photon. getAccountInfo returns nothing. There is no account.
+     prompt: Three horizontal bands stacked: top band "on chain" with three boxes (state tree root, address tree, compressed-token program); middle band "ledger" showing a ribbon of transaction records labeled "the actual account contents"; bottom band "off chain" with a single box labeled Photon indexer. A write arrow loops from a client node down to Photon (labeled "fetch account + 128 B proof"), then up to the program box (labeled "verify, rehash, update root, about 292,000 CU"). A separate read arrow from the client to Photon, with a crossed-out getAccountInfo call beside it.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:407px;right:-224px;top:388px;border-radius:38% 39% 51% 58% / 49% 60% 39% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:362px;height:424px;bottom:-247px;left:705px;border-radius:37% 56% 54% 42% / 55% 57% 45% 40%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">"no account" means state in three places</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 16px;color:var(--stbr-dark);">Where a compressed token balance actually lives</h2>
+
+    <!-- band: on chain -->
+    <div style="display:flex;align-items:stretch;gap:14px;margin-bottom:10px;">
+      <div style="flex:none;width:110px;display:flex;align-items:center;justify-content:center;background:var(--stbr-green);border-radius:10px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;color:var(--stbr-cream);text-transform:uppercase;">on chain</div>
+      <div style="flex:1;display:flex;gap:12px;">
+        <div style="flex:1;border:1.5px solid var(--stbr-emerald);border-radius:12px;padding:10px 16px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">state tree account</div>
+          <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">holds only the root</div>
+        </div>
+        <div style="flex:1;border:1.5px solid var(--stbr-emerald);border-radius:12px;padding:10px 16px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">address tree account</div>
+          <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">hands out unique compressed-account addresses</div>
+        </div>
+        <div style="flex:1;border:1.5px solid var(--stbr-emerald);border-radius:12px;padding:10px 16px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">compressed-token program</div>
+          <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">no per-holder token account exists</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- band: ledger -->
+    <div style="display:flex;align-items:stretch;gap:14px;margin-bottom:10px;">
+      <div style="flex:none;width:110px;display:flex;align-items:center;justify-content:center;background:var(--stbr-green);border-radius:10px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;color:var(--stbr-cream);text-transform:uppercase;">ledger</div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border:1px solid var(--border-subtle,#e5decb);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:8px;">
+        <div style="flex:none;background:var(--surface-card);border:1px solid var(--stbr-green);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:11.5px;color:var(--stbr-dark);">tx&nbsp;record</div>
+        <div style="flex:none;background:var(--surface-card);border:1px solid var(--stbr-green);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:11.5px;color:var(--stbr-dark);">tx&nbsp;record</div>
+        <div style="flex:none;background:var(--surface-card);border:1px solid var(--stbr-green);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:11.5px;color:var(--stbr-dark);">tx&nbsp;record</div>
+        <div style="flex:none;background:var(--surface-card);border:1px solid var(--stbr-green);border-radius:6px;padding:4px 10px;font-family:var(--font-mono);font-size:11.5px;color:var(--stbr-dark);">tx&nbsp;record</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);margin-left:8px;">&larr; the compressed account&rsquo;s FULL contents, emitted as transaction data</div>
+      </div>
+    </div>
+
+    <!-- band: off chain -->
+    <div style="display:flex;align-items:stretch;gap:14px;margin-bottom:16px;">
+      <div style="flex:none;width:110px;display:flex;align-items:center;justify-content:center;background:var(--stbr-green);border-radius:10px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;color:var(--stbr-cream);text-transform:uppercase;">off chain</div>
+      <div style="flex:1;background:var(--stbr-yellow);border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:16px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--stbr-dark);">Photon indexer <span style="font-weight:700;font-size:14px;">(Helius; also served by Alchemy)</span></div>
+        <div style="font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--stbr-dark);">reconstructs balances &middot; serves the 128-byte validity proof for every write</div>
+      </div>
+    </div>
+
+    <!-- paths -->
+    <div style="display:flex;gap:14px;">
+      <div style="flex:1.4;border:1.5px solid var(--border-strong,#c9c2ad);border-radius:12px;padding:12px 16px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.08em;color:var(--stbr-emerald);margin-bottom:8px;">WRITE PATH</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+          <div style="background:var(--stbr-dark);color:var(--stbr-cream);border-radius:8px;padding:6px 12px;font-family:var(--font-body);font-weight:700;font-size:13px;">client</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);">&mdash; fetch account + 128&nbsp;B proof &rarr;</div>
+          <div style="background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:8px;padding:6px 12px;font-family:var(--font-body);font-weight:700;font-size:13px;">Photon</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);">&mdash; tx with proof &rarr;</div>
+          <div style="background:var(--stbr-emerald);color:var(--stbr-cream);border-radius:8px;padding:6px 12px;font-family:var(--font-body);font-weight:700;font-size:13px;">program</div>
+        </div>
+        <div style="margin-top:8px;font-family:var(--font-body);font-size:13px;color:var(--stbr-dark);">program verifies proof, hashes new state, updates root &mdash; <b>&asymp;292,000&nbsp;CU</b></div>
+      </div>
+      <div style="flex:1;border:1.5px solid var(--border-strong,#c9c2ad);border-radius:12px;padding:12px 16px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.08em;color:var(--stbr-emerald);margin-bottom:8px;">READ PATH</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="background:var(--stbr-dark);color:var(--stbr-cream);border-radius:8px;padding:6px 12px;font-family:var(--font-body);font-weight:700;font-size:13px;">client</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);">&mdash; ask &rarr;</div>
+          <div style="background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:8px;padding:6px 12px;font-family:var(--font-body);font-weight:700;font-size:13px;">Photon</div>
+        </div>
+        <div style="margin-top:8px;font-family:var(--font-body);font-size:13px;color:var(--stbr-dark);"><span style="font-family:var(--font-mono);font-size:12px;text-decoration:line-through;">getAccountInfo</span> returns nothing. <b>There is no account.</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

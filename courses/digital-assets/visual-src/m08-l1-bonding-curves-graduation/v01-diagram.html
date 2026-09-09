@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Virtual reserves price the curve, real reserves are what you can buy
+     purpose: fix the distinction that every graduation-math mistake comes from
+     data: Curve at t=0 (reference pump constants, whole tokens): virtual SOL reserve:   30 SOL          (no SOL is actually held) virtual token reserve: 1,073,000,000   (exceeds total supply of 1,000,000,000) real token reserve:    793,100,000     (tokens actually purchasable on the curve) real SOL reserve:      0               (grows with every buy) Invariant: k = virtual SOL x virtual token = 32,190,000,000 Opening spot price = 30 / 1,073,000,000 = 2.7959e-8 SOL per token Key contrast: the virtual token reserve is LARGER than the entire supply, so it cannot be a balance; it is a coordinate on a price curve.
+     prompt: Two stacked horizontal bars sharing an x-axis of token quantity. Top bar labeled "virtual token reserve 1,073,000,000" extends past a vertical dashed line labeled "total supply 1,000,000,000". Bottom bar labeled "real token reserve 793,100,000" sits clearly shorter, inside the dashed line. To the right, a small two-row panel showing "virtual SOL 30 (not held)" and "real SOL 0 (grows per buy)". Annotate the overhang of the top bar past the dashed line with "a reserve bigger than the supply cannot be a balance". Labels in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:508px;height:483px;bottom:-272px;right:-272px;border-radius:35% 40% 38% 62% / 52% 62% 59% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:506px;height:430px;left:-323px;top:184px;border-radius:50% 46% 39% 35% / 48% 56% 56% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">the distinction every graduation-math mistake comes from</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 4px;color:var(--stbr-dark);">Virtual reserves price the curve; real reserves are what you can buy</h2>
+    <div style="font-family:var(--font-body);font-size:14px;color:var(--text-muted,#6b7a6f);margin-bottom:20px;">curve at t = 0, reference pump constants (whole tokens)</div>
+
+    <div style="display:flex;gap:32px;align-items:stretch;">
+      <!-- bar field -->
+      <div style="width:960px;">
+        <div style="position:relative;height:318px;">
+          <!-- dashed total-supply line at 1,000,000,000 of the 1,073,000,000 scale (860px bar) -->
+          <div style="position:absolute;left:801px;top:26px;bottom:0;border-left:2.5px dashed var(--stbr-dark);"></div>
+          <div style="position:absolute;left:640px;top:0;width:320px;font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--stbr-dark);text-align:left;padding-left:170px;">total supply<br>1,000,000,000</div>
+
+          <!-- virtual token reserve bar: 1,073,000,000 -> 860px; overhang past 801px in yellow -->
+          <div style="position:absolute;left:0;top:44px;font-family:var(--font-body);font-size:14px;font-weight:700;color:var(--stbr-dark);">virtual token reserve &nbsp;<span style="font-family:var(--font-mono);font-weight:400;color:var(--text-secondary,#4a5a4e);">1,073,000,000</span></div>
+          <div style="position:absolute;left:0;top:68px;width:801px;height:52px;background:var(--stbr-emerald);border-radius:10px 0 0 10px;"></div>
+          <div style="position:absolute;left:801px;top:68px;width:59px;height:52px;background:var(--stbr-yellow);border-radius:0 10px 10px 0;"></div>
+          <div style="position:absolute;left:16px;top:82px;font-family:var(--font-body);font-size:13px;font-weight:700;color:#F5E8CA;">a coordinate on the price curve: not a balance</div>
+
+          <!-- connector from overhang down to annotation chip -->
+          <div style="position:absolute;left:829px;top:120px;width:2px;height:22px;background:var(--stbr-dark);"></div>
+          <div style="position:absolute;left:585px;top:142px;width:360px;background:var(--stbr-yellow);border-radius:10px;padding:8px 14px;font-family:var(--font-body);font-size:13.5px;font-weight:700;color:var(--stbr-dark);">a reserve bigger than the supply cannot be a balance</div>
+
+          <!-- real token reserve bar: 793,100,000 -> 636px -->
+          <div style="position:absolute;left:0;top:206px;font-family:var(--font-body);font-size:14px;font-weight:700;color:var(--stbr-dark);">real token reserve &nbsp;<span style="font-family:var(--font-mono);font-weight:400;color:var(--text-secondary,#4a5a4e);">793,100,000</span></div>
+          <div style="position:absolute;left:0;top:230px;width:636px;height:52px;background:var(--stbr-green);border-radius:10px;"></div>
+          <div style="position:absolute;left:16px;top:244px;font-family:var(--font-body);font-size:13px;font-weight:700;color:#F5E8CA;">tokens actually purchasable on the curve</div>
+          <div style="position:absolute;left:0;top:294px;width:860px;font-family:var(--font-body);font-size:12px;color:var(--text-muted,#6b7a6f);">token quantity &rarr;</div>
+        </div>
+      </div>
+
+      <!-- SOL side panel -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:14px;">
+        <div style="border:1.5px solid var(--border-strong,#c9bd9d);border-radius:14px;padding:16px 18px;">
+          <div style="font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--stbr-dark);">virtual SOL reserve</div>
+          <div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--stbr-emerald);margin:2px 0;">30 SOL</div>
+          <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-muted,#6b7a6f);">no SOL is actually held</div>
+        </div>
+        <div style="border:1.5px solid var(--border-strong,#c9bd9d);border-radius:14px;padding:16px 18px;">
+          <div style="font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--stbr-dark);">real SOL reserve</div>
+          <div style="font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--stbr-green);margin:2px 0;">0 SOL</div>
+          <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-muted,#6b7a6f);">grows with every buy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- invariant footer -->
+    <div style="margin-top:18px;background:var(--stbr-dark);border-radius:12px;padding:12px 20px;display:flex;gap:36px;align-items:center;">
+      <div style="font-family:var(--font-mono);font-size:15px;color:#F5E8CA;">k = virtual SOL &times; virtual token = <span style="font-weight:700;">32,190,000,000</span></div>
+      <div style="width:1px;align-self:stretch;background:rgba(245,232,202,0.3);"></div>
+      <div style="font-family:var(--font-mono);font-size:15px;color:#F5E8CA;">opening spot price = 30 / 1,073,000,000 = <span style="font-weight:700;">2.7959e-8</span> SOL per token</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Raw amount vs displayed amount on an interest-bearing mint
+     purpose: make the display-only nature of InterestBearingConfig visible as two diverging tracks over time
+     data: track 1 (on-chain raw amount): flat line at 100 tokens from initialization onward; only mint/burn/transfer can move it track 2 (displayed ui_amount at 5% continuous rate): starts at 100, drifts upward over a year toward ~105.13 gap annotation: "the drift is display math, not supply; settling on track 2 double-counts the gap" event marker: "amount_to_ui_amount: the program's own conversion, the only sanctioned bridge between tracks"
+     prompt: Two-track diagram over a one-year time axis: a flat solid line labeled with the raw amount and a gently rising dashed curve labeled with the displayed amount, the widening gap between them shaded and annotated per data. Mark the amount_to_ui_amount bridge as a single vertical connector between tracks. Qualitative curve, only the 100 and ~105.13 endpoints as figures.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:429px;right:-296px;top:231px;border-radius:47% 52% 53% 44% / 50% 45% 62% 36%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:415px;height:455px;bottom:-243px;left:542px;border-radius:52% 51% 54% 56% / 39% 42% 39% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v06-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:36px 48px 32px; overflow:hidden; }
+  .v06-plot { position:relative; height:412px; margin-top:6px; }
+  .v06-lab { position:absolute; font-family:var(--font-body); font-size:15px; line-height:1.3;
+    color:var(--text-primary); }
+  .v06-chip { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:8px 14px; }
+  .v06-fig { font-family:var(--font-mono); font-weight:700; font-size:18px; }
+  .v06-axis { position:absolute; font-family:var(--font-body); font-size:14px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); }
+  .v06-legend { margin-top:10px; display:flex; gap:36px; align-items:center;
+    font-family:var(--font-body); font-size:15px; color:var(--text-secondary); }
+  .v06-legend .sw { display:inline-block; width:44px; height:0; vertical-align:4px; margin-right:10px; }
+  .v06-legend .solid { border-top:5px solid var(--stbr-emerald); }
+  .v06-legend .dash { border-top:5px dashed var(--stbr-green); }
+</style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">display math, not supply</div>
+    <h2 class="viz-title">raw amount vs displayed amount on an interest-bearing mint</h2>
+    <div class="v06-plot">
+      <svg width="1360" height="368" viewBox="0 0 1360 368">
+        <!-- shaded gap between the two tracks -->
+        <path d="M40,296 C 460,292 900,225 1320,110 L 1320,296 Z" fill="#ffd23f" opacity="0.32"/>
+        <!-- displayed ui_amount: rising dashed curve -->
+        <path d="M40,296 C 460,292 900,225 1320,110" fill="none" stroke="#306c40" stroke-width="5" stroke-dasharray="15 10"/>
+        <!-- raw on-chain amount: flat solid line -->
+        <line x1="40" y1="296" x2="1320" y2="296" stroke="#008b4c" stroke-width="5"/>
+        <!-- amount_to_ui_amount bridge -->
+        <line x1="1040" y1="186" x2="1040" y2="296" stroke="#1b231d" stroke-width="3"/>
+        <circle cx="1040" cy="186" r="7" fill="#1b231d"/>
+        <circle cx="1040" cy="296" r="7" fill="#1b231d"/>
+        <!-- start marker -->
+        <circle cx="40" cy="296" r="7" fill="#008b4c"/>
+        <!-- time axis -->
+        <line x1="40" y1="340" x2="1320" y2="340" stroke="#b8bdb6" stroke-width="2"/>
+        <line x1="40" y1="334" x2="40" y2="346" stroke="#b8bdb6" stroke-width="2"/>
+        <line x1="1320" y1="334" x2="1320" y2="346" stroke="#b8bdb6" stroke-width="2"/>
+      </svg>
+      <div class="v06-lab" style="left:4px; top:246px;"><span class="v06-fig">100</span></div>
+      <div class="v06-lab v06-chip" style="left:330px; top:130px; width:290px; color:var(--stbr-green); border-color:var(--stbr-green); font-weight:700;">displayed ui_amount &middot; 5% continuous rate &mdash; drifts upward all year</div>
+      <div class="v06-lab v06-chip" style="left:60px; top:232px; width:508px; color:var(--stbr-emerald); border-color:var(--stbr-emerald); font-weight:700; white-space:nowrap;">raw on-chain amount &mdash; flat; only mint / burn / transfer move it</div>
+      <div class="v06-lab v06-chip" style="left:646px; top:240px; width:316px; background:var(--stbr-yellow); border-color:var(--stbr-yellow); font-weight:700;">the drift is display math, not supply &mdash; settling on the displayed number double-counts the gap</div>
+      <div class="v06-lab v06-chip" style="left:1056px; top:196px; width:288px;"><code style="font-family:var(--font-mono); font-weight:700;">amount_to_ui_amount</code> &mdash; the program's own conversion, the only sanctioned bridge between tracks</div>
+      <div class="v06-lab" style="left:1120px; top:64px;"><span class="v06-fig">~105.13</span> displayed</div>
+      <div class="v06-lab" style="left:1130px; top:306px;"><span class="v06-fig">100</span> tokens raw</div>
+      <div class="v06-axis" style="left:40px; top:350px;">initialization &middot; t = 0</div>
+      <div class="v06-axis" style="left:1236px; top:350px;">one year</div>
+    </div>
+    <div class="v06-legend">
+      <span><span class="sw solid"></span>raw amount (track 1, on-chain)</span>
+      <span><span class="sw dash"></span>displayed ui_amount (track 2, computed at read time)</span>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One key, eight slots, two exercise timings
+     purpose: show that a single authority holds every option on PYUSD's mint, and that the two dormant behavior slots settle on different clocks
+     data: Center node: authority 2apBGMsS6ti9RyF5TwQTDswXBWskiJP2LD4cUEDqYJjk (holds all 8 extension authorities on mint 2b1k...GXo) Live edges (ACTIVE): permanentDelegate (move/burn from any account), mintCloseAuthority (close mint at zero supply), metadataPointer + tokenMetadata (name/symbol/uri resolve on-mint) Armed edges (DORMANT): transferHook -> exercise via TransferHookInstruction::Update, effective immediately, next block Armed edges (DORMANT): transferFeeConfig -> exercise via SetTransferFee, effective current_epoch + 2, about 3 days at 300ms slots Armed edges (DORMANT): confidentialTransferMint + confidentialTransferFeeConfig -> exercise via per-account approval Reader position: every holder is short all four armed options
+     prompt: Radial diagram: one central authority key node with eight labeled spokes to the eight extensions. Render four spokes as solid (live today) and four as dashed (armed). On the two dashed behavior spokes, annotate the exercise latency: "immediate, next block" on the hook and "current epoch + 2, about 3 days" on the fee. Add a small caption noting holders sit on the other side of the dashed spokes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:464px;height:360px;right:-236px;top:203px;border-radius:52% 46% 42% 36% / 50% 37% 42% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:436px;height:446px;bottom:-221px;left:-221px;border-radius:60% 43% 62% 45% / 63% 64% 64% 55%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:32px;padding:28px 48px 24px;}
+  .card .viz-title{font-size:38px;margin:4px 0 12px;}
+  .card .stbr-eyebrow{font-size:16px;}
+  .field{position:relative;width:1360px;height:500px;}
+  .field svg{position:absolute;top:0;left:0;}
+  .node{position:absolute;border-radius:14px;background:var(--surface-card);padding:9px 14px;}
+  .node .nn{font-family:var(--font-display);font-weight:900;font-size:16.5px;color:var(--text-primary);}
+  .node .ns{font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary);line-height:1.3;margin-top:2px;}
+  .live{border:2px solid var(--stbr-emerald);width:310px;left:0;}
+  .armed{border:2px dashed var(--stbr-green);width:340px;left:1018px;}
+  .tag{display:inline-block;border-radius:999px;padding:2px 9px;font-family:var(--font-display);font-weight:900;font-size:10.5px;letter-spacing:.07em;margin-bottom:3px;}
+  .tag-live{background:var(--stbr-emerald);color:#F5E8CA;}
+  .tag-armed{background:transparent;border:1.5px solid var(--stbr-green);color:var(--stbr-green);}
+  .lat{display:inline-block;margin-top:5px;background:var(--stbr-yellow);color:#1B231D;border-radius:999px;padding:3px 11px;font-family:var(--font-display);font-weight:800;font-size:12.5px;}
+  .center{position:absolute;left:555px;top:200px;width:250px;height:100px;background:var(--surface-inverse);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .center .cn{font-family:var(--font-display);font-weight:900;font-size:19px;color:#F5E8CA;}
+  .center .ca{font-family:var(--font-mono);font-size:13px;color:#F5E8CA;margin-top:3px;}
+  .center .cs{font-family:var(--font-body);font-size:11.5px;color:rgba(245,232,202,0.7);margin-top:3px;padding:0 12px;line-height:1.25;}
+  .foot{margin-top:12px;display:flex;align-items:center;justify-content:space-between;}
+  .legend{display:flex;gap:26px;align-items:center;font-family:var(--font-body);font-size:13px;color:var(--text-secondary);}
+  .legend span{white-space:nowrap;}
+  .legend .sw{display:inline-block;width:34px;height:0;border-top:3px solid var(--stbr-emerald);margin-right:8px;vertical-align:middle;}
+  .legend .swd{display:inline-block;width:34px;height:0;border-top:3px dashed var(--stbr-green);margin-right:8px;vertical-align:middle;}
+  .cap{font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--text-primary);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">mint 2b1k&hellip;GXo &mdash; who can pull which lever, and how fast</div>
+  <h2 class="viz-title">one key, eight slots, two exercise timings</h2>
+  <div class="field">
+    <svg width="1360" height="500" viewBox="0 0 1360 500">
+      <line x1="555" y1="250" x2="310" y2="48"  stroke="#008B4C" stroke-width="3"/>
+      <line x1="555" y1="250" x2="310" y2="180" stroke="#008B4C" stroke-width="3"/>
+      <line x1="555" y1="250" x2="310" y2="320" stroke="#008B4C" stroke-width="3"/>
+      <line x1="555" y1="250" x2="310" y2="452" stroke="#008B4C" stroke-width="3"/>
+      <line x1="805" y1="250" x2="1018" y2="48"  stroke="#306C40" stroke-width="3" stroke-dasharray="9 7"/>
+      <line x1="805" y1="250" x2="1018" y2="180" stroke="#306C40" stroke-width="3" stroke-dasharray="9 7"/>
+      <line x1="805" y1="250" x2="1018" y2="320" stroke="#306C40" stroke-width="3" stroke-dasharray="9 7"/>
+      <line x1="805" y1="250" x2="1018" y2="452" stroke="#306C40" stroke-width="3" stroke-dasharray="9 7"/>
+    </svg>
+    <div class="node live" style="top:12px;"><span class="tag tag-live">live</span><div class="nn">permanentDelegate</div><div class="ns">move or burn from any account</div></div>
+    <div class="node live" style="top:144px;"><span class="tag tag-live">live</span><div class="nn">mintCloseAuthority</div><div class="ns">close the mint at zero supply</div></div>
+    <div class="node live" style="top:284px;"><span class="tag tag-live">live</span><div class="nn">metadataPointer</div><div class="ns">metadata resolves on the mint itself</div></div>
+    <div class="node live" style="top:416px;"><span class="tag tag-live">live</span><div class="nn">tokenMetadata</div><div class="ns">name / symbol / uri live on-mint</div></div>
+    <div class="node armed" style="top:2px;"><span class="tag tag-armed">armed</span><div class="nn">transferHook</div><div class="ns">exercise: TransferHookInstruction::Update</div><span class="lat">immediate &mdash; next block</span></div>
+    <div class="node armed" style="top:134px;"><span class="tag tag-armed">armed</span><div class="nn">transferFeeConfig</div><div class="ns">exercise: SetTransferFee</div><span class="lat">current epoch + 2 &mdash; about 3 days</span></div>
+    <div class="node armed" style="top:290px;"><span class="tag tag-armed">armed</span><div class="nn">confidentialTransferMint</div><div class="ns">exercise: per-account approval</div></div>
+    <div class="node armed" style="top:422px;"><span class="tag tag-armed">armed</span><div class="nn">confidentialTransferFeeConfig</div><div class="ns">exercise: per-account approval</div></div>
+    <div class="center"><div class="cn">one authority</div><div class="ca">2apBGMsS&hellip;DqYJjk</div><div class="cs">holds all 8 extension authorities on this mint</div></div>
+  </div>
+  <div class="foot">
+    <div class="legend"><span><span class="sw"></span>live today</span><span><span class="swd"></span>armed &mdash; dormant option</span></div>
+    <div class="cap">every holder sits on the other side of the dashed spokes &mdash; short all four armed options</div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How a wallet turns a mint into pixels, and where that breaks
+     purpose: trace the full resolution chain the lesson has assembled and mark the failure points on it
+     data: mint address -> (legacy: derive metadata PDA / T22: read mint TLV) -> on-chain record { name, symbol, uri } -> HTTP fetch uri -> JSON document { image, attributes... } -> fetch image URI -> pixels on screen break points: uri host dead (S3 bill unpaid, DNS gone); JSON mutated by update authority; image link rotted; none of these touch the on-chain record
+     prompt: Left-to-right flowchart with six nodes: mint address, on-chain record (two entry styles noted: derived PDA for legacy, in-mint TLV for Token-2022), uri fetch, JSON document, image fetch, rendered asset. Mark three red break annotations on the last three hops labeled "host dies", "authority rewrites", "link rots". A caption under the chain: "rent keeps the pointer alive forever; nothing keeps the target alive at all."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:433px;height:357px;right:-235px;top:217px;border-radius:35% 60% 63% 39% / 55% 37% 38% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:408px;height:459px;bottom:-220px;left:536px;border-radius:36% 54% 38% 62% / 37% 59% 62% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .chain, .under { display:flex; align-items:stretch; justify-content:center; margin-top:6px; }
+  .node-cell { flex:0 0 193px; width:193px; display:flex; flex-direction:column; align-items:center; }
+  .arr-cell { flex:0 0 54px; width:54px; display:flex; align-items:center; justify-content:center; }
+  .node { width:193px; box-sizing:border-box; min-height:172px; background:var(--surface-card);
+          border:2.5px solid var(--stbr-dark); border-radius:var(--radius-lg);
+          padding:12px 10px; display:flex; flex-direction:column; align-items:center;
+          justify-content:center; gap:8px; text-align:center; }
+  .n-tag { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.11em;
+           text-transform:uppercase; color:#fff; background:var(--stbr-emerald);
+           padding:3px 10px; border-radius:var(--radius-pill); }
+  .n-tag.off { background:var(--stbr-green); }
+  .n-name { font-family:var(--font-display); font-weight:900; font-size:20px;
+            line-height:1.08; color:var(--text-primary); }
+  .n-sub { font-family:var(--font-body); font-weight:600; font-size:13px; line-height:1.3;
+           color:var(--text-secondary); }
+  .n-sub .m { font-family:var(--font-mono); font-size:12.5px; }
+  .under { margin-top:0; }
+  .u-cell { flex:0 0 193px; width:193px; display:flex; flex-direction:column; align-items:center; }
+  .u-gap { flex:0 0 54px; width:54px; }
+  .u-stem { width:3px; height:16px; background:var(--stbr-dark); }
+  .break { background:var(--stbr-yellow); color:var(--stbr-dark); border:2.5px solid var(--stbr-dark);
+           border-radius:var(--radius-pill); padding:6px 13px; font-family:var(--font-body);
+           font-weight:800; font-size:14.5px; white-space:nowrap; text-align:center; }
+  .safe { background:rgba(0,139,76,0.1); color:var(--stbr-green); border:2px solid var(--stbr-emerald);
+          border-radius:var(--radius-pill); padding:6px 12px; font-family:var(--font-body);
+          font-weight:800; font-size:13.5px; white-space:nowrap; }
+  .fc-cap { margin:26px auto 0; width:900px; background:var(--surface-inverse);
+            color:var(--text-on-dark); border-radius:var(--radius-pill); padding:14px 32px;
+            text-align:center; font-family:var(--font-display); font-weight:800; font-size:22px; }
+</style>
+  <div class="stbr-eyebrow">the full resolution chain</div>
+  <h2 class="viz-title">how a wallet turns a mint into pixels &mdash; and where that breaks</h2>
+  <div class="chain">
+    <div class="node-cell"><div class="node">
+      <span class="n-tag">on-chain</span>
+      <div class="n-name">mint address</div>
+      <div class="n-sub">the only input the wallet has</div>
+    </div></div>
+    <div class="arr-cell"><svg width="50" height="24" viewBox="0 0 50 24"><line x1="0" y1="12" x2="38" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="49,12 36,4 36,20" fill="#1B231D"/></svg></div>
+    <div class="node-cell"><div class="node">
+      <span class="n-tag">on-chain</span>
+      <div class="n-name">on-chain record</div>
+      <div class="n-sub">legacy: derived metadata PDA<br>T-2022: TLV in the mint<br><span class="m">{ name, symbol, uri }</span></div>
+    </div></div>
+    <div class="arr-cell"><svg width="50" height="24" viewBox="0 0 50 24"><line x1="0" y1="12" x2="38" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="49,12 36,4 36,20" fill="#1B231D"/></svg></div>
+    <div class="node-cell"><div class="node">
+      <span class="n-tag off">off-chain</span>
+      <div class="n-name">uri fetch</div>
+      <div class="n-sub">plain HTTP GET to whatever host the uri names</div>
+    </div></div>
+    <div class="arr-cell"><svg width="50" height="24" viewBox="0 0 50 24"><line x1="0" y1="12" x2="38" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="49,12 36,4 36,20" fill="#1B231D"/></svg></div>
+    <div class="node-cell"><div class="node">
+      <span class="n-tag off">off-chain</span>
+      <div class="n-name">JSON document</div>
+      <div class="n-sub"><span class="m">{ image, attributes&hellip; }</span></div>
+    </div></div>
+    <div class="arr-cell"><svg width="50" height="24" viewBox="0 0 50 24"><line x1="0" y1="12" x2="38" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="49,12 36,4 36,20" fill="#1B231D"/></svg></div>
+    <div class="node-cell"><div class="node">
+      <span class="n-tag off">off-chain</span>
+      <div class="n-name">image fetch</div>
+      <div class="n-sub">second HTTP GET, to the image URI</div>
+    </div></div>
+    <div class="arr-cell"><svg width="50" height="24" viewBox="0 0 50 24"><line x1="0" y1="12" x2="38" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="49,12 36,4 36,20" fill="#1B231D"/></svg></div>
+    <div class="node-cell"><div class="node">
+      <span class="n-tag off">off-chain</span>
+      <div class="n-name">pixels on screen</div>
+      <div class="n-sub">what the holder thinks they own</div>
+    </div></div>
+  </div>
+  <div class="under">
+    <div class="u-cell"></div>
+    <div class="u-gap"></div>
+    <div class="u-cell"><div class="u-stem"></div><div class="safe">untouched by all three breaks</div></div>
+    <div class="u-gap"></div>
+    <div class="u-cell"><div class="u-stem"></div><div class="break">&#9888; host dies</div></div>
+    <div class="u-gap"></div>
+    <div class="u-cell"><div class="u-stem"></div><div class="break">&#9888; authority rewrites</div></div>
+    <div class="u-gap"></div>
+    <div class="u-cell"><div class="u-stem"></div><div class="break">&#9888; link rots</div></div>
+    <div class="u-gap"></div>
+    <div class="u-cell"></div>
+  </div>
+  <div class="fc-cap">rent keeps the pointer alive forever; nothing keeps the target alive at all.</div>
+</div>
+</body></html>

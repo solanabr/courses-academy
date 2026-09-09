@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The forwarding obligation every client inherits from your hook
+     purpose: show the five steps a wallet or DEX must run before every transfer of a hooked token, forever
+     data: 1. fetch the validation account at get_extra_account_metas_address(mint, hook_program) 2. decode its ExtraAccountMetaList: n fixed 35-byte entries 3. resolve each entry: literal address as-is; PDA recipes re-derived from seed configs against the Execute account list (index-based seeds are positional) 4. append the resolved accounts to the transfer instruction, in list order 5. send; Token-2022 CPIs Execute on the hook with everything already in place failure mode: skip or reorder any step and the transfer reverts with an account-mismatch error that names none of this
+     prompt: Vertical top-to-bottom flowchart, five numbered nodes as listed in the data, one arrow per step, monospace for the derivation call and struct names. A red side branch off steps 3 and 4 labeled "skipped or out of order" pointing to a terminal node "transfer reverts, error names no cause".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:479px;top:-286px;right:-286px;border-radius:50% 36% 42% 36% / 59% 51% 42% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:523px;height:501px;left:-320px;top:216px;border-radius:44% 42% 62% 35% / 43% 42% 56% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v6 .flow{position:relative;height:566px;margin-top:6px}
+    .v6 .step{position:absolute;left:0;width:880px;height:92px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:14px;display:flex;align-items:center;gap:16px;padding:0 20px}
+    .v6 .num{width:40px;height:40px;border-radius:50%;background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .v6 .stitle{font-family:var(--font-body);font-size:16.5px;font-weight:700;color:var(--text-primary);line-height:1.25}
+    .v6 .sdet{font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);margin-top:3px;line-height:1.4}
+    .v6 .vline{position:absolute;left:439px;width:2.5px;height:16px;background:var(--stbr-dark)}
+    .v6 .vtip{position:absolute;left:433px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-dark)}
+    .v6 .hline{position:absolute;left:880px;width:130px;height:0;border-top:2.5px dashed var(--stbr-dark)}
+    .v6 .fail{position:absolute;left:1010px;top:260px;width:446px;height:150px;background:var(--stbr-yellow);border-radius:16px;padding:18px 22px}
+    .v6 .ftitle{font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--stbr-dark);line-height:1.15}
+    .v6 .fdet{font-family:var(--font-body);font-size:14px;color:var(--stbr-dark);margin-top:8px;line-height:1.4}
+    .v6 .flab{position:absolute;left:886px;top:320px;width:120px;text-align:center;font-family:var(--font-body);font-size:11.5px;font-weight:700;color:var(--text-secondary);line-height:1.3}
+  </style>
+  <div class="v6">
+    <div class="stbr-eyebrow">every wallet, every dex, every transfer &middot; forever</div>
+    <h2 class="viz-title" style="font-size:38px;margin-bottom:12px">the forwarding obligation every client inherits</h2>
+    <div class="flow">
+      <div class="step" style="top:0">
+        <div class="num">1</div>
+        <div><div class="stitle">fetch the validation account</div>
+        <div class="sdet">get_extra_account_metas_address(mint, hook_program)</div></div>
+      </div>
+      <div class="vline" style="top:94px"></div><div class="vtip" style="top:108px"></div>
+      <div class="step" style="top:116px">
+        <div class="num">2</div>
+        <div><div class="stitle">decode its ExtraAccountMetaList</div>
+        <div class="sdet">n fixed 35-byte entries</div></div>
+      </div>
+      <div class="vline" style="top:210px"></div><div class="vtip" style="top:224px"></div>
+      <div class="step" style="top:232px">
+        <div class="num">3</div>
+        <div><div class="stitle">resolve each entry</div>
+        <div class="sdet">literal address as-is; PDA recipes re-derived from seed configs against the<br>Execute account list &mdash; index-based seeds are positional</div></div>
+      </div>
+      <div class="vline" style="top:326px"></div><div class="vtip" style="top:340px"></div>
+      <div class="step" style="top:348px">
+        <div class="num">4</div>
+        <div><div class="stitle">append the resolved accounts to the transfer instruction</div>
+        <div class="sdet">in list order</div></div>
+      </div>
+      <div class="vline" style="top:442px"></div><div class="vtip" style="top:456px"></div>
+      <div class="step" style="top:464px;border:2px solid var(--stbr-emerald)">
+        <div class="num">5</div>
+        <div><div class="stitle">send</div>
+        <div class="sdet">Token-2022 CPIs Execute on the hook with everything already in place</div></div>
+      </div>
+      <div class="hline" style="top:277px"></div>
+      <div class="hline" style="top:393px"></div>
+      <div class="flab">skipped or<br>out of order</div>
+      <div class="fail">
+        <div class="ftitle">transfer reverts &mdash; the error names no cause</div>
+        <div class="fdet">skip or reorder any of steps 3&ndash;4 and the transfer dies with an account-mismatch error that mentions none of this.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

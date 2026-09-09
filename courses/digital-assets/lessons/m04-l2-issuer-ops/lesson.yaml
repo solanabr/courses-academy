@@ -1,0 +1,98 @@
+id: lesson-date-m04-l2-issuer-ops
+slug: m04-l2-issuer-ops
+title: "Issuer ops: auditor, registry, and confidential supply"
+skills:
+  - token-2022
+  - transactions
+  - signers
+  - program-security
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    "@solana-program/system": "0.13.0"
+    solana-zk-sdk: "7.0.1"
+    typescript: "5.9.3"
+    tsx: "4.23.12"
+    spl-token-cli: "5.6.1"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: configure-confidential-mint
+    type: code
+    language: typescript
+    starter: configure-confidential-mint/starter.ts
+    solution: configure-confidential-mint/solution.ts
+    tests: configure-confidential-mint/tests.json
+    hints:
+      - "Check the named authority first: an empty string is 'missing-authority'."
+      - "The auditor pubkey is optional: null must still return ok:true."
+      - "Combo rule 5 only bites when NonTransferable and ConfidentialTransferMint are both present without ConfidentialMintBurn."
+  - key: check
+    type: quiz
+    questions:
+      - id: m04l2-q1
+        prompt: "You configured a confidential SPROUT mint with an auditor ElGamal pubkey. What does setting that auditor key actually change about every subsequent confidential transfer?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Each transfer gains an optional auditor ciphertext, which the sender can omit whenever an amount is too sensitive to disclose to the mint's auditor"
+            correct: false
+            feedback: "There is no per-transfer opt-out. While an auditor is configured the program rejects any transfer whose auditor ciphertext is missing or malformed, because coverage that a sender can decline is not coverage."
+          - id: b
+            label: "Only the mint authority can now approve new confidential accounts before those accounts may receive funds."
+            correct: false
+            feedback: "That behavior is the separate auto_approve_new_accounts flag, not the auditor key. The auditor key governs who can DECRYPT transfer amounts, not who can open accounts."
+          - id: a
+            label: "Every confidential transfer must additionally encrypt its amount under the auditor's key, which only the auditor can decrypt."
+            correct: true
+            feedback: "The grouped-ciphertext validity proof carries three handles, so one amount is sealed for sender, receiver and auditor at once while the public still reads ciphertext."
+          - id: c
+            label: "Transfers become fully public the moment an auditor is set, because the program stops encrypting amounts once a designated third party can read them."
+            correct: false
+            feedback: "Amounts stay encrypted to the public. The auditor receives its OWN decryptable ciphertext via the grouped-ciphertext validity proof; that is targeted visibility, not a public disclosure."
+        explanation: "The auditor is a single optional global ElGamal pubkey on the ConfidentialTransferMint. When set, the grouped-ciphertext validity proof forces each transfer to encrypt its amount under sender, receiver, AND auditor keys, so the auditor (and only the auditor) can reconcile amounts, while the public still sees ciphertext."
+      - id: m04l2-q2
+        prompt: "Your lab targets a cluster where the zk-ElGamal proof gate is off, so anything that needs it will fail. What's the designed move?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Run the transfer flow anyway, and note in the write-up that the proof step may not verify on this cluster"
+            correct: false
+            feedback: "Caveating a step that cannot succeed is not the designed fallback. That path keeps the same mint, the same auditor and the same verify script, and drops only the live transfer."
+          - id: b
+            label: "Degrade to configuring the extension and proving its state on-chain, and say so; the proofs cannot verify without the gate."
+            correct: true
+            feedback: "The issuer skill this lesson grades is the configuration, so the fallback proves the extension and the auditor on-chain and names what it could not run, which is what the lab's own script does."
+          - id: c
+            label: "Force the gate on with a surfpool override and present the fabricated activation as a live mainnet transfer."
+            correct: false
+            feedback: "Running on devnet or surfpool is fine, but the honest, designed fallback is configure-plus-prove-state, not presenting a locally forced gate as real activation."
+          - id: a
+            label: "Abandon confidential transfers for this token and mint a plain SPROUT instead, since the extension cannot be demonstrated without the gate."
+            correct: false
+            feedback: "The lesson has a designed degrade path precisely so an off gate breaks nothing. You don't drop the build."
+        explanation: "The cluster plan is devnet-first (gates active per docs), surfpool secondary. If the zk-ElGamal gate is off, the transfer proofs will not verify, so the lab degrades to configuring ConfidentialTransferMint plus the auditor and proving that extension state on-chain: the same skill, minus the unavailable verification, stated openly."
+      - id: m04l2-q3
+        prompt: "You want confidential SUPPLY for SPROUT: mint and burn amounts hidden, not just transfers. Which extension and rule apply?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "ConfidentialTransferFeeConfig on its own, since hiding the fee flow is what makes mint and burn amounts confidential too."
+            correct: false
+            feedback: "That extension governs withheld fees on confidential transfers, not confidential mint/burn of supply."
+          - id: d
+            label: "ConfidentialMintBurn on its own; it brings its own supply key and needs no other extension"
+            correct: false
+            feedback: "The extension is right and the rule is missing. Combo rule 3 refuses ConfidentialMintBurn unless ConfidentialTransferMint sits on the same mint, and your validator has rejected that set since m01-l4."
+          - id: c
+            label: "ConfidentialMintBurn, which requires ConfidentialTransferMint on the mint too."
+            correct: true
+            feedback: "Confidential supply on a mint whose transfers are public would protect nothing, so the dependency runs one way: confidential transfers without confidential supply is a product, the reverse is not."
+          - id: a
+            label: "PermanentDelegate, which can reach into confidential balances to adjust supply."
+            correct: false
+            feedback: "PermanentDelegate explicitly does NOT work on confidential balances, and it isn't a supply-confidentiality feature in the first place."
+        explanation: "ConfidentialMintBurn adds confidential supply (confidential burn, apply_pending_burn, and rotate_supply_elgamal_pubkey), and combo rule 3 requires ConfidentialTransferMint to be present on the same mint. That's the issuer branch you enable on a second SPROUT variant."

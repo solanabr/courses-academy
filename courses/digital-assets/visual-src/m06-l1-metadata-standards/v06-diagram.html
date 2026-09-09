@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The storage durability spectrum behind a uri
+     purpose: turn the "permanent only if the store is" rule into a placement decision the reader can reuse next lesson
+     data: rented + mutable: web servers, S3 buckets (Mad Lads' actual host) -> lives while the bill is paid and the key is held pinned + content-addressed: IPFS -> integrity guaranteed by the hash, availability only while someone pins (market health unverified this round) paid-once + permanent: Arweave, via the Irys uploader (Metaplex CLI's documented default) -> endowment-funded, no ongoing bill orthogonal axis: on-chain update authority present? mutable metadata regardless of host
+     prompt: Horizontal spectrum bar with three zones labeled left to right: "rented (web/S3)", "pinned (IPFS)", "permanent (Arweave via Irys)". Under each zone one clause on what keeps content alive, using the data lines. Above the bar a separate toggle labeled "update authority: mutable vs immutable", positioned as an independent axis, with a note that it applies whatever the host. Mark the S3 zone with a small "Mad Lads lives here" tag.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:607px;height:590px;top:-331px;right:-331px;border-radius:48% 59% 61% 43% / 57% 43% 60% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:513px;height:463px;bottom:-246px;left:520px;border-radius:59% 49% 62% 48% / 56% 64% 47% 55%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .auth { margin-top:6px; display:flex; align-items:center; gap:20px;
+          background:var(--surface-card); border:2.5px dashed var(--stbr-dark);
+          border-radius:var(--radius-xl); padding:16px 26px; }
+  .auth-lab { font-family:var(--font-body); font-weight:800; font-size:13px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--text-secondary); }
+  .toggle { display:flex; border:2.5px solid var(--stbr-dark);
+            border-radius:var(--radius-pill); overflow:hidden; }
+  .tog { padding:7px 20px; font-family:var(--font-body); font-weight:800; font-size:16px; }
+  .tog.on  { background:var(--stbr-dark); color:#F5E8CA; }
+  .tog.off { background:var(--surface-card); color:var(--text-primary); }
+  .auth-note { font-family:var(--font-body); font-weight:600; font-size:16px;
+               color:var(--text-primary); }
+  .spec-lab { display:flex; justify-content:space-between; margin:26px 4px 8px;
+              font-family:var(--font-body); font-weight:800; font-size:13px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .bar { display:flex; border:3px solid var(--stbr-dark); border-radius:var(--radius-xl);
+         overflow:hidden; }
+  .zone { flex:1 1 0; box-sizing:border-box; height:130px; padding:18px 24px;
+          display:flex; flex-direction:column; justify-content:center; gap:5px;
+          position:relative; }
+  .zone + .zone { border-left:3px solid var(--stbr-dark); }
+  .z1 { background:var(--surface-card); }
+  .z2 { background:rgba(0,139,76,0.16); }
+  .z3 { background:var(--stbr-emerald); }
+  .z-name { font-family:var(--font-display); font-weight:900; font-size:27px;
+            color:var(--text-primary); }
+  .z-sub  { font-family:var(--font-body); font-weight:700; font-size:16px;
+            color:var(--text-secondary); }
+  .z3 .z-name { color:#F5E8CA; }
+  .z3 .z-sub  { color:rgba(245,232,202,0.85); }
+  .madlads { position:absolute; top:12px; right:14px; background:var(--stbr-yellow);
+             color:var(--stbr-dark); border:2.5px solid var(--stbr-dark);
+             border-radius:var(--radius-pill); padding:5px 14px;
+             font-family:var(--font-body); font-weight:800; font-size:14.5px; }
+  .clauses { display:flex; gap:0; margin-top:14px; }
+  .clause { flex:1 1 0; box-sizing:border-box; padding:0 24px 0 4px; display:flex; gap:10px; }
+  .clause + .clause { padding-left:24px; }
+  .c-tick { flex:0 0 3px; width:3px; background:var(--stbr-dark); border-radius:2px; }
+  .c-text { font-family:var(--font-body); font-weight:600; font-size:16.5px;
+            line-height:1.35; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">permanent only if the store is</div>
+  <h2 class="viz-title">the storage durability spectrum behind a uri</h2>
+  <div class="auth">
+    <span class="auth-lab">independent axis &middot; update authority</span>
+    <div class="toggle"><span class="tog on">mutable</span><span class="tog off">immutable</span></div>
+    <span class="auth-note">applies whatever the host: while an on-chain update authority exists, the metadata is mutable regardless of where the content lives</span>
+  </div>
+  <div class="spec-lab"><span>&larr; lives at someone's mercy</span><span>outlives everyone &rarr;</span></div>
+  <div class="bar">
+    <div class="zone z1">
+      <div class="madlads">Mad Lads lives here</div>
+      <div class="z-name">rented</div>
+      <div class="z-sub">web servers &middot; S3 buckets</div>
+    </div>
+    <div class="zone z2">
+      <div class="z-name">pinned</div>
+      <div class="z-sub">IPFS &middot; content-addressed</div>
+    </div>
+    <div class="zone z3">
+      <div class="z-name">permanent</div>
+      <div class="z-sub">Arweave, via the Irys uploader</div>
+    </div>
+  </div>
+  <div class="clauses">
+    <div class="clause"><div class="c-tick"></div><div class="c-text">lives while the bill is paid and the key is held &mdash; miss one and the uri points at nothing</div></div>
+    <div class="clause"><div class="c-tick"></div><div class="c-text">the hash guarantees integrity; availability lasts only while someone keeps pinning</div></div>
+    <div class="clause"><div class="c-tick"></div><div class="c-text">endowment-funded, paid once, no ongoing bill &mdash; the Metaplex CLI's documented default</div></div>
+  </div>
+</div>
+</body></html>

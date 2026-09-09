@@ -1,0 +1,117 @@
+id: lesson-date-m08-l3-airdrops-at-scale
+slug: m08-l3-airdrops-at-scale
+title: "Airdrops at scale: cost engineering & vesting claims"
+skills:
+  - merkle-proofs
+  - state-compression
+  - checked-arithmetic
+  - account-model
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@lightprotocol/stateless.js": "0.23.3"
+    "@lightprotocol/compressed-token": "0.23.3"
+    "@solana/web3.js": "1.98.4"
+    "@solana/spl-token": "0.4.15"
+    helius-airship: "0.9.4"
+    tsx: "4.23.12"
+    typescript: "5.9.3"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m08l3-q1-100k-cost
+        prompt: "Your cost table shows classic ATAs at ≈186 SOL for 100,000 recipients (293 bytes each at mainnet's 6,333 lamports/byte, read 2026-09-06). What is the compressed figure and the saving?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "≈20 SOL and about 90% saved, on ≈200,000 lamports per recipient."
+            correct: false
+            feedback: "20 SOL is roughly the CLASSIC 10k-recipient figure; you are off by a method and a scale. Compressed is far cheaper."
+          - id: e
+            label: "≈186 SOL either way, because each recipient still needs an account created before any tokens can land."
+            correct: false
+            feedback: "There is no account to create: a compressed recipient is a hash in a state tree, which is exactly where the 180x comes from."
+          - id: c
+            label: "≈1.03 SOL, well over 99% saved (≈10,300 lamports/recipient vs ≈1.86M)."
+            correct: true
+            feedback: "Bytes times a rate you looked up, against a state cost that is not rent at all. Recompute the classic side whenever the rate steps; the compressed side stays put."
+          - id: d
+            label: "≈1.03 SOL today, and the compressed side falls with the rent schedule the same way the classic side does."
+            correct: false
+            feedback: "Right total, wrong mechanism. A compressed recipient pays state cost, not rent, so SIMD-0437 moves only the classic column and the saving percentage drifts with it."
+          - id: b
+            label: "≈10.3 SOL, about 95% saved, since compressed state still pays roughly a tenth of classic rent per recipient."
+            correct: false
+            feedback: "10.3 SOL is the per-1M compressed extrapolation, not the 100k figure. At 100k it is ten times less."
+        explanation: "Per recipient: a classic ATA is 293 bytes of rent, ≈1,855,569 lamports at mainnet's current per-byte rate; a compressed recipient ≈10,300, which is not rent and does not move with the rent schedule. At 100k that is ≈186 SOL vs ≈1.03 SOL, a ~99.4% cut. The exact percentage drifts as SIMD-0437 steps rent down — it was 99.5% at the old 6,960 rate — which is precisely why doing this arithmetic live, rather than quoting it, is what makes a mass airdrop a budget line rather than a fantasy."
+      - id: m08l3-q2-airship-discrepancy
+        prompt: "AirShip's marketing says a 10k-recipient drop costs 0.01 SOL; the zkcompression per-recipient math gives 0.103 SOL (a 10x gap). How do you handle it in the lab?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Treat one of them as stale and cite the newer number, since two credible measured costs cannot both be right."
+            correct: false
+            feedback: "Both are current and both are right. They count different things, and nobody stated the scope, which is what made them look comparable."
+          - id: b
+            label: "Cite AirShip's 0.01 SOL, since the tool's own vendor is the authority on what the tool costs to run."
+            correct: false
+            feedback: "Vendor marketing numbers often quote a narrower scope; the course's rule is to measure disputed figures, not repeat them."
+          - id: c
+            label: "Quote the wider 0.103 SOL figure, so the budget carries margin against the vendor's scope."
+            correct: false
+            feedback: "Conservative and still short. The two figures are addends, not rivals, so the wider one alone still leaves the sender's fees out of the budget."
+          - id: a
+            label: "Measure it in the lab and report your own measured number; the gap is a difference of scope."
+            correct: true
+            feedback: "Reading AirShip's constants settles it in a minute: 15,000 lamports per transaction over 15 recipients is 1,000 each, and the 10,300 is state. Budget the sum, about 11,300."
+        explanation: "A 10x gap between a vendor claim and first-party math is almost always a scope difference (what's counted as cost). The honest move is to measure it in your own lab and teach the method; the disputed number is never the load-bearing fact."
+      - id: m08l3-q3-vesting-primitive
+        prompt: "You need a subset of airdrop recipients to vest linearly instead of claiming everything at once. Which primitive do you reach for?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "LaunchLab's cliff and unlock-duration knobs, set at launch so the drop inherits the same vesting schedule."
+            correct: false
+            feedback: "Same idea, wrong seat. Those knobs are launch-side and fixed at launch, so they cannot express a schedule for a subset of a later distribution's recipients."
+          - id: b
+            label: "The Jito-style merkle distributor's claim_locked path: unlocked plus linearly-vesting portions in one distributor."
+            correct: true
+            feedback: "One distributor carries both halves, and the locked half is a pull: unclaimed allocations sit in the vault costing you nothing until somebody returns for them."
+          - id: c
+            label: "Compressed tokens vest automatically by epoch, so the vesting needs no distributor of its own."
+            correct: false
+            feedback: "Compression is a storage optimization; it has no vesting semantics of its own."
+          - id: a
+            label: "A second SPL mint whose freeze authority sits behind a timelock, thawing each recipient's token account as its schedule matures."
+            correct: false
+            feedback: "Freeze authority is all-or-nothing and manual; it does not express a per-recipient linear vesting schedule the way a distributor does."
+        explanation: "The Jito distributor (the one the JTO drop used) carries both an unlocked portion and a claim_locked path that releases linearly. That is the vesting primitive to reuse — with the caveat the lesson attaches to it and this answer inherits: the distributor is an SPL-era program and whether its vault and claim-time transfer CPI can pay out a fee-bearing Token-2022 mint is unverified here, so read its transfer CPI and stand up a devnet distributor before you commit SPROUT to it. LaunchLab's cliff+duration knobs are the launchpad-side equivalent from the previous lesson."
+      - id: m08l3-q4-stale-proof
+        prompt: "A recipient's compressed-token claim transaction fails shortly after the tree received new writes. What is the most likely structural cause?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The ClaimStatus PDA exists already, so the distributor's replay guard rejected the claim."
+            correct: false
+            feedback: "That guard fires at account creation and does not care what the tree did. It is also the distributor's mechanism, not the compressed-token rail this claim rode."
+          - id: a
+            label: "The DAS RPC rate-limited the proof read, so the claim was built from an empty proof."
+            correct: false
+            feedback: "Rate limits cause read failures, but the tell here is the timing, right after tree writes, which points at proof staleness, not throttling."
+          - id: c
+            label: "The merkle proof went stale on the tree write; re-fetch the proof before submitting the claim."
+            correct: true
+            feedback: "A proof is a statement about one root, and any write moves the root. Fetch immediately before you submit, never from a cache and never from a file you generated last week."
+          - id: e
+            label: "The tree's canopy is too shallow, so the proof no longer fits in the transaction alongside the claim."
+            correct: false
+            feedback: "Canopy belongs to Bubblegum's concurrent merkle trees, where proof length grows with depth. A compressed-token write carries a constant 128-byte validity proof, so size is not the failure."
+          - id: b
+            label: "Compressed tokens cannot be claimed twice by design, and this account already claimed once."
+            correct: false
+            feedback: "This is a first claim; the failure correlates with tree writes, not a double-claim guard."
+        explanation: "Every write to a compression tree changes its root, invalidating outstanding proofs. A claim built against an old proof reverts. The rule is to re-fetch the proof immediately before each write/claim; stale proofs are the classic compressed-airdrop footgun."

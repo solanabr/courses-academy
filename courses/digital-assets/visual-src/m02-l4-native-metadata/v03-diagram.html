@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Why the self-referential pointer cannot be spoofed
+     purpose: make the direction-of-trust inversion concrete, the mint names its metadata rather than metadata accounts claiming a mint
+     data: Scenario A (no pointer, convention only): mint M sits passive. Account X (honest) claims mint=M. Account Y (attacker) also claims mint=M. Indexer sees two claimants, no on-chain tiebreak. Marked: FORGEABLE. Scenario B (MetadataPointer): mint M carries pointer -> M itself. TokenMetadata TLV inside M carries mint = M. Attacker account Y still claims mint=M but no pointer ever resolves to Y. Marked: readers follow the pointer, Y is unreachable.
+     prompt: Two-scenario diagram, stacked. Top: a mint box with two external boxes both pointing arrows AT it labeled "claims mint=M", one tagged attacker; an indexer figure with a question mark. Bottom: the same mint box with a looped arrow to itself labeled "pointer" and an internal mint field; the attacker box's arrow is drawn dashed and grayed with the label "never followed". Emphasis on arrow direction: claims point in, the pointer points out.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:481px;height:510px;top:-255px;right:-255px;border-radius:55% 47% 63% 47% / 54% 53% 54% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:527px;height:585px;bottom:-340px;left:746px;border-radius:46% 48% 43% 59% / 46% 59% 61% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin-bottom: 16px; }
+  .band { display:flex; align-items:center; background:var(--surface-card);
+          border:2px solid var(--border-subtle); border-radius:var(--radius-2xl);
+          padding:20px 26px; }
+  .band + .band { margin-top:22px; }
+  .tagcol { width:206px; flex:0 0 206px; }
+  .tagcol .sc { font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.13em; text-transform:uppercase; color:var(--text-muted); }
+  .tagcol .sn { font-family:var(--font-display); font-weight:900; font-size:22px;
+                line-height:1.15; color:var(--text-primary); margin-top:5px; }
+  .badge { display:inline-block; margin-top:12px; font-family:var(--font-display);
+           font-weight:900; font-size:15px; letter-spacing:.08em;
+           border-radius:var(--radius-pill); padding:6px 16px; }
+  .badge.bad { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .badge.good { background:var(--surface-brand); color:var(--text-on-brand); }
+  .claims { width:330px; flex:0 0 330px; }
+  .cl { border:2px solid var(--stbr-green); border-radius:var(--radius-lg);
+        background:var(--surface-paper); padding:11px 15px; height:78px; }
+  .cl + .cl { margin-top:18px; }
+  .cl .cn { font-family:var(--font-display); font-weight:900; font-size:17px;
+            color:var(--text-primary); }
+  .cl .cd { font-family:var(--font-mono); font-size:13px; color:var(--text-secondary);
+            margin-top:4px; }
+  .cl.atk { border-color:var(--stbr-dark); background:var(--surface-card); }
+  .cl.atk .cn::after { content:" · attacker"; color:var(--stbr-dark); font-size:13px; }
+  .cl.dead { border-style:dashed; border-color:var(--border-strong); opacity:.62; }
+  .agut { width:128px; flex:0 0 128px; display:flex; flex-direction:column; }
+  .aslot { height:78px; display:flex; align-items:center; }
+  .aslot + .aslot { margin-top:18px; }
+  .alab { font-family:var(--font-body); font-weight:700; font-size:11.5px;
+          color:var(--text-secondary); text-align:center; }
+  .mintcol { width:330px; flex:0 0 330px; position:relative; }
+  .mint { border:3px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+          background:var(--surface-card); padding:14px 18px; position:relative; }
+  .mint .mn { font-family:var(--font-display); font-weight:900; font-size:21px;
+              color:var(--text-primary); }
+  .mint .md { font-family:var(--font-body); font-size:13.5px; line-height:1.35;
+              color:var(--text-secondary); margin-top:4px; }
+  .infield { margin-top:9px; font-family:var(--font-mono); font-weight:700; font-size:13px;
+             background:var(--surface-paper); border:1.5px solid var(--stbr-green);
+             border-radius:var(--radius-md); padding:6px 10px; color:var(--text-primary); }
+  .ptr { position:absolute; top:-36px; right:14px; }
+  .ptrchip { position:absolute; top:-58px; right:140px; font-family:var(--font-body);
+             font-weight:800; font-size:13px; background:var(--stbr-yellow);
+             color:var(--stbr-dark); border-radius:var(--radius-pill); padding:4px 14px;
+             border:1.5px solid var(--stbr-dark); }
+  .gap2 { flex:0 0 56px; }
+  .obs { flex:1; border:2px solid var(--stbr-green); border-radius:var(--radius-lg);
+         background:var(--surface-paper); padding:14px 18px; display:flex;
+         align-items:center; }
+  .obs .q { font-family:var(--font-display); font-weight:900; font-size:44px;
+            color:var(--stbr-emerald); margin-right:16px; }
+  .obs .ot { font-family:var(--font-body); font-size:15px; line-height:1.4;
+             color:var(--text-primary); }
+  .obs .ot b { font-family:var(--font-display); font-weight:900; font-size:17px;
+               display:block; margin-bottom:3px; }
+</style>
+  <div class="stbr-eyebrow">direction of trust</div>
+  <h2 class="viz-title">claims point in &mdash; the pointer points out</h2>
+
+  <div class="band">
+    <div class="tagcol">
+      <div class="sc">scenario a</div>
+      <div class="sn">no pointer,<br>convention only</div>
+      <div class="badge bad">FORGEABLE</div>
+    </div>
+    <div class="claims">
+      <div class="cl"><div class="cn">account X &middot; honest</div><div class="cd">claims mint = M</div></div>
+      <div class="cl atk"><div class="cn">account Y</div><div class="cd">also claims mint = M</div></div>
+    </div>
+    <div class="agut">
+      <div class="aslot"><svg width="128" height="34" viewBox="0 0 128 34"><text x="64" y="10" text-anchor="middle" font-family="Inter" font-size="11.5" font-weight="700" fill="#306c40">claims mint=M</text><line x1="4" y1="24" x2="110" y2="24" stroke="#1b231d" stroke-width="3"/><polygon points="110,17 126,24 110,31" fill="#1b231d"/></svg></div>
+      <div class="aslot"><svg width="128" height="34" viewBox="0 0 128 34"><text x="64" y="10" text-anchor="middle" font-family="Inter" font-size="11.5" font-weight="700" fill="#306c40">claims mint=M</text><line x1="4" y1="24" x2="110" y2="24" stroke="#1b231d" stroke-width="3"/><polygon points="110,17 126,24 110,31" fill="#1b231d"/></svg></div>
+    </div>
+    <div class="mintcol">
+      <div class="mint">
+        <div class="mn">mint M</div>
+        <div class="md">sits passive &mdash; nothing on-chain says which claimant is real</div>
+      </div>
+    </div>
+    <div class="gap2"></div>
+    <div class="obs">
+      <div class="q">?</div>
+      <div class="ot"><b>indexer</b>sees two claimants and has no on-chain tiebreak</div>
+    </div>
+  </div>
+
+  <div class="band" style="padding-top:44px;">
+    <div class="tagcol">
+      <div class="sc">scenario b</div>
+      <div class="sn">MetadataPointer<br>on the mint</div>
+      <div class="badge good">SPOOF-PROOF</div>
+    </div>
+    <div class="claims">
+      <div class="cl atk dead" style="height:auto;"><div class="cn">account Y</div><div class="cd">still claims mint = M</div></div>
+    </div>
+    <div class="agut">
+      <div class="aslot" style="height:auto;"><svg width="128" height="34" viewBox="0 0 128 34"><text x="64" y="10" text-anchor="middle" font-family="Inter" font-size="11.5" font-weight="700" fill="#8a8f89">never followed</text><line x1="4" y1="24" x2="110" y2="24" stroke="#8a8f89" stroke-width="2.5" stroke-dasharray="7 5"/><polygon points="110,17 126,24 110,31" fill="#8a8f89"/></svg></div>
+    </div>
+    <div class="mintcol">
+      <div class="ptrchip">pointer &rarr; M itself</div>
+      <div class="mint">
+        <svg class="ptr" width="130" height="38" viewBox="0 0 130 38"><path d="M14 38 C 14 6, 100 6, 100 30" fill="none" stroke="#1b231d" stroke-width="3"/><polygon points="93,28 107,28 100,40" fill="#1b231d"/></svg>
+        <div class="mn">mint M</div>
+        <div class="md">carries its own pointer &mdash; and the metadata names its mint</div>
+        <div class="infield">TokenMetadata.mint = M</div>
+      </div>
+    </div>
+    <div class="gap2"></div>
+    <div class="obs">
+      <div class="q">&#10003;</div>
+      <div class="ot"><b>readers follow the pointer</b>it never resolves to Y &mdash; the attacker is unreachable</div>
+    </div>
+  </div>
+</div>
+</body></html>

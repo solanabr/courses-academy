@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: asset-reader, and what it hands downstream
+     purpose: show the completed artifact as a component with a stable interface so its consumption by later lessons reads as design rather than as coincidence
+     data: Inputs consumed: sprout-mint (module 2), almanac-assets (m06-l2), harvest-crates (m07-l1), read from overgrowth/assets.json. Components: das.ts (JSON-RPC transport, method + endpoint are the only swap surface), classify.ts (classifyAsset -> AssetClassification: category, compressed, fungible, pricePerToken, requiresDasRpc), extension-state.ts (readExtensionState -> active vs dormant per extension), read-any-asset.ts (orchestrator). Outputs: three interface classifications, one live price_per_token, one active-vs-dormant extension report. Boundary marker: streaming, backfill, and indexing pipelines are out of scope and belong to the Client-Side Mastery course.
+     prompt: Component diagram. Left column: three input artifact chips (sprout-mint, almanac-assets, harvest-crates) feeding a single assets.json node. Center: a box labeled asset-reader containing four stacked sub-modules with their exported function names. Right: three output chips for the classifications, the price, and the extension report. Draw a dashed boundary line to the right of the outputs labeled "streaming / backfill / pipelines: Client-Side Mastery", clearly outside the box.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:492px;bottom:-309px;right:-309px;border-radius:51% 47% 49% 42% / 51% 47% 60% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:449px;height:492px;left:-240px;top:188px;border-radius:54% 65% 39% 61% / 57% 39% 65% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .comp { display:flex; align-items:center; margin-top:16px; }
+  .in-col { flex:0 0 232px; display:flex; flex-direction:column; gap:38px; }
+  .in-chip { height:72px; background:var(--surface-card); border:2px solid var(--stbr-dark);
+             border-radius:var(--radius-lg); display:flex; flex-direction:column;
+             justify-content:center; padding:0 16px; gap:2px; }
+  .in-name { font-family:var(--font-mono); font-weight:700; font-size:16px;
+             color:var(--text-primary); }
+  .in-src { font-family:var(--font-body); font-weight:700; font-size:12px;
+            letter-spacing:.06em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .conv { flex:0 0 56px; }
+  .aj { flex:0 0 168px; height:96px; background:var(--surface-inverse); color:#F5E8CA;
+        border-radius:var(--radius-lg); display:flex; align-items:center;
+        justify-content:center; font-family:var(--font-mono); font-weight:700;
+        font-size:16.5px; }
+  .harr { flex:0 0 44px; display:flex; align-items:center; justify-content:center; }
+  .reader { flex:1 1 0; border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+            background:var(--surface-card); overflow:hidden; }
+  .r-head { background:var(--stbr-emerald); padding:12px 24px;
+            font-family:var(--font-display); font-weight:900; font-size:24px; color:#F5E8CA; }
+  .mods { display:flex; flex-direction:column; }
+  .mod { display:flex; align-items:center; gap:14px; padding:11px 22px;
+         border-top:1.5px solid var(--border-subtle); }
+  .m-file { flex:0 0 176px; font-family:var(--font-mono); font-weight:800; font-size:15.5px;
+            color:var(--stbr-green); }
+  .m-desc { font-family:var(--font-body); font-weight:600; font-size:13px; line-height:1.35;
+            color:var(--text-secondary); }
+  .m-desc code { font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+                 color:var(--text-primary); }
+  .swap { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+          color:var(--stbr-dark); background:var(--stbr-yellow);
+          border:1.5px solid var(--stbr-dark); border-radius:var(--radius-pill);
+          padding:1px 9px; }
+  .out-col { flex:0 0 252px; }
+  .out-chip { margin-top:22px; background:var(--surface-card); border:2px solid var(--stbr-emerald);
+              border-radius:var(--radius-lg); padding:13px 16px 15px;
+              font-family:var(--font-body); font-weight:700; font-size:13.5px;
+              line-height:1.35; color:var(--text-primary); }
+  .bound { flex:0 0 178px; align-self:stretch; border-left:3px dashed var(--stbr-dark);
+           margin-left:26px; padding-left:22px; display:flex; flex-direction:column;
+           justify-content:center; gap:8px; }
+  .b-tag { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+           letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .b-txt { font-family:var(--font-body); font-weight:700; font-size:13.5px; line-height:1.4;
+           color:var(--text-secondary); }
+  .b-txt b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">a component with a stable interface</div>
+  <h2 class="viz-title" style="font-size:46px;">asset-reader, and what it hands downstream</h2>
+  <div class="comp">
+    <div class="in-col">
+      <div class="in-chip"><span class="in-name">sprout-mint</span><span class="in-src">module 2</span></div>
+      <div class="in-chip"><span class="in-name">almanac-assets</span><span class="in-src">m06-l2</span></div>
+      <div class="in-chip"><span class="in-name">harvest-crates</span><span class="in-src">m07-l1</span></div>
+    </div>
+    <div class="conv">
+      <svg width="56" height="292" viewBox="0 0 56 292">
+        <line x1="2" y1="36" x2="40" y2="146" stroke="#1B231D" stroke-width="2.5"/>
+        <line x1="2" y1="146" x2="40" y2="146" stroke="#1B231D" stroke-width="2.5"/>
+        <line x1="2" y1="256" x2="40" y2="146" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="52,146 38,138 38,154" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="aj">assets.json</div>
+    <div class="harr"><svg width="40" height="26" viewBox="0 0 40 26"><line x1="0" y1="13" x2="28" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="39,13 26,6 26,20" fill="#1B231D"/></svg></div>
+    <div class="reader">
+      <div class="r-head">asset-reader</div>
+      <div class="mods">
+        <div class="mod"><span class="m-file">das.ts</span><span class="m-desc">JSON-RPC transport <span class="swap">method + endpoint are the only swap surface</span></span></div>
+        <div class="mod"><span class="m-file">classify.ts</span><span class="m-desc"><code>classifyAsset &rarr; AssetClassification</code><br>category &middot; compressed &middot; fungible &middot; pricePerToken &middot; requiresDasRpc</span></div>
+        <div class="mod"><span class="m-file">extension-state.ts</span><span class="m-desc"><code>readExtensionState</code> &rarr; active vs dormant per extension</span></div>
+        <div class="mod"><span class="m-file">read-any-asset.ts</span><span class="m-desc">orchestrator</span></div>
+      </div>
+    </div>
+    <div class="harr"><svg width="40" height="26" viewBox="0 0 40 26"><line x1="0" y1="13" x2="28" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="39,13 26,6 26,20" fill="#1B231D"/></svg></div>
+    <div class="out-col">
+      <div class="out-chip" style="margin-top:0;">three interface classifications</div>
+      <div class="out-chip">one live price_per_token</div>
+      <div class="out-chip">active-vs-dormant extension report</div>
+    </div>
+    <div class="bound">
+      <span class="b-tag">out of scope</span>
+      <span class="b-txt">streaming &middot; backfill &middot; indexing pipelines<br>&rarr; <b>Client-Side Mastery</b></span>
+    </div>
+  </div>
+</div>
+</body></html>

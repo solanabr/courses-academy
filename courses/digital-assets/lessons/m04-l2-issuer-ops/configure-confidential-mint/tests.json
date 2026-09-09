@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "description": "valid setup with an auditor key and auto-approve off",
+    "input": "'MetadataPointer|ConfidentialTransferMint', 'AuthPubkey1111111111111111111111111111111', false, 'AuditorKey111111111111111111111111111111'",
+    "expectedOutput": "result.ok === true && result.config.auditorElGamalPubkey === 'AuditorKey111111111111111111111111111111' && result.config.autoApproveNewAccounts === false"
+  },
+  {
+    "id": "t2",
+    "description": "auditor is optional, a null auditor with auto-approve on is still valid",
+    "input": "'ConfidentialTransferMint', 'Auth', true, null",
+    "expectedOutput": "result.ok === true && result.config.auditorElGamalPubkey === null && result.config.autoApproveNewAccounts === true"
+  },
+  {
+    "id": "t3",
+    "description": "no ConfidentialTransferMint extension, nothing to configure",
+    "input": "'MetadataPointer|TransferFeeConfig', 'Auth', false, null",
+    "expectedOutput": "result.ok === false && result.config === null && result.reason === 'confidential-transfer-mint-not-enabled'"
+  },
+  {
+    "id": "t4",
+    "description": "combo rule 5: NonTransferable + confidential without ConfidentialMintBurn is invalid",
+    "input": "'NonTransferable|ConfidentialTransferMint', 'Auth', false, null",
+    "expectedOutput": "result.ok === false && result.reason === 'nontransferable-confidential-requires-mintburn'"
+  },
+  {
+    "id": "t5",
+    "description": "adding ConfidentialMintBurn makes the NonTransferable + confidential set legal",
+    "input": "'NonTransferable|ConfidentialTransferMint|ConfidentialMintBurn', 'Auth', false, 'Aud'",
+    "expectedOutput": "result.ok === true && result.config.auditorElGamalPubkey === 'Aud'"
+  },
+  {
+    "id": "t6",
+    "description": "an unset authority is rejected before anything else",
+    "input": "'ConfidentialTransferMint', '', false, null",
+    "expectedOutput": "result.ok === false && result.reason === 'missing-authority'"
+  }
+]

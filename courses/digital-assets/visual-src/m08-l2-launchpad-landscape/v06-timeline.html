@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Where each defense sits on the launch clock
+     purpose: show that the four anti-snipe patterns attack different points on the same timeline rather than being interchangeable
+     data: Timeline left to right, four marked points: T-window (before trading opens) | T0 (pool tradable) | T0 + first slots | T0 + minutes Alpha Vault deposit window: spans T-window, resolves at T0 as one collective buy at one price Reserved fee-free first buy: a single point just before T0, creator or allowlist only Decaying fee: starts at T0 at its maximum, decays across "T0 + first slots" toward the normal rate Uniform-price auction: replaces the whole T0 point; bids collected over a window, one clearing price for all winners Sniper bot activity: concentrated in the first slots after T0, shaded as the contested zone No defense: the contested zone is unmitigated
+     prompt: Horizontal timeline with the four marked points labeled beneath the axis. Draw the sniper contested zone as a shaded band over the first slots after T0. Overlay each defense as a distinct band or marker positioned per the data, each labeled with its name. Include a bottom row for "no defense" showing the contested zone unshaded by any overlay.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:482px;height:497px;bottom:-234px;right:-234px;border-radius:37% 42% 63% 39% / 52% 61% 41% 55%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:547px;height:516px;left:-340px;top:210px;border-radius:58% 39% 54% 64% / 39% 49% 64% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v6-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:24px 30px 18px; margin-top:4px; }
+  .v6-grid { display:grid; grid-template-columns: 268px 1fr; row-gap:10px; align-items:center; }
+  .v6-lbl { font-family:var(--font-body); font-weight:800; font-size:15px; color:var(--text-primary);
+            padding-right:18px; line-height:1.25; }
+  .v6-lbl .s { display:block; font-weight:500; font-size:12px; color:var(--text-muted); margin-top:1px; }
+  .v6-track { position:relative; height:56px; background:var(--surface-paper); border:1px solid var(--border-subtle);
+              border-radius:var(--radius-md); overflow:hidden; }
+  .v6-band { position:absolute; top:10px; height:36px; border-radius:var(--radius-sm);
+             background:var(--stbr-emerald); color:var(--text-on-brand);
+             font-family:var(--font-body); font-weight:700; font-size:12.5px;
+             display:flex; align-items:center; justify-content:center; text-align:center; line-height:1.2; padding:0 8px; }
+  .v6-dot { position:absolute; top:14px; width:28px; height:28px; border-radius:50%;
+            background:var(--stbr-green); border:3px solid var(--surface-card); }
+  .v6-zone { position:absolute; top:0; bottom:0; left:40%; width:22%;
+             background:var(--stbr-yellow); opacity:0.35; }
+  .v6-zone-lbl { position:absolute; top:16px; left:40%; width:22%; text-align:center;
+                 font-family:var(--font-body); font-weight:800; font-size:12px; color:var(--stbr-dark); }
+  .v6-axis { position:relative; height:58px; margin-top:6px; }
+  .v6-axis .rule { position:absolute; top:8px; left:0; right:0; height:3px; background:var(--stbr-dark); }
+  .v6-tick { position:absolute; top:2px; width:3px; height:15px; background:var(--stbr-dark); }
+  .v6-ticklbl { position:absolute; top:24px; transform:translateX(-50%); font-family:var(--font-display);
+                font-weight:900; font-size:17px; color:var(--text-primary); white-space:nowrap; }
+  .v6-key { display:flex; align-items:center; gap:12px; margin-top:8px; }
+  .v6-key .sw { width:26px; height:16px; border-radius:4px; background:var(--stbr-yellow); }
+  .v6-key .kt { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">anti-snipe defenses &middot; not interchangeable</div>
+  <h2 class="viz-title">where each defense sits on the launch clock</h2>
+  <div class="v6-card">
+  <div class="v6-grid">
+    <div class="v6-lbl">Alpha Vault deposit window<span class="s">resolves at T0: one collective buy, one price</span></div>
+    <div class="v6-track">
+      <div class="v6-zone"></div>
+      <div class="v6-band" style="left:2%; width:34%;">deposit window (T-window)</div>
+      <div class="v6-dot" style="left:38.2%;"></div>
+    </div>
+    <div class="v6-lbl">Reserved fee-free first buy<span class="s">a single point just before T0 &mdash; creator or allowlist only</span></div>
+    <div class="v6-track">
+      <div class="v6-zone"></div>
+      <div class="v6-dot" style="left:36.6%;"></div>
+    </div>
+    <div class="v6-lbl">Decaying fee<span class="s">max at T0, decays toward the normal rate</span></div>
+    <div class="v6-track">
+      <div class="v6-zone"></div>
+      <div class="v6-band" style="left:40%; width:22%; background:linear-gradient(to right, var(--stbr-emerald), var(--stbr-green) 92%);">fee: max &rarr; normal</div>
+    </div>
+    <div class="v6-lbl">Uniform-price auction<span class="s">replaces the T0 point entirely</span></div>
+    <div class="v6-track">
+      <div class="v6-zone"></div>
+      <div class="v6-band" style="left:6%; width:37.5%;">bids collected over a window &rarr; one clearing price for all winners</div>
+    </div>
+    <div class="v6-lbl">No defense<span class="s">the contested zone is unmitigated</span></div>
+    <div class="v6-track" style="background:var(--surface-paper);">
+      <div class="v6-zone"></div>
+      <div class="v6-zone-lbl">sniper bots contest the first slots</div>
+    </div>
+  </div>
+  <div class="v6-axis">
+    <div class="rule"></div>
+    <div class="v6-tick" style="left:calc(268px + (100% - 268px)*0.15);"></div>
+    <div class="v6-ticklbl" style="left:calc(268px + (100% - 268px)*0.15);">T-window</div>
+    <div class="v6-tick" style="left:calc(268px + (100% - 268px)*0.40);"></div>
+    <div class="v6-ticklbl" style="left:calc(268px + (100% - 268px)*0.40);">T0 &middot; pool tradable</div>
+    <div class="v6-tick" style="left:calc(268px + (100% - 268px)*0.62);"></div>
+    <div class="v6-ticklbl" style="left:calc(268px + (100% - 268px)*0.62);">T0 + first slots</div>
+    <div class="v6-tick" style="left:calc(268px + (100% - 268px)*0.88);"></div>
+    <div class="v6-ticklbl" style="left:calc(268px + (100% - 268px)*0.88);">T0 + minutes</div>
+  </div>
+  <div class="v6-key">
+    <div class="sw"></div>
+    <div class="kt">sniper-bot contested zone &mdash; concentrated in the first slots after T0; each defense attacks a different point on the same clock</div>
+  </div>
+  </div>
+</div>
+</body></html>

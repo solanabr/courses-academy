@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The claim lifecycle, from CSV to a vesting drip
+     purpose: separate the one-time operator steps from the per-claimant steps, which is where the cost split comes from
+     data: Operator side (once): allocation list -> hash leaves -> build tree -> root (32 bytes) -> create distributor account with root, start_ts, end_ts, max_num_nodes -> fund the token vault. Claimant side (per person): fetch proof -> new_claim(amount_unlocked, amount_locked, proof) -> program recomputes leaf, verifies proof against root, opens ClaimStatus PDA, transfers amount_unlocked -> later, repeatedly: claim_locked -> transfers (vested - already_withdrawn). Failure edges: proof built against an old root -> InvalidProof; second new_claim by the same claimant -> ClaimStatus PDA already exists; claim_locked before start_ts -> InsufficientUnlockedTokens.
+     prompt: Two-lane flowchart. Top lane labeled "operator, once" with five nodes left to right as listed. Bottom lane labeled "claimant, per person" with the claim sequence, and a loop arrow on claim_locked labeled "repeatable until fully vested". Draw a vertical dashed line between the lanes labeled "only 32 bytes cross this line". Show the three failure edges as red branches off their respective nodes with the error names as labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:428px;height:352px;right:-232px;top:371px;border-radius:52% 52% 36% 47% / 40% 63% 52% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:520px;height:525px;bottom:-291px;left:-291px;border-radius:48% 39% 52% 63% / 63% 43% 44% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:26px 48px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">where the cost split comes from</div>
+    <h2 class="viz-title" style="font-size:33px;margin:6px 0 14px;color:var(--stbr-dark);">The claim lifecycle, from CSV to a vesting drip</h2>
+
+    <!-- operator lane -->
+    <div style="display:inline-block;background:var(--stbr-emerald);border-radius:999px;padding:4px 16px;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:var(--stbr-cream);margin-bottom:8px;">operator &mdash; once</div>
+    <div style="display:flex;align-items:stretch;width:1360px;">
+      <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">allocation list</div>
+        <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:3px;">claimant &middot; amounts</div>
+      </div>
+      <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+      <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">hash leaves</div>
+      </div>
+      <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+      <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">build tree</div>
+      </div>
+      <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+      <div style="flex:1;background:var(--stbr-yellow);border:2px solid var(--stbr-dark);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">root</div>
+        <div style="font-family:var(--font-mono);font-size:12px;color:var(--stbr-dark);margin-top:3px;">32 bytes</div>
+      </div>
+      <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+      <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">create distributor</div>
+        <div style="font-family:var(--font-mono);font-size:10.5px;color:var(--text-secondary,#4a5a4e);margin-top:3px;">root &middot; start_ts &middot; end_ts &middot; max_num_nodes</div>
+      </div>
+      <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+      <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:12px 10px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">fund the token vault</div>
+      </div>
+    </div>
+
+    <!-- the boundary: only the root crosses -->
+    <div style="position:relative;width:1360px;height:62px;">
+      <div style="position:absolute;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;">
+        <div style="flex:none;width:150px;border-top:3px dashed var(--stbr-green);"></div>
+        <div style="flex:none;margin:0 16px;background:var(--stbr-yellow);border:2px solid var(--stbr-dark);border-radius:999px;padding:6px 18px;font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">only 32 bytes cross this line</div>
+        <div style="flex:1;border-top:3px dashed var(--stbr-green);"></div>
+      </div>
+      <div style="position:absolute;left:794px;top:0;width:6px;height:118px;background:var(--stbr-yellow);border:1px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:786px;top:118px;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:14px solid var(--stbr-yellow);"></div>
+    </div>
+
+    <!-- claimant lane -->
+    <div style="display:inline-block;background:var(--stbr-emerald);border-radius:999px;padding:4px 16px;font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;color:var(--stbr-cream);margin-bottom:6px;">claimant &mdash; per person</div>
+    <div style="position:relative;width:1360px;margin-top:34px;">
+      <svg width="324" height="58" viewBox="0 0 324 58" style="position:absolute;left:1036px;top:-56px;">
+        <path d="M62 56 C 92 24, 232 24, 262 54" fill="none" stroke="#306C40" stroke-width="2.5"/>
+        <polygon points="256,46 268,58 254,58" fill="#306C40"/>
+        <text x="162" y="14" text-anchor="middle" font-size="12" fill="#306C40" style="font-family:var(--font-body);font-weight:600;">repeatable until fully vested</text>
+      </svg>
+      <div style="display:flex;align-items:stretch;width:1360px;">
+        <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">fetch proof</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">the path for this claimant&rsquo;s leaf</div>
+        </div>
+        <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+        <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+          <div style="font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-dark);">new_claim</div>
+          <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">(amount_unlocked, amount_locked, proof)</div>
+        </div>
+        <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+        <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">verify &amp; open</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">recompute leaf &middot; verify proof against root &middot; open ClaimStatus PDA &middot; transfer amount_unlocked</div>
+        </div>
+        <div style="flex:none;width:22px;display:flex;align-items:center;"><div style="width:14px;height:2px;background:#1B231D;"></div><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid #1B231D;"></div></div>
+        <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:10px;padding:14px 12px;display:flex;flex-direction:column;justify-content:center;text-align:center;">
+          <div style="font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-dark);">claim_locked</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">transfers vested &minus; already_withdrawn</div>
+        </div>
+      </div>
+      <!-- failure edges -->
+      <div style="display:flex;width:1360px;margin-top:0;">
+        <div style="flex:1;"></div>
+        <div style="flex:none;width:22px;"></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+          <div style="width:2px;height:12px;background:#1B231D;"></div>
+          <div style="background:var(--surface-inverse,#1B231D);border-radius:8px;padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-cream);text-align:center;line-height:1.4;">&#10007; second new_claim by the same claimant<br>&rarr; ClaimStatus PDA already exists</div>
+        </div>
+        <div style="flex:none;width:22px;"></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+          <div style="width:2px;height:12px;background:#1B231D;"></div>
+          <div style="background:var(--surface-inverse,#1B231D);border-radius:8px;padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-cream);text-align:center;line-height:1.4;">&#10007; proof built against an old root<br>&rarr; InvalidProof</div>
+        </div>
+        <div style="flex:none;width:22px;"></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+          <div style="width:2px;height:12px;background:#1B231D;"></div>
+          <div style="background:var(--surface-inverse,#1B231D);border-radius:8px;padding:7px 10px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-cream);text-align:center;line-height:1.4;">&#10007; claim_locked before start_ts<br>&rarr; InsufficientUnlockedTokens</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

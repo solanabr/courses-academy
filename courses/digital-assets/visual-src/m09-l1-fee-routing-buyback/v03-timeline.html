@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: pump.fun's fee policy, before and after the flag day
+     purpose: show that a launchpad's fee schedule is a moving policy you inherit, not a constant you configure
+     data: point 1: "flat era" - bonding-curve fee 100 basis points, identical for every coin point 2: "2025-09-01 20:00 UTC" - dynamic fees take effect; the schedule becomes market-cap-scaled tiers point 3: "after" - Cashback coins redirect the creator fee back to traders via volume-accumulator PDAs standing facts across the whole line: creator fees accrue to a creator_vault PDA; protocol fees rotate across 8 recipients; fee sharing supports up to 10 shareholders source: pump-public-docs @ 9c82f61
+     prompt: Horizontal three-point timeline, left to right, with the middle point marked as a hard cutover (vertical rule, timestamp printed exactly as given). Render the "standing facts" as a band running underneath the whole timeline to show they hold across all three periods. Cite the source in a small footer.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:529px;bottom:-314px;right:-314px;border-radius:42% 43% 59% 36% / 52% 46% 62% 39%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:512px;height:391px;left:-334px;top:173px;border-radius:39% 57% 61% 63% / 40% 56% 35% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:30px 48px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">a policy you inherit, not a constant you configure</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 30px;color:var(--stbr-dark);">pump.fun&rsquo;s fee policy, before and after the flag day</h2>
+
+    <!-- timeline rail: rule + 3 dots + hard cutover -->
+    <div style="position:relative;height:104px;margin:0 24px;">
+      <div style="position:absolute;left:0;right:0;top:70px;height:3px;background:var(--stbr-dark);"></div>
+      <div style="position:absolute;left:16.66%;top:60px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:var(--stbr-emerald);border:3px solid var(--surface-card);"></div>
+      <div style="position:absolute;left:83.33%;top:60px;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:var(--stbr-emerald);border:3px solid var(--surface-card);"></div>
+      <!-- the cutover: vertical yellow rule crossing the line, timestamp printed exactly -->
+      <div style="position:absolute;left:50%;top:38px;width:5px;margin-left:-2.5px;height:66px;background:var(--stbr-yellow);"></div>
+      <div style="position:absolute;left:50%;top:58px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:var(--stbr-yellow);border:3px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:50%;top:0;transform:translateX(-50%);background:var(--stbr-dark);color:#F5E8CA;font-family:var(--font-mono);font-size:15px;padding:7px 16px;border-radius:999px;white-space:nowrap;">2025-09-01 20:00 UTC</div>
+    </div>
+
+    <!-- the three periods -->
+    <div style="display:flex;gap:26px;margin-top:8px;">
+      <div style="flex:1;border:2px solid var(--stbr-emerald);border-radius:14px;padding:14px 18px;min-height:128px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--stbr-dark);">flat era</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);margin-top:6px;line-height:1.45;">bonding-curve fee <strong>100 basis points</strong>, identical for every coin</div>
+      </div>
+      <div style="flex:1;border:3px solid var(--stbr-yellow);border-radius:14px;padding:14px 18px;min-height:128px;background:rgba(255,210,63,0.10);">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--stbr-dark);">the hard cutover</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);margin-top:6px;line-height:1.45;">dynamic fees take effect &mdash; the schedule becomes <strong>market-cap-scaled tiers</strong></div>
+      </div>
+      <div style="flex:1;border:2px solid var(--stbr-green);border-radius:14px;padding:14px 18px;min-height:128px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--stbr-dark);">after</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);margin-top:6px;line-height:1.45;">Cashback coins redirect the creator fee back to traders via <span style="font-family:var(--font-mono);font-size:12.5px;">volume-accumulator</span> PDAs</div>
+      </div>
+    </div>
+
+    <!-- standing facts: hold across the whole line -->
+    <div style="margin-top:22px;background:var(--stbr-emerald);border-radius:14px;padding:14px 22px;display:flex;align-items:center;gap:20px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#F5E8CA;white-space:nowrap;">holds across all three periods</div>
+      <div style="display:flex;gap:16px;flex:1;">
+        <div style="flex:1;font-family:var(--font-body);font-size:13.5px;color:#F5E8CA;line-height:1.4;">creator fees accrue to a <span style="font-family:var(--font-mono);font-size:12px;">creator_vault</span> PDA</div>
+        <div style="flex:1;font-family:var(--font-body);font-size:13.5px;color:#F5E8CA;line-height:1.4;">protocol fees rotate across 8 recipients</div>
+        <div style="flex:1;font-family:var(--font-body);font-size:13.5px;color:#F5E8CA;line-height:1.4;">fee sharing supports up to 10 shareholders</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-muted,#6b7a6f);">source: pump-public-docs @ 9c82f61</div>
+  </div>
+</div>
+</body></html>

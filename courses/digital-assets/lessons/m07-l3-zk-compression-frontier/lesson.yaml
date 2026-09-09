@@ -1,0 +1,86 @@
+id: lesson-date-m07-l3-zk-compression-frontier
+slug: m07-l3-zk-compression-frontier
+title: "ZK compression and the Light Token frontier: when NOT to compress"
+skills:
+  - state-compression
+  - account-model
+  - rpc-reads
+  - version-pinning
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Overgrowth has to decide which of its state compresses. Select the three workload shapes this lesson rules out for compression."
+        multiSelect: true
+        options:
+          - id: c
+            label: "Balances that must stay tradeable on a router like Jupiter, because a compressed balance cannot be decompressed back."
+            correct: false
+            feedback: "Decompression is first-class: you decompress, then you route. The round trip is the design, and it puts the cost on the holders who actually showed up."
+          - id: a
+            label: "An in-game currency ledger debited on every craft, far past the few-hundred-lifetime-write band."
+            correct: true
+            feedback: "Write-heavy state is the first losing shape. Past the break-even the compressed path costs more lamports AND roughly 3,800 times the compute, forever."
+          - id: e
+            label: "An AMM pool's state, rewritten several times inside one block by people who are not you."
+            correct: true
+            feedback: "The second losing shape, and it is worse than expensive. Every competing write moves the root, so your proof is stale before the transaction reaches the leader."
+          - id: b
+            label: "A holder list past ~16,384 wallets, since a state tree cannot hold more leaves than that."
+            correct: false
+            feedback: "Trees scale far past 16,384 (that's just one example size), and a tree scales to holders happily. Holder count is the axis people reach for and it is the wrong one."
+          - id: d
+            label: "Balances a dashboard reads constantly, because each read has to pull a fresh 128-byte validity proof from Photon."
+            correct: false
+            feedback: "The proof is a write-path artifact, there so the program can be convinced your leaf was in the tree. Reads are an index query, and reading a lot is what this rail is best at."
+          - id: f
+            label: "A four-kilobyte recipe blob, well past the roughly one-kilobyte-per-access line the guidance draws."
+            correct: true
+            feedback: "The third losing shape. Past about 1 KB per access the read and hashing cost of moving that blob through the machinery outweighs the rent you saved."
+        explanation: "Two variables decide it: lifetime writes and bytes per access. Three shapes lose on them, and the lesson names each one: write-heavy accounts, same-block repeated updates, and accesses past roughly 1 KB. Holder count is not on that list, because a tree scales to holders happily, and tradeability is not either, because decompression is a first-class door. The shape that wins is state created once, written once or twice, and held by an enormous number of distinct owners."
+      - id: q2
+        prompt: "Contrast the proofs behind your Harvest-crate cNFTs with Light's ZK-compression proofs. What actually differs?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Both rails verify every write with the same constant-size Groth16 proof; the only difference is scope, since Bubblegum limits its leaves to NFT metadata while Light generalizes to token accounts and PDAs."
+            correct: false
+            feedback: "Bubblegum uses plain Merkle proofs that GROW with tree depth; only ZK compression uses constant 128-byte validity proofs."
+          - id: b
+            label: "Bubblegum uses plain Merkle proofs that grow with tree depth; ZK compression uses constant 128-byte Groth16 validity proofs over generalized accounts."
+            correct: true
+            feedback: "Size is the tell. A transcript gets thicker with the history it recounts; a succinct proof is a statement about the computation, so a deeper tree changes nothing."
+          - id: d
+            label: "Bubblegum verifies its proofs on chain, while ZK compression trusts Photon's prover to verify them off chain, which is why they stay 128 bytes."
+            correct: false
+            feedback: "The prover runs off chain and produces the proof; the program still checks it on chain. Constant size comes from succinctness, not from anybody being trusted."
+          - id: c
+            label: "Bubblegum stores full accounts on-chain while ZK compression stores only their hashes; the two proof formats are otherwise identical."
+            correct: false
+            feedback: "Neither stores full per-asset accounts on-chain; both store hashes. The proof mechanism (growing Merkle vs constant validity) is the difference, not the storage model."
+        explanation: "Bubblegum is NFT-specific plain Merkle proofs whose length grows with depth (canopy trades rent for shorter client proofs). ZK compression generalizes to accounts/tokens/PDAs with constant 128-byte Groth16 validity proofs and a different hash function (not built on SPL account-compression)."
+      - id: q3
+        prompt: "A teammate says 'let's ship Overgrowth's currency on the Light Token Program today; it's the new compressed-token default.' What's the accurate correction?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Light Token is mainnet-live but scoped to distribution flows only (the Claim and WithdrawFundingPool primitives), so it's the right rail for the compost drop and nothing else."
+            correct: false
+            feedback: "It's devnet-only right now, and the airdrop-only framing is part of the same 'default flipped' story the sources don't support."
+          - id: c
+            label: "Light Token is an emerging, devnet-only rail; the supported compressed-token path is still the current one. Treat it as a direction, not a default."
+            correct: true
+            feedback: "The claim that decides architecture is whether the rail is supported on the cluster you ship on, and it has an owner: the protocol's docs and its own deployments, with a date beside them."
+          - id: a
+            label: "Correct: Light Token has replaced compressed tokens as the mainnet default, so start migrating the currency now."
+            correct: false
+            feedback: "No doc positions Light Token as the default, and it isn't on mainnet; check the sources and this claim falls apart."
+          - id: d
+            label: "Not today, and the reason is compute: Light Token's Pinocchio hot path costs far more CU per transfer than the compressed-token program you would be migrating away from."
+            correct: false
+            feedback: "Right verdict, invented evidence. No CU figure for that path is published anywhere, and a number with no source on a program this young is a number somebody made up."
+        explanation: "Hold the 'default flipped' framing up to the sources and it falls apart: Light Token runs on devnet only, publishes no hot-path CU figure, and no doc names it the default. The supported compressed-token rail remains current; Light Token is a promising direction, not today's production choice."

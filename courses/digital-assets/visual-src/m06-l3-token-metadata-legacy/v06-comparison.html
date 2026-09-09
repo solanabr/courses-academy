@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: TokenStandard, docs page vs program source
+     purpose: make the docs-lag concrete: an integration built from the documented five variants mishandles the sixth
+     data: Docs page (5 variants): NonFungible, FungibleAsset, Fungible, NonFungibleEdition, ProgrammableNonFungible Program source (6 variants): NonFungible, FungibleAsset, Fungible, NonFungibleEdition, ProgrammableNonFungible, ProgrammableNonFungibleEdition   <- absent from the docs page Rule: for a legacy standard in maintenance mode, the code is the contract; docs trail it
+     prompt: Side-by-side comparison panel. Left card titled "Docs page" listing five variants. Right card titled "Program source" listing six, with ProgrammableNonFungibleEdition highlighted and tagged "undocumented". A banner across the bottom: "code wins".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:435px;height:478px;right:-254px;top:334px;border-radius:40% 38% 35% 53% / 52% 56% 52% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:372px;height:500px;bottom:-302px;left:796px;border-radius:57% 51% 61% 60% / 41% 46% 58% 36%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:30px; align-items:stretch; }
+  .col { flex:1; background:var(--surface-card); border:2px solid var(--border-strong);
+         border-radius:var(--radius-xl); overflow:hidden; display:flex; flex-direction:column; }
+  .colhead { padding:14px 26px; font-family:var(--font-display); font-weight:800;
+             font-size:21px; }
+  .colhead small { display:block; font-family:var(--font-body); font-weight:600;
+                   font-size:12.5px; margin-top:2px; }
+  .col.docs .colhead { background:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .col.docs .colhead small { color:var(--stbr-ink-300); }
+  .col.src .colhead { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .col.src .colhead small { color:var(--stbr-ink-300); }
+  .vrow { padding:9px 26px; border-top:1px solid var(--border-subtle);
+          font-family:var(--font-mono); font-size:16px; color:var(--text-primary);
+          display:flex; align-items:center; justify-content:space-between; }
+  .vrow.ghost { color:var(--text-muted); font-style:italic; font-family:var(--font-body);
+                font-size:13.5px; }
+  .vrow.hot { background:var(--stbr-yellow); border-top:2px solid var(--stbr-dark);
+              font-weight:700; color:var(--stbr-dark); }
+  .undoc { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+           letter-spacing:.08em; text-transform:uppercase; background:var(--stbr-dark);
+           color:var(--stbr-yellow); padding:3px 10px; border-radius:var(--radius-pill); }
+  .count { font-family:var(--font-body); font-weight:800; font-size:11px;
+           letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted);
+           padding:8px 26px 12px; border-top:1px solid var(--border-subtle);
+           margin-top:auto; }
+  .verdict { margin-top:26px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-xl); padding:18px 30px; display:flex;
+             align-items:center; gap:24px; }
+  .verdict .big { font-family:var(--font-display); font-weight:900; font-size:30px;
+                  white-space:nowrap; }
+  .verdict .why { font-family:var(--font-body); font-size:15.5px; line-height:1.4; }
+</style>
+  <div class="stbr-eyebrow">the docs-lag, made concrete</div>
+  <h2 class="viz-title">TokenStandard: docs page vs program source</h2>
+  <div class="cols">
+    <div class="col docs">
+      <div class="colhead">Docs page <small>5 variants documented</small></div>
+      <div class="vrow">NonFungible</div>
+      <div class="vrow">FungibleAsset</div>
+      <div class="vrow">Fungible</div>
+      <div class="vrow">NonFungibleEdition</div>
+      <div class="vrow">ProgrammableNonFungible</div>
+      <div class="vrow ghost">&mdash; nothing else listed &mdash;</div>
+      <div class="count">an integration built from this list mishandles the sixth</div>
+    </div>
+    <div class="col src">
+      <div class="colhead">Program source <small>6 variants in the enum</small></div>
+      <div class="vrow">NonFungible</div>
+      <div class="vrow">FungibleAsset</div>
+      <div class="vrow">Fungible</div>
+      <div class="vrow">NonFungibleEdition</div>
+      <div class="vrow">ProgrammableNonFungible</div>
+      <div class="vrow hot">ProgrammableNonFungibleEdition <span class="undoc">undocumented</span></div>
+      <div class="count">absent from the docs page entirely</div>
+    </div>
+  </div>
+  <div class="verdict">
+    <div class="big">code wins</div>
+    <div class="why">for a legacy standard in maintenance mode, the code is the contract &mdash; the docs trail it.</div>
+  </div>
+</div>
+</body></html>

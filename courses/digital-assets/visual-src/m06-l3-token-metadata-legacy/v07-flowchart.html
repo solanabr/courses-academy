@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The asymmetric standards call
+     purpose: turn the lesson's verdict into the decision an integrator actually makes
+     data: An NFT crosses your desk -> It already exists on TM/pNFT? -> integrate: resolve metadata -> tokenStandard (6 code variants) -> if programmable: resolve rule set -> decode -> enforcement verdict -> treat seller_fee_basis_points as indicative It is a NEW drop you control? -> never mint pNFTs -> royalties via Metaplex Core plugins (built in m06-l2) -> compressed at scale: Bubblegum v2 rulesets (next module, m07)
+     prompt: Decision-tree flowchart with one root node "asset in hand" branching into two lanes. Left lane "existing TM/pNFT asset": four sequential boxes ending in "verdict + indicative label". Right lane "new drop": a crossed-out box "new pNFT" and two green boxes "Core plugins" and "Bubblegum v2 rulesets". Root question labels on the branch arrows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:590px;height:547px;top:-325px;right:-325px;border-radius:45% 39% 40% 42% / 64% 38% 52% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:456px;height:421px;left:-230px;top:371px;border-radius:40% 60% 61% 58% / 54% 56% 44% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:46px; margin:4px 0 12px; }
+  .root { width:360px; margin:0 auto; background:var(--surface-inverse);
+          color:var(--text-on-dark); border-radius:var(--radius-lg); padding:12px 24px;
+          text-align:center; font-family:var(--font-display); font-weight:800; font-size:22px; }
+  .branch { position:relative; width:100%; height:84px; }
+  .branch svg { position:absolute; left:0; top:0; }
+  .blabel { position:absolute; top:28px; background:var(--surface-card);
+            border:1.5px solid var(--border-strong); border-radius:var(--radius-pill);
+            padding:5px 16px; font-family:var(--font-body); font-weight:700;
+            font-size:13.5px; color:var(--text-primary); }
+  .lanes { display:flex; gap:44px; }
+  .lane { width:706px; flex:0 0 706px; display:flex; flex-direction:column; align-items:center; }
+  .lanehead { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-emerald);
+              margin-bottom:8px; }
+  .step { width:640px; background:var(--surface-card); border:2px solid var(--border-strong);
+          border-radius:var(--radius-lg); padding:9px 20px; text-align:center; }
+  .step .t { font-family:var(--font-body); font-weight:700; font-size:15.5px;
+             color:var(--text-primary); line-height:1.3; }
+  .step .t code { font-family:var(--font-mono); font-size:14px; }
+  .step .s { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:2px; }
+  .darr { width:0; height:0; border-top:11px solid var(--stbr-dark);
+          border-left:8px solid transparent; border-right:8px solid transparent; margin:5px 0; }
+  .never { width:640px; background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+           border-radius:var(--radius-lg); padding:10px 20px; text-align:center; }
+  .never .t { font-family:var(--font-body); font-weight:800; font-size:17px;
+              color:var(--stbr-dark); text-decoration:line-through; }
+  .never .s { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+              color:var(--stbr-dark); margin-top:2px; }
+  .go { width:640px; background:var(--surface-brand); border-radius:var(--radius-lg);
+        padding:10px 20px; text-align:center; }
+  .go .t { font-family:var(--font-body); font-weight:800; font-size:15.5px;
+           color:var(--text-on-brand); line-height:1.3; }
+  .go .s { font-family:var(--font-body); font-size:12.5px; color:var(--stbr-ink-300); margin-top:2px; }
+  .final { width:640px; background:var(--surface-brand-deep); border-radius:var(--radius-lg);
+           padding:9px 20px; text-align:center; }
+  .final .t { font-family:var(--font-body); font-weight:800; font-size:15.5px; color:var(--text-on-brand); }
+  .final .s { font-family:var(--font-body); font-size:12.5px; color:var(--stbr-ink-300); margin-top:2px; }
+</style>
+  <div class="stbr-eyebrow">the decision an integrator actually makes</div>
+  <h2 class="viz-title">the asymmetric standards call</h2>
+  <div class="root">an NFT crosses your desk</div>
+  <div class="branch">
+    <svg width="1456" height="84" viewBox="0 0 1456 84">
+      <line x1="728" y1="2" x2="348" y2="70" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="348,70 362,60 366,72" fill="#1b231d"/>
+      <line x1="728" y1="2" x2="1108" y2="70" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1108,70 1090,72 1094,60" fill="#1b231d"/>
+    </svg>
+    <div class="blabel" style="left:335px;">it already exists on TM / pNFT?</div>
+    <div class="blabel" style="right:355px;">it&rsquo;s a NEW drop you control?</div>
+  </div>
+  <div class="lanes">
+    <div class="lane">
+      <div class="lanehead">existing TM / pNFT asset &mdash; integrate</div>
+      <div class="step">
+        <div class="t">resolve metadata &rarr; <code>tokenStandard</code></div>
+        <div class="s">trust the 6 code variants, not the 5 documented ones</div>
+      </div>
+      <div class="darr"></div>
+      <div class="step">
+        <div class="t">if programmable: resolve the rule set</div>
+      </div>
+      <div class="darr"></div>
+      <div class="step">
+        <div class="t">decode it &rarr; enforcement verdict</div>
+        <div class="s">what does the latest revision actually refuse?</div>
+      </div>
+      <div class="darr"></div>
+      <div class="step" style="border-width:2.5px;">
+        <div class="t">treat <code>seller_fee_basis_points</code> as indicative</div>
+        <div class="s">a label, not a guarantee</div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lanehead">new drop you control &mdash; build forward</div>
+      <div class="never">
+        <div class="t">mint new pNFTs</div>
+        <div class="s">never &mdash; the standard is legacy</div>
+      </div>
+      <div class="darr"></div>
+      <div class="go">
+        <div class="t">royalties via Metaplex Core plugins</div>
+        <div class="s">built in m06-l2</div>
+      </div>
+      <div class="darr"></div>
+      <div class="final">
+        <div class="t">compressed at scale: Bubblegum v2 rulesets</div>
+        <div class="s">next module &mdash; m07</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

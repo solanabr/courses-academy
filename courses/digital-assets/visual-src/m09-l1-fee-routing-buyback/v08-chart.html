@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Planned buyback versus delivered buyback
+     purpose: make the cost of a client-side buyback visible as a gap, not an abstraction
+     data: series "planned at the quoted price": 50000 SPROUT base units series "actually received": 49500 SPROUT base units breakdown of the 500-unit gap (illustrative, from one surfnet run): price impact and venue fee (door A, a real pool only), plus SPROUT's own transfer fee withheld on the treasury ATA (fires on both doors) note: exact split varies with pool depth and order size; on the maker door only the transfer-fee component exists; the gap never rounds to zero
+     prompt: Simple two-bar comparison chart, planned versus received, with the difference annotated as a bracket between the bar tops labeled "the cost of buying your own token back". Below the chart, a three-item legend naming the components of the gap. Do not imply fixed proportions between the three components.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:591px;height:521px;top:-333px;right:-333px;border-radius:42% 61% 35% 60% / 44% 56% 40% 63%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:514px;height:434px;bottom:-238px;left:444px;border-radius:47% 45% 65% 57% / 56% 48% 54% 46%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:28px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;font-size:16px;">the gap is the cost, made visible</div>
+    <h2 class="viz-title" style="font-size:36px;margin:4px 0 10px;color:var(--stbr-dark);">Planned buyback versus delivered buyback</h2>
+
+    <!-- chart: bar heights proportional to the real numbers (50000 -> 400px, 49500 -> 396px) -->
+    <div style="position:relative;width:1140px;height:472px;margin:0 auto;">
+      <!-- baseline -->
+      <div style="position:absolute;left:60px;right:340px;bottom:30px;height:3px;background:var(--stbr-dark);"></div>
+      <!-- dashed guide at the planned top, carried across the received bar -->
+      <div style="position:absolute;left:120px;width:640px;bottom:430px;border-top:2px dashed var(--stbr-dark);opacity:0.45;"></div>
+
+      <!-- planned bar: 50,000 base units -->
+      <div style="position:absolute;left:120px;bottom:30px;width:220px;height:400px;background:var(--stbr-emerald);border-radius:8px 8px 0 0;"></div>
+      <div style="position:absolute;left:120px;bottom:436px;width:220px;text-align:center;font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--stbr-dark);">50,000</div>
+      <div style="position:absolute;left:120px;bottom:0;width:220px;text-align:center;font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);">planned at the quoted price</div>
+
+      <!-- received bar: 49,500 base units, with the 500-unit shortfall as a yellow slice up to the planned line -->
+      <div style="position:absolute;left:520px;bottom:30px;width:220px;height:396px;background:var(--stbr-green);border-radius:8px 8px 0 0;"></div>
+      <div style="position:absolute;left:520px;bottom:426px;width:220px;height:4px;background:var(--stbr-yellow);border:1px dashed var(--stbr-dark);"></div>
+      <div style="position:absolute;left:520px;bottom:436px;width:220px;text-align:center;font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--stbr-dark);">49,500</div>
+      <div style="position:absolute;left:520px;bottom:0;width:220px;text-align:center;font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);">actually received</div>
+
+      <!-- callout bracketing the gap between the bar tops -->
+      <div style="position:absolute;left:744px;bottom:427px;width:36px;height:2px;background:var(--stbr-dark);"></div>
+      <div style="position:absolute;left:780px;bottom:380px;width:330px;background:rgba(255,210,63,0.22);border:3px solid var(--stbr-yellow);border-radius:12px;padding:12px 16px;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:22px;color:var(--stbr-dark);">&minus;500 base units</div>
+        <div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);line-height:1.4;margin-top:3px;">the cost of buying your own token back</div>
+      </div>
+    </div>
+
+    <!-- what the gap is made of (no fixed proportions implied) -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:28px;margin-top:4px;">
+      <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:var(--stbr-emerald);"></div><div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);white-space:nowrap;">price impact (door A only)</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:var(--stbr-emerald);"></div><div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);white-space:nowrap;">venue fee (door A only)</div></div>
+      <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:var(--stbr-emerald);"></div><div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);white-space:nowrap;">SPROUT&rsquo;s own transfer fee, withheld on the treasury ATA (both doors)</div></div>
+    </div>
+    <div style="margin-top:8px;text-align:center;font-family:var(--font-body);font-size:12.5px;color:var(--text-muted,#6b7a6f);">illustrative, from one surfnet run &mdash; the exact split varies with pool depth and order size; on the maker door only the transfer-fee component exists; the gap never rounds to zero</div>
+  </div>
+</div>
+</body></html>

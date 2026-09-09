@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: From a product brief to a primitive family
+     purpose: show that four constraint questions decide the family before any code is written
+     data: start: product brief Q1 "divisible?" -> no: Q3 ; yes: Q2 Q2 "must stay tradeable on a DEX?" -> yes: Token-2022, fee/display/accounting extensions only (or classic SPL) no: Token-2022, any extension set you can justify Q3 "how many will exist?" -> up to ~thousands: Metaplex Core asset (~0.003 SOL each, vendor-published) ~millions: Bubblegum v2 cNFT (a leaf in a tree, DAS required to read) Q4 (applied to every leaf) "who must be able to freeze / claw back / block transfer / update / take a cut?" -> each answer names one extension or plugin, and each one spends compatibility
+     prompt: Top-to-bottom decision flowchart. One start node (product brief), then Q1 as a diamond branching to Q2 (yes) and Q3 (no). Q2 branches to two terminal boxes, Q3 branches to two terminal boxes. Draw Q4 as a wide band under all four terminals with an arrow touching each, labeled "the set, not the family". Terminal boxes carry their cost annotation exactly as in the data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:479px;height:387px;right:-281px;top:292px;border-radius:45% 59% 39% 40% / 61% 59% 64% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:379px;height:500px;bottom:-289px;left:814px;border-radius:40% 46% 54% 55% / 42% 55% 40% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { display:flex; flex-direction:column; align-items:center; margin-top:6px; }
+  .start { background:var(--stbr-dark); color:#F5E8CA; font-family:var(--font-display);
+           font-weight:900; font-size:19px; border-radius:var(--radius-pill);
+           padding:9px 30px; }
+  .q { background:var(--surface-card); border:2.5px solid var(--stbr-emerald);
+       border-radius:var(--radius-xl); padding:10px 24px; text-align:center; }
+  .q-tag { font-family:var(--font-body); font-weight:800; font-size:11px;
+           letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-emerald);
+           display:block; }
+  .q-text { font-family:var(--font-display); font-weight:900; font-size:21px;
+            color:var(--text-primary); }
+  .varr { height:22px; display:flex; align-items:center; }
+  .branch-row { display:flex; gap:40px; align-items:stretch; }
+  .branch-col { display:flex; flex-direction:column; align-items:center; width:660px; }
+  .chip { font-family:var(--font-body); font-weight:800; font-size:12px;
+          letter-spacing:.08em; text-transform:uppercase; color:var(--text-primary);
+          background:var(--surface-paper); border:1.5px solid var(--stbr-green);
+          border-radius:var(--radius-pill); padding:2px 12px; margin:4px 0; }
+  .term-row { display:flex; gap:16px; width:100%; margin-top:2px; }
+  .term { flex:1; background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+          border-radius:var(--radius-lg); padding:12px 16px; }
+  .term-name { display:block; font-family:var(--font-display); font-weight:900;
+               font-size:17px; color:var(--text-primary); line-height:1.2;
+               margin-top:4px; }
+  .term-cost { display:block; font-family:var(--font-body); font-weight:600;
+               font-size:13px; line-height:1.3; color:var(--text-secondary);
+               margin-top:4px; }
+  .q4 { margin-top:8px; width:100%; background:var(--stbr-yellow);
+        border:2.5px solid var(--stbr-dark); border-radius:var(--radius-xl);
+        padding:14px 26px; display:flex; align-items:center; gap:22px; }
+  .q4-tag { font-family:var(--font-display); font-weight:900; font-size:20px;
+            color:var(--stbr-dark); white-space:nowrap; }
+  .q4-text { font-family:var(--font-body); font-weight:700; font-size:14.5px;
+             line-height:1.35; color:var(--stbr-dark); }
+  .uparrs { display:flex; width:100%; justify-content:space-around; height:20px; }
+</style>
+  <div class="stbr-eyebrow">four questions before any code</div>
+  <h2 class="viz-title" style="font-size:44px;margin-bottom:10px;">from a product brief to a primitive family</h2>
+  <div class="flow">
+    <div class="start">product brief</div>
+    <div class="varr"><svg width="16" height="22" viewBox="0 0 16 22"><line x1="8" y1="0" x2="8" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="8,21 2,11 14,11" fill="#1B231D"/></svg></div>
+    <div class="q"><span class="q-tag">Q1</span><span class="q-text">divisible?</span></div>
+    <div class="branch-row">
+      <div class="branch-col">
+        <span class="chip">yes</span>
+        <div class="q" style="margin-bottom:8px;"><span class="q-tag">Q2</span><span class="q-text">must stay tradeable on a DEX?</span></div>
+        <div class="term-row">
+          <div class="term"><span class="chip" style="align-self:flex-start;margin:0 0 2px;">yes</span>
+            <span class="term-name">Token-2022 &mdash; fee / display / accounting extensions only</span>
+            <span class="term-cost">(or classic SPL)</span></div>
+          <div class="term"><span class="chip" style="align-self:flex-start;margin:0 0 2px;">no</span>
+            <span class="term-name">Token-2022 &mdash; any extension set you can justify</span>
+            <span class="term-cost">&nbsp;</span></div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <span class="chip">no</span>
+        <div class="q" style="margin-bottom:8px;"><span class="q-tag">Q3</span><span class="q-text">how many will exist?</span></div>
+        <div class="term-row">
+          <div class="term"><span class="chip" style="align-self:flex-start;margin:0 0 2px;">up to ~thousands</span>
+            <span class="term-name">Metaplex Core asset</span>
+            <span class="term-cost">~0.003 SOL each, vendor-published</span></div>
+          <div class="term"><span class="chip" style="align-self:flex-start;margin:0 0 2px;">~millions</span>
+            <span class="term-name">Bubblegum v2 cNFT</span>
+            <span class="term-cost">a leaf in a tree, DAS required to read</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="uparrs">
+      <svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="8,19 2,9 14,9" fill="#1B231D"/></svg>
+      <svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="8,19 2,9 14,9" fill="#1B231D"/></svg>
+      <svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="8,19 2,9 14,9" fill="#1B231D"/></svg>
+      <svg width="16" height="20" viewBox="0 0 16 20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="8,19 2,9 14,9" fill="#1B231D"/></svg>
+    </div>
+    <div class="q4">
+      <span class="q4-tag">Q4 &middot; the set, not the family</span>
+      <span class="q4-text">applied to every leaf: who must be able to freeze / claw back / block transfer / update / take a cut? Each answer names one extension or plugin &mdash; and each one spends compatibility.</span>
+    </div>
+  </div>
+</div>
+</body></html>

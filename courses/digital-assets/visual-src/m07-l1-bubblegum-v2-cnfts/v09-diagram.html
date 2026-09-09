@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: harvest-crates, and who consumes it
+     purpose: show the artifact ladder position so the reader sees what this build feeds
+     data: Built here (harvest-crates): Bubblegum v2 tree (default spec depth 14 / buffer 64 / canopy 8 = 48,120 bytes; that was 0.336 SOL at the pre-SIMD-0437 rate the vendor's page quotes and prints 0.245 SOL on devnet, 2026-09-06 - state the BYTES, since the SOL is bytes x a rate SIMD-0437 is stepping down; yours may differ if you defended a different pair in step 5) + Harvest crate cNFT in the Overgrowth Almanac Core collection + Founding-Farmer achievement crate, soulbound via set_non_transferable_v2 + tree-cost.ts, the cost derivation that matches the vendor figure Gate: overgrowth/mint-harvest-crates.ts Consumes: almanac-assets (m06-l2) - the Core collection the crates mint into Consumed by: m07-l2 asset-reader - one script reads SPROUT, an Almanac asset, and a crate through DAS m07-l3 - the compression frontier, where the account disappears for fungibles too the capstone - choose the right primitive for a stated asset
+     prompt: Hub diagram. Center node "harvest-crates" as a rounded box listing the four contents, with a checkmark badge labeled mint-harvest-crates.ts. One arrow entering from the left from "almanac-assets (m06-l2)". Three arrows leaving right to "m07-l2 asset-reader", "m07-l3", and "capstone". Label the incoming arrow "the collection cNFTs mint into" and the arrow to m07-l2 "the crate that has no account to read".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:508px;height:411px;bottom:-223px;right:-223px;border-radius:57% 43% 60% 55% / 41% 53% 41% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:488px;height:488px;left:-271px;top:286px;border-radius:59% 52% 43% 60% / 35% 45% 62% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .lad-row { display:flex; align-items:center; gap:0; margin-top:4px; }
+  .lad-src { flex:0 0 250px; background:var(--surface-card); border:2.5px solid var(--stbr-green);
+             border-radius:var(--radius-xl); padding:14px 18px; }
+  .lad-src-name { font-family:var(--font-display); font-weight:900; font-size:20px;
+                  color:var(--stbr-green); }
+  .lad-src-sub { font-family:var(--font-body); font-size:13px; color:var(--text-secondary);
+                 margin-top:3px; }
+  .lad-in { flex:0 0 180px; display:flex; flex-direction:column; align-items:center;
+            justify-content:center; gap:8px; padding:0 10px; }
+  .lad-in-lbl { width:150px; box-sizing:border-box; font-family:var(--font-body);
+                font-weight:700; font-size:11.5px; text-align:center; line-height:1.3;
+                color:var(--stbr-green); background:var(--surface-card);
+                border:1.5px solid var(--stbr-green); border-radius:var(--radius-md);
+                padding:4px 8px; }
+  .lad-hub { flex:0 0 540px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); overflow:hidden; }
+  .lad-hub-head { background:var(--stbr-emerald); padding:12px 22px; display:flex;
+                  align-items:center; gap:14px; }
+  .lad-hub-name { font-family:var(--font-display); font-weight:900; font-size:24px;
+                  color:var(--text-on-brand); }
+  .lad-badge { margin-left:auto; background:var(--stbr-yellow); border:2px solid var(--stbr-dark);
+               border-radius:var(--radius-pill); padding:4px 14px; font-family:var(--font-mono);
+               font-weight:700; font-size:13px; color:var(--stbr-dark); white-space:nowrap; }
+  .lad-hub-body { padding:12px 20px 14px; display:flex; flex-direction:column; gap:8px; }
+  .lad-item { border:2px solid var(--border-strong); border-radius:var(--radius-md);
+              padding:7px 13px; font-family:var(--font-body); font-weight:700; font-size:14.5px;
+              color:var(--text-primary); line-height:1.3; }
+  .lad-item small { display:block; font-weight:500; font-size:12px; color:var(--text-muted); }
+  .lad-item code { font-family:var(--font-mono); font-size:13px; }
+  .lad-out { flex:0 0 110px; }
+  .lad-dst { flex:1 1 auto; display:flex; flex-direction:column; gap:20px; }
+  .lad-card { background:var(--surface-card); border:2.5px solid var(--stbr-green);
+              border-radius:var(--radius-xl); padding:11px 16px; height:100px;
+              display:flex; flex-direction:column; justify-content:center; box-sizing:border-box; }
+  .lad-card-name { font-family:var(--font-display); font-weight:900; font-size:17px;
+                   color:var(--text-primary); }
+  .lad-card-sub { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary);
+                  margin-top:2px; line-height:1.3; }
+  .lad-card-sub em { color:var(--stbr-green); font-weight:600; }
+</style>
+  <div class="stbr-eyebrow">the artifact ladder</div>
+  <h2 class="viz-title">harvest-crates, and who consumes it</h2>
+  <div class="lad-row">
+    <div class="lad-src">
+      <div class="lad-src-name">almanac-assets</div>
+      <div class="lad-src-sub">m06-l2 &mdash; the Overgrowth Almanac Core collection</div>
+    </div>
+    <div class="lad-in">
+      <div class="lad-in-lbl">the collection the cNFTs mint into</div>
+      <svg width="150" height="20" viewBox="0 0 150 20" xmlns="http://www.w3.org/2000/svg">
+        <line x1="2" y1="10" x2="132" y2="10" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="132,3 148,10 132,17" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="lad-hub">
+      <div class="lad-hub-head">
+        <div class="lad-hub-name">harvest-crates</div>
+        <div class="lad-badge">&#10003; mint-harvest-crates.ts</div>
+      </div>
+      <div class="lad-hub-body">
+        <div class="lad-item">Bubblegum v2 tree <small>default spec depth 14 / buffer 64 / canopy 8 = 48,120 bytes, 0.245 SOL on devnet 2026-09-06 &mdash; yours may differ if you defended a different pair in step 5</small></div>
+        <div class="lad-item">Harvest crate cNFT <small>minted into the Overgrowth Almanac Core collection</small></div>
+        <div class="lad-item">Founding-Farmer achievement crate <small>soulbound via <code>set_non_transferable_v2</code></small></div>
+        <div class="lad-item"><code>tree-cost.ts</code> <small>the cost derivation that matches the vendor figure</small></div>
+      </div>
+    </div>
+    <div class="lad-out">
+      <svg width="110" height="340" viewBox="0 0 110 340" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 6 170 C 50 170, 55 50, 92 50" fill="none" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="92,43 106,50 92,57" fill="#1B231D"/>
+        <line x1="6" y1="170" x2="92" y2="170" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="92,163 106,170 92,177" fill="#1B231D"/>
+        <path d="M 6 170 C 50 170, 55 290, 92 290" fill="none" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="92,283 106,290 92,297" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="lad-dst">
+      <div class="lad-card">
+        <div class="lad-card-name">m07-l2 &mdash; asset-reader</div>
+        <div class="lad-card-sub">one script reads SPROUT, an Almanac asset, and a crate through DAS &mdash; <em>the crate that has no account to read</em></div>
+      </div>
+      <div class="lad-card">
+        <div class="lad-card-name">m07-l3 &mdash; the compression frontier</div>
+        <div class="lad-card-sub">where the account disappears for fungibles too</div>
+      </div>
+      <div class="lad-card">
+        <div class="lad-card-name">capstone</div>
+        <div class="lad-card-sub">choose the right primitive for a stated asset</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

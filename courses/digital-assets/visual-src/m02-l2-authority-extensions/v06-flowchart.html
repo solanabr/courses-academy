@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The close-and-revival footgun
+     purpose: show how a closed mint/account address can be re-funded and mistaken for fresh state
+     data: Legit path: supply hits 0 -> close authority closes mint -> lamports reclaimed, data zeroed Danger: the ADDRESS still exists and is reusable Attack: anyone sends lamports to the old address -> a new account is created there -> downstream code sees "this address existed / exists" -> treats it as trusted, established state -> WRONG Defense: mark-closed hygiene -> write a sentinel byte before close -> a revived account is detectable as reused
+     prompt: Flowchart with two paths from a shared "close the account" node. Left/green path: "supply 0 -> close -> rent reclaimed". Right/red path branching from the closed address: "attacker re-funds old address -> new account exists -> naive code trusts it as established". At the bottom, a defense box spanning both: "write sentinel byte before close -> revived account is detectable". Emphasize the address persisting after close.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:507px;height:473px;right:-292px;top:316px;border-radius:39% 52% 43% 56% / 40% 56% 42% 60%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:466px;height:463px;bottom:-262px;left:687px;border-radius:56% 55% 59% 41% / 58% 47% 42% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .topnd { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-md); padding:13px 24px; text-align:center;
+           font-family:var(--font-body); font-weight:700; font-size:16.5px; color:var(--text-primary); }
+  .topnd code { font-family:var(--font-mono); font-size:15px; font-weight:600; color:var(--stbr-emerald-800); }
+  .arrrow { display:flex; justify-content:center; padding:4px 0; }
+  .addr { background:var(--surface-accent); border:2.5px solid var(--stbr-yellow-700);
+          border-radius:var(--radius-md); padding:12px 24px; text-align:center;
+          font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-on-accent); }
+  .addr span { font-family:var(--font-body); font-weight:600; font-size:14px; color:var(--stbr-dark-700); }
+  .paths { display:flex; gap:22px; margin-top:2px; }
+  .path { flex:1 1 0; min-width:0; border-radius:var(--radius-lg); padding:16px 20px; }
+  .path.ok { background:var(--surface-card); border:2px solid var(--stbr-emerald); }
+  .path.bad { background:var(--surface-card); border:2px solid var(--status-danger); }
+  .ph { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.13em;
+        text-transform:uppercase; margin-bottom:10px; }
+  .path.ok .ph { color:var(--stbr-emerald-800); }
+  .path.bad .ph { color:var(--status-danger); }
+  .step { display:flex; align-items:baseline; gap:10px; padding:6px 0; }
+  .sn { flex:0 0 22px; height:22px; border-radius:50%; text-align:center; line-height:22px;
+        font-family:var(--font-body); font-weight:800; font-size:12px; align-self:center; }
+  .path.ok .sn { background:var(--stbr-emerald); color:#fff; }
+  .path.bad .sn { background:var(--status-danger); color:#fff; }
+  .stx { font-family:var(--font-body); font-size:14.5px; line-height:1.38; color:var(--text-primary); }
+  .stx strong { font-weight:800; }
+  .stx .wrong { color:var(--status-danger); font-weight:800; }
+  .defense { margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:16px 28px; display:flex; align-items:center; gap:22px; }
+  .dk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .dt { font-family:var(--font-display); font-weight:900; font-size:22px; line-height:1.12;
+        color:var(--text-on-brand); }
+  .dt code { font-family:var(--font-mono); font-size:18px; font-weight:600; }
+</style>
+  <div class="stbr-eyebrow">mintcloseauthority &middot; the revival footgun</div>
+  <h2 class="viz-title">closed is not gone: the address survives</h2>
+
+  <div class="topnd">supply hits 0 &rarr; close authority closes the mint &rarr; lamports reclaimed, data zeroed</div>
+  <div class="arrrow"><svg width="16" height="18" viewBox="0 0 16 18"><line x1="8" y1="0" x2="8" y2="10" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,18 2,9 14,9" fill="#1b231d"/></svg></div>
+  <div class="addr">the ADDRESS still exists &mdash; and is reusable &nbsp;<span>(closing zeroes the account, not the address)</span></div>
+  <div class="arrrow"><svg width="220" height="18" viewBox="0 0 220 18"><line x1="110" y1="0" x2="30" y2="9" stroke="#1b231d" stroke-width="2.5"/><line x1="110" y1="0" x2="190" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="26,15 34,4 40,14" fill="#1b231d"/><polygon points="194,15 180,14 186,4" fill="#1b231d"/></svg></div>
+
+  <div class="paths">
+    <div class="path ok">
+      <div class="ph">legit path &mdash; ends here</div>
+      <div class="step"><span class="sn">1</span><span class="stx">rent lamports are reclaimed by the close authority</span></div>
+      <div class="step"><span class="sn">2</span><span class="stx">nothing lives at the address any more &mdash; <strong>done</strong></span></div>
+    </div>
+    <div class="path bad">
+      <div class="ph">revival attack</div>
+      <div class="step"><span class="sn">1</span><span class="stx">anyone sends lamports to the old address &rarr; a new account is created there</span></div>
+      <div class="step"><span class="sn">2</span><span class="stx">downstream code sees "this address existed / exists" and treats it as trusted, established state &mdash; <span class="wrong">WRONG</span></span></div>
+    </div>
+  </div>
+
+  <div class="defense">
+    <span class="dk">defense</span>
+    <span class="dt">mark-closed hygiene: write a sentinel byte before close &rarr; a revived account is detectable as reused</span>
+  </div>
+</div>
+</body></html>

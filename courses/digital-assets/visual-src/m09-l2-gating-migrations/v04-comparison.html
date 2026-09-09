@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three ways to put a token in 100,000 hands
+     purpose: show that the choice is about who pays and what happens to the unclaimed tail, not about difficulty
+     data: The classic issuer cost is DERIVED, not pasted: 293 bytes (165 of data + the 128-byte account header) x a per-byte rent rate SIMD-0437 is stepping down. Rate here: 6,333 lamports/byte, mainnet-beta, read 2026-09-06 -- the same rate m08-l3's cost-model.ts sets, which is where the learner costed this. Push to classic token accounts: issuer cost = ~1,855,569 lamports/recipient of rent, ~186 SOL at 100k recipient cost = zero unclaimed tail = paid for anyway supply effect = full amount minted whether wanted or not Push to compressed accounts (the compost airdrop): issuer cost = ~10,300 lamports/recipient, ~1.03 SOL at 100k (~99.4% saved, and this side is not rent so it does not move with the rate) recipient cost = zero, but reads need a DAS/Photon RPC and transfers cost far more CU unclaimed tail = cheap, still paid for supply effect = full amount minted up front Merkle claim (this lesson): issuer cost = one root on chain, plus the distributor account recipient cost = their own transaction and their own account rent unclaimed tail = costs nothing and never mints supply effect = supply grows only as people claim
+     prompt: Three-column comparison table with the rows issuer cost, recipient cost, unclaimed tail, and supply effect. Emphasize the third column's unclaimed-tail and supply rows as the distinguishing property. Keep the lamport and SOL figures exactly as written, print the classic cell's derivation inside the cell, and carry the rate, its cluster and its date under the title.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:524px;height:480px;right:-340px;top:152px;border-radius:40% 56% 64% 36% / 49% 56% 64% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:524px;height:449px;bottom:-234px;left:-234px;border-radius:63% 61% 36% 50% / 37% 44% 45% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl); overflow:hidden;
+         background:var(--surface-card); margin-top:6px; }
+  .crow { display:flex; align-items:stretch; }
+  .crow + .crow { border-top:1.5px solid var(--border-subtle); }
+  .c-lab { flex:0 0 218px; padding:13px 20px; display:flex; align-items:center;
+           font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.08em;
+           text-transform:uppercase; color:var(--stbr-emerald);
+           border-right:1.5px solid var(--border-subtle); background:rgba(0,139,76,0.05); }
+  .c-cell { flex:1 1 0; padding:13px 18px; display:flex; align-items:center;
+            font-family:var(--font-body); font-size:15px; line-height:1.32; color:var(--text-primary); }
+  .c-cell + .c-cell { border-left:1.5px solid var(--border-subtle); }
+  .crow.head { background:var(--surface-inverse); }
+  .crow.head .c-lab, .crow.head .c-cell { background:transparent; border-color:rgba(245,232,202,0.18); }
+  .crow.head .h { font-family:var(--font-display); font-weight:800; font-size:17px;
+                  line-height:1.2; color:var(--text-on-dark); }
+  .crow.head .h small { display:block; font-family:var(--font-body); font-weight:500;
+                        font-size:12.5px; color:rgba(245,232,202,0.75); margin-top:2px; }
+  .c-cell.win { background:rgba(255,210,63,0.30); font-weight:700; }
+  .col3 { background:rgba(0,139,76,0.05); }
+  .verdict { display:flex; align-items:center; background:var(--stbr-emerald); padding:13px 24px; }
+  .verdict .v { font-family:var(--font-display); font-weight:900; font-size:19px; color:#F5E8CA; }
+  .verdict .v b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">distribution economics</div>
+  <h2 class="viz-title">three ways to put a token in 100,000 hands</h2>
+  <div style="font-family:var(--font-body);font-size:13.5px;font-weight:600;color:var(--text-secondary);margin:2px 0 4px;">rent priced at <span style="font-family:var(--font-mono);">6,333 lamports/byte</span> &mdash; mainnet-beta, read 2026-09-06, the rate your <span style="font-family:var(--font-mono);">cost-model.ts</span> set. Re-derive on your own cluster before you quote any of this.</div>
+  <div class="cmp">
+    <div class="crow head">
+      <div class="c-lab"></div>
+      <div class="c-cell"><span class="h">Push to classic token accounts</span></div>
+      <div class="c-cell"><span class="h">Push to compressed accounts<small>the compost airdrop</small></span></div>
+      <div class="c-cell"><span class="h">Merkle claim<small>this lesson</small></span></div>
+    </div>
+    <div class="crow">
+      <div class="c-lab">issuer cost</div>
+      <div class="c-cell">~1,855,569 lamports/recipient of rent (293 bytes &times; 6,333) &mdash; ~186 SOL at 100k</div>
+      <div class="c-cell">~10,300 lamports/recipient &mdash; ~1.03 SOL at 100k (~99.4% saved). Not rent, so it does not move with the rate.</div>
+      <div class="c-cell col3">one root on chain, plus the distributor account</div>
+    </div>
+    <div class="crow">
+      <div class="c-lab">recipient cost</div>
+      <div class="c-cell">zero</div>
+      <div class="c-cell">zero &mdash; but reads need a DAS/Photon RPC and transfers cost far more CU</div>
+      <div class="c-cell col3">their own transaction and their own account rent</div>
+    </div>
+    <div class="crow">
+      <div class="c-lab">unclaimed tail</div>
+      <div class="c-cell">paid for anyway</div>
+      <div class="c-cell">cheap, still paid for</div>
+      <div class="c-cell win">costs nothing and never mints</div>
+    </div>
+    <div class="crow">
+      <div class="c-lab">supply effect</div>
+      <div class="c-cell">full amount minted whether wanted or not</div>
+      <div class="c-cell">full amount minted up front</div>
+      <div class="c-cell win">supply grows only as people claim</div>
+    </div>
+    <div class="verdict"><span class="v">the choice is about who pays &mdash; only the merkle claim leaves the <b>unclaimed tail unminted and unpaid for</b></span></div>
+  </div>
+</div>
+</body></html>

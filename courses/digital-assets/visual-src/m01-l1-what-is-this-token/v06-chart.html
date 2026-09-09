@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: What a classic transfer costs: before and after the engine swap
+     purpose: turn the 76 you just measured into the cliffhanger lesson three resolves
+     data: Bar chart, CU per instruction, two groups of two bars. Transfer: old engine 4,645 CU -> current engine 76 CU (the number you just measured). TransferChecked: old engine 6,200 CU -> current engine 105 CU. Annotation: same program address, same instruction bytes, implementation swapped 2026. Provenance, per bar, because two of these four are measurements and two are citations: current Transfer (76) = the simulateTransaction run you just did, 2026-08-22; current TransferChecked (105) = the same method against the same wallet, run while writing this lesson, 2026-08-22; old-engine Transfer (4,645) and TransferChecked (6,200) = published in the engine-swap proposal SIMD-0266, and no longer measurable on any live cluster, because the engine that produced them stopped running at epoch 971. Module 1 lesson 3 tells that story.
+     prompt: A grouped bar chart with two instruction groups (Transfer, TransferChecked), each showing an old-engine bar towering over a current-engine bar, values labeled from the data above. Use a log scale or a visible axis break so the 76 and 105 bars do not vanish. Caption the current Transfer bar "you measured this one yourself". Mark the two old-engine bars with a small "cited, not measurable" tag so the reader can see which numbers came from a document.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:367px;right:-230px;top:167px;border-radius:46% 37% 44% 49% / 47% 49% 61% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:377px;height:466px;bottom:-282px;left:807px;border-radius:61% 63% 58% 56% / 48% 52% 39% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .plot { position:relative; height:320px; margin:56px 20px 0 90px;
+          border-bottom:3px solid var(--stbr-dark); }
+  .grid { position:absolute; left:0; right:0; height:0;
+          border-top:1.5px dashed rgba(27,35,29,0.18); }
+  .gl { position:absolute; left:-78px; top:-9px; width:68px; text-align:right;
+        font-family:var(--font-mono); font-size:13px; color:var(--text-muted); }
+  .axis-note { position:absolute; left:-78px; top:-26px; font-family:var(--font-body);
+               font-weight:800; font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+               color:var(--text-muted); }
+  .swap-note { position:absolute; right:0; top:-46px; max-width:330px; box-sizing:border-box;
+               border:2px solid var(--stbr-dark); border-radius:var(--radius-lg);
+               background:var(--surface-card); padding:10px 14px;
+               font-family:var(--font-body); font-weight:700; font-size:14px; line-height:1.35;
+               color:var(--text-primary); }
+  .bar { position:absolute; bottom:0; width:130px; border-radius:6px 6px 0 0; }
+  .bar.old { background:var(--stbr-green); }
+  .bar.cur { background:var(--stbr-emerald); }
+  .bar.hot { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+             border-bottom:none; box-sizing:border-box; }
+  .bval { position:absolute; width:150px; text-align:center;
+          font-family:var(--font-display); font-weight:900; font-size:22px;
+          color:var(--text-primary); }
+  .btagwrap { position:absolute; width:170px; text-align:center; }
+  .btag { display:inline-block; font-family:var(--font-body); font-weight:700;
+          font-size:11.5px; text-align:center; line-height:1.25; color:var(--text-secondary);
+          border:1.5px solid var(--border-subtle); border-radius:var(--radius-pill);
+          padding:3px 11px; background:var(--surface-card); }
+  .btag.you { background:var(--stbr-dark); color:var(--stbr-yellow); border-color:var(--stbr-dark);
+              font-weight:800; }
+  .xlabels { position:relative; height:70px; margin:8px 20px 0 90px; }
+  .xb { position:absolute; top:6px; width:150px; text-align:center;
+        font-family:var(--font-body); font-weight:700; font-size:13.5px;
+        color:var(--text-secondary); }
+  .xg { position:absolute; top:32px; width:326px; text-align:center;
+        font-family:var(--font-display); font-weight:900; font-size:20px;
+        color:var(--text-primary); }
+  .caption { margin:6px 20px 0 90px; font-family:var(--font-body); font-size:14px;
+             line-height:1.4; color:var(--text-secondary); }
+  .caption b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">CU per instruction &middot; log scale</div>
+  <h2 class="viz-title">what a classic transfer costs: before and after the engine swap</h2>
+  <div class="plot">
+    <div class="axis-note">CU (log)</div>
+    <div class="grid" style="bottom:75px;"><span class="gl">10</span></div>
+    <div class="grid" style="bottom:150px;"><span class="gl">100</span></div>
+    <div class="grid" style="bottom:225px;"><span class="gl">1,000</span></div>
+    <div class="grid" style="bottom:300px;"><span class="gl">10,000</span></div>
+    <div class="swap-note">same program address, same instruction bytes &mdash; implementation swapped 2026</div>
+    <div class="bval" style="left:262px; bottom:317px;">4,645</div>
+    <div class="btagwrap" style="left:252px; bottom:281px;"><span class="btag">SIMD-0266 &middot; cited, not measurable</span></div>
+    <div class="bar old" style="left:272px; height:275px;"></div>
+    <div class="bval" style="left:438px; bottom:183px;">76</div>
+    <div class="btagwrap" style="left:428px; bottom:147px;"><span class="btag you">you measured this one yourself</span></div>
+    <div class="bar hot" style="left:448px; height:141px;"></div>
+    <div class="bval" style="left:758px; bottom:326px;">6,200</div>
+    <div class="btagwrap" style="left:748px; bottom:290px;"><span class="btag">SIMD-0266 &middot; cited, not measurable</span></div>
+    <div class="bar old" style="left:768px; height:284px;"></div>
+    <div class="bval" style="left:934px; bottom:194px;">105</div>
+    <div class="btagwrap" style="left:924px; bottom:158px;"><span class="btag">measured 2026-08-22</span></div>
+    <div class="bar cur" style="left:944px; height:152px;"></div>
+  </div>
+  <div class="xlabels">
+    <span class="xb" style="left:262px;">old engine</span>
+    <span class="xb" style="left:438px;">current engine</span>
+    <span class="xg" style="left:262px;">Transfer</span>
+    <span class="xb" style="left:758px;">old engine</span>
+    <span class="xb" style="left:934px;">current engine</span>
+    <span class="xg" style="left:758px;">TransferChecked</span>
+  </div>
+  <div class="caption"><b>Provenance:</b> current bars are simulateTransaction runs against the same wallet, 2026-08-22; old-engine bars are published in SIMD-0266 and no longer measurable on any live cluster &mdash; that engine stopped running at epoch 971. <b>Module 1, lesson 3 tells that story.</b></div>
+</div>
+</body></html>

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: PYUSD's eight extensions, read as a design decision
+     purpose: separate "configured" from "active" so the reader copies the strategy rather than the extension list
+     data: mint 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo (Token-2022, 6 decimals, read 2026-08-22) MintCloseAuthority          configured PermanentDelegate           configured   <- power extension: pool programs refuse it unless whitelisted TransferFeeConfig           configured, 0 bps / max 0        -> DORMANT ConfidentialTransferMint    configured, manual approval, none approved -> DORMANT ConfidentialTransferFeeConfig  configured, rides the dormant fee       -> DORMANT TransferHook                configured, programId = null     -> DORMANT MetadataPointer             configured                       -> display, allowlisted everywhere TokenMetadata               configured                       -> display, allowlisted everywhere tally: 4 active, 4 dormant (the m09-l3 classifier's own count); the fee and hook are the dormant pair a venue's allowlist walk would weigh the rule: configuring is permanent, activating is reversible
+     prompt: Annotated listing of the eight extension names in the order given, with a right-hand annotation column. Mark the four DORMANT rows with a distinct badge (visually pairing fee + hook as the market-facing two), mark PermanentDelegate with a refusal badge, mark the two display extensions with an accepted badge. Put the closing rule line as a full-width caption under the listing.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:494px;height:424px;bottom:-233px;right:-233px;border-radius:43% 39% 44% 57% / 35% 57% 41% 52%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:580px;height:420px;left:-335px;top:242px;border-radius:52% 50% 39% 42% / 42% 60% 55% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-2xl);
+           padding:20px 30px 16px; margin-top:8px; }
+  .mintline { font-family:var(--font-mono); font-size:13px; color:#F5E8CA;
+              opacity:.75; padding-bottom:10px; border-bottom:1px solid
+              rgba(245,232,202,.25); margin-bottom:8px; }
+  .xrow { display:flex; align-items:center; gap:14px; padding:6px 0;
+          border-bottom:1px solid rgba(245,232,202,.12); }
+  .xname { width:320px; font-family:var(--font-mono); font-weight:700;
+           font-size:16.5px; color:#F5E8CA; }
+  .xstate { width:330px; font-family:var(--font-body); font-weight:600;
+            font-size:13px; color:#F5E8CA; opacity:.85; line-height:1.25; }
+  .xnote { flex:1; font-family:var(--font-body); font-weight:600; font-size:12.5px;
+           color:#F5E8CA; opacity:.75; line-height:1.25; }
+  .tag { display:inline-block; font-family:var(--font-body); font-weight:800;
+         font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+         border-radius:var(--radius-pill); padding:2px 11px; white-space:nowrap; }
+  .t-dormant { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .t-refuse  { background:transparent; color:#F5E8CA;
+               border:1.5px solid #F5E8CA; }
+  .t-accept  { background:var(--stbr-emerald); color:#F5E8CA; }
+  .t-plain   { background:transparent; color:#F5E8CA; opacity:.6;
+               border:1.5px dashed rgba(245,232,202,.5); }
+  .tagcol { width:230px; display:flex; justify-content:flex-end; }
+  .tally { display:flex; align-items:center; gap:18px; padding-top:10px;
+           font-family:var(--font-body); font-weight:700; font-size:13.5px;
+           color:#F5E8CA; }
+  .tally b { color:var(--stbr-yellow); }
+  .rule { margin-top:12px; background:var(--stbr-emerald);
+          border-radius:var(--radius-lg); padding:13px 26px;
+          font-family:var(--font-display); font-weight:900; font-size:21px;
+          color:#F5E8CA; text-align:center; }
+</style>
+  <div class="stbr-eyebrow">configured is not active</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:6px;">PYUSD's eight extensions, read as a design decision</h2>
+  <div class="panel">
+    <div class="mintline">mint 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo &middot; Token-2022 &middot; 6 decimals &middot; read 2026-08-22</div>
+    <div class="xrow">
+      <span class="xname">MintCloseAuthority</span>
+      <span class="xstate">configured</span>
+      <span class="xnote"></span>
+      <span class="tagcol"><span class="tag t-plain">configured</span></span>
+    </div>
+    <div class="xrow">
+      <span class="xname">PermanentDelegate</span>
+      <span class="xstate">configured</span>
+      <span class="xnote">power extension: pool programs refuse it unless whitelisted</span>
+      <span class="tagcol"><span class="tag t-refuse">&#10005; pools refuse</span></span>
+    </div>
+    <div class="xrow">
+      <span class="xname">TransferFeeConfig</span>
+      <span class="xstate">configured, 0 bps / max 0</span>
+      <span class="xnote">one half of the market-facing dormant pair (fee)</span>
+      <span class="tagcol"><span class="tag t-dormant">dormant</span></span>
+    </div>
+    <div class="xrow">
+      <span class="xname">ConfidentialTransferMint</span>
+      <span class="xstate">configured, manual approval, none approved</span>
+      <span class="xnote"></span>
+      <span class="tagcol"><span class="tag t-dormant">dormant</span></span>
+    </div>
+    <div class="xrow">
+      <span class="xname">ConfidentialTransferFeeConfig</span>
+      <span class="xstate">configured, rides the dormant fee</span>
+      <span class="xnote"></span>
+      <span class="tagcol"><span class="tag t-dormant">dormant</span></span>
+    </div>
+    <div class="xrow">
+      <span class="xname">TransferHook</span>
+      <span class="xstate">configured, programId = null</span>
+      <span class="xnote">one half of the market-facing dormant pair (hook)</span>
+      <span class="tagcol"><span class="tag t-dormant">dormant</span></span>
+    </div>
+    <div class="xrow">
+      <span class="xname">MetadataPointer</span>
+      <span class="xstate">configured</span>
+      <span class="xnote">display</span>
+      <span class="tagcol"><span class="tag t-accept">allowlisted everywhere</span></span>
+    </div>
+    <div class="xrow" style="border-bottom:none;">
+      <span class="xname">TokenMetadata</span>
+      <span class="xstate">configured</span>
+      <span class="xnote">display</span>
+      <span class="tagcol"><span class="tag t-accept">allowlisted everywhere</span></span>
+    </div>
+    <div class="tally">
+      <span>tally: 4 active, <b>4 dormant</b> (the m09-l3 classifier's own count)</span>
+      <span style="opacity:.75;">&mdash; the fee and hook are the dormant pair a venue's allowlist walk would weigh</span>
+    </div>
+  </div>
+  <div class="rule">configuring is permanent &mdash; activating is reversible</div>
+</div>
+</body></html>

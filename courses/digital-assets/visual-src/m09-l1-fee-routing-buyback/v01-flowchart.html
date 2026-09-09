@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The four legs of SPROUT's fee rail
+     purpose: show that fee income takes four distinct hops before supply moves, and which hop needs which authority
+     data: node 1: buyer token accounts (TransferFeeAmount.withheldAmount, one jar per holder) node 2: mint (TransferFeeConfig.withheldAmount, one consolidated jar) node 3: treasury token account (a PDA's in production; the lab's keypair stands in) holding spendable SPROUT + treasury SOL balance node 4: the buyback counterparty (SOL in, SPROUT out) - a DAMM v2 pool on door A, an OTC maker on door B node 5: burn (mint supply falls) edge 1->2: "harvest_withheld_tokens_to_mint - PERMISSIONLESS, anyone may call" edge 2->3: "withdraw_withheld_tokens_from_mint - gated by withdraw_withheld_authority" edge 1->3: "withdraw_withheld_tokens_from_accounts - direct route, authority-gated, skips the mint" edge 3->4: "client-side buy, treasury SOL to SPROUT, and whatever it costs is paid by you" edge 4->5: "burn_checked on the treasury ATA, supply drops by exactly what was bought"
+     prompt: Left-to-right flowchart with five labeled nodes in the order given. Draw the 1->2->3 path as the main spine and the 1->3 direct route as a dashed arc below it. Badge the 1->2 arrow "permissionless" in green; badge the 2->3 and 1->3 arrows "authority-gated" in amber. Badge the 3->4 arrow "you pay slippage here" in red. Node 5 gets a downward arrow labeled "supply".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:582px;height:552px;top:-303px;right:-303px;border-radius:46% 58% 56% 57% / 52% 52% 39% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:556px;height:574px;bottom:-315px;left:-315px;border-radius:49% 45% 35% 38% / 62% 52% 41% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:26px 40px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">four hops before supply moves</div>
+    <h2 class="viz-title" style="font-size:34px;margin:6px 0 20px;color:var(--stbr-dark);">The four legs of SPROUT&rsquo;s fee rail</h2>
+
+    <!-- main spine: five nodes, four numbered arrows -->
+    <div style="display:flex;align-items:stretch;">
+      <div style="width:218px;min-height:118px;border:2px solid var(--stbr-emerald);border-radius:14px;padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--stbr-dark);">buyer token accounts</div>
+        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">TransferFeeAmount<br>.withheldAmount</div>
+        <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-muted,#6b7a6f);margin-top:3px;">one jar per holder</div>
+      </div>
+      <div style="width:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">1</div>
+        <div style="display:flex;align-items:center;width:100%;"><div style="flex:1;height:2px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--stbr-dark);"></div></div>
+      </div>
+      <div style="width:218px;min-height:118px;border:2px solid var(--stbr-emerald);border-radius:14px;padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--stbr-dark);">mint</div>
+        <div style="font-family:var(--font-mono);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">TransferFeeConfig<br>.withheldAmount</div>
+        <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-muted,#6b7a6f);margin-top:3px;">one consolidated jar</div>
+      </div>
+      <div style="width:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--stbr-dark);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">2</div>
+        <div style="display:flex;align-items:center;width:100%;"><div style="flex:1;height:2px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--stbr-dark);"></div></div>
+      </div>
+      <div style="width:218px;min-height:118px;border:2px solid var(--stbr-green);border-radius:14px;padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--stbr-dark);">treasury token account</div>
+        <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">a PDA&rsquo;s in production; the lab&rsquo;s keypair stands in</div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted,#6b7a6f);margin-top:3px;">spendable SPROUT + treasury SOL</div>
+      </div>
+      <div style="width:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">3</div>
+        <div style="display:flex;align-items:center;width:100%;"><div style="flex:1;height:2px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--stbr-dark);"></div></div>
+      </div>
+      <div style="width:218px;min-height:118px;border:2px solid var(--stbr-green);border-radius:14px;padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--stbr-dark);">buyback counterparty</div>
+        <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-secondary,#4a5a4e);margin-top:4px;">SOL in, SPROUT out</div>
+      </div>
+      <div style="width:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--stbr-green);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">4</div>
+        <div style="display:flex;align-items:center;width:100%;"><div style="flex:1;height:2px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:8px solid var(--stbr-dark);"></div></div>
+      </div>
+      <div style="width:218px;min-height:118px;background:var(--stbr-dark);border-radius:14px;padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15.5px;color:#F5E8CA;">burn</div>
+        <div style="font-family:var(--font-body);font-size:11.5px;color:rgba(245,232,202,0.75);margin-top:4px;">mint supply falls</div>
+        <div style="font-family:var(--font-mono);font-size:12px;color:#F5E8CA;margin-top:6px;">&darr; supply</div>
+      </div>
+    </div>
+
+    <!-- direct route 1 -> 3, dashed arc below the spine -->
+    <div style="position:relative;height:70px;margin-top:8px;">
+      <div style="position:absolute;left:109px;width:568px;top:0;height:48px;border-left:2px dashed var(--stbr-green);border-right:2px dashed var(--stbr-green);border-bottom:2px dashed var(--stbr-green);border-radius:0 0 22px 22px;"></div>
+      <div style="position:absolute;left:670px;top:-8px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:9px solid var(--stbr-green);"></div>
+      <div style="position:absolute;left:150px;width:490px;top:8px;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:11.5px;font-weight:700;color:var(--stbr-green);">withdraw_withheld_tokens_from_accounts</div>
+        <div style="font-family:var(--font-body);font-size:11px;color:var(--text-muted,#6b7a6f);margin-top:1px;">direct route &mdash; authority-gated, skips the mint</div>
+      </div>
+    </div>
+
+    <!-- legend: what each numbered hop is, and who may call it -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 26px;margin-top:8px;border-top:1.5px solid var(--border-subtle,#e4dcc6);padding-top:14px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center;margin-top:1px;">1</div>
+        <div style="flex:1;"><span style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--stbr-dark);">harvest_withheld_tokens_to_mint</span>
+          <span style="display:inline-block;background:var(--stbr-emerald);border-radius:999px;padding:1px 10px;font-family:var(--font-body);font-weight:700;font-size:10.5px;color:#F5E8CA;margin-left:6px;">PERMISSIONLESS &mdash; anyone may call</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--stbr-dark);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center;margin-top:1px;">2</div>
+        <div style="flex:1;"><span style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--stbr-dark);">withdraw_withheld_tokens_from_mint</span>
+          <span style="display:inline-block;border:1.5px solid var(--stbr-dark);border-radius:999px;padding:1px 10px;font-family:var(--font-body);font-weight:700;font-size:10.5px;color:var(--stbr-dark);margin-left:6px;">gated by withdraw_withheld_authority</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center;margin-top:1px;">3</div>
+        <div style="flex:1;"><span style="font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--stbr-dark);">client-side buy swap &mdash; treasury SOL &rarr; SPROUT</span>
+          <span style="display:inline-block;background:var(--stbr-yellow);border-radius:999px;padding:1px 10px;font-family:var(--font-body);font-weight:700;font-size:10.5px;color:var(--stbr-dark);margin-left:6px;">you pay slippage here</span></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--stbr-green);color:#F5E8CA;font-family:var(--font-display);font-weight:800;font-size:11.5px;display:flex;align-items:center;justify-content:center;margin-top:1px;">4</div>
+        <div style="flex:1;"><span style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--stbr-dark);">burn_checked</span>
+          <span style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);"> on the treasury ATA &mdash; supply drops by exactly what was bought</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

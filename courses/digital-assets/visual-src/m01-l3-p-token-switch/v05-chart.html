@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Transfer cost before and after the engine swap
+     purpose: land the scale of the CU drop; the client sent identical bytes in both eras
+     data: Bar chart, log-friendly gap. Series "before p-token (original spl-token)": Transfer 4,645 CU; TransferChecked 6,200 CU. Series "after p-token (epoch 971 onward)": Transfer 76 CU; TransferChecked 105 CU. Annotation: ~12-13% of total block space recovered (per Anza, May 2026).
+     prompt: Grouped bar chart with two instruction groups (Transfer, TransferChecked), each with a "before" bar (4,645 and 6,200 CU) and a much shorter "after" bar (76 and 105 CU). Label every bar with its exact value. Side annotation callout: "~12-13% of block space recovered network-wide". Make the before/after height contrast the visual story; no truncated axis tricks.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:542px;height:451px;right:-315px;top:212px;border-radius:57% 50% 35% 60% / 46% 61% 43% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:440px;height:549px;bottom:-332px;left:443px;border-radius:43% 45% 65% 51% / 37% 41% 49% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:flex; gap:24px; margin-top:24px; align-items:stretch; }
+  .chart { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); padding:28px 36px 22px; }
+  .plot { display:flex; justify-content:space-around; align-items:flex-end; height:440px;
+          border-bottom:2.5px solid var(--stbr-dark); }
+  .group { display:flex; gap:26px; align-items:flex-end; }
+  .barcol { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+  .bval { font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--text-primary);
+          margin-bottom:6px; white-space:nowrap; }
+  .bar { width:130px; border-radius:6px 6px 0 0; }
+  .bar.before { background:var(--surface-brand); }
+  .bar.after { background:var(--stbr-yellow); border:1.5px solid var(--stbr-dark); border-bottom:none; }
+  .gnames { display:flex; justify-content:space-around; padding-top:12px; }
+  .gname { font-family:var(--font-body); font-weight:800; font-size:19px; color:var(--text-primary);
+           width:286px; text-align:center; }
+  .side { width:340px; display:flex; flex-direction:column; gap:20px; }
+  .legend { background:var(--surface-card); border:2px solid var(--border-subtle);
+            border-radius:var(--radius-lg); padding:18px 22px; display:flex; flex-direction:column; gap:12px; }
+  .lrow { display:flex; align-items:center; gap:12px; font-family:var(--font-body); font-size:15px;
+          line-height:1.3; color:var(--text-primary); }
+  .sw { width:22px; height:22px; border-radius:5px; flex:none; }
+  .sw.b { background:var(--surface-brand); }
+  .sw.a { background:var(--stbr-yellow); border:1.5px solid var(--stbr-dark); }
+  .callout { flex:1; background:var(--surface-inverse); border-radius:var(--radius-lg);
+             padding:24px; display:flex; flex-direction:column; justify-content:center; }
+  .cbig { font-family:var(--font-display); font-weight:900; font-size:34px; line-height:1.05;
+          color:var(--stbr-yellow); margin-bottom:10px; }
+  .ctxt { font-family:var(--font-body); font-size:16px; line-height:1.4; color:var(--text-on-dark); }
+  .note { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:14px; }
+</style>
+  <div class="stbr-eyebrow">transfer cost before and after the engine swap</div>
+  <h2 class="viz-title">identical bytes in, 98% less compute</h2>
+  <div class="wrap">
+    <div class="chart">
+      <div class="plot">
+        <div class="group">
+          <div class="barcol"><div class="bval">4,645 CU</div><div class="bar before" style="height:300px;"></div></div>
+          <div class="barcol"><div class="bval">76 CU</div><div class="bar after" style="height:5px;"></div></div>
+        </div>
+        <div class="group">
+          <div class="barcol"><div class="bval">6,200 CU</div><div class="bar before" style="height:400px;"></div></div>
+          <div class="barcol"><div class="bval">105 CU</div><div class="bar after" style="height:7px;"></div></div>
+        </div>
+      </div>
+      <div class="gnames">
+        <div class="gname">Transfer</div>
+        <div class="gname">TransferChecked</div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="legend">
+        <div class="lrow"><div class="sw b"></div>before p-token (original spl-token)</div>
+        <div class="lrow"><div class="sw a"></div>after p-token (epoch 971 onward)</div>
+      </div>
+      <div class="callout">
+        <div class="cbig">~12&ndash;13%</div>
+        <div class="ctxt">of total block space recovered network-wide (per Anza, May 2026)</div>
+      </div>
+      <div class="note">Bar heights are to scale &mdash; no truncated axis. The client sent identical instruction bytes in both eras.</div>
+    </div>
+  </div>
+</div>
+</body></html>

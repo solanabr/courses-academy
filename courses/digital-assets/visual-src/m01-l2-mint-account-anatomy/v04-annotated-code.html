@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Walking PYUSD's real TLV region, entry by entry
+     purpose: turn the cursor arithmetic into a checkable table over the actual on-chain bytes
+     data: PYUSD mint 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo, read 2026-08-22, TLV region from byte 166. Columns: header offset, type (u16), name, length (u16), value bytes, next cursor. 166 | 3  | MintCloseAuthority        | 32  | 170..201 | 166+4+32  = 202 202 | 12 | PermanentDelegate         | 32  | 206..237 | 202+4+32  = 238 238 | 1  | TransferFeeConfig         | 108 | 242..349 | 238+4+108 = 350 350 | 4  | ConfidentialTransferMint  | 65  | 354..418 | 350+4+65  = 419 419 | 16 | ConfidentialTransferFeeConfig | 129 | 423..551 | 419+4+129 = 552 552 | 14 | TransferHook              | 64  | 556..619 | 552+4+64  = 620 620 | 18 | MetadataPointer           | 64  | 624..687 | 620+4+64  = 688 688 | 19 | TokenMetadata             | 174 | 692..865 | 688+4+174 = 866 = end of account Footer: 166 + sum of (4 + length) over 8 entries = 166 + 700 = 866. The cursor lands exactly on the account edge: every byte accounted for.
+     prompt: An annotated table rendering of the eight TLV entries from the data above, one row per entry, with the header-offset and next-cursor columns visually connected (an arrow from each row's next-cursor value to the following row's header offset) so the cursor chain reads as a walk. Highlight the final 866 landing on the account edge, and show the footer reconciliation line prominently.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:451px;height:424px;top:-242px;right:-242px;border-radius:49% 55% 59% 65% / 45% 36% 51% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:480px;height:465px;bottom:-261px;left:-261px;border-radius:35% 63% 52% 59% / 43% 45% 42% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:30px 48px 28px;}
+  .card .viz-title{font-size:42px;margin:4px 0 12px;}
+  .card .stbr-eyebrow{font-size:17px;}
+  .hdr{display:flex;gap:18px;align-items:center;height:26px;font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);}
+  .trow{display:flex;gap:18px;align-items:center;height:38px;border-top:1px solid var(--border-subtle);}
+  .arow{display:flex;gap:18px;align-items:center;height:17px;}
+  .c-off{width:96px;display:flex;justify-content:center;}
+  .c-typ{width:70px;font-family:var(--font-mono);font-size:16px;font-weight:700;color:var(--text-secondary);}
+  .c-nam{width:400px;font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-primary);}
+  .c-len{width:110px;font-family:var(--font-mono);font-size:16px;color:var(--text-secondary);}
+  .c-val{width:180px;font-family:var(--font-mono);font-size:15px;color:var(--text-muted);}
+  .c-adv{flex:1;font-family:var(--font-mono);font-size:15px;color:var(--text-secondary);}
+  .chip{min-width:74px;text-align:center;background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-mono);font-size:16px;font-weight:700;padding:4px 10px;border-radius:999px;}
+  .dn{width:96px;display:flex;justify-content:center;align-items:center;}
+  .dn .ar{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--stbr-green);}
+  .plus{flex:1;font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--stbr-green);}
+  .endrow{display:flex;gap:18px;align-items:center;height:40px;}
+  .endchip{min-width:74px;text-align:center;background:var(--stbr-yellow);color:var(--text-on-accent,#1B231D);font-family:var(--font-mono);font-size:17px;font-weight:800;padding:5px 10px;border-radius:999px;}
+  .endtx{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-primary);}
+  .foot{margin-top:10px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:12px;padding:12px 22px;font-family:var(--font-display);font-weight:800;font-size:19px;text-align:center;}
+  .foot code{font-family:var(--font-mono);font-weight:700;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the cursor arithmetic, checkable against the on-chain bytes</div>
+  <h2 class="viz-title">walking PYUSD&rsquo;s real TLV region, entry by entry</h2>
+  <div class="hdr"><div class="c-off">cursor</div><div class="c-typ">type</div><div class="c-nam">extension</div><div class="c-len">length</div><div class="c-val">value bytes</div><div class="c-adv">advance = 4 + length</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">166</span></div><div class="c-typ">3</div><div class="c-nam">MintCloseAuthority</div><div class="c-len">32</div><div class="c-val">170..201</div><div class="c-adv">166 + 4 + 32 = 202</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+36</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">202</span></div><div class="c-typ">12</div><div class="c-nam">PermanentDelegate</div><div class="c-len">32</div><div class="c-val">206..237</div><div class="c-adv">202 + 4 + 32 = 238</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+36</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">238</span></div><div class="c-typ">1</div><div class="c-nam">TransferFeeConfig</div><div class="c-len">108</div><div class="c-val">242..349</div><div class="c-adv">238 + 4 + 108 = 350</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+112</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">350</span></div><div class="c-typ">4</div><div class="c-nam">ConfidentialTransferMint</div><div class="c-len">65</div><div class="c-val">354..418</div><div class="c-adv">350 + 4 + 65 = 419</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+69</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">419</span></div><div class="c-typ">16</div><div class="c-nam">ConfidentialTransferFeeConfig</div><div class="c-len">129</div><div class="c-val">423..551</div><div class="c-adv">419 + 4 + 129 = 552</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+133</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">552</span></div><div class="c-typ">14</div><div class="c-nam">TransferHook</div><div class="c-len">64</div><div class="c-val">556..619</div><div class="c-adv">552 + 4 + 64 = 620</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+68</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">620</span></div><div class="c-typ">18</div><div class="c-nam">MetadataPointer</div><div class="c-len">64</div><div class="c-val">624..687</div><div class="c-adv">620 + 4 + 64 = 688</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+68</div></div>
+  <div class="trow"><div class="c-off"><span class="chip">688</span></div><div class="c-typ">19</div><div class="c-nam">TokenMetadata</div><div class="c-len">174</div><div class="c-val">692..865</div><div class="c-adv">688 + 4 + 174 = 866</div></div>
+  <div class="arow"><div class="dn"><div class="ar"></div></div><div class="plus">+178</div></div>
+  <div class="endrow"><div class="c-off"><span class="endchip">866</span></div><div class="endtx">= end of account &mdash; the cursor lands exactly on the edge</div></div>
+  <div class="foot">166 + &Sigma;(4 + length) over 8 entries = 166 + 700 = <code>866</code> &mdash; every byte accounted for</div>
+</div>
+<div style="margin-top:8px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);text-align:center;">PYUSD mint <span style="font-family:var(--font-mono);">2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo</span> &middot; TLV region from byte 166 &middot; read 2026-08-22</div>
+</div>
+</body></html>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Reviewer-gated admission versus code-gated admission, priced honestly
+     purpose: stop the reader from filing Orca's Token Badge as "the lax venue" by pricing both designs on the axes that actually differ, and show why a permissionless pool factory cannot pick the reviewer
+     data: axis | REVIEWER-GATED (Orca Token Badge) | CODE-GATED (Raydium CP-Swap allowlist) what is inspected | the issuer, the key custody, the revocation history, the mint | the extension set on the mint, nothing else can admit PermanentDelegate | yes, a human can judge the delegate key | no, never, no exception in the match latency to a verdict | human turnaround, unbounded | one transaction, deterministic verdict before you mint | no, you commit to a design first | yes, the rule is public and pure scales to N mints | no | yes usable by a permissionless pool factory | no: no human is in the transaction path | yes: this is why it exists failure mode | reviewer misjudges, or never answers | correct design refused for a dormant TLV entry
+     prompt: Seven-row comparison table, two value columns. Header row names the two designs. Shade the REVIEWER column and the CODE column in different tints. Mark the "usable by a permissionless pool factory" row as the pivot: heavier rule above and below it, and a margin call-out reading "this row is why CP-Swap's rule is code". Final row italicised as the cost of each design.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:536px;height:545px;top:-309px;right:-309px;border-radius:59% 55% 65% 54% / 55% 45% 41% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:455px;height:566px;bottom:-330px;left:766px;border-radius:58% 40% 57% 57% / 42% 46% 48% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .t1-wrap { position:relative; width:1456px; margin:0 auto; }
+  .t1 { width:1130px; display:grid; grid-template-columns:270px 430px 430px; }
+  .t1 > div { box-sizing:border-box; padding:11px 16px; font-family:var(--font-body);
+              font-size:14.5px; line-height:1.32; color:var(--text-primary);
+              border-bottom:1.5px solid var(--border-subtle); display:flex;
+              flex-direction:column; justify-content:center; min-height:60px; }
+  .t1 .hd { min-height:56px; font-family:var(--font-display); font-weight:800;
+            font-size:15px; letter-spacing:.05em; text-transform:uppercase;
+            color:var(--stbr-cream); border-bottom:none; }
+  .t1 .hd.ax { background:var(--stbr-dark); border-radius:var(--radius-md) 0 0 0; }
+  .t1 .hd.rv { background:var(--stbr-green); }
+  .t1 .hd.cd { background:var(--stbr-emerald); border-radius:0 var(--radius-md) 0 0; }
+  .t1 .hd small { display:block; font-family:var(--font-body); font-weight:600;
+                  font-size:12px; letter-spacing:0; text-transform:none; opacity:.85; }
+  .t1 .ax { font-family:var(--font-display); font-weight:800; font-size:15px;
+            background:var(--surface-card); }
+  .t1 .rv { background:var(--stbr-cream-200); }
+  .t1 .cd { background:rgba(0,139,76,0.07); }
+  .t1 .pv { background:rgba(255,210,63,0.32) !important;
+            border-top:3px solid var(--stbr-dark); border-bottom:3px solid var(--stbr-dark);
+            font-weight:700; }
+  .t1 .cost { font-style:italic; color:var(--text-secondary); }
+  .t1-note { position:absolute; left:1160px; top:342px; width:296px; box-sizing:border-box;
+             background:var(--stbr-yellow); color:var(--stbr-dark);
+             border:2px solid var(--stbr-dark); border-radius:var(--radius-lg);
+             padding:14px 16px; font-family:var(--font-body); font-weight:700;
+             font-size:14.5px; line-height:1.35; }
+  .t1-tick { position:absolute; left:1130px; top:372px; }
+</style>
+  <div class="stbr-eyebrow">venue admission models</div>
+  <h2 class="viz-title" style="font-size:44px;">reviewer-gated vs code-gated, priced honestly</h2>
+  <div class="t1-wrap">
+    <div class="t1">
+      <div class="hd ax">axis</div>
+      <div class="hd rv">reviewer-gated<small>Orca Token Badge</small></div>
+      <div class="hd cd">code-gated<small>Raydium CP-Swap allowlist</small></div>
+
+      <div class="ax">what is inspected</div>
+      <div class="rv">the issuer, the key custody, the revocation history, the mint</div>
+      <div class="cd">the extension set on the mint, nothing else</div>
+
+      <div class="ax">can admit PermanentDelegate</div>
+      <div class="rv">yes, a human can judge the delegate key</div>
+      <div class="cd">no, never, no exception in the match</div>
+
+      <div class="ax">latency to a verdict</div>
+      <div class="rv">human turnaround, unbounded</div>
+      <div class="cd">one transaction, deterministic</div>
+
+      <div class="ax">verdict before you mint</div>
+      <div class="rv">no, you commit to a design first</div>
+      <div class="cd">yes, the rule is public and pure</div>
+
+      <div class="ax">scales to N mints</div>
+      <div class="rv">no</div>
+      <div class="cd">yes</div>
+
+      <div class="ax pv">usable by a permissionless pool factory</div>
+      <div class="rv pv">no: no human is in the transaction path</div>
+      <div class="cd pv">yes: this is why it exists</div>
+
+      <div class="ax cost">failure mode</div>
+      <div class="rv cost">reviewer misjudges, or never answers</div>
+      <div class="cd cost">correct design refused for a dormant TLV entry</div>
+    </div>
+    <div class="t1-tick"><svg width="30" height="16" viewBox="0 0 30 16"><line x1="30" y1="8" x2="12" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="0,8 14,1 14,15" fill="#1b231d"/></svg></div>
+    <div class="t1-note">this row is why CP-Swap's rule is code</div>
+  </div>
+</div>
+</body></html>

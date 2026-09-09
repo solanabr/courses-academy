@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: A million crates, two ways to pay for it
+     purpose: put the compression decision on lamport figures the reader can check, not on adjectives
+     data: BOTH columns priced at one rate so the comparison is sound: 6,333 lamports/byte, mainnet-beta, read 2026-09-06, matching the prose paragraph this figure sits under. Rent is (128-byte account header + data) x that rate, and the rate is a network parameter SIMD-0437 is stepping down. Classic per-asset account (bare SPL token account, 165 bytes of data + the 128-byte header = 293 bytes: the cheapest possible floor; a Core asset runs ~0.003 SOL by the vendor figure, so ~3,000 SOL per million) per asset: 1,855,569 lamports, ~0.00186 SOL rent-exempt 1,000,000 assets: ~1,856 SOL  (~$278,000 at $150/SOL) read path: getAccountInfo, any RPC write path: sign and send, no proof Compressed (Bubblegum v2 tree, depth 20 / buffer 256 / canopy 14) whole tree: 1,223,352 bytes, one account, 7.748 SOL rent-exempt at the same rate (6.215 SOL on devnet's 5,080; 8.515 SOL at the pre-SIMD-0437 6,960; Metaplex's published 8.5012 is a different configuration, buffer 1024 / canopy 13, landing 0.17% away) per asset: 0.00000739 SOL read path: DAS-supporting RPC only, getAccountInfo returns nothing write path: fetch a fresh Merkle proof, then send Ratio: ~240x cheaper on rent, and that ratio is RATE-INVARIANT because both sides are rent -- 293,000,000 bytes against 1,223,480 is 239.5x at every rate the network has ever charged. Cost moves from per-asset to per-tree.
+     prompt: Two-column comparison card. Left column "Classic account", right column "Compressed leaf". Four labeled rows: rent per asset, rent for 1,000,000, read path, write path. Put the ~1,856 SOL and 7.748 SOL figures at large type as the visual anchor of each column, each with its byte count and the shared rate underneath, and call the ~240x ratio out in a strip across the bottom with the note that it does not move with the rate. Mark the two right-column read/write rows as costs, not wins, so the card does not read as pure advocacy.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:524px;height:508px;top:-272px;right:-272px;border-radius:43% 50% 55% 35% / 52% 60% 63% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:460px;height:504px;left:-224px;top:250px;border-radius:49% 49% 38% 55% / 45% 53% 55% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp-row { display:flex; gap:28px; align-items:stretch; margin-top:4px; }
+  .col { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column; }
+  .col-head { padding:12px 26px; font-family:var(--font-display); font-weight:900;
+              font-size:23px; color:var(--stbr-cream); }
+  .col-head.deep { background:var(--stbr-green); }
+  .col-head.emerald { background:var(--stbr-emerald); }
+  .anchor { padding:16px 26px 12px; border-bottom:2px solid var(--border-subtle); }
+  .anchor-label { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                  letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .anchor-num { font-family:var(--font-display); font-weight:900; font-size:52px;
+                line-height:1.05; color:var(--text-primary); }
+  .anchor-sub { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:2px; }
+  .attr { display:flex; align-items:flex-start; gap:14px; padding:11px 26px;
+          border-bottom:2px solid var(--border-subtle); }
+  .attr:last-child { border-bottom:0; }
+  .attr-key { flex:0 0 118px; font-family:var(--font-body); font-weight:800; font-size:12.5px;
+              letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted);
+              padding-top:2px; }
+  .attr-val { flex:1 1 auto; font-family:var(--font-body); font-weight:600; font-size:16px;
+              color:var(--text-primary); line-height:1.32; }
+  .attr-val small { display:block; font-weight:500; font-size:13px; color:var(--text-muted); margin-top:1px; }
+  .chip-cost { display:inline-block; margin-left:8px; padding:2px 10px; vertical-align:2px;
+               border-radius:var(--radius-pill); background:var(--surface-inverse);
+               color:var(--text-on-dark); font-family:var(--font-body); font-weight:700;
+               font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+  .verdict { margin-top:18px; display:flex; align-items:center; gap:18px;
+             background:var(--stbr-emerald); border-radius:var(--radius-xl);
+             padding:13px 26px; }
+  .verdict-ratio { background:var(--stbr-yellow); color:var(--stbr-dark);
+                   font-family:var(--font-display); font-weight:900; font-size:24px;
+                   border-radius:var(--radius-pill); padding:6px 20px; white-space:nowrap; }
+  .verdict-text { font-family:var(--font-body); font-weight:600; font-size:17px;
+                  color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">compression, priced in lamports &mdash; both columns at one rate</div>
+  <h2 class="viz-title">a million crates, two ways to pay for it</h2>
+  <div style="font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-secondary);margin:2px 0 6px;">rent = (128-byte header + data) &times; <span style="font-family:var(--font-mono);">6,333 lamports/byte</span> &mdash; mainnet-beta, read 2026-09-06. SIMD-0437 is stepping that rate down; re-read it and both columns move together.</div>
+  <div class="cmp-row">
+    <div class="col">
+      <div class="col-head deep">Classic account</div>
+      <div class="anchor">
+        <div class="anchor-label">rent for 1,000,000 assets</div>
+        <div class="anchor-num">~1,856 SOL</div>
+        <div class="anchor-sub">~$278,000 at $150/SOL &mdash; one rent-exempt account per asset, 293,000,000 bytes in total</div>
+      </div>
+      <div class="attr"><div class="attr-key">rent / asset</div>
+        <div class="attr-val">1,855,569 lamports
+          <small>bare SPL token account, 165 bytes of data + the 128-byte header = 293 &times; 6,333 &mdash; the cheapest floor; a Core asset runs ~0.003 SOL &rarr; ~3,000 SOL per million</small></div></div>
+      <div class="attr"><div class="attr-key">read path</div>
+        <div class="attr-val">getAccountInfo, any RPC</div></div>
+      <div class="attr"><div class="attr-key">write path</div>
+        <div class="attr-val">sign and send &mdash; no proof</div></div>
+    </div>
+    <div class="col">
+      <div class="col-head emerald">Compressed leaf</div>
+      <div class="anchor">
+        <div class="anchor-label">rent for the whole tree</div>
+        <div class="anchor-num">7.748 SOL</div>
+        <div class="anchor-sub">one account, 1,223,352 bytes &mdash; depth 20 / buffer 256 / canopy 14 &middot; 6.215 SOL on devnet, 8.515 at the old 6,960 rate</div>
+      </div>
+      <div class="attr"><div class="attr-key">rent / asset</div>
+        <div class="attr-val">0.00000739 SOL
+          <small>a few millionths either way &mdash; the tree is one account, so this falls as the tree fills</small></div></div>
+      <div class="attr"><div class="attr-key">read path</div>
+        <div class="attr-val">DAS-supporting RPC only<span class="chip-cost">cost</span>
+          <small>getAccountInfo returns nothing</small></div></div>
+      <div class="attr"><div class="attr-key">write path</div>
+        <div class="attr-val">fetch a fresh Merkle proof, then send<span class="chip-cost">cost</span></div></div>
+    </div>
+  </div>
+  <div class="verdict">
+    <div class="verdict-ratio">~240&times; cheaper on rent</div>
+    <div class="verdict-text">and that multiple does not move with the rate &mdash; both sides are rent, so it is 293,000,000 bytes against 1,223,480. The cost moves from per-asset to per-tree, and the reads and writes pick up the tab.</div>
+  </div>
+</div>
+</body></html>

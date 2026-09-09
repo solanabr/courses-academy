@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Canopy depth buys shorter proofs with rent
+     purpose: show the tradeoff as two curves moving in opposite directions on real derived numbers
+     data: Tree: maxDepth 20 (1,048,576 leaves), maxBufferSize 256. Derived by overgrowth/tree-cost.ts. The cost axis is ACCOUNT BYTES, not SOL, on purpose: bytes are a property of the account layout and read the same to every learner, while SOL is bytes times a per-byte rent rate that SIMD-0437 is stepping down and that differs per cluster. The lesson's prose makes exactly this move, and the sevenfold shape is the durable teaching point at any rate. canopy 0  -> 174,840 bytes, 20 proof nodes on the wire canopy 6  -> 178,872 bytes, 14 proof nodes canopy 8  -> 191,160 bytes, 12 proof nodes canopy 10 -> 240,312 bytes, 10 proof nodes canopy 12 -> 436,920 bytes,  8 proof nodes canopy 13 -> 699,064 bytes,  7 proof nodes canopy 14 -> 1,223,352 bytes, 6 proof nodes (this lesson's spec; NOT the vendor's, whose million-leaf row is buffer 1024 / canopy 13 = 1,221,304 bytes) Ratio canopy-14 to canopy-0: 6.997x, i.e. six-sevenths of that account is canopy. Priced: (128 + bytes) x rate; 1,223,352 bytes was 8.515 SOL at the pre-SIMD-0437 6,960 lamports/byte and printed 6.215 SOL on devnet's 5,080 on 2026-09-06. Metaplex's published 8.5012 SOL is a DIFFERENT tree (buffer 1024 / canopy 13) that lands 0.17% away, so do not label this curve with their number.
+     prompt: Dual-axis line chart. X axis is canopy depth with the seven sampled values 0, 6, 8, 10, 12, 13, 14. Left Y axis is the tree's account size in bytes, rising steeply from 174,840 to 1,223,352. Right Y axis is proof nodes the client must ship, falling from 20 to 6. Two lines, clearly distinguished, each labeled at its endpoint. Annotate the canopy-14 point with "1,223,352 bytes - this lesson's spec" and the canopy-0 point with "174,840 bytes, but 20 nodes per write". Keep both axes labeled with units, and put the SOL translation with its rate, cluster and date in the caption rather than on the axis.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:451px;height:433px;right:-253px;top:133px;border-radius:36% 60% 61% 52% / 51% 65% 35% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:365px;height:472px;bottom:-251px;left:592px;border-radius:39% 56% 63% 44% / 64% 55% 37% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cn-card { background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); padding:20px 28px 14px; margin-top:2px; }
+  .cn-cap { margin-top:8px; font-family:var(--font-body); font-size:14px;
+            color:var(--text-secondary); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">the canopy tradeoff, in bytes &mdash; the half that never rots</div>
+  <h2 class="viz-title">canopy depth buys shorter proofs with account bytes</h2>
+  <div class="cn-card">
+    <svg width="1360" height="470" viewBox="0 0 1360 470" xmlns="http://www.w3.org/2000/svg">
+      <!-- gridlines (left-axis SOL ticks) -->
+      <line x1="80" y1="348.6" x2="1270" y2="348.6" stroke="#e8e2d2" stroke-width="1.5"/>
+      <line x1="80" y1="272.3" x2="1270" y2="272.3" stroke="#e8e2d2" stroke-width="1.5"/>
+      <line x1="80" y1="195.9" x2="1270" y2="195.9" stroke="#e8e2d2" stroke-width="1.5"/>
+      <line x1="80" y1="119.5" x2="1270" y2="119.5" stroke="#e8e2d2" stroke-width="1.5"/>
+      <!-- axes -->
+      <line x1="80" y1="30" x2="80" y2="425" stroke="#1B231D" stroke-width="2.5"/>
+      <line x1="1270" y1="30" x2="1270" y2="425" stroke="#1B231D" stroke-width="2.5"/>
+      <line x1="80" y1="425" x2="1270" y2="425" stroke="#1B231D" stroke-width="2.5"/>
+      <!-- left axis ticks: rent in SOL -->
+      <text x="70" y="430" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="end">0</text>
+      <text x="70" y="353" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="end">250k</text>
+      <text x="70" y="277" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="end">500k</text>
+      <text x="70" y="200" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="end">750k</text>
+      <text x="70" y="124" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="end">1.0M</text>
+      <text x="80" y="18" font-family="Inter" font-size="15" font-weight="700" fill="#008B4C" text-anchor="start">account bytes</text>
+      <!-- right axis ticks: proof nodes -->
+      <text x="1282" y="430" font-family="Inter" font-size="14" fill="#4a5248">0</text>
+      <text x="1282" y="331" font-family="Inter" font-size="14" fill="#4a5248">5</text>
+      <text x="1282" y="232" font-family="Inter" font-size="14" fill="#4a5248">10</text>
+      <text x="1282" y="134" font-family="Inter" font-size="14" fill="#4a5248">15</text>
+      <text x="1282" y="35"  font-family="Inter" font-size="14" fill="#4a5248">20</text>
+      <text x="1270" y="18" font-family="Inter" font-size="15" font-weight="700" fill="#1B231D" text-anchor="end">proof nodes on the wire</text>
+      <!-- x ticks: canopy depth -->
+      <text x="80"   y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">0</text>
+      <text x="590"  y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">6</text>
+      <text x="760"  y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">8</text>
+      <text x="930"  y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">10</text>
+      <text x="1100" y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">12</text>
+      <text x="1185" y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">13</text>
+      <text x="1270" y="447" font-family="Inter" font-size="14" fill="#4a5248" text-anchor="middle">14</text>
+      <text x="675"  y="466" font-family="Inter" font-size="15" font-weight="700" fill="#1B231D" text-anchor="middle">canopy depth</text>
+      <!-- proof-nodes line (falling) -->
+      <polyline points="80,30 590,148.5 760,188 930,227.5 1100,267 1185,286.8 1270,306.5"
+                fill="none" stroke="#1B231D" stroke-width="3" stroke-dasharray="9,7"/>
+      <circle cx="80" cy="30" r="5" fill="#1B231D"/><circle cx="590" cy="148.5" r="5" fill="#1B231D"/>
+      <circle cx="760" cy="188" r="5" fill="#1B231D"/><circle cx="930" cy="227.5" r="5" fill="#1B231D"/>
+      <circle cx="1100" cy="267" r="5" fill="#1B231D"/><circle cx="1185" cy="286.8" r="5" fill="#1B231D"/>
+      <circle cx="1270" cy="306.5" r="5" fill="#1B231D"/>
+      <text x="1240" y="336" font-family="Inter" font-size="15" font-weight="700" fill="#1B231D" text-anchor="end">proof nodes: 20 &#8594; 6</text>
+      <!-- rent line (rising) -->
+      <polyline points="80,371.5 590,370.3 760,366.6 930,351.6 1100,291.5 1185,211.4 1270,51.3"
+                fill="none" stroke="#008B4C" stroke-width="4"/>
+      <circle cx="80" cy="371.5" r="6" fill="#008B4C"/><circle cx="590" cy="370.3" r="6" fill="#008B4C"/>
+      <circle cx="760" cy="366.6" r="6" fill="#008B4C"/><circle cx="930" cy="351.6" r="6" fill="#008B4C"/>
+      <circle cx="1100" cy="291.5" r="6" fill="#008B4C"/><circle cx="1185" cy="211.4" r="6" fill="#008B4C"/>
+      <!-- canopy-14 highlight: the vendor figure -->
+      <circle cx="1270" cy="51.3" r="10" fill="#FFD23F" stroke="#1B231D" stroke-width="3"/>
+      <line x1="1246" y1="51.3" x2="1258" y2="51.3" stroke="#1B231D" stroke-width="2"/>
+      <rect x="912" y="34" width="334" height="36" rx="18" fill="#FFD23F" stroke="#1B231D" stroke-width="2"/>
+      <text x="1079" y="58" font-family="Inter" font-size="16" font-weight="700" fill="#1B231D" text-anchor="middle">1,223,352 bytes &#8212; this lesson&#8217;s spec</text>
+      <!-- canopy-0 annotation -->
+      <rect x="92" y="330" width="336" height="32" rx="16" fill="#FFFFFF" stroke="#1B231D" stroke-width="2"/>
+      <text x="260" y="351" font-family="Inter" font-size="15" font-weight="600" fill="#1B231D" text-anchor="middle">174,840 bytes, but 20 nodes per write</text>
+      <line x1="90" y1="362" x2="82" y2="370" stroke="#1B231D" stroke-width="2"/>
+    </svg>
+    <div class="cn-cap">depth 20 (1,048,576 leaves), buffer 256 &mdash; canopy 0/6/8/10/12/13/14 sampled, derived by overgrowth/tree-cost.ts. The account grows <b>sevenfold</b>, so six-sevenths of the famous figure is canopy at any rent rate. To price it: (128 + bytes) &times; your cluster&rsquo;s lamports/byte &mdash; 1,223,352 bytes was <b>8.515 SOL</b> at the pre-SIMD-0437 6,960, and <b>6.215 SOL</b> on devnet&rsquo;s 5,080 on 2026-09-06. Metaplex&rsquo;s published 8.5012 is a different tree &mdash; buffer 1024, canopy 13 &mdash; landing 0.17% away.</div>
+  </div>
+</div>
+</body></html>

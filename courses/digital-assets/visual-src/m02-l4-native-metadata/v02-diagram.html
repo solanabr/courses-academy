@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two homes for a token's name
+     purpose: contrast the separate-account Metaplex model with the Token-2022 native model the lesson builds
+     data: Left side (classic SPL era): mint account (82 bytes, owned by classic SPL Token) .. separate metadata PDA (owned by Metaplex Token Metadata program), derived from mint, holds name/symbol/uri. Two accounts, two owner programs, linked by PDA convention. Right side (Token-2022 native): one mint account owned by TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb. Its TLV region holds MetadataPointer (type 18) whose metadataAddress arrow loops back to the mint's own address, and TokenMetadata (type 19) holding name/symbol/uri inline.
+     prompt: Side-by-side panel diagram. Left panel: two separate account boxes with an arrow labeled "PDA derivation" between them, each box labeled with its owner program. Right panel: a single tall account box with an internal TLV list; the MetadataPointer entry has a curved arrow looping back to the box's own address header. Caption each panel: "two accounts, glued by convention" vs "one account, self-describing".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:478px;right:-260px;top:68px;border-radius:59% 60% 44% 49% / 38% 48% 43% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:395px;height:464px;bottom:-240px;left:594px;border-radius:51% 51% 36% 57% / 49% 51% 37% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 48px; }
+  .panels { display:flex; }
+  .panel { width:708px; background:var(--surface-card); border:2px solid var(--stbr-emerald);
+           border-radius:var(--radius-2xl); padding:24px 28px 0; display:flex;
+           flex-direction:column; }
+  .panel + .panel { margin-left:40px; }
+  .ph { font-family:var(--font-display); font-weight:900; font-size:23px;
+        color:var(--text-primary); margin-bottom:16px; }
+  .acct { border:2px solid var(--stbr-green); border-radius:var(--radius-lg);
+          background:var(--surface-paper); padding:14px 18px; }
+  .acct .an { font-family:var(--font-display); font-weight:900; font-size:20px;
+              color:var(--text-primary); }
+  .acct .ad { font-family:var(--font-body); font-size:14px; line-height:1.35;
+              color:var(--text-secondary); margin-top:4px; }
+  .owner { display:inline-block; margin-top:8px; font-family:var(--font-mono);
+           font-size:12px; font-weight:700; background:var(--surface-brand-deep);
+           color:var(--text-on-brand); border-radius:var(--radius-pill); padding:3px 12px; }
+  .varrow { height:66px; display:flex; align-items:center; justify-content:center; }
+  .cap { margin:auto -28px 0; background:var(--surface-brand); color:var(--text-on-brand);
+         border-radius:0 0 20px 20px; padding:13px 24px; font-family:var(--font-display);
+         font-weight:900; font-size:20px; text-align:center; }
+  /* right: single tall account */
+  .tall { position:relative; border:2px solid var(--stbr-green); border-radius:var(--radius-lg);
+          overflow:visible; }
+  .thead { height:54px; display:flex; align-items:center; background:var(--surface-inverse);
+           border-radius:10px 10px 0 0; padding:0 18px; font-family:var(--font-mono);
+           font-weight:700; font-size:15px; color:var(--stbr-cream); }
+  .tbase { height:42px; display:flex; align-items:center; padding:0 18px;
+           font-family:var(--font-body); font-size:14px; color:var(--text-secondary);
+           border-bottom:1px solid var(--border-subtle); }
+  .tlvlab { height:28px; display:flex; align-items:center; padding:0 18px;
+            font-family:var(--font-body); font-weight:800; font-size:11px;
+            letter-spacing:.13em; text-transform:uppercase; color:var(--stbr-green);
+            background:var(--surface-paper); }
+  .tlv { padding:12px 74px 12px 18px; border-bottom:1px solid var(--border-subtle); }
+  .tlv .tn { font-family:var(--font-display); font-weight:900; font-size:18px;
+             color:var(--text-primary); }
+  .tlv .td { font-family:var(--font-body); font-size:13.5px; line-height:1.35;
+             color:var(--text-secondary); margin-top:3px; }
+  .tlv.hot { background:var(--stbr-yellow); }
+  .tlv.hot .tn, .tlv.hot .td { color:var(--stbr-dark); }
+  .looplab { position:absolute; right:68px; top:61px; font-family:var(--font-body);
+             font-weight:800; font-size:12.5px; color:var(--text-primary);
+             background:var(--surface-card); border:1.5px solid var(--stbr-dark);
+             border-radius:var(--radius-pill); padding:3px 10px; }
+</style>
+  <div class="stbr-eyebrow">two homes for a token's name</div>
+  <h2 class="viz-title">separate metadata account vs self-describing mint</h2>
+
+  <div class="panels">
+    <div class="panel">
+      <div class="ph">classic SPL era</div>
+      <div class="acct">
+        <div class="an">mint account &middot; 82 bytes</div>
+        <div class="ad">supply, decimals, authorities &mdash; and nothing about a name</div>
+        <div class="owner">owner: classic SPL Token</div>
+      </div>
+      <div class="varrow">
+        <svg width="320" height="60" viewBox="0 0 320 60">
+          <line x1="90" y1="0" x2="90" y2="42" stroke="#1b231d" stroke-width="3"/>
+          <polygon points="82,42 98,42 90,58" fill="#1b231d"/>
+          <text x="108" y="34" font-family="Inter" font-size="14" font-weight="700" fill="#306c40">PDA derivation</text>
+        </svg>
+      </div>
+      <div class="acct">
+        <div class="an">metadata PDA</div>
+        <div class="ad">derived from the mint; holds name / symbol / uri</div>
+        <div class="owner">owner: Metaplex Token Metadata</div>
+      </div>
+      <div class="cap" style="margin-top:24px;">two accounts, glued by convention</div>
+    </div>
+
+    <div class="panel">
+      <div class="ph">Token-2022 native</div>
+      <div class="tall">
+        <div class="thead">mint &middot; owner: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb</div>
+        <div class="tbase">base mint fields &mdash; supply, decimals, authorities</div>
+        <div class="tlvlab">TLV region</div>
+        <div class="tlv hot">
+          <div class="tn">MetadataPointer &middot; type 18</div>
+          <div class="td">metadataAddress &rarr; loops back to this mint's own address</div>
+        </div>
+        <div class="tlv">
+          <div class="tn">TokenMetadata &middot; type 19</div>
+          <div class="td">name &middot; symbol &middot; uri stored inline, right here</div>
+        </div>
+        <svg width="58" height="240" viewBox="0 0 58 240" style="position:absolute; right:6px; top:0;">
+          <path d="M4 170 C 52 170, 52 130, 28 80" fill="none" stroke="#1b231d" stroke-width="3"/>
+          <polygon points="19,80 37,86 30,62" fill="#1b231d"/>
+        </svg>
+        <div class="looplab">points at itself</div>
+      </div>
+      <div style="flex:1;"></div>
+      <div class="cap">one account, self-describing</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The curve steepens as it drains, which is where the missing 63 SOL lives
+     purpose: show why a flat opening-price estimate under-counts graduation by a factor of ~3.8
+     data: Constant-product curve, reference pump constants (whole tokens, SOL): k = 32,190,000,000 held constant; price = virtualSol / virtualToken Points along the drain (tokens sold, virtual token reserve, spot price SOL/token): 0            1,073,000,000   2.7959e-8 200,000,000    873,000,000   4.2237e-8 400,000,000    673,000,000   7.1071e-8 600,000,000    473,000,000   1.4388e-7 793,100,000    279,900,000   4.1088e-7  (graduation) Price multiple from open to graduation: 14.70x Area under the true curve = 85.005 SOL (the derived threshold) Flat-price rectangle at the opening price = 22.174 SOL (the naive estimate)
+     prompt: Line chart. X axis "real tokens sold" from 0 to 793,100,000. Y axis "spot price (SOL per token)" using the five plotted points above, rising steeply toward the right. Shade the area under the curve and label it "85.005 SOL, derived". Overlay a flat dashed horizontal line at the opening price 2.7959e-8 with its rectangle shaded in a lighter tone, labeled "22.174 SOL, flat-price estimate". Annotate the right edge "price is 14.7x the opening price at graduation". Monospace axis labels, no icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:538px;height:553px;top:-289px;right:-289px;border-radius:58% 58% 37% 61% / 65% 35% 50% 61%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:491px;height:365px;left:-262px;top:337px;border-radius:50% 42% 49% 60% / 57% 59% 49% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">why the flat estimate misses by ~3.8&times;</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 14px;color:var(--stbr-dark);">The curve steepens as it drains: that is where the missing 63 SOL lives</h2>
+
+    <div style="position:relative;width:1240px;height:566px;">
+      <svg width="1240" height="530" viewBox="0 0 1240 530" style="display:block;">
+        <!-- horizontal gridlines -->
+        <line x1="80" y1="383" x2="1140" y2="383" stroke="#e5ddc8" stroke-width="1"/>
+        <line x1="80" y1="266" x2="1140" y2="266" stroke="#e5ddc8" stroke-width="1"/>
+        <line x1="80" y1="150" x2="1140" y2="150" stroke="#e5ddc8" stroke-width="1"/>
+        <line x1="80" y1="33" x2="1140" y2="33" stroke="#e5ddc8" stroke-width="1"/>
+        <!-- flat-price rectangle: 22.174 SOL naive estimate (the accent) -->
+        <rect x="80" y="467" width="1060" height="33" fill="#FFD23F" opacity="0.85"/>
+        <!-- area under the true curve: 85.005 SOL -->
+        <path d="M 80,467 L 347,451 615,417 882,332 1016,230 1083,140 1140,20 L 1140,500 L 80,500 Z" fill="#008B4C" opacity="0.16"/>
+        <!-- true curve -->
+        <path d="M 80,467 L 347,451 615,417 882,332 1016,230 1083,140 1140,20" fill="none" stroke="#008B4C" stroke-width="4" stroke-linejoin="round"/>
+        <!-- flat opening-price dashed line -->
+        <line x1="80" y1="467" x2="1140" y2="467" stroke="#1B231D" stroke-width="2" stroke-dasharray="9 7"/>
+        <!-- plotted spec points -->
+        <circle cx="80" cy="467" r="7" fill="#008B4C" stroke="#ffffff" stroke-width="2"/>
+        <circle cx="347" cy="451" r="7" fill="#008B4C" stroke="#ffffff" stroke-width="2"/>
+        <circle cx="615" cy="417" r="7" fill="#008B4C" stroke="#ffffff" stroke-width="2"/>
+        <circle cx="882" cy="332" r="7" fill="#008B4C" stroke="#ffffff" stroke-width="2"/>
+        <circle cx="1140" cy="20" r="8" fill="#1B231D" stroke="#ffffff" stroke-width="2"/>
+        <!-- axes -->
+        <line x1="80" y1="20" x2="80" y2="500" stroke="#1B231D" stroke-width="2"/>
+        <line x1="80" y1="500" x2="1140" y2="500" stroke="#1B231D" stroke-width="2"/>
+      </svg>
+
+      <!-- axis + point labels (HTML layer) -->
+      <div style="position:absolute;left:0;top:-4px;font-family:var(--font-body);font-size:12px;color:var(--text-muted,#6b7a6f);white-space:nowrap;">spot price (SOL / token)</div>
+      <div style="position:absolute;left:30px;top:26px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">4e-7</div>
+      <div style="position:absolute;left:30px;top:143px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">3e-7</div>
+      <div style="position:absolute;left:30px;top:259px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">2e-7</div>
+      <div style="position:absolute;left:30px;top:376px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">1e-7</div>
+      <div style="position:absolute;left:54px;top:494px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">0</div>
+      <div style="position:absolute;left:74px;top:506px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">0</div>
+      <div style="position:absolute;left:315px;top:506px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">200,000,000</div>
+      <div style="position:absolute;left:583px;top:506px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">400,000,000</div>
+      <div style="position:absolute;left:850px;top:506px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);">600,000,000</div>
+      <div style="position:absolute;left:1080px;top:506px;font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--stbr-dark);">793,100,000</div>
+      <div style="position:absolute;left:530px;top:536px;font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--stbr-dark);">real tokens sold &rarr;</div>
+
+      <!-- annotation chips -->
+      <div style="position:absolute;left:660px;top:390px;background:var(--stbr-emerald);border-radius:10px;padding:8px 14px;font-family:var(--font-body);font-size:14px;font-weight:700;color:#F5E8CA;">85.005 SOL &mdash; area under the true curve (derived)</div>
+      <div style="position:absolute;left:100px;top:428px;background:#ffffff;border:2px solid var(--stbr-yellow);border-radius:10px;padding:6px 12px;font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--stbr-dark);">22.174 SOL &mdash; flat rectangle at the opening price 2.7959e-8</div>
+      <div style="position:absolute;left:720px;top:34px;width:330px;background:#ffffff;border:1.5px solid var(--border-strong,#c9bd9d);border-radius:10px;padding:8px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);">at graduation the price is <span style="font-family:var(--font-mono);font-weight:700;">14.7&times;</span> the opening price &mdash; 4.1088e-7 SOL per token</div>
+      <div style="position:absolute;left:1156px;top:8px;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--stbr-dark);width:80px;">graduation</div>
+    </div>
+  </div>
+</div>
+</body></html>

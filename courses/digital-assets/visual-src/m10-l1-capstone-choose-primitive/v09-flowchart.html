@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What verify.ts actually checks, in order
+     purpose: show that the gate is four checks, and that only the third one differs by primitive family
+     data: 1. argv address == memo.assetAddress ? else FAIL 2. das getAsset(id, options.showFungible) resolves ? else FAIL (a cNFT against a non-DAS RPC dies here, every time) 3. interface matches the declared family ? core-asset -> interface == MplCoreAsset cnft       -> compression.compressed == true token      -> category == fungible AND token_info.token_program == the declared program 4. live set == declared set ? core-asset -> Object.keys(asset.plugins) cnft       -> structural tags: compressed, collection token      -> extension kinds from fetchMint + readExtensionState report MISSING and EXTRA separately exit 0 only if all four pass
+     prompt: Vertical flowchart, four numbered gates in sequence, each with a FAIL branch exiting right to a single red terminal marked "exit 1". Gates 3 and 4 each open into a three-way sub-branch box listing the per-family rule exactly as in the data. Single green terminal at the bottom marked "exit 0". Annotate gate 2 with the non-DAS RPC note.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:489px;height:460px;top:-242px;right:-242px;border-radius:60% 45% 38% 51% / 60% 53% 52% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:522px;height:522px;bottom:-321px;left:732px;border-radius:60% 52% 63% 58% / 41% 58% 56% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .gates { display:grid; grid-template-columns:1fr 74px 250px; row-gap:0;
+           margin-top:6px; align-items:stretch; }
+  .gate { grid-column:1; background:var(--surface-card); border:2.5px solid
+          var(--stbr-emerald); border-radius:var(--radius-lg); padding:9px 18px;
+          display:flex; flex-direction:column; gap:5px; }
+  .g-head { display:flex; align-items:center; gap:12px; }
+  .g-num { font-family:var(--font-display); font-weight:900; font-size:15px;
+           color:#F5E8CA; background:var(--stbr-emerald); width:28px; height:28px;
+           border-radius:var(--radius-pill); display:flex; align-items:center;
+           justify-content:center; }
+  .g-q { font-family:var(--font-display); font-weight:900; font-size:19px;
+         color:var(--text-primary); }
+  .g-q code { font-family:var(--font-mono); font-size:16.5px; }
+  .g-note { font-family:var(--font-body); font-weight:700; font-size:12px;
+            color:var(--stbr-dark); background:#FFF3C4; border:1.5px solid
+            var(--stbr-yellow); border-radius:var(--radius-pill);
+            padding:2px 12px; align-self:flex-start; }
+  .subs { display:flex; flex-direction:column; gap:3px; border-top:1.5px dashed
+          var(--border-subtle); padding-top:5px; }
+  .sub { display:flex; gap:10px; align-items:baseline; }
+  .sub-fam { width:104px; font-family:var(--font-body); font-weight:800;
+             font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+             color:var(--stbr-green); }
+  .sub-rule { font-family:var(--font-mono); font-weight:600; font-size:13px;
+              color:var(--text-primary); line-height:1.3; }
+  .varr { grid-column:1; display:flex; justify-content:center; height:20px; }
+  .failcell { grid-column:2; display:flex; align-items:center; }
+  .exit1 { grid-column:3; grid-row:1 / 8; background:var(--stbr-yellow);
+           border:2.5px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+           display:flex; flex-direction:column; align-items:center;
+           justify-content:center; gap:6px; padding:16px; }
+  .exit1-code { font-family:var(--font-mono); font-weight:700; font-size:30px;
+                color:var(--stbr-dark); }
+  .exit1-sub { font-family:var(--font-body); font-weight:800; font-size:12px;
+               letter-spacing:.1em; text-transform:uppercase;
+               color:var(--stbr-dark); text-align:center; }
+  .exit0 { grid-column:1; background:var(--stbr-emerald); border:2.5px solid
+           var(--stbr-dark); border-radius:var(--radius-lg); padding:10px 20px;
+           display:flex; align-items:center; justify-content:center; gap:16px; }
+  .exit0-code { font-family:var(--font-mono); font-weight:700; font-size:22px;
+                color:#F5E8CA; }
+  .exit0-sub { font-family:var(--font-body); font-weight:700; font-size:14px;
+               color:#F5E8CA; }
+</style>
+  <div class="stbr-eyebrow">four checks; only the third differs by family</div>
+  <h2 class="viz-title" style="font-size:40px;margin-bottom:8px;">what verify.ts actually checks, in order</h2>
+  <div class="gates">
+    <div class="gate" style="grid-row:1;">
+      <div class="g-head"><span class="g-num">1</span><span class="g-q"><code>argv address == memo.assetAddress</code> ?</span></div>
+    </div>
+    <div class="failcell" style="grid-row:1;"><svg width="74" height="22" viewBox="0 0 74 22"><line x1="2" y1="11" x2="60" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="70,11 58,4 58,18" fill="#1B231D"/></svg></div>
+    <div class="varr" style="grid-row:2;"><svg width="14" height="20" viewBox="0 0 14 20"><line x1="7" y1="0" x2="7" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="7,19 1,9 13,9" fill="#1B231D"/></svg></div>
+    <div class="gate" style="grid-row:3;">
+      <div class="g-head"><span class="g-num">2</span><span class="g-q"><code>das getAsset(id, options.showFungible)</code> resolves ?</span></div>
+      <span class="g-note">a cNFT against a non-DAS RPC dies here, every time</span>
+    </div>
+    <div class="failcell" style="grid-row:3;"><svg width="74" height="22" viewBox="0 0 74 22"><line x1="2" y1="11" x2="60" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="70,11 58,4 58,18" fill="#1B231D"/></svg></div>
+    <div class="varr" style="grid-row:4;"><svg width="14" height="20" viewBox="0 0 14 20"><line x1="7" y1="0" x2="7" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="7,19 1,9 13,9" fill="#1B231D"/></svg></div>
+    <div class="gate" style="grid-row:5;">
+      <div class="g-head"><span class="g-num">3</span><span class="g-q">interface matches the declared family ?</span></div>
+      <div class="subs">
+        <div class="sub"><span class="sub-fam">core-asset</span><span class="sub-rule">interface == MplCoreAsset</span></div>
+        <div class="sub"><span class="sub-fam">cnft</span><span class="sub-rule">compression.compressed == true</span></div>
+        <div class="sub"><span class="sub-fam">token</span><span class="sub-rule">category == fungible AND token_info.token_program == the declared program</span></div>
+      </div>
+    </div>
+    <div class="failcell" style="grid-row:5;"><svg width="74" height="22" viewBox="0 0 74 22"><line x1="2" y1="11" x2="60" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="70,11 58,4 58,18" fill="#1B231D"/></svg></div>
+    <div class="varr" style="grid-row:6;"><svg width="14" height="20" viewBox="0 0 14 20"><line x1="7" y1="0" x2="7" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="7,19 1,9 13,9" fill="#1B231D"/></svg></div>
+    <div class="gate" style="grid-row:7;">
+      <div class="g-head"><span class="g-num">4</span><span class="g-q">live set == declared set ?</span></div>
+      <div class="subs">
+        <div class="sub"><span class="sub-fam">core-asset</span><span class="sub-rule">Object.keys(asset.plugins)</span></div>
+        <div class="sub"><span class="sub-fam">cnft</span><span class="sub-rule">structural tags: compressed, collection</span></div>
+        <div class="sub"><span class="sub-fam">token</span><span class="sub-rule">extension kinds from fetchMint + readExtensionState</span></div>
+      </div>
+      <span class="g-note" style="background:var(--surface-paper);border-color:var(--border-strong);">report MISSING and EXTRA separately</span>
+    </div>
+    <div class="failcell" style="grid-row:7;"><svg width="74" height="22" viewBox="0 0 74 22"><line x1="2" y1="11" x2="60" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="70,11 58,4 58,18" fill="#1B231D"/></svg></div>
+    <div class="exit1">
+      <span class="exit1-code">exit 1</span>
+      <span class="exit1-sub">any gate fails</span>
+    </div>
+    <div class="varr" style="grid-row:8;"><svg width="14" height="20" viewBox="0 0 14 20"><line x1="7" y1="0" x2="7" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="7,19 1,9 13,9" fill="#1B231D"/></svg></div>
+    <div class="exit0" style="grid-row:9;">
+      <span class="exit0-code">exit 0</span>
+      <span class="exit0-sub">only if all four pass</span>
+    </div>
+  </div>
+</div>
+</body></html>

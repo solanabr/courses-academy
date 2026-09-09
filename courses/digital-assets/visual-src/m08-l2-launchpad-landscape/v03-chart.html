@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Published fee take, and the two venues I could not source
+     purpose: compare the fee rates each venue publishes on the same scale, and show honestly which cells are unverified rather than filling them in
+     data: Grouped bar chart, y-axis = fee rate in percent (0 to 1.2), all figures read 2026-08-22. Group "pre-graduation (on the curve)": pump.fun bonding-curve fee: 1.00% (100 bps) - HISTORIC: replaced by admin-editable market-cap tiers on 2025-09-01 20:00 UTC; the live tiers are dynamic and unsourced here Metaplex Genesis bonding-curve MODE: 1.10% total (0.50% protocol + 0.60% creator revenue), shown stacked Raydium LaunchLab: NOT SOURCED Meteora DBC: NOT SOURCED (configurable per curve) Group "post-graduation (launch pool CPMM, Genesis only)": 0.86% total, stacked: 0.40% protocol + 0.42% LP + 0.04% Raydium Note under the chart: never budget from pump's historic flat rate; read the live tier table.
+     prompt: Grouped bar chart with two groups on the x-axis as labeled. Stack the component rates inside the Genesis bars and label each segment with its percentage. Render the pump.fun bar in the same muted/outlined treatment as unsourced cells, stamped "HISTORIC (pre-2025-09-01)" across the bar, so a skimming reader cannot mistake it for a live rate. Render the two NOT SOURCED venues as empty outlined placeholder bars at zero height with the label "not sourced" written vertically, so the gap is visible rather than hidden. Add the dated note as a caption.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:546px;height:464px;right:-300px;top:292px;border-radius:42% 37% 49% 41% / 51% 38% 58% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:474px;bottom:-229px;left:-229px;border-radius:59% 61% 58% 44% / 54% 60% 64% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v3t { font-size:44px; margin:4px 0 16px; }
+  .chart { display:flex; margin-top:6px; }
+  .yaxis { width:64px; position:relative; height:400px; flex:0 0 64px; }
+  .yaxis .yl { position:absolute; right:12px; font-family:var(--font-body); font-size:12px;
+               font-weight:700; color:var(--text-muted); }
+  .plot { flex:1 1 0; position:relative; height:400px; border-bottom:3px solid var(--stbr-dark);
+          border-left:2px solid var(--stbr-dark); }
+  .grid { position:absolute; left:0; right:0; height:1.5px; background:var(--border-subtle); }
+  /* absolutely positioned slots: WeasyPrint mis-sizes nested flex rows, so each bar gets a fixed left */
+  .slot { position:absolute; bottom:0; width:150px; }
+  .gdiv { position:absolute; top:0; bottom:0; left:845px; width:2px; background:var(--border-subtle); }
+  .bval { font-family:var(--font-body); font-weight:800; font-size:14px; color:var(--text-primary);
+          text-align:center; padding-bottom:5px; line-height:1.25; }
+  .seg { display:flex; align-items:center; justify-content:center; font-family:var(--font-body);
+         font-weight:700; font-size:12px; text-align:center; line-height:1.2; }
+  .seg.em { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .seg.gr { background:var(--stbr-green); color:var(--stbr-cream); }
+  .seg.yw { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .seg.dk { background:var(--stbr-dark); }
+  .hist { position:relative; height:333px; background:rgba(118,127,115,0.16);
+          border:2px dashed var(--stbr-ink-500); border-radius:6px 6px 0 0; }
+  .stamp { position:absolute; left:50%; top:50%; width:300px; margin-left:-150px; margin-top:-12px;
+           transform:rotate(-70deg); text-align:center; font-family:var(--font-body); font-weight:800;
+           font-size:14.5px; letter-spacing:.04em; color:var(--stbr-ink-700); }
+  .nsrc { position:relative; height:400px; border:2px dashed var(--stbr-ink-300); border-radius:6px 6px 0 0; }
+  .nlbl { position:absolute; left:50%; top:50%; width:200px; margin-left:-100px; margin-top:-10px;
+          transform:rotate(-90deg); text-align:center; font-family:var(--font-body); font-weight:800;
+          font-size:15px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
+  .xrow { position:relative; height:64px; margin-left:66px; }
+  .xl { position:absolute; top:8px; width:150px; text-align:center; font-family:var(--font-body);
+        font-weight:700; font-size:13px; color:var(--text-primary); line-height:1.25; }
+  .xl small { display:block; font-size:11px; font-weight:600; color:var(--text-muted); }
+  .grow { position:relative; height:40px; margin-left:66px; }
+  .glbl { position:absolute; top:6px; font-family:var(--font-body); font-weight:800; font-size:12px;
+          letter-spacing:.06em; text-transform:uppercase; color:var(--stbr-green); text-align:center; }
+  .cap { margin-top:12px; font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+  .cap b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">fee rates, read 2026-08-22</div>
+  <h2 class="viz-title v3t">published fee take &mdash; and the two venues we could not source</h2>
+  <div class="chart">
+    <div class="yaxis">
+      <div class="yl" style="bottom:-7px;">0%</div>
+      <div class="yl" style="bottom:93px;">0.3%</div>
+      <div class="yl" style="bottom:193px;">0.6%</div>
+      <div class="yl" style="bottom:293px;">0.9%</div>
+      <div class="yl" style="bottom:393px;">1.2%</div>
+    </div>
+    <div class="plot">
+      <div class="grid" style="bottom:100px;"></div>
+      <div class="grid" style="bottom:200px;"></div>
+      <div class="grid" style="bottom:300px;"></div>
+      <div class="grid" style="bottom:399px;"></div>
+      <div class="gdiv"></div>
+      <div class="slot" style="left:40px;">
+        <div class="bval">1.00% (100 bps)</div>
+        <div class="hist"><div class="stamp">HISTORIC (pre-2025-09-01)</div></div>
+      </div>
+      <div class="slot" style="left:240px;">
+        <div class="bval">1.10% total</div>
+        <div class="seg yw" style="height:200px;">0.60% creator revenue</div>
+        <div class="seg em" style="height:167px;">0.50% protocol</div>
+      </div>
+      <div class="slot" style="left:440px;">
+        <div class="nsrc"><div class="nlbl">not sourced</div></div>
+      </div>
+      <div class="slot" style="left:640px;">
+        <div class="nsrc"><div class="nlbl">not sourced</div></div>
+      </div>
+      <div class="slot" style="left:920px;">
+        <div class="bval">0.86% total<br><small style="font-weight:700;color:var(--text-muted);">top sliver: 0.04% Raydium</small></div>
+        <div class="seg dk" style="height:13px;"></div>
+        <div class="seg gr" style="height:140px;">0.42% LP</div>
+        <div class="seg em" style="height:133px;">0.40% protocol</div>
+      </div>
+    </div>
+  </div>
+  <div class="xrow">
+    <div class="xl" style="left:40px;">pump.fun<small>bonding-curve fee</small></div>
+    <div class="xl" style="left:240px;">Metaplex Genesis<small>bonding-curve mode, stacked</small></div>
+    <div class="xl" style="left:440px;">Raydium LaunchLab<small>&nbsp;</small></div>
+    <div class="xl" style="left:640px;">Meteora DBC<small>configurable per curve</small></div>
+    <div class="xl" style="left:920px;">Metaplex Genesis<small>launch pool CPMM, stacked</small></div>
+  </div>
+  <div class="grow">
+    <div class="glbl" style="left:40px;width:750px;">pre-graduation (on the curve)</div>
+    <div class="glbl" style="left:895px;width:200px;">post-graduation (Genesis only)</div>
+  </div>
+  <div class="cap"><b>Never budget from pump's historic flat rate</b> &mdash; the 1.00% fee was replaced by admin-editable market-cap tiers on 2025-09-01 20:00 UTC; the live tiers are dynamic. Read the live tier table. All figures read 2026-08-22.</div>
+</div>
+</body></html>

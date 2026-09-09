@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The leaf the distributor hashes, byte by byte
+     purpose: pin down the exact preimage, since an off-by-one in field order silently invalidates every proof
+     data: node = sha256( claimant_pubkey[32] || amount_unlocked u64 LE[8] || amount_locked u64 LE[8] ) leaf = sha256( 0x00 || node ) parent = sha256( 0x01 || min(child_a, child_b) || max(child_a, child_b) ) The 0x00 and 0x01 prefixes separate leaves from internal nodes, which is what stops a second-preimage attack that passes an internal node off as a leaf. Pairs are sorted before hashing, so a proof carries only sibling hashes, no left/right flags. Proof length is log2(N): about 17 hashes, 544 bytes, for a 100,000-leaf tree.
+     prompt: Annotated diagram of the leaf preimage. Top row: three labeled byte ranges, "claimant pubkey, 32 bytes", "amount_unlocked, u64 little-endian, 8 bytes", "amount_locked, u64 little-endian, 8 bytes", drawn as adjacent blocks to scale. An arrow down to a box labeled "sha256 -> node". A second arrow down to a box labeled "sha256(0x00 || node) -> leaf", with a callout on the 0x00 explaining the domain separation. To the right, a small three-level tree showing two leaves combining into a parent labeled "sha256(0x01 || min || max)" and a note reading "proof = sibling hashes only, about 17 of them at 100,000 leaves".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:507px;bottom:-276px;right:-276px;border-radius:44% 57% 35% 41% / 43% 44% 61% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:489px;height:408px;left:-248px;top:148px;border-radius:37% 49% 44% 62% / 40% 49% 35% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">an off-by-one in field order silently invalidates every proof</div>
+    <h2 class="viz-title" style="font-size:36px;margin:6px 0 22px;color:var(--stbr-dark);">The leaf the distributor hashes, byte by byte</h2>
+
+    <div style="display:flex;gap:36px;align-items:flex-start;">
+      <!-- left: the preimage pipeline -->
+      <div style="flex:none;width:800px;">
+        <!-- byte ranges to scale (32 : 8 : 8) -->
+        <div style="display:flex;width:760px;height:66px;border:2px solid var(--stbr-dark);border-radius:10px;overflow:hidden;">
+          <div style="flex:none;width:500px;background:var(--stbr-green);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-cream);">claimant_pubkey</div>
+            <div style="font-family:var(--font-body);font-size:12px;color:var(--stbr-cream);">32 bytes</div>
+          </div>
+          <div style="flex:none;width:130px;background:var(--stbr-emerald);border-left:2px solid var(--stbr-dark);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--stbr-cream);">amount_unlocked</div>
+            <div style="font-family:var(--font-body);font-size:11px;color:var(--stbr-cream);">u64 LE &middot; 8 B</div>
+          </div>
+          <div style="flex:1;background:var(--stbr-emerald);border-left:2px solid var(--stbr-dark);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div style="font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--stbr-cream);">amount_locked</div>
+            <div style="font-family:var(--font-body);font-size:11px;color:var(--stbr-cream);">u64 LE &middot; 8 B</div>
+          </div>
+        </div>
+        <!-- arrow -->
+        <div style="width:760px;display:flex;flex-direction:column;align-items:center;margin:6px 0;">
+          <div style="width:2.5px;height:16px;background:var(--stbr-dark);"></div>
+          <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark);"></div>
+        </div>
+        <!-- node box -->
+        <div style="width:760px;background:var(--surface-inverse,#1B231D);border-radius:12px;padding:14px 22px;font-family:var(--font-mono);font-size:17px;color:var(--stbr-cream);">node = sha256( pubkey &#8214; unlocked &#8214; locked )</div>
+        <!-- arrow -->
+        <div style="width:760px;display:flex;flex-direction:column;align-items:center;margin:6px 0;">
+          <div style="width:2.5px;height:16px;background:var(--stbr-dark);"></div>
+          <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark);"></div>
+        </div>
+        <!-- leaf box + callout -->
+        <div style="display:flex;align-items:center;gap:0;">
+          <div style="flex:none;width:470px;background:var(--surface-inverse,#1B231D);border-radius:12px;padding:14px 22px;font-family:var(--font-mono);font-size:17px;color:var(--stbr-cream);">leaf = sha256( <span style="background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:6px;padding:1px 8px;font-weight:700;">0x00</span> &#8214; node )</div>
+          <div style="flex:none;width:34px;height:2.5px;background:var(--stbr-dark);"></div>
+          <div style="flex:1;border:2px solid var(--stbr-yellow);border-radius:12px;padding:9px 14px;font-family:var(--font-body);font-size:13px;line-height:1.45;color:var(--stbr-dark);"><b>0x00 = leaf domain tag.</b> Leaves and internal nodes hash under different prefixes, which stops a second-preimage attack that passes an internal node off as a leaf.</div>
+        </div>
+      </div>
+
+      <!-- right: one level up -->
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border:1px solid var(--border-subtle,#e5decb);border-radius:16px;padding:18px 22px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:17px;color:var(--stbr-dark);margin-bottom:12px;">one level up: internal nodes</div>
+        <div style="display:flex;justify-content:space-around;width:400px;">
+          <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:8px;padding:6px 16px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">leaf A</div>
+          <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:8px;padding:6px 16px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">leaf B</div>
+        </div>
+        <svg width="400" height="44" style="display:block;">
+          <line x1="100" y1="2" x2="200" y2="42" stroke="#1B231D" stroke-width="2.5"/>
+          <line x1="300" y1="2" x2="200" y2="42" stroke="#1B231D" stroke-width="2.5"/>
+        </svg>
+        <div style="width:400px;background:var(--surface-inverse,#1B231D);border-radius:10px;padding:10px 14px;font-family:var(--font-mono);font-size:13.5px;line-height:1.5;color:var(--stbr-cream);text-align:center;">parent = sha256( <span style="background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:5px;padding:0 6px;font-weight:700;">0x01</span> &#8214; min(A,B) &#8214; max(A,B) )</div>
+        <div style="margin-top:12px;font-family:var(--font-body);font-size:13px;line-height:1.5;color:var(--stbr-dark);">pairs are <b>sorted before hashing</b>, so a proof carries only sibling hashes &mdash; no left/right flags.</div>
+        <div style="margin-top:12px;background:var(--stbr-emerald);border-radius:10px;padding:9px 14px;font-family:var(--font-body);font-weight:600;font-size:13.5px;line-height:1.45;color:var(--stbr-cream);">proof length = log&#8322;(N): about 17 hashes, 544 bytes, for a 100,000-leaf tree</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Where the crank's cost actually lives
+     purpose: correct the instinct that compute cost is the constraint, and name the three costs that are
+     data: columns: cost | magnitude | who pays | what breaks when you ignore it row "compute for the harvest instruction": very low, a single-source harvest measured around 1,200 CU on a surfnet run | the crank's fee payer | nothing, this is the cheap part row "transaction packing": each source account is another key in the message, and the message must fit the transaction | you, in batch-size design | oversized batches fail to build, so you chunk and retry row "the account scan": getProgramAccounts over Token-2022 is a heavy query, throttled hardest on public RPCs | your RPC bill or your indexer | rate limits, missed accounts, a sweep that silently under-collects row "operational ownership": a cron, its alerting, and someone who notices when it dies | your team, forever | fees accrue and never route; the treasury reads zero while the fee clearly fires
+     prompt: Four-row comparison table with the four labeled columns. Visually de-emphasize the first row (the cheap one) and emphasize the last row as the one that actually causes incidents. Add a caption: "the instruction is cheap; the job around it is not".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:376px;right:-224px;top:242px;border-radius:43% 48% 55% 44% / 48% 39% 45% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:372px;height:466px;bottom:-234px;left:391px;border-radius:64% 45% 42% 41% / 40% 48% 49% 64%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:28px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">compute is not the constraint</div>
+    <h2 class="viz-title" style="font-size:34px;margin:6px 0 18px;color:var(--stbr-dark);">Where the crank&rsquo;s cost actually lives</h2>
+
+    <!-- header row -->
+    <div style="display:grid;grid-template-columns:250px 1fr 220px 1.2fr;background:var(--surface-inverse,#1B231D);border-radius:12px 12px 0 0;">
+      <div style="padding:11px 18px;font-family:var(--font-display);font-weight:800;font-size:14px;color:#F5E8CA;text-transform:uppercase;letter-spacing:.05em;">cost</div>
+      <div style="padding:11px 18px;font-family:var(--font-display);font-weight:800;font-size:14px;color:#F5E8CA;text-transform:uppercase;letter-spacing:.05em;">magnitude</div>
+      <div style="padding:11px 18px;font-family:var(--font-display);font-weight:800;font-size:14px;color:#F5E8CA;text-transform:uppercase;letter-spacing:.05em;">who pays</div>
+      <div style="padding:11px 18px;font-family:var(--font-display);font-weight:800;font-size:14px;color:#F5E8CA;text-transform:uppercase;letter-spacing:.05em;">what breaks when you ignore it</div>
+    </div>
+
+    <!-- row 1: de-emphasized, the cheap one -->
+    <div style="display:grid;grid-template-columns:250px 1fr 220px 1.2fr;background:var(--surface-paper,#faf5e8);border-bottom:1.5px solid var(--border-subtle,#e4dcc6);">
+      <div style="padding:12px 18px;font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--text-muted,#6b7a6f);">compute for the harvest instruction</div>
+      <div style="padding:12px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-muted,#6b7a6f);">very low &mdash; a single-source harvest measured around <span style="font-family:var(--font-mono);">1,200 CU</span> on a surfnet run</div>
+      <div style="padding:12px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-muted,#6b7a6f);">the crank&rsquo;s fee payer</div>
+      <div style="padding:12px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-muted,#6b7a6f);">nothing &mdash; this is the cheap part</div>
+    </div>
+
+    <!-- row 2 -->
+    <div style="display:grid;grid-template-columns:250px 1fr 220px 1.2fr;border-bottom:1.5px solid var(--border-subtle,#e4dcc6);">
+      <div style="padding:13px 18px;font-family:var(--font-body);font-weight:700;font-size:13.5px;color:var(--stbr-dark);">transaction packing</div>
+      <div style="padding:13px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">each source account is another key in the message, and the message must fit the transaction</div>
+      <div style="padding:13px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">you, in batch-size design</div>
+      <div style="padding:13px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">oversized batches fail to build, so you chunk and retry</div>
+    </div>
+
+    <!-- row 3 -->
+    <div style="display:grid;grid-template-columns:250px 1fr 220px 1.2fr;border-bottom:1.5px solid var(--border-subtle,#e4dcc6);">
+      <div style="padding:13px 18px;font-family:var(--font-body);font-weight:700;font-size:13.5px;color:var(--stbr-dark);">the account scan</div>
+      <div style="padding:13px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);"><span style="font-family:var(--font-mono);">getProgramAccounts</span> over Token-2022 is a heavy query, throttled hardest on public RPCs</div>
+      <div style="padding:13px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">your RPC bill or your indexer</div>
+      <div style="padding:13px 18px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">rate limits, missed accounts, a sweep that silently under-collects</div>
+    </div>
+
+    <!-- row 4: emphasized, the one that causes incidents -->
+    <div style="display:grid;grid-template-columns:250px 1fr 220px 1.2fr;background:rgba(255,210,63,0.18);border-left:5px solid var(--stbr-yellow);border-radius:0 0 12px 12px;">
+      <div style="padding:14px 18px 14px 13px;font-family:var(--font-body);font-weight:800;font-size:13.5px;color:var(--stbr-dark);">operational ownership
+        <div style="display:inline-block;background:var(--stbr-yellow);border-radius:999px;padding:1px 10px;font-size:10.5px;font-weight:700;color:var(--stbr-dark);margin-left:4px;">the incident-maker</div></div>
+      <div style="padding:14px 18px;font-family:var(--font-body);font-weight:600;font-size:12.5px;color:var(--stbr-dark);">a cron, its alerting, and someone who notices when it dies</div>
+      <div style="padding:14px 18px;font-family:var(--font-body);font-weight:600;font-size:12.5px;color:var(--stbr-dark);">your team, forever</div>
+      <div style="padding:14px 18px;font-family:var(--font-body);font-weight:600;font-size:12.5px;color:var(--stbr-dark);">fees accrue and never route; the treasury reads zero while the fee clearly fires</div>
+    </div>
+
+    <!-- verdict caption -->
+    <div style="margin-top:18px;background:var(--stbr-emerald);border-radius:12px;padding:12px 22px;text-align:center;">
+      <span style="font-family:var(--font-display);font-weight:800;font-size:18px;color:#F5E8CA;">the instruction is cheap; the job around it is not</span>
+    </div>
+  </div>
+</div>
+</body></html>

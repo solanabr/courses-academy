@@ -1,0 +1,102 @@
+id: lesson-date-m02-l1-economics-extensions
+slug: m02-l1-economics-extensions
+title: "Economics extensions: fees, interest, scaled UI (and where the fees GO)"
+skills:
+  - token-2022
+  - solana-kit
+  - transactions
+  - compute-budget
+  - checked-arithmetic
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    "@solana-program/system": "0.13.0"
+    typescript: "5.9.3"
+    tsx: "4.20.5"
+    surfpool: "1.2.1"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: fee-calculator
+    type: code
+    language: typescript
+    starter: fee-calculator/starter.ts
+    solution: fee-calculator/solution.ts
+    tests: fee-calculator/tests.json
+    hints:
+      - "Ceiling division on bigints: (numerator + 9999n) / 10000n"
+      - "Cap with a min against maximumFee"
+      - "Handle basisPoints === 0 and amount === 0n up front"
+  - key: check
+    type: quiz
+    questions:
+      - id: q1-where-fees-go
+        prompt: "You set a 1% transfer fee (100 bps) on SPROUT and someone sends 250 SPROUT to a buyer. The instant that transfer confirms, where does the withheld fee sit?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "In a treasury token account, credited automatically because you named a withdraw-withheld authority at mint creation."
+            correct: false
+            feedback: "Nothing auto-routes to a treasury, and the withdraw-withheld authority is a KEY, not an account: it is permission to move fees later, never a destination that gets credited. Fees reach a treasury only when that key runs the harvest and withdraw steps."
+          - id: c
+            label: "Burned from the recipient's balance and re-minted to the fee authority's own account in one step."
+            correct: false
+            feedback: "No burn and no mint happen anywhere in a fee transfer. The fee is held intact in the recipient account's own TransferFeeAmount slot, not destroyed and recreated somewhere else."
+          - id: d
+            label: "In the mint's own withheldAmount field, which the transfer instruction credits before it returns"
+            correct: false
+            feedback: "That field is real, and it fills only after someone runs the permissionless harvest; at confirmation time the fee is still scattered across recipient accounts."
+          - id: b
+            label: "Withheld on the buyer's (recipient's) token account, until you harvest it."
+            correct: true
+            feedback: "TransferFeeConfig forces a TransferFeeAmount slot onto every account of the mint, and that slot is where the fee accrues per holder until someone sweeps it."
+        explanation: "Token-2022 accrues transfer fees as WITHHELD amounts on each recipient token account. Routing them anywhere is a two-step job you own: harvest_withheld_tokens_to_mint sweeps accounts into the mint, then withdraw_withheld_tokens_from_mint pulls them to a destination. That harvest mechanic is exactly what m09-l1's fee-routing rail consumes."
+      - id: q2-mutual-exclusion
+        prompt: "You want SPROUT's UI balance to grow with yield (InterestBearingConfig) AND rebase for a stock-split-style event (ScaledUiAmount). You try to enable both on one mint. What happens?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Your client refuses to build the transaction, so nothing at all reaches the chain"
+            correct: false
+            feedback: "The builders assemble both instructions without complaint and the transaction is sent; the rejection comes back from the program, which is what makes this worth watching on a surfnet."
+          - id: c
+            label: "Initialization fails; they are mutually exclusive by the source rules."
+            correct: true
+            feedback: "Rule 4 is the one true mutual exclusion in the matrix, and the program delivers it as InvalidExtensionCombination, error 0x33, throwing the whole transaction away."
+          - id: e
+            label: "The second initializer fails and the mint lands with the first"
+            correct: false
+            feedback: "Both initializers write their TLV entries happily. It is initialize_mint, the last instruction, that runs the five rules over the assembled set, so there is no half-built mint left behind."
+          - id: b
+            label: "It initializes, but only the extension you set last takes effect."
+            correct: false
+            feedback: "There's no last-wins fallback; the initialization is rejected outright, not silently resolved."
+          - id: a
+            label: "Both initialize; the UI multiplies the interest rate by the scale factor."
+            correct: false
+            feedback: "They don't compose. Both extensions rewrite the displayed amount, so the runtime can't let both own it."
+        explanation: "Rule 4 of check_for_invalid_mint_extension_combinations makes ScaledUiAmount and InterestBearingConfig mutually exclusive: both reshape the displayed balance, so only one may. The combo validator you built in m01-l4 already rejects this pairing before you ever hit the chain."
+      - id: q3-measure-cu
+        prompt: "The lab measures each extension's CU/rent cost with simulateTransaction against surfpool instead of quoting a cost table. Why?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Per-extension CU costs are published nowhere, so you measure them on your target cluster."
+            correct: true
+            feedback: "The send helper asks the cluster on every run for exactly this reason: the number is a function of the deployed program, the active features, and how many extensions your accounts carry."
+          - id: c
+            label: "CU costs are fixed by the runtime and identical across extensions."
+            correct: false
+            feedback: "Extensions have different processing costs; they are not uniform, which is exactly why a single table would be misleading."
+          - id: d
+            label: "A published per-extension table prices mainnet, and the lab runs on a local fork"
+            correct: false
+            feedback: "There is no such table in the docs or the source to be cluster-specific about, which is the gap the measurement policy fills."
+          - id: b
+            label: "simulateTransaction is the only way to send a Token-2022 transfer at all."
+            correct: false
+            feedback: "It doesn't send anything; it simulates. Real transfers go through normal signed transactions; simulation is just for measurement here."
+        explanation: "No per-extension CU/rent table exists in the docs or source. Rather than freeze an unpublished (and cluster-dependent) number, the testing thread measures it live with simulateTransaction, the same honest 'measure it, don't assert it' move you'll reuse for tree-cost and airdrop math later."

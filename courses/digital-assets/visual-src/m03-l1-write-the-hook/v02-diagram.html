@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two naming conventions, one dispatch table
+     purpose: show how a single Anchor program answers both its own discriminators and the interface's hashed-string ones
+     data: incoming instruction data: [8-byte prefix][args] harvest-hook dispatch: sha256("global:initialize")[0..8]                                  -> initialize (issuer) sha256("global:allow_destination")[0..8]                           -> allow_destination (issuer) sha256("global:set_paused")[0..8]                                  -> set_paused (issuer) sha256("spl-transfer-hook-interface:initialize-extra-account-metas")[0..8] = 2b220d31a758ebeb -> initialize_extra_account_metas sha256("spl-transfer-hook-interface:update-extra-account-metas")[0..8]     = 9d692a926655f1ae -> update_extra_account_metas sha256("spl-transfer-hook-interface:execute")[0..8]                        = 692565c54bfb661a -> execute (Token-2022 only) no match -> Anchor fallback error, which reads like the program was never called
+     prompt: A single tall box labeled "harvest-hook dispatch" containing six rows, each row showing a monospace hash expression on the left and a handler name on the right. Group the top three with a bracket labeled "Anchor namespace, issuer-invoked" and the bottom three with a bracket labeled "interface namespace". Show an incoming arrow at the top labeled "[8-byte prefix][args]" and a greyed exit arrow at the bottom labeled "no match -> fallback error".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:539px;height:482px;top:-252px;right:-252px;border-radius:46% 44% 50% 63% / 60% 42% 42% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:588px;height:540px;bottom:-303px;left:-303px;border-radius:64% 47% 61% 50% / 39% 53% 52% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v2{display:flex;flex-direction:column;align-items:center}
+    .v2 .hdr{width:100%}
+    .v2 .stack{width:1240px;display:flex;flex-direction:column;align-items:center}
+    .v2 .inchip{font-family:var(--font-mono);font-size:15px;font-weight:700;background:var(--surface-inverse);color:var(--stbr-cream);padding:7px 16px;border-radius:10px}
+    .v2 .varrow{width:2px;height:18px;background:var(--stbr-dark)}
+    .v2 .vhead{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark)}
+    .v2 .varrow.grey{background:var(--stbr-ink-300)}
+    .v2 .vhead.grey{border-top-color:var(--stbr-ink-300)}
+    .v2 .panel{width:100%;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:18px;overflow:hidden;margin:4px 0}
+    .v2 .phead{background:var(--surface-inverse);color:var(--text-on-dark);font-family:var(--font-display);font-weight:800;font-size:18px;padding:10px 20px}
+    .v2 .grp{padding:6px 20px 4px;font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .v2 .grp.a{color:var(--stbr-green);border-top:1px solid var(--border-subtle)}
+    .v2 .grp.b{color:var(--stbr-emerald);border-top:2px solid var(--stbr-emerald)}
+    .v2 .drow{display:flex;align-items:center;gap:14px;padding:7px 20px;border-top:1px solid var(--border-subtle)}
+    .v2 .expr{flex:1;font-family:var(--font-mono);font-size:14px;color:var(--text-primary);white-space:nowrap}
+    .v2 .expr .hx{font-weight:700}
+    .v2 .to{font-family:var(--font-body);font-size:14px;color:var(--text-muted)}
+    .v2 .hand{font-family:var(--font-mono);font-size:14px;font-weight:700;padding:4px 12px;border-radius:999px;background:var(--surface-paper);border:1px solid var(--border-subtle);color:var(--stbr-green);white-space:nowrap}
+    .v2 .drow.hot{background:rgba(255,210,63,.28)}
+    .v2 .drow.hot .hand{background:var(--stbr-yellow);border-color:var(--stbr-yellow-600);color:var(--stbr-dark)}
+    .v2 .fallback{font-family:var(--font-body);font-size:14px;color:var(--text-muted);border:1.5px dashed var(--stbr-ink-300);border-radius:12px;padding:9px 18px;text-align:center}
+    .v2 .fallback .mono{font-family:var(--font-mono)}
+  </style>
+  <div class="v2">
+    <div class="hdr">
+      <div class="stbr-eyebrow">instruction dispatch</div>
+      <h2 class="viz-title" style="font-size:40px;margin-bottom:10px">two naming conventions, one dispatch table</h2>
+    </div>
+    <div class="stack">
+      <div class="inchip">incoming data: [8-byte prefix][args]</div>
+      <div class="varrow"></div><div class="vhead"></div>
+      <div class="panel">
+        <div class="phead">harvest-hook dispatch</div>
+        <div class="grp a">anchor namespace &middot; issuer-invoked</div>
+        <div class="drow"><div class="expr">sha256("global:initialize")[0..8]</div><div class="to">&rarr;</div><div class="hand">initialize</div></div>
+        <div class="drow"><div class="expr">sha256("global:allow_destination")[0..8]</div><div class="to">&rarr;</div><div class="hand">allow_destination</div></div>
+        <div class="drow"><div class="expr">sha256("global:set_paused")[0..8]</div><div class="to">&rarr;</div><div class="hand">set_paused</div></div>
+        <div class="grp b">interface namespace</div>
+        <div class="drow"><div class="expr">sha256("spl-transfer-hook-interface:initialize-extra-account-metas")[0..8] = <span class="hx">2b220d31a758ebeb</span></div><div class="to">&rarr;</div><div class="hand">initialize_extra_account_metas</div></div>
+        <div class="drow"><div class="expr">sha256("spl-transfer-hook-interface:update-extra-account-metas")[0..8] = <span class="hx">9d692a926655f1ae</span></div><div class="to">&rarr;</div><div class="hand">update_extra_account_metas</div></div>
+        <div class="drow hot"><div class="expr">sha256("spl-transfer-hook-interface:execute")[0..8] = <span class="hx">692565c54bfb661a</span></div><div class="to">&rarr;</div><div class="hand">execute &middot; Token-2022 only</div></div>
+      </div>
+      <div class="varrow grey"></div><div class="vhead grey"></div>
+      <div class="fallback">no match &rarr; <span class="mono">Anchor fallback error</span> &mdash; which reads like the program was never called</div>
+    </div>
+  </div>
+</div>
+</body></html>

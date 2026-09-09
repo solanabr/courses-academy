@@ -1,0 +1,23 @@
+/* ContentGen render layer — house decoration + display scale for rendered visuals.
+   Skill-owned companion to the brand export (styles.css). Linked next to _brand.css
+   as _render.css. Tune the house look HERE; never edit the user's styles.css. */
+
+/* the decoration layer is positioned against the full page box */
+body { position: relative; }
+
+/* larger editorial headers than the base type scale */
+.stbr-eyebrow { font-size: 20px; letter-spacing: 0.15em; }
+.viz-title    { font-size: 56px; line-height: 1.02; letter-spacing: -0.015em;
+                font-weight: var(--weight-black); margin: 6px 0 18px; }
+
+/* low-opacity "morph" blobs bleeding off the page corners, behind content.
+   Geometry (shape / corner / size / rotation / opacity / fill) is emitted per-asset
+   by render_visuals.py so every visual gets a unique arrangement. top/right/bottom/
+   left:-72px expands the layer past the 72px page padding to the true edge, so
+   overflow:hidden clips the bleed cleanly at the border. */
+.stbr-decor { position: absolute; top: -72px; right: -72px; bottom: -72px; left: -72px;
+              overflow: hidden; z-index: 0; }
+.stbr-decor svg { position: absolute; display: block; transform-origin: 50% 50%; }
+
+/* keep the content card above the decoration */
+body > .viz { position: relative; z-index: 1; }

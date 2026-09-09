@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The allowlist split is a trust boundary, not a feature list
+     purpose: show that the accept/refuse line separates extensions the pool can price from extensions that reserve issuer discretion
+     data: Left column (whitelisted on Raydium CP-Swap, "the pool can price this"): TransferFeeConfig - declared, capped fee, readable on the mint MetadataPointer - display only TokenMetadata - display only InterestBearingConfig - UI accrual, raw amounts untouched ScaledUiAmount - UI multiplier, raw amounts untouched Right column (refused, "the issuer keeps discretion"): TransferHook - unaudited code runs inside every swap PermanentDelegate - a key can sweep any account, pool vault included DefaultAccountState(Frozen) - issuer gates who may transact ConfidentialTransfer - encrypted amounts, invariant cannot be checked Center divider label: "can the pool compute its invariant without trusting the issuer?"
+     prompt: Two-column layout with a vertical divider. Left column titled "whitelisted: fully priceable", five rows. Right column titled "refused: issuer keeps discretion", four rows. The divider carries the question "can the pool compute its invariant without trusting the issuer?" rotated or stacked. Extension names monospace, one-line rationale under each in smaller text.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:538px;height:382px;right:-325px;top:316px;border-radius:50% 45% 42% 63% / 52% 40% 54% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:544px;height:573px;bottom:-334px;left:-334px;border-radius:38% 53% 61% 38% / 46% 35% 63% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .split { width:1456px; margin:4px auto 0; display:flex; }
+  .col { box-sizing:border-box; background:var(--surface-card);
+         border:2.5px solid var(--stbr-dark); padding:22px 26px; height:520px; }
+  .col.ok { width:628px; border-radius:var(--radius-xl) 0 0 var(--radius-xl);
+            border-right:none; }
+  .col.no { width:628px; border-radius:0 var(--radius-xl) var(--radius-xl) 0;
+            border-left:none; }
+  .divider { width:200px; height:520px; box-sizing:border-box;
+             background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+             display:flex; flex-direction:column; align-items:center;
+             justify-content:center; padding:0 22px; text-align:center; }
+  .divider .q { font-family:var(--font-display); font-weight:900; font-size:21px;
+                line-height:1.25; color:var(--stbr-dark); }
+  .divider .q-tag { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+                    letter-spacing:.12em; text-transform:uppercase;
+                    color:var(--stbr-dark); margin-bottom:14px; }
+  .col-h { font-family:var(--font-display); font-weight:900; font-size:23px;
+           line-height:1.1; margin-bottom:2px; }
+  .col.ok .col-h { color:var(--stbr-emerald); }
+  .col.no .col-h { color:var(--stbr-dark); }
+  .col-sub { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+             color:var(--text-muted); margin-bottom:14px; }
+  .ext { border-radius:var(--radius-md); padding:13px 14px; margin-bottom:10px; }
+  .col.ok .ext { background:rgba(0,139,76,0.08);
+                 border-left:5px solid var(--stbr-emerald); }
+  .col.no .ext { background:var(--stbr-cream-200);
+                 border-left:5px solid var(--stbr-ink-500); }
+  .ext .nm { font-family:var(--font-mono); font-weight:700; font-size:16.5px;
+             color:var(--text-primary); }
+  .ext .why { font-family:var(--font-body); font-weight:500; font-size:13.5px;
+              line-height:1.3; color:var(--text-secondary); margin-top:2px; }
+  .col.no .ext.tall { padding-top:25px; padding-bottom:25px; }
+</style>
+  <div class="stbr-eyebrow">the allowlist split</div>
+  <h2 class="viz-title" style="font-size:44px;">a trust boundary, not a feature list</h2>
+  <div class="split">
+    <div class="col ok">
+      <div class="col-h">whitelisted: fully priceable</div>
+      <div class="col-sub">on Raydium CP-Swap &mdash; "the pool can price this"</div>
+      <div class="ext"><div class="nm">TransferFeeConfig</div><div class="why">declared, capped fee, readable on the mint</div></div>
+      <div class="ext"><div class="nm">MetadataPointer</div><div class="why">display only</div></div>
+      <div class="ext"><div class="nm">TokenMetadata</div><div class="why">display only</div></div>
+      <div class="ext"><div class="nm">InterestBearingConfig</div><div class="why">UI accrual, raw amounts untouched</div></div>
+      <div class="ext"><div class="nm">ScaledUiAmount</div><div class="why">UI multiplier, raw amounts untouched</div></div>
+    </div>
+    <div class="divider">
+      <div class="q-tag">the boundary</div>
+      <div class="q">can the pool compute its invariant without trusting the issuer?</div>
+    </div>
+    <div class="col no">
+      <div class="col-h">refused: issuer keeps discretion</div>
+      <div class="col-sub">off the CP-Swap allowlist &mdash; "the issuer keeps discretion"</div>
+      <div class="ext tall"><div class="nm">TransferHook</div><div class="why">unaudited code runs inside every swap</div></div>
+      <div class="ext tall"><div class="nm">PermanentDelegate</div><div class="why">a key can sweep any account, pool vault included</div></div>
+      <div class="ext tall"><div class="nm">DefaultAccountState(Frozen)</div><div class="why">issuer gates who may transact</div></div>
+      <div class="ext tall"><div class="nm">ConfidentialTransfer</div><div class="why">encrypted amounts, invariant cannot be checked</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

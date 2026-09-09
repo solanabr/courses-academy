@@ -1,0 +1,92 @@
+id: lesson-date-m02-l3-holder-protection-extensions
+slug: m02-l3-holder-protection-extensions
+title: "Holder-protection extensions: what accounts can refuse"
+skills:
+  - token-2022
+  - solana-kit
+  - account-model
+  - program-security
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    "@solana-program/system": "0.13.0"
+    "@solana-program/memo": "0.12.0"
+    typescript: "5.9.3"
+    tsx: "4.23.12"
+    surfpool: "1.2.1"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1-forced-pair
+        prompt: "You want soulbound SPROUT badges: non-transferable fungible tokens. You enable NonTransferable on the mint. Select the two extensions Token-2022 then forces onto every holder account."
+        multiSelect: true
+        options:
+          - id: b
+            label: "ImmutableOwner, so the account's owner authority cannot be reassigned by SetAuthority"
+            correct: true
+            feedback: "Closing the transfer door means welding the ownership door too, or a holder sells the whole account instead of the token and the guarantee is decoration."
+          - id: e
+            label: "CpiGuard, so no program can move the badge out through a cross-program invocation"
+            correct: false
+            feedback: "CpiGuard is a holder's own opt-in defence, toggled owner-signed on the account, and a soulbound mint blocks the transfer at the program level long before a guard would matter."
+          - id: d
+            label: "TransferFeeAmount, the per-holder slot the forced-pair lookup attaches to the account"
+            correct: false
+            feedback: "That slot is real and it is forced by TransferFeeConfig, a different row of the same lookup; a badge mint with no fee has nothing to accrue there."
+          - id: c
+            label: "MemoTransfer, so every badge that arrives leaves a settlement reference in the log"
+            correct: false
+            feedback: "MemoTransfer is opt-in, enabled by the account's own owner after creation, and nothing in the forced-pair lookup attaches it to anything."
+          - id: a
+            label: "NonTransferableAccount, the marker recording that this account holds soulbound tokens"
+            correct: true
+            feedback: "Type 13, stamped on the account at initialization; without it the account cannot be created for this mint at all."
+        explanation: "A NonTransferable mint forces the [NonTransferableAccount, ImmutableOwner] pair onto holder accounts, the soulbound-fungible pattern. The account can't be transferred and its owner can't be reassigned, so the badge truly sticks to its holder."
+      - id: q2-memo-required
+        prompt: "A partner integrates your MemoTransfer-enabled account and reports that transfers to it keep failing. What's actually going on?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "MemoTransfer requires the sender to hold a special memo NFT first."
+            correct: false
+            feedback: "There's no memo NFT; the requirement is just a memo instruction alongside the transfer, not a token gate."
+          - id: b
+            label: "MemoTransfer globally pauses transfers the way Pausable does."
+            correct: false
+            feedback: "MemoTransfer is per-account and doesn't halt anything globally; it only rejects transfers lacking a memo."
+          - id: c
+            label: "Every transfer into a memo-required account must include a memo instruction, or it reverts."
+            correct: true
+            feedback: "The memo has to sit immediately before the transfer in the same transaction, which is why perfectly normal partner code reverts against your account and nowhere else."
+          - id: d
+            label: "The receiving account's owner has to attach the memo, and yours has not"
+            correct: false
+            feedback: "The memo rides in the sender's transaction, so the burden lands on every partner who transfers to you. That is the integration tax Meteora's checklist warns its integrators about."
+        explanation: "MemoTransfer makes a destination refuse any incoming transfer that doesn't carry a memo instruction, the integration burden Meteora's checklist warns about ('ensure destinations accept memo-required'). The sender, not you, has to attach the memo."
+      - id: q3-immutable-owner
+        prompt: "Why do Associated Token Accounts ship ImmutableOwner by default?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "So a single derived account can hold balances of several different mints at once."
+            correct: false
+            feedback: "An ATA holds exactly one mint; ImmutableOwner has nothing to do with multi-mint storage."
+          - id: d
+            label: "Because the classic program enforces the same lock, so ATAs match on both programs"
+            correct: false
+            feedback: "The classic program stores no extensions at all: it takes the instruction as a no-op and logs a suggestion to upgrade, so the real enforcement exists on the Token-2022 side only."
+          - id: c
+            label: "So the account can be cheaply handed to a new owner later without recreating an ATA at a freshly derived address."
+            correct: false
+            feedback: "That's the opposite: ImmutableOwner exists specifically to prevent re-owning the account."
+          - id: a
+            label: "So the owner field can never be reassigned, closing a class of account-takeover tricks."
+            correct: true
+            feedback: "An ATA's address derives from its owner, so every future sender computes it without asking; reassignable ownership would quietly redirect all of that to somebody else."
+        explanation: "ImmutableOwner locks the owner authority so it can never be changed. ATAs ship it by default because their address is derived deterministically, and without the lock a program could re-own a derived account out from under its holder."

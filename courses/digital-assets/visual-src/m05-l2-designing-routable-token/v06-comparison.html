@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Five venues, five different rules
+     purpose: kill the one-allowlist-fits-all assumption by lining up how each venue actually decides
+     data: Raydium CP-Swap / CLMM: code allowlist, exactly five extensions; read in source at 244e124 on 2026-08-22 and put in front of a mainnet fork (m05-l1) Raydium AMM v4 / Stable AMM: classic SPL only, program predates Token-2022; verified in docs (docs.raydium.io, 2026-08-22) Orca: docs support table + Token Badge review, per-mint human decision; VERIFY: the table is docs guidance, not enforced code; submit your mint for the badge Jupiter: per-extension routing policy not found in its docs; VERIFY: quote your actual mint against the live API Meteora DBC: supports transfer-hook configs, the counter-thesis venue; the home for hook-bearing launches (MeteoraAg dynamic-bonding-curve README @ 3b540e9, read 2026-08-22)
+     prompt: Five-row comparison table. Columns: venue, decision mechanism, status badge. Status badges: "verified" (CP-Swap, AMM v4, Meteora rows) versus "VERIFY YOURSELF" (Orca, Jupiter rows) in a contrasting warning treatment. Keep mechanism text to one line per row.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:464px;height:451px;right:-260px;top:125px;border-radius:35% 39% 44% 48% / 41% 44% 55% 54%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:396px;height:458px;bottom:-254px;left:381px;border-radius:37% 63% 43% 40% / 36% 58% 40% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v6 { width:1380px; margin:4px auto 0; background:var(--surface-card);
+        border:2.5px solid var(--stbr-dark); border-radius:var(--radius-xl);
+        overflow:hidden; }
+  .v6 .row { display:flex; align-items:center; min-height:88px;
+             border-bottom:1.5px solid var(--border-subtle); box-sizing:border-box;
+             padding:10px 26px; }
+  .v6 .row:last-child { border-bottom:none; }
+  .v6 .row.hd { min-height:52px; background:var(--stbr-emerald); border-bottom:none; }
+  .v6 .row.hd > div { font-family:var(--font-display); font-weight:800; font-size:14px;
+                      letter-spacing:.08em; text-transform:uppercase;
+                      color:var(--stbr-cream); }
+  .v6 .venue { width:300px; flex:none; }
+  .v6 .venue .vn { font-family:var(--font-display); font-weight:900; font-size:20px;
+                   line-height:1.12; color:var(--text-primary); }
+  .v6 .mech { flex:1; padding-right:24px; }
+  .v6 .mech .m1 { font-family:var(--font-body); font-weight:600; font-size:15.5px;
+                  line-height:1.3; color:var(--text-primary); }
+  .v6 .mech .m2 { font-family:var(--font-body); font-weight:500; font-size:12.5px;
+                  line-height:1.3; color:var(--text-muted); margin-top:3px; }
+  .v6 .st { width:220px; flex:none; text-align:right; }
+  .bdg { display:inline-block; font-family:var(--font-body); font-weight:800;
+         font-size:13.5px; letter-spacing:.06em; padding:7px 16px;
+         border-radius:var(--radius-pill); white-space:nowrap; }
+  .bdg.ok { background:var(--stbr-cream-200); color:var(--stbr-emerald);
+            border:2px solid var(--stbr-emerald); }
+  .bdg.diy { background:var(--stbr-yellow); color:var(--stbr-dark);
+             border:2px solid var(--stbr-dark); }
+  .v6 .row.diyrow { background:rgba(255,210,63,0.14); }
+</style>
+  <div class="stbr-eyebrow">no one-allowlist-fits-all</div>
+  <h2 class="viz-title" style="font-size:44px;">five venues, five different rules</h2>
+  <div class="v6">
+    <div class="row hd">
+      <div class="venue">venue</div>
+      <div class="mech">decision mechanism</div>
+      <div class="st">status</div>
+    </div>
+    <div class="row">
+      <div class="venue"><div class="vn">Raydium CP-Swap / CLMM</div></div>
+      <div class="mech"><div class="m1">code allowlist, exactly five extensions</div>
+        <div class="m2">read in source at 244e124 on 2026-08-22, put in front of a mainnet fork (m05-l1)</div></div>
+      <div class="st"><span class="bdg ok">verified</span></div>
+    </div>
+    <div class="row">
+      <div class="venue"><div class="vn">Raydium AMM v4 / Stable AMM</div></div>
+      <div class="mech"><div class="m1">classic SPL only &mdash; program predates Token-2022</div>
+        <div class="m2">verified in docs (docs.raydium.io, 2026-08-22)</div></div>
+      <div class="st"><span class="bdg ok">verified</span></div>
+    </div>
+    <div class="row diyrow">
+      <div class="venue"><div class="vn">Orca</div></div>
+      <div class="mech"><div class="m1">docs support table + Token Badge review, per-mint human decision</div>
+        <div class="m2">the table is docs guidance, not enforced code &mdash; submit your mint for the badge</div></div>
+      <div class="st"><span class="bdg diy">VERIFY YOURSELF</span></div>
+    </div>
+    <div class="row diyrow">
+      <div class="venue"><div class="vn">Jupiter</div></div>
+      <div class="mech"><div class="m1">per-extension routing policy not found in its docs</div>
+        <div class="m2">quote your actual mint against the live API</div></div>
+      <div class="st"><span class="bdg diy">VERIFY YOURSELF</span></div>
+    </div>
+    <div class="row">
+      <div class="venue"><div class="vn">Meteora DBC</div></div>
+      <div class="mech"><div class="m1">supports transfer-hook configs &mdash; the counter-thesis venue, home for hook-bearing launches</div>
+        <div class="m2">MeteoraAg dynamic-bonding-curve README @ 3b540e9, read 2026-08-22</div></div>
+      <div class="st"><span class="bdg ok">verified</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

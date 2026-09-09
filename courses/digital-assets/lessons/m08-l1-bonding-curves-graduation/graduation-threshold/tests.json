@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1-pump-constants",
+    "input": "30, 1073, 793.1",
+    "expectedOutput": "Math.abs(result - 85.005) < 0.02",
+    "description": "pump.fun's first-party constants graduate at ~85 SOL, derived from the invariant: not the ~22 SOL the opening-price sum gives."
+  },
+  {
+    "id": "t2-round-curve",
+    "input": "30, 1000, 800",
+    "expectedOutput": "Math.abs(result - 120) < 0.01",
+    "description": "30*1000/(1000-800) - 30 = 120: draining 80% of the token reserve takes the SOL reserve from 30 to 150; the threshold is the 120 SOL added (4x the initial reserve)."
+  },
+  {
+    "id": "t3-deeper-sol-reserve",
+    "input": "85, 1073, 793.1",
+    "expectedOutput": "Math.abs(result - 240.848) < 0.05",
+    "description": "A deeper starting SOL reserve raises the graduation cost proportionally along the same curve shape."
+  },
+  {
+    "id": "t4-nothing-sellable",
+    "input": "30, 1073, 0",
+    "expectedOutput": "result === 0",
+    "description": "If no real tokens are sellable off the curve, zero SOL is needed to graduate: a sanity anchor the opening-price model also passes."
+  }
+]

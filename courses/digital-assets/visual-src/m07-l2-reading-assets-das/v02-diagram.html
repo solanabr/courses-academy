@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The trust boundary you cross when you call DAS
+     purpose: fix in the reader's head that a DAS read is a database read, so freshness and completeness caveats later in the lesson land as consequences rather than as warnings
+     data: Layer 1, the chain: accounts (SPROUT mint, Almanac Core asset) and Merkle tree roots (Harvest crate trees). This is consensus state. Layer 2, the indexer: a provider runs Metaplex's Digital Asset RPC infrastructure, watches transactions, and writes parsed rows into its own database. Freshness and completeness are properties of THIS layer, not of the chain. Layer 3, your app: one JSON-RPC POST to the provider's endpoint, methods getAsset, getAssetsByOwner, getAssetProof, searchAssets, DAS spec 1.1.0. Side path: getAccountInfo from your app straight to layer 1, bypassing the index. Available for the mint and the Core asset. Not available for the cNFT.
+     prompt: Three stacked horizontal layers labeled chain, indexer, your app, bottom to top. Draw the indexer layer with a database cylinder and an ingest arrow from the chain. From your app, draw one solid arrow down into the indexer labeled with the four DAS method names, and one dashed side arrow bypassing the indexer straight to the chain labeled getAccountInfo, with a small crossed marker where that dashed arrow would reach a compressed NFT. Draw a labeled horizontal line between the chain and indexer layers reading "trust boundary: freshness and completeness live above this line".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:553px;height:460px;top:-272px;right:-272px;border-radius:51% 48% 61% 54% / 41% 36% 62% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:548px;height:502px;left:-298px;top:84px;border-radius:60% 41% 58% 48% / 56% 51% 49% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stack-wrap { display:flex; gap:0; margin-top:10px; }
+  .layers { flex:1 1 0; display:flex; flex-direction:column; }
+  .rail { flex:0 0 250px; position:relative; }
+  .layer { border:2.5px solid var(--stbr-dark); border-radius:var(--radius-xl);
+           padding:0 26px; display:flex; align-items:center; gap:22px; }
+  .layer-tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+               letter-spacing:.12em; text-transform:uppercase; }
+  .layer-name { font-family:var(--font-display); font-weight:900; font-size:24px; }
+  .app { height:104px; background:var(--surface-card); }
+  .gap1 { height:62px; display:flex; align-items:center; justify-content:center; gap:14px; }
+  .methods { font-family:var(--font-mono); font-weight:700; font-size:15px;
+             color:var(--stbr-green); background:var(--surface-card);
+             border:1.5px solid var(--stbr-green); border-radius:var(--radius-pill);
+             padding:7px 16px; }
+  .indexer { height:198px; background:var(--surface-card); }
+  .cyl { flex:0 0 128px; height:88px; border:2.5px solid var(--stbr-dark);
+         border-radius:64px / 26px; display:flex; align-items:center; justify-content:center;
+         font-family:var(--font-mono); font-weight:700; font-size:14px;
+         color:var(--text-primary); background:var(--surface-paper); }
+  .boundary { height:54px; display:flex; align-items:center; gap:16px; padding:0 8px; }
+  .ingest { display:flex; align-items:center; gap:8px; font-family:var(--font-body);
+            font-weight:700; font-size:13.5px; color:var(--text-primary); white-space:nowrap; }
+  .b-line { flex:1 1 0; border-top:3.5px dashed var(--stbr-dark); }
+  .b-chip { font-family:var(--font-body); font-weight:800; font-size:14.5px;
+            color:var(--stbr-dark); background:var(--stbr-yellow);
+            border:2px solid var(--stbr-dark); border-radius:var(--radius-pill);
+            padding:6px 16px; white-space:nowrap; }
+  .chain { height:176px; background:var(--surface-inverse); border-color:var(--stbr-dark); }
+  .chain .layer-tag, .chain .layer-name { color:#F5E8CA; }
+  .chain-chips { display:flex; flex-direction:column; gap:8px; }
+  .cchip { font-family:var(--font-mono); font-weight:600; font-size:14.5px; color:#F5E8CA;
+           border:1.5px solid rgba(245,232,202,0.5); border-radius:var(--radius-pill);
+           padding:5px 14px; }
+  .l-body { display:flex; flex-direction:column; gap:6px; }
+  .l-sub { font-family:var(--font-body); font-weight:600; font-size:14.5px; line-height:1.35;
+           color:var(--text-secondary); max-width:640px; }
+  .chain .l-sub { color:rgba(245,232,202,0.85); }
+  .rail-chip { position:absolute; left:96px; top:210px; font-family:var(--font-mono);
+               font-weight:700; font-size:14.5px; color:var(--text-primary);
+               background:var(--surface-card); border:1.5px dashed var(--stbr-dark);
+               border-radius:var(--radius-pill); padding:5px 12px; }
+  .rail-ok { position:absolute; left:80px; top:452px; font-family:var(--font-body);
+             font-weight:700; font-size:12.5px; color:var(--stbr-green);
+             background:var(--surface-card); border:1.5px solid var(--stbr-green);
+             border-radius:var(--radius-pill); padding:4px 10px; white-space:nowrap; }
+  .rail-no { position:absolute; left:80px; top:492px; font-family:var(--font-body);
+             font-weight:800; font-size:12.5px; color:var(--stbr-dark);
+             background:var(--surface-card); border:2px solid var(--stbr-dark);
+             border-radius:var(--radius-pill); padding:4px 10px; white-space:nowrap; }
+</style>
+  <div class="stbr-eyebrow">a DAS read is a database read</div>
+  <h2 class="viz-title" style="font-size:48px;">the trust boundary you cross when you call DAS</h2>
+  <div class="stack-wrap">
+    <div class="layers">
+      <div class="layer app">
+        <div class="l-body">
+          <span class="layer-tag" style="color:var(--stbr-emerald);">layer 3</span>
+          <span class="layer-name" style="color:var(--text-primary);">your app</span>
+        </div>
+        <div class="l-sub">one JSON-RPC POST to the provider&rsquo;s endpoint</div>
+      </div>
+      <div class="gap1">
+        <svg width="30" height="44" viewBox="0 0 30 44"><line x1="15" y1="2" x2="15" y2="32" stroke="#008B4C" stroke-width="3"/><polygon points="15,42 7,30 23,30" fill="#008B4C"/></svg>
+        <span class="methods">getAsset &middot; getAssetsByOwner &middot; getAssetProof &middot; searchAssets</span>
+        <span class="l-sub" style="font-weight:700;">DAS spec 1.1.0</span>
+      </div>
+      <div class="layer indexer">
+        <div class="l-body">
+          <span class="layer-tag" style="color:var(--stbr-emerald);">layer 2</span>
+          <span class="layer-name" style="color:var(--text-primary);">the indexer</span>
+        </div>
+        <div class="cyl">provider DB</div>
+        <div class="l-sub">a provider runs Metaplex&rsquo;s Digital Asset RPC infrastructure, watches transactions, and writes parsed rows into its own database.<br><b style="color:var(--stbr-green);">Freshness and completeness are properties of THIS layer, not of the chain.</b></div>
+      </div>
+      <div class="boundary">
+        <span class="ingest">
+          <svg width="22" height="34" viewBox="0 0 22 34"><line x1="11" y1="32" x2="11" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="11,2 4,14 18,14" fill="#1B231D"/></svg>
+          ingest
+        </span>
+        <span class="b-line"></span>
+        <span class="b-chip">trust boundary: freshness and completeness live above this line</span>
+        <span class="b-line"></span>
+      </div>
+      <div class="layer chain">
+        <div class="l-body">
+          <span class="layer-tag">layer 1</span>
+          <span class="layer-name">the chain</span>
+        </div>
+        <div class="chain-chips">
+          <span class="cchip">SPROUT mint &mdash; account</span>
+          <span class="cchip">Almanac Core asset &mdash; account</span>
+          <span class="cchip">Harvest crate trees &mdash; Merkle roots</span>
+        </div>
+        <div class="l-sub" style="max-width:340px;">consensus state &mdash; what validators agree is true</div>
+      </div>
+    </div>
+    <div class="rail">
+      <svg width="250" height="594" viewBox="0 0 250 594" style="position:absolute;top:0;left:0;">
+        <polyline points="0,52 70,52 70,522" fill="none" stroke="#1B231D" stroke-width="2.5" stroke-dasharray="9,7"/>
+        <polygon points="70,536 62,522 78,522" fill="#1B231D"/>
+      </svg>
+      <span class="rail-chip">getAccountInfo</span>
+      <span class="rail-ok">&#10003; mint &middot; &#10003; Core asset</span>
+      <span class="rail-no">&times; compressed NFT: no account</span>
+    </div>
+  </div>
+</div>
+</body></html>

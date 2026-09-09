@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One transfer, three sealed envelopes
+     purpose: show that a configured auditor receives its own decryptable ciphertext on every transfer while the public still sees nothing
+     data: Confidential transfer of amount X -> ciphertext under SENDER's ElGamal key (sender can decrypt own history) ciphertext under RECEIVER's ElGamal key (receiver can decrypt what arrived) ciphertext under AUDITOR's ElGamal key (present ONLY if auditor_elgamal_pubkey is set on the mint) Public observers: see ciphertexts, decrypt none of them Enforcement: the grouped-ciphertext validity proof covers all three handles; a transfer missing the auditor handle fails No per-transfer opt-out: the setting lives on the MINT, applies to every transfer
+     prompt: Center: a single transfer arrow labeled "amount X (encrypted)". From it, three envelope icons fan out, labeled "sender key", "receiver key", "auditor key". The auditor envelope is highlighted and annotated "only exists if the mint sets auditor_elgamal_pubkey; then it exists on EVERY transfer". Below, a row of grey observer figures labeled "public: ciphertext only". A footer bar: "enforced by the grouped-ciphertext validity proof".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:451px;right:-291px;top:286px;border-radius:48% 42% 42% 57% / 45% 51% 45% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:396px;height:402px;bottom:-220px;left:729px;border-radius:49% 58% 47% 43% / 59% 38% 35% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:32px 48px 36px;overflow:hidden;}
+  .card .viz-title{font-size:46px;margin:4px 0 14px;}
+  .txpill{width:420px;margin:0 auto;background:var(--surface-inverse);color:#F5E8CA;border-radius:999px;padding:12px 26px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:22px;}
+  .txpill span{font-family:var(--font-mono);font-size:19px;color:#FFD23F;}
+  .fan{display:block;width:1360px;height:64px;}
+  .envs{display:flex;gap:50px;}
+  .env{width:420px;border:2px solid var(--border-subtle);border-radius:18px;padding:16px 22px 14px;background:var(--surface-card);}
+  .env.hero{border:3px solid var(--stbr-yellow);background:#FFF9E6;}
+  .flap{height:0;border-left:24px solid transparent;border-right:24px solid transparent;border-top:16px solid var(--stbr-emerald);width:0;margin:0 0 8px;}
+  .env.hero .flap{border-top-color:var(--stbr-yellow);}
+  .env .k{font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--text-primary);}
+  .env .w{font-family:var(--font-body);font-size:15px;color:var(--text-secondary);line-height:1.35;margin-top:5px;}
+  .env .w b{color:var(--text-primary);}
+  .obs{display:flex;align-items:center;gap:16px;margin-top:18px;background:var(--surface-paper,#FAF3E3);border-radius:14px;padding:12px 22px;}
+  .obs .figs{display:flex;gap:8px;}
+  .obs .fig{width:18px;height:18px;border-radius:50%;background:var(--text-muted);opacity:0.55;}
+  .obs .t{font-family:var(--font-body);font-size:16px;color:var(--text-secondary);}
+  .obs .t b{color:var(--text-primary);}
+  .foot{margin-top:14px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:14px;padding:13px 24px;font-family:var(--font-display);font-weight:800;font-size:19px;text-align:center;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">confidential transfer &middot; auditor visibility</div>
+  <h2 class="viz-title">one transfer, three sealed envelopes</h2>
+  <div class="txpill">transfer of <span>amount X (encrypted)</span></div>
+  <svg class="fan" width="1360" height="64" viewBox="0 0 1360 64">
+    <line x1="680" y1="4" x2="210" y2="52" stroke="#306C40" stroke-width="2.5"/>
+    <line x1="680" y1="4" x2="680" y2="52" stroke="#306C40" stroke-width="2.5"/>
+    <line x1="680" y1="4" x2="1150" y2="52" stroke="#306C40" stroke-width="2.5"/>
+    <polygon points="210,60 202,48 218,48" fill="#306C40"/>
+    <polygon points="680,60 672,48 688,48" fill="#306C40"/>
+    <polygon points="1150,60 1142,48 1158,48" fill="#306C40"/>
+  </svg>
+  <div class="envs">
+    <div class="env">
+      <div class="flap"></div>
+      <div class="k">ciphertext under the sender&rsquo;s ElGamal key</div>
+      <div class="w">the sender can decrypt <b>their own history</b></div>
+    </div>
+    <div class="env">
+      <div class="flap"></div>
+      <div class="k">ciphertext under the receiver&rsquo;s ElGamal key</div>
+      <div class="w">the receiver can decrypt <b>what arrived</b></div>
+    </div>
+    <div class="env hero">
+      <div class="flap"></div>
+      <div class="k">ciphertext under the auditor&rsquo;s ElGamal key</div>
+      <div class="w">exists <b>only if</b> the mint sets <b>auditor_elgamal_pubkey</b> &mdash; and then on <b>EVERY transfer</b>: the setting lives on the mint, no per-transfer opt-out</div>
+    </div>
+  </div>
+  <div class="obs">
+    <div class="figs"><div class="fig"></div><div class="fig"></div><div class="fig"></div><div class="fig"></div><div class="fig"></div></div>
+    <div class="t"><b>public observers:</b> see all three ciphertexts &mdash; decrypt none of them</div>
+  </div>
+  <div class="foot">enforced by the grouped-ciphertext validity proof &mdash; a transfer missing the auditor handle fails</div>
+</div>
+</div>
+</body></html>

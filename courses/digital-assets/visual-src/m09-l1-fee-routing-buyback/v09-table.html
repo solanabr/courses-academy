@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The four numbers that close this lesson, and what each one proves
+     purpose: give the reader an explicit scorecard so they can tell a passing run from a run that merely did not crash
+     data: columns: number | where it comes from | what it proves | how it fails row "harvested amount": sum of withheldAmount across every dirty account found by the scan | the fees were real and the scan found them | reads zero when the memcmp offset or the program is wrong row "treasury delta": treasury ATA balance after the withdraw minus before | the two-leg crank actually routed the money | short by the burn share if you withdrew after burning instead of before row "buyback quantity": treasury ATA balance after the swap minus before, measured not computed | the venue filled your order, minus slippage, venue fee, and SPROUT's own transfer fee | matches the plan exactly, which means you computed it instead of measuring it row "post-burn supply delta": mint supply before minus mint supply after, both re-fetched | the burn destroyed exactly what you intended and nothing else | mismatches when the post-burn supply came from a pre-burn decode
+     prompt: Four-row by four-column table. Style the "how it fails" column in a muted warning tone so it reads as a diagnostic key rather than as part of the happy path. Header caption: "a run that exits zero is not the same as a run that proves something".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:510px;top:-293px;right:-293px;border-radius:52% 37% 62% 59% / 45% 54% 47% 38%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:535px;height:520px;left:-302px;top:136px;border-radius:56% 42% 36% 38% / 47% 65% 56% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:28px 42px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;font-size:16px;">the scorecard</div>
+    <h2 class="viz-title" style="font-size:33px;margin:4px 0 6px;color:var(--stbr-dark);">The four numbers that close this lesson, and what each one proves</h2>
+    <div style="font-family:var(--font-body);font-style:italic;font-size:15px;color:var(--text-secondary,#4a5a4e);margin:0 0 16px;">a run that exits zero is not the same as a run that proves something</div>
+
+    <div style="display:grid;grid-template-columns:200px 1fr 1fr 1.15fr;border:2px solid var(--border-strong,#1B231D);border-radius:14px;overflow:hidden;">
+      <!-- header -->
+      <div style="background:var(--surface-inverse,#1B231D);padding:11px 14px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;">number</div>
+      <div style="background:var(--surface-inverse,#1B231D);padding:11px 14px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;border-left:1px solid rgba(245,232,202,0.25);">where it comes from</div>
+      <div style="background:var(--surface-inverse,#1B231D);padding:11px 14px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;border-left:1px solid rgba(245,232,202,0.25);">what it proves</div>
+      <div style="background:var(--surface-inverse,#1B231D);padding:11px 14px;font-family:var(--font-display);font-weight:900;font-size:15px;color:#F5E8CA;border-left:2px solid var(--stbr-yellow);">how it fails</div>
+
+      <!-- row 1: harvested amount -->
+      <div style="padding:12px 14px;font-family:var(--font-display);font-weight:800;font-size:14.5px;color:var(--stbr-emerald);border-top:1px solid var(--border-subtle,#d8d2c0);">harvested amount</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">sum of <span style="font-family:var(--font-mono);font-size:11px;">withheldAmount</span> across every dirty account found by the scan</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">the fees were real and the scan found them</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:2px solid var(--stbr-yellow);background:rgba(255,210,63,0.13);">reads zero when the <span style="font-family:var(--font-mono);font-size:11px;">memcmp</span> offset or the program is wrong</div>
+
+      <!-- row 2: treasury delta -->
+      <div style="background:var(--surface-paper,#faf6ea);padding:12px 14px;font-family:var(--font-display);font-weight:800;font-size:14.5px;color:var(--stbr-emerald);border-top:1px solid var(--border-subtle,#d8d2c0);">treasury delta</div>
+      <div style="background:var(--surface-paper,#faf6ea);padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">treasury ATA balance after the withdraw minus before</div>
+      <div style="background:var(--surface-paper,#faf6ea);padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">the two-leg crank actually routed the money</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:2px solid var(--stbr-yellow);background:rgba(255,210,63,0.13);">short by the burn share if you withdrew after burning instead of before</div>
+
+      <!-- row 3: buyback quantity -->
+      <div style="padding:12px 14px;font-family:var(--font-display);font-weight:800;font-size:14.5px;color:var(--stbr-emerald);border-top:1px solid var(--border-subtle,#d8d2c0);">buyback quantity</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">treasury ATA balance after the swap minus before &mdash; measured, not computed</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">the venue filled your order, minus slippage, venue fee, and SPROUT&rsquo;s own transfer fee</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:2px solid var(--stbr-yellow);background:rgba(255,210,63,0.13);">matches the plan exactly &mdash; which means you computed it instead of measuring it</div>
+
+      <!-- row 4: post-burn supply delta -->
+      <div style="background:var(--surface-paper,#faf6ea);padding:12px 14px;font-family:var(--font-display);font-weight:800;font-size:14.5px;color:var(--stbr-emerald);border-top:1px solid var(--border-subtle,#d8d2c0);">post-burn supply delta</div>
+      <div style="background:var(--surface-paper,#faf6ea);padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">mint supply before minus mint supply after &mdash; both re-fetched</div>
+      <div style="background:var(--surface-paper,#faf6ea);padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:1px solid var(--border-subtle,#d8d2c0);">the burn destroyed exactly what you intended and nothing else</div>
+      <div style="padding:12px 14px;font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);line-height:1.45;border-top:1px solid var(--border-subtle,#d8d2c0);border-left:2px solid var(--stbr-yellow);background:rgba(255,210,63,0.13);">mismatches when the post-burn supply came from a pre-burn decode</div>
+    </div>
+  </div>
+</div>
+</body></html>

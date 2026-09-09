@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The three-question classifier: ACTIVE, DORMANT, INERT
+     purpose: give the reader a mechanical rule that turns extension state into a verdict without guessing
+     data: Q1 present in the TLV list? no -> not applicable (the extension does not exist on this mint) Q1 yes -> Q2 does the behavior field carry a live value? (hook programId set / fee bps > 0 / delegate set / autoApprove true) Q2 yes -> ACTIVE (it changes what happens today) Q2 no  -> Q3 is there a non-null authority for that field? Q3 yes -> DORMANT (armed: one signature away, on that extension's own timing) Q3 no  -> INERT (the slot can never fire again) Worked PYUSD result at epoch 1026: 4 ACTIVE (mintCloseAuthority, permanentDelegate, metadataPointer, tokenMetadata), 4 DORMANT (transferFeeConfig, confidentialTransferMint, confidentialTransferFeeConfig, transferHook), 0 INERT
+     prompt: Vertical decision flowchart with three diamond decision nodes labeled Q1, Q2, Q3 and three terminal nodes labeled ACTIVE, DORMANT, INERT. Attach the PYUSD tally as a result box beside the terminals, showing which extension names landed in which bucket. Keep the three terminals visually distinct.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:480px;top:-286px;right:-286px;border-radius:61% 45% 61% 52% / 43% 58% 36% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:526px;height:445px;bottom:-242px;left:-242px;border-radius:47% 44% 55% 46% / 55% 41% 64% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:32px;padding:30px 46px 26px;}
+  .card .viz-title{font-size:38px;margin:4px 0 18px;}
+  .card .stbr-eyebrow{font-size:16px;}
+  .lay{display:flex;gap:34px;align-items:flex-start;}
+  .flow{flex:1;display:flex;flex-direction:column;}
+  .frow{display:flex;align-items:center;height:92px;}
+  .q{width:430px;height:88px;border:2px solid var(--stbr-emerald);border-radius:16px;background:var(--surface-card);display:flex;align-items:center;gap:14px;padding:0 18px;}
+  .q .dia{width:22px;height:22px;background:var(--stbr-emerald);transform:rotate(45deg);flex:none;margin:0 4px;}
+  .q .qt{font-family:var(--font-display);}
+  .q .qn{font-weight:900;font-size:15px;color:var(--stbr-emerald);letter-spacing:.06em;}
+  .q .qq{font-weight:800;font-size:16.5px;color:var(--text-primary);line-height:1.25;}
+  .q .qs{font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary);line-height:1.3;margin-top:2px;}
+  .harr{display:flex;align-items:center;width:96px;flex:none;}
+  .harr .lab{font-family:var(--font-body);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin:0 6px 0 8px;}
+  .harr .ln{flex:1;height:2px;background:var(--stbr-green);}
+  .harr .tr{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--stbr-green);}
+  .varr{height:44px;display:flex;align-items:center;margin-left:215px;}
+  .varr .col{display:flex;flex-direction:column;align-items:center;}
+  .varr .vl{width:2px;height:26px;background:var(--stbr-green);}
+  .varr .vt{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--stbr-green);}
+  .varr .lab{font-family:var(--font-body);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-left:10px;}
+  .term{width:250px;height:88px;border-radius:16px;display:flex;flex-direction:column;justify-content:center;padding:0 18px;}
+  .term .tt{font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:.04em;}
+  .term .ts{font-family:var(--font-body);font-size:12.5px;line-height:1.3;margin-top:3px;}
+  .t-na{background:var(--surface-paper,#F7F1E3);border:1px solid var(--border-subtle);}
+  .t-na .tt{font-size:15px;color:var(--text-secondary);}
+  .t-na .ts{color:var(--text-muted);}
+  .t-active{background:var(--stbr-emerald);}
+  .t-active .tt,.t-active .ts{color:#F5E8CA;}
+  .t-dormant{background:var(--stbr-yellow);}
+  .t-dormant .tt,.t-dormant .ts{color:#1B231D;}
+  .t-inert{background:var(--surface-inverse);}
+  .t-inert .tt,.t-inert .ts{color:#F5E8CA;}
+  .tally{width:396px;border:1px solid var(--border-subtle);border-radius:20px;padding:20px 24px;background:var(--surface-paper,#FBF6E9);}
+  .tally .th{font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--text-primary);margin-bottom:12px;}
+  .bucket{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border-subtle);}
+  .bucket .btag{flex:none;width:104px;text-align:center;border-radius:999px;padding:5px 0;font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.05em;}
+  .bt-a{background:var(--stbr-emerald);color:#F5E8CA;}
+  .bt-d{background:var(--stbr-yellow);color:#1B231D;}
+  .bt-i{background:var(--surface-inverse);color:#F5E8CA;}
+  .bucket .bls{font-family:var(--font-mono);font-size:13.5px;color:var(--text-primary);line-height:1.55;}
+  .bucket .bls .z{color:var(--text-muted);font-family:var(--font-body);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">a mechanical rule &mdash; no guessing</div>
+  <h2 class="viz-title">the three-question classifier: active, dormant, inert</h2>
+  <div class="lay">
+    <div class="flow">
+      <div class="frow">
+        <div class="q"><div class="dia"></div><div class="qt"><div class="qn">Q1</div><div class="qq">present in the TLV list?</div></div></div>
+        <div class="harr"><div class="lab">no</div><div class="ln"></div><div class="tr"></div></div>
+        <div class="term t-na"><div class="tt">NOT APPLICABLE</div><div class="ts">the extension does not exist on this mint</div></div>
+      </div>
+      <div class="varr"><div class="col"><div class="vl"></div><div class="vt"></div></div><div class="lab">yes</div></div>
+      <div class="frow">
+        <div class="q"><div class="dia"></div><div class="qt"><div class="qn">Q2</div><div class="qq">does the behavior field carry a live value?</div><div class="qs">hook programId set &middot; fee bps &gt; 0 &middot; delegate set &middot; autoApprove true</div></div></div>
+        <div class="harr"><div class="lab">yes</div><div class="ln"></div><div class="tr"></div></div>
+        <div class="term t-active"><div class="tt">ACTIVE</div><div class="ts">it changes what happens today</div></div>
+      </div>
+      <div class="varr"><div class="col"><div class="vl"></div><div class="vt"></div></div><div class="lab">no</div></div>
+      <div class="frow">
+        <div class="q"><div class="dia"></div><div class="qt"><div class="qn">Q3</div><div class="qq">is there a non-null authority for that field?</div></div></div>
+        <div class="harr"><div class="lab">yes</div><div class="ln"></div><div class="tr"></div></div>
+        <div class="term t-dormant"><div class="tt">DORMANT</div><div class="ts">armed: one signature away, on that extension&rsquo;s own timing</div></div>
+      </div>
+      <div class="varr"><div class="col"><div class="vl"></div><div class="vt"></div></div><div class="lab">no</div></div>
+      <div class="frow" style="height:88px;">
+        <div style="width:90px;"></div>
+        <div class="term t-inert"><div class="tt">INERT</div><div class="ts">the slot can never fire again</div></div>
+      </div>
+    </div>
+    <div class="tally">
+      <div class="th">worked result &mdash; PYUSD at epoch 1026</div>
+      <div class="bucket" style="border-top:none;"><div class="btag bt-a">4 ACTIVE</div><div class="bls">mintCloseAuthority<br>permanentDelegate<br>metadataPointer<br>tokenMetadata</div></div>
+      <div class="bucket"><div class="btag bt-d">4 DORMANT</div><div class="bls">transferFeeConfig<br>confidentialTransferMint<br>confidentialTransferFeeConfig<br>transferHook</div></div>
+      <div class="bucket"><div class="btag bt-i">0 INERT</div><div class="bls"><span class="z">no slot on this mint has burned its authority</span></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

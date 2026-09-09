@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What a pool is risking, extension by extension
+     purpose: map each refused extension to the specific pool invariant it breaks, so the refusals read as engineering, not policy
+     data: Pool invariants: (1) I can compute a price from a vault balance. (2) A balance I hold stays held. (3) A swap's compute cost is bounded and known before I quote. TransferFeeConfig -> touches (1) but the rate is declared in TLV -> pool math subtracts it -> ADMITTED ScaledUiAmount / InterestBearingConfig -> touch display only, raw amounts unchanged -> ADMITTED ConfidentialTransfer -> breaks (1): encrypted amounts cannot be priced -> REFUSED PermanentDelegate -> breaks (2): delegate key can sweep the pool vault -> REFUSED TransferHook -> breaks (3): custom program on every transfer, arbitrary CU, plus extra-account forwarding on every transferring instruction -> REFUSED NonTransferable -> breaks (2) trivially: the vault could never pay out -> REFUSED
+     prompt: Center panel listing the three numbered pool invariants. Six extension nodes arranged around it, each with an arrow to the invariant it touches. Arrows to ADMITTED outcomes in one weight, arrows to REFUSED in a heavier weight with the broken-invariant number labelled on the arrow. Right edge holds two outcome badges, ADMITTED and REFUSED, that the arrows terminate into.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:576px;height:529px;top:-319px;right:-319px;border-radius:38% 46% 46% 51% / 62% 56% 45% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:535px;height:473px;bottom:-267px;left:595px;border-radius:50% 61% 60% 43% / 59% 57% 56% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">refusals as engineering, not policy</div>
+    <h2 class="viz-title" style="font-size:40px;margin:6px 0 16px;color:var(--stbr-dark);">What a pool is risking, extension by extension</h2>
+
+    <!-- the three pool invariants: the foundation bar -->
+    <div style="background:var(--stbr-dark);border-radius:14px;padding:12px 22px;display:flex;gap:26px;align-items:center;margin-bottom:16px;">
+      <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.08em;color:var(--stbr-cream);">POOL<br>INVARIANTS</div>
+      <div style="flex:1;font-family:var(--font-body);font-size:15px;color:var(--stbr-cream);"><b>(1)</b> I can compute a price from a vault balance.</div>
+      <div style="flex:1;font-family:var(--font-body);font-size:15px;color:var(--stbr-cream);"><b>(2)</b> A balance I hold stays held.</div>
+      <div style="flex:1.15;font-family:var(--font-body);font-size:15px;color:var(--stbr-cream);"><b>(3)</b> A swap's compute cost is bounded and known before I quote.</div>
+    </div>
+
+    <!-- admitted rows -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:8px;">
+      <div style="flex:none;width:330px;border:1.5px solid var(--stbr-emerald);border-radius:10px;padding:8px 14px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);">TransferFeeConfig</div>
+      <div style="flex:none;width:26px;height:2px;background:var(--stbr-emerald);"></div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);"><b>touches (1)</b> &mdash; but the rate is declared in TLV &rarr; pool math subtracts it</div>
+      <div style="flex:none;width:26px;height:2px;background:var(--stbr-emerald);"></div>
+      <div style="flex:none;width:120px;text-align:center;background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;padding:9px 0;border-radius:999px;">ADMITTED</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:8px;">
+      <div style="flex:none;width:330px;border:1.5px solid var(--stbr-emerald);border-radius:10px;padding:8px 14px;font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--stbr-dark);">ScaledUiAmount / InterestBearingConfig</div>
+      <div style="flex:none;width:26px;height:2px;background:var(--stbr-emerald);"></div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);"><b>touch display only</b> &mdash; raw amounts unchanged</div>
+      <div style="flex:none;width:26px;height:2px;background:var(--stbr-emerald);"></div>
+      <div style="flex:none;width:120px;text-align:center;background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;padding:9px 0;border-radius:999px;">ADMITTED</div>
+    </div>
+
+    <!-- refused rows: heavier connectors, yellow broken-invariant chips -->
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:8px;">
+      <div style="flex:none;width:330px;border:2.5px solid var(--stbr-dark);border-radius:10px;padding:8px 14px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);">ConfidentialTransfer</div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);display:flex;align-items:center;gap:10px;"><span style="flex:none;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:12.5px;padding:3px 9px;border-radius:999px;">breaks (1)</span><span>encrypted amounts cannot be priced</span></div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:none;width:120px;text-align:center;background:var(--stbr-dark);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;padding:9px 0;border-radius:999px;">REFUSED</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:8px;">
+      <div style="flex:none;width:330px;border:2.5px solid var(--stbr-dark);border-radius:10px;padding:8px 14px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);">PermanentDelegate</div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);display:flex;align-items:center;gap:10px;"><span style="flex:none;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:12.5px;padding:3px 9px;border-radius:999px;">breaks (2)</span><span>delegate key can sweep the pool vault</span></div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:none;width:120px;text-align:center;background:var(--stbr-dark);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;padding:9px 0;border-radius:999px;">REFUSED</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:8px;">
+      <div style="flex:none;width:330px;border:2.5px solid var(--stbr-dark);border-radius:10px;padding:8px 14px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);">TransferHook</div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);display:flex;align-items:center;gap:10px;"><span style="flex:none;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:12.5px;padding:3px 9px;border-radius:999px;">breaks (3)</span><span>custom program on every transfer, arbitrary CU + extra-account forwarding on every transferring instruction</span></div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:none;width:120px;text-align:center;background:var(--stbr-dark);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;padding:9px 0;border-radius:999px;">REFUSED</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;">
+      <div style="flex:none;width:330px;border:2.5px solid var(--stbr-dark);border-radius:10px;padding:8px 14px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);">NonTransferable</div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);border-radius:8px;padding:7px 14px;font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);display:flex;align-items:center;gap:10px;"><span style="flex:none;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:12.5px;padding:3px 9px;border-radius:999px;">breaks (2)</span><span>trivially: the vault could never pay out</span></div>
+      <div style="flex:none;width:26px;height:4px;background:var(--stbr-dark);"></div>
+      <div style="flex:none;width:120px;text-align:center;background:var(--stbr-dark);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.06em;padding:9px 0;border-radius:999px;">REFUSED</div>
+    </div>
+  </div>
+</div>
+</body></html>

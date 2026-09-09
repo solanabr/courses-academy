@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: One knob, three very different tokens
+     purpose: show that the conversion ratio, not the mechanism, decides what fraction of the token the points program hands out
+     data: Worked example from this lesson (hypothetical Overgrowth numbers, not market data): existing SPROUT supply before migration = 9,000,000 base units compost points outstanding = 100,000 across 4,000 players series (ratio -> newly minted base units -> points holders' share of post-migration supply): 1 base unit per point   ->   100,000 new   ->  9,100,000 total  ->  1.10% 10 base units per point -> 1,000,000 new   -> 10,000,000 total  -> 10.00% 100 base units per point -> 10,000,000 new -> 19,000,000 total  -> 52.63%
+     prompt: Grouped bar chart with three ratio groups on the x axis. Each group shows two bars, existing supply held constant at 9,000,000 and newly minted supply varying by ratio. Annotate each group with the points holders' resulting share as a percentage label above the group. Add a caption strip stating that the mechanism is identical in all three cases.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:479px;height:510px;bottom:-257px;right:-257px;border-radius:56% 46% 62% 62% / 61% 63% 38% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:447px;height:479px;left:-265px;top:188px;border-radius:54% 48% 52% 63% / 58% 58% 40% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ch-card { background:var(--surface-card); border:2px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); padding:22px 40px 0; margin-top:6px; overflow:hidden; }
+  .legend { display:flex; gap:26px; justify-content:flex-end; align-items:center; }
+  .lg { display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:14px;
+        font-weight:600; color:var(--text-primary); }
+  .sw { width:16px; height:16px; border-radius:4px; border:1.5px solid var(--stbr-dark); }
+  .plot { display:flex; justify-content:space-around; align-items:flex-end;
+          border-bottom:3px solid var(--stbr-dark); margin-top:6px; }
+  .grp { display:flex; flex-direction:column; align-items:center; }
+  .share { display:inline-block; font-family:var(--font-display); font-weight:900; font-size:19px;
+           background:var(--surface-inverse); color:var(--text-on-dark);
+           padding:6px 16px; border-radius:var(--radius-pill); margin-bottom:12px; }
+  .grp.big .share { background:var(--stbr-yellow); color:var(--stbr-dark);
+                    border:2px solid var(--stbr-dark); }
+  .bars { display:flex; align-items:flex-end; }
+  .bcol { display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+          width:120px; flex:none; }
+  .bcol + .bcol { margin-left:22px; }
+  .bval { font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+          color:var(--text-secondary); margin-bottom:5px; white-space:nowrap; }
+  .bar { width:100%; border:2px solid var(--stbr-dark); border-bottom:none;
+         border-radius:8px 8px 0 0; }
+  .bar.ex { background:var(--stbr-emerald); }
+  .bar.nw { background:var(--stbr-yellow); }
+  .xrow { display:flex; justify-content:space-around; padding:12px 40px 18px; }
+  .xlab { width:300px; text-align:center; }
+  .xlab .r { font-family:var(--font-display); font-weight:900; font-size:19px; color:var(--text-primary); }
+  .xlab .tot { font-family:var(--font-body); font-size:13.5px; color:var(--text-muted); margin-top:2px; }
+  .cap { display:flex; align-items:center; justify-content:center; background:var(--stbr-emerald);
+         border-radius:var(--radius-lg); padding:11px 24px; margin-top:12px; }
+  .cap span { font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">the conversion ratio</div>
+  <h2 class="viz-title">one knob, three very different tokens</h2>
+  <div class="ch-card">
+    <div class="legend">
+      <span class="lg"><span class="sw" style="background:var(--stbr-emerald);"></span>existing SPROUT supply (constant: 9,000,000)</span>
+      <span class="lg"><span class="sw" style="background:var(--stbr-yellow);"></span>newly minted for 100,000 compost points</span>
+    </div>
+    <div class="plot">
+      <div class="grp">
+        <span class="share">points holders&rsquo; share: 1.10%</span>
+        <div class="bars">
+          <div class="bcol"><span class="bval">9,000,000</span><div class="bar ex" style="height:288px;"></div></div>
+          <div class="bcol"><span class="bval">100,000</span><div class="bar nw" style="height:5px;"></div></div>
+        </div>
+      </div>
+      <div class="grp">
+        <span class="share">points holders&rsquo; share: 10.00%</span>
+        <div class="bars">
+          <div class="bcol"><span class="bval">9,000,000</span><div class="bar ex" style="height:288px;"></div></div>
+          <div class="bcol"><span class="bval">1,000,000</span><div class="bar nw" style="height:32px;"></div></div>
+        </div>
+      </div>
+      <div class="grp big">
+        <span class="share">points holders&rsquo; share: 52.63%</span>
+        <div class="bars">
+          <div class="bcol"><span class="bval">9,000,000</span><div class="bar ex" style="height:288px;"></div></div>
+          <div class="bcol"><span class="bval">10,000,000</span><div class="bar nw" style="height:320px;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="xrow">
+    <div class="xlab"><div class="r">1 base unit per point</div><div class="tot">100,000 new &rarr; 9,100,000 total</div></div>
+    <div class="xlab"><div class="r">10 base units per point</div><div class="tot">1,000,000 new &rarr; 10,000,000 total</div></div>
+    <div class="xlab"><div class="r">100 base units per point</div><div class="tot">10,000,000 new &rarr; 19,000,000 total</div></div>
+  </div>
+  <div class="cap"><span>the mechanism is identical in all three cases &mdash; only the ratio changes who ends up holding the token</span></div>
+</div>
+</body></html>

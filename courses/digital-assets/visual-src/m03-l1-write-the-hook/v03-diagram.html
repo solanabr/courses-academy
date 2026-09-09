@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where the validation account actually lives
+     purpose: correct the most common derivation bug by showing the PDA hanging off the hook program, not the mint or Token-2022
+     data: Token-2022 program (TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb): owns the SPROUT mint account SPROUT mint (Token-2022): TLV holds TransferHook extension { authority, programId = harvest-hook } harvest-hook program (your deployed program id): owns three PDAs - PDA ["extra-account-metas", mint] = the ExtraAccountMetaList (one per mint) - PDA ["hook-config", mint] = allowlist + pause flag - PDA ["treasury", mint] = the transfer log wrong derivations that produce an account which will never exist: - same seeds, derived against the Token-2022 program id - same seeds, derived against the mint - seeded by the destination token account instead of the mint
+     prompt: Two boxes side by side at the top: "Token-2022 program" containing "SPROUT mint (TLV: TransferHook -> harvest-hook)" and "harvest-hook program (yours)". One arrow from the mint's TLV entry across to the harvest-hook box labeled "programId". Under the harvest-hook box, three PDA nodes with their seed arrays in monospace. To the side, a greyed-out "dead ends" panel listing the three wrong derivations, each with a strikethrough.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:456px;height:464px;right:-274px;top:84px;border-radius:54% 35% 48% 51% / 44% 47% 50% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:459px;height:419px;bottom:-234px;left:-234px;border-radius:38% 35% 35% 49% / 46% 50% 39% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v3 .lay{display:flex;gap:0;align-items:flex-start;margin-top:6px}
+    .v3 .progbox{background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:18px;overflow:hidden}
+    .v3 .pbhead{background:var(--surface-inverse);color:var(--text-on-dark);padding:10px 16px}
+    .v3 .pbname{font-family:var(--font-display);font-weight:800;font-size:18px}
+    .v3 .pbsub{font-family:var(--font-mono);font-size:11.5px;color:var(--stbr-ink-300);margin-top:2px}
+    .v3 .cola{width:430px}
+    .v3 .mintcard{margin:12px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--surface-paper);padding:10px 14px}
+    .v3 .mintname{font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--text-primary)}
+    .v3 .tlv{margin-top:6px;font-family:var(--font-mono);font-size:12.5px;line-height:1.5;background:var(--surface-inverse);color:var(--stbr-cream);border-radius:8px;padding:8px 10px}
+    .v3 .tlv .pid{color:var(--stbr-yellow);font-weight:700}
+    .v3 .arrowcol{width:96px;display:flex;flex-direction:column;align-items:center;padding-top:104px}
+    .v3 .alabel{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--stbr-emerald);margin-bottom:4px}
+    .v3 .aline{display:flex;align-items:center;width:100%}
+    .v3 .aline .bar{flex:1;height:2.5px;background:var(--stbr-emerald)}
+    .v3 .aline .tip{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--stbr-emerald)}
+    .v3 .colb{width:470px;display:flex;flex-direction:column;align-items:center}
+    .v3 .colb .progbox{width:100%;border-color:var(--stbr-emerald)}
+    .v3 .colb .pbhead{background:var(--stbr-emerald)}
+    .v3 .owns{display:flex;flex-direction:column;align-items:center;margin:2px 0}
+    .v3 .owns .lin{width:2px;height:14px;background:var(--stbr-dark)}
+    .v3 .owns .cap{font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin:1px 0}
+    .v3 .owns .tipd{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark)}
+    .v3 .pda{width:100%;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:12px;padding:9px 14px;margin-top:8px}
+    .v3 .pda.key{border:2.5px solid var(--stbr-yellow);background:rgba(255,210,63,.22)}
+    .v3 .seeds{font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--text-primary)}
+    .v3 .what{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:2px}
+    .v3 .dead{width:400px;margin-left:30px;background:var(--surface-paper);border:1.5px dashed var(--stbr-ink-300);border-radius:16px;padding:14px 18px}
+    .v3 .dhead{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-ink-500);letter-spacing:.02em}
+    .v3 .dsub{font-family:var(--font-body);font-size:12.5px;color:var(--text-muted);margin:2px 0 8px}
+    .v3 .drow{font-family:var(--font-mono);font-size:12.5px;color:var(--stbr-ink-500);text-decoration:line-through;padding:7px 0;border-top:1px solid var(--stbr-ink-100);line-height:1.45}
+    .v3 .dnote{font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary);margin-top:8px;font-style:italic}
+  </style>
+  <div class="v3">
+    <div class="stbr-eyebrow">pda derivation</div>
+    <h2 class="viz-title" style="font-size:40px;margin-bottom:12px">where the validation account actually lives</h2>
+    <div class="lay">
+      <div class="cola progbox">
+        <div class="pbhead">
+          <div class="pbname">Token-2022 program</div>
+          <div class="pbsub">TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb</div>
+        </div>
+        <div class="mintcard">
+          <div class="mintname">SPROUT mint <span style="font-weight:600;color:var(--text-muted)">(Token-2022)</span></div>
+          <div class="tlv">TLV: TransferHook {<br>&nbsp;&nbsp;authority,<br>&nbsp;&nbsp;programId = <span class="pid">harvest-hook</span><br>}</div>
+        </div>
+      </div>
+      <div class="arrowcol">
+        <div class="alabel">programId</div>
+        <div class="aline"><div class="bar"></div><div class="tip"></div></div>
+      </div>
+      <div class="colb">
+        <div class="progbox">
+          <div class="pbhead">
+            <div class="pbname">harvest-hook program</div>
+            <div class="pbsub">your deployed program id</div>
+          </div>
+          <div style="padding:12px 16px 14px;font-family:var(--font-body);font-size:13px;color:var(--text-secondary);line-height:1.4">the hook the mint&rsquo;s TLV points at &mdash; every seed below is derived against <strong>this</strong> program id</div>
+        </div>
+        <div class="owns"><div class="lin"></div><div class="cap">owns</div><div class="tipd"></div></div>
+        <div class="pda key">
+          <div class="seeds">["extra-account-metas", mint]</div>
+          <div class="what">the ExtraAccountMetaList &mdash; the validation account, one per mint</div>
+        </div>
+        <div class="pda">
+          <div class="seeds">["hook-config", mint]</div>
+          <div class="what">allowlist + pause flag</div>
+        </div>
+        <div class="pda">
+          <div class="seeds">["treasury", mint]</div>
+          <div class="what">the transfer log</div>
+        </div>
+      </div>
+      <div class="dead">
+        <div class="dhead">dead ends</div>
+        <div class="dsub">derivations that produce an account which will never exist</div>
+        <div class="drow">same seeds, derived against the Token-2022 program id</div>
+        <div class="drow">same seeds, derived against the mint</div>
+        <div class="drow">seeded by the destination token account instead of the mint</div>
+        <div class="dnote">always derive against YOUR hook program, seeded by the mint.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

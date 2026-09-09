@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The five authority extensions at a glance
+     purpose: line up each authority's power, its named footgun, and how a DEX reads it
+     data: PermanentDelegate | move/burn ANY account of the mint | ALWAYS bypasses CpiGuard; trivially sweepable | Raydium rejects it (can sweep pool vaults) Pausable | global halt of all transfers/mints/burns | mistaken for a per-account freeze; halts EVERYONE | read as a centralized kill switch DefaultAccountState(Frozen) | new accounts open frozen until thawed | confused with Pausable; it is per-account, not global | read as KYC-gated onboarding PermissionedBurn | burns require burn-authority co-signature | omitted from solana.com docs; enum is truth | read as centrally-controlled supply MintCloseAuthority | close a spent mint to reclaim rent | close-and-revival: re-funded address looks fresh | mostly benign; hygiene matters
+     prompt: Five-row comparison table, columns: "Extension", "Power it grants", "Named footgun", "How a DEX/auditor reads it". One row per extension as in the data. Bold the extension names. Visually flag the PermanentDelegate row as highest-risk (red accent) and the MintCloseAuthority row as lowest-risk (neutral).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:417px;right:-336px;top:127px;border-radius:60% 43% 61% 36% / 36% 46% 38% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:569px;height:549px;bottom:-298px;left:-298px;border-radius:39% 42% 49% 42% / 60% 49% 50% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { display:grid; grid-template-columns: 1.05fr 1.15fr 1.35fr 1.15fr; background:var(--surface-card);
+         border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; }
+  .hd { background:var(--surface-inverse); padding:13px 20px; font-family:var(--font-body);
+        font-weight:800; font-size:12.5px; letter-spacing:.11em; text-transform:uppercase;
+        color:var(--text-on-dark); }
+  .c { padding:15px 20px 13px; border-top:1.5px solid var(--border-subtle);
+       font-family:var(--font-body); font-size:14.5px; line-height:1.38; color:var(--text-primary); }
+  .c.name { font-family:var(--font-display); font-weight:900; font-size:18px; line-height:1.1; }
+  .c.hi { background:rgba(255,210,63,0.16); }
+  .brow { margin-top:6px; }
+  .badge { display:inline-block; font-family:var(--font-body);
+           font-weight:800; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+           padding:3px 9px; border-radius:var(--radius-pill); }
+  .badge.hot { background:var(--status-danger); color:#fff; }
+  .badge.low { background:var(--stbr-ink-100); color:var(--text-secondary); }
+  .c em { font-style:italic; color:var(--text-secondary); }
+  .c strong { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">the five authority extensions at a glance</div>
+  <h2 class="viz-title">power, footgun, and how a DEX reads it</h2>
+
+  <div class="tbl">
+    <div class="hd">Extension</div>
+    <div class="hd">Power it grants</div>
+    <div class="hd">Named footgun</div>
+    <div class="hd">How a DEX / auditor reads it</div>
+
+    <div class="c name hi">PermanentDelegate<div class="brow"><span class="badge hot">highest risk</span></div></div>
+    <div class="c hi">move / burn <strong>any</strong> account of the mint</div>
+    <div class="c hi"><strong>always</strong> bypasses CpiGuard; trivially sweepable</div>
+    <div class="c hi">Raydium rejects it &mdash; it can sweep pool vaults</div>
+
+    <div class="c name">Pausable</div>
+    <div class="c">global halt of all transfers, mints, burns</div>
+    <div class="c">mistaken for a per-account freeze; it halts <strong>everyone</strong></div>
+    <div class="c">read as a centralized kill switch</div>
+
+    <div class="c name">DefaultAccountState (Frozen)</div>
+    <div class="c">new accounts open frozen until thawed</div>
+    <div class="c">confused with Pausable; it is per-account, not global</div>
+    <div class="c">read as KYC-gated onboarding</div>
+
+    <div class="c name">PermissionedBurn</div>
+    <div class="c">burns require a burn-authority co-signature</div>
+    <div class="c">omitted from solana.com docs; the enum is truth</div>
+    <div class="c">read as centrally-controlled supply</div>
+
+    <div class="c name">MintCloseAuthority<div class="brow"><span class="badge low">lowest risk</span></div></div>
+    <div class="c">close a spent mint to reclaim rent</div>
+    <div class="c">close-and-revival: a re-funded address looks fresh</div>
+    <div class="c"><em>mostly benign; hygiene matters</em></div>
+  </div>
+</div>
+</body></html>

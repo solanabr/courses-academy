@@ -1,0 +1,78 @@
+id: lesson-date-m06-l3-token-metadata-legacy
+slug: m06-l3-token-metadata-legacy
+title: "Token Metadata as legacy: pNFTs and the royalty reality"
+skills:
+  - token-metadata
+  - account-model
+  - program-security
+  - version-pinning
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m06-l3-token-metadata-legacy-q1
+        prompt: "A marketplace lists a legacy NFT with seller_fee_basis_points = 500 and promises a 'guaranteed 5% royalty.' You decode its rule set and every operation is Pass. What's the accurate read?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The 5% is enforced on-chain, because seller_fee_basis_points is a protocol-level fee the runtime deducts at transfer."
+            correct: false
+            feedback: "The runtime never deducts seller_fee_basis_points; it's a metadata field, not a fee the protocol collects."
+          - id: d
+            label: "The 5% is enforced because Token Metadata reads seller_fee_basis_points on the pNFT transfer path before it refreezes; the rule set's Pass on each operation just approves the venue."
+            correct: false
+            feedback: "Token Metadata stores and serves that u16 and never spends it. Even in the enforcement era the rule set refused venues rather than collecting a fee."
+          - id: c
+            label: "seller_fee_basis_points is purely indicative; with the flagship rule set passing every operation, nothing on-chain enforces the 5%, and marketplaces choose whether to honor it."
+            correct: true
+            feedback: "Armed but idle is the phrase to carry out: the freeze still forces the pNFT transfer path, and the rule waved through at the end of it collects nothing."
+          - id: b
+            label: "The 5% is enforced only if the buyer opts in through their wallet's royalty-enforcement setting, which adds an extra instruction routing the fee to the creator list at purchase time."
+            correct: false
+            feedback: "There's no wallet opt-in mechanism that turns the field into enforcement; enforcement (when it happens) comes from a rule set, which here blocks nothing."
+        explanation: "For legacy Token Metadata, seller_fee_basis_points is indicative only. Enforcement would come from a Token Auth Rules RuleSet, but the flagship Metaplex Foundation Rule Set sets all operations to Pass: armed but idle. The royalty is a convention marketplaces may or may not honor, not an on-chain guarantee."
+      - id: m06-l3-token-metadata-legacy-q2
+        prompt: "Your team needs to integrate an existing pNFT collection AND launch a new royalty-bearing drop. What's the right standards call?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Integrate the existing pNFT collection as is, and ship the new drop as plain Token Metadata NFTs, since that standard has the widest marketplace support."
+            correct: false
+            feedback: "Widest support is exactly what makes reading it mandatory and shipping into it optional. A plain TM drop also has no royalty machinery at all, which is what this drop was for."
+          - id: b
+            label: "Mint the new drop as pNFTs too, so both collections sit on one standard and your integration code has a single path."
+            correct: false
+            feedback: "New pNFTs adopt a deprecated enforcement stack (Token Auth Rules) whose flagship rule enforces nothing; the course teaches TM/pNFT to evaluation depth precisely so you don't ship new ones."
+          - id: a
+            label: "Read-and-integrate against the existing pNFTs (TM/pNFT is legacy but live), and ship the NEW drop on Core plugins or Bubblegum-v2 rulesets; don't mint new pNFTs."
+            correct: true
+            feedback: "Two different verbs for two different assets. Consuming a legacy standard costs you nothing; minting into it inherits an enforcement stack its own vendor walked away from."
+          - id: c
+            label: "Migrate the existing pNFTs to Core first so both collections share one standard, then ship everything as pNFTs for compatibility with the tooling most marketplaces already run."
+            correct: false
+            feedback: "This is self-contradictory and unnecessary: you integrate legacy assets as-is, and new work goes to Core/Bubblegum-v2. You don't convert to Core only to mint pNFTs."
+        explanation: "The 2026 stance is asymmetric: Token Metadata is officially legacy, so you must read and integrate against the pNFTs already in the wild, but new-work royalties belong to Core plugins (what you built in m06-l2) or Bubblegum-v2 rulesets (m07-l1). Legacy is a thing you consume, not a thing you newly ship."
+      - id: m06-l3-token-metadata-legacy-q3
+        prompt: "The docs page lists 5 TokenStandard variants; the code enum has 6 (it adds ProgrammableNonFungibleEdition). Which do you build your integration against, and why?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The code's 6 variants: for a legacy standard the docs lag the source, and an asset can carry the 6th (ProgrammableNonFungibleEdition) variant you'd otherwise fail to handle."
+            correct: true
+            feedback: "Source is present tense, prose is the past tense of whenever someone last edited it. The variant that is missing from the page is the one that reaches your match statement in production."
+          - id: c
+            label: "Neither: TokenStandard is deprecated along with the rest of the standard, so the field can be ignored entirely."
+            correct: false
+            feedback: "You still have to read the variant to integrate legacy assets correctly; 'legacy' means you consume it, not that you can ignore its shape."
+          - id: d
+            label: "Against the code's 6 variants, then walk away: a legacy standard whose docs and source disagree is not safe for a production reader."
+            correct: false
+            feedback: "Drift is the normal condition of a maintenance-mode standard, not a red flag. Most NFTs on Solana live here, so a reader that refuses to read them is a product that cannot ship."
+          - id: a
+            label: "The docs' 5 variants, because the published page is the canonical contract that an integration is written against."
+            correct: false
+            feedback: "For a legacy, lightly-maintained standard the docs lag the code; building against 5 variants means an asset of the 6th variant surprises you at runtime."
+        explanation: "Token Metadata is in maintenance mode, so its docs page trails its source. The code enum carries 6 variants, adding ProgrammableNonFungibleEdition; an integration that only knows the documented 5 mishandles the sixth. When docs and code disagree on a legacy standard, the code is the truth you integrate against."

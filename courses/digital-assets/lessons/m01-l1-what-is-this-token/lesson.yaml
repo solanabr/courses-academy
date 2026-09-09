@@ -1,0 +1,83 @@
+id: lesson-date-m01-l1-what-is-this-token
+slug: m01-l1-what-is-this-token
+title: "What is this token, really?"
+skills:
+  - solana-fundamentals
+  - rpc-reads
+  - spl-tokens
+  - token-2022
+  - compute-budget
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    tsx: "4.20.5"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l1-q1
+        prompt: "Your PYUSD decode printed a transferHook extension but the script flagged it 'dormant.' What did the bytes actually show?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The transferHook extension is present on the mint, but its programId is null, so no hook program runs on transfers"
+            correct: true
+            feedback: "The extension occupies a real TLV slot on the mint while its programId field holds null, which is what the script prints as configured but dormant."
+          - id: d
+            label: "The hook slot names a program address that Paxos has not deployed yet, so the call silently no-ops"
+            correct: false
+            feedback: "The hook entry stores no address at all. The decode printed transferHook.programId as null, so there is nothing for a transfer to try to call and nothing to deploy against."
+          - id: b
+            label: "The transferHook extension runs on every transfer but its logic happens to be empty this block"
+            correct: false
+            feedback: "A dormant hook is not an empty running hook; PYUSD's slot has programId = null, so nothing is invoked at all."
+          - id: c
+            label: "The transferHook field is a leftover from an old version and is ignored by the program"
+            correct: false
+            feedback: "It is a live, current extension in the TLV, not a fossil; it is simply configured with a null program, hence dormant."
+        explanation: "'Configured but dormant' is the teachable PYUSD fact: the extension is really in the bytes, but transferHook.programId = null (and the transfer fee reads 0 bps), so it has no active effect. Present is not the same as active, a distinction the whole course leans on."
+      - id: m01-l1-q2
+        prompt: "A teammate says 'a mint is a mint; reading PYUSD tells us nothing new.' Your decode found eight TLV extensions on it. What does that prove about the mental model 'a token is the classic SPL mint I already use'?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "It proves nothing about the model: extensions are display-only metadata that wallets render and the token program ignores on transfer"
+            correct: false
+            feedback: "Extensions like permanent delegate and transfer fee change transfer behavior and who can move funds, the opposite of cosmetic."
+          - id: a
+            label: "It proves classic SPL mints can also carry eight extensions, since the classic program shares the same TLV region once you initialize one"
+            correct: false
+            feedback: "Classic SPL mints carry no extensions at all. Extensions only exist on Token-2022, a different program. That is exactly the model break."
+          - id: d
+            label: "Token-2022 is a compatibility wrapper over the classic program, so PYUSD's eight extensions are add-ons bolted around the same classic mint underneath"
+            correct: false
+            feedback: "There is no wrapping: the two programs own their accounts separately, a classic instruction aimed at a Token-2022 mint fails, and USDC's 82-byte account has no region for an add-on to sit in."
+          - id: b
+            label: "PYUSD is a Token-2022 mint carrying extensions the classic SPL program cannot express, so 'a token' is a family of shapes, not one fixed layout"
+            correct: true
+            feedback: "The mint is owned by Token-2022 at the Tokenz address, and a permanent delegate or a fee schedule are shapes the classic 82-byte layout has no room to hold."
+        explanation: "The opener breaks the prior model on purpose: PYUSD is Token-2022, and its eight extensions (permanent delegate, transfer fee, confidential, metadata pointer, and more) are shapes the classic SPL program cannot even represent. 'A token' is a decision across shapes, which is why you must be able to read the bytes before you choose."
+      - id: m01-l1-q3
+        prompt: "The second micro-demo reported a classic Transfer costing 76 CU. Why does the course refuse to let you memorize '76 CU' as a fixed fact?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Because the 76 came from USDC's accounts, and a classic transfer's cost depends on the particular mint and token accounts involved"
+            correct: false
+            feedback: "A classic mint is the same 82-byte layout whichever token it is, and the log line reports the program's cost for the instruction, not a per-mint price."
+          - id: b
+            label: "Because CU accounting drifts with validator hardware and network load, so two simulations of the same transfer disagree"
+            correct: false
+            feedback: "They are deterministic enough to simulate and measure; that is exactly what the demo did. The reason to re-measure is that the engine changed, not that the number is noise."
+          - id: a
+            label: "Because 76 CU is only what a devnet simulation reports; on mainnet-beta the same transfer is billed at a higher rate that shifts with priority fees"
+            correct: false
+            feedback: "The figure is not a devnet artifact; it is the real post-p-token transfer cost, the same story the next lessons unpack. It is not memorized because it is a measured, movable number, not because clusters differ."
+          - id: c
+            label: "Because 76 CU reflects the current p-token engine, and the course measures such numbers rather than freezing an engine-dependent value"
+            correct: true
+            feedback: "The same instruction billed 4,645 CU under the previous engine, so the figure belongs to whichever engine is live and gets re-measured rather than pinned into a doc."
+        explanation: "That 76 CU is the outcome of the p-token engine swap you meet in l3: the classic transfer used to cost far more. Because the underlying engine can change, the course's testing thread measures CU in a lab rather than freezing an engine-dependent number, and this demo is your first taste of that discipline."

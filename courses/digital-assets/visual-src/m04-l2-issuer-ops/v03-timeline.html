@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: What "one confidential transfer" costs today
+     purpose: show the dependent transaction sequence and the context-account churn an issuer must budget for
+     data: tx 1..n: create context account + verify proof (one per proof: equality, grouped-ciphertext validity, range) tx n+1: the Transfer instruction, reading the verified context accounts tx n+2: close context accounts, rent flows back Budget notes: context accounts are rent-bearing while alive; every extra transaction is an extra failure point and an extra fee; the whole sequence must land in order Future: transaction format v1 (the SIMD-0296 line, now carried by SIMD-0385 "Transaction V1 Format") ships in Agave 4.2 and would carry the proofs inline; both SIMDs are still status Review and the Agave gate `enable_tx_v1` is ACTIVE ON DEVNET (slot 492,480,000) while still having NO account on mainnet, probed 2026-09-06 -> build for multi-transaction today, because mainnet is where the users are
+     prompt: Horizontal timeline with grouped segments. First segment: three stacked ticks labeled "create context + verify proof" (equality / validity / range). Middle segment: one bold tick "Transfer executes". Final segment: "close contexts, reclaim rent". Under the line, a cost strip: "rent locked while contexts live · fee per tx · ordered dependency". A faded future-state marker at the right edge: "tx v1 (SIMD-0385): shipped in Agave, gate live on devnet, unset on mainnet".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:550px;height:568px;bottom:-316px;right:-316px;border-radius:43% 40% 38% 47% / 55% 40% 57% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:526px;height:488px;left:-312px;top:193px;border-radius:65% 46% 55% 45% / 43% 61% 56% 64%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:34px 48px 38px;overflow:hidden;}
+  .card .viz-title{font-size:46px;margin:4px 0 20px;}
+  .tl{position:relative;}
+  .tlline{position:absolute;left:30px;right:30px;top:115px;height:4px;background:var(--stbr-green);border-radius:2px;}
+  .groups{position:relative;display:flex;}
+  .grp{display:flex;flex-direction:column;}
+  .gcap{height:46px;margin:0 14px;border:2px solid var(--border-subtle);border-bottom:none;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:16.5px;color:var(--text-primary);text-align:center;padding:0 10px;}
+  .gcap.ghost{border-color:transparent;}
+  .grow{display:flex;}
+  .st{flex:1;display:flex;flex-direction:column;align-items:center;}
+  .above{height:60px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:8px;}
+  .txchip{font-family:var(--font-mono);font-size:14px;font-weight:700;color:#F5E8CA;background:var(--stbr-dark);border-radius:999px;padding:3px 12px;}
+  .dot{width:22px;height:22px;border-radius:50%;background:var(--stbr-emerald);border:4px solid var(--surface-card);}
+  .dot.big{width:30px;height:30px;background:var(--stbr-yellow);border:4px solid var(--stbr-dark);margin-top:-4px;}
+  .dot.ghost{background:var(--surface-card);border:3px dashed var(--text-muted);}
+  .below{padding-top:10px;text-align:center;font-family:var(--font-body);font-size:15.5px;color:var(--text-secondary);line-height:1.3;max-width:230px;}
+  .below b{color:var(--text-primary);}
+  .below .n{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--text-primary);display:block;margin-bottom:3px;}
+  .st.future .below{color:var(--text-muted);}
+  .st.future .below .n{color:var(--text-muted);}
+  .cost{margin-top:22px;display:flex;align-items:center;justify-content:center;gap:14px;background:var(--surface-paper,#FAF3E3);border-radius:14px;padding:13px 20px;font-family:var(--font-body);font-size:16.5px;color:var(--text-primary);font-weight:600;}
+  .cost .sep{color:var(--stbr-emerald);font-weight:900;}
+  .note{margin-top:12px;text-align:center;font-family:var(--font-body);font-size:14.5px;color:var(--text-muted);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">issuer budget &middot; transaction sequence</div>
+  <h2 class="viz-title">what &ldquo;one confidential transfer&rdquo; costs today</h2>
+  <div class="tl">
+    <div class="tlline"></div>
+    <div class="groups">
+      <div class="grp" style="width:660px;">
+        <div class="gcap">tx 1..n &middot; create context account + verify proof, one tx per proof</div>
+        <div class="grow">
+          <div class="st"><div class="above"><div class="txchip">tx 1</div></div><div class="dot"></div><div class="below"><span class="n">equality</span>proof verified into its context account</div></div>
+          <div class="st"><div class="above"><div class="txchip">tx 2</div></div><div class="dot"></div><div class="below"><span class="n">grouped-ciphertext validity</span>proof verified into its context account</div></div>
+          <div class="st"><div class="above"><div class="txchip">tx 3</div></div><div class="dot"></div><div class="below"><span class="n">range</span>proof verified into its context account</div></div>
+        </div>
+      </div>
+      <div class="grp" style="width:250px;">
+        <div class="gcap ghost"></div>
+        <div class="grow"><div class="st"><div class="above"><div class="txchip">tx n+1</div></div><div class="dot big"></div><div class="below"><span class="n">Transfer executes</span>reads the <b>verified</b> context accounts</div></div></div>
+      </div>
+      <div class="grp" style="width:230px;">
+        <div class="gcap ghost"></div>
+        <div class="grow"><div class="st"><div class="above"><div class="txchip">tx n+2</div></div><div class="dot"></div><div class="below"><span class="n">close contexts</span>rent flows back</div></div></div>
+      </div>
+      <div class="grp" style="width:220px;">
+        <div class="gcap ghost"></div>
+        <div class="grow"><div class="st future"><div class="above"><div class="txchip" style="background:var(--text-muted);">future</div></div><div class="dot ghost"></div><div class="below"><span class="n">tx v1 (SIMD-0385)</span>proofs inline, Agave 4.2 &mdash; gate <b>live on devnet</b>, unset on mainnet</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="cost"><span>rent locked while contexts live</span><span class="sep">&middot;</span><span>a fee per transaction</span><span class="sep">&middot;</span><span>ordered dependency &mdash; every extra tx is an extra failure point</span></div>
+  <div class="note">SIMD-0296 / SIMD-0385 still status Review; the <span style="font-family:var(--font-mono);">enable_tx_v1</span> gate is ACTIVE on devnet (slot 492,480,000) and still has no account on mainnet (probed 2026-09-06) &mdash; build for multi-transaction today, because mainnet is where the users are.</div>
+</div>
+</div>
+</body></html>

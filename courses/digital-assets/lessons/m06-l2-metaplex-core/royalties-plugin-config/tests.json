@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1-valid-single-creator",
+    "description": "A 5% royalty to one creator with ruleSet None is valid.",
+    "input": "500, 'None', 'Farm1er1111111111111111111111111111111111=100'",
+    "expectedOutput": "result.ok === true && result.reason === 'ok'"
+  },
+  {
+    "id": "t2-basis-points-over-max",
+    "description": "basisPoints above 10000 is rejected even when shares sum to 100.",
+    "input": "20000, 'None', 'Farm1er1111111111111111111111111111111111=100'",
+    "expectedOutput": "result.ok === false && /basis/i.test(result.reason)"
+  },
+  {
+    "id": "t3-shares-do-not-sum",
+    "description": "Two creators whose shares sum to 90 are rejected.",
+    "input": "500, 'None', 'Farm1er1111111111111111111111111111111111=60;Farm2er2222222222222222222222222222222222=30'",
+    "expectedOutput": "result.ok === false && /(share|sum|100)/i.test(result.reason)"
+  },
+  {
+    "id": "t4-duplicate-creator",
+    "description": "The same creator address twice is rejected even though shares sum to 100.",
+    "input": "500, 'None', 'Farm1er1111111111111111111111111111111111=50;Farm1er1111111111111111111111111111111111=50'",
+    "expectedOutput": "result.ok === false && /duplicate/i.test(result.reason)"
+  },
+  {
+    "id": "t5-unknown-ruleset",
+    "description": "A ruleSet outside None/ProgramAllowList/ProgramDenyList is rejected.",
+    "input": "500, 'ProgramList', 'Farm1er1111111111111111111111111111111111=100'",
+    "expectedOutput": "result.ok === false && /rule/i.test(result.reason)"
+  },
+  {
+    "id": "t6-valid-allowlist-split",
+    "description": "A two-creator 70/30 split with ruleSet ProgramAllowList is valid.",
+    "input": "250, 'ProgramAllowList', 'Farm1er1111111111111111111111111111111111=70;Farm2er2222222222222222222222222222222222=30'",
+    "expectedOutput": "result.ok === true && result.reason === 'ok'"
+  }
+]

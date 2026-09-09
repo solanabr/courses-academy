@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Genesis routes money through buckets, not through a curve
+     purpose: show that the auction is only half the design; the bucket topology is where the proceeds actually go
+     data: Left: participants deposit SOL Center-left: INFLOW BUCKETS (one or more; collect SOL from participants during the launch) Center: END BEHAVIOR (configured; fires when the launch resolves) Center-right: OUTFLOW BUCKETS (receive funds via end behaviors) Right: destinations, typically team or treasury accounts, or a vesting destination Parallel path, drawn beneath: token allocation to winning bidders at the single clearing price Contrast callout: a bonding curve has exactly one inflow and one destination, fixed by the venue; Genesis makes both configurable
+     prompt: Left-to-right dataflow diagram with five stages as labeled. Draw the inflow-bucket stage as a stack of two or three boxes to show it is plural, and the same for outflow buckets. Put the end-behavior stage on the arrow between them as a gate. Draw the token-allocation path as a second, thinner lane beneath the money path. Place the contrast callout as a side note.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:451px;height:482px;bottom:-245px;right:-245px;border-radius:56% 46% 50% 45% / 49% 62% 45% 53%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:493px;height:355px;left:-257px;top:415px;border-radius:45% 51% 45% 39% / 36% 35% 47% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v5-flow { display:grid; grid-template-columns: 200px 34px 250px 158px 250px 34px 210px; align-items:center; column-gap:0; }
+  .v5-stage { background:var(--surface-card); border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+              padding:14px 16px 16px; text-align:center; }
+  .v5-stage .tag { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.1em;
+                   text-transform:uppercase; color:var(--stbr-emerald); }
+  .v5-stage .nm { font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.15;
+                  color:var(--text-primary); margin-top:3px; }
+  .v5-stage .sub { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:4px; line-height:1.3; }
+  .v5-stack { display:flex; flex-direction:column; gap:8px; }
+  .v5-bucket { background:var(--surface-card); border:2px solid var(--stbr-emerald); border-radius:var(--radius-md);
+               padding:8px 12px; font-family:var(--font-body); font-weight:700; font-size:14px;
+               color:var(--text-primary); text-align:center; }
+  .v5-stackhd { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.1em;
+                text-transform:uppercase; color:var(--stbr-emerald); text-align:center; margin-bottom:2px; }
+  .v5-stacksub { font-family:var(--font-body); font-size:12px; color:var(--text-secondary); text-align:center; line-height:1.3; margin-top:2px; }
+  .v5-arrow { height:3px; background:var(--stbr-dark); position:relative; }
+  .v5-arrow::after { content:""; position:absolute; right:-1px; top:-6px; border-left:11px solid var(--stbr-dark);
+                     border-top:7.5px solid transparent; border-bottom:7.5px solid transparent; }
+  .v5-gatewrap { display:flex; flex-direction:column; align-items:center; }
+  .v5-gateline { width:100%; height:3px; background:var(--stbr-dark); position:relative; margin-bottom:8px; }
+  .v5-gateline::after { content:""; position:absolute; right:-1px; top:-6px; border-left:11px solid var(--stbr-dark);
+                        border-top:7.5px solid transparent; border-bottom:7.5px solid transparent; }
+  .v5-gate { background:var(--stbr-yellow); border-radius:var(--radius-md); padding:9px 12px 10px;
+             text-align:center; width:146px; }
+  .v5-gate .gt { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em;
+                 text-transform:uppercase; color:var(--stbr-dark); }
+  .v5-gate .gs { font-family:var(--font-body); font-size:11.5px; color:var(--stbr-dark); line-height:1.3; margin-top:2px; }
+  .v5-lane { margin-top:22px; display:flex; align-items:center; gap:14px; }
+  .v5-lane .ll { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.1em;
+                 text-transform:uppercase; color:var(--text-on-brand); background:var(--stbr-green);
+                 border-radius:var(--radius-pill); padding:6px 16px; white-space:nowrap; }
+  .v5-lane .lbar { flex:1; height:3px; background:var(--stbr-green); position:relative; }
+  .v5-lane .lbar::after { content:""; position:absolute; right:-1px; top:-5px; border-left:9px solid var(--stbr-green);
+                          border-top:6.5px solid transparent; border-bottom:6.5px solid transparent; }
+  .v5-lane .lt { font-family:var(--font-body); font-weight:600; font-size:14.5px; color:var(--text-primary); white-space:nowrap; }
+  .v5-note { margin-top:20px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+             padding:14px 24px; display:flex; align-items:center; gap:18px; }
+  .v5-note .nh { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.1em;
+                 text-transform:uppercase; color:var(--stbr-yellow); white-space:nowrap; }
+  .v5-note .nt { font-family:var(--font-body); font-size:15px; color:var(--text-on-dark); line-height:1.4; }
+</style>
+  <div class="stbr-eyebrow">meteora genesis &middot; proceeds topology</div>
+  <h2 class="viz-title">genesis routes money through buckets, not through a curve</h2>
+  <div class="v5-flow">
+    <div class="v5-stage">
+      <div class="tag">participants</div>
+      <div class="nm">deposit SOL</div>
+    </div>
+    <div class="v5-arrow"></div>
+    <div>
+      <div class="v5-stackhd">inflow buckets</div>
+      <div class="v5-stack">
+        <div class="v5-bucket">inflow bucket 1</div>
+        <div class="v5-bucket">inflow bucket 2</div>
+        <div class="v5-bucket">&hellip; one or more</div>
+      </div>
+      <div class="v5-stacksub">collect SOL during the launch</div>
+    </div>
+    <div class="v5-gatewrap">
+      <div class="v5-gateline"></div>
+      <div class="v5-gate">
+        <div class="gt">end behavior</div>
+        <div class="gs">configured; fires when the launch resolves</div>
+      </div>
+    </div>
+    <div>
+      <div class="v5-stackhd">outflow buckets</div>
+      <div class="v5-stack">
+        <div class="v5-bucket">outflow bucket 1</div>
+        <div class="v5-bucket">outflow bucket 2</div>
+        <div class="v5-bucket">&hellip; one or more</div>
+      </div>
+      <div class="v5-stacksub">receive funds via end behaviors</div>
+    </div>
+    <div class="v5-arrow"></div>
+    <div class="v5-stage">
+      <div class="tag">destinations</div>
+      <div class="nm">team / treasury</div>
+      <div class="sub">or a vesting destination</div>
+    </div>
+  </div>
+  <div class="v5-lane">
+    <div class="ll">parallel path</div>
+    <div class="lbar"></div>
+    <div class="lt">token allocation to winning bidders &mdash; at the single clearing price</div>
+  </div>
+  <div class="v5-note">
+    <div class="nh">contrast</div>
+    <div class="nt">A bonding curve has exactly <strong>one inflow and one destination, fixed by the venue</strong>. Genesis makes both configurable &mdash; the auction is only half the design; the bucket topology is where the proceeds actually go.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Four production answers to the transfer-hook question
+     purpose: ground the composability argument in real deployments rather than assertion
+     data: Raydium CP-Swap: REFUSES. Allowlists exactly five extensions (TransferFeeConfig, MetadataPointer, TokenMetadata, InterestBearingConfig, ScaledUiAmount); rejects TransferHook because it "invokes a custom program on every transfer, with arbitrary CU consumption"; pool creation reverts. pump.fun: SQUATS. Ships an empty hook program, six lines of anchor-lang 0.31.1 at 333UA891CYPpAJAthphPT3hg1EkUBLhNFoP9HoWW3nug, parking the authority slot with zero logic so nobody else can ever claim it. PYUSD: SLEEPS. Carries the TransferHook extension on mint 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo with transferHook.programId left null: configured but dormant. Meteora DBC: FORWARDS. Explicitly resolves and forwards transfer-hook remaining accounts on every transferring instruction: the integrator who pays the tax.
+     prompt: Four-row comparison card, one row per project: Raydium CP-Swap, pump.fun, PYUSD, Meteora DBC. Columns: "stance" (REFUSES / SQUATS / SLEEPS / FORWARDS, as bold row labels) and "the receipt" (the quoted or factual detail from the data block, one line each, addresses in monospace). Order the rows as given so the spectrum reads refusal to full support top to bottom.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:503px;height:474px;right:-302px;top:155px;border-radius:42% 51% 37% 36% / 42% 64% 57% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:606px;height:529px;bottom:-336px;left:-336px;border-radius:49% 39% 64% 40% / 42% 42% 57% 38%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:36px 48px 34px;}
+  .tbl{border-radius:16px;overflow:hidden;border:2px solid var(--border-strong);}
+  .thead{display:flex;background:var(--surface-inverse,#1B231D);}
+  .thead .c{font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:.1em;
+            text-transform:uppercase;color:#F5E8CA;padding:13px 20px;}
+  .row{display:flex;border-top:2px solid var(--border-subtle);align-items:stretch;background:var(--surface-card);}
+  .row.alt{background:var(--surface-paper,#FAF3E3);}
+  .row.key{background:#FFF3C9;}
+  .c1{flex:0 0 250px;display:flex;flex-direction:column;justify-content:center;padding:14px 20px;}
+  .c2{flex:0 0 200px;display:flex;align-items:center;padding:14px 20px;}
+  .c3{flex:1;display:flex;flex-direction:column;justify-content:center;padding:14px 22px 14px 0;}
+  .proj{font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-primary);line-height:1.15;}
+  .stance{font-family:var(--font-display);font-weight:900;font-size:22px;letter-spacing:.04em;}
+  .st-ref{color:var(--stbr-dark);}
+  .st-mid{color:var(--text-muted);}
+  .st-fwd{color:var(--stbr-emerald);}
+  .receipt{font-family:var(--font-body);font-size:15px;color:var(--text-primary);line-height:1.35;}
+  .receipt .q{font-style:italic;color:var(--text-secondary);}
+  .receipt code{font-family:var(--font-mono);font-size:13px;background:rgba(27,35,29,.07);border-radius:6px;padding:1px 6px;}
+  .spectrum{display:flex;align-items:center;gap:12px;margin-top:14px;}
+  .spectrum .bar{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,#1B231D 0%,#8f8b7c 50%,#008B4C 100%);}
+  .spectrum .tx{font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);white-space:nowrap;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">real deployments, not assertion</div>
+  <h2 class="viz-title">four production answers to the transfer-hook question</h2>
+  <div class="tbl">
+    <div class="thead">
+      <div class="c" style="flex:0 0 250px;">project</div>
+      <div class="c" style="flex:0 0 200px;">stance</div>
+      <div class="c" style="flex:1;">the receipt</div>
+    </div>
+    <div class="row">
+      <div class="c1"><div class="proj">Raydium CP-Swap</div></div>
+      <div class="c2"><div class="stance st-ref">REFUSES</div></div>
+      <div class="c3"><div class="receipt">allowlists exactly five extensions (TransferFeeConfig, MetadataPointer, TokenMetadata, InterestBearingConfig, ScaledUiAmount); rejects TransferHook &mdash; <span class="q">&ldquo;invokes a custom program on every transfer, with arbitrary CU consumption&rdquo;</span> &mdash; pool creation reverts.</div></div>
+    </div>
+    <div class="row alt">
+      <div class="c1"><div class="proj">pump.fun</div></div>
+      <div class="c2"><div class="stance st-mid">SQUATS</div></div>
+      <div class="c3"><div class="receipt">ships an empty hook program &mdash; six lines of anchor-lang 0.31.1 at <code>333UA891CYPpAJAthphPT3hg1EkUBLhNFoP9HoWW3nug</code> &mdash; parking the authority slot with zero logic so nobody else can ever claim it.</div></div>
+    </div>
+    <div class="row">
+      <div class="c1"><div class="proj">PYUSD</div></div>
+      <div class="c2"><div class="stance st-mid">SLEEPS</div></div>
+      <div class="c3"><div class="receipt">carries the TransferHook extension on mint <code>2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo</code> with <code>transferHook.programId</code> left null: configured but dormant.</div></div>
+    </div>
+    <div class="row key">
+      <div class="c1"><div class="proj">Meteora DBC</div></div>
+      <div class="c2"><div class="stance st-fwd">FORWARDS</div></div>
+      <div class="c3"><div class="receipt">explicitly resolves and forwards transfer-hook remaining accounts on every transferring instruction &mdash; the integrator who pays the tax.</div></div>
+    </div>
+  </div>
+  <div class="spectrum">
+    <div class="tx">refusal</div>
+    <div class="bar"></div>
+    <div class="tx">full support &mdash; top to bottom</div>
+  </div>
+</div>
+</div>
+</body></html>

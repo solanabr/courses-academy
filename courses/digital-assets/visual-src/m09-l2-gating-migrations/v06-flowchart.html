@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Two places to remember that a leaf was claimed
+     purpose: separate the rehearsal guard from the real one, so the lab's file ledger is never mistaken for security
+     data: Path A (this lab): claim request -> verify proof locally -> check claimed.json -> mint transaction -> write claimed.json failure mode: file lost, script re-run from another machine, two processes racing guarantee: none against an adversary; protects you from yourself Path B (production): claim request -> program verifies proof on chain -> program creates ClaimStatus PDA (seeds: "ClaimStatus", claimant, distributor) -> tokens transfer in the same transaction failure mode: none of the above; the second transaction fails to create an existing account guarantee: the guard and the transfer are atomic
+     prompt: Two parallel horizontal flows labeled Path A (rehearsal) and Path B (production), each with its steps as boxes. Draw the mint/transfer step and the guard step of Path B inside a single enclosing box labeled "one transaction, atomic". On Path A draw the guard step outside the transaction box and annotate the gap between them as the failure surface.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:518px;height:511px;top:-291px;right:-291px;border-radius:39% 64% 58% 49% / 52% 54% 49% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:408px;height:459px;bottom:-278px;left:656px;border-radius:55% 50% 60% 58% / 51% 47% 65% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .path { background:var(--surface-card); border:2px solid var(--stbr-dark);
+          border-radius:var(--radius-xl); padding:16px 24px 14px; }
+  .path + .path { margin-top:16px; }
+  .p-head { display:flex; align-items:center; gap:12px; }
+  .p-tag { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.09em;
+           text-transform:uppercase; padding:4px 13px; border-radius:var(--radius-pill); }
+  .p-tag.a { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .p-tag.b { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .p-nm { font-family:var(--font-display); font-weight:900; font-size:19px; color:var(--text-primary); }
+  .flow { display:flex; align-items:center; margin-top:14px; min-height:128px; }
+  .node { background:var(--surface-card); border:2px solid var(--stbr-dark); border-radius:11px;
+          padding:10px 13px; font-family:var(--font-body); font-weight:600; font-size:14px;
+          line-height:1.25; text-align:center; color:var(--text-primary); }
+  .node small { display:block; font-weight:500; font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+  .arr { flex:none; width:30px; height:2.5px; background:var(--stbr-dark); position:relative; }
+  .arr::after { content:""; position:absolute; right:-1px; top:-4.5px;
+                border-left:8px solid var(--stbr-dark);
+                border-top:5.5px solid transparent; border-bottom:5.5px solid transparent; }
+  .gapwrap { flex:none; position:relative; width:172px; height:128px; display:flex;
+             align-items:center; justify-content:center; }
+  .gapwrap .arr { width:120px; }
+  .gapchip { position:absolute; top:calc(50% + 11px); left:2px; right:2px;
+             font-family:var(--font-body); font-weight:800; font-size:11.5px; line-height:1.25;
+             text-align:center; background:var(--stbr-yellow); color:var(--stbr-dark);
+             border:2px solid var(--stbr-dark); border-radius:var(--radius-md); padding:5px 8px; }
+  .txbox { display:flex; align-items:center; border-radius:14px; padding:9px 12px; }
+  .txbox.a { border:2.5px dashed var(--stbr-dark); }
+  .txbox.b { border:3px solid var(--stbr-emerald); background:rgba(0,139,76,0.06); }
+  .txlab { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em;
+           text-transform:uppercase; margin-top:8px; }
+  .txcol { display:flex; flex-direction:column; align-items:center; }
+  .txcol .txlab.a { color:var(--text-secondary); }
+  .txcol .txlab.b { color:var(--stbr-emerald); }
+  .foot { display:flex; flex-direction:column; gap:3px; margin-top:12px;
+          border-top:1px solid var(--border-subtle); padding-top:9px; }
+  .foot .f { font-family:var(--font-body); font-size:13.5px; line-height:1.3; color:var(--text-secondary); }
+  .foot .f b { font-weight:800; color:var(--text-primary); }
+  .foot .f.good b { color:var(--stbr-emerald); }
+</style>
+  <div class="stbr-eyebrow">the rehearsal guard vs the real one</div>
+  <h2 class="viz-title">two places to remember that a leaf was claimed</h2>
+  <div style="margin-top:6px;">
+    <div class="path">
+      <div class="p-head"><span class="p-tag a">path a &mdash; this lab</span><span class="p-nm">a file remembers</span></div>
+      <div class="flow">
+        <div class="node">claim request</div>
+        <div class="arr"></div>
+        <div class="node">verify proof<br>locally</div>
+        <div class="arr"></div>
+        <div class="node">check<br><span style="font-family:var(--font-mono);font-size:13px;">claimed.json</span></div>
+        <div class="gapwrap">
+          <div class="arr"></div>
+          <div class="gapchip">this gap is the failure surface &mdash; the guard is outside the transaction</div>
+        </div>
+        <div class="txcol">
+          <div class="txbox a"><div class="node" style="border:none;padding:4px 8px;">mint transaction</div></div>
+          <div class="txlab a">its own transaction</div>
+        </div>
+        <div class="arr"></div>
+        <div class="node">write<br><span style="font-family:var(--font-mono);font-size:13px;">claimed.json</span></div>
+      </div>
+      <div class="foot">
+        <div class="f"><b>failure mode:</b> file lost &middot; script re-run from another machine &middot; two processes racing</div>
+        <div class="f"><b>guarantee:</b> none against an adversary &mdash; it protects you from yourself</div>
+      </div>
+    </div>
+    <div class="path">
+      <div class="p-head"><span class="p-tag b">path b &mdash; production</span><span class="p-nm">the chain remembers</span></div>
+      <div class="flow">
+        <div class="node">claim request</div>
+        <div class="arr"></div>
+        <div class="txcol">
+          <div class="txbox b">
+            <div class="node">program verifies<br>proof on chain</div>
+            <div class="arr"></div>
+            <div class="node">program creates ClaimStatus PDA<small>seeds: "ClaimStatus", claimant, distributor</small></div>
+            <div class="arr"></div>
+            <div class="node">tokens transfer<br>in the same transaction</div>
+          </div>
+          <div class="txlab b">one transaction, atomic</div>
+        </div>
+      </div>
+      <div class="foot">
+        <div class="f"><b>failure mode:</b> none of the above &mdash; a second claim fails to create an account that already exists</div>
+        <div class="f good"><b>guarantee:</b> the guard and the transfer are atomic</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

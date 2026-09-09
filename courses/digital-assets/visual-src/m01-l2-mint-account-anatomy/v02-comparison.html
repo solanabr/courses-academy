@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: JS number vs BigInt for a u64 supply
+     purpose: make the silent-precision-loss footgun concrete with today's live numbers
+     data: Three rows, two columns (value, safe as JS number?). Supplies read straight from each mint account on mainnet, in base units, 2026-08-22; both are live and drift by the minute. PYUSD supply (2026-08-22): 688,176,370,728,435 base units | yes, but only because it is small today: 7.6% of Number.MAX_SAFE_INTEGER classic USDC supply (2026-08-22): 7,923,463,957,481,104 base units | technically yes, at 88% of Number.MAX_SAFE_INTEGER: one growth spurt from silent rounding u64 maximum: 18,446,744,073,709,551,615 | no: 2,048 times past the safe-integer line Rule row: read u64 with DataView.getBigUint64, keep BigInt end to end, never Number(supply).
+     prompt: A three-row comparison card with the values and safety verdicts from the data above, plus a visual bar for each value scaled against a marked Number.MAX_SAFE_INTEGER line so the 88% row reads as nearly touching the line and the u64 max row as far past it (use an axis break or log hint). Close with the one-line rule as a footer strip.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:431px;height:475px;bottom:-220px;right:-220px;border-radius:39% 63% 65% 42% / 38% 36% 36% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:510px;left:-267px;top:219px;border-radius:63% 35% 59% 36% / 52% 62% 46% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:40px 48px 36px;}
+  .card .viz-title{font-size:50px;}
+  .rows{position:relative;margin-top:6px;}
+  .maxline{position:absolute;left:710px;top:0;bottom:0;width:0;border-left:3px dashed var(--stbr-dark);}
+  .maxchip{position:absolute;left:710px;top:0;transform:translateX(-50%);background:var(--stbr-dark);color:#F5E8CA;font-family:var(--font-body);font-size:14px;font-weight:600;padding:6px 14px;border-radius:999px;white-space:nowrap;}
+  .axisrow{height:40px;}
+  .row{display:flex;align-items:center;gap:20px;height:92px;border-top:2px solid var(--border-subtle);}
+  .cname{width:250px;}
+  .cname .n{font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-primary);}
+  .cname .d{font-family:var(--font-body);font-size:13px;color:var(--text-muted);margin-top:4px;}
+  .cbar{width:700px;position:relative;height:56px;}
+  .track{position:absolute;left:0;right:0;top:12px;height:32px;background:var(--surface-paper,#FAF3E3);border-radius:8px;}
+  .fill{position:absolute;top:12px;height:32px;border-radius:8px;}
+  .val{position:absolute;top:-8px;left:0;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--text-primary);white-space:nowrap;}
+  .brk{position:absolute;top:8px;width:7px;height:40px;background:var(--surface-card);transform:skewX(-22deg);}
+  .cverdict{flex:1;font-family:var(--font-body);font-size:16px;color:var(--text-secondary);line-height:1.35;}
+  .cverdict b{color:var(--text-primary);}
+  .src{margin-top:10px;font-family:var(--font-body);font-size:14px;color:var(--text-muted);}
+  .rule{margin-top:12px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:14px;padding:16px 24px;font-family:var(--font-display);font-weight:800;font-size:21px;text-align:center;}
+  .rule code{font-family:var(--font-mono);font-weight:700;background:rgba(0,0,0,0.22);padding:2px 10px;border-radius:8px;font-size:19px;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the silent-precision-loss footgun, with live numbers</div>
+  <h2 class="viz-title">js number vs BigInt for a u64 supply</h2>
+  <div class="rows">
+    <div class="maxline"></div>
+    <div class="axisrow"><div class="maxchip">Number.MAX_SAFE_INTEGER &middot; 9,007,199,254,740,991</div></div>
+    <div class="row">
+      <div class="cname"><div class="n">PYUSD supply</div><div class="d">base units, 2026-08-22</div></div>
+      <div class="cbar">
+        <div class="val">688,176,370,728,435</div>
+        <div class="track"></div>
+        <div class="fill" style="left:0;width:33px;background:var(--stbr-emerald);"></div>
+      </div>
+      <div class="cverdict"><b>yes</b> &mdash; but only because it is small today: <b>7.6%</b> of Number.MAX_SAFE_INTEGER</div>
+    </div>
+    <div class="row">
+      <div class="cname"><div class="n">classic USDC supply</div><div class="d">base units, 2026-08-22</div></div>
+      <div class="cbar">
+        <div class="val">7,923,463,957,481,104</div>
+        <div class="track"></div>
+        <div class="fill" style="left:0;width:387px;background:var(--stbr-yellow);"></div>
+      </div>
+      <div class="cverdict"><b>technically yes</b> &mdash; at <b>88%</b> of Number.MAX_SAFE_INTEGER: one growth spurt from silent rounding</div>
+    </div>
+    <div class="row">
+      <div class="cname"><div class="n">u64 maximum</div><div class="d">the type&rsquo;s full range</div></div>
+      <div class="cbar">
+        <div class="val">18,446,744,073,709,551,615</div>
+        <div class="track"></div>
+        <div class="fill" style="left:0;width:700px;background:var(--stbr-dark);"></div>
+        <div class="brk" style="left:540px;"></div>
+        <div class="brk" style="left:556px;"></div>
+      </div>
+      <div class="cverdict"><b>no</b> &mdash; <b>2,048&times;</b> past the safe-integer line (axis broken)</div>
+    </div>
+  </div>
+  <div class="src">Supplies read straight from each mint account on mainnet, 2026-08-22 &mdash; both are live and drift by the minute.</div>
+  <div class="rule">read u64 with <code>DataView.getBigUint64</code> &middot; keep <code>BigInt</code> end to end &middot; never <code>Number(supply)</code></div>
+</div>
+</div>
+</body></html>

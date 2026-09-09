@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The harvest hook's two entries, as recipes rather than addresses
+     purpose: show that an ExtraAccountMeta can encode a derivation instead of a literal key, and that the index refers to the Execute account list
+     data: entry 0 -> hook config PDA, read-only discriminator byte 1 = PDA on the hook program seed config A: Literal { bytes: b"hook-config" } seed config B: AccountKey { index: 1 }   // index 1 of the Execute account list = the mint is_signer 0, is_writable 0 entry 1 -> treasury log PDA, writable discriminator byte 1 = PDA on the hook program seed config A: Literal { bytes: b"treasury" } seed config B: AccountKey { index: 1 } is_signer 0, is_writable 1 Execute account list the indices point into: 0 source | 1 mint | 2 destination | 3 owner/delegate | 4 validation account | 5.. resolved extras
+     prompt: Two stacked annotated cards, one per entry, each showing the 35-byte struct split into discriminator byte, address_config region unpacked into two labeled seed configs, and the two flag bytes. Below both cards, a numbered horizontal strip of the Execute account list from 0 to 5, with a callout arrow from each "AccountKey { index: 1 }" to slot 1 (mint).
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:498px;right:-290px;top:93px;border-radius:49% 64% 60% 51% / 49% 50% 61% 44%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:415px;height:426px;bottom:-233px;left:476px;border-radius:41% 51% 58% 59% / 46% 44% 48% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v4 .entry{display:flex;gap:16px;background:var(--surface-inverse);border-radius:16px;padding:16px 20px;margin-top:12px;align-items:center}
+    .v4 .eid{width:212px}
+    .v4 .ename{font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--stbr-cream)}
+    .v4 .edesc{font-family:var(--font-body);font-size:13px;color:var(--stbr-ink-300);margin-top:3px}
+    .v4 .edesc .w{color:var(--stbr-cream);font-weight:700}
+    .v4 .striplab{font-family:var(--font-body);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--stbr-ink-300);margin-bottom:4px}
+    .v4 .stripwrap{flex:1}
+    .v4 .strip{display:flex;gap:6px}
+    .v4 .seg{border:1px solid rgba(245,232,202,.28);border-radius:9px;padding:7px 10px;min-height:58px}
+    .v4 .seg .role{font-family:var(--font-body);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--stbr-ink-300)}
+    .v4 .seg .byt{font-family:var(--font-mono);font-size:13px;color:var(--stbr-cream);margin-top:4px;line-height:1.35}
+    .v4 .seg.disc{width:150px}
+    .v4 .seg.sa{flex:1.15}
+    .v4 .seg.sb{flex:1;background:var(--stbr-yellow);border-color:var(--stbr-yellow)}
+    .v4 .seg.sb .role{color:rgba(27,35,29,.65)}
+    .v4 .seg.sb .byt{color:var(--stbr-dark);font-weight:700}
+    .v4 .seg.flag{width:104px}
+    .v4 .seg.flag.on .byt{color:var(--stbr-yellow);font-weight:700}
+    .v4 .connect{position:relative;height:56px}
+    .v4 .cline{position:absolute;left:350px;top:0;width:2.5px;height:44px;background:var(--stbr-dark)}
+    .v4 .ctip{position:absolute;left:344px;top:44px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark)}
+    .v4 .clab{position:absolute;left:374px;top:8px;font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:var(--text-primary);background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:999px;padding:5px 14px}
+    .v4 .accts{display:flex;gap:12px}
+    .v4 .slot{width:226px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:12px;padding:9px 12px}
+    .v4 .slot.mint{border:2.5px solid var(--stbr-yellow);background:rgba(255,210,63,.24)}
+    .v4 .idx{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--text-muted)}
+    .v4 .slot.mint .idx{color:var(--stbr-green)}
+    .v4 .sname{font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--text-primary);margin-top:2px}
+    .v4 .stripcap{font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin:14px 0 6px}
+  </style>
+  <div class="v4">
+    <div class="stbr-eyebrow">ExtraAccountMeta &middot; 35 bytes each</div>
+    <h2 class="viz-title" style="font-size:38px;margin-bottom:4px">two entries, written as recipes rather than addresses</h2>
+    <div class="entry">
+      <div class="eid">
+        <div class="ename">entry 0</div>
+        <div class="edesc">hook config PDA &middot; read-only</div>
+      </div>
+      <div class="stripwrap">
+        <div class="striplab">35 bytes</div>
+        <div class="strip">
+          <div class="seg disc"><div class="role">discriminator &middot; 1 B</div><div class="byt">1 = PDA on the<br>hook program</div></div>
+          <div class="seg sa"><div class="role">address_config &middot; seed A</div><div class="byt">Literal { bytes: b"hook-config" }</div></div>
+          <div class="seg sb"><div class="role">address_config &middot; seed B</div><div class="byt">AccountKey { index: 1 }</div></div>
+          <div class="seg flag"><div class="role">is_signer</div><div class="byt">0</div></div>
+          <div class="seg flag"><div class="role">is_writable</div><div class="byt">0</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="entry">
+      <div class="eid">
+        <div class="ename">entry 1</div>
+        <div class="edesc">treasury log PDA &middot; <span class="w">writable</span></div>
+      </div>
+      <div class="stripwrap">
+        <div class="striplab">35 bytes</div>
+        <div class="strip">
+          <div class="seg disc"><div class="role">discriminator &middot; 1 B</div><div class="byt">1 = PDA on the<br>hook program</div></div>
+          <div class="seg sa"><div class="role">address_config &middot; seed A</div><div class="byt">Literal { bytes: b"treasury" }</div></div>
+          <div class="seg sb"><div class="role">address_config &middot; seed B</div><div class="byt">AccountKey { index: 1 }</div></div>
+          <div class="seg flag"><div class="role">is_signer</div><div class="byt">0</div></div>
+          <div class="seg flag on"><div class="role">is_writable</div><div class="byt">1</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="connect">
+      <div class="cline"></div><div class="ctip"></div>
+      <div class="clab">both AccountKey { index: 1 } seeds resolve positionally &rarr; slot 1 of the Execute list = the mint</div>
+    </div>
+    <div class="stripcap" style="margin-top:0">the Execute account list the indices point into</div>
+    <div class="accts">
+      <div class="slot"><div class="idx">0</div><div class="sname">source</div></div>
+      <div class="slot mint"><div class="idx">1</div><div class="sname">mint</div></div>
+      <div class="slot"><div class="idx">2</div><div class="sname">destination</div></div>
+      <div class="slot"><div class="idx">3</div><div class="sname">owner / delegate</div></div>
+      <div class="slot"><div class="idx">4</div><div class="sname">validation account</div></div>
+      <div class="slot"><div class="idx">5..</div><div class="sname">resolved extras</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

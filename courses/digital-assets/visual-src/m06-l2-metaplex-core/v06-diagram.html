@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: How a numbered print run hangs together
+     purpose: show the MasterEdition/Edition split the lab builds, and where numbering responsibility sits
+     data: Collection "Overgrowth Almanac": plugins = MasterEdition {maxSupply: 100}. Member assets: "Almanac 2026, print #1" with Edition {number: 1}, print #2 with Edition {number: 2}, ellipsis to print #100. Note: minting by SDK, YOU assign numbers; Core Candy Machine automates sequential numbering at scale.
+     prompt: One parent node (the collection, showing the MasterEdition plugin with maxSupply 100) fanning out to three child asset nodes labeled print #1, print #2, and a dashed print #100, each showing its Edition{number} plugin. A side note attached to the arrows: "manual mints = manual numbering; Candy Machine auto-increments".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:464px;right:-305px;top:309px;border-radius:38% 65% 47% 47% / 57% 36% 46% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:558px;height:538px;bottom:-277px;left:-277px;border-radius:59% 35% 57% 47% / 59% 60% 61% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tree { position:relative; margin-top:6px; }
+  .parent-row { display:flex; justify-content:center; }
+  .parent { width:560px; border:3px solid var(--stbr-dark); border-radius:var(--radius-xl);
+            background:var(--surface-card); overflow:hidden; }
+  .parent-head { background:var(--stbr-emerald); color:var(--stbr-cream); padding:12px 24px;
+                 font-family:var(--font-display); font-weight:900; font-size:22px; }
+  .parent-body { padding:14px 24px 16px; display:flex; align-items:center; gap:14px; }
+  .plug { font-family:var(--font-mono); font-weight:700; font-size:16px;
+          padding:7px 16px; border-radius:var(--radius-pill); }
+  .plug.hot { background:var(--stbr-yellow); color:var(--stbr-dark);
+              border:2px solid var(--stbr-dark); }
+  .plug.soft { background:rgba(0,139,76,0.08); color:var(--stbr-green);
+               border:1.5px solid rgba(0,139,76,0.4); }
+  .band { position:relative; height:84px; }
+  .band svg { position:absolute; left:0; top:0; }
+  .kids { display:flex; justify-content:center; align-items:stretch; gap:24px; }
+  .kid { width:360px; border:2.5px solid var(--stbr-dark); border-radius:var(--radius-lg);
+         background:var(--surface-card); overflow:hidden; }
+  .kid.ghost { border-style:dashed; border-color:var(--stbr-ink-500); }
+  .kid-head { background:var(--stbr-green); color:var(--stbr-cream); padding:9px 20px;
+              font-family:var(--font-display); font-weight:800; font-size:18px; }
+  .kid.ghost .kid-head { background:var(--stbr-cream-200); color:var(--stbr-ink-700); }
+  .kid-body { padding:12px 20px 14px; }
+  .dots { align-self:center; font-family:var(--font-display); font-weight:900;
+          font-size:34px; color:var(--stbr-ink-500); padding:0 2px; }
+  .note { position:absolute; right:0; top:6px; width:330px;
+          background:var(--surface-inverse); color:var(--text-on-dark);
+          border-radius:var(--radius-lg); padding:16px 20px;
+          font-family:var(--font-body); font-weight:600; font-size:15px; line-height:1.45; }
+  .note b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">MasterEdition on the parent, Edition on each print</div>
+  <h2 class="viz-title">how a numbered print run hangs together</h2>
+  <div class="tree">
+    <div class="note">minting by SDK, <b>you</b> assign the numbers &mdash; Core Candy Machine automates sequential numbering at scale.</div>
+    <div class="parent-row">
+      <div class="parent">
+        <div class="parent-head">collection &middot; "Overgrowth Almanac"</div>
+        <div class="parent-body">
+          <span class="plug hot">MasterEdition { maxSupply: 100 }</span>
+        </div>
+      </div>
+    </div>
+    <div class="band">
+      <svg width="1456" height="84" viewBox="0 0 1456 84">
+        <line x1="728" y1="0" x2="728" y2="30" stroke="#1B231D" stroke-width="3"/>
+        <line x1="317" y1="30" x2="1139" y2="30" stroke="#1B231D" stroke-width="3"/>
+        <line x1="317" y1="30" x2="317" y2="70" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="317,84 309,68 325,68" fill="#1B231D"/>
+        <line x1="701" y1="30" x2="701" y2="70" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="701,84 693,68 709,68" fill="#1B231D"/>
+        <line x1="1139" y1="30" x2="1139" y2="70" stroke="#1B231D" stroke-width="3" stroke-dasharray="7 6"/>
+        <polygon points="1139,84 1131,68 1147,68" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="kids">
+      <div class="kid">
+        <div class="kid-head">"Almanac 2026" &middot; print #1</div>
+        <div class="kid-body"><span class="plug soft">Edition { number: 1 }</span></div>
+      </div>
+      <div class="kid">
+        <div class="kid-head">print #2</div>
+        <div class="kid-body"><span class="plug soft">Edition { number: 2 }</span></div>
+      </div>
+      <div class="dots">&hellip;</div>
+      <div class="kid ghost">
+        <div class="kid-head">print #100</div>
+        <div class="kid-body"><span class="plug soft">Edition { number: 100 }</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The four graders, and what each one catches
+     purpose: show that the test set is designed to separate the invariant derivation from the flat-price model, not just to check one number
+     data: Columns: input (vs, vt, rt in SOL / millions) | expected | what the flat-price model returns | what the test proves Row 1: 30, 1073, 793.1 | ~85.005 | 22.174 | the reference derivation; the naive model under-counts 3.8x Row 2: 30, 1000, 800 | 120 | 24.000 | the threshold moves when the constants move; no folklore constant survives Row 3: 85, 1073, 793.1 | ~240.848 | 62.827 | graduationSol is linear in the starting SOL reserve (85/30 x 85.005); widest absolute miss for the naive model Row 4: 30, 1073, 0 | 0 | 0 | sanity anchor only; the naive model passes it too, so it proves nothing alone
+     prompt: Four-column table with the four rows above, inputs and numbers in monospace. Style the flat-price column in a muted or struck tone to mark it as the model being replaced, and highlight row 3's expected cell as the discriminating test. Add a caption strip beneath: "a step-walking loop also passes all four; the closed form needs no loop".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:492px;height:481px;top:-227px;right:-227px;border-radius:45% 48% 51% 62% / 64% 59% 39% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:465px;height:400px;left:-240px;top:375px;border-radius:36% 37% 51% 46% / 46% 65% 57% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">tests that separate the derivation from the flat-price model</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 16px;color:var(--stbr-dark);">The four graders, and what each one catches</h2>
+
+    <table style="width:100%;border-collapse:collapse;">
+      <tr style="background:var(--stbr-dark);">
+        <td style="padding:11px 16px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.05em;color:#F5E8CA;border-radius:10px 0 0 0;width:22%;">INPUT (vs, vt, rt &mdash; SOL / MILLIONS)</td>
+        <td style="padding:11px 16px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.05em;color:#F5E8CA;width:13%;">EXPECTED</td>
+        <td style="padding:11px 16px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.05em;color:rgba(245,232,202,0.55);width:17%;">FLAT-PRICE MODEL</td>
+        <td style="padding:11px 16px;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.05em;color:#F5E8CA;border-radius:0 10px 0 0;width:48%;">WHAT THE TEST PROVES</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border-subtle);">
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">30, 1073, 793.1</td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-emerald);">~85.005</td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;font-style:italic;color:var(--text-muted,#6b7a6f);">22.174</td>
+        <td style="padding:14px 16px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);">the reference derivation; the naive model under-counts 3.8&times;</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border-subtle);background:var(--surface-paper,#faf5e6);">
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">30, 1000, 800</td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-emerald);">120</td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;font-style:italic;color:var(--text-muted,#6b7a6f);">24.000</td>
+        <td style="padding:14px 16px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);">the threshold moves when the constants move; no folklore constant survives</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border-subtle);">
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);">85, 1073, 793.1</td>
+        <td style="padding:14px 16px;background:rgba(255,210,63,0.35);"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);">~240.848</span><div style="font-family:var(--font-body);font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--stbr-green);margin-top:2px;">THE DISCRIMINATOR</div></td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;font-style:italic;color:var(--text-muted,#6b7a6f);">62.827</td>
+        <td style="padding:14px 16px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);">graduationSol is linear in the starting SOL reserve (85/30 &times; 85.005); widest absolute miss for the naive model</td>
+      </tr>
+      <tr style="background:var(--surface-paper,#faf5e6);">
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--stbr-dark);border-radius:0 0 0 10px;">30, 1073, 0</td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-emerald);">0</td>
+        <td style="padding:14px 16px;font-family:var(--font-mono);font-size:14px;font-style:italic;color:var(--text-muted,#6b7a6f);">0</td>
+        <td style="padding:14px 16px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);border-radius:0 0 10px 0;">sanity anchor only; the naive model passes it too, so it proves nothing alone</td>
+      </tr>
+    </table>
+
+    <div style="margin-top:16px;background:var(--stbr-emerald);border-radius:12px;padding:11px 22px;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#F5E8CA;">a step-walking loop also passes all four &mdash; the closed form needs no loop.</div>
+  </div>
+</div>
+</body></html>

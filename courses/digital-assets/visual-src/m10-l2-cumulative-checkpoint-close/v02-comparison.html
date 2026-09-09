@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two instruments, two different questions
+     purpose: fix the order in which a reader checks a row, structural legality first and market reality second
+     data: Instrument A: the conflict matrix (module 1, artifact R2, checkCombo) Question: will this mint initialize at all? Source: check_for_invalid_mint_extension_combinations, 29 ExtensionType production variants Sample rules: ScaledUiAmount x InterestBearingConfig mutually exclusive; ConfidentialMintBurn requires ConfidentialTransferMint; TransferFeeConfig forces a TransferFeeAmount account extension Failure mode: the create transaction reverts, you find out in seconds Instrument B: the compatibility thesis (module 5, artifact R6, isRoutable) Question: will a venue price it? Source: Raydium CP-Swap's five-extension allowlist plus a hardcoded 4-entry MINT_WHITELIST Rule shape: every, not some. Allowlisting is not additive Failure mode: pool creation reverts at graduation, you find out at launch Order: A then B. A legal combo can still be unlistable; an illegal combo never gets that far.
+     prompt: Two side-by-side panels, A on the left and B on the right, each with a bold instrument name, the question it answers in large type, a short source line, a bulleted rules list in monospace, and a footer strip labeled "failure mode" in a contrasting tone. Below both panels, a single full-width arrow running left to right labeled "check A first, then B", with the caption that a legal combo can still be unlistable.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:436px;height:514px;right:-252px;top:73px;border-radius:61% 35% 39% 39% / 57% 35% 65% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:376px;height:535px;bottom:-313px;left:728px;border-radius:55% 61% 42% 47% / 60% 59% 59% 45%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:24px; }
+  .panel { flex:1; position:relative; background:var(--surface-card);
+           border:2px solid var(--border-strong);
+           border-radius:var(--radius-2xl); padding:24px 28px 100px;
+           height:430px; overflow:hidden; }
+  .iname { display:flex; align-items:baseline; gap:12px; margin-bottom:8px; }
+  .iname .tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+        letter-spacing:.1em; text-transform:uppercase; padding:3px 12px;
+        border-radius:var(--radius-pill); background:var(--stbr-emerald); color:#F5E8CA; }
+  .iname .nm { font-family:var(--font-display); font-weight:900; font-size:24px;
+        color:var(--text-primary); }
+  .iname .art { font-family:var(--font-mono); font-size:13px; color:var(--text-muted); }
+  .question { font-family:var(--font-display); font-weight:900; font-size:33px;
+        line-height:1.05; color:var(--stbr-green); margin:2px 0 10px; }
+  .source { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+        line-height:1.4; color:var(--text-secondary); margin-bottom:12px; }
+  .rules { list-style:none; margin:0; padding:0; }
+  .rules li { font-family:var(--font-mono); font-size:13px; line-height:1.45;
+        color:var(--text-primary); padding:5px 0 5px 20px; position:relative;
+        border-top:1.5px solid var(--border-subtle); }
+  .rules li::before { content:""; position:absolute; left:2px; top:12px; width:9px;
+        height:9px; border-radius:50%; background:var(--stbr-emerald); }
+  .fmode { position:absolute; left:0; right:0; bottom:0; background:var(--surface-inverse);
+        padding:14px 28px 18px; }
+  .fmode .fl { font-family:var(--font-body); font-weight:800; font-size:11px;
+        letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-yellow);
+        margin-bottom:3px; }
+  .fmode .ft { font-family:var(--font-body); font-weight:600; font-size:14.5px;
+        color:var(--text-on-dark); }
+  .order { margin-top:22px; background:var(--stbr-emerald); border-radius:var(--radius-xl);
+        padding:16px 28px; display:flex; align-items:center; gap:20px; }
+  .order .ochip { font-family:var(--font-body); font-weight:800; font-size:15px;
+        letter-spacing:.06em; text-transform:uppercase; background:var(--stbr-yellow);
+        color:var(--stbr-dark); padding:7px 18px; border-radius:var(--radius-pill);
+        white-space:nowrap; }
+  .order svg { flex:none; display:block; }
+  .order .ocap { font-family:var(--font-body); font-weight:600; font-size:16.5px;
+        line-height:1.35; color:#F5E8CA; }
+</style>
+  <div class="stbr-eyebrow">structural legality first, market reality second</div>
+  <h2 class="viz-title">two instruments, two different questions</h2>
+  <div class="cols">
+    <div class="panel">
+      <div class="iname"><span class="tag">Instrument A</span><span class="nm">the conflict matrix</span><span class="art">m01 &middot; R2 &middot; checkCombo</span></div>
+      <div class="question">&ldquo;will this mint initialize at all?&rdquo;</div>
+      <div class="source">Source: <b>check_for_invalid_mint_extension_combinations</b> &mdash; 29 ExtensionType production variants</div>
+      <ul class="rules">
+        <li>ScaledUiAmount &times; InterestBearingConfig &mdash; mutually exclusive</li>
+        <li>ConfidentialMintBurn requires ConfidentialTransferMint</li>
+        <li>TransferFeeConfig forces a TransferFeeAmount account extension</li>
+      </ul>
+      <div class="fmode">
+        <div class="fl">failure mode</div>
+        <div class="ft">the create transaction reverts &mdash; you find out in seconds</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="iname"><span class="tag">Instrument B</span><span class="nm">the compatibility thesis</span><span class="art">m05 &middot; R6 &middot; isRoutable</span></div>
+      <div class="question">&ldquo;will a venue price it?&rdquo;</div>
+      <div class="source">Source: Raydium CP-Swap&rsquo;s five-extension allowlist <b>plus</b> a hardcoded 4-entry MINT_WHITELIST</div>
+      <ul class="rules">
+        <li>rule shape: every, not some</li>
+        <li>allowlisting is not additive</li>
+      </ul>
+      <div class="fmode">
+        <div class="fl">failure mode</div>
+        <div class="ft">pool creation reverts at graduation &mdash; you find out at launch</div>
+      </div>
+    </div>
+  </div>
+  <div class="order">
+    <span class="ochip">check A first, then B</span>
+    <svg width="150" height="20" viewBox="0 0 150 20"><line x1="0" y1="10" x2="132" y2="10" stroke="#F5E8CA" stroke-width="3"/><polygon points="132,2 150,10 132,18" fill="#F5E8CA"/></svg>
+    <span class="ocap">a legal combo can still be unlistable &mdash; an illegal combo never gets that far</span>
+  </div>
+</div>
+</body></html>

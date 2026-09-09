@@ -1,0 +1,96 @@
+id: lesson-date-m03-l1-write-the-hook
+slug: m03-l1-write-the-hook
+title: "Write the hook: the interface + your one Rust program"
+skills:
+  - anchor
+  - solana-programs
+  - pdas
+  - token-2022
+  - program-security
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    anchor-lang: "1.1.2"
+    litesvm: "0.15.2"
+    spl-transfer-hook-interface: "2.1.0"
+    spl-tlv-account-resolution: "0.11.1"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: hook-execute-gate
+    type: code
+    language: rust
+    starter: hook-execute-gate/starter.rs
+    solution: hook-execute-gate/solution.rs
+    tests: hook-execute-gate/tests.json
+    hints:
+      - "The hook has exactly one power on the transfer path: pass or fail. It cannot move funds."
+      - "Check the pause flag first: it is the global kill-switch and must beat the allowlist."
+      - "Return the amount (as i64) only when the transfer is truly allowed; otherwise a negative error code."
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "You seed your ExtraAccountMetaList PDA with ['extra-account-metas', mint] but compute its address against the Token-2022 program id, and now transfers fail to resolve the validation account. What is wrong?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The mint's TransferHook programId should name the validation PDA, not your hook program"
+            correct: false
+            feedback: "The slot names a program to invoke, and the runtime then resolves the list from that program's own PDA. Aim the slot at a data account and there is nothing for Token-2022 to call."
+          - id: c
+            label: "The validation PDA lives on your hook program, not Token-2022; derive it with get_extra_account_metas_address."
+            correct: true
+            feedback: "The manifest belongs to the program that needs the accounts, so the derivation takes your program id; pointing it at Token-2022 yields a valid address no account will ever occupy."
+          - id: b
+            label: "ExtraAccountMetaList must be seeded by the destination token account, so each recipient gets its own list."
+            correct: false
+            feedback: "There is exactly one validation account per mint, seeded by the mint, not per destination."
+          - id: a
+            label: "The seed literal must be 'extra_account_metas' with underscores, matching the snake_case the SPL crates use elsewhere, not hyphens."
+            correct: false
+            feedback: "The seed is the hyphenated literal 'extra-account-metas', but a spelling swap is not the bug here; the account is being derived on the wrong program."
+        explanation: "The ExtraAccountMetaList is owned and derived by the hook program, because it is the hook that needs to advertise which extra accounts the runtime must forward. Seeds are ['extra-account-metas', mint] but the program id is YOUR program's, resolved by get_extra_account_metas_address; deriving it against Token-2022 points at an account that will never exist."
+      - id: q2
+        prompt: "Your hook program builds and deploys, but the runtime never reaches your Execute logic on a transfer. Which detail is most likely missing?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Your program must answer to the hashed-string discriminator for 'spl-transfer-hook-interface:execute', not a custom instruction tag."
+            correct: true
+            feedback: "Dispatch falls off the end of your match when the eight bytes do not line up, and the log then shows a fallback error from a program that looks like it was never reached."
+          - id: d
+            label: "Anchor's own discriminator for a method named execute is the one Token-2022 sends, so a fallback handler has to forward the call to it"
+            correct: false
+            feedback: "Two namespaces, two hashes. Token-2022 sends sha256 of spl-transfer-hook-interface:execute, while an Anchor method named execute hashes global:execute, which is a different eight bytes."
+          - id: b
+            label: "You must register the hook program in Token-2022's global hook registry, signed by the mint authority, before the runtime will dispatch to it."
+            correct: false
+            feedback: "There is no global registry of any kind; the mint's own TransferHook extension names your program, and that is the only wiring."
+          - id: c
+            label: "Execute must be marked payable so it can receive the transferred amount and pass it on to the destination."
+            correct: false
+            feedback: "There is no payable concept; the amount arrives as instruction data and the funds never route through the hook."
+        explanation: "The interface is a contract of hashed-string discriminators. Token-2022 invokes your program with the discriminator for 'spl-transfer-hook-interface:execute'; if your program only recognizes a custom tag, the dispatch falls through and your logic never runs. The mint's TransferHook extension pointing at your program id is the whole registration; there is no separate global config."
+      - id: q3
+        prompt: "Your finished hook is great, and you want to attach it to the already-live SPROUT mint from M2 so existing holders get gated. What does the extension model force you to do?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Use the mint's transfer-hook authority to aim its existing hook slot at your newly deployed program"
+            correct: false
+            feedback: "Aiming the slot is real and it needs a slot. The hook authority can chamber or null a program id on a mint that carried the TransferHook entry from its first block; the live SPROUT has no such entry."
+          - id: c
+            label: "Freeze the mint, patch a new TransferHook extension into its TLV region, then thaw it and carry on."
+            correct: false
+            feedback: "Extension TLV data is not hand-patchable, and there is no freeze-patch-thaw flow for adding extensions."
+          - id: a
+            label: "Call update-extra-account-metas on the live mint, passing your hook's program id as the list authority, so transfers dispatch to it."
+            correct: false
+            feedback: "That instruction updates the meta LIST on a mint that already has the TransferHook extension; it cannot add the extension to a mint that lacks it."
+          - id: b
+            label: "Mint a new SPROUT variant with the TransferHook extension set at creation; extensions cannot be added after init."
+            correct: true
+            feedback: "The extension set is a birth certificate, so gating today's holders means a fresh hooked variant and a migration, which is why this hook is built beside SPROUT rather than on it."
+        explanation: "Almost every Token-2022 extension, TransferHook included, is creation-only: it must be present when the mint is initialized. An existing mint without the extension can never grow one, so gating existing SPROUT means minting a new hooked variant and migrating, which is why the course builds the hook on a fresh SPROUT variant, not the original."

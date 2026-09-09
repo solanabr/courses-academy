@@ -1,0 +1,94 @@
+id: lesson-date-m06-l2-metaplex-core
+slug: m06-l2-metaplex-core
+title: "Ship the NFT: Metaplex Core collections, plugins, and editions"
+skills:
+  - token-metadata
+  - account-model
+  - program-security
+  - signers
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@metaplex-foundation/mpl-core": "1.10.0"
+    "@metaplex-foundation/umi": "1.5.1"
+    "@metaplex-foundation/umi-bundle-defaults": "1.5.1"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: royalties-plugin-config
+    type: code
+    language: typescript
+    starter: royalties-plugin-config/starter.ts
+    solution: royalties-plugin-config/solution.ts
+    tests: royalties-plugin-config/tests.json
+    hints:
+      - "The starter only checks the shares sum; add the basisPoints range, the ruleSet membership, the duplicate-address guard, and the per-share range."
+      - "basisPoints is 0..10000 (10000 = 100%), an integer; reject anything outside that first."
+      - "Track seen creator addresses in a Set to catch duplicates before you total the shares."
+  - key: check
+    type: quiz
+    questions:
+      - id: m06-l2-metaplex-core-q1
+        prompt: "You mint three Almanac assets, then try to create the collection and add them. The downstream membership reads come back empty. What went wrong?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The collection didn't exist when the assets were minted, so they came out as orphans with Address update authorities; nothing retrofits membership on its own, and moving an orphan in later takes an explicit update signed by authorities on both sides."
+            correct: true
+            feedback: "Read the arm and you have your diagnosis: Address means orphan, Collection means member. Order is the fix, and it has to be the order you mint in."
+          - id: d
+            label: "The assets are members already; Core writes membership at mint but leaves it unverified until the collection authority signs a separate verify instruction, so run that once per asset and the reads populate."
+            correct: false
+            feedback: "That is the Token Metadata ritual, and Core deletes it. There is no verified boolean to flip: membership IS the update authority arm, writable only when the collection authority signs the mint itself."
+          - id: b
+            label: "The assets need a Royalties plugin attached before a collection will accept them as members, and the plugin has to be added at mint rather than later."
+            correct: false
+            feedback: "Royalties and membership are independent plugins/relationships; a missing Royalties plugin doesn't explain empty membership."
+          - id: a
+            label: "Core assets minted before their collection can only join it during the program's scheduled re-index window, when the collection authority batch-approves pending membership and rewrites their update authorities."
+            correct: false
+            feedback: "There's no re-index window and no batch approval; membership is written at mint against an existing collection, or afterwards only by an explicit two-signature update, never by a scheduled program pass."
+        explanation: "Core's model is collection-first: you create and verify the Almanac collection, then mint assets INTO it so membership is written at mint. An after-the-fact update path does exist — a retrofit signed by authorities on both sides — but nothing runs it for you, which is why the membership reads came back empty. The collection-first habit stays load-bearing: Bubblegum v2 in the next module mints cNFTs into a Core collection too."
+      - id: m06-l2-metaplex-core-q2
+        prompt: "A stakeholder wants the ~0.003 SOL Core mint cost printed as a hard guarantee in your docs. How do you frame it honestly?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "As a measured result from this course's own benchmark harness, run against the same surfnet the lab uses."
+            correct: false
+            feedback: "The course did not measure it: the figure comes from Metaplex's docs. Presenting it as your own measurement launders a vendor claim."
+          - id: b
+            label: "As a fixed protocol constant baked into the Core program: every mint pays exactly 0.003 SOL and 17,000 CU."
+            correct: false
+            feedback: "It's not a protocol constant; it's a vendor benchmark that varies with rent and instruction shape, so it can't be promised as an invariant."
+          - id: a
+            label: "As Metaplex's vendor-published figure versus Token Metadata's, cited as vendor-published rather than as a number this course independently measured."
+            correct: true
+            feedback: "Cite the vendor, show your own account. Attribution costs one clause and it is what keeps the comparison usable when somebody checks it against their own mint."
+          - id: d
+            label: "As a number you confirmed yourself, since first-mint.ts printed the same rent for your scratch asset on the surfnet."
+            correct: false
+            feedback: "Your run printed a rent deposit in the low thousandths, not the vendor's figure: the rent component moves with the name and uri you stored inline."
+        explanation: "The cost story is real and load-bearing for choosing Core, but the numbers are vendor-published (metaplex.com/docs/core) with no independent third-party measurement found. Attribute them as such, the same discipline the course applies to every moving number."
+      - id: m06-l2-metaplex-core-q3
+        prompt: "You apply PermanentFreeze to the Founding-Farmer badge to make it soulbound, then later get a request to let a farmer transfer their badge to a new wallet. What's true?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "You can toggle PermanentFreeze off with the freeze delegate authority and re-enable it after the move."
+            correct: false
+            feedback: "Not on this badge, and the reason is the arm rather than the plugin. PermanentFreezeDelegate CAN be thawed while a freeze authority exists; the badge is welded because that authority was set to None at mint, and no key exists that could ever change it back."
+          - id: b
+            label: "The badge was welded at mint by setting the plugin's authority to None, so no key can thaw it."
+            correct: true
+            feedback: "The permanence lives in the authority arm, not in the plugin's name. Frozen plus a live authority is thawable; frozen plus None is frozen the way a number is even."
+          - id: d
+            label: "Since the badge is a collection member, the collection's authority usually resolves plugin control and can thaw it."
+            correct: false
+            feedback: "Precedence decides which plugin config applies, never who may act on it. Each entry carries its own authority arm, and this one holds None, so the collection authority is as powerless as anyone else."
+          - id: c
+            label: "The badge can move once, because PermanentFreeze starts blocking only from the second transfer onward."
+            correct: false
+            feedback: "There's no one-free-transfer rule; PermanentFreeze blocks transfers outright from the moment it's applied."
+        explanation: "Be precise about where the permanence comes from, because this is the lesson's most carefully drawn distinction. PermanentFreezeDelegate is freeze that CAN BE MADE irrevocable, not freeze that is born irrevocable: frozen=true plus an authority someone holds is thawable. What welds the Founding-Farmer badge is the authority arm set to None, which removes the key that could undo it. So the decision is made at mint and it is a decision about the authority: null it for assets that should never move, retain it when you might need to transfer later."

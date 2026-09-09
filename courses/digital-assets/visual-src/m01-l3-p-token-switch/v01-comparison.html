@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three naive explanations, three refutations
+     purpose: pin each failed explanation to the specific evidence that kills it, so the reader arrives at the real question by elimination
+     data: Naive answer 1: "new program, everyone migrated" -> refuted by: no new address; TokenkegQ... still owns every classic mint; zero coordinated client migration happened Naive answer 2: "the runtime got faster" -> refuted by: CU is metered work, not wall-clock time; a faster validator still charges 4,645 CU for the same work Naive answer 3: "upgraded in place via upgrade authority" -> refuted by: the program reports Authority: none; no upgrade key exists to swap it the ordinary way Surviving question: what mechanism replaces code behind an address, by network consensus, without breaking a caller?
+     prompt: Three-row elimination card. Each row: left cell with the naive explanation quoted, an arrow, right cell with its refuting evidence, and a struck-through or crossed-out marker on the left cell. Below the three rows, a single highlighted banner row spanning the width with the surviving question. Keep labels short; the visual story is three eliminations funneling into one open question.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:453px;height:448px;bottom:-230px;right:-230px;border-radius:52% 53% 64% 49% / 55% 65% 40% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:467px;height:492px;left:-237px;top:296px;border-radius:42% 57% 47% 36% / 58% 51% 48% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .elim { display:flex; flex-direction:column; gap:14px; margin-top:26px; }
+  .row { display:flex; align-items:stretch; }
+  .naive { width:520px; background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-lg); padding:16px 22px; display:flex; align-items:center; gap:16px; }
+  .xmark { width:34px; height:34px; border-radius:50%; background:#a5342a; color:#fff;
+           font-family:var(--font-body); font-weight:800; font-size:20px; line-height:1;
+           display:flex; align-items:center; justify-content:center; flex:none; }
+  .qlab { font-weight:800; font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+          color:var(--text-muted); margin-bottom:3px; }
+  .quote { font-family:var(--font-body); font-size:19px; line-height:1.28; color:var(--text-secondary);
+           text-decoration:line-through; }
+  .arrow { width:88px; display:flex; align-items:center; justify-content:center; flex:none; }
+  .refute { flex:1; background:var(--surface-card); border:2px solid var(--stbr-emerald);
+            border-radius:var(--radius-lg); padding:13px 22px; display:flex; flex-direction:column;
+            justify-content:center; }
+  .rlab { font-weight:800; font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+          color:var(--stbr-emerald); margin-bottom:3px; }
+  .rtxt { font-size:16px; line-height:1.28; color:var(--text-primary); padding-bottom:2px; }
+  .survive { margin-top:20px; background:var(--stbr-yellow); border-radius:var(--radius-lg);
+             padding:20px 30px; display:flex; align-items:center; gap:24px; }
+  .svk { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.12em;
+         text-transform:uppercase; color:var(--stbr-dark); opacity:.75; white-space:nowrap; }
+  .svt { font-family:var(--font-display); font-weight:900; font-size:27px; line-height:1.08;
+         color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">three eliminations, one open question</div>
+  <h2 class="viz-title">every easy answer dies on the evidence</h2>
+  <div class="elim">
+    <div class="row">
+      <div class="naive"><div class="xmark">&#215;</div>
+        <div><div class="qlab">naive answer 1</div>
+        <div class="quote">&ldquo;new program, everyone migrated&rdquo;</div></div></div>
+      <div class="arrow"><svg width="60" height="20"><line x1="0" y1="10" x2="44" y2="10" stroke="#1B231D" stroke-width="2.5"/><polygon points="44,3 60,10 44,17" fill="#1B231D"/></svg></div>
+      <div class="refute"><div class="rlab">refuted by</div>
+        <div class="rtxt">no new address &mdash; TokenkegQ&hellip; still owns every classic mint; zero coordinated client migration happened</div></div>
+    </div>
+    <div class="row">
+      <div class="naive"><div class="xmark">&#215;</div>
+        <div><div class="qlab">naive answer 2</div>
+        <div class="quote">&ldquo;the runtime got faster&rdquo;</div></div></div>
+      <div class="arrow"><svg width="60" height="20"><line x1="0" y1="10" x2="44" y2="10" stroke="#1B231D" stroke-width="2.5"/><polygon points="44,3 60,10 44,17" fill="#1B231D"/></svg></div>
+      <div class="refute"><div class="rlab">refuted by</div>
+        <div class="rtxt">CU is metered work, not wall-clock time &mdash; a faster validator still charges 4,645 CU for the same work</div></div>
+    </div>
+    <div class="row">
+      <div class="naive"><div class="xmark">&#215;</div>
+        <div><div class="qlab">naive answer 3</div>
+        <div class="quote">&ldquo;upgraded in place via upgrade authority&rdquo;</div></div></div>
+      <div class="arrow"><svg width="60" height="20"><line x1="0" y1="10" x2="44" y2="10" stroke="#1B231D" stroke-width="2.5"/><polygon points="44,3 60,10 44,17" fill="#1B231D"/></svg></div>
+      <div class="refute"><div class="rlab">refuted by</div>
+        <div class="rtxt">the program reports <b>Authority: none</b> &mdash; no upgrade key exists to swap it the ordinary way</div></div>
+    </div>
+  </div>
+  <div class="survive">
+    <span class="svk">surviving question</span>
+    <span class="svt">what mechanism replaces code behind an address, by network consensus, without breaking a caller?</span>
+  </div>
+</div>
+</body></html>

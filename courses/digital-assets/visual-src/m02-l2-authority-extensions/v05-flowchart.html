@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Frozen-by-default onboarding with DefaultAccountState
+     purpose: show the lifecycle from account creation to first transfer under a frozen default
+     data: Start: holder creates a token account for the mint -> account opens in state = Frozen (because DefaultAccountState = Frozen on the mint) -> holder attempts a transfer -> reverts: AccountFrozen -> issuer runs KYC / checks off-chain -> freeze authority calls ThawAccount on this specific account -> account state = Initialized (unfrozen) -> holder transfers normally Contrast: Pausable would freeze EVERYONE at once; this thaws ONE account at a time
+     prompt: Vertical flowchart. Nodes top to bottom: "create account", "state = Frozen (default)", a red terminal branch "transfer attempted -> AccountFrozen", then "issuer completes checks", "freeze authority: ThawAccount (this account only)", "state = Initialized", green terminal "transfers work". Add a side callout contrasting with Pausable: "Pausable = global halt for all holders; DefaultAccountState = per-account thaw gate".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:467px;bottom:-244px;right:-244px;border-radius:52% 51% 37% 47% / 40% 46% 48% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:503px;height:347px;left:-285px;top:245px;border-radius:38% 56% 60% 58% / 59% 50% 44% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lay { display:flex; gap:26px; align-items:flex-start; }
+  .flow { flex:none; width:846px; display:flex; flex-direction:column; align-items:center; }
+  .nd { width:846px; box-sizing:border-box; background:var(--surface-card); border:2px solid var(--border-subtle);
+        border-radius:var(--radius-md); padding:10px 20px; display:flex; align-items:baseline; gap:12px; }
+  .nd.err { border-color:var(--status-danger); background:rgba(192,57,43,0.06); }
+  .nd.thaw { border-color:var(--stbr-yellow-700); background:var(--surface-accent); }
+  .nd.done { border-color:var(--stbr-emerald); background:var(--surface-brand); }
+  .nt { font-family:var(--font-body); font-weight:700; font-size:16px; color:var(--text-primary); }
+  .nd.err .nt { color:var(--status-danger); }
+  .nd.done .nt { color:var(--text-on-brand); }
+  .ns { font-family:var(--font-body); font-size:13px; color:var(--text-muted); }
+  .nd.thaw .ns { color:var(--stbr-dark-700); }
+  .nd.done .ns { color:rgba(245,232,202,0.75); }
+  .nt code, .ns code { font-family:var(--font-mono); font-size:0.92em; font-weight:600; }
+  .arr { padding:3px 0; }
+  .callout { flex:none; width:584px; box-sizing:border-box; background:var(--surface-inverse);
+             border-radius:var(--radius-lg); padding:24px 28px; }
+  .ck { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.14em;
+        text-transform:uppercase; color:rgba(245,232,202,0.60); margin-bottom:14px; }
+  .ci { display:flex; gap:12px; align-items:flex-start; margin-bottom:16px; }
+  .cdot { flex:0 0 10px; height:10px; border-radius:50%; margin-top:6px; }
+  .ct2 { font-family:var(--font-body); font-size:15.5px; line-height:1.45; color:var(--text-on-dark); }
+  .ct2 strong { font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">defaultaccountstate = frozen</div>
+  <h2 class="viz-title">frozen by default: creation to first transfer</h2>
+
+  <div class="lay">
+    <div class="flow">
+      <div class="nd"><span class="nt">holder creates a token account for the mint</span></div>
+      <div class="arr"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="0" x2="8" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,16 2,7 14,7" fill="#1b231d"/></svg></div>
+      <div class="nd"><span class="nt">account opens with <code>state = Frozen</code></span><span class="ns">DefaultAccountState on the mint decides, not the holder</span></div>
+      <div class="arr"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="0" x2="8" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,16 2,7 14,7" fill="#1b231d"/></svg></div>
+      <div class="nd err"><span class="nt">transfer attempted &rarr; reverts: <code>AccountFrozen</code></span></div>
+      <div class="arr"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="0" x2="8" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,16 2,7 14,7" fill="#1b231d"/></svg></div>
+      <div class="nd"><span class="nt">issuer completes KYC / checks off-chain</span></div>
+      <div class="arr"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="0" x2="8" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,16 2,7 14,7" fill="#1b231d"/></svg></div>
+      <div class="nd thaw"><span class="nt">freeze authority: <code>ThawAccount</code></span><span class="ns">this specific account only</span></div>
+      <div class="arr"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="0" x2="8" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,16 2,7 14,7" fill="#1b231d"/></svg></div>
+      <div class="nd"><span class="nt"><code>state = Initialized</code></span><span class="ns">unfrozen</span></div>
+      <div class="arr"><svg width="16" height="16" viewBox="0 0 16 16"><line x1="8" y1="0" x2="8" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,16 2,7 14,7" fill="#1b231d"/></svg></div>
+      <div class="nd done"><span class="nt">transfers work</span><span class="ns">the holder is onboarded</span></div>
+    </div>
+
+    <div class="callout">
+      <div class="ck">not Pausable</div>
+      <div class="ci"><span class="cdot" style="background:#c0392b"></span><span class="ct2"><strong>Pausable</strong> = a global halt &mdash; every holder stops at once, no per-account argument.</span></div>
+      <div class="ci"><span class="cdot" style="background:#ffd23f"></span><span class="ct2"><strong>DefaultAccountState</strong> = a per-account thaw gate &mdash; each account is unfrozen one at a time, by the freeze authority.</span></div>
+      <div class="ci"><span class="cdot" style="background:#008b4c"></span><span class="ct2">This flow freezes <strong>everyone at creation</strong>, then thaws <strong>one account at a time</strong>.</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What checkGate does with a wallet address
+     purpose: give the reader the decision path in one picture, so each early exit reads as a deliberate refusal rather than a missing case
+     data: input: owner address + GateRule 1. page through getAssetsByOwner (DAS) until a short page returns 2. for each asset: ownership.owner === owner ? continue : SKIP (an asset you were handed but do not own) 3. grouping contains {group_key: "collection", group_value: rule.collection} ? continue : SKIP 4. classifyAsset(asset).category is nft or compressed-nft ? PASS with evidence = asset.id : SKIP 5. loop exhausted -> DENY, reason names the collection, evidence null token-balance rule branch: find the mint among the owner's fungibles -> indexed balance >= minimum ? PASS : DENY every result carries readAt, the timestamp of the read that decided it optional follow-up for expensive gates: confirmBalanceOnChain at confirmed commitment
+     prompt: Vertical flowchart starting from the owner address, through the paged DAS read, then three sequential diamond decisions (ownership, collection membership, category) each with a SKIP branch looping back to the next asset, ending in PASS or DENY terminals. Show the token-balance rule as a separate short branch off the top. Attach a small side note to both terminals reading "carries readAt".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:443px;height:465px;right:-268px;top:110px;border-radius:43% 51% 65% 43% / 43% 53% 50% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:384px;height:554px;bottom:-321px;left:707px;border-radius:39% 47% 43% 61% / 53% 60% 60% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:flex; gap:22px; margin-top:6px; align-items:stretch; }
+  .main { flex:1 1 0; background:var(--surface-card); border:2px solid var(--stbr-dark);
+          border-radius:var(--radius-xl); padding:16px 24px; }
+  .mstep { display:flex; align-items:center; gap:16px; }
+  .mbox { width:474px; background:var(--surface-card); border:2px solid var(--stbr-dark);
+          border-radius:11px; padding:8px 14px; font-family:var(--font-body); font-weight:600;
+          font-size:14px; line-height:1.25; text-align:center; color:var(--text-primary); }
+  .mbox.start { background:var(--surface-inverse); color:var(--text-on-dark); border-color:var(--stbr-dark); }
+  .mbox.dec { border:2.5px solid var(--stbr-emerald); }
+  .mbox code { font-family:var(--font-mono); font-size:13px; }
+  .varr { width:2.5px; height:13px; background:var(--stbr-dark); margin-left:237px; position:relative; }
+  .varr::after { content:""; position:absolute; bottom:-1px; left:-4.5px;
+                 border-top:8px solid var(--stbr-dark);
+                 border-left:5.5px solid transparent; border-right:5.5px solid transparent; }
+  .skip { display:flex; align-items:center; gap:8px; }
+  .skip .sa { width:26px; height:2px; background:var(--stbr-green); position:relative; }
+  .skip .sa::after { content:""; position:absolute; right:-1px; top:-4px;
+                     border-left:7px solid var(--stbr-green);
+                     border-top:5px solid transparent; border-bottom:5px solid transparent; }
+  .skip .sc { font-family:var(--font-body); font-weight:700; font-size:12.5px; line-height:1.25;
+              color:var(--stbr-green); border:1.5px solid var(--stbr-green);
+              border-radius:var(--radius-md); padding:4px 10px; max-width:410px; }
+  .terms { display:flex; gap:16px; align-items:stretch; width:474px; }
+  .term { flex:1 1 0; border-radius:11px; padding:8px 12px; text-align:center;
+          font-family:var(--font-body); font-weight:800; font-size:14px; line-height:1.25; }
+  .term.pass { background:var(--stbr-emerald); color:var(--stbr-cream); border:2px solid var(--stbr-dark); }
+  .term.deny { background:var(--stbr-yellow); color:var(--stbr-dark); border:2.5px solid var(--stbr-dark); }
+  .term small { display:block; font-weight:600; font-size:12px; margin-top:2px; }
+  .readat { font-family:var(--font-body); font-weight:700; font-size:12.5px; line-height:1.3;
+            color:var(--text-secondary); border-left:3px solid var(--stbr-emerald);
+            padding:2px 0 2px 12px; max-width:400px; }
+  .side { flex:0 0 468px; }
+  .sp { background:var(--surface-card); border:2px solid var(--stbr-dark);
+        border-radius:var(--radius-xl); padding:16px 22px; }
+  .sp + .sp { margin-top:14px; }
+  .sp .sph { font-family:var(--font-display); font-weight:900; font-size:18px;
+             color:var(--text-primary); margin-bottom:3px; }
+  .sp .spk { font-family:var(--font-body); font-weight:700; font-size:11.5px; letter-spacing:.08em;
+             text-transform:uppercase; color:var(--stbr-emerald); }
+  .sbox { background:var(--surface-card); border:2px solid var(--stbr-dark); border-radius:10px;
+          padding:7px 12px; font-family:var(--font-body); font-weight:600; font-size:13.5px;
+          line-height:1.25; text-align:center; color:var(--text-primary); margin-top:10px; }
+  .sbox code { font-family:var(--font-mono); font-size:12.5px; }
+  .sarr { width:2.5px; height:11px; background:var(--stbr-dark); margin-left:206px; position:relative; }
+  .sarr::after { content:""; position:absolute; bottom:-1px; left:-4px;
+                 border-top:7px solid var(--stbr-dark);
+                 border-left:5px solid transparent; border-right:5px solid transparent; }
+  .sterms { display:flex; gap:10px; margin-top:10px; }
+  .sterm { flex:1 1 0; border-radius:9px; padding:6px 8px; text-align:center;
+           font-family:var(--font-body); font-weight:800; font-size:13px; }
+  .sterm.pass { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .sterm.deny { border:2px solid var(--stbr-dark); color:var(--text-primary); }
+  .fup { font-family:var(--font-body); font-size:13.5px; line-height:1.35; color:var(--text-primary); }
+  .fup b { font-weight:800; color:var(--stbr-emerald); }
+  .fup code { font-family:var(--font-mono); font-size:12.5px; }
+</style>
+  <div class="stbr-eyebrow">every early exit is deliberate</div>
+  <h2 class="viz-title">what checkGate does with a wallet address</h2>
+  <div class="wrap">
+    <div class="main">
+      <div class="mstep"><div class="mbox start">input: owner address + GateRule</div>
+        <div class="skip"><div class="sa"></div><div class="sc">a token-balance rule takes the branch at right instead</div></div></div>
+      <div class="varr"></div>
+      <div class="mstep"><div class="mbox">page through <code>getAssetsByOwner</code> (DAS) until a short page returns</div></div>
+      <div class="varr"></div>
+      <div class="mstep"><div class="mbox dec">1&nbsp;&nbsp;<code>ownership.owner === owner</code>&thinsp;?</div>
+        <div class="skip"><div class="sa"></div><div class="sc">SKIP &rarr; next asset &mdash; an asset you were handed but do not own</div></div></div>
+      <div class="varr"></div>
+      <div class="mstep"><div class="mbox dec">2&nbsp;&nbsp;grouping contains <code>{"collection", rule.collection}</code>&thinsp;?</div>
+        <div class="skip"><div class="sa"></div><div class="sc">SKIP &rarr; next asset</div></div></div>
+      <div class="varr"></div>
+      <div class="mstep"><div class="mbox dec">3&nbsp;&nbsp;<code>classifyAsset(asset).category</code> is nft or compressed-nft&thinsp;?</div>
+        <div class="skip"><div class="sa"></div><div class="sc">SKIP &rarr; next asset</div></div></div>
+      <div class="varr"></div>
+      <div class="mstep">
+        <div class="terms">
+          <div class="term pass">PASS<small>evidence = asset.id</small></div>
+          <div class="term deny">DENY &mdash; loop exhausted<small>reason names the collection &middot; evidence null</small></div>
+        </div>
+        <div class="readat">both terminals carry <span style="font-family:var(--font-mono);">readAt</span> &mdash; the timestamp of the read that decided it</div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="sp">
+        <div class="spk">separate branch off the top</div>
+        <div class="sph">the token-balance rule</div>
+        <div class="sbox">find the mint among the owner&rsquo;s fungibles</div>
+        <div class="sarr"></div>
+        <div class="sbox dec" style="border:2.5px solid var(--stbr-emerald);">indexed balance &ge; minimum&thinsp;?</div>
+        <div class="sterms">
+          <div class="sterm pass">PASS</div>
+          <div class="sterm deny">DENY</div>
+        </div>
+      </div>
+      <div class="sp">
+        <div class="fup"><b>optional follow-up for expensive gates:</b> <code>confirmBalanceOnChain</code> at confirmed commitment &mdash; a chain read, not an index read</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

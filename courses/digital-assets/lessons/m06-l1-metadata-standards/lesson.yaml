@@ -1,0 +1,83 @@
+id: lesson-date-m06-l1-metadata-standards
+slug: m06-l1-metadata-standards
+title: "The metadata standards wallets actually read"
+skills:
+  - token-metadata
+  - account-model
+  - pdas
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m06-l1-metadata-standards-q1
+        prompt: "You fetch a legacy NFT's on-chain account and it does NOT contain the image bytes or the trait list. A teammate says the asset is broken. What's actually going on?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Data holds only name, symbol, uri, seller_fee_basis_points and creators; the image and traits live in the JSON."
+            correct: true
+            feedback: "That is the architecture, and the uri field in their own dump was the answer: five fields on-chain, everything rich one fetch away."
+          - id: d
+            label: "The image and traits sit in the 65-byte account header the decoder skips past, so the Data struct legitimately shows neither."
+            correct: false
+            feedback: "The skipped 65 bytes are a one-byte account key, the 32-byte update authority and the 32-byte mint. No room for a PNG, and no traits either."
+          - id: b
+            label: "The image and traits were pruned by the RPC's default account encoding; a full archive node would return every missing field."
+            correct: false
+            feedback: "RPCs don't prune asset fields, and no node type or encoding changes that: the on-chain Data struct genuinely doesn't hold the image or traits; they live in the off-chain JSON."
+          - id: a
+            label: "The account was created with the wrong program, so it needs re-minting with the image bytes embedded in the Data struct."
+            correct: false
+            feedback: "Nothing is broken and nothing needs re-minting: on-chain accounts never embed the image. The bytes are supposed to be off-chain."
+        explanation: "A Metaplex on-chain record is a small struct plus a uri pointer. The rich content (image, animation_url, attributes) is a JSON document at that uri, following the Token Metadata JSON standard (whose canonical schema host, schema.metaplex.com, no longer resolves; the lesson's validator script carries the field contract). An empty-looking account is normal; you resolve the uri to see the asset."
+      - id: m06-l1-metadata-standards-q2
+        prompt: "For SPROUT's Token-2022 mint you set the MetadataPointer to point at a separate account you control. What's the risk versus the usual layout?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The mint will fail to initialize, because InitializeMint2 validates that the MetadataPointer target equals the mint address and rejects any configuration aimed at a separate account."
+            correct: false
+            feedback: "It can legally point elsewhere; that's precisely why it's a risk. The self-referential form is a convention that removes the spoofing surface, not a hard requirement."
+          - id: a
+            label: "A pointer to any account other than the mint itself can be aimed at spoofed metadata; the self-referential layout is the anti-spoofing default for exactly this reason."
+            correct: true
+            feedback: "Indirection is the surface: whatever the pointer names is what consumers treat as canonical, so the only target nobody else can substitute is the mint itself."
+          - id: b
+            label: "None: the pointer target is cosmetic, since wallets ignore it and read the mint's TLV entry directly either way."
+            correct: false
+            feedback: "The target is not cosmetic: wallets follow the pointer to find the canonical metadata, so where it aims determines what they trust."
+          - id: d
+            label: "A separate account can be closed or repointed later, but wallets typically fall back to the mint's own TLV, so the exposure is a brief display gap."
+            correct: false
+            feedback: "There is no fallback to fall back to: the pointer is how a consumer decides which bytes are canonical, so a bad target is bad metadata, not a gap."
+        explanation: "MetadataPointer tells consumers where the canonical metadata is. Pointing it at the mint itself (self-referential) means the metadata is inseparable from the mint and can't be impersonated. Pointing it at an arbitrary account reintroduces the spoofing surface the pointer was designed to close."
+      - id: m06-l1-metadata-standards-q3
+        prompt: "You're deciding where to host an Almanac asset's JSON so it still resolves in five years. Which framing is honest?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "IPFS is the verified market standard for permanence: content addressing pins the asset to its hash, so the host behind the gateway stops mattering."
+            correct: false
+            feedback: "Content addressing is a real integrity upgrade, but availability still depends on someone continuing to pin the file, and the health of that pinning market went unverified this round."
+          - id: d
+            label: "Dropping the update authority makes the asset permanent, because a record nobody can rewrite will keep resolving to the same file."
+            correct: false
+            feedback: "Immutability and durability are separate decisions. Freezing the record freezes the pointer, and a frozen pointer at a dead bucket resolves to nothing forever."
+          - id: b
+            label: "The asset is only as durable as the URI it points at; Irys/Arweave are the documented permanent defaults."
+            correct: true
+            feedback: "Permanence is a property of the store, not of the pointer. Irys in front of Arweave is the documented default precisely because the endowment outlives the team."
+          - id: a
+            label: "Any HTTPS URL is fine, because the on-chain account guarantees the content: the uri is stored on-chain under an update authority, and rent keeps that record alive forever."
+            correct: false
+            feedback: "Rent keeps the struct alive forever and the struct will point at a 404 just as long. The account stores the uri, never the bytes behind it."
+        explanation: "On-chain you store a pointer; permanence is a property of the store behind it. Irys is Metaplex CLI's documented default uploader and Arweave URIs are pervasive; IPFS works but relies on continued pinning. The honest rule is 'the URI is permanent only if the store is.'"

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The 82-byte bare mint, field by field
+     purpose: give the reader the exact offset map their parser code reads against
+     data: Byte-layout strip, left to right, total 82 bytes: offset 0-35: mintAuthority, COption<Pubkey> (4-byte u32 tag: 0 = None, 1 = Some; then 32-byte pubkey) offset 36-43: supply, u64 little-endian offset 44: decimals, u8 offset 45: isInitialized, bool (1 byte) offset 46-81: freezeAuthority, COption<Pubkey> (same 4+32 shape) hard stop at 82. On a bare classic mint nothing follows.
+     prompt: A single horizontal byte-layout bar divided into five labeled segments with their offset ranges and types, from the data above. Show the two COption segments as a small 4-byte tag sub-block plus a 32-byte pubkey sub-block. Mark the total width "82 bytes" and a hard stop after the last field. Keep segments proportional to their byte counts.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:475px;height:423px;right:-295px;top:255px;border-radius:61% 42% 56% 48% / 48% 52% 59% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:374px;height:515px;bottom:-315px;left:808px;border-radius:40% 50% 39% 44% / 55% 38% 62% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:44px 48px 36px;}
+  .strip{position:relative;width:1312px;margin:10px auto 0;}
+  .ruler{position:relative;height:28px;}
+  .tick{position:absolute;bottom:8px;transform:translateX(-50%);font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--text-muted);}
+  .tickln{position:absolute;bottom:0;width:2px;height:7px;background:var(--border-strong);transform:translateX(-50%);}
+  .bar{display:flex;height:150px;border-radius:12px;overflow:hidden;}
+  .blk{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border-left:2px solid var(--surface-card);}
+  .blk.first{border-left:0;}
+  .em{background:var(--stbr-emerald);} .dg{background:var(--stbr-green);} .ink{background:var(--stbr-dark);}
+  .nm{font-family:var(--font-display);font-weight:800;font-size:22px;color:#F5E8CA;}
+  .ty{font-family:var(--font-body);font-size:14px;color:#F5E8CA;opacity:.85;margin-top:6px;}
+  .tag{width:64px;} .tag .nm{font-size:14px;} .tag .ty{font-size:12px;}
+  .stopbar{position:absolute;right:-10px;top:18px;width:8px;height:170px;background:var(--stbr-yellow);border-radius:4px;}
+  .totalrow{display:flex;align-items:center;gap:14px;margin-top:12px;}
+  .totalrow .ln{flex:1;height:2px;background:var(--border-strong);}
+  .totalrow .tx{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-primary);white-space:nowrap;}
+  .stopchip{background:var(--stbr-yellow);color:var(--text-on-accent,#1B231D);font-family:var(--font-display);font-weight:800;font-size:16px;padding:7px 14px;border-radius:999px;white-space:nowrap;}
+  .callouts{position:relative;height:96px;margin-top:2px;}
+  .cchip{position:absolute;background:var(--surface-paper,#FAF3E3);border:2px solid var(--border-strong);border-radius:12px;padding:8px 16px;font-family:var(--font-body);font-size:15px;color:var(--text-primary);white-space:nowrap;}
+  .cchip b{font-family:var(--font-mono);font-weight:700;}
+  .legend{margin-top:8px;font-family:var(--font-body);font-size:15px;color:var(--text-secondary);}
+  .legend b{color:var(--text-primary);font-weight:700;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the exact offset map your parser reads against</div>
+  <h2 class="viz-title">the 82-byte bare mint, field by field</h2>
+  <div class="strip">
+    <div class="ruler">
+      <div class="tick" style="left:0;">0</div><div class="tickln" style="left:0;"></div>
+      <div class="tick" style="left:576px;">36</div><div class="tickln" style="left:576px;"></div>
+      <div class="tick" style="left:704px;">44</div><div class="tickln" style="left:704px;"></div>
+      <div class="tick" style="left:736px;">46</div><div class="tickln" style="left:736px;"></div>
+      <div class="tick" style="left:1312px;transform:translateX(-110%);">82</div><div class="tickln" style="left:1312px;"></div>
+    </div>
+    <div class="bar">
+      <div class="blk first dg tag"><div class="nm">tag</div><div class="ty">u32 &middot; 4B</div></div>
+      <div class="blk em" style="width:512px;"><div class="nm">mintAuthority</div><div class="ty">COption&lt;Pubkey&gt; &middot; bytes 0&ndash;35 &middot; 32-byte pubkey</div></div>
+      <div class="blk ink" style="width:128px;"><div class="nm">supply</div><div class="ty">u64 LE &middot; 36&ndash;43</div></div>
+      <div class="blk dg" style="width:16px;"></div>
+      <div class="blk ink" style="width:16px;"></div>
+      <div class="blk dg tag"><div class="nm">tag</div><div class="ty">u32 &middot; 4B</div></div>
+      <div class="blk em" style="width:512px;"><div class="nm">freezeAuthority</div><div class="ty">COption&lt;Pubkey&gt; &middot; bytes 46&ndash;81 &middot; 32-byte pubkey</div></div>
+    </div>
+    <div class="stopbar"></div>
+    <div class="callouts">
+      <svg width="1312" height="96" style="position:absolute;left:0;top:0;">
+        <path d="M 712 0 L 712 16 L 500 16 L 500 34" fill="none" stroke="#1B231D" stroke-width="2"/>
+        <path d="M 728 0 L 728 16 L 940 16 L 940 34" fill="none" stroke="#1B231D" stroke-width="2"/>
+      </svg>
+      <div class="cchip" style="top:34px;left:382px;">offset <b>44</b> &middot; decimals &middot; <b>u8</b> (1 byte)</div>
+      <div class="cchip" style="top:34px;left:800px;">offset <b>45</b> &middot; isInitialized &middot; <b>bool</b> (1 byte)</div>
+    </div>
+    <div class="totalrow">
+      <div class="tx">total: 82 bytes</div>
+      <div class="ln"></div>
+      <div class="stopchip">hard stop at 82 &mdash; on a bare classic mint, nothing follows</div>
+    </div>
+    <div class="legend"><b>COption&lt;Pubkey&gt;</b> = 4-byte u32 tag (<b>0 = None, 1 = Some</b>) + 32-byte pubkey &mdash; both authority fields share this 36-byte shape.</div>
+  </div>
+</div>
+</div>
+</body></html>

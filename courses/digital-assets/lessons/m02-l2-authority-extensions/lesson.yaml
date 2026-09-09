@@ -1,0 +1,89 @@
+id: lesson-date-m02-l2-authority-extensions
+slug: m02-l2-authority-extensions
+title: "Authority extensions: who can touch your tokens"
+skills:
+  - token-2022
+  - solana-kit
+  - program-security
+  - signers
+  - transactions
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    "@solana-program/system": "0.13.0"
+    typescript: "5.9.3"
+    tsx: "4.23.12"
+    surfpool: "1.2.1"
+    solana-cli: "3.1.10"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1-cpiguard-bypass
+        prompt: "You enable CpiGuard on a token account to stop programs from moving funds without the owner. The mint also carries a permanent delegate. A program moves tokens out of that account through the delegate. What happens?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The transfer succeeds; PermanentDelegate always bypasses CpiGuard."
+            correct: true
+            feedback: "The guard's rule asks whether the signer during a CPI is a delegate, and the extension guide carves the permanent delegate out by name, so the move walks through untouched."
+          - id: d
+            label: "It is blocked, since the delegate lacks the account owner's consent"
+            correct: false
+            feedback: "Consent is what a mint-level power does not need. The holder inherited the delegate by choosing to hold the token, and the guard defends the account's own authority surface, not the mint's."
+          - id: c
+            label: "Both are ignored, because a mint extension and an account extension can't interact."
+            correct: false
+            feedback: "They very much interact: the mint-level delegate acts on the account, and it wins over the account's guard."
+          - id: a
+            label: "CpiGuard blocks it; stopping unauthorized CPI moves is exactly its job."
+            correct: false
+            feedback: "CpiGuard blocks delegate-and-close tricks at the account level, but a permanent delegate is a mint-level power it cannot override."
+        explanation: "PermanentDelegate is the one authority that always bypasses CpiGuard, a mint-level power the account never consented to. This is precisely why Raydium refuses it: 'a holder of the delegate can sweep any token account, including the pool vault.'"
+      - id: q2-default-frozen
+        prompt: "Your compliance team wants each new holder locked out until KYC clears, and they won't control accounts after launch. Which extension gets you that without chasing accounts one by one?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "MintCloseAuthority, so ops can close and reopen each account after KYC."
+            correct: false
+            feedback: "MintCloseAuthority closes mints to reclaim rent; it has nothing to do with gating new holders."
+          - id: c
+            label: "DefaultAccountState set to Frozen, so every new account starts frozen."
+            correct: true
+            feedback: "It inverts the default: an account is inert at birth and a holder goes live only through a deliberate thaw, so onboarding is opt-in by the issuer rather than a cleanup job."
+          - id: d
+            label: "The mint's freeze authority, used to freeze each new account as soon as it appears"
+            correct: false
+            feedback: "The freeze authority is the thaw side of this design, not the default. Accounts still open usable, so someone has to catch every new holder in time, which is the chase the extension removes."
+          - id: a
+            label: "Pausable, so compliance can pause transfers for each new account until that holder's KYC clears."
+            correct: false
+            feedback: "Pausable is a global switch for the whole mint, not a per-account onboarding gate; flipping it freezes everyone at once."
+        explanation: "DefaultAccountState(Frozen) is the frozen-by-default onboarding primitive: new accounts open frozen and a freeze authority thaws each one after checks. Pausable, by contrast, halts ALL transfers/mints/burns globally in one flip."
+      - id: q3-close-revival
+        prompt: "You use MintCloseAuthority to close a spent mint and reclaim its rent. What's the footgun you have to guard against?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The close authority is permanently transferred to the system program."
+            correct: false
+            feedback: "No authority transfer happens; the account is drained and zeroed, not handed off."
+          - id: b
+            label: "Closing the mint automatically burns every outstanding token account."
+            correct: false
+            feedback: "There is nothing for the close to burn: a mint with outstanding supply cannot be closed at all (MintHasSupply). Close only succeeds once supply is zero, so holder accounts are never touched."
+          - id: a
+            label: "A closed account can be revived by re-funding it, so you must mark it closed to prevent reuse."
+            correct: true
+            feedback: "Closing drains lamports and zeroes data, and the address survives all of it, so a sentinel byte written before the close is what keeps a revived account from passing as fresh state."
+          - id: d
+            label: "Lamports sent to that address later may be stranded, since it can hold no account"
+            correct: false
+            feedback: "The address stays perfectly usable, and that is the problem: re-funding it creates a live account there, which is why the risk runs toward revival rather than toward loss."
+        explanation: "Close-and-revival: an account that's been zeroed and rent-drained can be recreated by anyone who re-funds its address. Mark-closed hygiene (writing a sentinel byte) stops a revived account from being mistaken for fresh, trusted state."

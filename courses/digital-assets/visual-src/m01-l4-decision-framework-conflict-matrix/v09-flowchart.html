@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: R1 feeds R2, the artifact ladder in one pipeline
+     purpose: show how decode-mint's TLV output becomes check-combo's input, and where the pipeline gates later builds
+     data: node 1: "mint address" -> node 2: "decode-mint (R1, m01-l2): base fields + TLV extensions as {name, type, length}" node 2 -> node 3: "names[] extracted" node 3 -> node 4: "checkCombo(names) (R2, this lesson): five source rules" node 4 -> verdict A: "{ valid: true }" -> node 5: "proceed to mint design / m02 builds" node 4 -> verdict B: "{ valid: false, reason: 'rule N: ...' }" -> node 6: "fix the set (add the demanded extension or drop the conflict)" annotation: every later mint build in this course passes through this pipeline before any instruction is sent
+     prompt: Left-to-right pipeline flowchart, six nodes as in data, forking after the checkCombo node into a green valid path and a red invalid path that loops back to the set-drafting stage. Tag node 2 as "R1" and node 4 as "R2". Footer annotation from data across the bottom.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:535px;height:443px;top:-261px;right:-261px;border-radius:51% 58% 54% 42% / 49% 57% 58% 62%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:556px;height:526px;bottom:-296px;left:-296px;border-radius:53% 54% 48% 58% / 36% 59% 45% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 36px 48px 36px; }
+  .pipe { display: flex; align-items: center; margin-top: 12px; }
+  .pnode { border: 2px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-card);
+           padding: 13px 12px; text-align: center; position: relative; }
+  .pnode .t { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: 16px; color: var(--text-primary); }
+  .pnode .s { font-family: var(--font-body); font-size: 12px; color: var(--text-secondary); margin-top: 3px; line-height: 1.35; }
+  .rtag { position: absolute; top: -13px; left: 12px; background: var(--surface-brand); color: var(--text-on-brand);
+          border-radius: var(--radius-pill); padding: 2px 11px; font-family: var(--font-body); font-size: 11.5px; font-weight: 700; }
+  .harr { flex: 0 0 38px; display: flex; align-items: center; justify-content: center; }
+  .harr .ln { width: 20px; height: 2.5px; background: var(--stbr-dark); }
+  .harr .hd { width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 8px solid var(--stbr-dark); }
+  .verd { font-family: var(--font-mono); font-size: 12px; font-weight: 700; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the artifact ladder</div>
+  <h2 class="viz-title" style="margin-bottom:22px;">R1 feeds R2: one pipeline, every mint</h2>
+
+  <div class="pipe">
+    <div class="pnode" style="flex:0 0 140px;background:var(--surface-paper);"><div class="t">mint address</div></div>
+    <div class="harr"><div class="ln"></div><div class="hd"></div></div>
+    <div class="pnode" style="flex:0 0 215px;"><span class="rtag">R1 &middot; m01-l2</span>
+      <div class="t">decode-mint</div>
+      <div class="s">base fields + TLV extensions as <span style="font-family:var(--font-mono);font-size:11px;">{name, type, length}</span></div>
+    </div>
+    <div class="harr"><div class="ln"></div><div class="hd"></div></div>
+    <div class="pnode" style="flex:0 0 118px;"><div class="t" style="font-family:var(--font-mono);font-size:15px;">names[]</div><div class="s">extracted</div></div>
+    <div class="harr"><div class="ln"></div><div class="hd"></div></div>
+    <div class="pnode" style="flex:0 0 215px;border-color:var(--stbr-emerald);border-width:3px;"><span class="rtag">R2 &middot; this lesson</span>
+      <div class="t" style="font-family:var(--font-mono);font-size:15px;">checkCombo(names)</div>
+      <div class="s">the five source rules</div>
+    </div>
+
+    <!-- fork -->
+    <div style="flex:0 0 14px;display:flex;align-items:center;"><div style="width:14px;height:2.5px;background:var(--stbr-dark);"></div></div>
+    <div style="flex:0 0 2.5px;align-self:stretch;display:flex;align-items:center;"><div style="width:2.5px;height:180px;background:var(--stbr-dark);"></div></div>
+
+    <div style="flex:1 1 0;display:flex;flex-direction:column;gap:20px;min-width:0;">
+      <div style="display:flex;align-items:center;">
+        <div class="harr"><div class="ln"></div><div class="hd"></div></div>
+        <div class="pnode" style="flex:1;background:var(--surface-brand);border-color:var(--surface-brand);">
+          <div class="verd" style="color:var(--text-on-brand);">{ valid: true }</div>
+          <div class="t" style="color:var(--text-on-brand);margin-top:3px;">proceed</div>
+          <div class="s" style="color:var(--text-on-brand);opacity:0.85;">mint design &middot; m02 builds</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <div class="harr"><div class="ln"></div><div class="hd"></div></div>
+        <div class="pnode" style="flex:1;background:var(--surface-accent);border-color:var(--surface-accent);">
+          <div class="verd" style="color:var(--text-on-accent);">{ valid: false, reason: 'rule N: &hellip;' }</div>
+          <div class="t" style="color:var(--text-on-accent);margin-top:3px;">fix the set</div>
+          <div class="s" style="color:var(--text-on-accent);">add the demanded extension or drop the conflict &mdash; then back through checkCombo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:30px;background:var(--surface-inverse);border-radius:var(--radius-lg);padding:14px 24px;font-family:var(--font-body);font-size:15px;color:var(--text-on-dark);">
+    every later mint build in this course passes through this pipeline <strong>before any instruction is sent</strong>.
+  </div>
+</div>
+</div>
+</body></html>

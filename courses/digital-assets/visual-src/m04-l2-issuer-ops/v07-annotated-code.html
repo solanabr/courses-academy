@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The verify gate, line by line
+     purpose: pin exactly what output constitutes a pass so the learner cannot half-pass
+     data: Expected output of `npx tsx verify-confidential.ts <mint>`: ConfidentialTransferMint present            <- TLV entry decoded from the live mint auditorElgamalPubkey=<your base58 key>      <- must EQUAL ct-keygen's base58 line; "none" = fill 3 failed autoApproveNewAccounts=false                <- manual policy confirmed; true = fill 2 failed Optional fourth line (supply branch only): ConfidentialMintBurn present; supplyElgamalPubkey=<supply key>
+     prompt: A terminal-styled panel showing the three expected output lines, each with a side annotation arrow: line 1 "extension decoded from chain", line 2 "must match ct-keygen output exactly; 'none' means the auditor never landed", line 3 "manual policy in force". Below, a dimmed fourth line labeled "appears only on the solo supply branch".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:429px;height:446px;right:-254px;top:267px;border-radius:39% 55% 46% 43% / 35% 48% 45% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:577px;bottom:-315px;left:-315px;border-radius:40% 56% 37% 46% / 61% 57% 56% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:32px 48px 36px;overflow:hidden;}
+  .card .viz-title{font-size:46px;margin:4px 0 18px;}
+  .term{background:var(--surface-inverse);border-radius:18px;padding:22px 28px 24px;}
+  .prompt{font-family:var(--font-mono);font-size:18px;color:#F5E8CA;padding-bottom:14px;border-bottom:1.5px solid rgba(245,232,202,0.25);margin-bottom:14px;}
+  .prompt .dollar{color:var(--stbr-yellow);font-weight:700;}
+  .ln{display:flex;align-items:center;gap:0;margin-top:12px;}
+  .code{width:720px;font-family:var(--font-mono);font-size:17.5px;color:#F5E8CA;line-height:1.4;}
+  .code .var{color:#9FD6B8;}
+  .tie{width:64px;height:0;border-top:2px dashed rgba(245,232,202,0.45);}
+  .chip{flex:1;border-radius:12px;padding:8px 16px;font-family:var(--font-body);font-size:14.5px;line-height:1.35;background:var(--stbr-emerald);color:#F5E8CA;}
+  .chip b{font-weight:700;}
+  .chip.hot{background:var(--stbr-yellow);color:var(--stbr-dark);}
+  .ln.dim .code{opacity:0.45;}
+  .ln.dim .tie{border-top-style:dotted;opacity:0.6;}
+  .chip.ghost{background:transparent;border:1.5px dashed rgba(245,232,202,0.45);color:rgba(245,232,202,0.75);}
+  .gate{margin-top:16px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:12px;padding:12px 22px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:19px;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the verify gate &middot; what a pass looks like</div>
+  <h2 class="viz-title">three lines, exact &mdash; or it didn&rsquo;t happen</h2>
+  <div class="term">
+    <div class="prompt"><span class="dollar">$</span> npx tsx verify-confidential.ts &lt;mint&gt;</div>
+    <div class="ln">
+      <div class="code">ConfidentialTransferMint present</div>
+      <div class="tie"></div>
+      <div class="chip">the extension&rsquo;s <b>TLV entry decoded from the live mint</b> &mdash; read off chain, not off your script</div>
+    </div>
+    <div class="ln">
+      <div class="code">auditorElgamalPubkey=<span class="var">&lt;your base58 key&gt;</span></div>
+      <div class="tie"></div>
+      <div class="chip hot">must <b>EQUAL ct-keygen&rsquo;s base58 line</b> exactly &mdash; <b>&ldquo;none&rdquo;</b> means the auditor never landed (fill 3 failed)</div>
+    </div>
+    <div class="ln">
+      <div class="code">autoApproveNewAccounts=false</div>
+      <div class="tie"></div>
+      <div class="chip">manual policy confirmed &mdash; <b>true</b> means fill 2 failed</div>
+    </div>
+    <div class="ln dim">
+      <div class="code">ConfidentialMintBurn present; supplyElgamalPubkey=<span class="var">&lt;supply key&gt;</span></div>
+      <div class="tie"></div>
+      <div class="chip ghost">optional fourth line &mdash; appears only on the solo supply branch</div>
+    </div>
+  </div>
+  <div class="gate">the pass is all three lines together &mdash; one wrong line points at exactly which fill failed</div>
+</div>
+</div>
+</body></html>

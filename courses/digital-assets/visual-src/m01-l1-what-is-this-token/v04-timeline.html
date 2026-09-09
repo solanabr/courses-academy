@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The tokens outran the tutorials
+     purpose: ground why this course reads live accounts instead of trusting docs frozen in 2025
+     data: May 2024: PayPal + Paxos ship PYUSD on Token-2022, flagship deployment of the program. 2025-01-24: solana-foundation/developer-content repo archived; official course pipeline stops. 2025-05-29: PYUSD at $215.9M across ~20,400 token accounts (Solana PYUSD developer note). 2026: post-archive era ships ScaledUiAmount, Pausable, ConfidentialMintBurn, and the p-token engine swap. 2026-08-22: you decode the live mint yourself.
+     prompt: A horizontal timeline with five dated markers from the data above. Visually split it into two eras at the 2025-01-24 archive event: "docs still current" before, "tokens newer than the tutorials" after. The final marker ("you decode the live mint yourself") should read as the course's answer to the split.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:425px;height:341px;right:-227px;top:388px;border-radius:61% 51% 62% 59% / 57% 56% 41% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:562px;height:540px;bottom:-286px;left:-286px;border-radius:59% 53% 54% 57% / 41% 56% 65% 41%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .eras { position:relative; height:40px; margin-top:12px; }
+  .era { position:absolute; top:0; height:40px; display:flex; align-items:center;
+         justify-content:center; border-radius:var(--radius-pill);
+         font-family:var(--font-body); font-weight:800; font-size:14.5px;
+         letter-spacing:.06em; text-transform:uppercase; }
+  .era.before { left:0; width:404px; background:var(--stbr-emerald); color:#F5E8CA; }
+  .era.after { left:432px; right:0; background:var(--surface-inverse); color:var(--text-on-dark); }
+  .tzone { position:relative; height:430px; margin-top:8px; }
+  .rule-l { position:absolute; top:202px; left:0; width:418px; height:6px;
+            background:var(--stbr-emerald); border-radius:3px 0 0 3px; }
+  .rule-r { position:absolute; top:202px; left:418px; right:0; height:6px;
+            background:var(--stbr-dark); border-radius:0 3px 3px 0; }
+  .split { position:absolute; top:0; left:416px; width:0; height:196px;
+           border-left:3px dashed var(--stbr-dark); }
+  .node { position:absolute; top:194px; width:22px; height:22px; border-radius:50%;
+          background:var(--stbr-emerald); border:3px solid var(--surface-page); }
+  .node.dark { background:var(--stbr-dark); }
+  .node.hot { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .stem { position:absolute; width:2.5px; background:var(--stbr-dark); }
+  .stem.up { top:185px; height:20px; }
+  .stem.dn { top:211px; height:31px; }
+  .tcard { position:absolute; background:var(--surface-card);
+           border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+           padding:12px 16px; }
+  .tcard.up { bottom:245px; }
+  .tcard.dn { top:242px; }
+  .tcard .dt { font-family:var(--font-mono); font-weight:700; font-size:14px;
+               color:var(--stbr-green); margin-bottom:4px; }
+  .tcard .tx { font-family:var(--font-body); font-weight:600; font-size:14.5px;
+               line-height:1.35; color:var(--text-primary); }
+  .tcard.hotcard { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark); }
+  .tcard.hotcard .dt { color:var(--stbr-dark); }
+  .tcard.hotcard .tx { font-weight:800; color:var(--stbr-dark); }
+  .tcard.hotcard .ans { display:inline-block; margin-bottom:5px; font-family:var(--font-body);
+        font-weight:800; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+        background:var(--stbr-dark); color:var(--stbr-yellow);
+        padding:2px 9px; border-radius:var(--radius-pill); }
+</style>
+  <div class="stbr-eyebrow">why this course reads live accounts</div>
+  <h2 class="viz-title">the tokens outran the tutorials</h2>
+  <div class="eras">
+    <div class="era before">docs still current</div>
+    <div class="era after">tokens newer than the tutorials</div>
+  </div>
+  <div class="tzone">
+    <div class="rule-l"></div>
+    <div class="rule-r"></div>
+    <div class="split"></div>
+    <div class="stem up" style="left:89px;"></div>
+    <div class="stem dn" style="left:417px;"></div>
+    <div class="stem up" style="left:739px;"></div>
+    <div class="stem dn" style="left:1049px;"></div>
+    <div class="stem up" style="left:1359px;"></div>
+    <div class="node" style="left:79px;"></div>
+    <div class="node dark" style="left:407px;"></div>
+    <div class="node" style="left:729px;"></div>
+    <div class="node dark" style="left:1039px;"></div>
+    <div class="node hot" style="left:1349px;"></div>
+    <div class="tcard up" style="left:0; width:250px;">
+      <div class="dt">May 2024</div>
+      <div class="tx">PayPal + Paxos ship PYUSD on Token-2022 &mdash; the program's flagship deployment</div>
+    </div>
+    <div class="tcard dn" style="left:288px; width:266px;">
+      <div class="dt">2025-01-24</div>
+      <div class="tx">solana-foundation/developer-content repo archived; the official course pipeline stops</div>
+    </div>
+    <div class="tcard up" style="left:618px; width:250px;">
+      <div class="dt">2025-05-29</div>
+      <div class="tx">PYUSD at $215.9M across ~20,400 token accounts</div>
+    </div>
+    <div class="tcard dn" style="left:892px; width:316px;">
+      <div class="dt">2026</div>
+      <div class="tx">post-archive era ships ScaledUiAmount, Pausable, ConfidentialMintBurn &mdash; and the p-token engine swap</div>
+    </div>
+    <div class="tcard up hotcard" style="left:1196px; width:260px;">
+      <span class="ans">this course's answer</span>
+      <div class="dt">2026-08-22</div>
+      <div class="tx">you decode the live mint yourself</div>
+    </div>
+  </div>
+</div>
+</body></html>

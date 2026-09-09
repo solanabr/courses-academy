@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three sources about a token, ranked by what they can be trusted for
+     purpose: give the reader a source-reliability rule they can apply after this course ends
+     data: Source: the mint account on mainnet | Trust for: what is true right now (values, authorities, sizes) | Fails at: intent, roadmap, what a venue will accept | Freshness: the block you read it in Source: official docs and solutions pages | Trust for: durable facts (audit firm roster, interface descriptions, instruction semantics) | Fails at: timelines and status claims (example: "confidential transfers expected EOY 2024" still live) | Freshness: unknown, often stale by a year or more Source: the program repository at HEAD | Trust for: what the maintainers are building, exact processor logic | Fails at: what mainnet runs today, because Token-2022 is still upgradable | Freshness: ahead of mainnet by an unknown margin
+     prompt: Three-column comparison, one column per source, with the four labeled rows: Trust for, Fails at, Freshness, and a one-line verdict per column. Verdicts: "the law", "the manual, sometimes out of date", "the future, not the present". Keep the stale-date example verbatim in the docs column.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:462px;top:-267px;right:-267px;border-radius:54% 35% 65% 43% / 35% 55% 35% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:529px;height:501px;bottom:-309px;left:408px;border-radius:50% 62% 49% 64% / 45% 40% 52% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:32px;padding:30px 48px 28px;}
+  .card .viz-title{font-size:38px;margin:4px 0 18px;}
+  .card .stbr-eyebrow{font-size:16px;}
+  .cols{display:flex;gap:22px;}
+  .src{flex:1;border:1px solid var(--border-subtle);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;}
+  .sh{box-sizing:border-box;height:70px;display:flex;align-items:center;padding:0 22px;font-family:var(--font-display);font-weight:900;font-size:19px;line-height:1.15;}
+  .sh-mint{background:var(--stbr-emerald);color:#F5E8CA;}
+  .sh-docs{background:var(--stbr-green);color:#F5E8CA;}
+  .sh-repo{background:var(--surface-inverse);color:#F5E8CA;}
+  .sect{box-sizing:border-box;padding:12px 22px;border-top:1px solid var(--border-subtle);}
+  .sect:first-of-type{border-top:none;}
+  .sl{font-family:var(--font-body);font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:5px;}
+  .sv{font-family:var(--font-body);font-size:14px;color:var(--text-primary);line-height:1.42;}
+  .sv .q{font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary);}
+  .s-trust{height:126px;}
+  .s-fails{height:140px;}
+  .s-fresh{height:82px;}
+  .vb{box-sizing:border-box;height:62px;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--font-display);font-weight:900;font-size:18px;padding:0 14px;}
+  .vb-mint{background:var(--stbr-yellow);color:#1B231D;font-size:21px;}
+  .vb-docs{background:var(--surface-inverse);color:#F5E8CA;}
+  .vb-repo{background:var(--surface-inverse);color:#F5E8CA;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">a source-reliability rule to keep after the course ends</div>
+  <h2 class="viz-title">three sources about a token, ranked by what they can be trusted for</h2>
+  <div class="cols">
+    <div class="src">
+      <div class="sh sh-mint">the mint account on mainnet</div>
+      <div class="sect s-trust"><div class="sl">trust it for</div><div class="sv">what is true right now &mdash; values, authorities, sizes.</div></div>
+      <div class="sect s-fails"><div class="sl">fails at</div><div class="sv">intent, roadmap, and what a venue will accept.</div></div>
+      <div class="sect s-fresh"><div class="sl">freshness</div><div class="sv">the block you read it in.</div></div>
+      <div class="vb vb-mint">&ldquo;the law&rdquo;</div>
+    </div>
+    <div class="src">
+      <div class="sh sh-docs">official docs &amp; solutions pages</div>
+      <div class="sect s-trust"><div class="sl">trust it for</div><div class="sv">durable facts &mdash; audit firm roster, interface descriptions, instruction semantics.</div></div>
+      <div class="sect s-fails"><div class="sl">fails at</div><div class="sv">timelines and status claims &mdash; <span class="q">"confidential transfers expected EOY 2024"</span> is still live.</div></div>
+      <div class="sect s-fresh"><div class="sl">freshness</div><div class="sv">unknown &mdash; often stale by a year or more.</div></div>
+      <div class="vb vb-docs">&ldquo;the manual, sometimes out of date&rdquo;</div>
+    </div>
+    <div class="src">
+      <div class="sh sh-repo">the program repository at HEAD</div>
+      <div class="sect s-trust"><div class="sl">trust it for</div><div class="sv">what the maintainers are building; exact processor logic.</div></div>
+      <div class="sect s-fails"><div class="sl">fails at</div><div class="sv">what mainnet runs today &mdash; Token-2022 is still upgradable.</div></div>
+      <div class="sect s-fresh"><div class="sl">freshness</div><div class="sv">ahead of mainnet by an unknown margin.</div></div>
+      <div class="vb vb-repo">&ldquo;the future, not the present&rdquo;</div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

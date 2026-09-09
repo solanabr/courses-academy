@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three claims about your token, three different gates
+     purpose: separate init legality from venue acceptance from wallet display, so the reader stops treating one check as proof of the others
+     data: Gate 1, legal to initialize | enforced by Token-2022's check_for_invalid_mint_extension_combinations at InitializeMint | your tool: check-combo (R2, m01-l4) | failure mode: transaction reverts at mint creation Gate 2, admitted by a venue | enforced by each DEX program's own code, per venue, per commit | your tool: predict-routability (R6 draft, this lesson) | failure mode: pool creation reverts Gate 3, displayed correctly by a wallet | enforced by nobody; client behavior, undocumented per wallet | your tool: none yet, you test each wallet by hand | failure mode: silent, users see a wrong balance rule: passing one gate is evidence about that gate only
+     prompt: Three stacked horizontal bands, one per gate, each split into four labelled cells: what enforces it, your tool, the failure mode, and whether it is code-enforced or convention. Shade gate 3 differently to mark that nothing enforces it. Bottom rule line spans all three bands.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:410px;height:468px;right:-221px;top:257px;border-radius:50% 39% 54% 49% / 55% 56% 62% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:527px;height:501px;bottom:-305px;left:700px;border-radius:59% 35% 42% 56% / 43% 49% 40% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">one check is not proof of the others</div>
+    <h2 class="viz-title" style="font-size:40px;margin:6px 0 18px;color:var(--stbr-dark);">Three claims about your token, three different gates</h2>
+
+    <!-- column headers -->
+    <div style="display:flex;gap:14px;margin-bottom:8px;">
+      <div style="flex:none;width:230px;"></div>
+      <div style="flex:1.4;font-family:var(--font-display);font-weight:900;font-size:13.5px;letter-spacing:.06em;color:var(--stbr-green);">WHAT ENFORCES IT</div>
+      <div style="flex:1.1;font-family:var(--font-display);font-weight:900;font-size:13.5px;letter-spacing:.06em;color:var(--stbr-green);">YOUR TOOL</div>
+      <div style="flex:1.1;font-family:var(--font-display);font-weight:900;font-size:13.5px;letter-spacing:.06em;color:var(--stbr-green);">FAILURE MODE</div>
+      <div style="flex:none;width:150px;font-family:var(--font-display);font-weight:900;font-size:13.5px;letter-spacing:.06em;color:var(--stbr-green);">ENFORCED BY</div>
+    </div>
+
+    <!-- gate 1 -->
+    <div style="display:flex;gap:14px;align-items:stretch;border:2px solid var(--stbr-emerald);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:var(--surface-card);">
+      <div style="flex:none;width:230px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-emerald);">GATE 1</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.15;color:var(--stbr-dark);margin-top:2px;">legal to initialize</div>
+      </div>
+      <div style="flex:1.4;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">Token-2022's <span style="font-family:var(--font-mono);font-size:11.5px;">check_for_invalid_mint_extension_combinations</span> at <span style="font-family:var(--font-mono);font-size:12px;">InitializeMint</span></div>
+      <div style="flex:1.1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--stbr-dark);"><span style="font-family:var(--font-mono);font-size:12.5px;font-weight:700;">check-combo</span><br><span style="color:var(--text-muted,#6b7a6f);font-size:12.5px;">R2, m01-l4</span></div>
+      <div style="flex:1.1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">transaction reverts at mint creation</div>
+      <div style="flex:none;width:150px;display:flex;align-items:center;"><span style="background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:12px;letter-spacing:.05em;padding:6px 12px;border-radius:999px;">CODE</span></div>
+    </div>
+
+    <!-- gate 2 -->
+    <div style="display:flex;gap:14px;align-items:stretch;border:2px solid var(--stbr-emerald);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:var(--surface-card);">
+      <div style="flex:none;width:230px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-emerald);">GATE 2</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.15;color:var(--stbr-dark);margin-top:2px;">admitted by a venue</div>
+      </div>
+      <div style="flex:1.4;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">each DEX program's own code &mdash; per venue, per commit</div>
+      <div style="flex:1.1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--stbr-dark);"><span style="font-family:var(--font-mono);font-size:12.5px;font-weight:700;">predict-routability</span><br><span style="color:var(--text-muted,#6b7a6f);font-size:12.5px;">R6 draft, this lesson</span></div>
+      <div style="flex:1.1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--text-secondary,#4a5a4e);">pool creation reverts</div>
+      <div style="flex:none;width:150px;display:flex;align-items:center;"><span style="background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:12px;letter-spacing:.05em;padding:6px 12px;border-radius:999px;">CODE</span></div>
+    </div>
+
+    <!-- gate 3: nothing enforces it -->
+    <div style="display:flex;gap:14px;align-items:stretch;border:2px dashed var(--stbr-dark);border-radius:14px;padding:14px 16px;margin-bottom:16px;background:linear-gradient(0deg, #fff7dc, #fff7dc);">
+      <div style="flex:none;width:230px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-dark);">GATE 3</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.15;color:var(--stbr-dark);margin-top:2px;">displayed correctly by a wallet</div>
+      </div>
+      <div style="flex:1.4;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--stbr-dark);"><b>nobody</b> &mdash; client behavior, undocumented per wallet</div>
+      <div style="flex:1.1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--stbr-dark);"><b>none yet</b> &mdash; you test each wallet by hand</div>
+      <div style="flex:1.1;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--stbr-dark);"><b>silent</b>: users see a wrong balance</div>
+      <div style="flex:none;width:150px;display:flex;align-items:center;"><span style="background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:12px;letter-spacing:.05em;padding:6px 12px;border-radius:999px;">CONVENTION</span></div>
+    </div>
+
+    <!-- the rule, spanning all three bands -->
+    <div style="background:var(--stbr-emerald);border-radius:12px;padding:13px 22px;font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--stbr-cream);text-align:center;">
+      passing one gate is evidence about that gate only
+    </div>
+  </div>
+</div>
+</body></html>

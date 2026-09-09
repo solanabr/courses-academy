@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: What survives a transfer, by plugin class
+     purpose: give the reader the one rule that decides whether a capability belongs to the owner or to the creator
+     data: Columns: Plugin class | Examples | Default authority | On transfer | Attach when Row 1: Owner-managed | TransferDelegate, FreezeDelegate, BurnDelegate | Owner | authority auto-revokes back to Owner | mint or later Row 2: Authority-managed | Royalties, Attributes, UpdateDelegate | UpdateAuthority (resolves through the collection for members) | persists unchanged | mint or later Row 3: Permanent | PermanentFreezeDelegate, PermanentTransferDelegate, PermanentBurnDelegate | as assigned; None = welded | persists unchanged | MINT ONLY Footer: the Founding-Farmer badge is row 3 with frozen=true and authority None.
+     prompt: Designed three-row comparison table with the five columns named in the data. Emphasize the "On transfer" column as the decision column. Give row 3 a lock motif and badge its "Attach when" cell as mint-only. Keep the footer as a caption strip under the table.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:578px;top:-339px;right:-339px;border-radius:60% 38% 53% 36% / 61% 40% 60% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:418px;height:548px;bottom:-334px;left:640px;border-radius:48% 43% 45% 49% / 46% 63% 55% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  table.tt { width:100%; border-collapse:collapse; margin-top:6px;
+             border:3px solid var(--stbr-dark); border-radius:var(--radius-lg);
+             overflow:hidden; background:var(--surface-card); }
+  .tt th { background:var(--surface-inverse); color:var(--text-on-dark);
+           font-family:var(--font-display); font-weight:800; font-size:16.5px;
+           text-align:left; padding:14px 20px; }
+  .tt th.dec { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .tt td { padding:16px 20px; border-top:1.5px solid var(--border-subtle);
+           font-family:var(--font-body); font-size:15.5px; line-height:1.4;
+           color:var(--text-primary); vertical-align:top; }
+  .tt td.cls { font-family:var(--font-display); font-weight:900; font-size:18px; }
+  .tt td.ex { font-family:var(--font-mono); font-size:14px; color:var(--text-secondary); }
+  .tt td.dec { background:rgba(255,210,63,0.22); font-weight:700; }
+  .tt tr.perm td { background:var(--surface-paper); }
+  .tt tr.perm td.dec { background:rgba(255,210,63,0.32); }
+  .pill { display:inline-block; font-family:var(--font-body); font-weight:800;
+          font-size:12.5px; letter-spacing:.06em; padding:4px 12px;
+          border-radius:var(--radius-pill); }
+  .pill.any { background:rgba(0,139,76,0.1); color:var(--stbr-green);
+              border:1.5px solid rgba(0,139,76,0.4); }
+  .pill.mint { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .lockrow { display:flex; align-items:center; gap:10px; }
+  .caption { margin-top:14px; border-radius:var(--radius-pill);
+             background:var(--stbr-green); color:var(--stbr-cream);
+             font-family:var(--font-body); font-weight:600; font-size:15px;
+             padding:10px 24px; text-align:center; }
+  .caption code { font-family:var(--font-mono); color:var(--stbr-yellow); font-size:14px; }
+</style>
+  <div class="stbr-eyebrow">the decision column: on transfer</div>
+  <h2 class="viz-title">what survives a transfer, by plugin class</h2>
+  <table class="tt">
+    <tr>
+      <th style="width:17%;">Plugin class</th>
+      <th style="width:29%;">Examples</th>
+      <th style="width:20%;">Default authority</th>
+      <th class="dec" style="width:22%;">On transfer</th>
+      <th style="width:12%;">Attach when</th>
+    </tr>
+    <tr>
+      <td class="cls">owner-managed</td>
+      <td class="ex">TransferDelegate, FreezeDelegate, BurnDelegate</td>
+      <td>Owner</td>
+      <td class="dec">authority auto-revokes back to Owner</td>
+      <td><span class="pill any">mint or later</span></td>
+    </tr>
+    <tr>
+      <td class="cls">authority-managed</td>
+      <td class="ex">Royalties, Attributes, UpdateDelegate</td>
+      <td>UpdateAuthority &mdash; resolves through the collection for members</td>
+      <td class="dec">persists unchanged</td>
+      <td><span class="pill any">mint or later</span></td>
+    </tr>
+    <tr class="perm">
+      <td class="cls">
+        <div class="lockrow">
+          <svg width="20" height="24" viewBox="0 0 20 24"><rect x="2" y="10" width="16" height="12" rx="3" fill="#1B231D"/><path d="M5 10 V7 a5 5 0 0 1 10 0 V10" fill="none" stroke="#1B231D" stroke-width="3"/></svg>
+          <span>permanent</span>
+        </div>
+      </td>
+      <td class="ex">PermanentFreezeDelegate, PermanentTransferDelegate, PermanentBurnDelegate</td>
+      <td>as assigned; None = welded</td>
+      <td class="dec">persists unchanged</td>
+      <td><span class="pill mint">MINT ONLY</span></td>
+    </tr>
+  </table>
+  <div class="caption">the Founding-Farmer badge is row 3 with <code>frozen = true</code> and authority <code>None</code></div>
+</div>
+</body></html>

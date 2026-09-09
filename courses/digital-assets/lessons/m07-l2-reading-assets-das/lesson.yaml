@@ -1,0 +1,95 @@
+id: lesson-date-m07-l2-reading-assets-das
+slug: m07-l2-reading-assets-das
+title: "Read anything: one DAS script for fungibles, Core assets, and cNFTs"
+skills:
+  - das-api
+  - rpc-reads
+  - token-2022
+  - state-compression
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    tsx: "4.23.12"
+    typescript: "5.9.3"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: classify-das-asset
+    type: code
+    language: typescript
+    starter: classify-das-asset/starter.ts
+    solution: classify-das-asset/solution.ts
+    tests: classify-das-asset/tests.json
+    hints:
+      - "The NFT interfaces include MplCoreAsset, MplBubblegumV2, V1_NFT, ProgrammableNFT; the fungible ones are FungibleAsset and FungibleToken."
+      - "compressed is asset.compression?.compressed === true, and a compressed NFT is the only case that requires a DAS RPC."
+      - "Price lives at asset.token_info?.price_info?.price_per_token; default it to null when absent."
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "read-any-asset.ts resolves SPROUT with getAccountInfo-equivalent ease, but the Harvest crate REQUIRED a DAS-supporting RPC. Why the asymmetry?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "A cNFT has no on-chain account of its own: its data lives in the provider's index, so only a DAS RPC can reconstruct it; SPROUT's mint is a real account any RPC returns."
+            correct: true
+            feedback: "Storage decides the read path, which is why the classifier tracks compression.compressed rather than the interface name."
+          - id: c
+            label: "getAccountInfo is rate-limited for collectibles, so DAS is the only supported way to read any NFT at any real scale."
+            correct: false
+            feedback: "It's not a rate-limit issue, and regular NFTs read fine without DAS; a cNFT simply has no standalone account to fetch."
+          - id: b
+            label: "DAS RPCs are required for any Token-2022 mint: the TLV extension records live in the provider's off-chain index rather than in the base 82-byte mint layout, so getAccountInfo cannot see them."
+            correct: false
+            feedback: "getAccountInfo returns a Token-2022 mint with its TLV extensions fine; the DAS requirement is specific to compressed assets, not extensions."
+          - id: d
+            label: "DAS is the NFT read path while getAccountInfo is the fungible one, so the crate needs a DAS provider and SPROUT does not."
+            correct: false
+            feedback: "Your Almanac asset is an NFT and an ordinary account, read either way. The split is storage, not standard, which is why the flag is called compressed."
+        explanation: "A compressed NFT is only a leaf hash in a tree; its readable data lives in a DAS provider's index. Regular mints and Core assets are real accounts, so any RPC returns them; only cNFTs force a DAS RPC."
+      - id: q2
+        prompt: "You point getAssetsByCreator at a pump.fun mint's creator and get an empty list, even though the token clearly exists and trades. What's happening, and the fix?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The creators are present but unverified, so getAssetsByCreator returns an empty list; re-run it with the verified filter off."
+            correct: false
+            feedback: "There is no unverified entry hiding behind a filter. The array has zero entries, which the probe prints for you before any query goes out."
+          - id: b
+            label: "pump.fun mints don't populate the Metaplex creators array, so the query has nothing to match; key on the update authority instead."
+            correct: true
+            feedback: "The probe prints creators: 0 before it runs a single query, which is the whole diagnosis. Check that your assets populate a key before you build a feature on it."
+          - id: a
+            label: "The mint is compressed, so creator-keyed queries never reach it; switch to getAssetProof, which is the read path for anything the index holds as a leaf."
+            correct: false
+            feedback: "It isn't about compression, and getAssetProof fetches a Merkle proof for a compressed asset, not owner/creator listings."
+          - id: c
+            label: "DAS caches its creator indexes for up to 600 seconds, the same window that caches price_info, so wait for the refresh and retry the query."
+            correct: false
+            feedback: "The ~600s cache is the price_info TTL, not creator indexing; the creators array is genuinely empty for pump mints, so waiting changes nothing."
+        explanation: "pump.fun leaves the Metaplex creators array unpopulated, so creator-keyed queries come back empty. The practitioner fix is to index by authority or subscribe to the program, a gotcha you only hit once."
+      - id: q3
+        prompt: "Your dashboard needs SPROUT's live USD price next to holdings, and a teammate wants to bolt on a second price API. Given what read-any-asset.ts already does, the cheapest correct move is:"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Call getAsset with showFungible and read token_info.price_info.price_per_token; DAS serves it."
+            correct: true
+            feedback: "One flag on a call your reader already makes. Render a dash when price_info is absent, because a token outside the priced slice is the normal case, not an error."
+          - id: b
+            label: "Call getAssetProof with showFungible so the returned proof carries a price attestation alongside the balance."
+            correct: false
+            feedback: "getAssetProof returns a Merkle proof for compressed assets; price comes from getAsset's showFungible, not from a proof call."
+          - id: a
+            label: "Add a CoinGecko fetch keyed by mint address, since DAS covers NFTs and collections but leaves fungible pricing to market-data providers."
+            correct: false
+            feedback: "DAS did become the fungible + price API: getAsset with showFungible returns token_info.price_info for top tokens, so no second API is needed."
+          - id: d
+            label: "Point the same getAsset call at devnet and read price_per_token: SPROUT already resolves there, so the price arrives too."
+            correct: false
+            feedback: "Resolving and being priced are different things. The priced set is a mainnet slice ranked by 24h volume, which is why the lab probes PYUSD on mainnet to see the field populated at all."
+        explanation: "DAS is the fungible + price API too: getAsset with showFungible returns token_info.price_info for top tokens, including Token-2022 mints. Your reader already speaks DAS, so the price is one flag away; no second provider is needed."

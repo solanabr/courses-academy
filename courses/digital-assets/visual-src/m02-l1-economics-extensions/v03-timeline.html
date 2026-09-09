@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: How a fee change actually lands, epoch by epoch
+     purpose: show that set_transfer_fee arms a future schedule instead of taking effect immediately
+     data: t0 (epoch N): mint initialized; older = newer = 100 bps / 5 SPROUT cap; transfers charge 100 bps t1 (mid-epoch N): transfer_fee_config_authority signs set_transfer_fee(200 bps); newer schedule armed for a coming epoch; in-flight and same-epoch transfers still charge 100 bps t2 (armed epoch boundary): newer schedule becomes effective t3 (after boundary): transfers now charge 200 bps; the 100 bps schedule is retained as older caption: transfers select their fee schedule by execution epoch, so a signed change never applies retroactively or mid-flight
+     prompt: Horizontal timeline with four markers as in data, epoch boundaries drawn as vertical dividers. Shade the region before the armed boundary as "100 bps" and after as "200 bps"; place the set_transfer_fee signing event clearly INSIDE the 100 bps region to show the arming gap. Caption from data underneath.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:485px;height:453px;right:-265px;top:285px;border-radius:56% 39% 35% 45% / 56% 47% 51% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:445px;height:515px;bottom:-287px;left:479px;border-radius:41% 37% 42% 58% / 38% 39% 50% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v03-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:36px 48px 36px; overflow:hidden; }
+  .v03-zone { position:relative; height:452px; margin-top:8px; }
+  .v03-track { position:absolute; left:0; right:0; top:214px; height:64px; display:flex;
+    border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border-subtle); }
+  .v03-seg1 { width:64%; background:var(--surface-paper); display:flex; align-items:center;
+    padding-left:132px; font-family:var(--font-display); font-weight:900; font-size:22px;
+    color:var(--stbr-emerald); letter-spacing:.02em; }
+  .v03-seg2 { width:36%; background:var(--surface-brand); display:flex; align-items:center;
+    padding-left:26px; font-family:var(--font-display); font-weight:900; font-size:22px;
+    color:var(--text-on-brand); letter-spacing:.02em; }
+  .v03-boundary { position:absolute; left:calc(64% - 2px); top:190px; height:112px; width:4px;
+    background:var(--stbr-dark); }
+  .v03-dot { position:absolute; top:237px; width:18px; height:18px; border-radius:50%;
+    background:var(--stbr-dark); border:3px solid var(--surface-card); }
+  .v03-dot.hot { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .v03-dot.on-brand { background:var(--stbr-cream); border-color:var(--stbr-dark); }
+  .v03-stem { position:absolute; width:3px; background:var(--stbr-ink-300); }
+  .v03-ev { position:absolute; background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:12px 16px; font-family:var(--font-body);
+    font-size:15px; line-height:1.35; color:var(--text-primary); }
+  .v03-ev .t { font-family:var(--font-display); font-weight:900; font-size:15px;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--stbr-emerald); margin-bottom:4px; }
+  .v03-ev.hot { background:var(--stbr-yellow); border-color:var(--stbr-yellow); font-weight:600; }
+  .v03-ev.hot .t { color:var(--stbr-dark); }
+  .v03-ev code { font-family:var(--font-mono); font-size:13.5px; font-weight:700; }
+  .v03-cap { margin-top:14px; background:var(--surface-inverse); color:var(--text-on-dark);
+    border-radius:var(--radius-lg); padding:14px 24px; font-family:var(--font-body);
+    font-size:17px; line-height:1.35; }
+  .v03-cap b { color:var(--stbr-yellow); }
+</style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">set_transfer_fee arms a schedule &mdash; it does not fire</div>
+    <h2 class="viz-title">how a fee change actually lands, epoch by epoch</h2>
+    <div class="v03-zone">
+      <!-- events above the track -->
+      <div class="v03-ev" style="left:0; width:25%; top:6px; height:142px;">
+        <div class="t">t0 &middot; epoch N</div>
+        mint initialized &middot; older = newer = <b>100 bps / 5 SPROUT cap</b> &middot; transfers charge 100 bps
+      </div>
+      <div class="v03-ev hot" style="left:29%; width:31%; top:6px; height:142px;">
+        <div class="t">t1 &middot; mid-epoch N &mdash; signed, not live</div>
+        <code>transfer_fee_config_authority</code> signs <code>set_transfer_fee(200 bps)</code> &mdash; newer schedule <b>armed</b> for a coming epoch; in-flight and same-epoch transfers still charge 100 bps
+      </div>
+      <!-- stems above -->
+      <div class="v03-stem" style="left:calc(6% - 1px); top:148px; height:66px;"></div>
+      <div class="v03-stem" style="left:calc(38% - 1px); top:148px; height:66px;"></div>
+      <!-- the track -->
+      <div class="v03-track">
+        <div class="v03-seg1">100 bps in force</div>
+        <div class="v03-seg2">200 bps in force</div>
+      </div>
+      <div class="v03-boundary"></div>
+      <!-- dots -->
+      <div class="v03-dot" style="left:calc(6% - 9px);"></div>
+      <div class="v03-dot hot" style="left:calc(38% - 9px);"></div>
+      <div class="v03-dot on-brand" style="left:calc(82% - 9px);"></div>
+      <!-- stems below -->
+      <div class="v03-stem" style="left:calc(64% - 1px); top:302px; height:34px;"></div>
+      <div class="v03-stem" style="left:calc(82% - 1px); top:302px; height:34px;"></div>
+      <!-- events below the track -->
+      <div class="v03-ev" style="left:46%; width:26%; top:336px; height:108px; border-color:var(--stbr-dark);">
+        <div class="t" style="color:var(--text-primary);">t2 &middot; armed epoch boundary</div>
+        the newer schedule becomes effective the instant the epoch ticks over
+      </div>
+      <div class="v03-ev" style="left:76%; width:24%; top:336px; height:108px;">
+        <div class="t">t3 &middot; after boundary</div>
+        transfers now charge <b>200 bps</b>; the 100 bps schedule is retained as <i>older</i>
+      </div>
+    </div>
+    <div class="v03-cap">transfers select their fee schedule by <b>execution epoch</b> &mdash; a signed change never applies retroactively or mid-flight.</div>
+  </div>
+</div>
+</body></html>

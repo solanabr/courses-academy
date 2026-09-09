@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The four primitive families on one set of axes
+     purpose: let the reader score their brief against every family on the same five dimensions instead of arguing about them one at a time
+     data: axes: divisible? | per-unit cost to create | post-ship powers available | DEX routability | what a reader needs classic SPL mint: yes | mint rent only | none beyond mint/freeze authority | best in class, universally supported | any RPC Token-2022 mint: yes | mint rent, grows with the extension set | the full extension catalog (fees, hooks, permanent delegate, confidential, pausable...) | conditional: CP-Swap accepts exactly five extensions and refuses power extensions; the only exception is the hand-vetted per-MINT whitelist (mints get whitelisted, extensions never do) | any RPC (extension state needs a Token-2022-aware decoder) Metaplex Core asset: no | ~0.003 SOL, vendor-published | plugin registry (Royalties, Edition, PermanentFreezeDelegate, Attributes...) | not a fungible token, trades on NFT marketplaces | any RPC, DAS for the indexed view Bubblegum v2 cNFT: no | a leaf in a shared tree, and the tree's cost is rent -- bytes x a per-byte rate SIMD-0437 is stepping down, so state the bytes and date the SOL: module 7's depth-14 tree is 48,120 bytes for 16,384 leaves and its depth-20 tree 1,223,352 bytes for 1,048,576, which at devnet's 5,080 lamports/byte on 2026-09-06 is ~0.000015/leaf and ~0.0000059/leaf | Bubblegum v2 ruleset, incl. soulbound leaves | not a fungible token | a DAS-supporting RPC, mandatory
+     prompt: Five-column comparison table, one row per family, axes as column headers in the order given. Emphasize the "DEX routability" column: green for classic SPL, amber with the five-extension caveat for Token-2022, grey "n/a" for the two NFT families. Put the per-unit cost figures in a monospace face so the two orders of magnitude between Core and a cNFT leaf are readable at a glance.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:436px;bottom:-254px;right:-254px;border-radius:52% 43% 59% 38% / 40% 62% 53% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:539px;height:470px;left:-319px;top:322px;border-radius:50% 44% 63% 48% / 52% 65% 44% 52%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { width:100%; border-collapse:collapse; margin-top:8px;
+         background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+         border-radius:var(--radius-lg); overflow:hidden; }
+  .cmp th { background:var(--surface-inverse); color:#F5E8CA;
+            font-family:var(--font-display); font-weight:900; font-size:14.5px;
+            text-align:left; padding:10px 12px; line-height:1.2; }
+  .cmp td { font-family:var(--font-body); font-weight:600; font-size:12.5px;
+            line-height:1.32; color:var(--text-primary); padding:9px 12px;
+            border-top:1.5px solid var(--border-subtle); vertical-align:top; }
+  .cmp td.fam { font-family:var(--font-display); font-weight:900; font-size:16.5px;
+                color:var(--text-primary); width:150px; }
+  .cmp td.cost { font-family:var(--font-mono); font-size:11.5px; width:270px; }
+  .cmp th.dex, .cmp td.dex { width:330px; }
+  .cmp td.dex { background:#FFF6D9; }
+  .badge { display:inline-block; font-family:var(--font-body); font-weight:800;
+           font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+           border-radius:var(--radius-pill); padding:1px 9px; margin-bottom:3px; }
+  .b-green { background:var(--stbr-emerald); color:#F5E8CA; }
+  .b-amber { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .b-grey  { background:var(--surface-paper); color:var(--text-muted);
+             border:1px solid var(--border-strong); }
+  .sub { color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">score the brief, don't argue it</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:8px;">the four primitive families on one set of axes</h2>
+  <table class="cmp">
+    <tr>
+      <th style="width:150px;">family</th>
+      <th style="width:82px;">divisible?</th>
+      <th style="width:270px;">per-unit cost to create</th>
+      <th>post-ship powers available</th>
+      <th class="dex">DEX routability</th>
+      <th style="width:190px;">what a reader needs</th>
+    </tr>
+    <tr>
+      <td class="fam">classic SPL mint</td>
+      <td>yes</td>
+      <td class="cost">mint rent only</td>
+      <td>none beyond mint / freeze authority</td>
+      <td class="dex"><span class="badge b-green">best in class</span><br>universally supported</td>
+      <td>any RPC</td>
+    </tr>
+    <tr>
+      <td class="fam">Token-2022 mint</td>
+      <td>yes</td>
+      <td class="cost">mint rent, grows with the extension set</td>
+      <td>the full extension catalog (fees, hooks, permanent delegate, confidential, pausable&hellip;)</td>
+      <td class="dex"><span class="badge b-amber">conditional</span><br>CP-Swap accepts exactly five extensions and refuses power extensions; the only exception is the hand-vetted per-MINT whitelist &mdash; mints get whitelisted, extensions never do</td>
+      <td>any RPC <span class="sub">(extension state needs a Token-2022-aware decoder)</span></td>
+    </tr>
+    <tr>
+      <td class="fam">Metaplex Core asset</td>
+      <td>no</td>
+      <td class="cost">~0.003 SOL, vendor-published</td>
+      <td>plugin registry (Royalties, Edition, PermanentFreezeDelegate, Attributes&hellip;)</td>
+      <td class="dex"><span class="badge b-grey">n/a</span><br><span class="sub">not a fungible token; trades on NFT marketplaces</span></td>
+      <td>any RPC, DAS for the indexed view</td>
+    </tr>
+    <tr>
+      <td class="fam">Bubblegum v2 cNFT</td>
+      <td>no</td>
+      <td class="cost">a leaf in a shared tree; the tree is rent, so state bytes. depth-14: 48,120 B / 16,384 leaves. depth-20: 1,223,352 B / 1,048,576. At devnet 5,080 lamports/B (2026-09-06): ~0.000015 / ~0.0000059 SOL ea</td>
+      <td>Bubblegum v2 ruleset, incl. soulbound leaves</td>
+      <td class="dex"><span class="badge b-grey">n/a</span><br><span class="sub">not a fungible token</span></td>
+      <td>a DAS-supporting RPC, <b>mandatory</b></td>
+    </tr>
+  </table>
+</div>
+</body></html>

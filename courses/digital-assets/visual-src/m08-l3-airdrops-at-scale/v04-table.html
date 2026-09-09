@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Which of SPROUT's extensions survive compression
+     purpose: show that the token's own design, not the budget, is what eliminates the compression drop
+     data: Source: helius-labs/airship packages/core/src/config/constants.ts, supportedExtensions map, read 2026-08. Supported: metadata_pointer, metadata, interest_bearing_config, group_pointer, group_member_pointer, token_group, token_group_member. Unsupported: transfer_hook, mint_close_authority, permanent_delegate, confidential_transfer_mint, confidential_transfer_account, confidential_transfer_fee_config, transfer_fee_config, default_account_state. SPROUT's R6 launch set is TransferFeeConfig (unsupported), MetadataPointer (supported), TokenMetadata (supported). Verdict: SPROUT cannot ride the compressed drop; it needs the claim path.
+     prompt: Two-column table headed "supported by the compressed drop" and "not supported", listing the extensions above in each column. Below the table, a single highlighted verdict strip reading: "SPROUT = TransferFeeConfig + MetadataPointer + TokenMetadata, so two supported and one not. The fee extension is the disqualifier." Mark the three SPROUT extensions with a distinct badge in whichever column they sit.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:581px;height:503px;top:-292px;right:-292px;border-radius:47% 43% 58% 40% / 53% 60% 48% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:497px;height:371px;left:-260px;top:355px;border-radius:61% 51% 35% 65% / 62% 51% 43% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:30px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">the token&rsquo;s own design, not the budget, kills the drop</div>
+    <h2 class="viz-title" style="font-size:36px;margin:6px 0 18px;color:var(--stbr-dark);">Which of SPROUT&rsquo;s extensions survive compression</h2>
+
+    <div style="display:flex;gap:20px;align-items:stretch;">
+      <!-- supported column -->
+      <div style="flex:1;border:1.5px solid var(--border-strong,#c9c2ad);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="background:var(--stbr-emerald);padding:10px 18px;font-family:var(--font-display);font-weight:900;font-size:17px;color:var(--stbr-cream);">supported by the compressed drop</div>
+        <div style="padding:10px 18px 12px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-subtle,#e5decb);"><div style="font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">metadata_pointer</div><div style="background:var(--stbr-green);border-radius:99px;padding:1px 9px;font-family:var(--font-body);font-weight:700;font-size:11px;color:var(--stbr-cream);">SPROUT</div></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-subtle,#e5decb);"><div style="font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">metadata</div><div style="background:var(--stbr-green);border-radius:99px;padding:1px 9px;font-family:var(--font-body);font-weight:700;font-size:11px;color:var(--stbr-cream);">SPROUT</div></div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">interest_bearing_config</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">group_pointer</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">group_member_pointer</div>
+          <div style="padding:5px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">token_group</div>
+          <div style="padding:5px 0;font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">token_group_member</div>
+        </div>
+      </div>
+      <!-- unsupported column -->
+      <div style="flex:1;border:1.5px solid var(--border-strong,#c9c2ad);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;">
+        <div style="background:var(--surface-inverse,#1B231D);padding:10px 18px;font-family:var(--font-display);font-weight:900;font-size:17px;color:var(--stbr-cream);">not supported</div>
+        <div style="padding:10px 18px 12px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:4px 6px;border-bottom:1px solid var(--border-subtle,#e5decb);background:var(--stbr-yellow);border-radius:8px;margin:1px -6px 2px;"><div style="font-family:var(--font-mono);font-weight:700;font-size:14.5px;color:var(--stbr-dark);">transfer_fee_config</div><div style="background:var(--stbr-dark);border-radius:99px;padding:1px 9px;font-family:var(--font-body);font-weight:700;font-size:11px;color:var(--stbr-cream);">SPROUT</div><div style="font-family:var(--font-body);font-weight:700;font-size:12px;color:var(--stbr-dark);">&larr; the disqualifier</div></div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">transfer_hook</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">mint_close_authority</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">permanent_delegate</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">confidential_transfer_mint</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">confidential_transfer_account</div>
+          <div style="padding:4px 0;border-bottom:1px solid var(--border-subtle,#e5decb);font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">confidential_transfer_fee_config</div>
+          <div style="padding:4px 0;font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-dark);">default_account_state</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- verdict strip -->
+    <div style="margin-top:16px;background:var(--stbr-emerald);border-radius:14px;padding:13px 22px;display:flex;align-items:center;gap:16px;">
+      <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.08em;color:var(--stbr-cream);">VERDICT</div>
+      <div style="font-family:var(--font-body);font-weight:600;font-size:15.5px;line-height:1.4;color:var(--stbr-cream);">SPROUT = TransferFeeConfig + MetadataPointer + TokenMetadata, so two supported and one not. The fee extension is the disqualifier &mdash; SPROUT cannot ride the compressed drop; it needs the claim path.</div>
+    </div>
+    <div style="margin-top:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-muted,#6b7a6f);">source: helius-labs/airship &nbsp;packages/core/src/config/constants.ts&nbsp; supportedExtensions map, read 2026-08</div>
+  </div>
+</div>
+</body></html>

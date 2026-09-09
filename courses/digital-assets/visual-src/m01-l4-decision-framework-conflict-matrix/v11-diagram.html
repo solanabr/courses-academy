@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The layers between your intent and the bytes
+     purpose: generalize the probe's two side findings into a model of where rules can live, so the reader stops equating a tool's behavior with the program's
+     data: layer 1 - "you: the extension set you asked for" layer 2 - "the CLI (spl-token): may REFUSE early (rule 4 re-guarded client-side) or quietly ADD extensions (rule 2's missing bridge auto-inserted)" layer 3 - "the program (Token-2022 init): enforces exactly the five source rules, nothing more" layer 4 - "the account bytes: what actually got built; readable via decode-mint (R1)" annotations: the exit code reports layer 2's opinion; only layer 4 is the truth; check-combo models layer 3 alone
+     prompt: A four-layer vertical stack from "you" at the top down to "the account bytes", per the data. On the CLI layer, two small side-callouts: one for the early refusal, one for the silent extension auto-add. A bracket on the right marking layer 3 as "what check-combo models" and layer 4 as "what decode-mint reads". Keep the layers visually distinct so rules living at different layers is the single takeaway.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:492px;height:464px;top:-239px;right:-239px;border-radius:61% 54% 60% 35% / 51% 47% 44% 41%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:492px;height:520px;bottom:-294px;left:374px;border-radius:39% 62% 52% 40% / 37% 48% 57% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 48px 34px; }
+  .stack { display: grid; grid-template-columns: 1fr 340px; column-gap: 26px; align-items: stretch; }
+  .layer { border-radius: var(--radius-lg); padding: 14px 22px; display: flex; align-items: center; gap: 18px; }
+  .layer .ln { font-family: var(--font-body); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+               text-transform: uppercase; flex: 0 0 70px; }
+  .layer .lt { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: 19px; }
+  .layer .ls { font-family: var(--font-body); font-size: 13px; margin-top: 2px; line-height: 1.35; }
+  .conn { display: flex; flex-direction: column; align-items: center; padding: 2px 0; }
+  .conn .st { width: 2.5px; height: 8px; background: var(--stbr-dark); }
+  .conn .hd { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 7px solid var(--stbr-dark); }
+  .callout { border: 2px dashed var(--stbr-green); border-radius: var(--radius-md); padding: 7px 12px;
+             font-family: var(--font-body); font-size: 12px; color: var(--stbr-green); line-height: 1.35; flex: 1 1 0; }
+  .rnote { border-left: 4px solid var(--stbr-emerald); padding: 6px 0 6px 16px; display: flex; flex-direction: column;
+           justify-content: center; font-family: var(--font-body); font-size: 14px; color: var(--text-primary); line-height: 1.4; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">where rules can live</div>
+  <h2 class="viz-title" style="margin-bottom:14px;">the layers between your intent and the bytes</h2>
+
+  <div class="stack">
+    <!-- layer 1 -->
+    <div class="layer" style="background:var(--surface-paper);border:1px solid var(--border-subtle);">
+      <div class="ln" style="color:var(--text-muted);">layer 1</div>
+      <div><div class="lt" style="color:var(--text-primary);">you</div>
+        <div class="ls" style="color:var(--text-secondary);">the extension set you asked for</div></div>
+    </div>
+    <div></div>
+    <div class="conn"><div class="st"></div><div class="hd"></div></div><div></div>
+
+    <!-- layer 2: the CLI, with its two side behaviors -->
+    <div class="layer" style="background:var(--surface-card);border:2px solid var(--border-strong);">
+      <div class="ln" style="color:var(--text-muted);">layer 2</div>
+      <div style="flex:0 0 220px;"><div class="lt" style="color:var(--text-primary);">the CLI</div>
+        <div class="ls" style="color:var(--text-secondary);font-family:var(--font-mono);font-size:12px;">spl-token</div></div>
+      <div class="callout">may <strong>REFUSE early</strong>: rule 4 re-guarded client-side</div>
+      <div class="callout">may quietly <strong>ADD extensions</strong>: rule 2's missing bridge auto-inserted</div>
+    </div>
+    <div class="rnote" style="border-color:var(--border-strong);color:var(--text-secondary);font-size:13px;"><span>the exit code reports <strong>this layer's opinion,</strong> nothing deeper</span></div>
+    <div class="conn"><div class="st"></div><div class="hd"></div></div><div></div>
+
+    <!-- layer 3: the program -->
+    <div class="layer" style="background:var(--surface-brand);">
+      <div class="ln" style="color:var(--text-on-brand);opacity:0.8;">layer 3</div>
+      <div><div class="lt" style="color:var(--text-on-brand);">the program · Token-2022 init</div>
+        <div class="ls" style="color:var(--text-on-brand);opacity:0.9;">enforces exactly the five source rules, nothing more</div></div>
+    </div>
+    <div class="rnote"><span>what <strong>check-combo</strong> models: this layer alone</span></div>
+    <div class="conn"><div class="st"></div><div class="hd"></div></div><div></div>
+
+    <!-- layer 4: the bytes -->
+    <div class="layer" style="background:var(--surface-inverse);">
+      <div class="ln" style="color:var(--text-on-dark);opacity:0.7;">layer 4</div>
+      <div style="flex:1;"><div class="lt" style="color:var(--text-on-dark);">the account bytes</div>
+        <div class="ls" style="color:var(--text-on-dark);opacity:0.85;">what actually got built: readable via decode-mint (R1)</div></div>
+      <div style="background:var(--surface-accent);color:var(--text-on-accent);border-radius:var(--radius-pill);padding:6px 18px;font-family:var(--font-body);font-size:14px;font-weight:700;white-space:nowrap;">only this layer is the truth</div>
+    </div>
+    <div class="rnote"><span>what <strong>decode-mint</strong> reads</span></div>
+  </div>
+
+  <div style="margin-top:18px;border-top:1px solid var(--border-subtle);padding-top:10px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">
+    rules live at different layers: never equate a tool's behavior with the program's.
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One name, two token programs
+     purpose: make it physical that "SPL token" spans two separate on-chain programs that never mix
+     data: Two program boxes side by side. Left: "classic SPL Token" at TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA, owning example mint USDC (EPjF...Dt1v, 82 bytes, no extensions) and its token accounts. Right: "Token-2022 / Token Extensions" at TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb, owning example mint PYUSD (2b1k...GXo, 866 bytes, 8 TLV extensions) and its token accounts. A crossed-out arrow between the two: instructions for one program fail against the other's accounts.
+     prompt: Two labeled program containers side by side, each holding one example mint card (name, truncated address, byte size, extension count from the data above) and a small stack of token accounts beneath it. Between the containers, a single arrow with a clear "fails" cross-out mark in both directions. Truncate the two program addresses to first six characters plus ellipsis in the labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:512px;height:496px;top:-287px;right:-287px;border-radius:46% 53% 45% 44% / 50% 50% 50% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:557px;height:561px;bottom:-323px;left:-323px;border-radius:54% 39% 58% 38% / 52% 63% 55% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p2-row { display:flex; align-items:stretch; gap:0; margin-top:10px; }
+  .prog { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column; }
+  .prog-head { padding:16px 24px; display:flex; align-items:center; gap:14px; }
+  .prog-head.emerald { background:var(--stbr-emerald); }
+  .prog-head.deep { background:var(--stbr-green); }
+  .prog-name { font-family:var(--font-display); font-weight:900; font-size:23px; color:#F5E8CA; }
+  .prog-addr { margin-left:auto; font-family:var(--font-mono); font-weight:700; font-size:16px;
+               color:#F5E8CA; background:rgba(0,0,0,0.2); padding:4px 12px;
+               border-radius:var(--radius-pill); }
+  .prog-body { padding:20px 24px 22px; display:flex; flex-direction:column; gap:14px; }
+  .mint { border:2.5px solid var(--stbr-dark); border-radius:var(--radius-lg);
+          background:var(--surface-card); padding:16px 20px; }
+  .mint-top { display:flex; align-items:baseline; gap:14px; margin-bottom:10px; }
+  .mint-tag { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+              text-transform:uppercase; color:#fff; background:var(--stbr-emerald);
+              padding:4px 11px; border-radius:var(--radius-pill); }
+  .mint-name { font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--text-primary); }
+  .mint-addr { font-family:var(--font-mono); font-size:16px; color:var(--text-secondary); }
+  .mint-chips { display:flex; gap:10px; flex-wrap:wrap; }
+  .mchip { font-family:var(--font-body); font-weight:800; font-size:13.5px; color:var(--stbr-green);
+           border:1.5px solid rgba(0,139,76,0.45); background:rgba(0,139,76,0.07);
+           padding:5px 12px; border-radius:var(--radius-pill); }
+  .ta-lab { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--text-muted); margin-top:2px; }
+  .ta-stack { display:flex; flex-direction:column; gap:7px; }
+  .ta { border:1.5px solid var(--border-subtle); background:var(--surface-paper);
+        border-radius:var(--radius-md); padding:8px 14px; font-family:var(--font-mono);
+        font-size:14px; color:var(--text-secondary); }
+  .mid { flex:0 0 236px; display:flex; flex-direction:column; align-items:center;
+         justify-content:center; gap:14px; padding:0 4px; }
+  .mid-arrow { position:relative; width:228px; height:60px; }
+  .fail-chip { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+               background:var(--stbr-yellow); color:var(--stbr-dark);
+               font-family:var(--font-body); font-weight:800; font-size:15px;
+               padding:7px 15px; border-radius:var(--radius-pill);
+               border:2px solid var(--stbr-dark); white-space:nowrap; }
+  .mid-note { font-family:var(--font-body); font-weight:700; font-size:14.5px; line-height:1.35;
+              color:var(--text-primary); text-align:center; max-width:210px; }
+</style>
+  <div class="stbr-eyebrow">"SPL token" spans two programs</div>
+  <h2 class="viz-title">one name, two token programs</h2>
+  <div class="p2-row">
+    <div class="prog">
+      <div class="prog-head emerald">
+        <span class="prog-name">classic SPL Token</span>
+        <span class="prog-addr">Tokenk&hellip;</span>
+      </div>
+      <div class="prog-body">
+        <div class="mint">
+          <div class="mint-top">
+            <span class="mint-tag">mint</span>
+            <span class="mint-name">USDC</span>
+            <span class="mint-addr">EPjF&hellip;Dt1v</span>
+          </div>
+          <div class="mint-chips">
+            <span class="mchip">82 bytes</span>
+            <span class="mchip">no extensions</span>
+          </div>
+        </div>
+        <div class="ta-lab">its token accounts</div>
+        <div class="ta-stack">
+          <div class="ta">token account &middot; owned by classic SPL Token</div>
+          <div class="ta">token account &middot; owned by classic SPL Token</div>
+          <div class="ta">token account &middot; owned by classic SPL Token</div>
+        </div>
+      </div>
+    </div>
+    <div class="mid">
+      <div class="mid-arrow">
+        <svg width="228" height="60" viewBox="0 0 228 60">
+          <line x1="18" y1="30" x2="210" y2="30" stroke="#1B231D" stroke-width="3"/>
+          <polygon points="4,30 20,21 20,39" fill="#1B231D"/>
+          <polygon points="224,30 208,21 208,39" fill="#1B231D"/>
+        </svg>
+        <span class="fail-chip">&times; fails</span>
+      </div>
+      <div class="mid-note">instructions for one program fail against the other's accounts &mdash; in both directions</div>
+    </div>
+    <div class="prog">
+      <div class="prog-head deep">
+        <span class="prog-name">Token-2022 / Token Extensions</span>
+        <span class="prog-addr">Tokenz&hellip;</span>
+      </div>
+      <div class="prog-body">
+        <div class="mint">
+          <div class="mint-top">
+            <span class="mint-tag">mint</span>
+            <span class="mint-name">PYUSD</span>
+            <span class="mint-addr">2b1k&hellip;GXo</span>
+          </div>
+          <div class="mint-chips">
+            <span class="mchip">866 bytes</span>
+            <span class="mchip">8 TLV extensions</span>
+          </div>
+        </div>
+        <div class="ta-lab">its token accounts</div>
+        <div class="ta-stack">
+          <div class="ta">token account &middot; owned by Token-2022</div>
+          <div class="ta">token account &middot; owned by Token-2022</div>
+          <div class="ta">token account &middot; owned by Token-2022</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

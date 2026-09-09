@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The economics-set authorities and what revoking each one means
+     purpose: separate the four authority seats the learner configures today and make the revocation consequences explicit before init
+     data: rows (authority | lives in | power | if set to none): transfer_fee_config_authority | TransferFeeConfig | change basis points / maximum fee (epoch-armed) | fee schedule frozen forever: a credible commitment withdraw_withheld_authority | TransferFeeConfig | pull withheld fees from mint or accounts | all withheld fees stranded permanently: harvest still consolidates, nothing can withdraw rate_authority | InterestBearingConfig | update the displayed interest rate (i16 bps) | rate frozen; display math continues at the last rate multiplier authority | ScaledUiAmount | schedule a new display multiplier with an effective timestamp | multiplier frozen; no future splits or rebases footer: all four are chosen at mint initialization; the lab sets every one to the payer for simplicity, production splits them
+     prompt: Designed four-row data table with columns Authority, Lives in, Power, If revoked. Style the withdraw_withheld_authority row's revocation cell as a warning (the stranded-fees tombstone) and the config-authority row's as a positive commitment. Footer band with the initialization note from data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:480px;height:421px;top:-229px;right:-229px;border-radius:36% 49% 54% 48% / 37% 47% 40% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:548px;height:481px;left:-315px;top:72px;border-radius:59% 55% 44% 58% / 55% 50% 65% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v02-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:36px 48px 40px; overflow:hidden; }
+  .v02-t { margin-top:6px; border:1px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; }
+  .v02-r { display:flex; border-top:1px solid var(--border-subtle); }
+  .v02-r:first-child { border-top:none; }
+  .v02-r.alt { background:var(--surface-paper); }
+  .v02-c { padding:14px 18px; font-family:var(--font-body); font-size:16px; line-height:1.3; color:var(--text-primary); }
+  .v02-c1 { width:22%; font-family:var(--font-mono); font-size:15px; font-weight:700; }
+  .v02-c2 { width:15%; font-family:var(--font-mono); font-size:15px; color:var(--text-secondary); }
+  .v02-c3 { width:33%; }
+  .v02-c4 { width:30%; }
+  .v02-head { background:var(--surface-inverse); }
+  .v02-head .v02-c { color:var(--text-on-dark); font-family:var(--font-display); font-weight:800;
+    font-size:14px; letter-spacing:.1em; text-transform:uppercase; padding:12px 18px; }
+  .v02-pill { display:inline-block; font-family:var(--font-body); font-size:12px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; border-radius:var(--radius-pill);
+    padding:2px 10px; margin-bottom:5px; }
+  .v02-good { background:rgba(0,139,76,.10); }
+  .v02-good .v02-pill { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .v02-warn { background:var(--stbr-yellow); font-weight:600; }
+  .v02-warn .v02-pill { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .v02-foot { margin-top:16px; background:var(--surface-brand); color:var(--text-on-brand);
+    border-radius:var(--radius-lg); padding:15px 24px; font-family:var(--font-body);
+    font-size:17px; line-height:1.35; }
+  .v02-foot b { color:var(--stbr-yellow); }
+</style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">four seats, chosen at init</div>
+    <h2 class="viz-title">the economics authorities &mdash; and what revoking each one means</h2>
+    <div class="v02-t">
+      <div class="v02-r v02-head">
+        <div class="v02-c v02-c1">authority</div>
+        <div class="v02-c v02-c2">lives in</div>
+        <div class="v02-c v02-c3">power</div>
+        <div class="v02-c v02-c4">if set to none</div>
+      </div>
+      <div class="v02-r">
+        <div class="v02-c v02-c1">transfer_fee_config_authority</div>
+        <div class="v02-c v02-c2">TransferFeeConfig</div>
+        <div class="v02-c v02-c3">change basis points / maximum fee (epoch-armed)</div>
+        <div class="v02-c v02-c4 v02-good"><span class="v02-pill">credible commitment</span><br>fee schedule frozen forever</div>
+      </div>
+      <div class="v02-r alt">
+        <div class="v02-c v02-c1">withdraw_withheld_authority</div>
+        <div class="v02-c v02-c2">TransferFeeConfig</div>
+        <div class="v02-c v02-c3">pull withheld fees from mint or accounts</div>
+        <div class="v02-c v02-c4 v02-warn"><span class="v02-pill">fees stranded forever</span><br>harvest still consolidates &mdash; nothing can withdraw</div>
+      </div>
+      <div class="v02-r">
+        <div class="v02-c v02-c1">rate_authority</div>
+        <div class="v02-c v02-c2">InterestBearingConfig</div>
+        <div class="v02-c v02-c3">update the displayed interest rate (i16 bps)</div>
+        <div class="v02-c v02-c4">rate frozen; display math continues at the last rate</div>
+      </div>
+      <div class="v02-r alt">
+        <div class="v02-c v02-c1">multiplier authority</div>
+        <div class="v02-c v02-c2">ScaledUiAmount</div>
+        <div class="v02-c v02-c3">schedule a new display multiplier with an effective timestamp</div>
+        <div class="v02-c v02-c4">multiplier frozen; no future splits or rebases</div>
+      </div>
+    </div>
+    <div class="v02-foot">all four are chosen at <b>mint initialization</b> &mdash; the lab sets every one to the payer for simplicity; production splits them.</div>
+  </div>
+</div>
+</body></html>

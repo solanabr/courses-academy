@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How a hooked transfer gets its accounts
+     purpose: show that the client, not the runtime, carries the burden of assembling a hooked transfer
+     data: client reads mint -> sees TransferHook extension -> derives PDA ["extra-account-metas", mint] on hook program -> fetches ExtraAccountMetaList account -> decodes N 35-byte metas -> resolves each to an address -> appends resolved extras + hook program + validation account to TransferChecked -> sends transaction -> Token-2022 rebuilds the same resolution on-chain -> CPIs Execute on the hook failure edge: skip any resolve/append step -> Token-2022 cannot find the validation account, skips resolution, and CPIs a hook program that is not in the transaction -> revert: MissingAccount
+     prompt: Left-to-right flowchart with two lanes labeled "client (off-chain)" and "Token-2022 (on-chain)". Client lane: five nodes: "read mint: TransferHook set", "derive validation PDA", "fetch + decode 35-byte metas", "resolve each meta", "append extras + hook program + validation account". Arrow crossing into the on-chain lane: "send tx". On-chain lane: two nodes: "re-resolve + check", "CPI Execute on hook". A red branch off the lane boundary labeled "extras missing" pointing to a terminal red node "revert: MissingAccount".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:606px;height:545px;top:-327px;right:-327px;border-radius:35% 39% 48% 43% / 51% 65% 49% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:557px;height:437px;left:-315px;top:225px;border-radius:43% 49% 56% 53% / 51% 56% 54% 45%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:38px 48px 34px;}
+  .lane{border-radius:18px;padding:16px 20px 18px;}
+  .lane.client{background:var(--surface-paper,#FAF3E3);}
+  .lane.chain{background:var(--stbr-dark);}
+  .lanetag{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:15px;
+           letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:12px;}
+  .client .lanetag{background:var(--stbr-emerald);color:#F5E8CA;}
+  .chain .lanetag{background:#F5E8CA;color:var(--stbr-dark);}
+  .flow{display:flex;align-items:stretch;gap:0;}
+  .node{background:var(--surface-card);border:2px solid var(--border-strong);border-radius:12px;
+        padding:10px 13px;display:flex;flex-direction:column;justify-content:center;flex:1;height:108px;}
+  .node .t{font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--text-primary);line-height:1.2;}
+  .node .s{font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted);margin-top:5px;line-height:1.3;}
+  .harr{display:flex;align-items:center;padding:0 4px;}
+  .send{display:flex;flex-direction:column;align-items:center;margin:6px 0;}
+  .send .chip{font-family:var(--font-display);font-weight:800;font-size:15px;background:var(--stbr-emerald);
+              color:#F5E8CA;padding:5px 16px;border-radius:999px;margin-bottom:2px;}
+  .cflow{display:flex;align-items:center;gap:14px;}
+  .cnode{background:var(--surface-card);border-radius:12px;padding:14px 18px;
+         font-family:var(--font-body);font-weight:700;font-size:16.5px;color:var(--text-primary);}
+  .branch{display:flex;flex-direction:column;gap:12px;flex:1;}
+  .brow{display:flex;align-items:center;gap:10px;}
+  .blabel{font-family:var(--font-body);font-size:13.5px;white-space:nowrap;}
+  .ok{color:#F5E8CA;}
+  .bad{color:var(--stbr-yellow);font-weight:700;}
+  .revert{background:var(--stbr-yellow);border-radius:12px;padding:14px 18px;
+          font-family:var(--font-display);font-weight:800;font-size:16.5px;color:var(--stbr-dark);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the client, not the runtime, carries the burden</div>
+  <h2 class="viz-title">how a hooked transfer gets its accounts</h2>
+
+  <div class="lane client">
+    <div class="lanetag">client (off-chain)</div>
+    <div class="flow">
+      <div class="node"><div class="t">read mint</div><div class="s">TransferHook set</div></div>
+      <div class="harr"><svg width="34" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#1B231D" stroke-width="2"/><polygon points="24,1 34,6 24,11" fill="#1B231D"/></svg></div>
+      <div class="node"><div class="t">derive validation PDA</div><div class="s">["extra-account-metas",<br>mint] on hook program</div></div>
+      <div class="harr"><svg width="34" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#1B231D" stroke-width="2"/><polygon points="24,1 34,6 24,11" fill="#1B231D"/></svg></div>
+      <div class="node"><div class="t">fetch + decode</div><div class="s">ExtraAccountMetaList<br>N &times; 35-byte metas</div></div>
+      <div class="harr"><svg width="34" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#1B231D" stroke-width="2"/><polygon points="24,1 34,6 24,11" fill="#1B231D"/></svg></div>
+      <div class="node"><div class="t">resolve each meta</div><div class="s">meta &rarr; concrete address</div></div>
+      <div class="harr"><svg width="34" height="12"><line x1="0" y1="6" x2="24" y2="6" stroke="#1B231D" stroke-width="2"/><polygon points="24,1 34,6 24,11" fill="#1B231D"/></svg></div>
+      <div class="node"><div class="t">append to tx</div><div class="s">extras + hook program<br>+ validation account</div></div>
+    </div>
+  </div>
+
+  <div class="send">
+    <div class="chip">send tx</div>
+    <svg width="12" height="26"><line x1="6" y1="0" x2="6" y2="16" stroke="#1B231D" stroke-width="2"/><polygon points="1,16 11,16 6,26" fill="#1B231D"/></svg>
+  </div>
+
+  <div class="lane chain">
+    <div class="lanetag">Token-2022 (on-chain)</div>
+    <div class="cflow">
+      <div class="cnode" style="flex:0 0 320px;">re-resolve + check<br><span style="font-family:var(--font-body);font-weight:400;font-size:13px;color:var(--text-secondary);">rebuilds the same resolution on-chain</span></div>
+      <div class="branch">
+        <div class="brow">
+          <span class="blabel ok">extras present</span>
+          <svg width="64" height="12"><line x1="0" y1="6" x2="54" y2="6" stroke="#F5E8CA" stroke-width="2"/><polygon points="54,1 64,6 54,11" fill="#F5E8CA"/></svg>
+          <div class="cnode" style="flex:1;">CPI Execute on the hook</div>
+        </div>
+        <div class="brow">
+          <span class="blabel bad">extras missing</span>
+          <svg width="64" height="12"><line x1="0" y1="6" x2="54" y2="6" stroke="#FFD23F" stroke-width="2"/><polygon points="54,1 64,6 54,11" fill="#FFD23F"/></svg>
+          <div class="revert" style="flex:1;">revert: MissingAccount &mdash; the hook program isn&rsquo;t in the transaction</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

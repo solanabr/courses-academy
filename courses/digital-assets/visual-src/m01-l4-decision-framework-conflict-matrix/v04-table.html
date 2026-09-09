@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Three briefs, three verdicts, one loop
+     purpose: show the requirement-to-extension-set translation and which rule judged each draft, as a reusable design-review pattern
+     data: columns: brief | requirement phrases | draft set | rule verdict | final legal set row 1: SPROUT currency | "tax on transfer", "displays yield", "own name and symbol" | TransferFeeConfig, one display extension (rule 4: never both), MetadataPointer, TokenMetadata | no rule fires, legal as drafted | same four row 2: payroll stablecoin | "salaries not readable", "fee to fund ops" | TransferFeeConfig, ConfidentialTransferMint | rule 2 fires: pair demands ConfidentialTransferFeeConfig | the trio with ConfidentialTransferFeeConfig added row 3: soulbound credential | "non-transferable", "issuance sizes private" | NonTransferable, ConfidentialTransferMint | rule 5 fires: invalid unless ConfidentialMintBurn present | the trio with ConfidentialMintBurn added footer: additive fixes for rules 2 and 5; rule 4 (display math) is the one with no fix, pick one extension
+     prompt: Designed data table, three rows, five columns as in data. Render the "rule verdict" column with a small badge per row: a green "legal" badge for row 1 and amber "rule 2" / "rule 5" badges for rows 2 and 3. Final-set column shows the added extension in bold. Footer band carries the additive-fix note from data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:430px;bottom:-238px;right:-238px;border-radius:38% 58% 44% 58% / 65% 49% 45% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:427px;left:-312px;top:226px;border-radius:57% 38% 57% 50% / 36% 63% 40% 37%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 48px 34px; }
+  table.br { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .br th { background: var(--surface-brand); color: var(--text-on-brand); font-family: var(--font-display);
+           font-weight: var(--weight-bold); font-size: 14.5px; text-align: left; padding: 11px 14px;
+           letter-spacing: 0.04em; text-transform: uppercase; }
+  .br th:first-child { border-radius: var(--radius-md) 0 0 0; }
+  .br th:last-child { border-radius: 0 var(--radius-md) 0 0; }
+  .br td { border-bottom: 1px solid var(--border-subtle); padding: 12px 14px; vertical-align: top;
+           font-family: var(--font-body); font-size: 14px; color: var(--text-primary); line-height: 1.4; }
+  .br .ext { font-family: var(--font-mono); font-size: 12.5px; }
+  .br .q { color: var(--text-secondary); font-style: italic; }
+  .vb { display: inline-block; border-radius: var(--radius-pill); padding: 4px 13px; font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+  .brief { font-family: var(--font-display); font-weight: var(--weight-bold); font-size: 16px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the design-review pattern</div>
+  <h2 class="viz-title" style="margin-bottom:12px;">three briefs, three verdicts, one loop</h2>
+  <table class="br">
+    <tr>
+      <th style="width:170px;">brief</th>
+      <th style="width:280px;">requirement phrases</th>
+      <th style="width:330px;">draft set</th>
+      <th style="width:300px;">rule verdict</th>
+      <th>final legal set</th>
+    </tr>
+    <tr>
+      <td class="brief">SPROUT currency</td>
+      <td class="q">"tax on transfer" · "displays yield" · "own name and symbol"</td>
+      <td class="ext">TransferFeeConfig, one display extension (rule 4: never both), MetadataPointer, TokenMetadata</td>
+      <td><span class="vb" style="background:var(--surface-brand);color:var(--text-on-brand);">legal</span>
+        <div style="margin-top:6px;">no rule fires, legal as drafted</div></td>
+      <td class="ext">same four</td>
+    </tr>
+    <tr>
+      <td class="brief">payroll stablecoin</td>
+      <td class="q">"salaries not readable" · "fee to fund ops"</td>
+      <td class="ext">TransferFeeConfig, ConfidentialTransferMint</td>
+      <td><span class="vb" style="background:var(--surface-accent);color:var(--text-on-accent);">rule 2 fires</span>
+        <div style="margin-top:6px;">pair demands ConfidentialTransferFeeConfig</div></td>
+      <td class="ext">the trio, with <strong style="font-size:13px;">ConfidentialTransferFeeConfig</strong> added</td>
+    </tr>
+    <tr>
+      <td class="brief">soulbound credential</td>
+      <td class="q">"non-transferable" · "issuance sizes private"</td>
+      <td class="ext">NonTransferable, ConfidentialTransferMint</td>
+      <td><span class="vb" style="background:var(--surface-accent);color:var(--text-on-accent);">rule 5 fires</span>
+        <div style="margin-top:6px;">invalid unless ConfidentialMintBurn present</div></td>
+      <td class="ext">the trio, with <strong style="font-size:13px;">ConfidentialMintBurn</strong> added</td>
+    </tr>
+  </table>
+  <div style="margin-top:18px;background:var(--surface-inverse);border-radius:var(--radius-md);padding:14px 20px;font-family:var(--font-body);font-size:14.5px;color:var(--text-on-dark);">
+    rules 2 and 5 have <strong>additive fixes</strong>: add the demanded extension. rule 4 (display math) is the one with no fix: pick one extension.
+  </div>
+</div>
+</div>
+</body></html>

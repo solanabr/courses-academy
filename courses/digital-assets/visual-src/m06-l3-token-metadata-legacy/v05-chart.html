@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Nine revisions, one direction
+     purpose: show enforcement draining out of the flagship rule set over its revision history
+     data: x-axis: revision index 0..8 (append-only history inside the account) y-axis: operations carrying a real (non-Pass) rule values: rev0: 15, rev1: 16, rev2: 15, rev3: 15, rev4: 16, rev5: 16, rev6: 16, rev7: 1, rev8: 0 annotation at rev7-8: "the cliff: near-total Pass, then total Pass" note: early revisions include namespace base rules, so op counts exceed the current 14 source: decoded from eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9, 2026-08-23
+     prompt: A step/bar chart, x-axis revisions 0 through 8, y-axis "operations with real rules". Bars near 15-16 for revisions 0 through 6, then a dramatic drop to 1 at revision 7 and 0 at revision 8. Annotate the drop with "enforcement switched off". Small footer with the source account and decode date.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:442px;top:-221px;right:-221px;border-radius:40% 57% 35% 59% / 42% 58% 55% 48%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:513px;height:485px;bottom:-253px;left:-253px;border-radius:58% 60% 57% 40% / 55% 64% 42% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border:2px solid var(--border-strong);
+          border-radius:var(--radius-2xl); padding:30px 44px 22px; }
+  .plot { position:relative; height:470px; }
+  .ylab { position:absolute; left:0; top:180px; font-family:var(--font-body);
+          font-weight:700; font-size:13px; color:var(--text-secondary); width:120px;
+          line-height:1.3; }
+  .bar { position:absolute; width:96px; background:var(--stbr-emerald);
+         border-radius:8px 8px 0 0; bottom:47px; }
+  .bar.hot { background:var(--stbr-yellow); border:2px solid var(--stbr-dark); border-bottom:0; }
+  .bval { position:absolute; width:135px; text-align:center; font-family:var(--font-mono);
+          font-weight:700; font-size:16px; color:var(--text-primary); }
+  .baseline { position:absolute; left:150px; right:0; bottom:44px; height:3px;
+              background:var(--stbr-dark); border-radius:2px; }
+  .xlab { position:absolute; bottom:8px; width:135px; text-align:center;
+          font-family:var(--font-mono); font-size:14px; color:var(--text-secondary); }
+  .cliff { position:absolute; right:0; top:8px; width:250px; background:var(--stbr-yellow);
+           border:2.5px solid var(--stbr-dark); border-radius:var(--radius-lg);
+           padding:12px 18px; font-family:var(--font-body); color:var(--stbr-dark); }
+  .cliff b { display:block; font-weight:800; font-size:15px; margin-bottom:3px; }
+  .cliff span { font-size:12.5px; line-height:1.3; display:block; }
+  .cliffline { position:absolute; left:1230px; top:200px; width:0; height:170px;
+               border-left:2.5px dashed var(--stbr-dark); }
+  .foot { display:flex; justify-content:space-between; margin-top:10px;
+          font-family:var(--font-body); font-size:12.5px; color:var(--text-muted); }
+  .foot code { font-family:var(--font-mono); color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">enforcement draining out of the flagship rule set</div>
+  <h2 class="viz-title">nine revisions, one direction</h2>
+  <div class="card">
+    <div class="plot">
+      <div class="ylab">operations with a real (non-Pass) rule</div>
+      <div class="bar" style="left:170px; height:375px;"></div>
+      <div class="bar" style="left:305px; height:400px;"></div>
+      <div class="bar" style="left:440px; height:375px;"></div>
+      <div class="bar" style="left:575px; height:375px;"></div>
+      <div class="bar" style="left:710px; height:400px;"></div>
+      <div class="bar" style="left:845px; height:400px;"></div>
+      <div class="bar" style="left:980px; height:400px;"></div>
+      <div class="bar hot" style="left:1115px; height:25px;"></div>
+      <div class="bval" style="left:150px; bottom:428px;">15</div>
+      <div class="bval" style="left:285px; bottom:453px;">16</div>
+      <div class="bval" style="left:420px; bottom:428px;">15</div>
+      <div class="bval" style="left:555px; bottom:428px;">15</div>
+      <div class="bval" style="left:690px; bottom:453px;">16</div>
+      <div class="bval" style="left:825px; bottom:453px;">16</div>
+      <div class="bval" style="left:960px; bottom:453px;">16</div>
+      <div class="bval" style="left:1095px; bottom:78px;">1</div>
+      <div class="bval" style="left:1230px; bottom:53px;">0</div>
+      <div class="baseline"></div>
+      <div class="xlab" style="left:150px;">rev0</div>
+      <div class="xlab" style="left:285px;">rev1</div>
+      <div class="xlab" style="left:420px;">rev2</div>
+      <div class="xlab" style="left:555px;">rev3</div>
+      <div class="xlab" style="left:690px;">rev4</div>
+      <div class="xlab" style="left:825px;">rev5</div>
+      <div class="xlab" style="left:960px;">rev6</div>
+      <div class="xlab" style="left:1095px;">rev7</div>
+      <div class="xlab" style="left:1230px;">rev8</div>
+      <div class="cliff">
+        <b>the cliff: enforcement switched off</b>
+        <span>rev7 &rarr; near-total Pass; rev8 &rarr; total Pass. The append-only history keeps the old rules; only the latest revision governs.</span>
+      </div>
+      <div class="cliffline"></div>
+    </div>
+    <div class="foot">
+      <span>early revisions include namespace base rules, so operation counts exceed the current 14</span>
+      <span>decoded from <code>eBJLFYPxJmMGKuFwpDWkzxZeUrad92kZRC5BJLpzyT9</code>, 2026-08-23</span>
+    </div>
+  </div>
+</div>
+</body></html>

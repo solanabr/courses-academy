@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Depth is nearly free, canopy is not
+     purpose: correct the intuition that a bigger tree costs meaningfully more, and locate the real cost in canopy
+     data: maxBufferSize 64 throughout. Derived with overgrowth/tree-size.ts (depth loop at fixed canopy 8). Stated in BYTES, matching the lesson's own table: bytes belong to the account layout and read the same to every learner, while SOL is bytes times a per-byte rent rate that SIMD-0437 is stepping down and that differs per cluster. depth 14 | 16,384 leaves      | 31,800 bytes no canopy | 48,120 bytes canopy 8 | 6 proof nodes depth 17 | 131,072 leaves     | 38,040 bytes no canopy | 54,360 bytes canopy 8 | 9 proof nodes depth 20 | 1,048,576 leaves   | 44,280 bytes no canopy | 60,600 bytes canopy 8 | 12 proof nodes depth 24 | 16,777,216 leaves  | 52,600 bytes no canopy | 68,920 bytes canopy 8 | 16 proof nodes Delta across a 1000x supply increase: 20,800 bytes. Delta from adding canopy 8, at every depth: exactly 16,320 bytes. Delta from canopy 14 at depth 20 with buffer 256, this lesson's million-leaf spec: 1,223,352 bytes, twenty times the largest row here. Metaplex's own million-leaf row is a different configuration again (buffer 1024 / canopy 13 = 1,221,304 bytes); the depth-14 row in THIS table, 48,120 bytes at 0.3358 SOL, is the one that reproduces a published row exactly. To price any row: (128 + bytes) x your cluster's rate; 6,333 on mainnet and 5,080 on devnet, both read 2026-09-06.
+     prompt: Designed data table, four rows, five columns as listed. Emphasize the "no canopy" column by showing how little it moves top to bottom, using a small inline bar or sparkline per row sized to the byte count on a shared 0-70,000 scale. Add two footer callout strips: "1000x more supply costs 20,800 more bytes" and "canopy, not depth, is where the money goes". Keep the proof nodes column plain numeric, and put the bytes-to-SOL conversion with its rates and date in the note line.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:517px;height:494px;right:-303px;top:244px;border-radius:37% 63% 37% 35% / 48% 42% 39% 37%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:498px;height:487px;bottom:-246px;left:-246px;border-radius:43% 62% 53% 54% / 59% 41% 42% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .dc-wrap { border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+             overflow:hidden; background:var(--surface-card); margin-top:2px; }
+  .dc-table { width:100%; border-collapse:collapse; }
+  .dc-table th { background:var(--surface-inverse); color:var(--stbr-cream);
+                 font-family:var(--font-display); font-weight:800; font-size:16.5px;
+                 text-align:left; padding:12px 22px; }
+  .dc-table th small { display:block; font-family:var(--font-body); font-weight:500;
+                       font-size:11.5px; color:rgba(245,232,202,0.75); }
+  .dc-table td { padding:11px 22px; border-top:2px solid var(--border-subtle);
+                 font-family:var(--font-body); font-size:16.5px; color:var(--text-primary);
+                 vertical-align:middle; }
+  .dc-table tr:nth-child(even) td { background:var(--surface-paper); }
+  .dc-depth { font-family:var(--font-display); font-weight:900; font-size:19px; }
+  .dc-leaves { font-family:var(--font-mono); font-size:15.5px; color:var(--text-secondary); }
+  .dc-sol { font-weight:700; white-space:nowrap; }
+  .dc-bar { height:9px; border-radius:5px; margin-top:5px; }
+  .dc-bar.hero { background:var(--stbr-emerald); }
+  .dc-bar.deep { background:rgba(48,108,64,0.45); }
+  .dc-nodes { font-family:var(--font-mono); font-size:16.5px; }
+  .dc-feet { display:flex; gap:20px; margin-top:16px; }
+  .dc-callout { flex:1 1 0; border-radius:var(--radius-pill); padding:11px 24px;
+                font-family:var(--font-body); font-weight:700; font-size:16.5px;
+                text-align:center; }
+  .dc-callout.plain { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .dc-callout.hot { background:var(--stbr-yellow); color:var(--stbr-dark);
+                    border:2.5px solid var(--stbr-dark); }
+  .dc-note { margin-top:10px; font-family:var(--font-body); font-size:13px;
+             color:var(--text-muted); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">where the money actually goes</div>
+  <h2 class="viz-title">depth is nearly free, canopy is not</h2>
+  <div class="dc-wrap"><table class="dc-table">
+    <tr>
+      <th>depth</th>
+      <th>leaves</th>
+      <th style="width:26%;">bytes, no canopy <small>bars share one 0&ndash;70,000 byte scale</small></th>
+      <th style="width:26%;">bytes, canopy 8</th>
+      <th>proof nodes</th>
+    </tr>
+    <tr>
+      <td class="dc-depth">14</td><td class="dc-leaves">16,384</td>
+      <td><span class="dc-sol">31,800</span><div class="dc-bar hero" style="width:45.4%;"></div></td>
+      <td><span class="dc-sol">48,120</span><div class="dc-bar deep" style="width:68.7%;"></div></td>
+      <td class="dc-nodes">6</td>
+    </tr>
+    <tr>
+      <td class="dc-depth">17</td><td class="dc-leaves">131,072</td>
+      <td><span class="dc-sol">38,040</span><div class="dc-bar hero" style="width:54.3%;"></div></td>
+      <td><span class="dc-sol">54,360</span><div class="dc-bar deep" style="width:77.7%;"></div></td>
+      <td class="dc-nodes">9</td>
+    </tr>
+    <tr>
+      <td class="dc-depth">20</td><td class="dc-leaves">1,048,576</td>
+      <td><span class="dc-sol">44,280</span><div class="dc-bar hero" style="width:63.3%;"></div></td>
+      <td><span class="dc-sol">60,600</span><div class="dc-bar deep" style="width:86.6%;"></div></td>
+      <td class="dc-nodes">12</td>
+    </tr>
+    <tr>
+      <td class="dc-depth">24</td><td class="dc-leaves">16,777,216</td>
+      <td><span class="dc-sol">52,600</span><div class="dc-bar hero" style="width:75.1%;"></div></td>
+      <td><span class="dc-sol">68,920</span><div class="dc-bar deep" style="width:98.5%;"></div></td>
+      <td class="dc-nodes">16</td>
+    </tr>
+  </table></div>
+  <div class="dc-feet">
+    <div class="dc-callout plain">1000&times; more supply costs 20,800 more bytes</div>
+    <div class="dc-callout hot">canopy, not depth, is where the money goes</div>
+  </div>
+  <div class="dc-note">buffer 64 throughout &middot; derived with overgrowth/tree-size.ts &middot; this lesson&rsquo;s million-leaf spec is depth 20 with canopy 14 and buffer 256: <b>1,223,352 bytes</b>, twenty times the largest row here &mdash; canopy again. The depth-14 row above is the one Metaplex publishes exactly, at 0.3358 SOL<br>bytes, not SOL, because rent is (128 + bytes) &times; your cluster&rsquo;s rate &mdash; 6,333 lamports/byte on mainnet and 5,080 on devnet, both read 2026-09-06, and SIMD-0437 is still stepping it down</div>
+</div>
+</body></html>

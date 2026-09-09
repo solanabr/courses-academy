@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Metaplex two-account model vs Token-2022 self-contained model
+     purpose: contrast the two on-chain layouts on the axes that drive a designer's choice
+     data: axis: where identity lives | Metaplex: separate metadata PDA owned by Token Metadata | Token-2022: TLV inside the mint account itself axis: reads required | Metaplex: derive PDA + fetch second account | Token-2022: one getAccountInfo on the mint axis: spoofing surface | Metaplex: PDA derivation binds mint to metadata | Token-2022: self-referential MetadataPointer, nothing external to forge axis: cost shape | Metaplex: fixed-size second account | Token-2022: mint account grows with each field, rent grows with it axis: who can use it | Metaplex: any mint, classic SPL included | Token-2022: Token-2022 mints only axis: rich content | both: a uri field pointing at the same off-chain JSON standard
+     prompt: Two-column comparison card, left "Metaplex Token Metadata", right "Token-2022 native TLV", six labeled rows as in the data. Final row spans both columns to show the shared off-chain JSON standard as common ground. Keep rows terse, one clause per cell.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:575px;height:541px;top:-290px;right:-290px;border-radius:65% 48% 50% 50% / 61% 64% 57% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:461px;height:479px;left:-237px;top:313px;border-radius:36% 50% 42% 54% / 62% 54% 50% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { margin-top:8px; border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+         overflow:hidden; background:var(--surface-card); }
+  .c-row { display:flex; border-top:1.5px solid var(--border-subtle); }
+  .c-row:first-child { border-top:0; }
+  .c-axis { flex:0 0 296px; box-sizing:border-box; padding:15px 22px;
+            background:var(--surface-paper); border-right:1.5px solid var(--border-subtle);
+            font-family:var(--font-body); font-weight:800; font-size:14px;
+            letter-spacing:.09em; text-transform:uppercase; color:var(--text-secondary);
+            display:flex; align-items:center; }
+  .c-cell { flex:1 1 0; box-sizing:border-box; padding:15px 24px;
+            font-family:var(--font-body); font-weight:600; font-size:18px;
+            line-height:1.3; color:var(--text-primary); display:flex; align-items:center; }
+  .c-cell + .c-cell { border-left:1.5px solid var(--border-subtle); }
+  .c-head .c-axis { background:var(--surface-paper); }
+  .c-head .c-cell { padding:16px 24px; font-family:var(--font-display); font-weight:900;
+                    font-size:24px; color:#F5E8CA; }
+  .c-head .c-cell.mplx { background:var(--stbr-emerald); }
+  .c-head .c-cell.t22  { background:var(--stbr-green); }
+  .verdict { display:flex; align-items:center; gap:18px; background:var(--surface-brand);
+             padding:18px 26px; border-top:3px solid var(--stbr-dark); }
+  .v-chip { background:var(--stbr-yellow); color:var(--stbr-dark);
+            border-radius:var(--radius-pill); padding:6px 16px;
+            font-family:var(--font-body); font-weight:800; font-size:15px; white-space:nowrap; }
+  .v-text { font-family:var(--font-display); font-weight:800; font-size:22px;
+            color:var(--text-on-brand); }
+  .v-text .m { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">two on-chain layouts, one choice</div>
+  <h2 class="viz-title">Metaplex two-account model vs Token-2022 self-contained</h2>
+  <div class="cmp">
+    <div class="c-row c-head">
+      <div class="c-axis"></div>
+      <div class="c-cell mplx">Metaplex Token Metadata</div>
+      <div class="c-cell t22">Token-2022 native TLV</div>
+    </div>
+    <div class="c-row">
+      <div class="c-axis">where identity lives</div>
+      <div class="c-cell">separate metadata PDA owned by Token Metadata</div>
+      <div class="c-cell">TLV inside the mint account itself</div>
+    </div>
+    <div class="c-row">
+      <div class="c-axis">reads required</div>
+      <div class="c-cell">derive PDA + fetch a second account</div>
+      <div class="c-cell">one getAccountInfo on the mint</div>
+    </div>
+    <div class="c-row">
+      <div class="c-axis">spoofing surface</div>
+      <div class="c-cell">PDA derivation binds mint to metadata</div>
+      <div class="c-cell">self-referential MetadataPointer &mdash; nothing external to forge</div>
+    </div>
+    <div class="c-row">
+      <div class="c-axis">cost shape</div>
+      <div class="c-cell">fixed-size second account</div>
+      <div class="c-cell">mint grows with each field; rent grows with it</div>
+    </div>
+    <div class="c-row">
+      <div class="c-axis">who can use it</div>
+      <div class="c-cell">any mint, classic SPL included</div>
+      <div class="c-cell">Token-2022 mints only</div>
+    </div>
+    <div class="verdict">
+      <span class="v-chip">common ground</span>
+      <span class="v-text">rich content: both point a <span class="m">uri</span> at the same off-chain JSON standard</span>
+    </div>
+  </div>
+</div>
+</body></html>

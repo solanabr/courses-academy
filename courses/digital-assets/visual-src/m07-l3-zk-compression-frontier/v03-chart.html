@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Cumulative lamport cost per account, compressed versus classic
+     purpose: make the crossover visual so "many writes" stops being a vibe and becomes a number the reader can locate
+     data: X axis: lifetime writes per account, 0 to 1000. Series A "compressed": cost = 5,000 + 5,300 * W lamports. Points: W=0 -> 5,000; W=100 -> 535,000; W=376 -> 1,997,800; W=500 -> 2,655,000; W=1000 -> 5,305,000. Series B "classic SPL": flat 2,000,000 lamports at every W (rent, a refundable deposit, no per-write lamport cost). Crossover annotation at W=376. Second annotation at W=1000 noting compressed has spent about 2.65x the classic account's rent. Footnote: the classic line is a deposit and is refundable on close, so the true crossover sits earlier than 376.
+     prompt: Line chart. X axis "lifetime writes per account" 0 to 1000, Y axis "cumulative lamports" 0 to 5.5M. One rising straight line labeled "compressed (5,000 + 5,300 per write)" and one flat horizontal line labeled "classic SPL rent (2,000,000, refundable)". Mark the intersection with a vertical drop line and the label "break-even: 376 writes". Shade the region right of the intersection lightly and label it "compression is now the expensive option". Add the refundability footnote under the chart.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:566px;height:521px;top:-284px;right:-284px;border-radius:40% 37% 54% 58% / 36% 53% 52% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:445px;height:424px;bottom:-249px;left:538px;border-radius:51% 61% 55% 45% / 36% 54% 64% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">"many writes" is a number, not a vibe</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 6px;color:var(--stbr-dark);">Cumulative lamport cost per account: compressed vs classic</h2>
+    <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);margin-bottom:6px;">cumulative lamports (0 &ndash; 5.5M)</div>
+
+    <svg width="1370" height="462" viewBox="0 0 1370 462" xmlns="http://www.w3.org/2000/svg">
+      <!-- shaded region right of break-even -->
+      <rect x="551" y="10" width="799" height="420" fill="#FFD23F" fill-opacity="0.16"/>
+      <!-- gridlines + y labels -->
+      <line x1="70" y1="353.6" x2="1350" y2="353.6" stroke="#e5decb" stroke-width="1"/>
+      <line x1="70" y1="277.3" x2="1350" y2="277.3" stroke="#e5decb" stroke-width="1"/>
+      <line x1="70" y1="200.9" x2="1350" y2="200.9" stroke="#e5decb" stroke-width="1"/>
+      <line x1="70" y1="124.5" x2="1350" y2="124.5" stroke="#e5decb" stroke-width="1"/>
+      <line x1="70" y1="48.2" x2="1350" y2="48.2" stroke="#e5decb" stroke-width="1"/>
+      <text x="60" y="434" text-anchor="end" font-family="Inter" font-size="14" fill="#4a5a4e">0</text>
+      <text x="60" y="358" text-anchor="end" font-family="Inter" font-size="14" fill="#4a5a4e">1M</text>
+      <text x="60" y="282" text-anchor="end" font-family="Inter" font-size="14" fill="#4a5a4e">2M</text>
+      <text x="60" y="205" text-anchor="end" font-family="Inter" font-size="14" fill="#4a5a4e">3M</text>
+      <text x="60" y="129" text-anchor="end" font-family="Inter" font-size="14" fill="#4a5a4e">4M</text>
+      <text x="60" y="53" text-anchor="end" font-family="Inter" font-size="14" fill="#4a5a4e">5M</text>
+      <!-- axes -->
+      <line x1="70" y1="10" x2="70" y2="430" stroke="#1B231D" stroke-width="2"/>
+      <line x1="70" y1="430" x2="1350" y2="430" stroke="#1B231D" stroke-width="2"/>
+      <!-- x labels -->
+      <text x="70" y="452" text-anchor="middle" font-family="Inter" font-size="14" fill="#4a5a4e">0</text>
+      <text x="326" y="452" text-anchor="middle" font-family="Inter" font-size="14" fill="#4a5a4e">200</text>
+      <text x="582" y="452" text-anchor="middle" font-family="Inter" font-size="14" fill="#4a5a4e">400</text>
+      <text x="838" y="452" text-anchor="middle" font-family="Inter" font-size="14" fill="#4a5a4e">600</text>
+      <text x="1094" y="452" text-anchor="middle" font-family="Inter" font-size="14" fill="#4a5a4e">800</text>
+      <text x="1350" y="452" text-anchor="middle" font-family="Inter" font-size="14" fill="#4a5a4e">1000</text>
+      <!-- classic flat line -->
+      <line x1="70" y1="277.3" x2="1350" y2="277.3" stroke="#1B231D" stroke-width="3"/>
+      <text x="690" y="262" font-family="Inter" font-size="15" font-weight="600" fill="#1B231D">classic SPL rent (2,000,000 &mdash; a refundable deposit, no per-write cost)</text>
+      <!-- compressed rising line -->
+      <line x1="70" y1="429.6" x2="1350" y2="24.9" stroke="#008B4C" stroke-width="4"/>
+      <text x="700" y="130" font-family="Inter" font-size="15" font-weight="600" fill="#008B4C">compressed (5,000 + 5,300 per write)</text>
+      <!-- data points -->
+      <circle cx="70" cy="429.6" r="5" fill="#008B4C"/>
+      <circle cx="198" cy="389.1" r="5" fill="#008B4C"/>
+      <circle cx="710" cy="227.3" r="5" fill="#008B4C"/>
+      <circle cx="1350" cy="24.9" r="6" fill="#008B4C"/>
+      <!-- break-even drop line -->
+      <line x1="551" y1="277.3" x2="551" y2="430" stroke="#1B231D" stroke-width="2" stroke-dasharray="6 5"/>
+      <circle cx="551" cy="277.3" r="8" fill="#FFD23F" stroke="#1B231D" stroke-width="2"/>
+      <rect x="440" y="300" width="224" height="34" rx="9" fill="#FFD23F"/>
+      <text x="552" y="322" text-anchor="middle" font-family="Archivo" font-size="17" font-weight="800" fill="#1B231D">break-even: 376 writes</text>
+      <!-- region + endpoint annotations -->
+      <text x="950" y="395" text-anchor="middle" font-family="Archivo" font-size="18" font-weight="800" fill="#1B231D">compression is now the expensive option</text>
+      <text x="1240" y="42" text-anchor="end" font-family="Inter" font-size="14" fill="#1B231D">W=1000: 5,305,000 &mdash; about 2.65&times; the classic rent</text>
+    </svg>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:2px;">
+      <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">footnote: the classic line is a deposit, refundable on close &mdash; so the true crossover sits <b>earlier</b> than 376</div>
+      <div style="font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--stbr-dark);">lifetime writes per account &rarr;</div>
+    </div>
+  </div>
+</div>
+</body></html>

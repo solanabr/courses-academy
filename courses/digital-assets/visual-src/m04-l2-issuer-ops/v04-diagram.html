@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The confidential SPROUT family: base variant and supply branch
+     purpose: show the two mints this lesson produces and which TLV fields each carries
+     data: Mint 1 - confidential SPROUT (this lesson's main artifact): ConfidentialTransferMint { authority, auto_approve_new_accounts: false, auditor_elgamal_pubkey: SET } Mint 2 - confidential-supply branch (solo challenge): ConfidentialTransferMint { authority, auto_approve_new_accounts: false, auditor: none } + ConfidentialMintBurn { supply_elgamal_pubkey, decryptable_supply, confidential_supply, pending_burn } Combo rules in force: rule 3 (MintBurn requires TransferMint), rule 5 (NonTransferable + confidential demands MintBurn) Footgun: PermanentDelegate does NOT operate on confidential balances - it is not a confidential-supply lever
+     prompt: Two mint cards side by side. Left card "confidential SPROUT": one extension block listing the three ConfidentialTransferMint fields, auditor field highlighted as SET. Right card "supply branch": the same block (auditor: none) plus a second stacked block with the four ConfidentialMintBurn fields. Between the cards, a small rules ribbon: "rule 3: MintBurn needs TransferMint · rule 5: NonTransferable + confidential needs MintBurn". Bottom warning strip: "PermanentDelegate cannot reach confidential balances".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:525px;height:447px;bottom:-265px;right:-265px;border-radius:62% 61% 37% 35% / 63% 58% 52% 45%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:438px;height:368px;left:-232px;top:147px;border-radius:55% 45% 56% 40% / 62% 38% 48% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:30px 48px 34px;overflow:hidden;}
+  .card .viz-title{font-size:44px;margin:4px 0 16px;}
+  .mints{display:flex;gap:50px;}
+  .mint{width:655px;border:2px solid var(--border-strong,#1B231D);border-radius:18px;padding:18px 24px 20px;background:var(--surface-card);}
+  .mhead{display:flex;align-items:baseline;gap:12px;margin-bottom:12px;}
+  .mhead .n{font-family:var(--font-display);font-weight:900;font-size:24px;color:var(--text-primary);}
+  .mhead .tag{font-family:var(--font-body);font-size:13.5px;font-weight:600;color:var(--text-secondary);background:var(--surface-paper,#FAF3E3);border-radius:999px;padding:4px 12px;}
+  .ext{border:2px solid var(--stbr-emerald);border-radius:12px;overflow:hidden;margin-bottom:12px;}
+  .ext:last-child{margin-bottom:0;}
+  .ext .et{background:var(--stbr-emerald);color:#F5E8CA;font-family:var(--font-mono);font-weight:700;font-size:16px;padding:7px 16px;}
+  .ext.mb .et{background:var(--stbr-green);}
+  .frow{display:flex;justify-content:space-between;align-items:center;padding:7px 16px;border-top:1.5px solid var(--border-subtle);font-family:var(--font-mono);font-size:15px;color:var(--text-primary);}
+  .frow:first-of-type{border-top:none;}
+  .frow .v{color:var(--text-secondary);}
+  .frow.hot{background:#FFF3C4;}
+  .frow.hot .v{color:var(--stbr-dark);font-weight:700;background:var(--stbr-yellow);border-radius:8px;padding:2px 10px;}
+  .rules{margin-top:14px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:12px;padding:11px 22px;text-align:center;font-family:var(--font-body);font-weight:600;font-size:16.5px;}
+  .rules b{font-family:var(--font-display);font-weight:800;}
+  .warn{margin-top:10px;background:var(--surface-inverse);color:#F5E8CA;border-radius:12px;padding:11px 22px;text-align:center;font-family:var(--font-body);font-size:16px;}
+  .warn b{color:var(--stbr-yellow);font-weight:700;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">this lesson&rsquo;s artifacts &middot; TLV fields</div>
+  <h2 class="viz-title">the confidential SPROUT family: base mint and supply branch</h2>
+  <div class="mints">
+    <div class="mint">
+      <div class="mhead"><div class="n">confidential SPROUT</div><div class="tag">this lesson&rsquo;s main artifact</div></div>
+      <div class="ext">
+        <div class="et">ConfidentialTransferMint</div>
+        <div class="frow"><span>authority</span><span class="v">set</span></div>
+        <div class="frow"><span>auto_approve_new_accounts</span><span class="v">false</span></div>
+        <div class="frow hot"><span>auditor_elgamal_pubkey</span><span class="v">SET</span></div>
+      </div>
+    </div>
+    <div class="mint">
+      <div class="mhead"><div class="n">confidential-supply branch</div><div class="tag">solo challenge</div></div>
+      <div class="ext">
+        <div class="et">ConfidentialTransferMint</div>
+        <div class="frow"><span>authority</span><span class="v">set</span></div>
+        <div class="frow"><span>auto_approve_new_accounts</span><span class="v">false</span></div>
+        <div class="frow"><span>auditor_elgamal_pubkey</span><span class="v">none</span></div>
+      </div>
+      <div class="ext mb">
+        <div class="et">ConfidentialMintBurn</div>
+        <div class="frow"><span>supply_elgamal_pubkey</span><span class="v">set</span></div>
+        <div class="frow"><span>decryptable_supply</span><span class="v">&mdash;</span></div>
+        <div class="frow"><span>confidential_supply</span><span class="v">&mdash;</span></div>
+        <div class="frow"><span>pending_burn</span><span class="v">&mdash;</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="rules"><b>combo rules in force</b> &mdash; rule 3: MintBurn requires TransferMint &nbsp;&middot;&nbsp; rule 5: NonTransferable + confidential demands MintBurn</div>
+  <div class="warn">footgun: <b>PermanentDelegate does NOT operate on confidential balances</b> &mdash; it is not a confidential-supply lever</div>
+</div>
+</div>
+</body></html>

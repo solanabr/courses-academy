@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What the capstone consumes
+     purpose: show that R13 is assembly, not new mechanism, by naming every rung it calls by name
+     data: center: R13 capstone (memo + asset + one rail + integration proof) inbound rungs: R2 check-combo (m01-l4)        -> the five-rule matrix gate on the declared set R3 sprout-mint (m02-l1)        -> the Token-2022 mint recipe R6 routability-report (m05-l2) -> the allowlist verdicts per extension R7 almanac-assets (m06-l2)     -> the Core collection + Royalties/Edition plugin recipe R8 harvest-crates (m07-l1)     -> the Bubblegum v2 tree + mint recipe R9 asset-reader (m07-l2)       -> das(), classifyAsset(), readExtensionState() R10 sprout-launch (m08-l1)     -> graduationSol(), checkGraduationVenue(): the venue section R11 compost-airdrop (m08-l3)   -> the merkle claim path, if your rail is an airdrop (two compost-named artifacts exist: R11 is m08-l3's distributor port, the drop with vesting; m09-l2's compost-points MIGRATION reuses the same tree discipline to convert points to SPROUT. An airdrop rail reuses R11; a migration-flavored rail reuses m09-l2's.) R12 sprout-economy (m09-l1/l2) -> fee-route, gate, buyback: pick exactly one outbound: nothing. R13 is terminal.
+     prompt: Hub-and-spoke diagram. R13 as a large center node listing its four deliverables. Nine inbound arrows from labeled rung boxes on the left and top, each arrow carrying the short "what it contributes" phrase from the data. One short stub arrow leaving the center to a small terminal marker labeled "terminal: nothing downstream consumes it".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:505px;height:478px;top:-235px;right:-235px;border-radius:35% 63% 48% 55% / 37% 52% 43% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:447px;left:-285px;top:144px;border-radius:40% 49% 61% 39% / 63% 65% 62% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .hubgrid { display:grid; grid-template-columns:1fr 56px 420px; row-gap:8px;
+             margin-top:6px; align-items:stretch; }
+  .rung { grid-column:1; background:var(--surface-card); border:2px solid var(--stbr-green);
+          border-radius:var(--radius-lg); padding:7px 14px; display:flex;
+          align-items:center; gap:12px; }
+  .rung-id { font-family:var(--font-display); font-weight:900; font-size:15px;
+             color:var(--text-primary); white-space:nowrap; width:250px; }
+  .rung-id small { font-family:var(--font-body); font-weight:700; font-size:11px;
+                   color:var(--stbr-emerald); margin-left:6px; }
+  .rung-what { font-family:var(--font-body); font-weight:600; font-size:12.5px;
+               line-height:1.28; color:var(--text-secondary); }
+  .harr { display:flex; align-items:center; justify-content:center; }
+  .hub { grid-column:3; grid-row:1 / 10; background:var(--stbr-emerald);
+         border:2.5px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+         display:flex; flex-direction:column; justify-content:center; gap:10px;
+         padding:26px 30px; }
+  .hub-name { font-family:var(--font-display); font-weight:900; font-size:34px;
+              line-height:1.05; color:#F5E8CA; }
+  .hub-sub { font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .hub-item { font-family:var(--font-body); font-weight:700; font-size:16px;
+              color:#F5E8CA; border-left:3px solid var(--stbr-yellow);
+              padding-left:12px; line-height:1.3; }
+  .termrow { grid-column:3; grid-row:10; display:flex; align-items:center;
+             gap:10px; justify-content:center; margin-top:2px; }
+  .term { background:var(--stbr-yellow); border:2px solid var(--stbr-dark);
+          border-radius:var(--radius-pill); padding:6px 18px;
+          font-family:var(--font-body); font-weight:800; font-size:12.5px;
+          color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">assembly, not new mechanism</div>
+  <h2 class="viz-title" style="font-size:40px;margin-bottom:6px;">what the capstone consumes</h2>
+  <div class="hubgrid">
+    <div class="rung" style="grid-row:1;"><span class="rung-id">R2 check-combo<small>m01-l4</small></span><span class="rung-what">the five-rule matrix gate on the declared set</span></div>
+    <div class="harr" style="grid-row:1;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:2;"><span class="rung-id">R3 sprout-mint<small>m02-l1</small></span><span class="rung-what">the Token-2022 mint recipe</span></div>
+    <div class="harr" style="grid-row:2;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:3;"><span class="rung-id">R6 routability-report<small>m05-l2</small></span><span class="rung-what">the allowlist verdicts per extension</span></div>
+    <div class="harr" style="grid-row:3;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:4;"><span class="rung-id">R7 almanac-assets<small>m06-l2</small></span><span class="rung-what">the Core collection + Royalties/Edition plugin recipe</span></div>
+    <div class="harr" style="grid-row:4;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:5;"><span class="rung-id">R8 harvest-crates<small>m07-l1</small></span><span class="rung-what">the Bubblegum v2 tree + mint recipe</span></div>
+    <div class="harr" style="grid-row:5;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:6;"><span class="rung-id">R9 asset-reader<small>m07-l2</small></span><span class="rung-what">das(), classifyAsset(), readExtensionState()</span></div>
+    <div class="harr" style="grid-row:6;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:7;"><span class="rung-id">R10 sprout-launch<small>m08-l1</small></span><span class="rung-what">graduationSol(), checkGraduationVenue(): the venue section</span></div>
+    <div class="harr" style="grid-row:7;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:8;"><span class="rung-id">R11 compost-airdrop<small>m08-l3</small></span><span class="rung-what">the merkle claim path, if your rail is an airdrop &mdash; R11 is m08-l3's distributor port (the drop with vesting); m09-l2's compost-points MIGRATION reuses the same tree discipline to convert points to SPROUT. An airdrop rail reuses R11; a migration-flavored rail reuses m09-l2's.</span></div>
+    <div class="harr" style="grid-row:8;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="rung" style="grid-row:9;"><span class="rung-id">R12 sprout-economy<small>m09-l1/l2</small></span><span class="rung-what">fee-route, gate, buyback: pick exactly one</span></div>
+    <div class="harr" style="grid-row:9;grid-column:2;"><svg width="56" height="22" viewBox="0 0 56 22"><line x1="2" y1="11" x2="44" y2="11" stroke="#1B231D" stroke-width="2.5"/><polygon points="54,11 42,4 42,18" fill="#1B231D"/></svg></div>
+    <div class="hub">
+      <span class="hub-sub">center &middot; nine rungs in</span>
+      <span class="hub-name">R13 capstone</span>
+      <span class="hub-item">memo</span>
+      <span class="hub-item">asset</span>
+      <span class="hub-item">one rail</span>
+      <span class="hub-item">integration proof</span>
+    </div>
+    <div class="termrow">
+      <svg width="16" height="26" viewBox="0 0 16 26"><line x1="8" y1="0" x2="8" y2="17" stroke="#1B231D" stroke-width="2.5"/><polygon points="8,25 2,15 14,15" fill="#1B231D"/></svg>
+      <span class="term">terminal: nothing downstream consumes it</span>
+    </div>
+  </div>
+</div>
+</body></html>

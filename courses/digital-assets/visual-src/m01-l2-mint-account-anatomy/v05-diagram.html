@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The cursor bug: advancing by length instead of 4 + length
+     purpose: show visually how one wrong cursor advance silently corrupts every subsequent TLV read
+     data: Two parallel walks over the same bytes, starting at PYUSD's first entry (header at 166, type 3, length 32). Correct walk: advance 4+32 -> lands at 202, reads real header "12 0 32 0" (PermanentDelegate). Buggy walk: advance 32 -> lands at 198, which is inside the MintCloseAuthority value (bytes 30-31 of the pubkey), reads two pubkey bytes as a "type" and two more as a "length", then keeps walking from there: every subsequent entry is garbage that still parses. Caption: no error is ever thrown; u16s always parse.
+     prompt: Two horizontal walks over the same labeled byte strip (header 166-169, value 170-201, next header 202-205), from the data above. Top walk: an arrow labeled "+36 (4+32)" landing cleanly on the next header. Bottom walk: an arrow labeled "+32" landing visibly inside the value region, with subsequent smaller arrows wandering off into wrong positions marked as garbage reads. Emphasize the 4-byte offset between the two landing points and include the no-error caption.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:542px;height:556px;bottom:-298px;right:-298px;border-radius:55% 58% 45% 63% / 39% 45% 43% 63%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:511px;height:423px;left:-281px;top:289px;border-radius:56% 55% 41% 37% / 39% 52% 58% 47%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:36px 48px 32px;}
+  .card .viz-title{font-size:46px;margin:6px 0 8px;}
+  .wrap{position:relative;width:1320px;margin:0 auto;}
+  .lane{position:relative;}
+  .chipw{position:absolute;background:var(--surface-card);border:2px solid var(--stbr-emerald);border-radius:12px;padding:8px 14px;font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--text-primary);white-space:nowrap;}
+  .chipy{position:absolute;background:var(--stbr-yellow);border-radius:12px;padding:8px 14px;font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--text-on-accent,#1B231D);white-space:nowrap;}
+  .chipw code,.chipy code{font-family:var(--font-mono);font-weight:700;}
+  .strip{position:relative;display:flex;height:96px;border-radius:10px;overflow:hidden;}
+  .sseg{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border-left:2px solid var(--surface-card);}
+  .sseg:first-child{border-left:0;}
+  .snm{font-family:var(--font-display);font-weight:800;font-size:17px;color:#F5E8CA;}
+  .sty{font-family:var(--font-body);font-size:12px;color:#F5E8CA;opacity:.85;margin-top:3px;}
+  .dot{position:absolute;width:16px;height:16px;border-radius:50%;border:3px solid var(--surface-card);}
+  .ruler{position:relative;height:22px;}
+  .rt{position:absolute;transform:translateX(-50%);font-family:var(--font-mono);font-size:14px;font-weight:600;color:var(--text-muted);}
+  .offband{position:absolute;left:480px;top:0;width:60px;height:6px;background:var(--stbr-yellow);border-radius:3px;}
+  .offlbl{position:absolute;left:548px;top:-2px;font-family:var(--font-body);font-size:14px;font-weight:700;color:var(--text-primary);white-space:nowrap;}
+  .caption{margin-top:8px;background:var(--stbr-dark);color:#F5E8CA;border-radius:12px;padding:12px 22px;font-family:var(--font-display);font-weight:800;font-size:20px;text-align:center;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">one wrong advance silently corrupts every later read</div>
+  <h2 class="viz-title">the cursor bug: advancing by length instead of 4 + length</h2>
+  <div class="wrap">
+    <div class="lane" style="height:110px;">
+      <svg width="1320" height="110" style="position:absolute;left:0;top:0;">
+        <path d="M 8 106 L 8 34 L 540 34 L 540 92" fill="none" stroke="#008B4C" stroke-width="3"/>
+        <polygon points="532,92 548,92 540,106" fill="#008B4C"/>
+      </svg>
+      <div class="chipw" style="left:120px;top:2px;">correct: advance <code>+36 (4 + 32)</code> &rarr; lands on <code>202</code>, reads <code>12 00 32 00</code> = the real PermanentDelegate header</div>
+    </div>
+    <div class="strip">
+      <div class="sseg" style="width:60px;background:var(--stbr-emerald);"><div class="snm" style="font-size:14px;">header</div><div class="sty">@166</div></div>
+      <div class="sseg" style="width:480px;background:var(--stbr-green);"><div class="snm">MintCloseAuthority value</div><div class="sty">32-byte pubkey &middot; bytes 170&ndash;201</div></div>
+      <div class="sseg" style="width:60px;background:var(--stbr-emerald);"><div class="snm" style="font-size:14px;">header</div><div class="sty">@202</div></div>
+      <div class="sseg" style="width:720px;background:var(--stbr-dark);"><div class="snm">PermanentDelegate value &rarr;</div><div class="sty">bytes 206&ndash;237, then six more entries</div></div>
+      <div class="dot" style="left:532px;top:-8px;background:var(--stbr-emerald);"></div>
+      <div class="dot" style="left:472px;bottom:-8px;background:var(--stbr-yellow);"></div>
+      <div class="dot" style="left:812px;bottom:-8px;background:var(--stbr-dark);"></div>
+      <div class="dot" style="left:992px;bottom:-8px;background:var(--stbr-dark);"></div>
+      <div class="dot" style="left:1172px;bottom:-8px;background:var(--stbr-dark);"></div>
+    </div>
+    <div class="ruler">
+      <div class="rt" style="left:0;">166</div>
+      <div class="rt" style="left:60px;">170</div>
+      <div class="rt" style="left:540px;">202</div>
+      <div class="rt" style="left:614px;">206</div>
+    </div>
+    <div class="lane" style="height:132px;">
+      <div class="offband"></div>
+      <div class="offlbl">&larr; lands 4 bytes short of 202</div>
+      <svg width="1320" height="132" style="position:absolute;left:0;top:0;">
+        <path d="M 8 4 L 8 64 L 480 64 L 480 20" fill="none" stroke="#1B231D" stroke-width="6"/>
+        <path d="M 8 4 L 8 64 L 480 64 L 480 20" fill="none" stroke="#FFD23F" stroke-width="3"/>
+        <polygon points="471,22 489,22 480,6" fill="#1B231D"/>
+        <path d="M 480 64 L 820 64 L 820 16" fill="none" stroke="#1B231D" stroke-width="5" stroke-dasharray="10 7"/>
+        <polygon points="813,16 827,16 820,2" fill="#1B231D"/>
+        <path d="M 820 64 L 1000 64 L 1000 16" fill="none" stroke="#1B231D" stroke-width="5" stroke-dasharray="10 7"/>
+        <polygon points="993,16 1007,16 1000,2" fill="#1B231D"/>
+        <path d="M 1000 64 L 1180 64 L 1180 16" fill="none" stroke="#1B231D" stroke-width="5" stroke-dasharray="10 7"/>
+        <polygon points="1173,16 1187,16 1180,2" fill="#1B231D"/>
+      </svg>
+      <div class="chipy" style="left:60px;top:78px;">bug: advance <code>+32</code> &rarr; lands at <code>198</code>, inside the pubkey (bytes 30&ndash;31 of the value)</div>
+      <div class="chipw" style="left:700px;top:78px;border-color:var(--border-strong);color:var(--text-secondary);">two pubkey bytes read as &ldquo;type&rdquo;, two as &ldquo;length&rdquo; &mdash; every later entry is garbage</div>
+    </div>
+    <div class="caption">no error is ever thrown &mdash; u16s always parse</div>
+  </div>
+</div>
+</div>
+</body></html>

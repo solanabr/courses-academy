@@ -1,0 +1,99 @@
+id: lesson-date-m09-l1-fee-routing-buyback
+slug: m09-l1-fee-routing-buyback
+title: "Fee routing & buyback/burn: where the money actually flows"
+skills:
+  - token-2022
+  - solana-kit
+  - transactions
+  - checked-arithmetic
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    "@solana-program/system": "0.13.0"
+    "@solana/web3.js": "1.98.4"
+    "@meteora-ag/cp-amm-sdk": "1.4.6"
+    "bn.js": "5.2.2"
+    tsx: "4.23.12"
+    typescript: "5.9.3"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: route-fees
+    type: code
+    language: typescript
+    starter: route-fees/starter.ts
+    solution: route-fees/solution.ts
+    tests: route-fees/tests.json
+    hints:
+      - "Subtract the burned share from the harvest to get toTreasury."
+      - "Buyback tokens = treasurySol / priceLamportsPerToken, floored on bigints."
+      - "burnedFromFees + toTreasury must always equal harvested."
+  - key: check
+    type: quiz
+    questions:
+      - id: m09l1-q1-where-fees-go
+        prompt: "Your Overgrowth marketplace charges a 1% Token-2022 transfer fee on SPROUT trades. A week in, your treasury PDA balance is still zero, but transfers are clearly paying the fee. What happened?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The fee was never configured: a Token-2022 transfer fee needs a creator_vault set at mint creation, the way pump.fun does it."
+            correct: false
+            feedback: "That conflates two models. pump.fun's creator_vault is a program-side fee account; Token-2022 transfer fees don't use it. The fee IS being collected; you just looked in the wrong place."
+          - id: d
+            label: "Harvest already swept the fees to the mint, which forwards them to the treasury on its own schedule."
+            correct: false
+            feedback: "Nothing forwards on its own, and nothing had been swept: peek.ts printed the mint's own withheldAmount as zero. The second leg is an authority-signed withdraw you have to run."
+          - id: c
+            label: "The fees are withheld on the recipients' token accounts; the treasury sees nothing until you harvest and withdraw."
+            correct: true
+            feedback: "Two instructions and a permission boundary between them: consolidation is permissionless because it cannot steal, and collection is gated because it can."
+          - id: b
+            label: "Token-2022 burns transfer fees automatically at transfer time, deflating supply on every trade, so no treasury is ever supposed to receive them."
+            correct: false
+            feedback: "Token-2022 never burns fees automatically; it withholds them. Nothing is destroyed: the tokens are sitting on recipient accounts waiting to be harvested."
+        explanation: "Token-2022 transfer fees accrue WITHHELD on each recipient's token account. Routing them anywhere requires the harvest crank: harvest_withheld_tokens_to_mint, then withdraw to the treasury. That's the first leg of the rail, and exactly the mechanic you built back in the economics-extensions lesson."
+      - id: m09l1-q2-buyback-scope
+        prompt: "You wire the treasury to buy SPROUT back and burn it. In this course, how is that buyback executed?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "By calling harvest_withheld_tokens_to_mint a second time, which converts withheld fees directly into a burn."
+            correct: false
+            feedback: "Harvest only moves withheld fees to the mint; it doesn't swap SOL for tokens or burn anything. The buyback is a separate buy-then-burn."
+          - id: b
+            label: "By deploying a custom constant-product AMM pool with treasury-owned LP positions, so the treasury controls its own liquidity, routing, and slippage."
+            correct: false
+            feedback: "Pool composition, routing, and LP strategy are the planned DeFi & RWA Engineering course's material. This course buys client-side from whichever counterparty it has, and teaches no AMM design."
+          - id: a
+            label: "As a client-side purchase paying treasury SOL for SPROUT, then a burn: a DAMM v2 swap if SPROUT has a pool, otherwise an OTC buy from a maker you stand up."
+            correct: true
+            feedback: "The rail downstream cannot tell the two doors apart, which is the point. Only the swap door has slippage and MEV to worry about; both doors pay SPROUT's own transfer fee on the payout."
+          - id: d
+            label: "As a burn of the treasury's harvested SPROUT: buying back is just the name for burning fee income you already hold."
+            correct: false
+            feedback: "That is the fee-split's burn share, which the treasury already holds. A buyback is funded by a different asset, treasury SOL, and it needs a counterparty to spend that SOL with."
+        explanation: "The buyback leg is deliberately scoped to a client-side purchase followed by a burn. If SPROUT has a DAMM v2 pool (the venue the launchpad-landscape decision chose, reachable only if you launched and migrated it yourself) that purchase is a swap; the course never launches SPROUT, so the guaranteed path is an OTC buy from a maker you stand up, at a price you set rather than read. Either way you measure what landed instead of computing it. One sentence of AMM math is used; none is taught. The depth lives in the planned DeFi & RWA Engineering course."
+      - id: m09l1-q3-conservation
+        prompt: "In the fee-split challenge you harvest 1,000,000 base units of SPROUT with a 20% burn share, and separately hold treasury SOL for the buyback. Which invariant must your function preserve?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "burnedFromFees + toTreasury must equal harvested; the split creates and destroys nothing."
+            correct: true
+            feedback: "The split only labels. Hold that on every input, including the ugly ones, and the supply assertion at the end of the run has something to stand on."
+          - id: d
+            label: "burnedFromFees plus toTreasury plus the buyback must equal the harvested total, since all three come from one pile."
+            correct: false
+            feedback: "Three terms, two piles. The buyback is bought with treasury SOL, not carved out of the harvested SPROUT, so folding it into this identity breaks on the first run."
+          - id: c
+            label: "toTreasury must equal the full harvested amount, since the burning happens later at the venue."
+            correct: false
+            feedback: "If toTreasury equalled the whole harvest you'd have double-counted the burned share. The split must sum to the harvest, not ignore the burn."
+          - id: a
+            label: "The buyback token amount must equal the burned-from-fees amount, or supply isn't conserved."
+            correct: false
+            feedback: "Those are two independent legs: the fee-burn and the SOL-funded buyback-burn. They needn't be equal; conservation is about the fee split summing back to the harvest."
+        explanation: "The split is a conservation law: whatever you burn from fees plus whatever stays in the treasury has to add up to exactly what you harvested. The buyback is funded from SOL and is a separate leg; sizing it is a floor-division on price, not a mirror of the fee burn."

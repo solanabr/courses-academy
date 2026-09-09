@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The compress-hold-decompress round trip
+     purpose: show that compression is a distribution strategy with a defined exit, and that the exit cost lands on active users rather than the issuer
+     data: Issuer: mint SPROUT -> compress into cTokens -> one drop transaction batch covers many recipients at about 10,300 lamports each (5,000 create + 5,300 first write). Idle holder: balance sits as a compressed account. Issuer paid about 10,300 lamports. No further cost to anyone. Active holder: wants to swap -> decompress to a regular SPL token account (holder now pays the classic account rent) -> route through Jupiter as an ordinary SPL token. Annotation: the classic path would have paid about 2,000,000 lamports per recipient up front, active or not.
+     prompt: Left-to-right flowchart with one branch. Start node "issuer mints and compresses", then a fan-out to many small holder nodes. From the holder cluster, two labeled paths: an upper path "stays idle" ending in a terminal node "cost stops here", and a lower path "wants to trade" through a "decompress" node into an "SPL token account" node and then a "Jupiter swap" node. Annotate the decompress node "holder pays rent, at the moment they benefit". A callout box near the start reads "classic path: about 2,000,000 lamports per recipient, paid up front, idle or not".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:515px;height:513px;top:-261px;right:-261px;border-radius:54% 51% 62% 43% / 45% 64% 55% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:496px;height:431px;left:-305px;top:296px;border-radius:59% 61% 48% 43% / 56% 61% 62% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">a distribution strategy with a defined exit</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 20px;color:var(--stbr-dark);">The compress&nbsp;&rarr;&nbsp;hold&nbsp;&rarr;&nbsp;decompress round trip</h2>
+
+    <div style="display:flex;align-items:center;gap:14px;">
+      <!-- issuer -->
+      <div style="flex:none;width:210px;background:var(--stbr-emerald);border-radius:14px;padding:16px 18px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--stbr-cream);line-height:1.2;">issuer mints SPROUT &amp; compresses into cTokens</div>
+      </div>
+      <!-- arrow + cost label -->
+      <div style="flex:none;width:170px;text-align:center;">
+        <div style="font-family:var(--font-body);font-size:12.5px;font-weight:600;color:var(--stbr-dark);line-height:1.35;">one drop tx batch covers many recipients<br>&asymp;10,300 lamports each<br><span style="color:var(--text-secondary,#4a5a4e);">(5,000 create + 5,300 first write)</span></div>
+        <div style="margin:6px auto 0;width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid var(--stbr-dark);"></div>
+      </div>
+      <!-- holder cluster -->
+      <div style="flex:none;width:230px;border:1.5px solid var(--stbr-emerald);border-radius:14px;padding:14px 16px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);margin-bottom:8px;">holders</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+          <div style="width:34px;height:22px;background:var(--surface-paper,#faf5e6);border:1px solid var(--stbr-green);border-radius:6px;"></div>
+        </div>
+        <div style="margin-top:8px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">each balance sits as a compressed account</div>
+      </div>
+      <!-- two branches -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:18px;">
+        <!-- idle path -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:none;background:var(--surface-paper,#faf5e6);border:1px solid var(--border-strong,#c9c2ad);border-radius:999px;padding:5px 14px;font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--stbr-dark);">stays idle</div>
+          <div style="flex:none;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+          <div style="flex:1;background:var(--stbr-green);border-radius:12px;padding:12px 16px;">
+            <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-cream);">cost stops here</div>
+            <div style="font-family:var(--font-body);font-size:12.5px;color:var(--stbr-cream);opacity:0.9;">issuer paid &asymp;10,300 lamports; no further cost to anyone</div>
+          </div>
+        </div>
+        <!-- trade path -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:none;background:var(--surface-paper,#faf5e6);border:1px solid var(--border-strong,#c9c2ad);border-radius:999px;padding:5px 14px;font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--stbr-dark);">wants to trade</div>
+          <div style="flex:none;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+          <div style="flex:none;background:var(--stbr-yellow);border-radius:12px;padding:12px 14px;max-width:230px;">
+            <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">decompress</div>
+            <div style="font-family:var(--font-body);font-size:12px;color:var(--stbr-dark);line-height:1.35;">holder pays the classic account rent &mdash; at the moment they benefit</div>
+          </div>
+          <div style="flex:none;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+          <div style="flex:none;border:1.5px solid var(--stbr-emerald);border-radius:12px;padding:10px 14px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">SPL token account</div>
+          <div style="flex:none;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+          <div style="flex:none;border:1.5px solid var(--stbr-emerald);border-radius:12px;padding:10px 14px;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--stbr-dark);">Jupiter swap<div style="font-family:var(--font-body);font-weight:400;font-size:11.5px;color:var(--text-secondary,#4a5a4e);">ordinary SPL token</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;border:1.5px dashed var(--stbr-green);border-radius:12px;padding:12px 20px;font-family:var(--font-body);font-size:15px;color:var(--stbr-dark);"><b>the counterfactual:</b> the classic path would have paid &asymp;2,000,000 lamports per recipient <b>up front</b> &mdash; active or not</div>
+  </div>
+</div>
+</body></html>

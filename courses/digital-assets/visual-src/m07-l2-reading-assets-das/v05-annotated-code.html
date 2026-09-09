@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The two representations of a dormant transfer hook
+     purpose: show the reader the exact field-level difference between the DAS view and the decoded account so their flagger checks the right thing
+     data: DAS getAsset response (indexed view), mint_extensions style shape: "transfer_hook": { "authority": "<issuer>", "program_id": null } Decoded account via fetchMint from @solana-program/token-2022 (raw view): { __kind: 'TransferHook', authority: '<issuer>', programId: '11111111111111111111111111111111' } Same for fees. DAS: "transfer_fee_config" with newer_transfer_fee basis points 0. Raw: { __kind: 'TransferFeeConfig', newerTransferFee: { transferFeeBasisPoints: 0, maximumFee: 0n } } Verdict line: dormant either way, but the null check and the all-zeros check are different code.
+     prompt: Two side-by-side code panels labeled "DAS index view" and "decoded account view", each showing the transfer hook and transfer fee snippets above. Draw a connecting bracket between the two program-id lines annotated "null vs all-zeros address: same fact, different check". Below both panels a single verdict strip reading "dormant".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:500px;height:489px;right:-306px;top:155px;border-radius:51% 40% 45% 43% / 59% 52% 62% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:456px;height:495px;bottom:-245px;left:-245px;border-radius:39% 47% 41% 49% / 51% 55% 56% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panels { display:flex; align-items:stretch; margin-top:12px; }
+  .panel { flex:1 1 0; background:var(--surface-inverse); border-radius:var(--radius-xl);
+           overflow:hidden; display:flex; flex-direction:column; }
+  .p-head { padding:12px 22px; background:rgba(245,232,202,0.1);
+            font-family:var(--font-body); font-weight:800; font-size:14px;
+            letter-spacing:.1em; text-transform:uppercase; color:#F5E8CA; }
+  .p-code { padding:18px 22px 20px; font-family:var(--font-mono); font-weight:600;
+            font-size:16.5px; line-height:26px; color:#F5E8CA; white-space:pre; }
+  .hl { color:var(--stbr-yellow); font-weight:800; }
+  .cm { color:rgba(245,232,202,0.55); }
+  .mid-col { flex:0 0 250px; position:relative; display:flex; align-items:center;
+             justify-content:center; }
+  .tie-line { position:absolute; top:188px; left:0; right:0; height:0;
+              border-top:2.5px dashed var(--stbr-dark); }
+  .tie-chip { position:absolute; top:140px; left:17px; width:216px;
+              font-family:var(--font-body); font-weight:800; font-size:13.5px;
+              line-height:1.35; color:var(--stbr-dark); background:var(--stbr-yellow);
+              border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+              padding:9px 12px; text-align:center; }
+  .verdict { margin-top:18px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+             padding:15px 26px; display:flex; align-items:center; gap:16px; }
+  .v-tag { font-family:var(--font-display); font-weight:900; font-size:22px; color:#F5E8CA;
+           text-transform:lowercase; }
+  .v-txt { font-family:var(--font-body); font-weight:700; font-size:16.5px; color:#F5E8CA; }
+</style>
+  <div class="stbr-eyebrow">one dormant hook, two shapes</div>
+  <h2 class="viz-title" style="font-size:46px;">the two representations of a dormant transfer hook</h2>
+  <div class="panels">
+    <div class="panel">
+      <div class="p-head">DAS index view &middot; getAsset</div>
+      <div class="p-code">"mint_extensions": {
+  "transfer_hook": {
+    "authority": "&lt;issuer&gt;",
+    <span class="hl">"program_id": null</span>
+  },
+  "transfer_fee_config": {
+    "newer_transfer_fee": {
+      <span class="hl">"transfer_fee_basis_points": 0</span>
+    }
+  }
+}</div>
+    </div>
+    <div class="mid-col">
+      <div class="tie-line"></div>
+      <div class="tie-chip">null vs all-zeros address: same fact, different check</div>
+    </div>
+    <div class="panel">
+      <div class="p-head">decoded account view &middot; fetchMint</div>
+      <div class="p-code"><span class="cm">// @solana-program/token-2022</span>
+{ __kind: 'TransferHook',
+  authority: '&lt;issuer&gt;',
+  <span class="hl">programId: '111111&hellip;111111'</span> }
+
+{ __kind: 'TransferFeeConfig',
+  newerTransferFee: {
+    <span class="hl">transferFeeBasisPoints: 0,</span>
+    <span class="hl">maximumFee: 0n</span> } }</div>
+    </div>
+  </div>
+  <div class="verdict">
+    <span class="v-tag">verdict: dormant</span>
+    <span class="v-txt">either way &mdash; but the null check and the all-zeros check are different code</span>
+  </div>
+</div>
+</body></html>

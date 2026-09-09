@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Plain SPROUT transfer vs confidential SPROUT transfer, field by field
+     purpose: make the public/encrypted split concrete on one worked transfer so the reader can reproduce it in the lab
+     data: plain transfer column: sender pubkey public, receiver pubkey public, mint public, amount public (u64 in instruction data), no proofs confidential column: sender pubkey public, receiver pubkey public, mint public, amount encrypted (grouped ciphertext lo+hi under sender/receiver/auditor), new source balance ciphertext encrypted, AES cache encrypted, three proofs attached (equality, validity, range) shared row: the FACT of the transfer is public in both verdict row: confidentiality = hidden amounts only; identities and timing stay public in both columns
+     prompt: Two-column comparison card, "plain transfer" vs "confidential transfer". Rows: sender, receiver, mint, amount, sender's new balance, proofs. Use an open-eye icon for public cells and a lock icon for encrypted cells. The amount row is the only row that changes state between columns; highlight it. Verdict band: "amounts hidden, identities public, in both worlds the transfer itself is visible".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:458px;height:402px;right:-272px;top:338px;border-radius:46% 48% 35% 42% / 63% 40% 53% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:466px;height:452px;bottom:-221px;left:-221px;border-radius:50% 58% 41% 60% / 36% 65% 42% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { margin-top:8px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-2xl); overflow:hidden; }
+  .cmp-head { display:flex; }
+  .cmp-head > div { padding:12px 22px; font-family:var(--font-display); font-weight:900; font-size:19px; }
+  .col-field { flex:0 0 250px; background:var(--stbr-dark); color:#F5E8CA;
+               font-family:var(--font-body) !important; font-weight:800 !important;
+               font-size:13px !important; letter-spacing:.11em; text-transform:uppercase;
+               display:flex; align-items:center; }
+  .col-plain { flex:1 1 0; background:var(--stbr-green); color:#F5E8CA; }
+  .col-conf  { flex:1 1 0; background:var(--stbr-emerald); color:#F5E8CA; }
+  .cmp-row { display:flex; align-items:stretch; border-top:1.5px solid var(--border-subtle); }
+  .cmp-row.hot { background:rgba(255,210,63,0.28); border-top:2.5px solid var(--stbr-dark);
+                 border-bottom:2.5px solid var(--stbr-dark); }
+  .f-name { flex:0 0 250px; padding:11px 22px; display:flex; align-items:center;
+            font-family:var(--font-body); font-weight:800; font-size:15.5px; color:var(--text-primary); }
+  .f-cell { flex:1 1 0; padding:11px 22px; display:flex; align-items:center; gap:10px;
+            border-left:1.5px solid var(--border-subtle); }
+  .chip { display:inline-flex; align-items:center; gap:6px; border-radius:var(--radius-pill);
+          padding:4px 12px; font-family:var(--font-body); font-weight:800; font-size:13px;
+          flex:0 0 auto; }
+  .chip-pub { border:2px solid var(--stbr-green); color:var(--stbr-green); background:#FFFFFF; }
+  .chip-enc { background:var(--stbr-dark); color:#F5E8CA; }
+  .cell-note { font-family:var(--font-body); font-weight:700; font-size:13px; line-height:1.3;
+               color:var(--text-secondary); }
+  .verdict { margin-top:16px; background:var(--stbr-emerald); border-radius:var(--radius-2xl);
+             padding:14px 30px; font-family:var(--font-body); font-weight:800; font-size:17px;
+             color:#F5E8CA; text-align:center; }
+</style>
+  <div class="stbr-eyebrow">ONE WORKED TRANSFER, FIELD BY FIELD</div>
+  <h2 class="viz-title">plain SPROUT transfer vs confidential SPROUT transfer</h2>
+  <div class="cmp">
+    <div class="cmp-head">
+      <div class="col-field">field</div>
+      <div class="col-plain">plain transfer</div>
+      <div class="col-conf">confidential transfer</div>
+    </div>
+    <div class="cmp-row">
+      <div class="f-name">sender pubkey</div>
+      <div class="f-cell"><span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span></div>
+      <div class="f-cell"><span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="f-name">receiver pubkey</div>
+      <div class="f-cell"><span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span></div>
+      <div class="f-cell"><span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="f-name">mint</div>
+      <div class="f-cell"><span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span></div>
+      <div class="f-cell"><span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span></div>
+    </div>
+    <div class="cmp-row hot">
+      <div class="f-name">amount</div>
+      <div class="f-cell">
+        <span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span>
+        <span class="cell-note">u64 sitting in instruction data</span>
+      </div>
+      <div class="f-cell">
+        <span class="chip chip-enc"><svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="2" fill="#F5E8CA"/><path d="M3 6 V4 a3 3 0 0 1 6 0 v2" fill="none" stroke="#F5E8CA" stroke-width="1.6"/></svg>encrypted</span>
+        <span class="cell-note">grouped ciphertext lo+hi under sender &middot; receiver &middot; optional auditor</span>
+      </div>
+    </div>
+    <div class="cmp-row">
+      <div class="f-name">sender's new balance</div>
+      <div class="f-cell">
+        <span class="chip chip-pub"><svg width="16" height="11" viewBox="0 0 16 11"><path d="M1 5.5 C4 1, 12 1, 15 5.5 C12 10, 4 10, 1 5.5 Z" fill="none" stroke="#306C40" stroke-width="1.6"/><circle cx="8" cy="5.5" r="2" fill="#306C40"/></svg>public</span>
+        <span class="cell-note">plain u64 in the token account</span>
+      </div>
+      <div class="f-cell">
+        <span class="chip chip-enc"><svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="2" fill="#F5E8CA"/><path d="M3 6 V4 a3 3 0 0 1 6 0 v2" fill="none" stroke="#F5E8CA" stroke-width="1.6"/></svg>encrypted</span>
+        <span class="cell-note">new source balance ciphertext + AES cache, both encrypted</span>
+      </div>
+    </div>
+    <div class="cmp-row">
+      <div class="f-name">proofs</div>
+      <div class="f-cell"><span class="cell-note" style="font-weight:800;color:var(--text-primary);">none</span></div>
+      <div class="f-cell">
+        <span class="cell-note" style="font-weight:800;color:var(--text-primary);">three attached &mdash; equality &middot; validity &middot; range</span>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">amounts hidden, identities public &mdash; in both worlds the FACT of the transfer is visible</div>
+</div>
+</body></html>

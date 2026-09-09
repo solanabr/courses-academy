@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: spl-token-cli 5.6.1 vs the raw instruction set
+     purpose: show exactly which issuer operations force you below the CLI into raw instructions
+     data: Column 1 - CLI 5.6.1 covers (proofs generated internally): create-token --enable-confidential-transfers auto|manual update-confidential-transfer-settings --auditor-pubkey (base64 only, per its own help text) configure-confidential-transfer-account deposit-confidential-tokens / apply-pending-balance / withdraw-confidential-tokens transfer --confidential Column 2 - raw instructions only (no CLI command in 5.6.1): ApproveConfidentialTransferAccount (the manual-policy approve) ConfigureAccountWithRegistry (registry-based provisioning) InitializeConfidentialMintBurn / apply_pending_burn / rotate_supply_elgamal_pubkey Verdict row: holder flow = CLI; issuer flow = raw instructions
+     prompt: Two-column comparison card. Left column header "CLI 5.6.1 ships it", listing the five holder-flow commands. Right column header "raw instructions only", listing the four issuer-side operations. Full-width verdict band at the bottom: "the holder flow has tooling; the ISSUER flow is yours to build". Keep command names monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:542px;height:490px;top:-293px;right:-293px;border-radius:47% 57% 36% 41% / 51% 65% 55% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:457px;height:427px;bottom:-236px;left:-236px;border-radius:56% 37% 49% 58% / 41% 48% 44% 55%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:30px 48px 34px;overflow:hidden;}
+  .card .viz-title{font-size:44px;margin:4px 0 16px;}
+  .cols{display:flex;gap:40px;}
+  .col{width:660px;border:2px solid var(--border-subtle);border-radius:16px;overflow:hidden;}
+  .colhead{padding:12px 22px;font-family:var(--font-display);font-weight:900;font-size:22px;background:var(--stbr-emerald);color:#F5E8CA;}
+  .colhead span{display:block;font-family:var(--font-body);font-weight:500;font-size:14px;margin-top:2px;opacity:0.9;}
+  .col.raw .colhead{background:var(--stbr-yellow);color:var(--stbr-dark);}
+  .col.raw .colhead span{opacity:0.85;}
+  .rowlist{background:var(--surface-card);}
+  .r{padding:10px 22px;border-top:1.5px solid var(--border-subtle);}
+  .r:first-child{border-top:none;}
+  .r code{font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--text-primary);display:block;line-height:1.45;}
+  .r .why{font-family:var(--font-body);font-size:13.5px;color:var(--text-muted);margin-top:2px;}
+  .col.raw{border-color:var(--stbr-yellow);border-width:2.5px;}
+  .verdict{margin-top:16px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:14px;padding:14px 24px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:22px;}
+  .verdict b{color:var(--stbr-yellow);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">tooling gap &middot; who builds what</div>
+  <h2 class="viz-title">spl-token-cli 5.6.1 vs the raw instruction set</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="colhead">CLI 5.6.1 ships it<span>the holder flow &mdash; proofs generated internally</span></div>
+      <div class="rowlist">
+        <div class="r"><code>create-token --enable-confidential-transfers auto|manual</code></div>
+        <div class="r"><code>update-confidential-transfer-settings --auditor-pubkey</code><div class="why">base64 only, per its own help text</div></div>
+        <div class="r"><code>configure-confidential-transfer-account</code></div>
+        <div class="r"><code>deposit-confidential-tokens / apply-pending-balance / withdraw-confidential-tokens</code></div>
+        <div class="r"><code>transfer --confidential</code></div>
+      </div>
+    </div>
+    <div class="col raw">
+      <div class="colhead">raw instructions only<span>the issuer flow &mdash; no CLI command in 5.6.1</span></div>
+      <div class="rowlist">
+        <div class="r"><code>ApproveConfidentialTransferAccount</code><div class="why">the manual-policy approve</div></div>
+        <div class="r"><code>ConfigureAccountWithRegistry</code><div class="why">registry-based provisioning</div></div>
+        <div class="r"><code>InitializeConfidentialMintBurn / apply_pending_burn / rotate_supply_elgamal_pubkey</code><div class="why">the confidential-supply branch</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">the holder flow has tooling &mdash; the <b>ISSUER</b> flow is yours to build</div>
+</div>
+</div>
+</body></html>

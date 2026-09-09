@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: What graduation seeds, versus doing it by hand
+     purpose: make the launchpad's actual service concrete by listing each seeded item against its manual equivalent
+     data: Columns: What graduation seeds | Who decides it | What you would do without a launchpad Row 1: The trading pair (pool account on the destination AMM) | the venue, via its graduation target | create and rent-fund the pool account yourself; pick the AMM and the quote mint yourself Row 2: The opening price | the curve endpoint, mechanically; the auction clearing price on Genesis | set an opening price by judgment and defend it Row 3: The seeded liquidity (both sides) | the curve's collected quote plus the remaining token supply | fund both sides from a wallet you control Row 4: The LP tokens and their disposal | the venue's rule: pump burns 100%; LaunchLab burns 90% and locks 10% behind the Fee Key; DBC burns or locks per config | receive LP tokens, then burn or lock them and prove it to holders Row 5: Anti-snipe on the first slots | the venue's defense, if it has one | build it, or accept the first slots are contested
+     prompt: Three-column table with the five rows as given. Style the middle column as the "who decides" axis so the reader can scan how little of it the creator controls. In row 4, break the three venue rules onto separate lines within the cell.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:543px;height:525px;bottom:-294px;right:-294px;border-radius:35% 43% 51% 36% / 44% 41% 57% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:501px;height:464px;left:-254px;top:98px;border-radius:56% 58% 42% 63% / 53% 42% 50% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v7-tbl { width:100%; border-collapse:collapse; background:var(--surface-card);
+            border-radius:var(--radius-lg); overflow:hidden; }
+  .v7-tbl th { background:var(--surface-inverse); color:var(--stbr-cream);
+               font-family:var(--font-display); font-weight:900; font-size:17px;
+               text-align:left; padding:12px 20px; }
+  .v7-tbl th.mid { color:var(--stbr-yellow); }
+  .v7-tbl td { font-family:var(--font-body); font-size:14.5px; line-height:1.35;
+               color:var(--text-primary); padding:11px 20px; vertical-align:top;
+               border-bottom:1px solid var(--border-subtle); }
+  .v7-tbl tr:last-child td { border-bottom:none; }
+  .v7-tbl td.what { font-weight:800; width:24%; }
+  .v7-tbl td.mid { width:38%; background:rgba(255,210,63,0.18); font-weight:600; }
+  .v7-tbl td.man { width:38%; color:var(--text-secondary); }
+  .v7-tbl td.mid .vr { display:block; padding:1px 0; }
+  .v7-tbl td.mid .vn { font-weight:800; color:var(--stbr-green); }
+  .v7-cap { margin-top:14px; font-family:var(--font-body); font-size:14.5px;
+            color:var(--text-secondary); }
+  .v7-cap strong { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">graduation &middot; the launchpad's actual service</div>
+  <h2 class="viz-title">what graduation seeds, versus doing it by hand</h2>
+  <table class="v7-tbl">
+    <tr>
+      <th>What graduation seeds</th>
+      <th class="mid">Who decides it</th>
+      <th>Without a launchpad, you would&hellip;</th>
+    </tr>
+    <tr>
+      <td class="what">The trading pair<br><span style="font-weight:500;color:var(--text-muted);font-size:13px;">pool account on the destination AMM</span></td>
+      <td class="mid">the venue, via its graduation target</td>
+      <td class="man">create and rent-fund the pool account yourself; pick the AMM and the quote mint yourself</td>
+    </tr>
+    <tr>
+      <td class="what">The opening price</td>
+      <td class="mid">the curve endpoint, mechanically; the auction clearing price on Genesis</td>
+      <td class="man">set an opening price by judgment and defend it</td>
+    </tr>
+    <tr>
+      <td class="what">The seeded liquidity<br><span style="font-weight:500;color:var(--text-muted);font-size:13px;">both sides</span></td>
+      <td class="mid">the curve's collected quote plus the remaining token supply</td>
+      <td class="man">fund both sides from a wallet you control</td>
+    </tr>
+    <tr>
+      <td class="what">The LP tokens and their disposal</td>
+      <td class="mid">the venue's rule:
+        <span class="vr"><span class="vn">pump</span> burns 100%</span>
+        <span class="vr"><span class="vn">LaunchLab</span> burns 90%, locks 10% behind the Fee Key</span>
+        <span class="vr"><span class="vn">DBC</span> burns or locks per config</span>
+      </td>
+      <td class="man">receive LP tokens, then burn or lock them and prove it to holders</td>
+    </tr>
+    <tr>
+      <td class="what">Anti-snipe on the first slots</td>
+      <td class="mid">the venue's defense, if it has one</td>
+      <td class="man">build it, or accept the first slots are contested</td>
+    </tr>
+  </table>
+  <div class="v7-cap">Scan the middle column: <strong>almost none of it is the creator's call</strong> &mdash; the venue decides, mechanically or by rule.</div>
+</div>
+</body></html>

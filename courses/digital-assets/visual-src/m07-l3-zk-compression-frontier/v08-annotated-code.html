@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Why the disqualifiers run before the arithmetic
+     purpose: make the evaluation order explicit, since the cheapest-on-paper workload is the one the gates reject
+     data: decide(workload): 1. same-block updates?      -> reject. Reason is mechanical (proof staleness), not economic. Lamports are irrelevant here. 2. bytesPerAccess > 1024?   -> reject. Guideline ceiling on access size. 3. writes > 376?            -> reject. Past the lamport break-even. 4. otherwise                -> compress. Worked case: the crafting-recipe blob costs 0.0780 SOL compressed against 10.0000 SOL classic, and is still rejected at gate 2 for 4,096 bytes per access. Cheapest is not the same as eligible.
+     prompt: Vertical four-step gate diagram rendered as annotated pseudocode. Each of the first three steps is a diamond gate with a reject arrow branching right into a "KEEP CLASSIC" sink; the fourth falls through to a "COMPRESS" terminal. Attach a callout to gate 2 showing the crafting-recipe numbers (0.0780 SOL compressed versus 10.0000 SOL classic) with the label "cheaper, and still rejected".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:565px;height:373px;right:-319px;top:232px;border-radius:58% 39% 44% 47% / 42% 59% 47% 65%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:556px;height:487px;bottom:-280px;left:-280px;border-radius:51% 41% 46% 37% / 62% 56% 47% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">evaluation order is the point</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 18px;color:var(--stbr-dark);">Why the disqualifiers run before the arithmetic</h2>
+
+    <div style="background:var(--surface-inverse,#1B231D);border-radius:14px 14px 0 0;padding:12px 22px;font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--stbr-cream);">decide(workload):</div>
+
+    <!-- gate 1 -->
+    <div style="display:flex;align-items:stretch;gap:12px;margin-top:10px;">
+      <div style="flex:1;background:var(--surface-inverse,#1B231D);border-radius:12px;padding:12px 22px;">
+        <div style="font-family:var(--font-mono);font-size:16px;color:var(--stbr-cream);"><span style="color:var(--stbr-yellow);">1</span>&nbsp; same-block updates?</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:#b9c2ba;margin-top:4px;">reason is mechanical (proof staleness), not economic &mdash; lamports are irrelevant here</div>
+      </div>
+      <div style="flex:none;display:flex;align-items:center;"><div style="width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid var(--stbr-dark);"></div></div>
+      <div style="flex:none;width:170px;display:flex;align-items:center;justify-content:center;background:#e6e2d6;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.04em;color:var(--stbr-dark);">KEEP CLASSIC</div>
+      <div style="flex:none;width:340px;"></div>
+    </div>
+
+    <!-- gate 2 + callout -->
+    <div style="display:flex;align-items:stretch;gap:12px;margin-top:10px;">
+      <div style="flex:1;background:var(--surface-inverse,#1B231D);border-radius:12px;padding:12px 22px;">
+        <div style="font-family:var(--font-mono);font-size:16px;color:var(--stbr-cream);"><span style="color:var(--stbr-yellow);">2</span>&nbsp; bytesPerAccess &gt; 1024?</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:#b9c2ba;margin-top:4px;">guideline ceiling on access size</div>
+      </div>
+      <div style="flex:none;display:flex;align-items:center;"><div style="width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid var(--stbr-dark);"></div></div>
+      <div style="flex:none;width:170px;display:flex;align-items:center;justify-content:center;background:#e6e2d6;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.04em;color:var(--stbr-dark);">KEEP CLASSIC</div>
+      <div style="flex:none;width:340px;background:var(--stbr-yellow);border-radius:12px;padding:10px 16px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-dark);">cheaper, and still rejected</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;line-height:1.4;color:var(--stbr-dark);margin-top:2px;">crafting-recipe blob: <b>0.0780 SOL</b> compressed vs <b>10.0000 SOL</b> classic &mdash; killed here at 4,096 bytes per access</div>
+      </div>
+    </div>
+
+    <!-- gate 3 -->
+    <div style="display:flex;align-items:stretch;gap:12px;margin-top:10px;">
+      <div style="flex:1;background:var(--surface-inverse,#1B231D);border-radius:12px;padding:12px 22px;">
+        <div style="font-family:var(--font-mono);font-size:16px;color:var(--stbr-cream);"><span style="color:var(--stbr-yellow);">3</span>&nbsp; writes &gt; 376?</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:#b9c2ba;margin-top:4px;">past the lamport break-even</div>
+      </div>
+      <div style="flex:none;display:flex;align-items:center;"><div style="width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid var(--stbr-dark);"></div></div>
+      <div style="flex:none;width:170px;display:flex;align-items:center;justify-content:center;background:#e6e2d6;border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.04em;color:var(--stbr-dark);">KEEP CLASSIC</div>
+      <div style="flex:none;width:340px;"></div>
+    </div>
+
+    <!-- fall-through -->
+    <div style="display:flex;align-items:stretch;gap:12px;margin-top:10px;">
+      <div style="flex:1;background:var(--surface-inverse,#1B231D);border-radius:12px 12px 12px 14px;padding:12px 22px;">
+        <div style="font-family:var(--font-mono);font-size:16px;color:var(--stbr-cream);"><span style="color:var(--stbr-yellow);">4</span>&nbsp; otherwise</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:#b9c2ba;margin-top:4px;">all three gates passed &mdash; only now does the arithmetic decide</div>
+      </div>
+      <div style="flex:none;display:flex;align-items:center;"><div style="width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:12px solid var(--stbr-emerald);"></div></div>
+      <div style="flex:none;width:170px;display:flex;align-items:center;justify-content:center;background:var(--stbr-emerald);border-radius:12px;font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.04em;color:var(--stbr-cream);">COMPRESS</div>
+      <div style="flex:none;width:340px;"></div>
+    </div>
+
+    <div style="margin-top:16px;font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--stbr-dark);">Cheapest is not the same as eligible.</div>
+  </div>
+</div>
+</body></html>

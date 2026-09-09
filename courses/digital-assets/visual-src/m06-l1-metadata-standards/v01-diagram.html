@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The three layers of a Solana asset
+     purpose: give the reader the whole map before walking each layer, so every later field has a place to land
+     data: Layer 1 (off-chain, at the uri): JSON { name, symbol, description, image, animation_url, external_url, attributes[], properties.files[], properties.category } Layer 2 (on-chain, Token Metadata): metadata PDA -> Data { name, symbol, uri, seller_fee_basis_points, creators } Layer 3 (on-chain, Token-2022 only): mint account TLV -> MetadataPointer (self-referential) + TokenMetadata { name, symbol, uri, additional_metadata } arrows: Data.uri -> JSON document; JSON.image -> image file; MetadataPointer -> the mint itself; TokenMetadata.uri -> JSON document
+     prompt: Three horizontal bands, numbered 1 to 3 top to bottom. Top band "Layer 1, off-chain: the JSON document" showing a larger box listing name, symbol, description, image, animation_url, external_url, attributes, properties.files, properties.category, with image emitting an arrow to a small picture icon. Middle band "Layer 2, on-chain: the Metaplex Data struct" showing a small box with the five fields name, symbol, uri, seller_fee_basis_points, creators, with the uri field emitting an arrow UP into the layer-1 band. Bottom band "Layer 3, Token-2022 native (the SPROUT path)" showing a mint account box containing MetadataPointer with a looped self-arrow and TokenMetadata with name, symbol, uri, additional_metadata, its uri also arrowing up to layer 1. Emphasize the uri arrows as the load-bearing links between bands, and keep the numeric labels visible so the numbering matches the prose sections.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:616px;height:534px;bottom:-326px;right:-326px;border-radius:50% 47% 43% 45% / 46% 54% 38% 61%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:490px;height:386px;left:-297px;top:249px;border-radius:58% 52% 61% 60% / 56% 56% 36% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .l-wrap { display:flex; margin-top:8px; }
+  .l-col { flex:1 1 0; display:flex; flex-direction:column; gap:14px; }
+  .rail { flex:0 0 150px; position:relative; }
+  .band { background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-xl); padding:14px 22px; box-sizing:border-box;
+          display:flex; flex-direction:column; gap:10px; overflow:hidden; }
+  .band-head { display:flex; align-items:center; gap:14px; }
+  .num { flex:0 0 34px; width:34px; height:34px; border-radius:50%; background:var(--stbr-dark);
+         color:#F5E8CA; font-family:var(--font-display); font-weight:900; font-size:19px;
+         display:flex; align-items:center; justify-content:center; }
+  .band-title { font-family:var(--font-display); font-weight:900; font-size:22px;
+                color:var(--text-primary); }
+  .band-sub { font-family:var(--font-body); font-weight:700; font-size:14px;
+              color:var(--text-muted); margin-left:auto; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .fld { font-family:var(--font-mono); font-weight:700; font-size:14.5px; color:var(--stbr-green);
+         border:1.5px solid rgba(0,139,76,0.45); background:rgba(0,139,76,0.06);
+         padding:5px 12px; border-radius:var(--radius-md); }
+  .fld-uri { background:var(--stbr-yellow); border:2px solid var(--stbr-dark);
+             color:var(--stbr-dark); font-weight:800; }
+  .inner-box { border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+               padding:10px 14px; background:var(--surface-paper); }
+  .inner-lab { font-family:var(--font-body); font-weight:800; font-size:12px;
+               letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted);
+               margin-bottom:7px; }
+  .l3-row { display:flex; gap:14px; }
+  .l3-row .inner-box { flex:1 1 0; }
+  .selfloop { display:flex; align-items:center; gap:8px; margin-top:6px;
+              font-family:var(--font-body); font-weight:700; font-size:13.5px;
+              color:var(--text-secondary); }
+  .rail-chip { position:absolute; background:var(--stbr-yellow); color:var(--stbr-dark);
+               border:2px solid var(--stbr-dark); border-radius:var(--radius-pill);
+               font-family:var(--font-body); font-weight:800; font-size:13px;
+               padding:2px 10px; }
+</style>
+  <div class="stbr-eyebrow">the whole map before the walk</div>
+  <h2 class="viz-title">the three layers of a Solana asset</h2>
+  <div class="l-wrap">
+    <div class="l-col">
+      <div class="band" style="height:184px;">
+        <div class="band-head">
+          <div class="num">1</div>
+          <div class="band-title">off-chain: the JSON document</div>
+          <div class="band-sub">lives at the uri, on somebody's server</div>
+        </div>
+        <div class="chips">
+          <span class="fld">name</span><span class="fld">symbol</span>
+          <span class="fld">description</span><span class="fld">image</span>
+          <svg width="40" height="22" viewBox="0 0 40 22"><line x1="1" y1="11" x2="28" y2="11" stroke="#306C40" stroke-width="2.5"/><polygon points="38,11 26,4 26,18" fill="#306C40"/></svg>
+          <svg width="34" height="28" viewBox="0 0 34 28"><rect x="1.5" y="1.5" width="31" height="25" rx="4" fill="#fff" stroke="#1B231D" stroke-width="2.5"/><circle cx="11" cy="10" r="3.2" fill="#008B4C"/><polygon points="5,23 15,13 22,20 27,15 30,23" fill="#306C40"/></svg>
+          <span class="fld">animation_url</span><span class="fld">external_url</span>
+          <span class="fld">attributes[]</span><span class="fld">properties.files[]</span>
+          <span class="fld">properties.category</span>
+        </div>
+      </div>
+      <div class="band" style="height:166px;">
+        <div class="band-head">
+          <div class="num">2</div>
+          <div class="band-title">on-chain: the Metaplex Data struct</div>
+          <div class="band-sub">metadata PDA &rarr; Data</div>
+        </div>
+        <div class="chips">
+          <span class="fld">name</span><span class="fld">symbol</span>
+          <span class="fld fld-uri">uri &rarr;</span>
+          <span class="fld">seller_fee_basis_points</span><span class="fld">creators</span>
+        </div>
+      </div>
+      <div class="band" style="height:222px;">
+        <div class="band-head">
+          <div class="num">3</div>
+          <div class="band-title">Token-2022 native (the SPROUT path)</div>
+          <div class="band-sub">TLV entries inside the mint account itself</div>
+        </div>
+        <div class="l3-row">
+          <div class="inner-box" style="flex:0 0 380px;">
+            <div class="inner-lab">MetadataPointer</div>
+            <div class="selfloop">
+              <svg width="34" height="30" viewBox="0 0 34 30"><path d="M 8 22 A 10 9 0 1 1 24 22" fill="none" stroke="#306C40" stroke-width="2.5"/><polygon points="24,28 19,18 30,19" fill="#306C40"/></svg>
+              <span>self-referential &mdash; points at this same mint</span>
+            </div>
+          </div>
+          <div class="inner-box">
+            <div class="inner-lab">TokenMetadata</div>
+            <div class="chips">
+              <span class="fld">name</span><span class="fld">symbol</span>
+              <span class="fld fld-uri">uri &rarr;</span>
+              <span class="fld">additional_metadata</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rail">
+      <svg width="150" height="600" viewBox="0 0 150 600" style="position:absolute;left:0;top:0;">
+        <path d="M 0 335 H 62 V 86 H 24" fill="none" stroke="#1B231D" stroke-width="8" stroke-linejoin="round"/>
+        <path d="M 0 335 H 62 V 86 H 24" fill="none" stroke="#FFD23F" stroke-width="3.5" stroke-linejoin="round"/>
+        <polygon points="8,86 28,74 28,98" fill="#1B231D"/>
+        <path d="M 0 528 H 112 V 132 H 24" fill="none" stroke="#1B231D" stroke-width="8" stroke-linejoin="round"/>
+        <path d="M 0 528 H 112 V 132 H 24" fill="none" stroke="#FFD23F" stroke-width="3.5" stroke-linejoin="round"/>
+        <polygon points="8,132 28,120 28,144" fill="#1B231D"/>
+      </svg>
+      <div class="rail-chip" style="left:8px; top:303px;">uri</div>
+      <div class="rail-chip" style="left:58px; top:496px;">uri</div>
+    </div>
+  </div>
+</div>
+</body></html>

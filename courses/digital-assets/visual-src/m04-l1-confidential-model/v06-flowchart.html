@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One logical transfer, several transactions on the wire
+     purpose: show the context-account dance that exists because the proofs cannot fit beside the transfer in 1,232 bytes
+     data: tx 1..n: submit each proof to the ZK ElGamal Proof Program -> verified -> written into a short-lived context state account (range proof typically alone in its tx) tx n+1: Token-2022 Transfer executes, referencing the equality, validity, and range context accounts tx n+2: close context accounts, reclaim rent constraint: proofs exceed the 1,232-byte transaction envelope future: transaction format v1 (SIMD-0296 line, now carried by SIMD-0385) is designed to collapse this to one transaction; shipped in Agave, and as of 2026-09-06 its `enable_tx_v1` gate (txv1aq4pp281K9um3tnPgkfX8UqtFT6wcVW3hNezGLL) is ACTIVE ON DEVNET since slot 492,480,000 but still has no account on mainnet, so on mainnet 1,232 bytes remains the law
+     prompt: Horizontal pipeline of three stages: "verify proofs into context accounts" (stack of small account boxes, one per proof), "Transfer references contexts", "close contexts, reclaim rent". A ruler graphic under stage 1 labeled "proofs > 1,232-byte tx envelope". Dashed future lane underneath: "tx format v1: one transaction, gate not active on mainnet yet".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:573px;height:514px;top:-318px;right:-318px;border-radius:42% 36% 61% 58% / 51% 64% 46% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:541px;height:501px;bottom:-279px;left:-279px;border-radius:57% 64% 56% 55% / 61% 50% 37% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .pipe { display:flex; align-items:stretch; gap:0; margin-top:8px; }
+  .stage { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+           border-radius:var(--radius-2xl); padding:18px 22px; display:flex; flex-direction:column;
+           gap:10px; height:378px; }
+  .tx-tag { align-self:flex-start; font-family:var(--font-mono); font-weight:700; font-size:14px;
+            color:#F5E8CA; background:var(--stbr-dark); padding:4px 13px;
+            border-radius:var(--radius-pill); }
+  .stage-name { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.15;
+                color:var(--text-primary); }
+  .stage-sub { font-family:var(--font-body); font-weight:700; font-size:13.5px; line-height:1.35;
+               color:var(--text-secondary); }
+  .ctx-stack { display:flex; flex-direction:column; gap:6px; }
+  .ctx { border:2px solid var(--stbr-green); background:rgba(0,139,76,0.07);
+         border-radius:var(--radius-md); padding:6px 12px; font-family:var(--font-mono);
+         font-weight:700; font-size:13px; color:var(--stbr-green); }
+  .ruler { margin-top:auto; }
+  .ruler-lab { font-family:var(--font-body); font-weight:800; font-size:13px; color:var(--stbr-dark);
+               background:var(--stbr-yellow); border:2px solid var(--stbr-dark);
+               border-radius:var(--radius-md); padding:6px 11px; line-height:1.3; }
+  .pipe-arrow { flex:0 0 66px; display:flex; align-items:center; justify-content:center; }
+  .future { margin-top:20px; border:2.5px dashed var(--text-muted); border-radius:var(--radius-2xl);
+            background:rgba(255,255,255,0.55); padding:14px 26px; display:flex; align-items:center; gap:16px; }
+  .future-tag { flex:0 0 auto; font-family:var(--font-body); font-weight:800; font-size:12px;
+                letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted);
+                border:2px solid var(--text-muted); border-radius:var(--radius-pill); padding:5px 13px; }
+  .future-txt { font-family:var(--font-body); font-weight:700; font-size:14.5px; line-height:1.4;
+                color:var(--text-primary); }
+  .future-txt code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">THE CONTEXT-ACCOUNT DANCE</div>
+  <h2 class="viz-title">one logical transfer, several transactions on the wire</h2>
+  <div class="pipe">
+    <div class="stage" style="flex:1.25 1 0;">
+      <span class="tx-tag">tx 1..n</span>
+      <span class="stage-name">verify proofs into context accounts</span>
+      <span class="stage-sub" style="height:56px;">each proof goes to the ZK ElGamal Proof Program &rarr; verified &rarr; written into a short-lived context state account</span>
+      <div class="ctx-stack">
+        <div class="ctx" style="height:32px;">equality proof &rarr; context account</div>
+        <div class="ctx" style="height:32px;">validity proof &rarr; context account</div>
+        <div class="ctx" style="height:52px;">range proof &rarr; context account (typically alone in its tx)</div>
+      </div>
+      <div class="ruler">
+        <div class="ruler-lab">
+          <svg width="150" height="12" viewBox="0 0 150 12" style="display:block;margin-bottom:4px;">
+            <line x1="1" y1="6" x2="149" y2="6" stroke="#1B231D" stroke-width="2"/>
+            <line x1="1" y1="0" x2="1" y2="12" stroke="#1B231D" stroke-width="2"/>
+            <line x1="38" y1="2" x2="38" y2="10" stroke="#1B231D" stroke-width="1.5"/>
+            <line x1="75" y1="2" x2="75" y2="10" stroke="#1B231D" stroke-width="1.5"/>
+            <line x1="112" y1="2" x2="112" y2="10" stroke="#1B231D" stroke-width="1.5"/>
+            <line x1="149" y1="0" x2="149" y2="12" stroke="#1B231D" stroke-width="2"/>
+          </svg>
+          why: the proofs exceed the 1,232-byte transaction envelope
+        </div>
+      </div>
+    </div>
+    <div class="pipe-arrow">
+      <svg width="52" height="30" viewBox="0 0 52 30"><line x1="0" y1="15" x2="38" y2="15" stroke="#1B231D" stroke-width="3.5"/><polygon points="52,15 34,6 34,24" fill="#1B231D"/></svg>
+    </div>
+    <div class="stage">
+      <span class="tx-tag">tx n+1</span>
+      <span class="stage-name">the Transfer executes</span>
+      <span class="stage-sub">Token-2022 Transfer runs, referencing the equality, validity, and range context accounts instead of carrying the proofs inline</span>
+    </div>
+    <div class="pipe-arrow">
+      <svg width="52" height="30" viewBox="0 0 52 30"><line x1="0" y1="15" x2="38" y2="15" stroke="#1B231D" stroke-width="3.5"/><polygon points="52,15 34,6 34,24" fill="#1B231D"/></svg>
+    </div>
+    <div class="stage">
+      <span class="tx-tag">tx n+2</span>
+      <span class="stage-name">clean up</span>
+      <span class="stage-sub">close the context accounts and reclaim their rent &mdash; they only ever existed to smuggle the proofs past the size limit</span>
+    </div>
+  </div>
+  <div class="future">
+    <span class="future-tag">future lane</span>
+    <span class="future-txt">transaction format v1 (SIMD-0296 line, now carried by SIMD-0385) is designed to collapse this to ONE transaction. Shipped in Agave &mdash; and as of 2026-09-06 its <code>enable_tx_v1</code> gate is active on DEVNET but still has no account on mainnet, so on mainnet 1,232 bytes remains the law.</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two compression rails, two proof shapes
+     purpose: fix the single mechanical difference that drives every economic difference later in the lesson
+     data: Bubblegum v2 (cNFTs): plain Merkle proof; size GROWS with tree depth; depth-20 tree sends 20 sibling hashes at 32 bytes = 640 bytes; canopy caches upper nodes on chain to shorten what the client sends (rent buys proof size back); built on Metaplex's mpl-account-compression fork (a different program from SPL's original, as m07-l1 flagged); NFT-specific. ZK compression (compressed accounts / cTokens): Groth16 validity proof; CONSTANT 128 bytes regardless of depth; generalized over accounts, tokens and PDAs; uses address trees for compressed-account addresses; different hash function; NOT built on either account-compression program, SPL's or the mpl fork. Shared: neither stores a per-asset account on chain; both require an indexer to supply the proof; both proofs go stale when the tree moves.
+     prompt: Two-column comparison card. Left column "Bubblegum v2" shows a tree with a highlighted leaf and a stack of sibling-hash boxes climbing to the root, labeled "proof grows with depth: 20 x 32 B = 640 B", with a shaded band across the top levels labeled "canopy: rent buys this back". Right column "ZK compression" shows the same tree shape but with a single small fixed-size badge labeled "128 B validity proof" beside it and a caption "same size at any depth". A bottom strip spanning both columns reads "both: no per-asset account, both need an indexer, both proofs go stale".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:579px;height:450px;right:-333px;top:306px;border-radius:46% 58% 39% 42% / 51% 42% 63% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:576px;height:563px;bottom:-337px;left:-337px;border-radius:46% 39% 43% 37% / 50% 46% 39% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">one mechanical difference drives all the economics</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 18px;color:var(--stbr-dark);">Two compression rails, two proof shapes</h2>
+
+    <div style="display:flex;gap:20px;align-items:stretch;">
+      <!-- left: Bubblegum v2 -->
+      <div style="flex:1;border:1.5px solid var(--border-strong,#c9c2ad);border-radius:16px;padding:18px 22px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--stbr-dark);">Bubblegum v2 <span style="font-weight:700;font-size:16px;color:var(--text-secondary,#4a5a4e);">(cNFTs)</span></div>
+        <div style="margin-top:12px;background:var(--surface-paper,#faf5e6);border:1px solid var(--border-subtle,#e5decb);border-radius:12px;padding:12px 14px;">
+          <div style="background:var(--stbr-green);color:var(--stbr-cream);border-radius:8px;padding:5px 10px;font-family:var(--font-body);font-size:12.5px;font-weight:600;margin-bottom:10px;">canopy: upper nodes cached on chain &mdash; rent buys proof size back</div>
+          <div style="display:flex;gap:5px;align-items:center;flex-wrap:nowrap;">
+            <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:4px 7px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-dark);">h&#8321; 32&nbsp;B</div>
+            <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:4px 7px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-dark);">h&#8322; 32&nbsp;B</div>
+            <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:4px 7px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-dark);">h&#8323; 32&nbsp;B</div>
+            <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:4px 7px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-dark);">h&#8324; 32&nbsp;B</div>
+            <div style="font-family:var(--font-mono);font-size:14px;color:var(--text-secondary,#4a5a4e);">&hellip;</div>
+            <div style="background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:4px 7px;font-family:var(--font-mono);font-size:11px;color:var(--stbr-dark);">h&#8322;&#8320; 32&nbsp;B</div>
+          </div>
+          <div style="margin-top:10px;font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">plain Merkle proof &mdash; grows with depth: 20 &times; 32&nbsp;B = 640&nbsp;B</div>
+        </div>
+        <div style="margin-top:12px;font-family:var(--font-body);font-size:14px;line-height:1.55;color:var(--stbr-dark);">
+          <div>&bull; client sends one sibling hash per tree level</div>
+          <div>&bull; built on Metaplex&rsquo;s <span style="font-family:var(--font-mono);font-size:12.5px;">mpl-account-compression</span> fork &mdash; not SPL&rsquo;s original</div>
+          <div>&bull; NFT-specific</div>
+        </div>
+      </div>
+      <!-- right: ZK compression -->
+      <div style="flex:1;border:1.5px solid var(--border-strong,#c9c2ad);border-radius:16px;padding:18px 22px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--stbr-dark);">ZK compression <span style="font-weight:700;font-size:16px;color:var(--text-secondary,#4a5a4e);">(compressed accounts / cTokens)</span></div>
+        <div style="margin-top:12px;background:var(--surface-paper,#faf5e6);border:1px solid var(--border-subtle,#e5decb);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:16px;">
+          <div style="flex:none;background:var(--stbr-yellow);border-radius:12px;padding:12px 18px;text-align:center;">
+            <div style="font-family:var(--font-display);font-weight:900;font-size:32px;color:var(--stbr-dark);line-height:1;">128&nbsp;B</div>
+            <div style="font-family:var(--font-body);font-weight:700;font-size:12px;color:var(--stbr-dark);margin-top:4px;">Groth16 validity proof</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--stbr-dark);">CONSTANT &mdash; same size at any depth</div>
+            <div style="margin-top:4px;font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">one proof attests the whole path, however deep the tree</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-family:var(--font-body);font-size:14px;line-height:1.55;color:var(--stbr-dark);">
+          <div>&bull; generalized over accounts, tokens and PDAs</div>
+          <div>&bull; address trees hand out compressed-account addresses; different hash function</div>
+          <div>&bull; NOT built on either account-compression program (SPL&rsquo;s or the mpl fork)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;background:var(--stbr-emerald);border-radius:14px;padding:14px 22px;display:flex;align-items:center;gap:16px;">
+      <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.08em;color:var(--stbr-cream);">BOTH RAILS</div>
+      <div style="font-family:var(--font-body);font-weight:600;font-size:16px;color:var(--stbr-cream);">no per-asset account on chain &nbsp;&middot;&nbsp; an indexer must supply the proof &nbsp;&middot;&nbsp; proofs go stale when the tree moves</div>
+    </div>
+  </div>
+</div>
+</body></html>

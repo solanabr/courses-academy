@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: How fifteen recipients fit in one 1,232-byte transaction
+     purpose: show that the batch size is a byte-budget outcome, not a knob someone picked
+     data: Transaction envelope: 1,232 bytes, hard cap. Without a lookup table: every account address costs 32 bytes inline. The Light system accounts, the token pool, the state tree and the fee payer are all named in full, and the recipient list eats what is left. With the lookup table (mainnet 9NYFyEqPkyXUhkerbGHXUXkvb4qpzeEdHuGpgbgpH1NJ): the static accounts are referenced by 1-byte index into the table, freeing the space for 15 recipients across 3 compress instructions, 5 recipients each (maxAddressesPerInstruction = 5, maxAddressesPerTransaction = 15). Result: one transaction, 15,000 lamports, 15 recipients, 1,000 lamports each.
+     prompt: Two stacked horizontal bars, both 1,232 bytes wide and labeled as such. Top bar "no lookup table": large segments for each static account at 32 bytes, leaving a small remainder segment labeled "room for recipients". Bottom bar "with lookup table": the static accounts collapse into one thin segment labeled "table indexes, 1 byte each", and a large segment labeled "15 recipients, 3 compress instructions of 5". Under the bottom bar, a small caption: "15,000 lamports per transaction / 15 recipients = 1,000 lamports each".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:467px;height:430px;right:-238px;top:143px;border-radius:37% 45% 61% 38% / 60% 56% 61% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:492px;height:544px;bottom:-279px;left:-279px;border-radius:41% 40% 56% 38% / 61% 44% 53% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 60px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">batch size is a byte-budget outcome, not a knob</div>
+    <h2 class="viz-title" style="font-size:36px;margin:6px 0 22px;color:var(--stbr-dark);">How fifteen recipients fit in one 1,232-byte transaction</h2>
+
+    <!-- top bar: no lookup table -->
+    <div style="display:flex;justify-content:space-between;align-items:baseline;width:1232px;margin-bottom:6px;">
+      <div style="font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--stbr-dark);">no lookup table</div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary,#4a5a4e);">&#9001;&mdash; 1,232 bytes, hard cap &mdash;&#9002;</div>
+    </div>
+    <div style="display:flex;width:1232px;height:64px;border:2px solid var(--stbr-dark);border-radius:10px;overflow:hidden;">
+      <div style="flex:none;width:876px;background:repeating-linear-gradient(90deg, var(--stbr-green) 0px, var(--stbr-green) 30px, #3f7d4f 30px, #3f7d4f 32px);display:flex;align-items:center;justify-content:center;">
+        <div style="background:var(--surface-inverse,#1B231D);border-radius:8px;padding:5px 14px;font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--stbr-cream);">every account address named in full &mdash; 32 B each</div>
+      </div>
+      <div style="flex:1;background:var(--surface-paper,#faf5e6);display:flex;align-items:center;justify-content:center;border-left:2px solid var(--stbr-dark);">
+        <div style="font-family:var(--font-body);font-weight:700;font-size:13.5px;color:var(--stbr-dark);text-align:center;">room for<br>recipients</div>
+      </div>
+    </div>
+    <div style="width:876px;margin-top:5px;border-top:2px solid var(--border-strong,#c9c2ad);padding-top:4px;font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);text-align:center;">fee payer &nbsp;&middot;&nbsp; token pool &nbsp;&middot;&nbsp; state tree &nbsp;&middot;&nbsp; the Light system accounts &mdash; the recipient list eats what is left</div>
+
+    <!-- bottom bar: with lookup table -->
+    <div style="display:flex;justify-content:space-between;align-items:baseline;width:1232px;margin:22px 0 6px;">
+      <div style="font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--stbr-dark);">with the lookup table</div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary,#4a5a4e);">&#9001;&mdash; 1,232 bytes, hard cap &mdash;&#9002;</div>
+    </div>
+    <div style="display:flex;width:1232px;height:64px;border:2px solid var(--stbr-dark);border-radius:10px;overflow:hidden;">
+      <div style="flex:none;width:64px;background:var(--surface-inverse,#1B231D);display:flex;align-items:center;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--stbr-cream);text-align:center;line-height:1.3;">1&nbsp;B<br>each</div>
+      </div>
+      <div style="flex:1;background:var(--stbr-yellow);display:flex;align-items:center;justify-content:center;border-left:2px solid var(--stbr-dark);">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--stbr-dark);">15 recipients &mdash; 3 compress instructions &times; 5 each</div>
+      </div>
+    </div>
+    <div style="display:flex;width:1232px;margin-top:5px;gap:20px;align-items:baseline;">
+      <div style="flex:none;font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">table indexes, 1 byte each</div>
+      <div style="flex:1;text-align:right;font-family:var(--font-mono);font-size:12.5px;color:var(--text-muted,#6b7a6f);">lookup table (mainnet): 9NYFyEqPkyXUhkerbGHXUXkvb4qpzeEdHuGpgbgpH1NJ &nbsp;&middot;&nbsp; maxAddressesPerInstruction = 5, maxAddressesPerTransaction = 15</div>
+    </div>
+
+    <!-- caption -->
+    <div style="width:1232px;margin-top:18px;background:var(--stbr-emerald);border-radius:12px;padding:12px 20px;font-family:var(--font-body);font-weight:700;font-size:16px;color:var(--stbr-cream);text-align:center;">one transaction &nbsp;&middot;&nbsp; 15,000 lamports / 15 recipients = 1,000 lamports each</div>
+  </div>
+</div>
+</body></html>

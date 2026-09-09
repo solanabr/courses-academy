@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: How much of the extension space is actually constrained
+     purpose: right-size the reader's fear of the matrix by showing that only 9 of 29 production variants carry any cross-extension law
+     data: total: 29 production ExtensionType variants (source enum @ 426400f; 3 test-only variants excluded) segment A - "unconstrained": 20 variants; appear in neither the conflict guards nor the forced-pair lookup; combine freely segment B - "conflict-guard only": 5 variants (ConfidentialTransferMint, ConfidentialTransferFeeConfig, ConfidentialMintBurn, InterestBearingConfig, ScaledUiAmount) segment C - "forced-pair only": 2 variants (TransferHook, Pausable) segment D - "both": 2 variants (TransferFeeConfig, NonTransferable) derivation note: 7 variants appear in check_for_invalid_mint_extension_combinations, 4 in required_init_account_extensions, overlap of 2, union of 9
+     prompt: Single horizontal stacked bar, 29 units wide, split into the four segments from data in the order A, B, C, D with segment widths proportional to their counts (20 / 5 / 2 / 2). Render segment A in a muted neutral and B, C, D in three progressively stronger accents. Label each segment with its count and short name; put a bracket over B+C+D reading "9 constrained". Caption underneath with the derivation note from data, verbatim.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:449px;height:407px;top:-222px;right:-222px;border-radius:45% 53% 53% 38% / 63% 65% 43% 62%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:525px;bottom:-329px;left:426px;border-radius:41% 65% 55% 65% / 38% 50% 62% 64%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 36px 48px 36px; }
+  .barrow { display: flex; width: 100%; border-radius: var(--radius-md); overflow: hidden; height: 110px; }
+  .seg { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .seg .n { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 34px; }
+  .seg .t { font-family: var(--font-body); font-size: 13px; font-weight: 600; margin-top: 2px; }
+  .brk { display: flex; width: 100%; margin-bottom: 8px; }
+  .leg { display: flex; gap: 16px; margin-top: 18px; }
+  .legcard { flex: 1 1 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 10px 14px; }
+  .legcard .h { display: flex; align-items: center; gap: 8px; font-family: var(--font-body); font-weight: 700; font-size: 13.5px; color: var(--text-primary); }
+  .dot { width: 14px; height: 14px; border-radius: 4px; flex: 0 0 14px; }
+  .legcard .b { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); margin-top: 5px; line-height: 1.45; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">right-sizing the fear</div>
+  <h2 class="viz-title" style="margin-bottom:16px;">only 9 of 29 variants carry any cross-extension law</h2>
+
+  <!-- bracket over B+C+D (9/29 of the bar, right-aligned) -->
+  <div style="width:100%;margin-bottom:8px;">
+    <div style="margin-left:68.96%;width:31.04%;text-align:center;font-family:var(--font-display);font-weight:var(--weight-bold);font-size:17px;color:var(--stbr-emerald);margin-bottom:4px;">9 constrained</div>
+    <div style="margin-left:68.96%;width:31.04%;height:12px;border-top:2px solid var(--stbr-emerald);border-left:2px solid var(--stbr-emerald);border-right:2px solid var(--stbr-emerald);border-radius:8px 8px 0 0;"></div>
+  </div>
+
+  <!-- the stacked bar: 20 / 5 / 2 / 2 of 29 -->
+  <div class="barrow">
+    <div class="seg" style="flex:20 0 0;background:var(--surface-paper);border:1px solid var(--border-subtle);">
+      <div class="n" style="color:var(--text-secondary);">20</div>
+      <div class="t" style="color:var(--text-secondary);">unconstrained: combine freely</div>
+    </div>
+    <div class="seg" style="flex:5 0 0;background:var(--surface-brand-deep);">
+      <div class="n" style="color:var(--text-on-brand);">5</div>
+      <div class="t" style="color:var(--text-on-brand);">conflict-guard only</div>
+    </div>
+    <div class="seg" style="flex:2 0 0;background:var(--surface-brand);">
+      <div class="n" style="color:var(--text-on-brand);">2</div>
+      <div class="t" style="color:var(--text-on-brand);">forced-pair</div>
+    </div>
+    <div class="seg" style="flex:2 0 0;background:var(--surface-accent);">
+      <div class="n" style="color:var(--text-on-accent);">2</div>
+      <div class="t" style="color:var(--text-on-accent);">both</div>
+    </div>
+  </div>
+  <div style="font-family:var(--font-body);font-size:13px;color:var(--text-muted);margin-top:6px;">29 production ExtensionType variants (source enum @ 426400f; 3 test-only variants excluded)</div>
+
+  <!-- legend with the named variants -->
+  <div class="leg">
+    <div class="legcard">
+      <div class="h"><span class="dot" style="background:var(--surface-paper);border:1px solid var(--border-strong);"></span>unconstrained · 20</div>
+      <div class="b">appear in neither the conflict guards nor the forced-pair lookup</div>
+    </div>
+    <div class="legcard">
+      <div class="h"><span class="dot" style="background:var(--surface-brand-deep);"></span>conflict-guard only · 5</div>
+      <div class="b">ConfidentialTransferMint, ConfidentialTransferFeeConfig, ConfidentialMintBurn, InterestBearingConfig, ScaledUiAmount</div>
+    </div>
+    <div class="legcard">
+      <div class="h"><span class="dot" style="background:var(--surface-brand);"></span>forced-pair only · 2</div>
+      <div class="b">TransferHook, Pausable</div>
+    </div>
+    <div class="legcard">
+      <div class="h"><span class="dot" style="background:var(--surface-accent);"></span>both · 2</div>
+      <div class="b">TransferFeeConfig, NonTransferable</div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;border-top:1px solid var(--border-subtle);padding-top:10px;font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);">
+    7 variants appear in check_for_invalid_mint_extension_combinations, 4 in required_init_account_extensions, overlap of 2, union of 9
+  </div>
+</div>
+</div>
+</body></html>

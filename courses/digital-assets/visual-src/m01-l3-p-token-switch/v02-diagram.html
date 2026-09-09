@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Same address, swapped engine
+     purpose: show that every client still calls TokenkegQ... unchanged while the implementation behind it was replaced at epoch 971
+     data: Layer 1 (unchanged): wallets, DEXes, bridges, your decode-mint inspector Layer 2 (unchanged): address TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA Layer 2 (unchanged): the interface: account layouts, instruction discriminators, error codes Layer 3 (swapped): OLD engine: original spl-token (Rust, 2020-2026) -> NEW engine: p-token (Pinocchio rewrite by Anza, epoch 971 onward) Switch: feature gate ptokF...nSdP, activated slot 419,472,000
+     prompt: Three-layer vertical stack. Top layer: client boxes (wallet, DEX, bridge, decode-mint) with arrows all converging on a middle layer labeled with the TokenkegQ address and "frozen interface: layouts, discriminators, errors". Bottom layer split into two engine boxes: left "original spl-token (2020-2026)" crossed out, right "p-token (Pinocchio, epoch 971 onward)" highlighted, with a switch icon between them labeled "feature gate, slot 419,472,000". Emphasize that no arrow above the middle layer changes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:568px;height:542px;bottom:-286px;right:-286px;border-radius:56% 58% 53% 39% / 36% 37% 40% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:413px;height:430px;left:-230px;top:248px;border-radius:55% 44% 63% 64% / 47% 44% 61% 50%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .stack { display:flex; flex-direction:column; margin-top:22px; }
+  .clients { display:flex; gap:16px; }
+  .client { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+            border-radius:var(--radius-lg); padding:14px 10px; text-align:center;
+            display:flex; align-items:center; justify-content:center;
+            font-family:var(--font-body); font-weight:700; font-size:18px; color:var(--text-primary); }
+  .drop { display:flex; }
+  .dcol { flex:1; display:flex; flex-direction:column; align-items:center; padding:4px 0 0; }
+  .caption { text-align:center; font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.11em; text-transform:uppercase; color:var(--stbr-green);
+             padding:2px 0 6px; }
+  .iface { background:var(--surface-brand); border-radius:var(--radius-lg); padding:16px 28px;
+           display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .iaddr { font-family:var(--font-mono); font-weight:700; font-size:19px; color:var(--text-on-brand); }
+  .isub { font-family:var(--font-body); font-size:15px; color:var(--text-on-brand); opacity:.88;
+          text-align:right; line-height:1.3; }
+  .ichip { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.1em;
+           text-transform:uppercase; color:var(--stbr-emerald); background:var(--stbr-cream);
+           border-radius:var(--radius-pill); padding:5px 12px; white-space:nowrap; flex:none; }
+  .drop2 { display:flex; justify-content:center; padding:4px 0; }
+  .engines { display:flex; align-items:stretch; gap:0; }
+  .engine { flex:1; border-radius:var(--radius-lg); padding:16px 24px; }
+  .engine .elab { font-weight:800; font-size:11px; letter-spacing:.11em; text-transform:uppercase; margin-bottom:4px; }
+  .engine .ename { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1; }
+  .engine .esub { font-family:var(--font-body); font-size:15px; margin-top:4px; line-height:1.3; }
+  .old { background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .old .elab { color:#a5342a; }
+  .old .ename { color:var(--text-secondary); text-decoration:line-through; }
+  .old .esub { color:var(--text-muted); }
+  .new { background:var(--stbr-yellow); }
+  .new .elab { color:var(--stbr-dark); opacity:.7; }
+  .new .ename, .new .esub { color:var(--stbr-dark); }
+  .switch { width:280px; flex:none; display:flex; flex-direction:column; align-items:center;
+            justify-content:center; gap:8px; padding:0 12px; }
+  .swchip { font-family:var(--font-mono); font-weight:700; font-size:13px; color:var(--text-primary);
+            background:var(--surface-card); border:1.5px solid var(--border-strong);
+            border-radius:var(--radius-pill); padding:5px 14px; text-align:center; }
+  .swsub { font-family:var(--font-body); font-size:13px; color:var(--text-secondary); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">same address, swapped engine</div>
+  <h2 class="viz-title">nothing above the interface moved</h2>
+  <div class="stack">
+    <div class="clients">
+      <div class="client">wallets</div>
+      <div class="client">DEXes</div>
+      <div class="client">bridges</div>
+      <div class="client">your decode-mint inspector</div>
+    </div>
+    <div class="drop">
+      <div class="dcol"><svg width="14" height="34"><line x1="7" y1="0" x2="7" y2="22" stroke="#306C40" stroke-width="2.5"/><polygon points="1,22 13,22 7,34" fill="#306C40"/></svg></div>
+      <div class="dcol"><svg width="14" height="34"><line x1="7" y1="0" x2="7" y2="22" stroke="#306C40" stroke-width="2.5"/><polygon points="1,22 13,22 7,34" fill="#306C40"/></svg></div>
+      <div class="dcol"><svg width="14" height="34"><line x1="7" y1="0" x2="7" y2="22" stroke="#306C40" stroke-width="2.5"/><polygon points="1,22 13,22 7,34" fill="#306C40"/></svg></div>
+      <div class="dcol"><svg width="14" height="34"><line x1="7" y1="0" x2="7" y2="22" stroke="#306C40" stroke-width="2.5"/><polygon points="1,22 13,22 7,34" fill="#306C40"/></svg></div>
+    </div>
+    <div class="caption">every call, byte for byte &mdash; unchanged</div>
+    <div class="iface">
+      <div>
+        <div class="iaddr">TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</div>
+      </div>
+      <div class="isub">the frozen interface: account layouts &middot; instruction discriminators &middot; error codes</div>
+      <div class="ichip">unchanged</div>
+    </div>
+    <div class="drop2"><svg width="14" height="30"><line x1="7" y1="0" x2="7" y2="18" stroke="#306C40" stroke-width="2.5"/><polygon points="1,18 13,18 7,30" fill="#306C40"/></svg></div>
+    <div class="engines">
+      <div class="engine old">
+        <div class="elab">old engine &mdash; retired</div>
+        <div class="ename">original spl-token</div>
+        <div class="esub">Rust, 2020&ndash;2026</div>
+      </div>
+      <div class="switch">
+        <svg width="80" height="20"><line x1="0" y1="10" x2="62" y2="10" stroke="#1B231D" stroke-width="2.5"/><polygon points="62,3 78,10 62,17" fill="#1B231D"/></svg>
+        <div class="swchip">feature gate ptokF&hellip;nSdP</div>
+        <div class="swsub">activated slot 419,472,000</div>
+      </div>
+      <div class="engine new">
+        <div class="elab">new engine &mdash; live</div>
+        <div class="ename">p-token</div>
+        <div class="esub">Pinocchio rewrite by Anza &middot; epoch 971 onward</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

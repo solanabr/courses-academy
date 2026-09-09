@@ -1,0 +1,44 @@
+[
+  {
+    "id": "t1-classic-spl",
+    "input": "'spl', '', false",
+    "expectedOutput": "result === true",
+    "description": "A classic SPL mint always routes, the check is bypassed for it."
+  },
+  {
+    "id": "t2-allowlisted-set",
+    "input": "'token2022', 'TransferFeeConfig MetadataPointer TokenMetadata', false",
+    "expectedOutput": "result === true",
+    "description": "All three extensions are on the allowlist, so the pool is created."
+  },
+  {
+    "id": "t3-transfer-hook",
+    "input": "'token2022', 'TransferHook', false",
+    "expectedOutput": "result === false",
+    "description": "TransferHook is off-list, arbitrary CU per transfer: so it reverts."
+  },
+  {
+    "id": "t4-permanent-delegate",
+    "input": "'token2022', 'PermanentDelegate', false",
+    "expectedOutput": "result === false",
+    "description": "PermanentDelegate can sweep the pool vault: rejected unless whitelisted."
+  },
+  {
+    "id": "t5-whitelisted-permanent-delegate",
+    "input": "'token2022', 'PermanentDelegate MetadataPointer', true",
+    "expectedOutput": "result === true",
+    "description": "A MINT_WHITELIST / mint-association bypass lets a regulated PermanentDelegate stablecoin route."
+  },
+  {
+    "id": "t6-scaled-ui-amount",
+    "input": "'token2022', 'ScaledUiAmount', false",
+    "expectedOutput": "result === true",
+    "description": "ScaledUiAmount is a display extension on the allowlist: it routes."
+  },
+  {
+    "id": "t7-mixed-taint",
+    "input": "'token2022', 'TransferFeeConfig ConfidentialTransferMint', false",
+    "expectedOutput": "result === false",
+    "description": "One off-list extension taints the whole mint even when another is allowlisted."
+  }
+]

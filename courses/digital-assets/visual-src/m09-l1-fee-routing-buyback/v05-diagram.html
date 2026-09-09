@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One harvest, two independent burns
+     purpose: show the conservation invariant on the fee split and that the SOL-funded buyback is a separate flow, not a mirror
+     data: left flow: harvested 1,000,000 SPROUT base units -> burnedFromFees 200,000 (20% burn share) -> toTreasury 800,000 invariant: 200,000 + 800,000 = 1,000,000 right flow: treasury SOL 5,000,000,000 lamports -> divide by venue price 1,000,000 lamports per base unit -> buyback 5,000 SPROUT base units bought, then burned note: floor division on bigints, no fractional base units both flows converge on: burn (mint supply falls by burnedFromFees + bought)
+     prompt: Two vertical flows side by side converging on a single "burn" node at the bottom. Left flow labeled "fee split (SPROUT in, SPROUT out)", right flow labeled "buyback (SOL in, SPROUT out)". Print the invariant equation under the left flow in a highlighted box. Draw a dashed line between the two flows labeled "NOT required to be equal".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:479px;top:-293px;right:-293px;border-radius:40% 55% 43% 47% / 35% 47% 38% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:413px;height:463px;left:-233px;top:118px;border-radius:47% 60% 35% 45% / 55% 49% 52% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:26px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;font-size:16px;">two flows, one supply</div>
+    <h2 class="viz-title" style="font-size:34px;margin:4px 0 18px;color:var(--stbr-dark);">One harvest, two independent burns</h2>
+
+    <div style="position:relative;height:396px;">
+      <!-- dashed divider between the flows -->
+      <div style="position:absolute;left:50%;top:8px;height:380px;width:0;margin-left:-1px;border-left:3px dashed var(--stbr-dark);opacity:0.35;"></div>
+      <div style="position:absolute;left:50%;top:166px;transform:translateX(-50%);width:130px;background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:12px;padding:6px 8px;font-family:var(--font-display);font-weight:800;font-size:11.5px;line-height:1.3;letter-spacing:0.04em;color:var(--stbr-dark);text-align:center;">NOT required to be equal</div>
+
+      <!-- LEFT: fee split -->
+      <div style="position:absolute;left:0;top:0;width:600px;">
+        <div style="text-align:center;margin-bottom:12px;"><span style="display:inline-block;background:var(--stbr-emerald);color:#F5E8CA;border-radius:999px;padding:6px 18px;font-family:var(--font-display);font-weight:800;font-size:14px;">fee split &mdash; SPROUT in, SPROUT out</span></div>
+        <div style="border:2px solid var(--stbr-emerald);border-radius:12px;padding:10px 16px;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">harvested</div>
+          <div style="font-family:var(--font-mono);font-size:14px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">1,000,000 SPROUT base units</div>
+        </div>
+        <div style="width:2px;height:14px;background:var(--stbr-dark);margin:4px auto 0;"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);margin:0 auto 4px;"></div>
+        <div style="display:flex;justify-content:space-between;">
+          <div style="width:289px;border:2px solid var(--stbr-green);border-radius:12px;padding:9px 6px;text-align:center;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">burnedFromFees</div>
+            <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">200,000</div>
+            <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-muted,#6b7a6f);">20% burn share</div>
+          </div>
+          <div style="width:289px;border:2px solid var(--stbr-green);border-radius:12px;padding:9px 6px;text-align:center;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">toTreasury</div>
+            <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">800,000</div>
+            <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-muted,#6b7a6f);">spendable</div>
+          </div>
+        </div>
+        <!-- the invariant: the point of the visual -->
+        <div style="margin-top:12px;background:rgba(255,210,63,0.22);border:3px solid var(--stbr-yellow);border-radius:12px;padding:9px 14px;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--stbr-dark);">conservation invariant</div>
+          <div style="font-family:var(--font-mono);font-weight:700;font-size:17px;color:var(--stbr-dark);margin-top:2px;">200,000 + 800,000 = 1,000,000</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: buyback -->
+      <div style="position:absolute;right:0;top:0;width:600px;">
+        <div style="text-align:center;margin-bottom:12px;"><span style="display:inline-block;background:var(--stbr-green);color:#F5E8CA;border-radius:999px;padding:6px 18px;font-family:var(--font-display);font-weight:800;font-size:14px;">buyback &mdash; SOL in, SPROUT out</span></div>
+        <div style="border:2px solid var(--stbr-emerald);border-radius:12px;padding:10px 16px;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">treasury SOL</div>
+          <div style="font-family:var(--font-mono);font-size:14px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">5,000,000,000 lamports</div>
+        </div>
+        <div style="width:2px;height:14px;background:var(--stbr-dark);margin:4px auto 0;"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);margin:0 auto 4px;"></div>
+        <div style="border:2px solid var(--stbr-green);border-radius:12px;padding:9px 16px;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">&divide; venue price</div>
+          <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">1,000,000 lamports per base unit</div>
+          <div style="font-family:var(--font-body);font-size:11.5px;color:var(--text-muted,#6b7a6f);margin-top:2px;">floor division on bigints &mdash; no fractional base units</div>
+        </div>
+        <div style="width:2px;height:14px;background:var(--stbr-dark);margin:4px auto 0;"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);margin:0 auto 4px;"></div>
+        <div style="border:2px solid var(--stbr-green);border-radius:12px;padding:9px 16px;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);">buyback</div>
+          <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">5,000 SPROUT base units bought, then burned</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- convergence arrows into the burn bar -->
+    <div style="position:relative;height:30px;">
+      <div style="position:absolute;left:299px;top:2px;width:2px;height:16px;background:var(--stbr-emerald);"></div>
+      <div style="position:absolute;left:293px;top:18px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-emerald);"></div>
+      <div style="position:absolute;right:299px;top:2px;width:2px;height:16px;background:var(--stbr-emerald);"></div>
+      <div style="position:absolute;right:293px;top:18px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-emerald);"></div>
+    </div>
+
+    <!-- the single burn node both flows converge on -->
+    <div style="background:var(--surface-inverse,#1B231D);border-radius:14px;padding:13px 24px;text-align:center;">
+      <span style="font-family:var(--font-display);font-weight:900;font-size:20px;color:#F5E8CA;">burn</span>
+      <span style="font-family:var(--font-body);font-size:14.5px;color:rgba(245,232,202,0.85);margin-left:14px;">mint supply falls by <span style="font-family:var(--font-mono);font-size:13px;">burnedFromFees + bought</span></span>
+    </div>
+  </div>
+</div>
+</body></html>

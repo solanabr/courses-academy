@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: validateConfidentialConfig: three ordered rejections, then the config
+     purpose: pin the exact check order and error slugs the grader expects, so cases where more than one rejection holds resolve deterministically
+     data: input: extensionList split on '|', authorityKey, autoApprove, auditorKey check 1: authorityKey is "" -> return reject("missing-authority") check 2: ConfidentialTransferMint absent from set -> return reject("confidential-transfer-mint-not-enabled") (also the correct verdict for MintBurn-without-TransferMint, rule 3) check 3: NonTransferable AND ConfidentialTransferMint present, ConfidentialMintBurn absent -> return reject("nontransferable-confidential-requires-mintburn") fall-through: return { authority, autoApproveNewAccounts, auditorElGamalPubkey } note: a null auditorKey is the no-auditor policy, never an error
+     prompt: Vertical decision flow: one input box, then three diamond checks stacked in the order above, each with a red exit arrow to a slug box carrying its exact error string in monospace. Side note on the second diamond: "covers rule 3 too". The fall-through arrow ends in a green box listing the three returned fields, with a small tag "null auditor is legal". Column caption: "first failing check wins".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:484px;right:-273px;top:290px;border-radius:37% 50% 54% 35% / 41% 46% 42% 57%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:517px;height:559px;bottom:-296px;left:-296px;border-radius:54% 57% 56% 56% / 46% 65% 43% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:28px 48px 32px;overflow:hidden;}
+  .card .viz-title{font-size:42px;margin:4px 0 14px;}
+  .row{display:flex;align-items:center;}
+  .flowcell{width:640px;display:flex;justify-content:center;}
+  .inbox{width:640px;border:2px solid var(--border-strong,#1B231D);border-radius:14px;background:var(--surface-paper,#FAF3E3);padding:9px 18px;text-align:center;font-family:var(--font-mono);font-size:15px;color:var(--text-primary);}
+  .inbox b{font-family:var(--font-body);font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:var(--stbr-green);margin-right:10px;}
+  .check{width:640px;border:2px solid var(--stbr-green);border-radius:14px;background:var(--surface-card);padding:9px 16px;display:flex;align-items:center;gap:12px;}
+  .num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;}
+  .cond{font-family:var(--font-mono);font-size:14.5px;color:var(--text-primary);line-height:1.35;}
+  .cond .note{display:block;font-family:var(--font-body);font-size:13px;color:var(--stbr-green);font-weight:600;margin-top:2px;}
+  .harr{width:84px;height:14px;position:relative;}
+  .harr .l{position:absolute;left:0;right:12px;top:6px;height:2.5px;background:var(--stbr-dark);}
+  .harr .h{position:absolute;right:0;top:0;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid var(--stbr-dark);}
+  .slug{flex:1;background:var(--surface-inverse);color:#F5E8CA;border-radius:12px;padding:11px 18px;font-family:var(--font-mono);font-size:14.5px;}
+  .slug em{font-style:normal;color:var(--stbr-yellow);}
+  .darr{width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:11px solid var(--stbr-green);margin:5px 0;}
+  .darrow{display:flex;justify-content:center;width:640px;}
+  .result{width:640px;background:var(--stbr-emerald);color:#F5E8CA;border-radius:14px;padding:10px 18px;text-align:center;}
+  .result .t{font-family:var(--font-display);font-weight:800;font-size:17px;margin-bottom:3px;}
+  .result code{font-family:var(--font-mono);font-size:14px;}
+  .tagcell{flex:1;display:flex;justify-content:flex-start;padding-left:24px;}
+  .tag{font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-primary);background:var(--surface-paper,#FAF3E3);border:1.5px dashed var(--stbr-green);border-radius:999px;padding:6px 16px;}
+  .cap{margin-top:12px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-primary);}
+  .cap span{background:var(--stbr-yellow);border-radius:999px;padding:4px 18px;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">grader contract &middot; check order + exact slugs</div>
+  <h2 class="viz-title">validateConfidentialConfig: three ordered rejections, then the config</h2>
+  <div class="row"><div class="flowcell"><div class="inbox"><b>input</b>extensionList.split('|') &middot; authorityKey &middot; autoApprove &middot; auditorKey</div></div></div>
+  <div class="row"><div class="darrow"><div class="darr"></div></div></div>
+  <div class="row">
+    <div class="flowcell"><div class="check"><div class="num">1</div><div class="cond">authorityKey === ""</div></div></div>
+    <div class="harr"><div class="l"></div><div class="h"></div></div>
+    <div class="slug">return reject(<em>"missing-authority"</em>)</div>
+  </div>
+  <div class="row"><div class="darrow"><div class="darr"></div></div></div>
+  <div class="row">
+    <div class="flowcell"><div class="check"><div class="num">2</div><div class="cond">ConfidentialTransferMint absent from the set<span class="note">covers rule 3 too: MintBurn without TransferMint lands here</span></div></div></div>
+    <div class="harr"><div class="l"></div><div class="h"></div></div>
+    <div class="slug">return reject(<em>"confidential-transfer-mint-not-enabled"</em>)</div>
+  </div>
+  <div class="row"><div class="darrow"><div class="darr"></div></div></div>
+  <div class="row">
+    <div class="flowcell"><div class="check"><div class="num">3</div><div class="cond">NonTransferable &amp;&amp; ConfidentialTransferMint present &amp;&amp; ConfidentialMintBurn absent</div></div></div>
+    <div class="harr"><div class="l"></div><div class="h"></div></div>
+    <div class="slug">return reject(<em>"nontransferable-confidential-requires-mintburn"</em>)</div>
+  </div>
+  <div class="row"><div class="darrow"><div class="darr"></div></div></div>
+  <div class="row">
+    <div class="flowcell"><div class="result"><div class="t">fall-through: return the config</div><code>{ authority, autoApproveNewAccounts, auditorElGamalPubkey }</code></div></div>
+    <div class="tagcell"><div class="tag">null auditorKey is legal &mdash; the no-auditor policy, never an error</div></div>
+  </div>
+  <div class="cap"><span>first failing check wins</span></div>
+</div>
+</div>
+</body></html>

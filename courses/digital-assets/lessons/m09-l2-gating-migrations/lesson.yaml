@@ -1,0 +1,86 @@
+id: lesson-date-m09-l2-gating-migrations
+slug: m09-l2-gating-migrations
+title: "Gating & points-to-token migrations: wiring the whole economy"
+skills:
+  - das-api
+  - merkle-proofs
+  - state-compression
+  - solana-kit
+  - pdas
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/kit": "7.1.1"
+    "@solana-program/token-2022": "0.15.0"
+    tsx: "4.23.12"
+    typescript: "5.9.3"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m09l2-q1-gate-trust
+        prompt: "The alpha channel gates on holding a Founding-Farmer cNFT. A user's client sends a signed message saying 'I hold it.' How should your gate decide?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Check the local wallet adapter's cached token list for the Founding-Farmer cNFT, which is what the portfolio page renders from."
+            correct: false
+            feedback: "A client-side cache is both spoofable and stale. The gate must verify against a DAS/on-chain source, not the client's own report."
+          - id: d
+            label: "Ask for the crate's merkle proof with getAssetProof and verify it locally, so the decision rests on cryptography instead of on an index whose freshness you do not control."
+            correct: false
+            feedback: "The proof comes from the same index and describes the same root, so it buys a round trip and no freshness. For a cNFT there is no account to fall back on."
+          - id: c
+            label: "Resolve the wallet's assets through a DAS read and confirm the Founding-Farmer cNFT actually resolves to that owner, accepting a bounded amount of index lag."
+            correct: true
+            feedback: "A gate decides on a read the applicant cannot write to. Index lag is a bounded failure; trusting the applicant's own report is bounded by nothing."
+          - id: a
+            label: "Accept the wallet-signed message: a valid signature over the gate's challenge nonce proves the wallet controls its keys and therefore holds the badge."
+            correct: false
+            feedback: "A signature proves control of the keypair, not that the wallet currently holds a specific cNFT. Holdings must be read from the chain, not asserted by the client."
+        explanation: "Gating decides on an on-chain reality, so it reads one: resolve the wallet's assets through DAS (cNFT reads require a DAS-supporting RPC) and confirm the gating asset resolves to that owner. A signature or a client claim is not evidence of a current holding. DAS is an index, so this read is fresh to within the provider's lag rather than instantaneous, which is a bill worth paying for a chat role and worth topping up with an on-chain confirmation for anything expensive."
+      - id: m09l2-q2-kmno-gap
+        prompt: "You migrate compost points to SPROUT. The lesson points at Kamino's KMNO points-to-token migration as a case study but flags a gap. What's the honest way to use it?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Reuse the mechanism, a merkle-claim path like your airdrop, but don't cite a KMNO conversion ratio; those numbers aren't published."
+            correct: true
+            feedback: "The mechanism is portable and the tokenomics are not. Nobody can hand you the ratio, which is exactly the gap the case study leaves open."
+          - id: b
+            label: "Copy Kamino's exact points-to-KMNO conversion ratio straight from their published docs into your migration config, since a shipped mainnet migration is the best-vetted number you can get."
+            correct: false
+            feedback: "Kamino's conversion tokenomics aren't surfaced in their docs; the research flags this as a gap. Copy the mechanism, not a number you can't verify."
+          - id: c
+            label: "Skip the merkle path and mint SPROUT straight to every points holder, batching them into as few transactions as fit."
+            correct: false
+            feedback: "A single-transaction mint to all holders doesn't scale and throws away the claim/vesting path you already built; the migration reuses that merkle path."
+          - id: d
+            label: "Back the ratio out of KMNO's circulating supply and Kamino's published points totals, then apply the same implied rate to compost points."
+            correct: false
+            feedback: "That reconstructs a number the lesson could not source, and it would still be somebody else's supply math. Your ratio is a decision about your own dilution."
+        explanation: "Kamino KMNO is a candidate case study with an honest numbers gap: the conversion tokenomics aren't public. The transferable lesson is the mechanism, a merkle-claim migration (reusing the conversion-window path you just built, with claim_locked for any vesting), not a ratio you'd be inventing."
+      - id: m09l2-q3-stale-index
+        prompt: "Your gate-check just passed a wallet that transferred its Founding-Farmer cNFT away five seconds ago. What's the most likely cause?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The DAS index hadn't caught up: a just-transferred asset can still resolve to the old owner until the indexer updates."
+            correct: true
+            feedback: "Not a bug in your gate and not a bug in the provider. It is what an index is, which is why a soulbound badge is the fix that removes the case rather than shrinking it."
+          - id: d
+            label: "The gate skipped its on-chain confirmation step, which for a cNFT would have caught the transfer."
+            correct: false
+            feedback: "That remedy exists for a fungible balance, where getTokenAccountsByOwner is a fresher second read. A cNFT has no account to confirm against, which is why the lag is structural here."
+          - id: c
+            label: "DAS reads are cryptographically final, so the gate is authoritative and the old owner cannot still resolve."
+            correct: false
+            feedback: "DAS is an indexer view, not a consensus proof; it lags the chain by design. The issue is freshness, not finality."
+          - id: a
+            label: "cNFTs can't be transferred, so the read must be misreporting the transfer."
+            correct: false
+            feedback: "cNFTs are transferable via Bubblegum v2 transfer_v2. The badge is soulbound only because set_non_transferable_v2 was applied; an ordinary cNFT can move freely."
+        explanation: "DAS is an indexed view of on-chain state, and indexers lag. A holding that changed seconds ago may not be reflected yet, so a gate can briefly admit a former holder. Design for freshness: accept the lag, or confirm against a fresher source for high-stakes gates."

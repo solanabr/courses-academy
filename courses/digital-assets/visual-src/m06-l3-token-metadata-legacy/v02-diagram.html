@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The pNFT transfer funnel
+     purpose: show why a pNFT transfer cannot bypass rule evaluation: the token account is frozen, so only Token Metadata's instruction can move it
+     data: Wallet attempts transfer -> Path A (plain SPL token transfer): BLOCKED, token account is frozen at all times Path B (Token Metadata Transfer instruction): 1. resolve metadata PDA -> programmable config -> rule set address 2. Token Auth Rules: evaluate rule for operation (e.g. Transfer:SaleDelegate) 3. rule passes -> thaw, transfer, refreeze (atomic) 4. rule fails -> whole transfer fails Note: with the flagship rule set, step 2 always passes (every operation = Pass)
+     prompt: A funnel diagram. Left side: a wallet icon with two outgoing arrows. Top arrow to a box "SPL Token transfer" struck through with a lock icon and label "frozen at all times". Bottom arrow to a pipeline of four boxes: "TM Transfer ix" -> "resolve rule set" -> "evaluate rule for operation" -> "thaw / move / refreeze". The evaluate box has a side annotation: "flagship rule set: always Pass". Keep labels monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:554px;height:543px;top:-291px;right:-291px;border-radius:54% 57% 59% 56% / 50% 59% 55% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:517px;height:433px;left:-306px;top:336px;border-radius:59% 62% 38% 55% / 64% 63% 53% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { display:flex; align-items:stretch; gap:0; }
+  .wallet { flex:0 0 190px; background:var(--surface-inverse); color:var(--text-on-dark);
+            border-radius:var(--radius-xl); padding:22px 18px; display:flex;
+            flex-direction:column; justify-content:center; text-align:center; }
+  .wallet .big { font-family:var(--font-display); font-weight:900; font-size:24px;
+                 line-height:1.1; margin-bottom:8px; }
+  .wallet .sub { font-family:var(--font-body); font-size:13px; color:var(--stbr-ink-300); }
+  .paths { flex:1; display:flex; flex-direction:column; gap:26px; padding-left:0; }
+  .pathrow { display:flex; align-items:center; }
+  .plabel { flex:0 0 118px; display:flex; flex-direction:column; align-items:center; }
+  .plabel .arr { width:86px; height:0; border-top:3px solid var(--stbr-dark); position:relative; }
+  .plabel .arr::after { content:""; position:absolute; right:-2px; top:-7px; width:0; height:0;
+        border-left:11px solid var(--stbr-dark); border-top:6px solid transparent;
+        border-bottom:6px solid transparent; }
+  .plabel .pt { margin-top:6px; font-family:var(--font-body); font-weight:800; font-size:11px;
+        letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary); }
+  .blocked { flex:1; background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+             border-radius:var(--radius-xl); padding:18px 26px; display:flex;
+             align-items:center; gap:20px; }
+  .lock { flex:0 0 52px; height:52px; border-radius:50%; background:var(--stbr-dark);
+          color:var(--stbr-yellow); display:flex; align-items:center; justify-content:center;
+          font-size:24px; font-weight:900; font-family:var(--font-body); }
+  .blocked .bt { font-family:var(--font-mono); font-weight:700; font-size:19px;
+                 color:var(--stbr-dark); text-decoration:line-through; }
+  .blocked .bs { font-family:var(--font-body); font-weight:800; font-size:14px;
+                 color:var(--stbr-dark); margin-top:4px; }
+  .pipe { flex:1; display:flex; align-items:stretch; }
+  .pbox { flex:1; background:var(--surface-card); border:2px solid var(--border-strong);
+          border-radius:var(--radius-lg); padding:14px 14px; display:flex;
+          flex-direction:column; }
+  .pbox .n { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+             letter-spacing:.09em; text-transform:uppercase; color:var(--stbr-emerald);
+             margin-bottom:5px; }
+  .pbox .t { font-family:var(--font-mono); font-weight:700; font-size:14.5px;
+             color:var(--text-primary); line-height:1.25; margin-bottom:5px; }
+  .pbox .d { font-family:var(--font-body); font-size:12px; line-height:1.35;
+             color:var(--text-secondary); }
+  .parr { flex:0 0 30px; display:flex; align-items:center; justify-content:center; }
+  .parr div { width:22px; height:0; border-top:3px solid var(--stbr-emerald); position:relative; }
+  .parr div::after { content:""; position:absolute; right:-2px; top:-6px; width:0; height:0;
+        border-left:9px solid var(--stbr-emerald); border-top:5px solid transparent;
+        border-bottom:5px solid transparent; }
+  .notes { display:flex; gap:16px; margin-top:22px; margin-left:308px; }
+  .note { border-radius:var(--radius-lg); padding:10px 18px; font-family:var(--font-body);
+          font-size:13.5px; line-height:1.35; }
+  .note.pass { background:var(--surface-brand); color:var(--text-on-brand); }
+  .note.fail { background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+               color:var(--text-secondary); }
+  .note b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">why a pNFT cannot dodge its rule set</div>
+  <h2 class="viz-title">the pNFT transfer funnel</h2>
+  <div class="stage">
+    <div class="wallet">
+      <div class="big">wallet</div>
+      <div class="sub">attempts to move a pNFT &mdash; two possible paths</div>
+    </div>
+    <div class="paths">
+      <div class="pathrow">
+        <div class="plabel"><div class="arr"></div><div class="pt">path A</div></div>
+        <div class="blocked">
+          <div class="lock">&#10005;</div>
+          <div>
+            <div class="bt">plain SPL Token transfer</div>
+            <div class="bs">BLOCKED &mdash; the token account is frozen at all times</div>
+          </div>
+        </div>
+      </div>
+      <div class="pathrow">
+        <div class="plabel"><div class="arr"></div><div class="pt">path B</div></div>
+        <div class="pipe">
+          <div class="pbox">
+            <div class="n">step 1</div>
+            <div class="t">TM Transfer ix</div>
+            <div class="d">metadata PDA &rarr; programmable config &rarr; rule set address</div>
+          </div>
+          <div class="parr"><div></div></div>
+          <div class="pbox">
+            <div class="n">step 2</div>
+            <div class="t">evaluate rule</div>
+            <div class="d">Token Auth Rules checks the rule for the operation, e.g. <span style="font-family:var(--font-mono)">Transfer:SaleDelegate</span></div>
+          </div>
+          <div class="parr"><div></div></div>
+          <div class="pbox" style="border-color:var(--stbr-emerald); border-width:2.5px;">
+            <div class="n">rule passes</div>
+            <div class="t">thaw &rarr; transfer &rarr; refreeze</div>
+            <div class="d">one atomic instruction &mdash; the freeze never lifts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="notes">
+    <div class="note fail"><b>rule fails</b> &rarr; the whole transfer fails; nothing moves</div>
+    <div class="note pass"><b>flagship rule set:</b> step 2 always passes &mdash; every operation evaluates to Pass</div>
+  </div>
+</div>
+</body></html>

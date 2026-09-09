@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of a RuleSet account, the layout the revision walk relies on
+     purpose: give the byte layout the challenge's slicing loop needs: the header points forward to the tail map, the map points back at every revision, and each slice ends where the next begins
+     data: byte 0: account key (1 = RuleSet) bytes 1..9: u64 LE -> byte offset of the revision map at the account's tail middle of the account: revision stack, rev0 .. rev8, appended in order each revision: 1 lib_version byte (1 = msgpack) + serialized RuleSetV1 body revision map (at revMapLoc): 1 key byte, u32 revision count, then one u64 offset per revision slicing rule: revision i spans offsets[i] to offsets[i+1]; the final revision ends at revMapLoc
+     prompt: A single horizontal byte-layout bar representing one account. Leftmost small segment "header: key + u64 map offset". Middle: nine stacked segments labeled rev0 through rev8, each with a thin leading sliver marked "lib_version". Rightmost segment "revision map: count + 9 offsets". Curved arrows from the map segment back to the start of each revision segment, plus one arrow from the header forward to the map. Annotate the right edge of rev8: "ends where the map begins".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:460px;top:-268px;right:-268px;border-radius:54% 47% 59% 57% / 38% 45% 50% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:547px;height:548px;bottom:-308px;left:-308px;border-radius:64% 63% 51% 44% / 48% 44% 47% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:46px; margin:4px 0 10px; }
+  .fwd { position:relative; width:1456px; height:64px; }
+  .fwd svg { position:absolute; left:0; top:0; }
+  .fwdchip { position:absolute; left:470px; top:0; background:var(--surface-card);
+             border:1.5px solid var(--border-strong); border-radius:var(--radius-pill);
+             padding:4px 16px; font-family:var(--font-mono); font-weight:700;
+             font-size:13px; color:var(--text-primary); }
+  .bar { display:flex; width:1456px; height:96px; border:2.5px solid var(--stbr-dark);
+         border-radius:var(--radius-md); overflow:hidden; }
+  .seg-h { flex:0 0 180px; background:var(--surface-inverse); color:var(--text-on-dark);
+           padding:10px 12px; font-family:var(--font-body); font-size:11.5px;
+           line-height:1.35; }
+  .seg-h b { font-weight:800; font-size:12.5px; display:block; margin-bottom:3px; }
+  .seg-h code { font-family:var(--font-mono); font-size:11px; color:var(--stbr-yellow); }
+  .rev { flex:0 0 112px; background:var(--surface-card); display:flex;
+         border-left:1.5px solid var(--border-subtle); }
+  .rev .lv { flex:0 0 7px; background:var(--stbr-green); }
+  .rev .body { flex:1; display:flex; flex-direction:column; align-items:center;
+               justify-content:center; }
+  .rev .nm { font-family:var(--font-mono); font-weight:700; font-size:16px;
+             color:var(--text-primary); }
+  .rev .ms { font-family:var(--font-body); font-size:10.5px; color:var(--text-muted); }
+  .rev.last { border-right:3px solid var(--stbr-dark); }
+  .seg-m { flex:1; background:var(--stbr-yellow); color:var(--stbr-dark);
+           padding:10px 14px; font-family:var(--font-body); font-size:12px; line-height:1.35; }
+  .seg-m b { font-weight:800; font-size:13.5px; display:block; margin-bottom:3px; }
+  .seg-m code { font-family:var(--font-mono); font-size:11.5px; }
+  .fan { position:relative; width:1456px; height:238px; }
+  .fan svg { position:absolute; left:0; top:0; }
+  .fanlab { position:absolute; left:12px; bottom:2px; font-family:var(--font-body);
+            font-weight:700; font-size:13.5px; color:var(--text-secondary); width:430px; }
+  .endchip { position:absolute; left:1046px; top:118px; width:300px;
+             background:var(--surface-card); border:1.5px solid var(--border-strong);
+             border-radius:var(--radius-lg); padding:8px 14px;
+             font-family:var(--font-body); font-weight:700; font-size:13px;
+             color:var(--text-primary); }
+  .endchip small { display:block; font-weight:400; font-size:11.5px;
+                   color:var(--text-secondary); margin-top:2px; }
+  .legend { display:flex; gap:18px; align-items:stretch; margin-top:2px; }
+  .lv-key { flex:0 0 400px; background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+            border-radius:var(--radius-lg); padding:10px 16px; display:flex; gap:12px;
+            align-items:center; font-family:var(--font-body); font-size:13px;
+            color:var(--text-secondary); }
+  .lv-key .sw { flex:0 0 7px; height:34px; background:var(--stbr-green); border-radius:2px; }
+  .slice { flex:1; background:var(--surface-brand); color:var(--text-on-brand);
+           border-radius:var(--radius-lg); padding:10px 20px; display:flex;
+           align-items:center; font-family:var(--font-body); font-size:14.5px; }
+  .slice code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">the layout the revision walk relies on</div>
+  <h2 class="viz-title">anatomy of a RuleSet account</h2>
+  <div class="fwd">
+    <svg width="1456" height="64" viewBox="0 0 1456 64">
+      <path d="M 90,58 Q 706,6 1322,54" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="1322,60 1314,47 1329,45" fill="#008b4c"/>
+    </svg>
+    <div class="fwdchip">header u64 &rarr; revMapLoc (points forward to the tail)</div>
+  </div>
+  <div class="bar">
+    <div class="seg-h">
+      <b>header</b>
+      byte 0: key (<code>1 = RuleSet</code>)<br>
+      bytes 1..9: <code>u64 LE</code> offset of the revision map
+    </div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev0</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev1</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev2</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev3</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev4</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev5</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev6</div><div class="ms">msgpack</div></div></div>
+    <div class="rev"><div class="lv"></div><div class="body"><div class="nm">rev7</div><div class="ms">msgpack</div></div></div>
+    <div class="rev last"><div class="lv"></div><div class="body"><div class="nm">rev8</div><div class="ms">msgpack</div></div></div>
+    <div class="seg-m">
+      <b>revision map (at revMapLoc)</b>
+      1 key byte &middot; <code>u32</code> revision count<br>
+      then one <code>u64</code> offset per revision (9 total)
+    </div>
+  </div>
+  <div class="fan">
+    <svg width="1456" height="238" viewBox="0 0 1456 238">
+      <path d="M 1322,4 Q 755,225 190,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 810,205 302,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 866,185 414,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 922,165 526,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 978,145 638,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 1034,125 750,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 1090,105 862,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 1146,80 974,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <path d="M 1322,4 Q 1202,48 1086,12" fill="none" stroke="#306c40" stroke-width="2"/>
+      <polygon points="190,2 184,15 196,15" fill="#306c40"/>
+      <polygon points="302,2 296,15 308,15" fill="#306c40"/>
+      <polygon points="414,2 408,15 420,15" fill="#306c40"/>
+      <polygon points="526,2 520,15 532,15" fill="#306c40"/>
+      <polygon points="638,2 632,15 644,15" fill="#306c40"/>
+      <polygon points="750,2 744,15 756,15" fill="#306c40"/>
+      <polygon points="862,2 856,15 868,15" fill="#306c40"/>
+      <polygon points="974,2 968,15 980,15" fill="#306c40"/>
+      <polygon points="1086,2 1080,15 1092,15" fill="#306c40"/>
+    </svg>
+    <div class="endchip">rev8 ends where the map begins<small>the thick boundary above: end of the last revision = revMapLoc</small></div>
+    <div class="fanlab">the map&rsquo;s 9 offsets point back at the start of every revision in the middle of the account</div>
+  </div>
+  <div class="legend">
+    <div class="lv-key"><div class="sw"></div><div>the thin leading sliver on every revision = its <b>lib_version</b> byte (<span style="font-family:var(--font-mono)">1 = msgpack</span>), followed by the serialized RuleSetV1 body</div></div>
+    <div class="slice">slicing rule:&nbsp;<code>revision i spans offsets[i] .. offsets[i+1]</code>&nbsp;&mdash; the final revision ends at&nbsp;<code>revMapLoc</code></div>
+  </div>
+</div>
+</body></html>

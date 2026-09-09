@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: decode-mint's decision flow, end to end
+     purpose: give the reader the parser's complete branch structure before they write it
+     data: node 1: "fetch account data (base64) via RPC" -> node 2: "length < 82?" -> yes: "throw: not a mint" | no -> node 3: "parse the 82-byte base: mintAuthority, supply (BigInt), decimals, isInitialized, freezeAuthority" -> node 4: "length == 82 exactly?" -> yes: "report bare-82, zero extensions, done" | no -> node 5: "read byte 165" -> "1 = Mint: continue" | "2 = token account, 0 = uninitialized: throw" -> node 6: "TLV walk from byte 166: read u16 type + u16 length, stop on type 0 or account edge, advance by 4 + length" -> node 7: "emit {name, type, length} list" annotation on node 4: "the length IS the bare-vs-extended test" annotation on node 6: "the completion TODO: you write this branch"
+     prompt: A top-to-bottom flowchart with the seven nodes and two decision diamonds from the data above, error exits to the side, the happy path down the middle. Mark node 6 visually as "yours to write" per its annotation, and attach the length-is-the-test annotation to the first diamond. Keep labels verbatim.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:429px;right:-296px;top:250px;border-radius:59% 45% 43% 55% / 54% 62% 55% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:561px;height:501px;bottom:-316px;left:-316px;border-radius:55% 57% 39% 64% / 49% 62% 56% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:28px 40px 26px;}
+  .card .viz-title{font-size:40px;margin:4px 0 14px;}
+  .card .stbr-eyebrow{font-size:16px;}
+  .flow{position:relative;width:1400px;height:580px;margin:0 auto;}
+  .nd{position:absolute;left:390px;width:620px;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--surface-card);border:2px solid var(--border-strong);border-radius:14px;padding:4px 22px;font-family:var(--font-display);font-weight:800;font-size:18px;line-height:1.28;color:var(--text-primary);}
+  .dec{border:3px solid var(--stbr-emerald);}
+  .todo{border:4px solid var(--stbr-yellow);}
+  .todotag{position:absolute;right:404px;top:394px;background:var(--stbr-yellow);color:var(--text-on-accent,#1B231D);font-family:var(--font-display);font-weight:800;font-size:14px;padding:5px 12px;border-radius:999px;z-index:2;}
+  .var{position:absolute;left:698px;width:3px;background:var(--stbr-dark);}
+  .vah{position:absolute;left:691px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid var(--stbr-dark);}
+  .hln{position:absolute;height:3px;background:var(--stbr-dark);}
+  .hal{position:absolute;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:9px solid var(--stbr-dark);}
+  .har{position:absolute;width:0;height:0;border-top:8px solid transparent;border-bottom:8px solid transparent;border-left:9px solid var(--stbr-dark);}
+  .exit{position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:12px;padding:6px 16px;font-family:var(--font-display);font-weight:800;font-size:16px;line-height:1.25;}
+  .throw{background:var(--stbr-dark);color:#F5E8CA;}
+  .done{background:var(--stbr-emerald);color:#F5E8CA;}
+  .anno{position:absolute;background:var(--surface-paper,#FAF3E3);border:2px solid var(--border-strong);border-radius:12px;padding:8px 14px;font-family:var(--font-body);font-size:14px;font-weight:600;line-height:1.3;color:var(--text-primary);text-align:center;}
+  .brl{position:absolute;background:var(--surface-card);border:2px solid var(--stbr-emerald);color:var(--stbr-emerald);font-family:var(--font-body);font-size:13px;font-weight:700;padding:2px 10px;border-radius:999px;white-space:nowrap;z-index:2;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the parser&rsquo;s complete branch structure, before you write it</div>
+  <h2 class="viz-title">decode-mint&rsquo;s decision flow, end to end</h2>
+  <div class="flow">
+    <div class="nd" style="top:0;height:56px;">fetch account data (base64) via RPC</div>
+    <div class="var" style="top:56px;height:11px;"></div><div class="vah" style="top:65px;"></div>
+    <div class="nd dec" style="top:74px;height:56px;">length &lt; 82?</div>
+    <div class="hln" style="top:100px;left:320px;width:70px;"></div><div class="hal" style="top:93px;left:320px;"></div>
+    <div class="brl" style="top:70px;left:334px;">yes</div>
+    <div class="exit throw" style="top:76px;left:60px;width:260px;height:50px;">throw: not a mint</div>
+    <div class="var" style="top:130px;height:11px;"></div><div class="vah" style="top:139px;"></div>
+    <div class="brl" style="top:127px;left:712px;">no</div>
+    <div class="nd" style="top:148px;height:72px;font-size:17px;">parse the 82-byte base: mintAuthority, supply (BigInt), decimals, isInitialized, freezeAuthority</div>
+    <div class="var" style="top:220px;height:11px;"></div><div class="vah" style="top:229px;"></div>
+    <div class="nd dec" style="top:238px;height:56px;">length == 82 exactly?</div>
+    <div class="hln" style="top:264px;left:1010px;width:70px;"></div><div class="har" style="top:257px;left:1071px;"></div>
+    <div class="brl" style="top:234px;left:1022px;">yes</div>
+    <div class="exit done" style="top:240px;left:1080px;width:300px;height:52px;">report bare-82, zero extensions, done</div>
+    <div class="anno" style="top:238px;left:40px;width:290px;">the length IS the bare-vs-extended test</div>
+    <div class="hln" style="top:264px;left:346px;width:44px;height:2px;background:var(--border-strong);"></div>
+    <div class="var" style="top:294px;height:11px;"></div><div class="vah" style="top:303px;"></div>
+    <div class="brl" style="top:291px;left:712px;">no</div>
+    <div class="nd" style="top:312px;height:56px;">read byte 165</div>
+    <div class="hln" style="top:338px;left:346px;width:44px;"></div><div class="hal" style="top:331px;left:346px;"></div>
+    <div class="exit throw" style="top:310px;left:20px;width:326px;height:60px;font-size:15px;">2 = token account, 0 = uninitialized: throw</div>
+    <div class="var" style="top:368px;height:31px;"></div><div class="vah" style="top:399px;"></div>
+    <div class="brl" style="top:369px;left:518px;">1 = Mint: continue</div>
+    <div class="nd todo" style="top:408px;height:88px;font-size:17px;">TLV walk from byte 166: read u16 type + u16 length, stop on type 0 or account edge, advance by 4 + length</div>
+    <div class="todotag">the completion TODO &mdash; you write this branch</div>
+    <div class="var" style="top:496px;height:11px;"></div><div class="vah" style="top:507px;"></div>
+    <div class="nd" style="top:520px;height:56px;">emit {name, type, length} list</div>
+  </div>
+</div>
+</div>
+</body></html>

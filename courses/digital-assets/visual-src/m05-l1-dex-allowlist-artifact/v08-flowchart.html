@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: "The R6 pipeline: from mint bytes to a routability verdict"
+     purpose: show how this lesson's artifact consumes three earlier ones and where the fork's answer enters
+     data: mint address -> fetchMint (Token-2022 client) -> TLV extension names + owning program -> profile-from-mint.ts -> MintProfile {tokenProgram, extensions, whitelisted} -> isRoutable (predict-routability.ts, R6 draft) -> ROUTABLE | REJECTED + reason side inputs: check-combo (R2, m01-l4) answers "is this set legal to initialize?" sprout-mint (R3, m02) and harvest-hook (R4, m03) supply the two mints under test (R5, the confidential-sprout branch from m04, sits this pipeline out; it gets its verdict in verify-routability's sixth case) ground truth: surfpool mainnet fork -> CP-Swap pool-create attempt -> created | reverted the gate: predictor verdict == fork outcome, for both mints
+     prompt: Left-to-right pipeline with five stages in the main track. Two side-input nodes feed in from below, labelled with their artifact ids R2, R3 and R4. A separate track along the bottom runs the fork's pool-create attempt to a comparison node where both tracks meet, labelled "verdicts must agree". Mark the R6 node as the artifact this lesson produces.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:381px;right:-296px;top:237px;border-radius:47% 53% 57% 62% / 58% 36% 55% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:428px;height:472px;bottom:-252px;left:741px;border-radius:43% 64% 63% 61% / 46% 40% 47% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">this lesson's artifact in its pipeline</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 16px;color:var(--stbr-dark);">The R6 pipeline: from mint bytes to a routability verdict</h2>
+
+    <div style="position:relative;height:414px;">
+      <!-- main track: five stages -->
+      <div style="position:absolute;left:0;top:0;width:240px;height:100px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);">mint address</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:3px;">the two mints under test</div>
+      </div>
+      <div style="position:absolute;left:240px;top:49px;width:32px;height:0;border-top:2.5px solid var(--stbr-green);"></div>
+      <div style="position:absolute;left:271px;top:42px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-green);"></div>
+
+      <div style="position:absolute;left:282px;top:0;width:240px;height:100px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);padding:10px 14px;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-dark);">fetchMint</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:3px;">Token-2022 client &rarr; TLV extension names + owning program</div>
+      </div>
+      <div style="position:absolute;left:522px;top:49px;width:32px;height:0;border-top:2.5px solid var(--stbr-green);"></div>
+      <div style="position:absolute;left:553px;top:42px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-green);"></div>
+
+      <div style="position:absolute;left:564px;top:0;width:240px;height:100px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);padding:10px 14px;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-dark);">profile-from-mint.ts</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:3px;">&rarr; <span style="font-family:var(--font-mono);font-size:11.5px;">MintProfile {tokenProgram, extensions, whitelisted}</span></div>
+      </div>
+      <div style="position:absolute;left:804px;top:49px;width:32px;height:0;border-top:2.5px solid var(--stbr-green);"></div>
+      <div style="position:absolute;left:835px;top:42px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-green);"></div>
+
+      <!-- R6: the artifact this lesson produces -->
+      <div style="position:absolute;left:846px;top:0;width:240px;height:100px;background:var(--stbr-yellow);border-radius:12px;padding:10px 14px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-dark);">isRoutable</span><span style="background:var(--stbr-dark);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:10.5px;letter-spacing:.05em;padding:2px 8px;border-radius:999px;">R6 &middot; THIS LESSON</span></div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);margin-top:4px;"><span style="font-family:var(--font-mono);font-size:11.5px;">predict-routability.ts</span>, R6 draft</div>
+      </div>
+      <div style="position:absolute;left:1086px;top:49px;width:32px;height:0;border-top:2.5px solid var(--stbr-green);"></div>
+      <div style="position:absolute;left:1117px;top:42px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-green);"></div>
+
+      <div style="position:absolute;left:1128px;top:0;width:240px;height:100px;background:var(--stbr-emerald);border-radius:12px;padding:10px 14px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-cream);">ROUTABLE | REJECTED</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--stbr-cream);margin-top:3px;">+ reason &mdash; the predictor's verdict</div>
+      </div>
+
+      <!-- side inputs feeding up -->
+      <div style="position:absolute;left:117px;top:104px;width:2.5px;height:66px;background:var(--stbr-green);"></div>
+      <div style="position:absolute;left:111px;top:104px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:8px solid var(--stbr-green);margin-top:-8px;"></div>
+      <div style="position:absolute;left:0;top:170px;width:340px;border:1.5px dashed var(--stbr-green);border-radius:12px;padding:9px 14px;background:var(--surface-paper,#faf5e6);">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--stbr-green);">SIDE INPUT &middot; R3 (m02) + R4 (m03)</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);margin-top:2px;"><span style="font-family:var(--font-mono);font-size:11.5px;">sprout-mint</span> and <span style="font-family:var(--font-mono);font-size:11.5px;">harvest-hook</span> supply the two mints under test</div>
+      </div>
+
+      <div style="position:absolute;left:964px;top:104px;width:2.5px;height:66px;background:var(--stbr-green);"></div>
+      <div style="position:absolute;left:958px;top:104px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:8px solid var(--stbr-green);margin-top:-8px;"></div>
+      <div style="position:absolute;left:816px;top:170px;width:340px;border:1.5px dashed var(--stbr-green);border-radius:12px;padding:9px 14px;background:var(--surface-paper,#faf5e6);">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--stbr-green);">SIDE INPUT &middot; R2 (m01-l4)</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--stbr-dark);margin-top:2px;"><span style="font-family:var(--font-mono);font-size:11.5px;">check-combo</span> answers &ldquo;is this set legal to initialize?&rdquo;</div>
+      </div>
+
+      <!-- R5 sits out -->
+      <div style="position:absolute;left:390px;top:178px;width:376px;font-family:var(--font-body);font-size:12px;line-height:1.4;color:var(--text-muted,#6b7a6f);">R5, the confidential-sprout branch from m04, sits this pipeline out; it gets its verdict in verify-routability's sixth case.</div>
+
+      <!-- ground-truth track along the bottom -->
+      <div style="position:absolute;left:0;top:300px;width:330px;height:76px;border:2px solid var(--stbr-dark);border-radius:12px;background:var(--surface-card);padding:9px 14px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-dark);">GROUND TRUTH &middot; surfpool mainnet fork</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">the chain answers for itself</div>
+      </div>
+      <div style="position:absolute;left:330px;top:337px;width:32px;height:0;border-top:2.5px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:361px;top:330px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:372px;top:300px;width:330px;height:76px;border:2px solid var(--stbr-dark);border-radius:12px;background:var(--surface-card);padding:9px 14px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:14px;color:var(--stbr-dark);">CP-Swap pool-create attempt</div>
+        <div style="font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">run once per mint under test</div>
+      </div>
+      <div style="position:absolute;left:702px;top:337px;width:32px;height:0;border-top:2.5px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:733px;top:330px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:744px;top:300px;width:250px;height:76px;border:2px solid var(--stbr-dark);border-radius:12px;background:var(--surface-card);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--stbr-dark);">created | reverted</div>
+      <div style="position:absolute;left:994px;top:337px;width:32px;height:0;border-top:2.5px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:1025px;top:330px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);"></div>
+
+      <!-- verdict drops down into the gate -->
+      <div style="position:absolute;left:1246px;top:104px;width:2.5px;height:192px;background:var(--stbr-emerald);"></div>
+      <div style="position:absolute;left:1240px;top:292px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--stbr-emerald);"></div>
+
+      <!-- the gate: both tracks meet -->
+      <div style="position:absolute;left:1036px;top:300px;width:332px;height:76px;background:var(--stbr-dark);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:17px;letter-spacing:.03em;color:var(--stbr-cream);">verdicts must agree</div>
+        <div style="font-family:var(--font-body);font-size:12px;color:var(--stbr-cream);margin-top:2px;">predictor verdict == fork outcome, for both mints</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

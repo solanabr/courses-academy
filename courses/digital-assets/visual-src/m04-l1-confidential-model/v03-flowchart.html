@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The life of an incoming confidential credit
+     purpose: show that incoming amounts pass through a pending bucket the owner must apply, and why
+     data: step 1: sender's Transfer credits recipient's pending_balance (lo + hi ciphertexts), counter += 1 step 2: recipient's available_balance and AES cache are untouched (sender lacks the AES key) step 3: owner signs ApplyPendingBalance: pending folds into available_balance homomorphically step 4: owner supplies the new decryptable_available_balance (AES), cache is fresh again guard: if counter reaches maximum_pending_balance_credit_counter (default 65,536), further credits are rejected until an apply runs why: direct credits would stale the AES cache and race the owner's in-flight proofs
+     prompt: Vertical flowchart, four steps top to bottom as in data, with the pending bucket drawn as a literal waiting-room box between "incoming Transfer" and "available_balance". Side annotation on step 2: "sender cannot refresh your AES cache". A guard badge near the bucket: "counter cap 65,536, then credits bounce".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:452px;height:391px;right:-268px;top:375px;border-radius:56% 60% 49% 44% / 56% 51% 40% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:567px;height:472px;bottom:-280px;left:-280px;border-radius:43% 47% 49% 55% / 41% 59% 63% 41%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { display:flex; flex-direction:column; margin-top:6px; }
+  .frow { display:flex; align-items:stretch; gap:22px; }
+  .fnode { flex:0 0 880px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+           border-radius:var(--radius-xl); padding:13px 22px; display:flex; align-items:center; gap:16px; }
+  .fnode.bucket { border-style:dashed; background:var(--surface-paper); }
+  .step-n { flex:0 0 40px; height:40px; border-radius:50%; background:var(--stbr-emerald);
+            color:#F5E8CA; font-family:var(--font-display); font-weight:900; font-size:19px;
+            display:flex; align-items:center; justify-content:center; }
+  .step-n.dark { background:var(--stbr-dark); }
+  .fmain { display:flex; flex-direction:column; gap:2px; }
+  .ftitle { font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--text-primary); }
+  .fsub { font-family:var(--font-body); font-weight:700; font-size:14.5px; color:var(--text-secondary); }
+  .fsub code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-green); }
+  .side { flex:1 1 0; display:flex; align-items:center; }
+  .side-note { border-left:4px solid var(--stbr-green); background:rgba(48,108,64,0.08);
+               border-radius:0 var(--radius-md) var(--radius-md) 0; padding:9px 16px;
+               font-family:var(--font-body); font-weight:700; font-size:14px; line-height:1.35;
+               color:var(--text-primary); }
+  .guard { border:2.5px solid var(--stbr-dark); background:var(--stbr-yellow);
+           border-radius:var(--radius-lg); padding:10px 16px; font-family:var(--font-body);
+           font-weight:800; font-size:13px; line-height:1.35; color:var(--stbr-dark); }
+  .varrow { height:30px; display:flex; align-items:center; padding-left:436px; }
+  .why { margin-top:16px; background:var(--stbr-emerald); border-radius:var(--radius-2xl);
+         padding:13px 28px; font-family:var(--font-body); font-weight:800; font-size:16.5px;
+         color:#F5E8CA; }
+</style>
+  <div class="stbr-eyebrow">WHY CREDITS WAIT IN A BUCKET</div>
+  <h2 class="viz-title">the life of an incoming confidential credit</h2>
+  <div class="flow">
+    <div class="frow">
+      <div class="fnode">
+        <span class="step-n">1</span>
+        <span class="fmain">
+          <span class="ftitle">incoming Transfer lands</span>
+          <span class="fsub">sender's Transfer credits your <code>pending_balance</code> (lo + hi ciphertexts) &middot; counter += 1</span>
+        </span>
+      </div>
+    </div>
+    <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="0" x2="13" y2="19" stroke="#1B231D" stroke-width="3"/><polygon points="13,29 5,17 21,17" fill="#1B231D"/></svg></div>
+    <div class="frow" style="min-height:170px;">
+      <div class="fnode bucket">
+        <span class="step-n dark">2</span>
+        <span class="fmain">
+          <span class="ftitle">the waiting room: <span style="font-family:var(--font-mono);font-size:19px;">pending_balance</span></span>
+          <span class="fsub"><code>available_balance</code> and the AES cache are untouched &mdash; the credit sits here until you act</span>
+        </span>
+      </div>
+      <div class="side" style="display:block; padding-top:8px;">
+        <div class="side-note" style="height:48px; margin-bottom:12px;">the sender lacks your AES key &mdash; they cannot refresh your cache for you</div>
+        <div class="guard" style="height:52px;">guard: at <span style="font-family:var(--font-mono);">maximum_pending_balance_credit_counter</span> (default 65,536) further credits bounce until an apply runs</div>
+      </div>
+    </div>
+    <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="0" x2="13" y2="19" stroke="#1B231D" stroke-width="3"/><polygon points="13,29 5,17 21,17" fill="#1B231D"/></svg></div>
+    <div class="frow">
+      <div class="fnode">
+        <span class="step-n">3</span>
+        <span class="fmain">
+          <span class="ftitle">owner signs ApplyPendingBalance</span>
+          <span class="fsub">pending folds into <code>available_balance</code> homomorphically &mdash; still never decrypted on-chain</span>
+        </span>
+      </div>
+    </div>
+    <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="0" x2="13" y2="19" stroke="#1B231D" stroke-width="3"/><polygon points="13,29 5,17 21,17" fill="#1B231D"/></svg></div>
+    <div class="frow">
+      <div class="fnode">
+        <span class="step-n">4</span>
+        <span class="fmain">
+          <span class="ftitle">owner refreshes the cache</span>
+          <span class="fsub">supplies the new <code>decryptable_available_balance</code> (AES) &mdash; the wallet reads instantly again</span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="why">why the bucket exists: direct credits would stale your AES cache and race your in-flight proofs</div>
+</div>
+</body></html>

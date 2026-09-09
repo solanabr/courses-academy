@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: InterestBearingConfig vs ScaledUiAmount, one seat for two extensions
+     purpose: make the learner's pick-one decision concrete and show why the runtime forbids the pairing
+     data: column 1 - InterestBearingConfig: stores i16 rate in bps (negative allowed) + timestamps; display compounds continuously; shape = drift; use: bonds, yield-bearing notes; authority: rate_authority updates the rate column 2 - ScaledUiAmount: stores f64 multiplier (+ scheduled effective timestamp on update); display jumps when multiplier changes; shape = step; use: splits, rebases, redenominations; authority: multiplier authority shared row: neither mints anything; raw on-chain amounts never move; UI amount is NOT supply verdict row: both rewrite the same displayed number, so rule 4 makes them mutually exclusive; a mint carries at most one
+     prompt: Two-column comparison card with the columns as in data, a full-width shared band under them stating the neither-mints-anything fact, and a warning-styled verdict band at the bottom for the mutual exclusion. Add small sparkline-style glyphs in each column header: a smooth rising curve for interest, a step function for scaled. The glyphs are qualitative shapes, not data series.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:431px;height:484px;bottom:-225px;right:-225px;border-radius:47% 44% 38% 38% / 37% 49% 51% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:463px;height:373px;left:-273px;top:388px;border-radius:52% 55% 47% 55% / 57% 40% 54% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v07-card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:34px 46px 36px; overflow:hidden; }
+  .v07-cols { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:6px; }
+  .v07-col { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; }
+  .v07-head { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; }
+  .v07-head .name { font-family:var(--font-mono); font-weight:700; font-size:21px; color:var(--stbr-cream); }
+  .v07-col.a .v07-head { background:var(--surface-brand); }
+  .v07-col.b .v07-head { background:var(--surface-brand-deep); }
+  .v07-row { display:flex; gap:14px; padding:11px 20px; border-top:1px solid var(--border-subtle);
+    font-family:var(--font-body); font-size:15.5px; line-height:1.35; color:var(--text-primary); }
+  .v07-row .k { flex:none; width:86px; font-size:12px; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--text-muted); padding-top:2px; }
+  .v07-row code { font-family:var(--font-mono); font-size:13.5px; font-weight:700; }
+  .v07-shared { margin-top:16px; background:var(--surface-inverse); color:var(--text-on-dark);
+    border-radius:var(--radius-lg); padding:13px 24px; font-family:var(--font-body); font-size:16.5px; }
+  .v07-verdict { margin-top:12px; background:var(--stbr-yellow); color:var(--stbr-dark);
+    border-radius:var(--radius-lg); padding:14px 24px; font-family:var(--font-body);
+    font-size:17.5px; font-weight:700; display:flex; align-items:center; gap:16px; }
+  .v07-verdict .tag { flex:none; font-size:12px; font-weight:800; letter-spacing:.1em;
+    text-transform:uppercase; background:var(--stbr-dark); color:var(--stbr-cream);
+    border-radius:var(--radius-pill); padding:4px 12px; }
+</style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">one seat, two extensions &mdash; pick one</div>
+    <h2 class="viz-title">InterestBearingConfig vs ScaledUiAmount</h2>
+    <div class="v07-cols">
+      <div class="v07-col a">
+        <div class="v07-head">
+          <span class="name">InterestBearingConfig</span>
+          <svg width="120" height="40" viewBox="0 0 120 40"><path d="M6,34 C 40,32 76,22 114,6" fill="none" stroke="#f5e8ca" stroke-width="4"/></svg>
+        </div>
+        <div class="v07-row"><span class="k">stores</span><span>i16 rate in bps (negative allowed) + timestamps</span></div>
+        <div class="v07-row"><span class="k">display</span><span>compounds continuously &mdash; shape: <b>drift</b></span></div>
+        <div class="v07-row"><span class="k">use</span><span>bonds, yield-bearing notes</span></div>
+        <div class="v07-row"><span class="k">authority</span><span><code>rate_authority</code> updates the rate</span></div>
+      </div>
+      <div class="v07-col b">
+        <div class="v07-head">
+          <span class="name">ScaledUiAmount</span>
+          <svg width="120" height="40" viewBox="0 0 120 40"><path d="M6,34 L 44,34 L 44,20 L 82,20 L 82,7 L 114,7" fill="none" stroke="#f5e8ca" stroke-width="4"/></svg>
+        </div>
+        <div class="v07-row"><span class="k">stores</span><span>f64 multiplier + scheduled effective timestamp on update</span></div>
+        <div class="v07-row"><span class="k">display</span><span>jumps when the multiplier changes &mdash; shape: <b>step</b></span></div>
+        <div class="v07-row"><span class="k">use</span><span>splits, rebases, redenominations</span></div>
+        <div class="v07-row"><span class="k">authority</span><span>multiplier authority schedules a new multiplier</span></div>
+      </div>
+    </div>
+    <div class="v07-shared">both columns: <b>neither mints anything</b> &mdash; raw on-chain amounts never move; the UI amount is NOT supply.</div>
+    <div class="v07-verdict">
+      <span class="tag">mutually exclusive</span>
+      <span>both rewrite the same displayed number, so rule 4 forbids the pairing &mdash; a mint carries at most one.</span>
+    </div>
+  </div>
+</div>
+</body></html>

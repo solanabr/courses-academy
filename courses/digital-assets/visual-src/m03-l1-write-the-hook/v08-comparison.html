@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The four hook footguns, by symptom
+     purpose: give a symptom-first diagnostic table so a stuck reader can jump straight to the cause
+     data: symptom: transfers fail to resolve the validation account, or the account "does not exist" | cause: the ExtraAccountMetaList PDA was derived against Token-2022 or against the mint | fix: derive ["extra-account-metas", mint] against YOUR hook program id, via get_extra_account_metas_address symptom: initialize_account3 fails when creating a holder account | cause: the account was sized as a plain token account | fix: size it with ExtensionType::TransferHookAccount, which a hooked mint forces on every holder symptom: Execute runs but you expected it to move or claw back tokens | cause: the transfer accounts arrive read-only and non-signer | fix: none; a hook passes or fails, it never moves funds, so redesign the policy around a veto symptom: you cannot attach the finished hook to the SPROUT mint from module 2 | cause: TransferHook is a create-time extension | fix: mint a new hooked variant and migrate; update-extra-account-metas cannot add an extension a mint never had
+     prompt: Three-column table, columns "symptom you see", "what is actually wrong", "fix". Four rows as listed. Left column in plain sentence case, middle column emphasized, right column monospace where it names an identifier. Mark row 3's fix cell visually as "no fix, redesign".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:531px;top:-289px;right:-289px;border-radius:53% 52% 57% 61% / 46% 62% 57% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:602px;height:580px;bottom:-335px;left:-335px;border-radius:55% 42% 56% 53% / 41% 35% 48% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v8 .tbl{margin-top:8px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:18px;overflow:hidden}
+    .v8 .tr{display:flex;border-top:1px solid var(--border-subtle)}
+    .v8 .tr.head{border-top:none;background:var(--surface-inverse)}
+    .v8 .td{padding:14px 20px;font-family:var(--font-body);font-size:15px;line-height:1.42;color:var(--text-primary)}
+    .v8 .c1{width:32%}
+    .v8 .c2{width:33%;font-weight:700;background:var(--surface-paper)}
+    .v8 .c3{width:35%}
+    .v8 .tr.head .td{font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--text-on-dark);background:none;padding:12px 20px}
+    .v8 .mono{font-family:var(--font-mono);font-size:13px}
+    .v8 .nofix{display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;font-size:13px;border-radius:999px;padding:2px 12px;margin-bottom:5px}
+    .v8 .tr.r3 .c3{background:rgba(255,210,63,.24)}
+  </style>
+  <div class="v8">
+    <div class="stbr-eyebrow">symptom-first diagnostics</div>
+    <h2 class="viz-title" style="font-size:40px;margin-bottom:10px">the four hook footguns, by symptom</h2>
+    <div class="tbl">
+      <div class="tr head">
+        <div class="td c1">symptom you see</div>
+        <div class="td c2">what is actually wrong</div>
+        <div class="td c3">fix</div>
+      </div>
+      <div class="tr">
+        <div class="td c1">transfers fail to resolve the validation account, or the account &ldquo;does not exist&rdquo;</div>
+        <div class="td c2">the ExtraAccountMetaList PDA was derived against Token-2022 or against the mint</div>
+        <div class="td c3">derive <span class="mono">["extra-account-metas", mint]</span> against <strong>your</strong> hook program id, via <span class="mono">get_extra_account_metas_address</span></div>
+      </div>
+      <div class="tr">
+        <div class="td c1"><span class="mono">initialize_account3</span> fails when creating a holder account</div>
+        <div class="td c2">the account was sized as a plain token account</div>
+        <div class="td c3">size it with <span class="mono">ExtensionType::TransferHookAccount</span> &mdash; a hooked mint forces it on every holder</div>
+      </div>
+      <div class="tr r3">
+        <div class="td c1">Execute runs but you expected it to move or claw back tokens</div>
+        <div class="td c2">the transfer accounts arrive read-only and non-signer</div>
+        <div class="td c3"><span class="nofix">no fix &mdash; redesign</span><br>a hook passes or fails; it never moves funds. build the policy around a veto.</div>
+      </div>
+      <div class="tr">
+        <div class="td c1">you cannot attach the finished hook to the SPROUT mint from module 2</div>
+        <div class="td c2">TransferHook is a create-time extension</div>
+        <div class="td c3">mint a new hooked variant and migrate &mdash; <span class="mono">update-extra-account-metas</span> cannot add an extension a mint never had</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

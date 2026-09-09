@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Pump's fee policy, before and after the flag day
+     purpose: show that curve economics are an editable policy, not a property of the math
+     data: Before 2025-09-01 20:00 UTC: bonding-curve fee: flat 100 bps, market-cap independent single fee number applied to every trade on every coin 2025-09-01 20:00 UTC: dynamic fee schedule takes effect After: fee selected by market-cap tier from an on-chain FeeConfig account fee splits three ways: lp_fee_bps / protocol_fee_bps / creator_fee_bps tier table is account data, editable by the config admin, read at runtime Cashback coins: creator fees redirect to traders via volume-accumulator PDAs Unchanged across the change: k = virtualSol x virtualToken, and the derivation of the graduation threshold from the reserve constants
+     prompt: Horizontal timeline with a single prominent marker labeled "2025-09-01 20:00 UTC". Left region titled "flat 100 bps" listing the two before-facts; right region titled "market-cap tiers" listing the four after-facts. Below the axis, a full-width band labeled "unchanged: k = virtualSol x virtualToken and the derived threshold". Keep the left region visually simpler than the right to convey added complexity.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:480px;height:504px;right:-292px;top:300px;border-radius:52% 65% 42% 43% / 46% 55% 50% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:398px;height:436px;bottom:-255px;left:454px;border-radius:58% 49% 65% 45% / 41% 55% 59% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">policy is editable; the math is not</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 20px;color:var(--stbr-dark);">Pump's fee policy, before and after the flag day</h2>
+
+    <!-- axis with the single marker -->
+    <div style="position:relative;height:84px;margin-bottom:18px;">
+      <div style="position:absolute;left:0;right:0;top:56px;height:3px;background:var(--stbr-green);border-radius:2px;"></div>
+      <div style="position:absolute;left:0;top:50px;width:15px;height:15px;border-radius:50%;background:var(--stbr-green);"></div>
+      <div style="position:absolute;right:0;top:50px;width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid var(--stbr-green);"></div>
+      <div style="position:absolute;left:462px;top:44px;width:27px;height:27px;border-radius:50%;background:var(--stbr-yellow);border:3px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:330px;top:0;background:var(--stbr-yellow);border-radius:999px;padding:5px 18px;font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--stbr-dark);">2025-09-01 20:00 UTC &mdash; dynamic fee schedule takes effect</div>
+    </div>
+
+    <!-- before / after regions -->
+    <div style="display:flex;gap:32px;align-items:stretch;margin-bottom:20px;">
+      <div style="width:420px;border:1.5px solid var(--border-strong,#c9bd9d);border-radius:16px;padding:18px 22px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--stbr-dark);margin-bottom:10px;">before &mdash; flat 100 bps</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);line-height:1.5;padding-left:14px;border-left:3px solid var(--stbr-green);margin-bottom:10px;">one fee number applied to every trade on every coin</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary,#4a5a4e);line-height:1.5;padding-left:14px;border-left:3px solid var(--stbr-green);">market-cap independent</div>
+      </div>
+      <div style="flex:1;border:2px solid var(--stbr-emerald);border-radius:16px;padding:18px 22px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:20px;color:var(--stbr-dark);margin-bottom:10px;">after &mdash; market-cap tiers</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;">
+          <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;padding-left:14px;border-left:3px solid var(--stbr-emerald);">fee selected by market-cap tier from an on-chain <span style="font-family:var(--font-mono);">FeeConfig</span> account</div>
+          <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;padding-left:14px;border-left:3px solid var(--stbr-emerald);">fee splits three ways: <span style="font-family:var(--font-mono);">lp_fee_bps / protocol_fee_bps / creator_fee_bps</span></div>
+          <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;padding-left:14px;border-left:3px solid var(--stbr-emerald);">tier table is account data &mdash; editable by the config admin, read at runtime</div>
+          <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary,#4a5a4e);line-height:1.45;padding-left:14px;border-left:3px solid var(--stbr-emerald);">Cashback coins: creator fees redirect to traders via volume-accumulator PDAs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- unchanged band -->
+    <div style="background:var(--stbr-emerald);border-radius:14px;padding:14px 24px;display:flex;align-items:center;gap:18px;">
+      <div style="font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.06em;color:#F5E8CA;text-transform:uppercase;">unchanged</div>
+      <div style="font-family:var(--font-mono);font-size:15px;color:#F5E8CA;">k = virtualSol &times; virtualToken &nbsp;&mdash;&nbsp; and the graduation threshold derived from the reserve constants</div>
+    </div>
+  </div>
+</div>
+</body></html>

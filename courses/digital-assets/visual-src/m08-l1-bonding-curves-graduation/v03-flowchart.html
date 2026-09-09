@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: A pump curve's life, from first buy to burnt LP
+     purpose: place the derived threshold, the complete flag, and the permissionless migrate on one timeline
+     data: create -> curve initialized from Global constants (virtual 30 SOL / 1,073,000,000 tokens; real 793,100,000 tokens; complete=false) buys/sells -> k held constant; real_token_reserves falls; price rises toward 14.7x derived threshold reached: ~85.005 SOL added, real_token_reserves == 0 program sets complete = true -> further buys/sells fail with 6005 BondingCurveComplete -> migrate before this point fails with 6006 BondingCurveNotComplete migrate (permissionless, any signer, no args; pool_migration_fee 15,000,001 lamports) -> liquidity lands on PumpSwap pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA -> LP tokens burnt; repeat calls change nothing
+     prompt: Vertical flowchart, five stacked stages in order as listed above, one box per stage, arrows downward. Attach the two error codes as side annotations on the "complete = true" box, one pointing up (6006 before) and one pointing down (6005 after). Mark the "migrate" box with a small badge reading "permissionless + idempotent". Put the derived threshold 85.005 SOL as a highlighted label on the arrow entering "complete = true". Monospace labels, no decorative icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:604px;height:579px;top:-325px;right:-325px;border-radius:40% 47% 61% 63% / 53% 62% 39% 60%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:466px;bottom:-252px;left:546px;border-radius:65% 54% 65% 54% / 58% 58% 44% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:28px 44px 26px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">threshold, flag, and migrate on one line</div>
+    <h2 class="viz-title" style="font-size:34px;margin:6px 0 16px;color:var(--stbr-dark);">A pump curve's life, from first buy to burnt LP</h2>
+
+    <div style="display:flex;gap:26px;">
+      <!-- main spine -->
+      <div style="width:900px;display:flex;flex-direction:column;">
+        <div style="border:2px solid var(--stbr-emerald);border-radius:14px;padding:10px 20px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">create &mdash; curve initialized from Global constants</div>
+          <div style="font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">virtual 30 SOL / 1,073,000,000 tokens &nbsp;&middot;&nbsp; real 793,100,000 tokens &nbsp;&middot;&nbsp; complete = false</div>
+        </div>
+        <div style="height:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:14px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark);"></div></div>
+
+        <div style="border:2px solid var(--stbr-emerald);border-radius:14px;padding:10px 20px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">buys / sells &mdash; k held constant, real_token_reserves falls</div>
+          <div style="font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">price rises toward 14.7&times; the opening price</div>
+        </div>
+        <div style="height:34px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:18px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark);"></div>
+          <div style="position:absolute;left:490px;top:4px;background:var(--stbr-yellow);border-radius:999px;padding:3px 14px;font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--stbr-dark);">threshold: ~85.005 SOL added</div>
+        </div>
+
+        <div style="background:var(--stbr-dark);border-radius:14px;padding:10px 20px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:#F5E8CA;">program sets complete = true</div>
+          <div style="font-family:var(--font-mono);font-size:12.5px;color:rgba(245,232,202,0.75);margin-top:2px;">real_token_reserves == 0 &mdash; the curve is drained</div>
+        </div>
+        <div style="height:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:14px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark);"></div></div>
+
+        <div style="border:2px solid var(--stbr-emerald);border-radius:14px;padding:10px 20px;position:relative;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">migrate <span style="display:inline-block;margin-left:10px;background:var(--stbr-emerald);border-radius:999px;padding:2px 12px;font-family:var(--font-body);font-weight:700;font-size:12px;color:#F5E8CA;vertical-align:3px;">permissionless + idempotent</span></div>
+          <div style="font-family:var(--font-mono);font-size:12.5px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">any signer, no args &nbsp;&middot;&nbsp; pool_migration_fee 15,000,001 lamports</div>
+        </div>
+        <div style="height:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:2px;height:14px;background:var(--stbr-dark);"></div><div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:9px solid var(--stbr-dark);"></div></div>
+
+        <div style="border:2px solid var(--stbr-green);border-radius:14px;padding:10px 20px;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--stbr-dark);">liquidity lands on PumpSwap &mdash; LP tokens burnt</div>
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary,#4a5a4e);margin-top:2px;">pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA &nbsp;&middot;&nbsp; repeat calls change nothing</div>
+        </div>
+      </div>
+
+      <!-- error-code annotations, anchored beside the flag box -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:12px;padding-top:60px;">
+        <div style="border:1.5px dashed var(--stbr-green);border-radius:12px;padding:10px 16px;">
+          <div style="font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--stbr-green);text-transform:uppercase;letter-spacing:.06em;">&uarr; before the flag</div>
+          <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--stbr-dark);margin-top:3px;">migrate fails &mdash; 6006</div>
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted,#6b7a6f);">BondingCurveNotComplete</div>
+        </div>
+        <div style="border:1.5px dashed var(--stbr-green);border-radius:12px;padding:10px 16px;">
+          <div style="font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--stbr-green);text-transform:uppercase;letter-spacing:.06em;">&darr; after the flag</div>
+          <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--stbr-dark);margin-top:3px;">buys / sells fail &mdash; 6005</div>
+          <div style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted,#6b7a6f);">BondingCurveComplete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

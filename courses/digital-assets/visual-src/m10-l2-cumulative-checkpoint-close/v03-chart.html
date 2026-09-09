@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: One million badges, three ways to pay for it
+     purpose: show that the mass-mint constraint is decided by arithmetic, not preference
+     data: Bar chart, log scale on the cost axis, cost in SOL to create 1,000,000 holdings. The two rent bars are bytes x a per-byte rate, and they carry the same LAMPORTS_PER_BYTE the lesson's own decision-alarm code sets: 6,333, mainnet-beta, read 2026-09-06, with SIMD-0437 still stepping it down. Classic SPL token accounts: 1,856 SOL (derived: 293 bytes x 6,333 = 1,855,569 lamports of rent per account x 1,000,000) Metaplex Core assets: 3,000 SOL (derived: ~0.003 SOL per asset, vendor-published, x 1,000,000 -- a vendor price, not rent) Bubblegum v2 compressed NFTs: 7.75 SOL (one 1,223,352-byte tree, depth 20 / buffer 256 / canopy 14, at the same rate) Annotation on the cNFT bar: about 240x cheaper than the nearest alternative, and that multiple is rate-invariant because both bars are rent. Footnote: the rent bars move with the rate and the ratio between them does not; re-read the rate before you quote any of this in a budget.
+     prompt: Horizontal bar chart with three bars on a logarithmic cost axis labeled in SOL. Order the bars descending by cost: Metaplex Core assets, classic SPL token accounts, Bubblegum v2 cNFTs. Print the exact value at the end of each bar. Emphasize the shortest bar and attach the annotation about the roughly 240x gap to it. Place the derivation note for each bar in small text under its label -- bytes x rate for the two rent bars, so neither reads as a constant -- and the rate, cluster, date and rate-invariance footnote below the chart.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:452px;height:420px;bottom:-237px;right:-237px;border-radius:57% 53% 60% 48% / 39% 52% 50% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:488px;left:-324px;top:214px;border-radius:64% 39% 53% 62% / 39% 57% 55% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl);
+          padding:34px 44px 26px; }
+  .chart { display:grid; grid-template-columns:392px 1fr; row-gap:34px;
+           align-items:center; }
+  .ylab .nm { font-family:var(--font-display); font-weight:800; font-size:21px;
+           color:var(--text-primary); }
+  .ylab .dv { font-family:var(--font-body); font-weight:500; font-size:13px;
+           line-height:1.4; color:var(--text-muted); margin-top:3px; padding-right:24px; }
+  .track { position:relative; height:88px; }
+  .grid { position:absolute; top:-14px; bottom:-14px; width:0;
+          border-left:1.5px dashed var(--border-subtle); }
+  .bar { position:absolute; top:14px; height:60px; border-radius:0 var(--radius-md)
+         var(--radius-md) 0; background:var(--stbr-emerald); }
+  .bar.hot { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark); }
+  .val { position:absolute; top:26px; font-family:var(--font-mono); font-weight:700;
+         font-size:19px; color:var(--text-primary); white-space:nowrap; }
+  .anno { position:absolute; top:-8px; left:246px; font-family:var(--font-body);
+         font-weight:800; font-size:14px; background:var(--stbr-dark);
+         color:var(--stbr-yellow); padding:5px 14px; border-radius:var(--radius-pill);
+         white-space:nowrap; }
+  .axis { position:relative; height:34px; margin-top:2px; }
+  .tick { position:absolute; top:8px; font-family:var(--font-mono); font-size:13px;
+          color:var(--text-muted); transform:translateX(-50%); white-space:nowrap; }
+  .axcap { text-align:right; font-family:var(--font-body); font-weight:600;
+          font-size:12.5px; color:var(--text-muted); }
+  .foot { margin-top:16px; border-top:1.5px solid var(--border-subtle); padding-top:12px;
+          font-family:var(--font-body); font-weight:600; font-size:14px;
+          color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">the mass-mint constraint is arithmetic, not preference</div>
+  <h2 class="viz-title">one million badges, three ways to pay for it</h2>
+  <div class="card">
+    <div class="chart">
+      <div class="ylab">
+        <div class="nm">Metaplex Core assets</div>
+        <div class="dv">derived: ~0.003 SOL per asset, vendor-published, &times; 1,000,000 &mdash; a vendor price, not rent</div>
+      </div>
+      <div class="track">
+        <div class="grid" style="left:25%"></div><div class="grid" style="left:50%"></div>
+        <div class="grid" style="left:75%"></div><div class="grid" style="left:100%"></div>
+        <div class="bar" style="left:0; width:86.9%;"></div>
+        <div class="val" style="left:88.0%;">3,000 SOL</div>
+      </div>
+      <div class="ylab">
+        <div class="nm">classic SPL token accounts</div>
+        <div class="dv">derived: 293 bytes &times; 6,333 lamports/byte = 1,855,569 per account &times; 1,000,000</div>
+      </div>
+      <div class="track">
+        <div class="grid" style="left:25%"></div><div class="grid" style="left:50%"></div>
+        <div class="grid" style="left:75%"></div><div class="grid" style="left:100%"></div>
+        <div class="bar" style="left:0; width:81.7%;"></div>
+        <div class="val" style="left:82.8%;">1,856 SOL</div>
+      </div>
+      <div class="ylab">
+        <div class="nm">Bubblegum v2 cNFTs</div>
+        <div class="dv">derived: one 1,223,352-byte tree (depth 20 / buffer 256 / canopy 14) at the same rate</div>
+      </div>
+      <div class="track">
+        <div class="grid" style="left:25%"></div><div class="grid" style="left:50%"></div>
+        <div class="grid" style="left:75%"></div><div class="grid" style="left:100%"></div>
+        <div class="bar hot" style="left:0; width:22.2%;"></div>
+        <div class="val" style="left:23.4%;">7.75 SOL</div>
+        <div class="anno">&asymp; 240&times; cheaper than the nearest alternative</div>
+      </div>
+      <div class="axcap" style="padding-right:24px;">cost to create 1,000,000 holdings &rarr;</div>
+      <div class="axis">
+        <div class="tick" style="left:0;">1 SOL</div>
+        <div class="tick" style="left:25%;">10</div>
+        <div class="tick" style="left:50%;">100</div>
+        <div class="tick" style="left:75%;">1,000</div>
+        <div class="tick" style="right:0; transform:none; text-align:right;">10,000 SOL &middot; log scale</div>
+      </div>
+    </div>
+    <div class="foot">the two rent bars are <b>bytes &times; 6,333 lamports/byte</b> &mdash; mainnet-beta, read 2026-09-06, the same rate this lesson&rsquo;s decision-alarm code sets. SIMD-0437 is stepping it down, so re-read it before you quote a budget. The <b>240&times; gap does not move</b>: both bars are rent, so they scale together. Only the Core bar is a fixed vendor price.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How a wallet turns a mint address into a rendered name
+     purpose: show the resolution path a reader's wallet walks, and where this lesson's two extensions sit in it
+     data: mint address -> getAccountInfo -> owner is TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb -> walk the TLV -> MetadataPointer (type 18) -> follow it: points at the mint itself -> TokenMetadata TLV (type 19) -> name + symbol render immediately (on-chain strings) -> uri -> one HTTP fetch for the off-chain JSON (image and rich fields only) Contrast branch (classic-SPL era): mint address -> derive Metaplex metadata PDA -> second account read -> deserialize the Metaplex Data struct.
+     prompt: Left-to-right flowchart of the native path as the main spine, seven nodes per the data. Highlight the two nodes for extension types 18 and 19. Mark the name/symbol node "zero HTTP fetches" and the uri node "one fetch, images only". Below it, a thinner grayed branch showing the legacy two-account Metaplex path, labeled "the pre-native world".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:496px;height:456px;top:-271px;right:-271px;border-radius:36% 60% 61% 43% / 52% 62% 61% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:513px;height:369px;left:-299px;top:315px;border-radius:36% 43% 51% 65% / 62% 40% 55% 52%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size: 46px; margin-bottom: 14px; }
+  .row { display:flex; align-items:stretch; }
+  .nd { background:var(--surface-card); border:2px solid var(--stbr-emerald);
+        border-radius:var(--radius-lg); padding:12px 16px; }
+  .nd .nt { font-family:var(--font-display); font-weight:900; font-size:19px;
+            line-height:1.12; color:var(--text-primary); }
+  .nd .ns { font-family:var(--font-body); font-size:13px; line-height:1.3;
+            color:var(--text-secondary); margin-top:5px; }
+  .nd.hot { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .nd.hot .nt { color:var(--stbr-dark); }
+  .nd.hot .ns { color:var(--stbr-dark); }
+  .r1 .nd { width:238px; }
+  .r2 .nd { width:274px; }
+  .harrow { flex:0 0 42px; display:flex; align-items:center; justify-content:center; }
+  .chip { display:inline-block; margin-top:7px; font-family:var(--font-body);
+          font-weight:800; font-size:12px; letter-spacing:.04em;
+          background:var(--surface-brand); color:var(--text-on-brand);
+          border-radius:var(--radius-pill); padding:3px 11px; }
+  .nd.hot .chip { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .wrap { height:46px; position:relative; }
+  .legacy { margin-top:18px; border:2px dashed var(--border-strong);
+            border-radius:var(--radius-lg); background:var(--surface-paper);
+            padding:14px 20px; display:flex; align-items:center; opacity:.82; }
+  .legacy .lg-tag { width:196px; font-family:var(--font-display); font-weight:900;
+                    font-size:16px; line-height:1.2; color:var(--text-muted);
+                    padding-right:16px; }
+  .lnd { background:var(--surface-card); border:1px solid var(--border-strong);
+         border-radius:var(--radius-md); padding:9px 14px; width:262px;
+         font-family:var(--font-body); font-weight:700; font-size:14px;
+         line-height:1.25; color:var(--text-muted); }
+  .lnd span { display:block; font-weight:400; font-size:12px; margin-top:2px; }
+  .larrow { flex:0 0 34px; display:flex; align-items:center; justify-content:center; }
+</style>
+  <div class="stbr-eyebrow">the resolution path</div>
+  <h2 class="viz-title">how a wallet turns a mint address into a rendered name</h2>
+
+  <div class="row r1">
+    <div class="nd"><div class="nt">mint address</div>
+      <div class="ns">the only thing the wallet starts with</div></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd"><div class="nt">getAccountInfo</div>
+      <div class="ns">one RPC read of the mint</div></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd"><div class="nt">owner check</div>
+      <div class="ns" style="font-family:var(--font-mono);">TokenzQdBN&hellip;PxuEb<br>= Token-2022</div></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd"><div class="nt">walk the TLV</div>
+      <div class="ns">scan the extension entries after the base mint</div></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd hot"><div class="nt">MetadataPointer</div>
+      <div class="ns">extension type 18</div></div>
+  </div>
+
+  <div class="wrap">
+    <svg width="1456" height="46" viewBox="0 0 1456 46" style="position:absolute;top:0;left:0;">
+      <path d="M1258 4 L1258 20 L137 20 L137 32" fill="none" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="127,32 147,32 137,45" fill="#1b231d"/>
+    </svg>
+  </div>
+
+  <div class="row r2">
+    <div class="nd"><div class="nt">follow the pointer</div>
+      <div class="ns">it points at the mint itself &mdash; self-referential</div></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd hot"><div class="nt">TokenMetadata TLV</div>
+      <div class="ns">extension type 19</div></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd"><div class="nt">name + symbol render</div>
+      <div class="ns">on-chain strings, straight to the screen</div>
+      <span class="chip">zero HTTP fetches</span></div>
+    <div class="harrow"><svg width="42" height="16" viewBox="0 0 42 16"><line x1="0" y1="8" x2="28" y2="8" stroke="#1b231d" stroke-width="3"/><polygon points="28,1 42,8 28,15" fill="#1b231d"/></svg></div>
+    <div class="nd"><div class="nt">uri &rarr; off-chain JSON</div>
+      <div class="ns">image and rich fields only</div>
+      <span class="chip">one fetch, images only</span></div>
+  </div>
+
+  <div class="legacy">
+    <div class="lg-tag">the pre-native world<br>(classic SPL era)</div>
+    <div class="lnd">mint address<span>same starting point</span></div>
+    <div class="larrow"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="22" y2="7" stroke="#6b6f6a" stroke-width="2" stroke-dasharray="6 4"/><polygon points="22,2 34,7 22,12" fill="#6b6f6a"/></svg></div>
+    <div class="lnd">derive Metaplex metadata PDA<span>convention, off the mint</span></div>
+    <div class="larrow"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="22" y2="7" stroke="#6b6f6a" stroke-width="2" stroke-dasharray="6 4"/><polygon points="22,2 34,7 22,12" fill="#6b6f6a"/></svg></div>
+    <div class="lnd">second account read<span>another RPC round-trip</span></div>
+    <div class="larrow"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="0" y1="7" x2="22" y2="7" stroke="#6b6f6a" stroke-width="2" stroke-dasharray="6 4"/><polygon points="22,2 34,7 22,12" fill="#6b6f6a"/></svg></div>
+    <div class="lnd">deserialize Metaplex Data struct<span>then name/symbol/uri</span></div>
+  </div>
+</div>
+</body></html>

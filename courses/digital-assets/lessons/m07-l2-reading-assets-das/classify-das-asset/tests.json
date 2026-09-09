@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "description": "a Bubblegum v2 cNFT is a compressed NFT and can only be read via a DAS RPC",
+    "input": "'MplBubblegumV2', '{\"compression\":{\"compressed\":true}}'",
+    "expectedOutput": "result.category === 'compressed-nft' && result.compressed === true && result.requiresDasRpc === true && result.pricePerToken === null"
+  },
+  {
+    "id": "t2",
+    "description": "a Metaplex Core asset is a plain NFT, no DAS-only requirement",
+    "input": "'MplCoreAsset', '{\"compression\":{\"compressed\":false}}'",
+    "expectedOutput": "result.category === 'nft' && result.compressed === false && result.requiresDasRpc === false"
+  },
+  {
+    "id": "t3",
+    "description": "a fungible token surfaces its price from token_info.price_info",
+    "input": "'FungibleToken', '{\"token_info\":{\"price_info\":{\"price_per_token\":1.0003}}}'",
+    "expectedOutput": "result.category === 'fungible' && result.fungible === true && result.pricePerToken === 1.0003"
+  },
+  {
+    "id": "t4",
+    "description": "a legacy NFT still classifies as an NFT",
+    "input": "'V1_NFT', '{}'",
+    "expectedOutput": "result.category === 'nft' && result.compressed === false && result.fungible === false"
+  },
+  {
+    "id": "t5",
+    "description": "a fungible asset with no price info returns a null price",
+    "input": "'FungibleAsset', '{}'",
+    "expectedOutput": "result.category === 'fungible' && result.pricePerToken === null"
+  }
+]

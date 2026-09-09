@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: One TransferChecked, two account lists
+     purpose: make the exact delta between the failing and succeeding transaction visible
+     data: naive (reverts): [0] source ATA (writable) | [1] SPROUT mint | [2] destination ATA (writable) | [3] owner (signer) resolved (lands): the same four, then + each resolved extra from the ExtraAccountMetaList (harvest-hook state, treasury log kept writable) + harvest-hook program (readonly) + validation PDA (readonly) identical in both: instruction data [12][amount u64 LE][decimals u8], the signer, the amount
+     prompt: Two columns titled "naive: reverts" and "resolved: lands". Both start with the same four account chips (source, mint, destination, owner-signer) rendered identically. The resolved column continues with appended chips: "extra: hook state", "extra: treasury log [writable]", "hook program", "validation PDA", visually set apart as an appended tail. A footer bar under both: "instruction data identical". Mark the naive column with a red revert badge, the resolved with a green landed badge.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:496px;top:-304px;right:-304px;border-radius:50% 65% 64% 57% / 53% 52% 41% 62%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:360px;height:448px;bottom:-240px;left:439px;border-radius:59% 40% 37% 62% / 35% 59% 65% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:34px 48px 30px;}
+  .cols{display:flex;gap:28px;align-items:stretch;}
+  .col{flex:1;border:2px solid var(--border-strong);border-radius:16px;overflow:hidden;
+       display:flex;flex-direction:column;}
+  .chead{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;}
+  .chead.naive{background:var(--surface-inverse,#1B231D);}
+  .chead.res{background:var(--stbr-emerald);}
+  .ctitle{font-family:var(--font-display);font-weight:800;font-size:19px;color:#F5E8CA;}
+  .cbadge{font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.08em;
+          text-transform:uppercase;border-radius:999px;padding:4px 14px;}
+  .bd-rev{background:var(--stbr-yellow);color:var(--stbr-dark);}
+  .bd-land{background:#F5E8CA;color:var(--stbr-emerald);}
+  .list{display:flex;flex-direction:column;gap:6px;padding:14px 18px 16px;flex:1;}
+  .acct{display:flex;align-items:center;gap:10px;background:var(--surface-paper,#FAF3E3);
+        border:1.5px solid var(--border-subtle);border-radius:10px;padding:8px 12px;}
+  .acct .ix{font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:#F5E8CA;
+            background:var(--stbr-green);border-radius:6px;padding:1px 8px;}
+  .acct .nm{font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--text-primary);flex:1;}
+  .acct .fl{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);}
+  .tail{margin-top:8px;border:2px solid var(--stbr-yellow);background:#FFF6D6;border-radius:12px;
+        padding:10px 12px 12px;}
+  .taillab{font-family:var(--font-display);font-weight:800;font-size:12.5px;letter-spacing:.09em;
+           text-transform:uppercase;color:var(--stbr-dark);margin-bottom:8px;}
+  .tail .acct{background:var(--surface-card);}
+  .tail .acct + .acct{margin-top:6px;}
+  .empty{margin-top:8px;flex:1;border:2px dashed var(--border-subtle);border-radius:12px;
+         display:flex;align-items:center;justify-content:center;font-family:var(--font-body);
+         font-size:14px;color:var(--text-muted);text-align:center;padding:12px;min-height:120px;}
+  .foot{margin-top:16px;background:var(--surface-inverse,#1B231D);border-radius:12px;padding:12px 24px;
+        text-align:center;font-family:var(--font-body);font-size:15px;color:#F5E8CA;}
+  .foot code{font-family:var(--font-mono);font-size:14px;color:var(--stbr-yellow);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the exact delta between failing and landing</div>
+  <h2 class="viz-title">one TransferChecked, two account lists</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="chead naive"><div class="ctitle">naive</div><div class="cbadge bd-rev">&#10007; reverts</div></div>
+      <div class="list">
+        <div class="acct"><span class="ix">0</span><span class="nm">source ATA</span><span class="fl">writable</span></div>
+        <div class="acct"><span class="ix">1</span><span class="nm">SPROUT mint</span><span class="fl">readonly</span></div>
+        <div class="acct"><span class="ix">2</span><span class="nm">destination ATA</span><span class="fl">writable</span></div>
+        <div class="acct"><span class="ix">3</span><span class="nm">owner</span><span class="fl">signer</span></div>
+        <div class="empty">nothing appended &mdash; Token-2022 can&rsquo;t find the validation account and the hook program isn&rsquo;t in the transaction</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="chead res"><div class="ctitle">resolved</div><div class="cbadge bd-land">&#10003; lands</div></div>
+      <div class="list">
+        <div class="acct"><span class="ix">0</span><span class="nm">source ATA</span><span class="fl">writable</span></div>
+        <div class="acct"><span class="ix">1</span><span class="nm">SPROUT mint</span><span class="fl">readonly</span></div>
+        <div class="acct"><span class="ix">2</span><span class="nm">destination ATA</span><span class="fl">writable</span></div>
+        <div class="acct"><span class="ix">3</span><span class="nm">owner</span><span class="fl">signer</span></div>
+        <div class="tail">
+          <div class="taillab">appended by resolution</div>
+          <div class="acct"><span class="ix">+</span><span class="nm">extra: harvest-hook state</span><span class="fl">readonly</span></div>
+          <div class="acct"><span class="ix">+</span><span class="nm">extra: treasury log</span><span class="fl">writable</span></div>
+          <div class="acct"><span class="ix">+</span><span class="nm">harvest-hook program</span><span class="fl">readonly</span></div>
+          <div class="acct"><span class="ix">+</span><span class="nm">validation PDA</span><span class="fl">readonly</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">instruction data identical in both: <code>[12][amount u64 LE][decimals u8]</code> &mdash; same signer, same amount</div>
+</div>
+</div>
+</body></html>

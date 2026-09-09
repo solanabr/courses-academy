@@ -1,0 +1,89 @@
+id: lesson-date-m07-l1-bubblegum-v2-cnfts
+slug: m07-l1-bubblegum-v2-cnfts
+title: "Bubblegum v2: mint a million NFTs for the price of a laptop"
+skills:
+  - state-compression
+  - merkle-proofs
+  - das-api
+  - account-model
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@metaplex-foundation/umi": "1.5.1"
+    "@metaplex-foundation/umi-bundle-defaults": "1.5.1"
+    "@metaplex-foundation/mpl-bubblegum": "5.1.0"
+    "@metaplex-foundation/mpl-core": "1.10.0"
+    "@metaplex-foundation/digital-asset-standard-api": "2.0.0"
+    "@metaplex-foundation/mpl-account-compression": "0.0.1"
+    tsx: "4.23.12"
+    typescript: "5.9.3"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Your Harvest-crate cNFTs mint into the tree and their asset ids resolve. A teammate asks where a single crate's metadata actually lives on-chain. What's the accurate answer?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The crate's data is hashed into a leaf of the Merkle tree; the full metadata is reconstructable only from an RPC provider's off-chain index, not from any account on-chain."
+            correct: true
+            feedback: "Thirty-two bytes in a slot is the entire on-chain footprint. Everything a wallet renders was rebuilt by somebody who was watching when the mint landed."
+          - id: b
+            label: "Each cNFT owns a 165-byte account holding its metadata, the same layout as a Token-2022 mint account."
+            correct: false
+            feedback: "That's an SPL token account layout. Compression's whole point is that no per-asset account exists; only a leaf hash sits in the tree."
+          - id: c
+            label: "The metadata is stored inside the Core collection account the tree belongs to, one record per member crate."
+            correct: false
+            feedback: "The Core collection verifies membership and holds collection-level plugins, but it does not store each cNFT's metadata; the leaf hash does."
+          - id: d
+            label: "The full metadata sits in the transaction logs the Noop program wrote at mint, so any RPC can replay that crate's mint against the tree and reconstruct it."
+            correct: false
+            feedback: "Those logs are why an indexer can rebuild the crate, and they are also why you need the indexer: logs are transaction output, not queryable state, and no RPC keeps them forever."
+        explanation: "State compression stores only a hash of each asset as a leaf in an on-chain concurrent Merkle tree. The readable metadata lives in a DAS provider's index, which is exactly why the next lesson needs a DAS RPC to read a crate back."
+      - id: q2
+        prompt: "You need roughly one million Harvest crates. A colleague reads the vendor's ~8.5 SOL figure and budgets 8.5 SOL per crate. What should you tell them?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "About 0.34 SOL flat, the fixed cost of any Bubblegum v2 tree regardless of depth."
+            correct: false
+            feedback: "0.34 SOL is the cost of a 16,384-leaf tree specifically; tree cost scales with depth, buffer, and canopy. It is not a flat fee."
+          - id: a
+            label: "8.5 SOL per crate is right, because each compressed mint provisions its own full account."
+            correct: false
+            feedback: "The vendor's 8.5 SOL is the total for ~1M cNFTs, not per-asset; each works out to a few millionths of a SOL."
+          - id: b
+            label: "Single-digit SOL for the whole tree of ~1M leaves, a few millionths of a SOL per cNFT."
+            correct: true
+            feedback: "The per-crate figure is that one bill divided by the leaf count, which is why it falls as the tree fills rather than being charged again."
+          - id: d
+            label: "About 8.5 SOL for the tree, and then a few millionths of rent per crate as the leaves fill."
+            correct: false
+            feedback: "A leaf costs no rent at all: the tree account is the same size empty or full, which is the whole reason depth is nearly free and canopy is not."
+        explanation: "Cost is a property of the tree's depth/buffer/canopy, derived once for the whole supply, not paid per asset. Vendor figures put ~1M cNFTs at ~8.5 SOL total and a 16,384-leaf tree at ~0.34 SOL; both were quoted at 6,960 lamports/byte, and SIMD-0437 has since cut that rate, so derive the SOL from the byte count on your own cluster and treat the vendor number as a sanity check rather than a quote."
+      - id: q3
+        prompt: "You want the Founding-Farmer achievement crate to be non-transferable. Someone insists cNFTs can never be soulbound. What's the correct move in Bubblegum v2?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Move the crate into a V1 tree, which enforces immutability at the leaf level."
+            correct: false
+            feedback: "V2 trees are not backward-compatible with V1 leaves, and immutability isn't a V1 feature; use set_non_transferable_v2 plus a collection PermanentFreezeDelegate."
+          - id: c
+            label: "Use set_non_transferable_v2 (with a collection-level PermanentFreezeDelegate) to make the cNFT soulbound."
+            correct: true
+            feedback: "Soulbound is bit 2 of the v2 leaf's flags byte, and the collection's permanent freeze delegate is what authorizes the signer to set it."
+          - id: d
+            label: "Call freeze_v2 on the leaf, because freezing is how v2 spells soulbound and there is no separate flag for it."
+            correct: false
+            feedback: "Freeze and non-transferable are different bits in the same flags byte, and freeze has a thaw_v2 to undo it. A frozen crate is parked, not welded."
+          - id: a
+            label: "They're right: mint a Token-2022 NonTransferable mint instead, because cNFTs are always freely transferable."
+            correct: false
+            feedback: "That was true in the V1 era, but Bubblegum v2 added set_non_transferable_v2; a cNFT can be soulbound now."
+        explanation: "Bubblegum v2's set_non_transferable_v2, combined with a PermanentFreezeDelegate on the Core collection, produces genuinely soulbound cNFTs, the reversal of 2024-era folklore that compression couldn't do freeze or soulbound."

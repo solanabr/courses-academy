@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The TM-to-Core hand-off, told by release cadence
+     purpose: ground the "Core is the standard now" claim in observable shipping activity rather than assertion
+     data: Feb 2025: mpl-token-metadata JS v3.4.0, final feature release; the line goes quiet. Apr 2026: mpl-core JS SDK 1.10.0. May-Jun 2026: the Core program ships 0.13.0, 0.14.0, 0.15.0, 0.15.1 in steady cadence; its Rust client crate reaches 0.12.1 (2026-06-16). Aug 2026 (time of writing): TM JS still at 3.4.0; all three Core lines active.
+     prompt: Horizontal timeline, Feb 2025 to Aug 2026. Two parallel tracks: "Token Metadata JS" with a single release dot at v3.4.0 then a flat gray line labeled "no feature releases since"; "Metaplex Core" with dots for JS 1.10.0 and the program's 0.13.0 through 0.15.1 cluster. Emphasize the density contrast between tracks.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:546px;height:549px;top:-290px;right:-290px;border-radius:54% 39% 35% 50% / 50% 41% 51% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:527px;bottom:-300px;left:702px;border-radius:63% 43% 42% 53% / 56% 45% 57% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl-card { background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); padding:26px 48px 18px; margin-top:6px; }
+  .track { position:relative; height:170px; }
+  .track-lab { position:absolute; left:0; top:0; font-family:var(--font-display);
+               font-weight:900; font-size:19px; color:var(--text-primary); }
+  .track-lab small { display:block; font-family:var(--font-body); font-weight:600;
+                     font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .rail { position:absolute; left:0; top:96px; height:4px; width:1340px;
+          border-radius:2px; }
+  .rail.gray { background:var(--stbr-ink-300); }
+  .rail.green { background:var(--stbr-emerald); }
+  .seg { position:absolute; top:92px; height:12px; border-radius:6px;
+         background:var(--stbr-yellow); border:2px solid var(--stbr-dark); }
+  .dot { position:absolute; top:89px; width:18px; height:18px; border-radius:50%;
+         border:3px solid var(--stbr-dark); background:var(--surface-card); }
+  .dot.green { background:var(--stbr-emerald); }
+  .dot.small { top:92px; width:12px; height:12px; border-width:2.5px; }
+  .lab { position:absolute; font-family:var(--font-mono); font-weight:700;
+         font-size:13px; color:var(--text-primary); white-space:nowrap; }
+  .lab.up { top:58px; } .lab.up2 { top:36px; } .lab.top { top:12px; }
+  .lab.dn { top:118px; } .lab.dn2 { top:140px; }
+  .lab.muted { color:var(--text-muted); font-family:var(--font-body); font-weight:600; }
+  .axis { position:relative; height:34px; border-top:2px solid var(--stbr-dark);
+          margin-top:2px; width:1340px; }
+  .tick { position:absolute; top:6px; font-family:var(--font-body); font-weight:700;
+          font-size:13px; color:var(--text-secondary); }
+  .tickmark { position:absolute; top:-2px; width:2px; height:8px; background:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">shipping activity, not assertion</div>
+  <h2 class="viz-title">the TM-to-Core hand-off, told by release cadence</h2>
+  <div class="tl-card">
+    <div class="track">
+      <div class="track-lab">Token Metadata JS<small>mpl-token-metadata</small></div>
+      <div class="rail gray"></div>
+      <div class="dot" style="left:1px;"></div>
+      <div class="lab dn" style="left:0;">v3.4.0 &middot; Feb 2025 &middot; final feature release</div>
+      <div class="lab dn muted" style="left:520px;">no feature releases since &mdash; still v3.4.0 in Aug 2026</div>
+    </div>
+    <div class="track">
+      <div class="track-lab">Metaplex Core<small>JS SDK &middot; program &middot; Rust client</small></div>
+      <div class="rail green"></div>
+      <div class="seg" style="left:1090px;width:160px;"></div>
+      <div class="dot green" style="left:1035px;"></div>
+      <div class="lab up2" style="left:880px;">JS SDK 1.10.0 &middot; Apr 2026</div>
+      <div class="dot small green" style="left:1104px;"></div>
+      <div class="lab up" style="left:1048px;">program 0.13.0</div>
+      <div class="dot small green" style="left:1140px;"></div>
+      <div class="lab dn" style="left:1108px;">0.14.0</div>
+      <div class="dot small green" style="left:1176px;"></div>
+      <div class="lab up" style="left:1176px;">0.15.0</div>
+      <div class="dot small green" style="left:1210px;"></div>
+      <div class="lab dn" style="left:1218px;">0.15.1</div>
+      <div class="lab dn2" style="left:1000px;">Rust client 0.12.1 &middot; 2026-06-16</div>
+      <div class="lab top muted" style="left:1190px;">all three lines active</div>
+    </div>
+    <div class="axis">
+      <div class="tickmark" style="left:8px;"></div><div class="tick" style="left:0;">Feb 2025</div>
+      <div class="tickmark" style="left:452px;"></div><div class="tick" style="left:424px;">Aug 2025</div>
+      <div class="tickmark" style="left:897px;"></div><div class="tick" style="left:869px;">Feb 2026</div>
+      <div class="tickmark" style="left:1338px;"></div><div class="tick" style="left:1276px;">Aug 2026</div>
+    </div>
+  </div>
+</div>
+</body></html>

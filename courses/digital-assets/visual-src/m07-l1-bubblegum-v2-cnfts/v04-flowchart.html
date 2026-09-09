@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Why a cached Merkle proof fails, and what the buffer absorbs
+     purpose: make proof staleness a mechanism the reader can predict, not a mystery error
+     data: Happy path: fetch proof at root R -> submit write -> program recomputes R -> accepted Concurrent path: fetch proof at root R -> someone else mints, root becomes R' -> submit write -> program checks changelog buffer for R -> found within last max_buffer_size changes -> proof replayed forward -> accepted Failure path: fetch proof at root R -> more than max_buffer_size writes land -> R aged out of the changelog buffer -> proof cannot be replayed -> transaction fails Mitigation: re-fetch the proof immediately before the write; size max_buffer_size for the write concurrency you expect (64 for a quiet tree, 256 for a drop)
+     prompt: Vertical flowchart with three labeled lanes side by side: "happy", "concurrent", "failed". Each lane runs top to bottom through the same four boxes (fetch proof, other writes land, submit, program verifies) with the divergence shown at the verify step: accepted, replayed forward from the changelog buffer, rejected. Annotate the concurrent lane's verify box with "within max_buffer_size" and the failed lane's with "aged out". Put the mitigation as a single footer strip.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:613px;height:511px;top:-327px;right:-327px;border-radius:65% 64% 37% 50% / 62% 42% 60% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:556px;height:511px;bottom:-272px;left:-272px;border-radius:38% 56% 52% 64% / 65% 58% 38% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .st-lanes { display:flex; gap:26px; align-items:stretch; margin-top:2px; }
+  .st-lane { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column; }
+  .st-lane-head { padding:9px 20px; font-family:var(--font-display); font-weight:900;
+                  font-size:20px; color:var(--stbr-cream); }
+  .st-lane-head.ok { background:var(--stbr-emerald); }
+  .st-lane-head.mid { background:var(--stbr-green); }
+  .st-lane-head.bad { background:var(--surface-inverse); }
+  .st-steps { flex:1 1 auto; padding:12px 16px 10px; display:flex; flex-direction:column;
+              align-items:stretch; }
+  .st-step { border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+             background:var(--surface-card); padding:6px 14px; font-family:var(--font-body);
+             font-weight:600; font-size:14px; line-height:1.28; color:var(--text-primary);
+             min-height:44px; display:flex; flex-direction:column; justify-content:center; }
+  .st-step b { font-weight:800; }
+  .st-down { align-self:center; display:flex; flex-direction:column; align-items:center; height:20px; }
+  .st-down .stem { width:2.5px; height:9px; background:var(--stbr-dark); }
+  .st-down .tri { width:12px; height:9px; position:relative; }
+  .st-down .tri::after { content:""; position:absolute; left:0; top:0; width:0; height:0;
+                         border-left:6px solid transparent; border-right:6px solid transparent;
+                         border-top:9px solid var(--stbr-dark); }
+  .st-note { align-self:flex-start; margin:-2px 0 4px; padding:2px 10px;
+             border-radius:var(--radius-pill); font-family:var(--font-body); font-weight:700;
+             font-size:11px; letter-spacing:.07em; text-transform:uppercase; }
+  .st-note.in { background:rgba(0,139,76,0.12); color:var(--stbr-green); }
+  .st-note.out { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .st-verdict { padding:9px 16px; text-align:center; font-family:var(--font-display);
+                font-weight:900; font-size:18px; border-top:2.5px solid var(--stbr-dark); }
+  .st-verdict.ok { background:rgba(0,139,76,0.12); color:var(--stbr-emerald); }
+  .st-verdict.bad { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .st-verdict small { display:block; font-family:var(--font-body); font-weight:600;
+                      font-size:12px; color:var(--text-secondary); }
+  .st-foot { margin-top:16px; background:var(--surface-inverse); color:var(--text-on-dark);
+             border-radius:var(--radius-pill); padding:10px 26px; text-align:center;
+             font-family:var(--font-body); font-weight:600; font-size:15px; }
+  .st-foot b { color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">proof staleness is a mechanism, not a mystery</div>
+  <h2 class="viz-title">why a cached proof fails &mdash; and what the buffer absorbs</h2>
+  <div class="st-lanes">
+    <div class="st-lane">
+      <div class="st-lane-head ok">happy</div>
+      <div class="st-steps">
+        <div class="st-step"><b>fetch proof</b> at root R</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step">no other writes land &mdash; root is still R</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step"><b>submit</b> the write</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step"><b>verify:</b> program recomputes R &mdash; it matches</div>
+      </div>
+      <div class="st-verdict ok">accepted</div>
+    </div>
+    <div class="st-lane">
+      <div class="st-lane-head mid">concurrent</div>
+      <div class="st-steps">
+        <div class="st-step"><b>fetch proof</b> at root R</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step">someone else mints &mdash; root becomes R&prime;</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step"><b>submit</b> the write</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-note in">within max_buffer_size</div>
+        <div class="st-step"><b>verify:</b> R found in the changelog buffer &mdash; proof replayed forward</div>
+      </div>
+      <div class="st-verdict ok">accepted<small>the buffer absorbed the concurrency</small></div>
+    </div>
+    <div class="st-lane">
+      <div class="st-lane-head bad">failed</div>
+      <div class="st-steps">
+        <div class="st-step"><b>fetch proof</b> at root R</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step">more than max_buffer_size writes land</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-step"><b>submit</b> the write</div>
+        <div class="st-down"><span class="stem"></span><span class="tri"></span></div>
+        <div class="st-note out">aged out</div>
+        <div class="st-step"><b>verify:</b> R fell off the changelog &mdash; proof cannot be replayed</div>
+      </div>
+      <div class="st-verdict bad">transaction fails</div>
+    </div>
+  </div>
+  <div class="st-foot"><b>mitigation:</b> re-fetch the proof immediately before the write &middot; size max_buffer_size for the concurrency you expect &mdash; 64 for a quiet tree, 256 for a drop</div>
+</div>
+</body></html>

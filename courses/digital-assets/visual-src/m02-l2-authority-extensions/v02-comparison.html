@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Approve-delegate versus permanent delegate
+     purpose: separate the holder-granted classic delegate from the mint-level permanent delegate before the guard demonstration
+     data: Who grants it | owner signs approve on their own account | issuer sets it before initializeMint Scope | one token account | every account of the mint, forever Amount | capped by the approve amount | uncapped Holder can revoke | yes, one revoke instruction | no, never Relation to CpiGuard | this is the delegate the guard DEMANDS during a CPI | bypasses the guard entirely
+     prompt: Two-column comparison card, left column "Approve-delegate (classic SPL)", right column "PermanentDelegate (Token-2022)". Five rows as in the data: who grants it, scope, amount, holder can revoke, relation to CpiGuard. Give the right column a red accent to mark it as the higher-power authority. Keep row labels short and bold.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:529px;height:478px;bottom:-240px;right:-240px;border-radius:35% 56% 58% 55% / 53% 60% 45% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:491px;height:405px;left:-310px;top:304px;border-radius:38% 60% 60% 62% / 47% 42% 48% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { display:grid; grid-template-columns: 220px 1fr 1.08fr; background:var(--surface-card);
+         border:2px solid var(--border-subtle); border-radius:var(--radius-lg); overflow:hidden; }
+  .hc { padding:16px 22px; }
+  .hc.blank { background:var(--surface-card); }
+  .hc.classic { background:var(--surface-inverse); }
+  .hc.perm { background:var(--surface-accent); }
+  .ht { font-family:var(--font-display); font-weight:900; font-size:22px; line-height:1.05; }
+  .hc.classic .ht { color:var(--text-on-dark); }
+  .hc.perm .ht { color:var(--text-on-accent); }
+  .hs { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.13em;
+        text-transform:uppercase; margin-top:4px; }
+  .hc.classic .hs { color:rgba(245,232,202,0.60); }
+  .hc.perm .hs { color:rgba(27,35,29,0.62); }
+  .lbl { padding:15px 22px; border-top:1.5px solid var(--border-subtle);
+         font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.09em;
+         text-transform:uppercase; color:var(--text-secondary); display:flex; align-items:center; }
+  .cell { padding:17px 22px 15px; border-top:1.5px solid var(--border-subtle);
+          font-family:var(--font-body); font-size:15.5px; line-height:1.38;
+          color:var(--text-primary); }
+  .cell.perm { background:rgba(255,210,63,0.14); font-weight:600; }
+  .cell code { font-family:var(--font-mono); font-size:14px; color:var(--stbr-emerald-800); font-weight:600; }
+  .verdict { margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:17px 28px; display:flex; align-items:center; gap:22px; }
+  .vk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.13em;
+        text-transform:uppercase; color:rgba(245,232,202,0.78); white-space:nowrap; }
+  .vt { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1;
+        color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">delegation &middot; two very different grants</div>
+  <h2 class="viz-title">approve-delegate vs permanent delegate</h2>
+
+  <div class="tbl">
+    <div class="hc blank"></div>
+    <div class="hc classic"><div class="ht">Approve-delegate</div><div class="hs">classic SPL</div></div>
+    <div class="hc perm"><div class="ht">PermanentDelegate</div><div class="hs">Token-2022 &middot; mint-level power</div></div>
+
+    <div class="lbl">Who grants it</div>
+    <div class="cell">the owner signs <code>approve</code> on their own account</div>
+    <div class="cell perm">the issuer sets it before <code>initializeMint</code></div>
+
+    <div class="lbl">Scope</div>
+    <div class="cell">one token account</div>
+    <div class="cell perm">every account of the mint, forever</div>
+
+    <div class="lbl">Amount</div>
+    <div class="cell">capped by the approve amount</div>
+    <div class="cell perm">uncapped</div>
+
+    <div class="lbl">Holder can revoke</div>
+    <div class="cell">yes &mdash; one <code>revoke</code> instruction</div>
+    <div class="cell perm">no, never</div>
+
+    <div class="lbl">Relation to CpiGuard</div>
+    <div class="cell">this is the delegate the guard <strong>demands</strong> during a CPI</div>
+    <div class="cell perm">bypasses the guard entirely</div>
+  </div>
+
+  <div class="verdict">
+    <span class="vk">the split</span>
+    <span class="vt">One is permission the holder grants; the other is power the issuer keeps.</span>
+  </div>
+</div>
+</body></html>

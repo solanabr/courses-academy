@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: What the hook costs on the transfer path
+     purpose: quantify the CU tax a hook adds, measured in this lesson's own harness rather than asserted
+     data: measured in LiteSVM 0.15.2 against spl-token-2022 11.0.0, 2026-08-22, this lesson's harness plain TransferChecked, mint with no extensions: 1790 CU (single bar) hooked TransferChecked, total: 23108 to 35292 CU across runs (range bar) of which harvest-hook Execute: 9448 to 13448 CU across runs (range bar, nested) note: the spread is dominated by PDA bump searches, not by the hook's own logic
+     prompt: Horizontal bar chart, three bars, shared CU axis from 0 to 40,000. Bar 1 "plain TransferChecked" solid at 1,790 with the value labeled. Bar 2 "hooked TransferChecked" drawn as a range from 23,108 to 35,292. Bar 3 "of which: hook Execute" drawn as a range from 9,448 to 13,448, visually nested or indented under bar 2. Caption line with the measurement environment and date.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:611px;height:581px;bottom:-340px;right:-340px;border-radius:57% 62% 63% 64% / 54% 55% 54% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:494px;height:440px;left:-268px;top:371px;border-radius:54% 65% 53% 58% / 52% 42% 42% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v5 .card{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:20px;padding:30px 36px 22px;margin-top:8px}
+    .v5 .crow{display:flex;align-items:center;margin-bottom:26px}
+    .v5 .cname{width:280px;font-family:var(--font-body);font-size:16px;font-weight:600;color:var(--text-primary);padding-right:18px;line-height:1.3}
+    .v5 .cname .sub{display:block;font-size:12.5px;font-weight:500;color:var(--text-muted);margin-top:2px}
+    .v5 .cname.indent{padding-left:26px;font-size:15px}
+    .v5 .track{position:relative;flex:1;height:44px}
+    .v5 .grid{position:absolute;top:-10px;bottom:-10px;width:1px;background:var(--stbr-ink-100)}
+    .v5 .bar{position:absolute;top:4px;height:36px;border-radius:8px}
+    .v5 .bar.solid{background:var(--stbr-emerald)}
+    .v5 .bar.range{background:var(--stbr-emerald);border-radius:10px}
+    .v5 .bar.hook{background:var(--stbr-yellow)}
+    .v5 .vlab{position:absolute;top:12px;font-family:var(--font-mono);font-size:14.5px;font-weight:700;color:var(--text-primary);white-space:nowrap}
+    .v5 .vlab.in{color:var(--stbr-cream)}
+    .v5 .vlab.inhook{color:var(--stbr-dark)}
+    .v5 .axis{display:flex;margin-left:280px;border-top:2px solid var(--stbr-dark);padding-top:6px}
+    .v5 .tick{flex:1;font-family:var(--font-body);font-size:12.5px;color:var(--text-muted)}
+    .v5 .tick.last{flex:0;}
+    .v5 .cap{margin-top:16px;font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);line-height:1.5}
+    .v5 .cap strong{color:var(--text-primary)}
+  </style>
+  <div class="v5">
+    <div class="stbr-eyebrow">compute units &middot; measured, not asserted</div>
+    <h2 class="viz-title" style="font-size:40px;margin-bottom:10px">what the hook costs on the transfer path</h2>
+    <div class="card">
+      <div class="crow">
+        <div class="cname">plain TransferChecked<span class="sub">mint with no extensions</span></div>
+        <div class="track">
+          <div class="grid" style="left:25%"></div><div class="grid" style="left:50%"></div><div class="grid" style="left:75%"></div><div class="grid" style="left:100%"></div>
+          <div class="bar solid" style="left:0;width:4.5%"></div>
+          <div class="vlab" style="left:5.6%">1,790 CU</div>
+        </div>
+      </div>
+      <div class="crow">
+        <div class="cname">hooked TransferChecked<span class="sub">total, range across runs</span></div>
+        <div class="track">
+          <div class="grid" style="left:25%"></div><div class="grid" style="left:50%"></div><div class="grid" style="left:75%"></div><div class="grid" style="left:100%"></div>
+          <div class="bar range" style="left:57.8%;width:30.5%"></div>
+          <div class="vlab in" style="left:60%">23,108 &ndash; 35,292 CU</div>
+        </div>
+      </div>
+      <div class="crow" style="margin-bottom:10px">
+        <div class="cname indent">&#8627; of which: hook Execute<span class="sub">range across runs</span></div>
+        <div class="track">
+          <div class="grid" style="left:25%"></div><div class="grid" style="left:50%"></div><div class="grid" style="left:75%"></div><div class="grid" style="left:100%"></div>
+          <div class="bar range hook" style="left:23.6%;width:10%"></div>
+          <div class="vlab" style="left:35%">9,448 &ndash; 13,448 CU</div>
+        </div>
+      </div>
+      <div class="axis">
+        <div class="tick">0</div><div class="tick">10,000</div><div class="tick">20,000</div><div class="tick">30,000</div><div class="tick last">40,000 CU</div>
+      </div>
+      <div class="cap"><strong>measured in LiteSVM 0.15.2 against spl-token-2022 11.0.0, 2026-08-22, this lesson&rsquo;s harness.</strong> the spread is dominated by PDA bump searches, not by the hook&rsquo;s own logic.</div>
+    </div>
+  </div>
+</div>
+</body></html>

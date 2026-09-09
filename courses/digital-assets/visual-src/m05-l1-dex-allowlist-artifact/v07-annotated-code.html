@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The pool-creation check, annotated
+     purpose: let the reader map each line of the real source onto the branch it becomes in their predictor
+     data: L18-23  const MINT_WHITELIST: [&str; 4]          // four base58 strings, bypass branch 2 L208    fn is_supported_mint(mint_account, mint_associated_is_initialized) -> Result<bool> L213      if *mint_info.owner == Token::id() { return Ok(true) }  // bypass 1: classic SPL L216      if mint_whitelist.contains(mint.key().to_string()) { return Ok(true) }  // bypass 2 L220      if mint_associated_is_initialized { return Ok(true) }   // bypass 3 L225      let extensions = mint.get_extension_types()             // TLV walk, types only L226      for e in extensions { L227        if e != TransferFeeConfig && e != MetadataPointer && e != TokenMetadata L230           && e != InterestBearingConfig && e != ScaledUiAmount { L233          return Ok(false)                                    // one bad entry ends it L234        } L236      Ok(true) reading: line numbers are the real ones at commit 244e124 (read 2026-08-22); the bodies are abbreviated, not a verbatim copy. Diff them against your own sed output. mapping: L213/L216/L220 -> isRoutable's two bypass branches (the profile's whitelisted flag deliberately collapses the L216 whitelist and L220 mint-association doors into one); L227 -> CP_SWAP_ALLOWLIST; L233 -> every(), not some()
+     prompt: Annotated code panel showing the numbered pseudo-source lines from data on the left, with three callout annotations on the right connected by leader lines to L213, L227 and L233, each callout carrying the mapping text for the TypeScript predictor. Header band states the commit and read date; footer carries the re-read warning.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:516px;right:-287px;top:263px;border-radius:53% 53% 54% 48% / 53% 40% 51% 48%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:489px;height:450px;bottom:-222px;left:773px;border-radius:39% 37% 51% 52% / 36% 47% 40% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:32px 44px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">source &rarr; predictor branch map</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 12px;color:var(--stbr-dark);">The pool-creation check, annotated</h2>
+
+    <!-- header band: commit + read date -->
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">
+      <div style="background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-mono);font-size:13px;font-weight:700;padding:5px 14px;border-radius:999px;">raydium-cp-swap &middot; token.rs @ 244e124</div>
+      <div style="border:1.5px solid var(--stbr-emerald);color:var(--stbr-emerald);font-family:var(--font-body);font-size:13px;font-weight:600;padding:4px 14px;border-radius:999px;">read 2026-08-22</div>
+    </div>
+
+    <div style="position:relative;height:372px;">
+      <!-- code panel -->
+      <div style="position:absolute;left:0;top:0;width:800px;height:366px;background:var(--surface-inverse,#1B231D);border-radius:14px;padding:18px 22px;font-family:var(--font-mono);font-size:13.5px;line-height:26px;color:var(--stbr-cream);white-space:pre;">
+<span style="color:#8fae95;">L18-23</span>  const MINT_WHITELIST: [&amp;str; 4]  <span style="color:#6e8274;">// 4 base58 strings, bypass 2</span>
+<span style="color:#8fae95;">L208  </span>  fn is_supported_mint(mint_account, ..) -&gt; Result&lt;bool&gt;
+<span style="color:var(--stbr-yellow);font-weight:700;">L213  </span>    <span style="color:var(--stbr-yellow);">if *mint_info.owner == Token::id() { return Ok(true) }</span> <span style="color:#6e8274;">// bypass 1</span>
+<span style="color:#8fae95;">L216  </span>    if mint_whitelist.contains(mint.key()..) { return Ok(true) } <span style="color:#6e8274;">// bypass 2</span>
+<span style="color:#8fae95;">L220  </span>    if mint_associated_is_initialized { return Ok(true) } <span style="color:#6e8274;">// bypass 3</span>
+<span style="color:#8fae95;">L225  </span>    let extensions = mint.get_extension_types() <span style="color:#6e8274;">// TLV walk, types only</span>
+<span style="color:#8fae95;">L226  </span>    for e in extensions {
+<span style="color:var(--stbr-yellow);font-weight:700;">L227  </span>      <span style="color:var(--stbr-yellow);">if e != TransferFeeConfig &amp;&amp; e != MetadataPointer &amp;&amp; e != TokenMetadata</span>
+<span style="color:#8fae95;">L230  </span>         &amp;&amp; e != InterestBearingConfig &amp;&amp; e != ScaledUiAmount {
+<span style="color:var(--stbr-yellow);font-weight:700;">L233  </span>        <span style="color:var(--stbr-yellow);">return Ok(false)</span> <span style="color:#6e8274;">// one bad entry ends it</span>
+<span style="color:#8fae95;">L234  </span>      }
+<span style="color:#8fae95;">L236  </span>    Ok(true)</div>
+
+      <!-- leader lines -->
+      <div style="position:absolute;left:800px;top:109px;width:52px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+      <div style="position:absolute;left:800px;top:239px;width:52px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+      <div style="position:absolute;left:800px;top:291px;width:52px;height:0;border-top:2.5px solid var(--stbr-emerald);"></div>
+
+      <!-- callouts -->
+      <div style="position:absolute;left:852px;top:46px;width:470px;border:2px solid var(--stbr-emerald);border-radius:12px;padding:10px 14px;background:var(--surface-card);">
+        <span style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-mono);font-weight:700;font-size:12px;padding:2px 9px;border-radius:999px;margin-bottom:5px;">L213 / L216 / L220</span>
+        <div style="font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--stbr-dark);">&rarr; <b>isRoutable's two bypass branches</b> &mdash; the profile's <span style="font-family:var(--font-mono);font-size:12px;">whitelisted</span> flag deliberately collapses the L216 whitelist and L220 mint-association doors into one</div>
+      </div>
+      <div style="position:absolute;left:852px;top:203px;width:470px;border:2px solid var(--stbr-emerald);border-radius:12px;padding:8px 14px;background:var(--surface-card);">
+        <span style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-mono);font-weight:700;font-size:12px;padding:2px 9px;border-radius:999px;margin-bottom:4px;">L227</span>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-dark);">&rarr; <span style="font-family:var(--font-mono);font-size:12.5px;font-weight:700;">CP_SWAP_ALLOWLIST</span></div>
+      </div>
+      <div style="position:absolute;left:852px;top:270px;width:470px;border:2px solid var(--stbr-emerald);border-radius:12px;padding:8px 14px;background:var(--surface-card);">
+        <span style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-mono);font-weight:700;font-size:12px;padding:2px 9px;border-radius:999px;margin-bottom:4px;">L233</span>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-dark);">&rarr; <span style="font-family:var(--font-mono);font-size:12.5px;font-weight:700;">every()</span>, not <span style="font-family:var(--font-mono);font-size:12.5px;">some()</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;font-family:var(--font-body);font-size:13px;color:var(--text-muted,#6b7a6f);border-top:1px solid var(--border-subtle);padding-top:9px;">
+      line numbers are the real ones at commit 244e124 (read 2026-08-22); the bodies are abbreviated, not a verbatim copy &mdash; diff them against your own <span style="font-family:var(--font-mono);font-size:12px;">sed</span> output before trusting this panel.
+    </div>
+  </div>
+</div>
+</body></html>

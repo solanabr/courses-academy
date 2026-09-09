@@ -1,0 +1,78 @@
+id: lesson-date-m04-l1-confidential-model
+slug: m04-l1-confidential-model
+title: "The confidential model: encrypted balances on a public chain"
+skills:
+  - token-2022
+  - transactions
+  - rpc-reads
+  - account-model
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m04l1-q1
+        prompt: "You send 5 SPROUT confidentially to a teammate. Which statement about that on-chain transfer is TRUE?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The amount stays public, but both wallet identities are encrypted under the auditor's key."
+            correct: false
+            feedback: "It's the reverse. Token-2022 confidential transfers encrypt the amount, never the identities: addresses are always visible."
+          - id: b
+            label: "Both the amount and the two wallet addresses are hidden from everyone, including validators, who see only the proofs."
+            correct: false
+            feedback: "Confidential transfers hide the amount only. The sender and receiver pubkeys, and the fact that a transfer happened, stay fully public. Encrypted is not anonymous."
+          - id: a
+            label: "The amount is encrypted, but your address and the recipient's address are still public on-chain."
+            correct: true
+            feedback: "Twisted ElGamal seals the amount and nothing else, so both pubkeys and the fact of the transfer stay on the public ledger; traffic analysis still sees the edge, just not its weight."
+          - id: d
+            label: "The amount is encrypted and no on-chain component checks it, since the proofs are verified off-chain by the wallets that hold the keys"
+            correct: false
+            feedback: "A native program at ZkE1Gama1Proof11111111111111111111111111111 verifies every proof on chain, and Token-2022 confirms that verification before it touches a balance. Nothing here runs on trust."
+        explanation: "The confidential-transfer extension encrypts the transferred amount under Twisted ElGamal. It does nothing to hide who is transacting: both pubkeys and the transaction itself remain on the public ledger. Confidentiality of amounts is a different property from anonymity of participants."
+      - id: m04l1-q2
+        prompt: "A confidential transfer submits three zero-knowledge proofs. Which trio matches what Token-2022 actually verifies?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "A range proof, a validity proof, and a sufficient-balance proof against the sender's ciphertext"
+            correct: false
+            feedback: "Two of the three land. The missing one is the equality proof: solvency is never proven directly, it follows from welding the sender's claimed remainder to the real post-debit ciphertext and range-proving that."
+          - id: a
+            label: "A signature proof, a Merkle inclusion proof against the account's state root, and a nonce-freshness proof that blocks replay."
+            correct: false
+            feedback: "None of those are part of the confidential-transfer flow; that's a mix of unrelated primitives from signatures and state compression."
+          - id: c
+            label: "A range proof, a hash-preimage proof that opens the commitment, and a stake-weight proof."
+            correct: false
+            feedback: "Only the range proof belongs here; hash-preimage and stake-weight proofs are not part of the confidential-transfer proof set."
+          - id: b
+            label: "An equality proof, a grouped-ciphertext validity proof (including the auditor ciphertext), and a range proof."
+            correct: true
+            feedback: "One proof per available lie: equality welds the claimed remainder to the chain's post-debit ciphertext, validity forces one amount under three keys, and the range proof blocks the modular underflow."
+        explanation: "The three proofs are CiphertextCommitmentEqualityProof (the debit and the new balance commit to the same value), BatchedGroupedCiphertext3HandlesValidityProof (the amount is correctly encrypted under sender, receiver, and the optional auditor), and BatchedRangeProofU128 (the amount is in range). All three are checked by the ZK ElGamal Proof Program (SIMD-0153)."
+      - id: m04l1-q3
+        prompt: "Why does a single confidential transfer take several dependent transactions today, rather than one?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Because each confidential transfer must wait a full epoch for the mint's auditor to countersign it on chain."
+            correct: false
+            feedback: "There is no per-transfer epoch wait and no auditor countersignature. The auditor merely receives its own encrypted copy of the amount; it does not gate the transfer."
+          - id: c
+            label: "Because the zero-knowledge proofs are too large to fit alongside the transfer in one transaction; transaction format v1 is meant to relax this but is not activated yet."
+            correct: true
+            feedback: "The proofs ride in context accounts precisely because they do not fit beside the instruction, and whether v1 has collapsed the dance is a per-cluster question you re-probe rather than assume."
+          - id: a
+            label: "Because the ZK ElGamal Proof Program is deployed only on devnet, so mainnet has to route through extra hops."
+            correct: false
+            feedback: "The proof program is a real on-chain component, not a devnet-only stub. The multi-transaction reality is about proof SIZE, not deployment location."
+          - id: d
+            label: "Because verifying three proofs exceeds one transaction's compute budget, so each proof typically needs a transaction of its own"
+            correct: false
+            feedback: "The binding limit the source names is bytes: 1,232 per transaction, which the trio blows past on size alone. That is also why a bigger transaction envelope is the fix rather than a bigger compute cap."
+        explanation: "The proofs exceed what fits beside the transfer in a single transaction, so the flow is split across dependent transactions (create context accounts, verify proofs, apply). Transaction format v1 (SIMD-0296 / SIMD-0385) is designed to collapse this to one transaction; its enable_tx_v1 gate was active on devnet and absent on mainnet when this was last probed on 2026-09-06, so mainnet still splits. Re-probe the gate account yourself at write time, per cluster."

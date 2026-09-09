@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Four costs, and what bounds each one
+     purpose: collect the section's four accepted trade-offs in one view, so each cost is carried into the lab with its bound attached
+     data: DAS-read gate: cost = a just-transferred badge can admit a former holder bounded by = one index write; shrinks to zero if the badge is soulbound the false economy = trusting a client claim instead, which is bounded by nothing Merkle claim: cost = recipients pay their own rent, and you inherit a program you do not control bounded by = claim UX you publish, plus re-reading a quiet repo before trusting it the false economy = a mass mint that pays rent for the tail that never shows up Migration mechanism vs ratio: cost = the ratio cannot be copied from anyone, including Kamino bounded by = your own supply math, done before you announce the false economy = borrowing a number you cannot source Client-side claim ledger: cost = the guard is a habit, not a boundary bounded by = nothing once two processes race; production bound = ClaimStatus, atomic with the transfer the false economy = mistaking the rehearsal file for the real guard
+     prompt: Four-row comparison card, one row per trade-off, with three aligned columns labeled the cost, what bounds it, and the false economy to refuse. Give the bounded-by column the visual emphasis, and mark the client-side ledger row's "nothing once two processes race" cell as the outlier the reader must not miss.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:538px;height:523px;top:-294px;right:-294px;border-radius:36% 63% 37% 56% / 59% 51% 43% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:578px;height:409px;left:-339px;top:178px;border-radius:40% 54% 48% 63% / 40% 61% 36% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl); overflow:hidden;
+         background:var(--surface-card); margin-top:6px; }
+  .crow { display:flex; align-items:stretch; }
+  .crow + .crow { border-top:1.5px solid var(--border-subtle); }
+  .c-nm { flex:0 0 252px; padding:13px 20px; display:flex; align-items:center;
+          font-family:var(--font-display); font-weight:900; font-size:17.5px; line-height:1.15;
+          color:var(--text-primary); border-right:1.5px solid var(--border-subtle);
+          background:rgba(0,139,76,0.05); }
+  .c-cell { flex:1 1 0; padding:13px 18px; display:flex; align-items:center;
+            font-family:var(--font-body); font-size:14.5px; line-height:1.32; color:var(--text-primary); }
+  .c-cell + .c-cell { border-left:1.5px solid var(--border-subtle); }
+  .c-cell.bd { background:rgba(0,139,76,0.09); font-weight:600; }
+  .c-cell.out { background:var(--stbr-yellow); font-weight:700; color:var(--stbr-dark); }
+  .crow.head { background:var(--surface-inverse); }
+  .crow.head .c-nm, .crow.head .c-cell { background:transparent; border-color:rgba(245,232,202,0.18); }
+  .crow.head .h { font-family:var(--font-body); font-weight:800; font-size:13px;
+                  letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-dark); }
+  .crow.head .h.bh { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">carried into the lab</div>
+  <h2 class="viz-title">four costs, and what bounds each one</h2>
+  <div class="cmp">
+    <div class="crow head">
+      <div class="c-nm"><span class="h">trade-off</span></div>
+      <div class="c-cell"><span class="h">the cost</span></div>
+      <div class="c-cell"><span class="h bh">what bounds it</span></div>
+      <div class="c-cell"><span class="h">the false economy to refuse</span></div>
+    </div>
+    <div class="crow">
+      <div class="c-nm">DAS-read gate</div>
+      <div class="c-cell">a just-transferred badge can admit a former holder</div>
+      <div class="c-cell bd">one index write &mdash; shrinks to zero if the badge is soulbound</div>
+      <div class="c-cell">trusting a client claim instead, which is bounded by nothing</div>
+    </div>
+    <div class="crow">
+      <div class="c-nm">Merkle claim</div>
+      <div class="c-cell">recipients pay their own rent, and you inherit a program you do not control</div>
+      <div class="c-cell bd">claim UX you publish, plus re-reading a quiet repo before trusting it</div>
+      <div class="c-cell">a mass mint that pays rent for the tail that never shows up</div>
+    </div>
+    <div class="crow">
+      <div class="c-nm">Migration mechanism vs&nbsp;ratio</div>
+      <div class="c-cell">the ratio cannot be copied from anyone, including Kamino</div>
+      <div class="c-cell bd">your own supply math, done before you announce</div>
+      <div class="c-cell">borrowing a number you cannot source</div>
+    </div>
+    <div class="crow">
+      <div class="c-nm">Client-side claim ledger</div>
+      <div class="c-cell">the guard is a habit, not a boundary</div>
+      <div class="c-cell out">nothing, once two processes race &mdash; the production bound is ClaimStatus, atomic with the transfer</div>
+      <div class="c-cell">mistaking the rehearsal file for the real guard</div>
+    </div>
+  </div>
+</div>
+</body></html>

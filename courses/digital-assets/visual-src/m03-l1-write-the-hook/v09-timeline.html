@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Where harvest-hook sits on the artifact ladder
+     purpose: show what this lesson added to the running build and what consumes it next, so the reader can see the accretion
+     data: M1: decode-mint, the byte-level reader for any Token-2022 mint M2 (R3): SPROUT mint complete, transfer fee + withheld-fee harvest + native metadata TLV M3 this lesson: harvest-hook program (3 interface instructions + allowlist + pause), its ExtraAccountMetaList, and a hooked SPROUT variant, proven in LiteSVM M3 next lesson: the client-side resolver that lets any wallet build a hooked transfer, and the read-only proof M5: the routability decision, where the hook's cost is weighed against DEX allowlists M9: fee routing and buyback, which run against the finished mint
+     prompt: Horizontal timeline with five stops labeled M1, M2, M3 (split into two adjacent nodes: "this lesson" and "next lesson"), M5, M9. Under each stop, the artifact name in monospace and a one-line description. Highlight the "this lesson" node. Draw a thin connector from the M3 node to M5 and M9 labeled "consumed by".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:515px;height:434px;right:-315px;top:227px;border-radius:52% 42% 55% 53% / 58% 49% 54% 40%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:410px;height:486px;bottom:-243px;left:710px;border-radius:56% 40% 43% 59% / 35% 58% 55% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v9 .band{position:relative;width:1440px;height:104px;margin:2px auto 0}
+    .v9 .axis{position:relative;width:1440px;height:40px;margin:0 auto}
+    .v9 .rule{position:absolute;left:60px;right:60px;top:18px;height:3px;background:var(--stbr-ink-300)}
+    .v9 .rule.hot{left:600px;right:auto;width:240px;top:17px;height:5px;background:var(--stbr-emerald)}
+    .v9 .dot{position:absolute;top:10px;width:19px;height:19px;border-radius:50%;background:var(--stbr-emerald)}
+    .v9 .dot.this{top:6px;width:27px;height:27px;background:var(--stbr-yellow);border:3px solid var(--stbr-dark)}
+    .v9 .cards{display:flex;gap:12px;width:1440px;margin:10px auto 0}
+    .v9 .card{width:230px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:14px;padding:12px 14px}
+    .v9 .card.this{border:3px solid var(--stbr-yellow);background:rgba(255,210,63,.16)}
+    .v9 .stop{display:inline-block;font-family:var(--font-display);font-weight:900;font-size:15px;color:var(--stbr-cream);background:var(--stbr-emerald);border-radius:999px;padding:2px 12px}
+    .v9 .card.this .stop{background:var(--stbr-dark)}
+    .v9 .tag{font-family:var(--font-body);font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-left:6px}
+    .v9 .art{font-family:var(--font-mono);font-size:13.5px;font-weight:700;color:var(--text-primary);margin-top:8px}
+    .v9 .desc{font-family:var(--font-body);font-size:12.5px;line-height:1.42;color:var(--text-secondary);margin-top:4px}
+  </style>
+  <div class="v9">
+    <div class="stbr-eyebrow">the running build, module by module</div>
+    <h2 class="viz-title" style="font-size:38px;margin-bottom:6px">where harvest-hook sits on the artifact ladder</h2>
+    <div class="band">
+      <svg width="1440" height="128" viewBox="0 0 1440 128" style="position:absolute;left:0;top:0">
+        <path d="M 600 110 Q 840 22 1076 102" stroke="#008b4c" stroke-width="2.5" fill="none"/>
+        <polygon points="1072,100 1085,101 1079.5,114" fill="#008b4c"/>
+        <path d="M 600 110 Q 960 4 1316 102" stroke="#008b4c" stroke-width="2.5" fill="none"/>
+        <polygon points="1312,100 1325,101 1319.5,114" fill="#008b4c"/>
+        <text x="900" y="34" font-family="Inter,sans-serif" font-size="14" font-weight="700" fill="#306c40">consumed by</text>
+      </svg>
+    </div>
+    <div class="axis">
+      <div class="rule"></div>
+      <div class="rule hot"></div>
+      <div class="dot" style="left:110px"></div>
+      <div class="dot" style="left:350px"></div>
+      <div class="dot this" style="left:586px"></div>
+      <div class="dot" style="left:830px"></div>
+      <div class="dot" style="left:1070px"></div>
+      <div class="dot" style="left:1310px"></div>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="stop">M1</span>
+        <div class="art">decode-mint</div>
+        <div class="desc">the byte-level reader for any Token-2022 mint</div>
+      </div>
+      <div class="card">
+        <span class="stop">M2</span><span class="tag">R3</span>
+        <div class="art">SPROUT mint</div>
+        <div class="desc">complete: transfer fee + withheld-fee harvest + native metadata TLV</div>
+      </div>
+      <div class="card this">
+        <span class="stop">M3</span><span class="tag">this lesson</span>
+        <div class="art">harvest-hook</div>
+        <div class="desc">the hook program (3 interface instructions + allowlist + pause), its ExtraAccountMetaList, and a hooked SPROUT variant &mdash; proven in LiteSVM</div>
+      </div>
+      <div class="card">
+        <span class="stop">M3</span><span class="tag">next lesson</span>
+        <div class="art">client resolver</div>
+        <div class="desc">lets any wallet build a hooked transfer, plus the read-only proof</div>
+      </div>
+      <div class="card">
+        <span class="stop">M5</span>
+        <div class="art">routability</div>
+        <div class="desc">the decision where the hook&rsquo;s cost is weighed against DEX allowlists</div>
+      </div>
+      <div class="card">
+        <span class="stop">M9</span>
+        <div class="art">fee routing</div>
+        <div class="desc">fee routing and buyback, which run against the finished mint</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,84 @@
+id: lesson-date-m01-l3-p-token-switch
+slug: m01-l3-p-token-switch
+title: "The p-token switch: frozen interface, new engine"
+skills:
+  - solana-programs
+  - spl-tokens
+  - compute-budget
+  - version-pinning
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    solana-cli: "3.1.10"
+    "@solana/kit": "7.1.1"
+    tsx: "4.20.5"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l3-q1
+        prompt: "A colleague insists 'SIMD-0266 shipped a new token program, so I need to update my client to the new address.' What is actually true?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "p-token deployed at a fresh program address, so clients must swap the old TokenkegQ program id for the new one before the legacy deployment is disabled"
+            correct: false
+            feedback: "There is no new address; p-token runs at the classic TokenkegQ… address. Nothing to migrate; the interface is frozen."
+          - id: c
+            label: "p-token supersedes Token-2022, so clients should port their extension logic onto the new engine and retire the Tokenz address"
+            correct: false
+            feedback: "p-token is the classic SPL engine, not a Token-2022 successor; no Token-2022 successor exists. Extensions still live only in Token-2022."
+          - id: a
+            label: "p-token replaced the implementation at the SAME address with byte-identical layouts and discriminators, so no client changes are needed"
+            correct: true
+            feedback: "Layouts, discriminators and error codes were frozen on purpose, so the address kept its contract and the engine behind it is the part that changed."
+          - id: d
+            label: "The classic program was upgraded in place by its upgrade authority, so the address is unchanged but clients should re-pin the program hash they verify"
+            correct: false
+            feedback: "The program account reports Authority: none, so there is no upgrade key to deploy through. A feature gate activated by consensus is what swapped the code, and it left the interface untouched."
+        explanation: "SIMD-0266 swapped the implementation behind the existing classic SPL address for Anza's Pinocchio rewrite, instruction by instruction and error by error. The interface (layouts, discriminators, errors) is frozen, so client code is untouched; the whole point is that nobody had to change anything."
+      - id: m01-l3-q2
+        prompt: "You read SIMD-0266's page and its status header says 'Review.' A teammate concludes p-token is not live yet. How do you correct this precisely?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The teammate is right: a 'Review' header means it has not been accepted, so p-token is still a proposal"
+            correct: false
+            feedback: "The header lags reality: SIMD-0266 was merged on 2026-03-13 and its gate is active on mainnet. A 'Review' front-matter status does not mean unmerged."
+          - id: b
+            label: "SIMD-0266 merged on 2026-03-13 and its feature gate has been active on mainnet since epoch 971, so p-token is live"
+            correct: true
+            feedback: "Merged is a dated Git fact, and liveness is settled by the 9-byte gate account you can read yourself, which is why chain state outranks a document header here."
+          - id: c
+            label: "The header is authoritative, so p-token is live on devnet but not mainnet until the status flips to 'Accepted'"
+            correct: false
+            feedback: "Activation is governed by the on-chain feature gate, not the document header; the gate is active on mainnet, so it is live there today."
+          - id: d
+            label: "Tell the teammate SIMD-0266 was formally accepted in a governance vote, and that the vote is what moved p-token from Review to live on mainnet"
+            correct: false
+            feedback: "Accepted and approved are governance claims the paper trail does not support; the PR merged on 2026-03-13, and what put the engine on mainnet was the feature gate activating at epoch 971."
+        explanation: "Say merged, not accepted or approved: merged is a Git fact (SIMD-0266 merged 2026-03-13) while its front-matter status still reads 'Review.' What actually gates activation is the on-chain feature gate ptokF…nSdP, which activated at slot 419,472,000 (epoch 971). The header is a lagging label; the gate is the truth."
+      - id: m01-l3-q3
+        prompt: "You want to explain, at the token layer, WHY a classic transfer now costs 76 CU instead of 4,645. Where does the course say that 'why' properly belongs?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "In this lesson, which derives it by stepping through the Pinocchio engine's allocator and zero-copy account internals"
+            correct: false
+            feedback: "This lesson teaches the CU drop as a token-layer mental model and explicitly refuses the runtime derivation, handing it off."
+          - id: a
+            label: "In Token-2022's extension source, since extensions are what made transfers cheaper"
+            correct: false
+            feedback: "Extensions are unrelated to the classic transfer cost; this is the classic SPL engine, and extensions add cost, not remove it."
+          - id: c
+            label: "In the planned Low-Level Solana course, which owns the loader, sBPF and CU metering"
+            correct: true
+            feedback: "This lesson stops at what changed and when; where each of the 76 units goes is a runtime question, and the course that owns the runtime answers it."
+          - id: d
+            label: "In SIMD-0266 itself, which sets the per-instruction CU budget p-token had to hit"
+            correct: false
+            feedback: "The proposal's contract was byte-identical layouts, discriminators and error codes, not a compute target. Cheaper execution was the result of the rewrite, not a number the document specified."
+        explanation: "Here you learn the CU drop as a fact and a mental model: frozen interface, faster engine. The runtime 'why' (loaders, sBPF, compute metering) is explicitly the planned Low-Level Solana course's territory, cross-referenced by name rather than re-derived, keeping this a token-layer lesson."

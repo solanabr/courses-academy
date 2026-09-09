@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Why frozen compatibility matrices rot
+     purpose: place the reader's report on a timeline where authoritative documentation demonstrably stopped moving while the rules kept changing
+     data: May 2024: PYUSD ships the flagship Token-2022 deployment, compliance-shaped set 2025-01-24: solana-foundation/developer-content archived; official course material freezes 2026 (this course's sweeps): Orca rows unresolved, Jupiter policy absent from docs, wallet display unmeasured 2026-08-23: this lesson's PYUSD read and allowlist claims, dated Arrow beyond: "your launch date: re-verify everything dated above"
+     prompt: Horizontal timeline with four dated points and one open-ended arrow labeled "your launch date". Emphasize the 2025-01-24 archive event as the moment official docs freeze while the rule-change events continue past it. Final arrow annotated "re-verify everything dated above".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:504px;top:-314px;right:-314px;border-radius:40% 40% 64% 41% / 60% 46% 64% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:551px;height:520px;left:-324px;top:300px;border-radius:47% 53% 43% 61% / 57% 54% 35% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { position:relative; width:1456px; height:580px; margin:0 auto; }
+  .tl svg.rail { position:absolute; top:0; left:0; }
+  .ev { position:absolute; width:300px; box-sizing:border-box;
+        background:var(--surface-card); border:2px solid var(--stbr-dark);
+        border-radius:var(--radius-lg); padding:13px 17px; }
+  .ev .dt { font-family:var(--font-display); font-weight:900; font-size:19px;
+            color:var(--text-primary); margin-bottom:4px; }
+  .ev .tx { font-family:var(--font-body); font-weight:500; font-size:13.5px;
+            line-height:1.35; color:var(--text-secondary); }
+  .ev.freeze { background:var(--stbr-yellow); border-width:2.5px; }
+  .ev.freeze .tx { color:var(--stbr-dark); font-weight:600; }
+  .ev.freeze .tag { display:inline-block; font-family:var(--font-body); font-weight:800;
+                    font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+                    background:var(--stbr-dark); color:var(--stbr-yellow);
+                    padding:3px 10px; border-radius:var(--radius-pill); margin-bottom:6px; }
+  .seg-lbl { position:absolute; font-family:var(--font-body); font-weight:700;
+             font-size:13.5px; font-style:italic; color:var(--stbr-emerald);
+             white-space:nowrap; }
+  .launch { position:absolute; left:1180px; top:180px; width:270px; box-sizing:border-box;
+            background:var(--stbr-emerald); border-radius:var(--radius-lg);
+            padding:13px 17px; }
+  .launch .dt { font-family:var(--font-display); font-weight:900; font-size:19px;
+                color:var(--stbr-cream); margin-bottom:4px; }
+  .launch .tx { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+                line-height:1.35; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">date every claim</div>
+  <h2 class="viz-title" style="font-size:44px;">why frozen compatibility matrices rot</h2>
+  <div class="tl">
+    <svg class="rail" width="1456" height="580" viewBox="0 0 1456 580">
+      <!-- rail: dark until the archive event, emerald + thicker after it -->
+      <line x1="110" y1="330" x2="520" y2="330" stroke="#1b231d" stroke-width="3"/>
+      <line x1="520" y1="330" x2="1396" y2="330" stroke="#008b4c" stroke-width="6"/>
+      <polygon points="1420,330 1392,318 1392,342" fill="#008b4c"/>
+      <!-- connector stubs card->dot -->
+      <line x1="170" y1="200" x2="170" y2="318" stroke="#1b231d" stroke-width="2"/>
+      <line x1="520" y1="342" x2="520" y2="410" stroke="#1b231d" stroke-width="2"/>
+      <line x1="880" y1="200" x2="880" y2="318" stroke="#008b4c" stroke-width="2"/>
+      <line x1="1140" y1="342" x2="1140" y2="410" stroke="#008b4c" stroke-width="2"/>
+      <line x1="1300" y1="250" x2="1350" y2="322" stroke="#008b4c" stroke-width="2"/>
+      <!-- dots -->
+      <circle cx="170" cy="330" r="11" fill="#ffffff" stroke="#1b231d" stroke-width="3.5"/>
+      <circle cx="520" cy="330" r="15" fill="#ffd23f" stroke="#1b231d" stroke-width="3.5"/>
+      <circle cx="880" cy="330" r="11" fill="#ffffff" stroke="#008b4c" stroke-width="3.5"/>
+      <circle cx="1140" cy="330" r="11" fill="#ffffff" stroke="#008b4c" stroke-width="3.5"/>
+    </svg>
+    <div class="ev" style="left:20px; top:118px;">
+      <div class="dt">May 2024</div>
+      <div class="tx">PYUSD ships the flagship Token-2022 deployment, compliance-shaped set</div>
+    </div>
+    <div class="ev freeze" style="left:370px; top:392px;">
+      <span class="tag">official docs freeze here</span>
+      <div class="dt">2025-01-24</div>
+      <div class="tx">solana-foundation/developer-content archived; official course material freezes</div>
+    </div>
+    <div class="ev" style="left:730px; top:110px;">
+      <div class="dt">2026 &middot; this course's sweeps</div>
+      <div class="tx">Orca rows unresolved, Jupiter policy absent from docs, wallet display unmeasured</div>
+    </div>
+    <div class="ev" style="left:990px; top:392px;">
+      <div class="dt">2026-08-23</div>
+      <div class="tx">this lesson's PYUSD read and allowlist claims, dated</div>
+    </div>
+    <div class="seg-lbl" style="left:565px; top:298px;">the rules keep changing past the freeze &rarr;</div>
+    <div class="launch">
+      <div class="dt">your launch date</div>
+      <div class="tx">re-verify everything dated above</div>
+    </div>
+  </div>
+</div>
+</body></html>

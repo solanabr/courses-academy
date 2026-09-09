@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The life of a derived matrix, from pin to re-pin
+     purpose: show that drift is expected and the re-derivation loop is short, so the reader treats the matrix as maintained code rather than a fact to memorize
+     data: step 1: derive the matrix from source @ 426400f (commit dated 2026-08-17; derived in this lesson 2026-08-22) step 2: pin the hash in check-combo.ts header; tests green step 3: upstream moves (enum grows or a guard changes) at some unknown future date step 4: git diff old-pin..new-pin on interface/src/extension/mod.rs (empty diff = still current) step 5: port the delta, update reasons, add tests step 6: tests green again; new pin recorded; the matrix is fresh with provenance
+     prompt: Horizontal timeline with six milestones as in data, left to right. Render steps 1-2 as a solid "derived + pinned" phase, step 3 as a dashed "drift" event with an uncertainty marker (no date), and steps 4-6 as the short re-derivation loop, visually grouped with a bracket labeled "one evening". Annotate step 4 with "empty diff = done".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:497px;height:490px;bottom:-230px;right:-230px;border-radius:54% 54% 55% 63% / 42% 56% 53% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:430px;height:351px;left:-248px;top:381px;border-radius:48% 37% 63% 55% / 52% 42% 48% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 36px 48px 40px; }
+  .tl { display: grid; grid-template-columns: repeat(6, 1fr); }
+  .phase { height: 56px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; }
+  .track { height: 36px; display: flex; align-items: center; }
+  .half { flex: 1 1 0; height: 0; }
+  .solidln { border-top: 4px solid var(--stbr-emerald); }
+  .dashln { border-top: 3px dashed var(--stbr-dark); }
+  .noln { border-top: 4px solid transparent; }
+  .dotc { flex: 0 0 22px; display: flex; justify-content: center; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; background: var(--stbr-emerald); border: 3px solid var(--stbr-emerald); }
+  .dot.hollow { background: var(--surface-card); border: 3px solid var(--stbr-dark); }
+  .step { margin: 12px 8px 0; text-align: center; }
+  .step .n { display: inline-block; font-family: var(--font-display); font-weight: var(--weight-black); font-size: 15px;
+             color: var(--stbr-emerald); margin-bottom: 4px; }
+  .step .b { font-family: var(--font-body); font-size: 13px; color: var(--text-primary); line-height: 1.35; }
+  .step .m { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); }
+  .phlbl { font-family: var(--font-body); font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">drift is expected</div>
+  <h2 class="viz-title" style="margin-bottom:8px;">the life of a derived matrix, from pin to re-pin</h2>
+
+  <div class="tl">
+    <!-- phase bands over the milestones -->
+    <div class="phase" style="grid-column:1 / span 2;">
+      <div class="phlbl" style="color:var(--stbr-emerald);margin-bottom:4px;">derived + pinned</div>
+      <div style="width:78%;height:10px;border:2px solid var(--stbr-emerald);border-bottom:none;border-radius:8px 8px 0 0;"></div>
+    </div>
+    <div class="phase" style="grid-column:3;">
+      <div class="phlbl" style="color:var(--text-secondary);margin-bottom:4px;">drift · date unknown</div>
+      <div style="width:60%;height:10px;"></div>
+    </div>
+    <div class="phase" style="grid-column:4 / span 3;">
+      <div class="phlbl" style="color:var(--text-on-accent);background:var(--surface-accent);border-radius:var(--radius-pill);padding:3px 16px;margin-bottom:4px;">the re-derivation loop · one evening</div>
+      <div style="width:86%;height:10px;border:3px solid var(--stbr-yellow);border-bottom:none;border-radius:8px 8px 0 0;"></div>
+    </div>
+
+    <!-- the track: half-lines + dots per column -->
+    <div class="track"><div class="half noln"></div><div class="dotc"><div class="dot"></div></div><div class="half solidln"></div></div>
+    <div class="track"><div class="half solidln"></div><div class="dotc"><div class="dot"></div></div><div class="half dashln"></div></div>
+    <div class="track"><div class="half dashln"></div><div class="dotc"><div class="dot hollow"></div></div><div class="half dashln"></div></div>
+    <div class="track"><div class="half dashln"></div><div class="dotc"><div class="dot"></div></div><div class="half solidln"></div></div>
+    <div class="track"><div class="half solidln"></div><div class="dotc"><div class="dot"></div></div><div class="half solidln"></div></div>
+    <div class="track"><div class="half solidln"></div><div class="dotc"><div class="dot"></div></div><div class="half noln"></div></div>
+
+    <!-- the milestones -->
+    <div class="step"><span class="n">1</span><div class="b">derive the matrix from source <span class="m">@ 426400f</span></div><div class="m">commit 2026-08-17 · derived 2026-08-22</div></div>
+    <div class="step"><span class="n">2</span><div class="b">pin the hash in <span class="m">check-combo.ts</span> header</div><div class="m">tests green</div></div>
+    <div class="step"><span class="n">3</span><div class="b">upstream moves: enum grows or a guard changes</div><div class="m">some unknown future date</div></div>
+    <div class="step"><span class="n">4</span><div class="b"><span class="m">git diff old-pin..new-pin</span> on <span class="m">interface/src/extension/mod.rs</span></div>
+      <div style="display:inline-block;margin-top:5px;background:var(--surface-accent);color:var(--text-on-accent);border-radius:var(--radius-pill);padding:2px 12px;font-family:var(--font-body);font-size:12px;font-weight:700;">empty diff = done</div></div>
+    <div class="step"><span class="n">5</span><div class="b">port the delta, update reasons, add tests</div></div>
+    <div class="step"><span class="n">6</span><div class="b">tests green again; new pin recorded</div><div class="m">fresh, with provenance</div></div>
+  </div>
+
+  <div style="margin-top:22px;border-top:1px solid var(--border-subtle);padding-top:12px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">
+    the matrix is <strong style="color:var(--text-primary);">maintained code</strong>, not a fact to memorize: the loop from drift to fresh pin fits in one evening.
+  </div>
+</div>
+</div>
+</body></html>

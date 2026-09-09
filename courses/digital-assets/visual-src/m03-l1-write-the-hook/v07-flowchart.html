@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One hooked transfer, from test to hook and back
+     purpose: trace the actual call path of the harness so the reader can locate any failure by layer
+     data: test builds TransferChecked [source, mint, destination, authority] + [config ro, treasury w, harvest-hook ro, validation ro] -> LiteSVM sends tx -> Token-2022 invoke [1]: TransferChecked -> Token-2022 reads mint TLV: TransferHook.programId = harvest-hook -> Token-2022 re-resolves the ExtraAccountMetaList and checks the supplied accounts match -> harvest-hook invoke [2]: Execute, data = disc 692565c54bfb661a + u64 amount -> Execute: owner check -> gate(config, destination) -> msg! log -> Ok -> back in Token-2022: balances move, tx succeeds failure edge A (account list wrong): reverts before your logic runs; where it dies depends on what is missing (validation account or hook program absent: inside Token-2022; extras absent but hook reachable: at the hook's account-parsing door, before your gate) failure edge B (gate returns Err): reverts inside Execute's logic, custom program error 0x1771
+     prompt: Vertical flowchart with two swimlanes, "Token-2022 (invoke depth 1)" and "harvest-hook (invoke depth 2)". Show the constructed instruction at the top with its eight account chips in order. Arrows down through TLV read, re-resolution, then across into the hook lane for Execute with its three internal steps. Two red branches labeled "edge A: account list wrong, dies before your gate (in Token-2022 or at the hook's account parser, depending on the missing account)" and "edge B: gate returns Err, 0x1771", each ending in a revert node.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:556px;bottom:-305px;right:-305px;border-radius:60% 54% 44% 35% / 40% 63% 60% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:387px;left:-269px;top:341px;border-radius:40% 38% 52% 48% / 59% 55% 49% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v7 .ixcard{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:14px;padding:12px 18px;margin:4px 0 10px;display:flex;align-items:center;gap:14px}
+    .v7 .ixlab{font-family:var(--font-body);font-size:13.5px;font-weight:700;color:var(--text-primary);width:230px;line-height:1.3}
+    .v7 .ixlab .sub{display:block;font-weight:500;font-size:12px;color:var(--text-muted)}
+    .v7 .chips{display:flex;gap:6px;flex-wrap:wrap}
+    .v7 .chip{font-family:var(--font-mono);font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--stbr-emerald);color:var(--stbr-cream)}
+    .v7 .chip.extra{background:var(--surface-card);color:var(--stbr-green);border:1.5px solid var(--stbr-emerald)}
+    .v7 .lanes{position:relative;height:556px}
+    .v7 .lanebg{position:absolute;top:0;height:556px;width:640px;background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:16px}
+    .v7 .lanehead{position:absolute;top:0;height:32px;width:640px;background:var(--surface-inverse);color:var(--text-on-dark);border-radius:16px 16px 0 0;font-family:var(--font-display);font-weight:800;font-size:14.5px;display:flex;align-items:center;padding:0 16px}
+    .v7 .node{position:absolute;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:11px;padding:8px 14px;font-family:var(--font-body);font-size:14px;line-height:1.35;color:var(--text-primary)}
+    .v7 .node .mono{font-family:var(--font-mono);font-size:12.5px}
+    .v7 .node b{font-weight:700}
+    .v7 .fail{position:absolute;background:var(--stbr-yellow);border-radius:12px;padding:10px 14px;font-family:var(--font-body);font-size:12.5px;line-height:1.35;color:var(--stbr-dark)}
+    .v7 .fail b{font-family:var(--font-display);font-size:14px}
+    .v7 .ok{position:absolute;background:var(--stbr-emerald);color:var(--stbr-cream);border-radius:11px;padding:8px 14px;font-family:var(--font-display);font-weight:800;font-size:16px;display:flex;align-items:center}
+    .v7 .vl{position:absolute;width:2.5px;background:var(--stbr-dark)}
+    .v7 .vl.dash{width:0;border-left:2.5px dashed var(--stbr-dark);background:none}
+    .v7 .vt{position:absolute;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid var(--stbr-dark)}
+    .v7 .stepchip{position:absolute;height:56px;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:11px;padding:6px 12px;font-family:var(--font-mono);font-size:12.5px;line-height:1.3;color:var(--text-primary);display:flex;align-items:center}
+    .v7 .harrow{position:absolute;font-size:16px;font-weight:700;color:var(--stbr-dark);font-family:var(--font-body)}
+    .v7 .retlab{position:absolute;font-family:var(--font-body);font-size:12px;font-weight:700;color:var(--text-secondary)}
+  </style>
+  <div class="v7">
+    <div class="stbr-eyebrow">the harness call path, by invoke depth</div>
+    <h2 class="viz-title" style="font-size:36px;margin-bottom:2px">one hooked transfer, from test to hook and back</h2>
+    <div class="ixcard">
+      <div class="ixlab">the test builds TransferChecked<span class="sub">LiteSVM sends the tx &darr;</span></div>
+      <div class="chips">
+        <div class="chip">source</div><div class="chip">mint</div><div class="chip">destination</div><div class="chip">authority</div>
+        <div class="chip extra">config &middot; ro</div><div class="chip extra">treasury &middot; w</div><div class="chip extra">harvest-hook &middot; ro</div><div class="chip extra">validation &middot; ro</div>
+      </div>
+    </div>
+    <div class="lanes">
+      <div class="lanebg" style="left:0"></div>
+      <div class="lanebg" style="left:730px"></div>
+      <div class="lanehead" style="left:0">Token-2022 &middot; invoke [1]</div>
+      <div class="lanehead" style="left:730px">harvest-hook &middot; invoke [2]</div>
+      <svg width="1456" height="556" style="position:absolute;left:0;top:0" viewBox="0 0 1456 556">
+        <line x1="624" y1="248" x2="736" y2="248" stroke="#1b231d" stroke-width="2.5"/>
+        <polygon points="736,241 748,248 736,255" fill="#1b231d"/>
+        <polyline points="1269,378 1269,508 644,508" stroke="#1b231d" stroke-width="2.5" fill="none"/>
+        <polygon points="644,501 632,508 644,515" fill="#1b231d"/>
+      </svg>
+      <div class="node" style="left:16px;top:46px;width:608px"><b>invoke [1]: TransferChecked</b> begins</div>
+      <div class="vl" style="left:318px;top:82px;height:24px"></div><div class="vt" style="left:312px;top:106px"></div>
+      <div class="node" style="left:16px;top:118px;width:608px">reads the mint&rsquo;s TLV &rarr; <span class="mono">TransferHook.programId = harvest-hook</span></div>
+      <div class="vl" style="left:318px;top:168px;height:24px"></div><div class="vt" style="left:312px;top:192px"></div>
+      <div class="node" style="left:16px;top:204px;width:608px;height:88px"><b>re-resolves the ExtraAccountMetaList</b> and checks the supplied accounts match &mdash; then CPIs the hook &rarr;</div>
+      <div class="vl dash" style="left:318px;top:294px;height:22px"></div><div class="vt" style="left:312px;top:316px"></div>
+      <div class="fail" style="left:16px;top:322px;width:608px;height:130px"><b>edge A &middot; account list wrong</b><br>reverts <b>before your logic runs</b>. where it dies depends on what is missing: validation account or hook program absent &rarr; inside Token-2022; extras absent but hook reachable &rarr; at the hook&rsquo;s account-parsing door, before your gate.</div>
+      <div class="ok" style="left:16px;top:476px;width:608px;height:64px">balances move &mdash; tx succeeds</div>
+      <div class="node" style="left:746px;top:204px;width:608px;height:88px"><b>invoke [2]: Execute</b><br><span class="mono">data = 692565c54bfb661a + u64 amount</span></div>
+      <div class="vl" style="left:1048px;top:294px;height:22px"></div><div class="vt" style="left:1042px;top:316px"></div>
+      <div class="stepchip" style="left:746px;top:322px;width:148px">owner check</div>
+      <div class="harrow" style="left:900px;top:338px">&rarr;</div>
+      <div class="stepchip" style="left:922px;top:322px;width:236px">gate(config, destination)</div>
+      <div class="harrow" style="left:1164px;top:338px">&rarr;</div>
+      <div class="stepchip" style="left:1186px;top:322px;width:168px">msg! log &rarr; Ok</div>
+      <div class="vl dash" style="left:1038px;top:380px;height:32px"></div><div class="vt" style="left:1032px;top:412px"></div>
+      <div class="fail" style="left:746px;top:418px;width:420px;height:78px"><b>edge B &middot; gate returns Err</b><br>reverts inside Execute&rsquo;s logic &mdash; <span style="font-family:var(--font-mono)">custom program error 0x1771</span></div>
+      <div class="retlab" style="left:860px;top:514px">Ok &mdash; back at invoke depth 1</div>
+    </div>
+  </div>
+</div>
+</body></html>

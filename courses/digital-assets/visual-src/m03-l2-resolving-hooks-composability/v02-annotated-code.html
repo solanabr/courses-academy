@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The 35-byte ExtraAccountMeta, byte by byte
+     purpose: fix the exact layout the resolver decodes, including the four discriminator encodings
+     data: byte 0        discriminator: 0 = literal pubkey | 1 = PDA on the hook program | 2 = pubkey read out of instruction or account data | 128 + i = PDA of the program at execute-account index i bytes 1..33   address_config [32 bytes]: the pubkey itself (disc 0) OR packed seed configs (PDA discs) OR the data-location config (disc 2) byte 33       is_signer (0 or 1) byte 34       is_writable (0 or 1) seed configs packed inside address_config, zero-padded: tag 1 = literal: [1, len, bytes...]   tag 2 = instruction-data slice: [2, index, length] tag 3 = account key at index: [3, index]   tag 4 = account-data slice: [4, account, index, length]
+     prompt: A horizontal byte-strip of 35 cells. Bracket byte 0 as "discriminator" with a four-row legend (0 = literal pubkey, 1 = hook-program PDA, 2 = pubkey from instruction/account data, 128+i = PDA of program at execute index i). Bracket bytes 1-32 as "address_config: pubkey or packed seeds", bytes 33 and 34 as "is_signer" / "is_writable". Below, a second strip showing address_config unpacked into example seed configs: [1, 8, "treasury"] then [3, 1] with labels "literal seed" and "key of execute account 1".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:512px;height:506px;right:-318px;top:328px;border-radius:58% 35% 53% 60% / 45% 40% 58% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:487px;bottom:-244px;left:763px;border-radius:38% 52% 64% 64% / 42% 62% 35% 38%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:36px 48px 32px;}
+  .panel{background:var(--surface-inverse,#1B231D);border-radius:20px;padding:26px 30px 22px;}
+  .strip{display:flex;height:76px;border-radius:10px;overflow:hidden;}
+  .cell{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+        border-left:2px solid var(--stbr-dark);}
+  .cell.first{border-left:0;}
+  .cell .b{font-family:var(--font-mono);font-weight:700;font-size:17px;}
+  .cell .n{font-family:var(--font-body);font-size:12.5px;margin-top:4px;opacity:.85;}
+  .disc{background:var(--stbr-yellow);color:var(--stbr-dark);}
+  .addr{background:var(--stbr-emerald);color:#F5E8CA;}
+  .flag{background:var(--stbr-green);color:#F5E8CA;}
+  .brackets{display:flex;margin-top:8px;}
+  .br{border-top:2px solid #F5E8CA;padding-top:6px;text-align:center;
+      font-family:var(--font-body);font-size:13.5px;color:#F5E8CA;margin:0 3px;}
+  .br b{font-family:var(--font-display);font-weight:800;}
+  .br.hl{border-top-color:var(--stbr-yellow);color:var(--stbr-yellow);}
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;margin:16px 0 18px;}
+  .lrow{display:flex;align-items:center;gap:10px;}
+  .lkey{flex:0 0 74px;text-align:center;font-family:var(--font-mono);font-weight:700;font-size:14px;
+        background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:8px;padding:4px 0;}
+  .ltx{font-family:var(--font-body);font-size:14.5px;color:#F5E8CA;line-height:1.25;}
+  .sub{font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:.1em;
+       text-transform:uppercase;color:#F5E8CA;margin:2px 0 8px;}
+  .strip2{display:flex;height:58px;border-radius:10px;overflow:hidden;}
+  .strip2 .cell .b{font-size:15px;}
+  .pad{background:#3a463c;color:#F5E8CA;}
+  .foot{font-family:var(--font-body);font-size:13px;color:#F5E8CA;opacity:.8;margin-top:12px;line-height:1.4;}
+  .foot code{font-family:var(--font-mono);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the exact layout the resolver decodes</div>
+  <h2 class="viz-title">the 35-byte ExtraAccountMeta, byte by byte</h2>
+  <div class="panel">
+    <div class="strip">
+      <div class="cell first disc" style="width:150px;"><div class="b">byte 0</div><div class="n">discriminator</div></div>
+      <div class="cell addr" style="flex:1;"><div class="b">bytes 1 &hellip; 32</div><div class="n">address_config [32 bytes] &mdash; the pubkey itself (disc 0) &middot; packed seed configs (PDA discs) &middot; data-location config (disc 2)</div></div>
+      <div class="cell flag" style="width:140px;"><div class="b">byte 33</div><div class="n">is_signer (0|1)</div></div>
+      <div class="cell flag" style="width:140px;"><div class="b">byte 34</div><div class="n">is_writable (0|1)</div></div>
+    </div>
+    <div class="brackets">
+      <div class="br hl" style="width:150px;"><b>discriminator</b></div>
+      <div class="br" style="flex:1;"><b>address_config</b> &mdash; pubkey or packed seeds</div>
+      <div class="br" style="width:140px;">is_signer</div>
+      <div class="br" style="width:140px;">is_writable</div>
+    </div>
+    <div class="legend">
+      <div class="lrow"><div class="lkey">0</div><div class="ltx">literal pubkey &mdash; address_config is the key itself</div></div>
+      <div class="lrow"><div class="lkey">2</div><div class="ltx">pubkey read out of instruction or account data</div></div>
+      <div class="lrow"><div class="lkey">1</div><div class="ltx">PDA on the hook program &mdash; seeds packed in address_config</div></div>
+      <div class="lrow"><div class="lkey">128 + i</div><div class="ltx">PDA of the program at execute-account index <code>i</code></div></div>
+    </div>
+    <div class="sub">address_config unpacked &mdash; packed seed configs, zero-padded</div>
+    <div class="strip2">
+      <div class="cell first addr" style="width:64px;"><div class="b">1</div><div class="n">tag</div></div>
+      <div class="cell addr" style="width:64px;"><div class="b">8</div><div class="n">len</div></div>
+      <div class="cell addr" style="width:220px;"><div class="b">"treasury"</div><div class="n">8 bytes</div></div>
+      <div class="cell addr" style="width:64px;"><div class="b">3</div><div class="n">tag</div></div>
+      <div class="cell addr" style="width:64px;"><div class="b">1</div><div class="n">index</div></div>
+      <div class="cell pad" style="flex:1;"><div class="b">0 0 0 &hellip;</div><div class="n">zero padding</div></div>
+    </div>
+    <div class="brackets">
+      <div class="br" style="width:348px;"><b>[1, 8, "treasury"]</b> &mdash; literal seed</div>
+      <div class="br" style="width:128px;"><b>[3, 1]</b> &mdash; key of execute account 1</div>
+      <div class="br" style="flex:1;">&nbsp;</div>
+    </div>
+    <div class="foot">seed tags: <code>1</code> literal <code>[1, len, bytes&hellip;]</code> &nbsp;&middot;&nbsp; <code>2</code> instruction-data slice <code>[2, index, length]</code> &nbsp;&middot;&nbsp; <code>3</code> account key at index <code>[3, index]</code> &nbsp;&middot;&nbsp; <code>4</code> account-data slice <code>[4, account, index, length]</code></div>
+  </div>
+</div>
+</div>
+</body></html>

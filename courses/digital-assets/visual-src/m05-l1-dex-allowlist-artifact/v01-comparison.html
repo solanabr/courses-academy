@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Raydium CP-Swap's five yes-extensions against the refused set, with the program's own reasons
+     purpose: show that the allowlist splits on capability (display and declared fees) versus power (arbitrary code and control over other people's tokens), quoting Raydium's published rationales for the refusals
+     data: ACCEPTED (exactly five, token.rs L225-236 @ 244e124): TransferFeeConfig | value moves by a declared rule | pool math subtracts the inbound fee, Token-2022 handles the outbound one MetadataPointer | an address | no pricing impact TokenMetadata | strings in TLV | no pricing impact InterestBearingConfig | display multiplier | pool accounts in principal; the multiplier is decorator-only ScaledUiAmount | display multiplier | display-only REFUSED (any of these reverts pool creation): TransferHook | "invokes a custom program on every transfer, with arbitrary CU consumption" PermanentDelegate | "a holder of the delegate can sweep any token account, including the pool vault" ConfidentialTransfer | "encrypted amounts prevent pricing" NonTransferable | a pool cannot move it at all DefaultAccountState (Frozen) | pool vaults would be born frozen GroupPointer / MemberPointer | "unreviewed" source: docs.raydium.io Token-2022 support reference, read 2026-08-22
+     prompt: Two-column comparison card. Left column headed ACCEPTED with five rows, right column headed REFUSED with six rows. Each row: extension name in monospace, then a short middle cell, then the quoted rationale in quotation marks. Visually separate the two columns with a vertical divider labelled "the line". Footer line carries the source and date.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:454px;height:464px;right:-230px;top:85px;border-radius:36% 52% 53% 62% / 55% 36% 55% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:528px;height:550px;bottom:-290px;left:-290px;border-radius:60% 54% 63% 47% / 44% 58% 46% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:36px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">capability vs power</div>
+    <h2 class="viz-title" style="font-size:42px;margin:6px 0 20px;color:var(--stbr-dark);">Raydium CP-Swap's allowlist: five in, six out</h2>
+    <div style="display:flex;align-items:stretch;gap:0;">
+      <!-- ACCEPTED column -->
+      <div style="flex:1;min-width:0;">
+        <div style="background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:.08em;padding:10px 16px;border-radius:12px 12px 0 0;">ACCEPTED: token.rs L225–236</div>
+        <div style="border:2px solid var(--stbr-emerald);border-top:none;border-radius:0 0 12px 12px;padding:6px 16px 10px;">
+          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:210px;flex:none;">TransferFeeConfig</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-green);width:190px;flex:none;">value moves by a declared rule</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">pool math subtracts the inbound fee; Token-2022 handles the outbound one</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:210px;flex:none;">MetadataPointer</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-green);width:190px;flex:none;">an address</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">no pricing impact</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:210px;flex:none;">TokenMetadata</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-green);width:190px;flex:none;">strings in TLV</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">no pricing impact</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:210px;flex:none;">InterestBearingConfig</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-green);width:190px;flex:none;">display multiplier</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">pool accounts in principal; the multiplier is decorator-only</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:10px 0;align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:210px;flex:none;">ScaledUiAmount</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-green);width:190px;flex:none;">display multiplier</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">display-only</div>
+          </div>
+        </div>
+      </div>
+      <!-- the line -->
+      <div style="flex:none;width:64px;display:flex;flex-direction:column;align-items:center;">
+        <div style="width:4px;flex:1;background:var(--stbr-yellow);border-radius:2px;"></div>
+        <div style="background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:900;font-size:13px;letter-spacing:.06em;padding:6px 8px;border-radius:8px;margin:6px 0;white-space:nowrap;transform:rotate(0deg);">the line</div>
+        <div style="width:4px;flex:1;background:var(--stbr-yellow);border-radius:2px;"></div>
+      </div>
+      <!-- REFUSED column -->
+      <div style="flex:1;min-width:0;">
+        <div style="background:var(--stbr-dark);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:.08em;padding:10px 16px;border-radius:12px 12px 0 0;">REFUSED: any of these reverts pool creation</div>
+        <div style="border:2px solid var(--stbr-dark);border-top:none;border-radius:0 0 12px 12px;padding:4px 16px 8px;">
+          <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:220px;flex:none;">TransferHook</div>
+            <div style="font-family:var(--font-body);font-size:13px;font-style:italic;color:var(--text-secondary,#4a5a4e);">&ldquo;invokes a custom program on every transfer, with arbitrary CU consumption&rdquo;</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:220px;flex:none;">PermanentDelegate</div>
+            <div style="font-family:var(--font-body);font-size:13px;font-style:italic;color:var(--text-secondary,#4a5a4e);">&ldquo;a holder of the delegate can sweep any token account, including the pool vault&rdquo;</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:220px;flex:none;">ConfidentialTransfer</div>
+            <div style="font-family:var(--font-body);font-size:13px;font-style:italic;color:var(--text-secondary,#4a5a4e);">&ldquo;encrypted amounts prevent pricing&rdquo;</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:220px;flex:none;">NonTransferable</div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">a pool cannot move it at all</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-subtle);align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:220px;flex:none;">DefaultAccountState<span style="font-weight:400;"> (Frozen)</span></div>
+            <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary,#4a5a4e);">pool vaults would be born frozen</div>
+          </div>
+          <div style="display:flex;gap:10px;padding:8px 0;align-items:baseline;">
+            <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);width:220px;flex:none;">GroupPointer / MemberPointer</div>
+            <div style="font-family:var(--font-body);font-size:13px;font-style:italic;color:var(--text-secondary,#4a5a4e);">&ldquo;unreviewed&rdquo;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:18px;font-family:var(--font-body);font-size:13px;color:var(--text-muted,#6b7a6f);border-top:1px solid var(--border-subtle);padding-top:10px;">
+      left: capability the pool can account for &middot; right: power over pricing, other people's tokens, or arbitrary code &mdash; source: token.rs @ 244e124 + docs.raydium.io Token-2022 support reference, read 2026-08-22
+    </div>
+  </div>
+</div>
+</body></html>

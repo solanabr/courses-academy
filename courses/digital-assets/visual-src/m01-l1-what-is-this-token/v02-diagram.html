@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two mints, side by side: classic SPL vs PYUSD's Token-2022 layout
+     purpose: make the 82-byte fixed layout vs 866-byte base-plus-TLV difference visible at a glance
+     data: Left column, "classic SPL mint (82 bytes, fixed)": mintAuthority (36) -> supply (8) -> decimals (1) -> isInitialized (1) -> freezeAuthority (36). Nothing follows. Right column, "PYUSD mint (866 bytes)": same 82-byte base region first, then a TLV region: [type][len][value] boxes labeled in order: mintCloseAuthority, permanentDelegate, transferFeeConfig, confidentialTransferMint, confidentialTransferFeeConfig, transferHook, metadataPointer, tokenMetadata.
+     prompt: Two vertical byte-layout columns side by side. Left: a short stack of five labeled segments totaling 82 bytes, with a hard stop underneath. Right: the same five-segment base stack, then a visually distinct stacked region of eight [type|len|value] boxes, each labeled with its extension name from the data above. Annotate total sizes "82 bytes" and "866 bytes" under the columns. Emphasize that the base region is identical in both.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:513px;top:-321px;right:-321px;border-radius:55% 63% 51% 42% / 54% 64% 42% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:537px;height:530px;bottom:-293px;left:-293px;border-radius:53% 38% 49% 53% / 52% 46% 53% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; align-items:flex-start; gap:0; margin-top:8px; }
+  .col { flex:1 1 0; display:flex; flex-direction:column; gap:8px; }
+  .col-head { font-family:var(--font-display); font-weight:900; font-size:22px;
+              color:var(--text-primary); padding:0 2px 2px; }
+  .seg { display:flex; align-items:center; justify-content:space-between;
+         border:2px solid rgba(0,139,76,0.5); background:rgba(0,139,76,0.08);
+         border-radius:var(--radius-md); padding:6px 16px; height:32px; }
+  .seg .nm { font-family:var(--font-mono); font-weight:700; font-size:15.5px; color:var(--text-primary); }
+  .seg .by { font-family:var(--font-body); font-weight:800; font-size:12.5px; color:var(--stbr-green); }
+  .base { display:flex; flex-direction:column; gap:5px; }
+  .hardstop { background:var(--surface-inverse); color:var(--text-on-dark);
+              border-radius:var(--radius-md); padding:9px 16px; text-align:center;
+              font-family:var(--font-body); font-weight:800; font-size:14.5px; }
+  .tlv { border:3px solid var(--stbr-yellow); background:rgba(255,210,63,0.14);
+         border-radius:var(--radius-lg); padding:10px 12px 12px; display:flex;
+         flex-direction:column; gap:4px; }
+  .tlv-head { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+              letter-spacing:.08em; text-transform:uppercase; color:var(--text-primary);
+              padding:0 4px 4px; }
+  .tlv-head .tlvfmt { font-family:var(--font-mono); text-transform:none; letter-spacing:0;
+                      color:var(--text-secondary); font-weight:700; }
+  .ext { display:flex; align-items:center; gap:10px; background:var(--surface-card);
+         border:1.5px solid var(--border-subtle); border-radius:var(--radius-sm);
+         padding:3px 10px; height:27px; }
+  .ext .tl { font-family:var(--font-mono); font-weight:700; font-size:11px;
+             color:var(--stbr-green); background:rgba(0,139,76,0.1);
+             border-radius:var(--radius-sm); padding:2px 6px; }
+  .ext .en { font-family:var(--font-mono); font-size:14.5px; color:var(--text-primary); }
+  .total { display:flex; align-items:baseline; gap:10px; padding:4px 2px 0; }
+  .total .n { font-family:var(--font-display); font-weight:900; font-size:30px; color:var(--text-primary); }
+  .total .t { font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--text-secondary); }
+  .gutter { flex:0 0 176px; display:flex; flex-direction:column; align-items:center;
+            margin-top:96px; }
+  .same-chip { background:var(--surface-inverse); color:var(--text-on-dark);
+               font-family:var(--font-body); font-weight:800; font-size:13.5px; line-height:1.3;
+               text-align:center; padding:10px 14px; border-radius:var(--radius-lg);
+               max-width:150px; }
+  .gutter svg { display:block; margin-bottom:8px; }
+</style>
+  <div class="stbr-eyebrow">82 bytes, fixed vs base + TLV</div>
+  <h2 class="viz-title">two mints, side by side: classic SPL vs PYUSD</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="col-head">classic SPL mint &mdash; 82 bytes, fixed</div>
+      <div class="base">
+        <div class="seg"><span class="nm">mintAuthority</span><span class="by">36 B</span></div>
+        <div class="seg"><span class="nm">supply</span><span class="by">8 B</span></div>
+        <div class="seg"><span class="nm">decimals</span><span class="by">1 B</span></div>
+        <div class="seg"><span class="nm">isInitialized</span><span class="by">1 B</span></div>
+        <div class="seg"><span class="nm">freezeAuthority</span><span class="by">36 B</span></div>
+      </div>
+      <div class="hardstop">hard stop &mdash; nothing follows</div>
+      <div class="total"><span class="n">82 bytes</span><span class="t">total, fixed layout</span></div>
+    </div>
+    <div class="gutter">
+      <svg width="150" height="36" viewBox="0 0 150 36">
+        <line x1="16" y1="18" x2="134" y2="18" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="4,18 18,11 18,25" fill="#1B231D"/>
+        <polygon points="146,18 132,11 132,25" fill="#1B231D"/>
+      </svg>
+      <div class="same-chip">the 82-byte base region is identical</div>
+    </div>
+    <div class="col">
+      <div class="col-head">PYUSD mint (Token-2022) &mdash; 866 bytes</div>
+      <div class="base">
+        <div class="seg"><span class="nm">mintAuthority</span><span class="by">36 B</span></div>
+        <div class="seg"><span class="nm">supply</span><span class="by">8 B</span></div>
+        <div class="seg"><span class="nm">decimals</span><span class="by">1 B</span></div>
+        <div class="seg"><span class="nm">isInitialized</span><span class="by">1 B</span></div>
+        <div class="seg"><span class="nm">freezeAuthority</span><span class="by">36 B</span></div>
+      </div>
+      <div class="tlv">
+        <div class="tlv-head">TLV region &mdash; <span class="tlvfmt">[type][len][value]</span> entries follow</div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">mintCloseAuthority</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">permanentDelegate</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">transferFeeConfig</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">confidentialTransferMint</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">confidentialTransferFeeConfig</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">transferHook</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">metadataPointer</span></div>
+        <div class="ext"><span class="tl">T|L|V</span><span class="en">tokenMetadata</span></div>
+      </div>
+      <div class="total"><span class="n">866 bytes</span><span class="t">total, base + 8 TLV extensions</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

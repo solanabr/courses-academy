@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where a Harvest crate's data actually lives
+     purpose: show that the on-chain footprint is one 32-byte leaf inside one shared account, and that the readable metadata lives in an off-chain index
+     data: On-chain (one Merkle tree account, 1,223,352 bytes at depth 20 / buffer 256 / canopy 14): root (32 bytes) canopy: cached top 14 levels of internal nodes changelog buffer: last 256 root changes leaves: hash(name, uri, sellerFeeBasisPoints, creators, collection, owner, nonce) Off-chain (DAS provider index, rebuilt from Noop-program logs): full metadata JSON, owner, collection membership, proof on request Derived, not stored: asset id = PDA(tree, leaf index) Not present anywhere: a per-asset account. getAccountInfo(assetId) returns null.
+     prompt: Split diagram. Left side is a single large rounded rectangle labeled "one tree account" containing four stacked bands top to bottom: root (32 bytes), canopy (cached top levels), changelog buffer (256 entries), and a wide band of leaf slots with one slot highlighted and labeled "your Harvest crate: 32 bytes". Right side is a separate box labeled "DAS provider index" holding the readable metadata, connected to the left box by a dashed arrow labeled "Noop program logs". Below both, a small callout: "asset id = PDA(tree, leaf index), derived not stored". Add a struck-through ghost box labeled "per-asset account" to show what does not exist.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:506px;top:-245px;right:-245px;border-radius:59% 50% 46% 53% / 63% 47% 64% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:372px;height:505px;bottom:-318px;left:769px;border-radius:46% 40% 35% 63% / 47% 47% 45% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .wl-row { display:flex; gap:0; align-items:stretch; margin-top:2px; }
+  .wl-tree { flex:0 0 760px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+             border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column; }
+  .wl-tree-head { background:var(--surface-inverse); color:var(--text-on-dark);
+                  padding:11px 24px; font-family:var(--font-display); font-weight:900; font-size:20px; }
+  .wl-tree-head small { display:block; font-family:var(--font-body); font-weight:500;
+                        font-size:12.5px; color:rgba(245,232,202,0.8); }
+  .wl-bands { padding:14px 20px 16px; display:flex; flex-direction:column; gap:9px; }
+  .wl-band { border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+             padding:8px 16px; font-family:var(--font-body); font-weight:700; font-size:15.5px;
+             color:var(--text-primary); }
+  .wl-band small { font-weight:500; font-size:13px; color:var(--text-muted); }
+  .wl-band.root { background:var(--stbr-emerald); color:var(--text-on-brand); border-color:var(--stbr-emerald); }
+  .wl-band.root small { color:rgba(245,232,202,0.85); }
+  .wl-band.tint { background:rgba(0,139,76,0.06); }
+  .wl-leafband { border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+                 padding:9px 16px 10px; }
+  .wl-leafband .lbl { font-family:var(--font-body); font-weight:700; font-size:15.5px;
+                      color:var(--text-primary); margin-bottom:7px; }
+  .wl-slots { display:flex; gap:5px; align-items:center; }
+  .wl-slot { flex:1 1 0; height:26px; border-radius:5px; background:rgba(48,108,64,0.22); }
+  .wl-slot.you { background:var(--stbr-yellow); border:2px solid var(--stbr-dark); }
+  .wl-youlbl { margin-top:7px; font-family:var(--font-body); font-weight:800; font-size:13.5px;
+               color:var(--text-primary); }
+  .wl-hash { margin-top:3px; font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted); }
+  .wl-link { flex:0 0 190px; display:flex; flex-direction:column; align-items:center;
+             justify-content:center; gap:8px; }
+  .wl-dash { width:150px; border-top:3px dashed var(--stbr-green); position:relative; }
+  .wl-dash::after { content:""; position:absolute; right:-2px; top:-7px; width:0; height:0;
+                    border-top:6px solid transparent; border-bottom:6px solid transparent;
+                    border-left:10px solid var(--stbr-green); }
+  .wl-linklbl { font-family:var(--font-body); font-weight:700; font-size:12.5px; text-align:center;
+                color:var(--stbr-green); background:var(--surface-card);
+                border:1.5px solid var(--stbr-green); border-radius:var(--radius-pill); padding:3px 12px; }
+  .wl-das { flex:1 1 auto; background:var(--surface-card); border:3px solid var(--stbr-emerald);
+            border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column; }
+  .wl-das-head { background:var(--stbr-emerald); color:var(--text-on-brand); padding:11px 22px;
+                 font-family:var(--font-display); font-weight:900; font-size:20px; }
+  .wl-das-head small { display:block; font-family:var(--font-body); font-weight:500;
+                       font-size:12.5px; color:rgba(245,232,202,0.85); }
+  .wl-das-body { padding:12px 20px; display:flex; flex-direction:column; gap:8px; }
+  .wl-das-item { border:2px solid var(--border-strong); border-radius:var(--radius-md);
+                 padding:7px 14px; font-family:var(--font-body); font-weight:600; font-size:14.5px;
+                 color:var(--text-primary); }
+  .wl-foot { margin-top:16px; display:flex; gap:20px; align-items:stretch; }
+  .wl-pda { flex:1 1 auto; background:var(--surface-inverse); color:var(--text-on-dark);
+            border-radius:var(--radius-pill); padding:10px 24px; display:flex; align-items:center;
+            font-family:var(--font-mono); font-size:15px; }
+  .wl-pda b { font-family:var(--font-body); font-weight:700; margin-left:10px; font-size:13px;
+              color:rgba(245,232,202,0.8); }
+  .wl-ghost { flex:0 0 430px; border:2.5px dashed var(--stbr-ink-500, #6b7268);
+              border-radius:var(--radius-lg); padding:8px 20px; color:var(--text-muted);
+              font-family:var(--font-body); }
+  .wl-ghost .gone { font-weight:800; font-size:16px; text-decoration:line-through; }
+  .wl-ghost small { display:block; font-family:var(--font-mono); font-size:12px; margin-top:2px; }
+</style>
+  <div class="stbr-eyebrow">one leaf on-chain, everything readable off-chain</div>
+  <h2 class="viz-title">where a Harvest crate&rsquo;s data actually lives</h2>
+  <div class="wl-row">
+    <div class="wl-tree">
+      <div class="wl-tree-head">one tree account<small>1,223,352 bytes &mdash; depth 20 / buffer 256 / canopy 14</small></div>
+      <div class="wl-bands">
+        <div class="wl-band root">root <small>32 bytes</small></div>
+        <div class="wl-band tint">canopy <small>&mdash; cached top 14 levels of internal nodes</small></div>
+        <div class="wl-band tint">changelog buffer <small>&mdash; last 256 root changes</small></div>
+        <div class="wl-leafband">
+          <div class="lbl">leaf slots</div>
+          <div class="wl-slots">
+            <div class="wl-slot"></div><div class="wl-slot"></div><div class="wl-slot"></div>
+            <div class="wl-slot"></div><div class="wl-slot you"></div><div class="wl-slot"></div>
+            <div class="wl-slot"></div><div class="wl-slot"></div><div class="wl-slot"></div>
+            <div class="wl-slot"></div><div class="wl-slot"></div><div class="wl-slot"></div>
+          </div>
+          <div class="wl-youlbl">&uarr; your Harvest crate: 32 bytes</div>
+          <div class="wl-hash">hash(name, uri, sellerFeeBasisPoints, creators, collection, owner, nonce)</div>
+        </div>
+      </div>
+    </div>
+    <div class="wl-link">
+      <div class="wl-linklbl">Noop program logs</div>
+      <div class="wl-dash"></div>
+    </div>
+    <div class="wl-das">
+      <div class="wl-das-head">DAS provider index<small>rebuilt from Noop-program logs</small></div>
+      <div class="wl-das-body">
+        <div class="wl-das-item">full metadata JSON</div>
+        <div class="wl-das-item">owner</div>
+        <div class="wl-das-item">collection membership</div>
+        <div class="wl-das-item">proof, on request</div>
+      </div>
+    </div>
+  </div>
+  <div class="wl-foot">
+    <div class="wl-pda">asset id = PDA(tree, leaf index)<b>derived, not stored</b></div>
+    <div class="wl-ghost"><span class="gone">per-asset account</span><small>does not exist &mdash; getAccountInfo(assetId) returns null</small></div>
+  </div>
+</div>
+</body></html>

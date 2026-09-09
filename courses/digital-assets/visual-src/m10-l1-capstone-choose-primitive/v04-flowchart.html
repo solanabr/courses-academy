@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The two NFT ship-paths, and the one that is a dead end
+     purpose: show that an NFT brief resolves to Core or to a Bubblegum tree, and why the legacy royalty path fails a reviewer
+     data: start: the brief landed on the NFT side of the divisibility question edition drop with royalties -> Metaplex Core collection + Royalties plugin: basisPoints, creator list summing to exactly 100 + Edition plugin: numbered prints, the worked Almanac step memo line: split recorded on chain, honoured by marketplace policy, not by the token program mass badge, non-transferable -> Bubblegum v2 tree with soulbound leaves memo line: capacity fixed at tree creation; reads require a DAS-supporting RPC dead end: Token Metadata pNFT enforcement via Token Auth Rules Metaplex marks the stack deprecated; the flagship rule set blocks zero programs; seller_fee_basis_points on classic Token Metadata is purely indicative
+     prompt: Left-to-right flowchart. One start node branching into two live paths, each a labeled box listing its plugins or leaf settings and ending in a short memo-line caption. Below both, a third greyed-out path to a terminal marked "deprecated, armed and idle", carrying the Token Auth Rules notes from the data. Give the two live paths equal visual weight and keep the dead end visibly secondary.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:604px;height:527px;top:-333px;right:-333px;border-radius:37% 60% 45% 45% / 36% 56% 51% 58%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:496px;height:455px;left:-266px;top:242px;border-radius:45% 56% 37% 44% / 49% 56% 54% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lanes { display:grid; grid-template-columns:270px 70px 1fr; row-gap:18px;
+           column-gap:0; margin-top:10px; align-items:stretch; }
+  .startnode { grid-column:1; grid-row:1 / 3; background:var(--stbr-dark);
+               color:#F5E8CA; border-radius:var(--radius-xl); display:flex;
+               flex-direction:column; justify-content:center; gap:6px;
+               padding:20px 24px; }
+  .start-tag { font-family:var(--font-body); font-weight:800; font-size:11px;
+               letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .start-txt { font-family:var(--font-display); font-weight:900; font-size:22px;
+               line-height:1.2; }
+  .arrcell { display:flex; align-items:center; justify-content:center; }
+  .path { background:var(--surface-card); border:2.5px solid var(--stbr-emerald);
+          border-radius:var(--radius-xl); padding:14px 22px; display:flex;
+          flex-direction:column; gap:5px; }
+  .path-name { font-family:var(--font-display); font-weight:900; font-size:20px;
+               color:var(--text-primary); }
+  .path-item { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+               line-height:1.35; color:var(--text-primary); }
+  .path-item b { color:var(--stbr-green); }
+  .memo { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+          line-height:1.3; color:var(--text-secondary); border-top:1.5px dashed
+          var(--border-strong); padding-top:6px; margin-top:3px; }
+  .brieftag { align-self:flex-start; font-family:var(--font-body); font-weight:800;
+              font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+              color:#F5E8CA; background:var(--stbr-emerald);
+              border-radius:var(--radius-pill); padding:2px 12px; }
+  .dead { grid-column:1 / 4; grid-row:3; display:flex; align-items:stretch; gap:0; }
+  .dead-path { flex:1; background:var(--surface-paper); border:2px dashed
+               var(--border-strong); border-radius:var(--radius-xl);
+               padding:12px 22px; display:flex; flex-direction:column; gap:4px;
+               opacity:.85; }
+  .dead-name { font-family:var(--font-display); font-weight:900; font-size:17px;
+               color:var(--text-muted); }
+  .dead-item { font-family:var(--font-body); font-weight:600; font-size:12.5px;
+               line-height:1.3; color:var(--text-muted); }
+  .dead-term { width:290px; margin-left:24px; background:var(--stbr-yellow);
+               border:2.5px solid var(--stbr-dark); border-radius:var(--radius-xl);
+               display:flex; flex-direction:column; align-items:center;
+               justify-content:center; gap:4px; padding:12px 18px; text-align:center; }
+  .dead-term-name { font-family:var(--font-display); font-weight:900; font-size:19px;
+                    color:var(--stbr-dark); line-height:1.15; }
+  .dead-term-sub { font-family:var(--font-body); font-weight:700; font-size:11.5px;
+                   letter-spacing:.08em; text-transform:uppercase;
+                   color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">the NFT side of the divisibility question</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:8px;">two ship-paths, and the one that is a dead end</h2>
+  <div class="lanes">
+    <div class="startnode">
+      <span class="start-tag">start</span>
+      <span class="start-txt">the brief landed on the NFT side of the divisibility question</span>
+    </div>
+    <div class="arrcell" style="grid-column:2;grid-row:1;">
+      <svg width="70" height="28" viewBox="0 0 70 28"><line x1="4" y1="14" x2="56" y2="14" stroke="#1B231D" stroke-width="2.5"/><polygon points="66,14 54,7 54,21" fill="#1B231D"/></svg>
+    </div>
+    <div class="path" style="grid-column:3;grid-row:1;">
+      <span class="brieftag">edition drop with royalties</span>
+      <span class="path-name">Metaplex Core collection</span>
+      <span class="path-item"><b>+ Royalties plugin</b> &mdash; basisPoints, creator list summing to exactly 100</span>
+      <span class="path-item"><b>+ Edition plugin</b> &mdash; numbered prints, the worked Almanac step</span>
+      <span class="memo">memo: split recorded on chain, honoured by marketplace policy &mdash; not by the token program</span>
+    </div>
+    <div class="arrcell" style="grid-column:2;grid-row:2;">
+      <svg width="70" height="28" viewBox="0 0 70 28"><line x1="4" y1="14" x2="56" y2="14" stroke="#1B231D" stroke-width="2.5"/><polygon points="66,14 54,7 54,21" fill="#1B231D"/></svg>
+    </div>
+    <div class="path" style="grid-column:3;grid-row:2;">
+      <span class="brieftag">mass badge, non-transferable</span>
+      <span class="path-name">Bubblegum v2 tree with soulbound leaves</span>
+      <span class="memo">memo: capacity fixed at tree creation; reads require a DAS-supporting RPC</span>
+    </div>
+    <div class="dead">
+      <div class="dead-path">
+        <span class="dead-name">Token Metadata pNFT enforcement via Token Auth Rules</span>
+        <span class="dead-item">Metaplex marks the stack deprecated &middot; the flagship rule set blocks zero programs &middot; seller_fee_basis_points on classic Token Metadata is purely indicative</span>
+      </div>
+      <div class="arrcell" style="width:70px;">
+        <svg width="70" height="28" viewBox="0 0 70 28"><line x1="4" y1="14" x2="56" y2="14" stroke="#1B231D" stroke-width="2.5" stroke-dasharray="6 5"/><polygon points="66,14 54,7 54,21" fill="#1B231D"/></svg>
+      </div>
+      <div class="dead-term">
+        <span class="dead-term-name">deprecated, armed and idle</span>
+        <span class="dead-term-sub">dead end &mdash; fails a reviewer</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One compressed asset, two very different call paths
+     purpose: separate the read path from the write path so the reader stops fetching proofs they do not need and starts fetching them at the right moment
+     data: READ path (wallet display): getAsset(id) -> parsed metadata, ownership, compression object -> classify -> render. One call. No proof involved. WRITE path (transfer or burn a crate): getAssetProof(id) -> root + leaf + node_index + sibling hashes (length = tree depth) -> build Bubblegum instruction -> send. Staleness rule on the write path: any other modification to the same tree invalidates the proof, so fetch it immediately before sending, never at page load. Cost note: fetching a proof on the read path is a wasted round trip.
+     prompt: Two parallel horizontal tracks sharing a single left-hand start node labeled "compressed asset id". Top track "READ", three steps, ending in a render node. Bottom track "WRITE", four steps, ending in a send node. Attach a warning annotation to the getAssetProof node reading "stale on any tree modification: fetch last". Mark a crossed-out dashed arrow from the READ track down to getAssetProof labeled "wasted round trip".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:530px;height:489px;bottom:-283px;right:-283px;border-radius:61% 49% 37% 51% / 40% 41% 42% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:458px;height:446px;left:-236px;top:278px;border-radius:38% 58% 49% 60% / 51% 56% 52% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .paths { display:flex; align-items:center; margin-top:14px; }
+  .start { flex:0 0 176px; background:var(--surface-inverse); color:#F5E8CA;
+           border-radius:var(--radius-xl); padding:22px 20px; text-align:center;
+           font-family:var(--font-mono); font-weight:700; font-size:17px; line-height:1.35; }
+  .branch { flex:0 0 64px; }
+  .tracks { flex:1 1 0; display:flex; flex-direction:column; }
+  .track { position:relative; border:2.5px solid var(--stbr-dark);
+           border-radius:var(--radius-xl); background:var(--surface-card);
+           display:flex; align-items:flex-start; gap:0; padding:44px 18px 16px; }
+  .track.read { height:170px; }
+  .track.write { height:210px; }
+  .t-tag { position:absolute; top:-16px; left:22px; font-family:var(--font-body);
+           font-weight:800; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+           color:#F5E8CA; background:var(--stbr-emerald); border-radius:var(--radius-pill);
+           padding:6px 16px; }
+  .track.write .t-tag { background:var(--stbr-green); }
+  .cell { flex:1 1 0; display:flex; flex-direction:column; gap:8px; }
+  .step { border:2px solid var(--stbr-dark); border-radius:var(--radius-lg);
+          background:var(--surface-card); padding:12px 14px;
+          font-family:var(--font-mono); font-weight:700; font-size:14.5px; line-height:1.35;
+          color:var(--text-primary); min-height:74px; display:flex; align-items:center; }
+  .step.end { background:var(--stbr-emerald); border-color:var(--stbr-dark); color:#F5E8CA;
+              font-family:var(--font-display); font-weight:900; font-size:19px;
+              justify-content:center; }
+  .step-arr { flex:0 0 34px; display:flex; align-items:center; justify-content:center;
+              padding-top:24px; }
+  .warn { position:absolute; left:18px; bottom:16px; white-space:nowrap;
+          font-family:var(--font-body); font-weight:800; font-size:12.5px; line-height:1.3;
+          color:var(--stbr-dark); background:var(--stbr-yellow);
+          border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+          padding:6px 10px; }
+  .mid-gap { position:relative; height:96px; }
+  .cross-note { position:absolute; left:238px; top:26px; font-family:var(--font-body);
+                font-weight:700; font-size:14px; color:var(--text-primary);
+                background:var(--surface-paper); border:1.5px dashed var(--stbr-dark);
+                border-radius:var(--radius-pill); padding:7px 14px; white-space:nowrap; }
+</style>
+  <div class="stbr-eyebrow">read path vs write path</div>
+  <h2 class="viz-title" style="font-size:46px;">one compressed asset, two very different call paths</h2>
+  <div class="paths">
+    <div class="start">compressed<br>asset id</div>
+    <div class="branch">
+      <svg width="64" height="476" viewBox="0 0 64 476">
+        <line x1="2" y1="238" x2="50" y2="88" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="56,74 42,84 52,96" fill="#1B231D"/>
+        <line x1="2" y1="238" x2="50" y2="388" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="56,402 52,380 42,392" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="tracks">
+      <div class="track read">
+        <span class="t-tag">read &middot; wallet display &mdash; one call, no proof</span>
+        <div class="cell"><div class="step">getAsset(id)</div></div>
+        <div class="step-arr"><svg width="30" height="24" viewBox="0 0 30 24"><line x1="0" y1="12" x2="20" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="29,12 18,6 18,18" fill="#1B231D"/></svg></div>
+        <div class="cell"><div class="step">parsed metadata, ownership, compression object</div></div>
+        <div class="step-arr"><svg width="30" height="24" viewBox="0 0 30 24"><line x1="0" y1="12" x2="20" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="29,12 18,6 18,18" fill="#1B231D"/></svg></div>
+        <div class="cell"><div class="step">classify</div></div>
+        <div class="step-arr"><svg width="30" height="24" viewBox="0 0 30 24"><line x1="0" y1="12" x2="20" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="29,12 18,6 18,18" fill="#1B231D"/></svg></div>
+        <div class="cell"><div class="step end">render</div></div>
+      </div>
+      <div class="mid-gap">
+        <svg width="130" height="96" viewBox="0 0 130 96" style="position:absolute;left:90px;top:0;">
+          <line x1="86" y1="0" x2="86" y2="84" stroke="#1B231D" stroke-width="2.5" stroke-dasharray="8,7"/>
+          <polygon points="86,94 78,82 94,82" fill="#1B231D"/>
+          <line x1="72" y1="34" x2="100" y2="60" stroke="#1B231D" stroke-width="3.5"/>
+          <line x1="100" y1="34" x2="72" y2="60" stroke="#1B231D" stroke-width="3.5"/>
+        </svg>
+        <span class="cross-note">&times; wasted round trip &mdash; a proof buys nothing on the read path</span>
+      </div>
+      <div class="track write">
+        <span class="t-tag">write &middot; transfer or burn a crate</span>
+        <div class="cell">
+          <div class="step">getAssetProof(id)</div>
+          <div class="warn">stale on any tree modification &mdash; fetch last</div>
+        </div>
+        <div class="step-arr"><svg width="30" height="24" viewBox="0 0 30 24"><line x1="0" y1="12" x2="20" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="29,12 18,6 18,18" fill="#1B231D"/></svg></div>
+        <div class="cell"><div class="step">root + leaf + node_index + sibling hashes (length = tree depth)</div></div>
+        <div class="step-arr"><svg width="30" height="24" viewBox="0 0 30 24"><line x1="0" y1="12" x2="20" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="29,12 18,6 18,18" fill="#1B231D"/></svg></div>
+        <div class="cell"><div class="step">build Bubblegum instruction</div></div>
+        <div class="step-arr"><svg width="30" height="24" viewBox="0 0 30 24"><line x1="0" y1="12" x2="20" y2="12" stroke="#1B231D" stroke-width="2.5"/><polygon points="29,12 18,6 18,18" fill="#1B231D"/></svg></div>
+        <div class="cell"><div class="step end">send</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

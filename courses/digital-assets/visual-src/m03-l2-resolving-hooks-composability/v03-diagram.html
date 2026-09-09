@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The execute account list is the seed namespace
+     purpose: make positional resolution concrete: index-based seeds hash over this exact list, so order and completeness change the derived address
+     data: execute account list, in order: [0] source | [1] mint | [2] destination | [3] owner | [4] validation account | [5] extra 1 | [6] extra 2 | ... example: seed config [3, 1] means "key of the account at index 1" -> resolves to the mint extras may reference earlier extras: an index-6 seed can point at the extra resolved into slot 5 failure path: omit extra 1 -> every later slot shifts down one -> index-based seeds hash different keys -> different PDA -> on-chain check fails -> revert
+     prompt: A single horizontal row of seven numbered slots: 0 source, 1 mint, 2 destination, 3 owner, 4 validation account, 5 extra 1, 6 extra 2, with an ellipsis after. Above the row, one arrow from a chip labeled "seed config [3, 1]" pointing at slot 1, captioned "resolves to the mint". Below the row, a second copy of the row with slot 5 removed and later slots shifted left, greyed, with the caption "one extra omitted: every index-based seed after it now hashes the wrong key". A red terminal chip: "wrong PDA -> revert".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:557px;top:-294px;right:-294px;border-radius:43% 60% 45% 54% / 57% 60% 37% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:399px;height:479px;bottom:-231px;left:578px;border-radius:55% 62% 43% 42% / 44% 39% 60% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl,32px);padding:36px 48px 32px;}
+  .wrap{position:relative;width:1280px;margin:0 auto;}
+  .seedhdr{position:relative;height:88px;}
+  .seedchip{position:absolute;left:96px;top:0;width:328px;text-align:center;background:var(--stbr-emerald);
+            color:#F5E8CA;border-radius:10px;padding:8px 0;font-family:var(--font-mono);font-weight:700;font-size:17px;}
+  .seedcap{position:absolute;left:440px;top:8px;font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);}
+  .rowlab{font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:.1em;
+          text-transform:uppercase;color:var(--text-muted);margin:0 0 8px;}
+  .slots{display:flex;gap:8px;align-items:stretch;}
+  .slot{width:168px;border-radius:12px;border:2px solid var(--border-strong);background:var(--surface-paper,#FAF3E3);
+        padding:10px 10px 12px;text-align:center;}
+  .slot .ix{font-family:var(--font-mono);font-weight:700;font-size:14px;color:#F5E8CA;background:var(--stbr-green);
+            display:inline-block;border-radius:6px;padding:2px 9px;margin-bottom:6px;}
+  .slot .nm{font-family:var(--font-body);font-weight:700;font-size:15.5px;color:var(--text-primary);line-height:1.2;}
+  .slot.hit{background:var(--stbr-emerald);border-color:var(--stbr-emerald);}
+  .slot.hit .nm{color:#F5E8CA;}
+  .slot.hit .ix{background:#F5E8CA;color:var(--stbr-emerald);}
+  .ell{display:flex;align-items:center;font-family:var(--font-display);font-weight:800;font-size:26px;color:var(--text-muted);padding:0 4px;}
+  .note{font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);margin-top:8px;}
+  .ghost .slot{background:#EDEAE0;border-color:var(--border-subtle);}
+  .ghost .slot .nm{color:var(--text-muted);}
+  .ghost .slot .ix{background:#c9c4b4;color:#6b6b60;}
+  .ghost .slot.shift{border-style:dashed;border-color:var(--stbr-yellow);}
+  .gap5{width:168px;border:2px dashed var(--border-subtle);border-radius:12px;display:flex;align-items:center;
+        justify-content:center;font-family:var(--font-body);font-size:13px;color:var(--text-muted);text-align:center;padding:8px;}
+  .failrow{display:flex;align-items:center;gap:16px;margin-top:12px;}
+  .failcap{font-family:var(--font-body);font-size:15px;color:var(--text-primary);flex:1;}
+  .revert{background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-display);font-weight:800;
+          font-size:16px;border-radius:999px;padding:9px 20px;white-space:nowrap;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">index-based seeds hash over this exact list</div>
+  <h2 class="viz-title">the execute account list is the seed namespace</h2>
+  <div class="wrap">
+    <div class="seedhdr">
+      <div class="seedchip">seed config [3, 1]</div>
+      <div class="seedcap">&ldquo;key of the account at index 1&rdquo; &rarr; resolves to the mint</div>
+      <svg width="1280" height="40" style="position:absolute;left:0;top:44px;">
+        <line x1="260" y1="0" x2="260" y2="28" stroke="#008B4C" stroke-width="2.5"/>
+        <polygon points="253,28 267,28 260,40" fill="#008B4C"/>
+      </svg>
+    </div>
+    <div class="rowlab">declared order</div>
+    <div class="slots">
+      <div class="slot"><div class="ix">0</div><div class="nm">source</div></div>
+      <div class="slot hit"><div class="ix">1</div><div class="nm">mint</div></div>
+      <div class="slot"><div class="ix">2</div><div class="nm">destination</div></div>
+      <div class="slot"><div class="ix">3</div><div class="nm">owner</div></div>
+      <div class="slot"><div class="ix">4</div><div class="nm">validation account</div></div>
+      <div class="slot"><div class="ix">5</div><div class="nm">extra 1</div></div>
+      <div class="slot"><div class="ix">6</div><div class="nm">extra 2</div></div>
+      <div class="ell">&hellip;</div>
+    </div>
+    <div class="note">extras may reference earlier extras &mdash; an index-6 seed can point at the extra resolved into slot 5.</div>
+    <div class="rowlab" style="margin-top:18px;">omit extra 1 &mdash; every later slot shifts down one</div>
+    <div class="slots ghost">
+      <div class="slot"><div class="ix">0</div><div class="nm">source</div></div>
+      <div class="slot"><div class="ix">1</div><div class="nm">mint</div></div>
+      <div class="slot"><div class="ix">2</div><div class="nm">destination</div></div>
+      <div class="slot"><div class="ix">3</div><div class="nm">owner</div></div>
+      <div class="slot"><div class="ix">4</div><div class="nm">validation account</div></div>
+      <div class="slot shift"><div class="ix">5</div><div class="nm">extra 2 <span style="font-weight:400;font-size:12.5px;">(was 6)</span></div></div>
+      <div class="gap5">slot 6 is gone</div>
+      <div class="ell">&hellip;</div>
+    </div>
+    <div class="failrow">
+      <div class="failcap">one extra omitted: every index-based seed after it now hashes the wrong key &mdash; different PDA, and the on-chain check fails.</div>
+      <div class="revert">wrong PDA &rarr; revert</div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,82 @@
+id: lesson-date-m10-l2-cumulative-checkpoint-close
+slug: m10-l2-cumulative-checkpoint-close
+title: "Cumulative checkpoint and close"
+skills:
+  - token-2022
+  - state-compression
+  - token-metadata
+  - solana-fundamentals
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    tsx: "4.23.12"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Cold brief: a cafe loyalty currency that must stay tradeable on Raydium, with no compliance controls needed. What is the defensible cold decision?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "A classic SPL mint, because a loyalty currency cannot use Token-2022 without inviting extension risk it does not need"
+            correct: false
+            feedback: "Token-2022 is a superset of classic SPL; display-only extensions are exactly what keep a token both featureful and routable. Classic SPL would work but forgoes native metadata for no reason."
+          - id: d
+            label: "Token-2022 with MetadataPointer, TokenMetadata and a PermanentDelegate for clawbacks, which is still only three of the five allowlist slots"
+            correct: false
+            feedback: "The rule is every, not some. Two allowlisted extensions beside one refused extension is still refused, because the pool's exposure to a delegate that can sweep its vault does not shrink when a metadata pointer sits next to it."
+          - id: c
+            label: "Token-2022 with a TransferHook that logs every loyalty transfer on-chain, plus MetadataPointer and TokenMetadata."
+            correct: false
+            feedback: "TransferHook is a power extension Raydium rejects; a currency that must stay tradeable cannot carry it unless the mint is whitelisted."
+          - id: a
+            label: "Token-2022 with display-only extensions (MetadataPointer + TokenMetadata), no power extensions, so it stays on Raydium's five-extension allowlist"
+            correct: true
+            feedback: "Cold decisions are the ones you make before a brief tempts you. No compliance requirement means no power extension has to be argued for, and the token stays routable by construction."
+        explanation: "With no compliance need and a hard tradeability requirement, the thesis points straight at display-only extensions: they get whitelisted, they add native metadata, and they keep the token on the allowlist. This is the checkpoint's simplest row, and getting it cold confirms the compatibility model transferred."
+      - id: q2
+        prompt: "In the close you place each refused topic with its sibling course. Which course carries 'how a live RWA issuer structures compliance rails and KYC'?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The planned DeFi and RWA Engineering course, where RWA issuance and the compliance rails around it live"
+            correct: true
+            feedback: "Everything it assumes on the token layer is what you just built, which is why the hand-off is a front door rather than a window."
+          - id: c
+            label: "The Master Anchor V2 course, since compliance rails come down to program constraints and CPI"
+            correct: false
+            feedback: "That course owns the Anchor framework layer (macros, constraints, CPI, testing), not RWA compliance rails."
+          - id: d
+            label: "This course already covered it: the compliance-shaped extension set and a live issuer's dormant powers are that framing, so no sibling course is needed"
+            correct: false
+            feedback: "This course taught you to read a compliance-shaped mint and refused the legal and issuer framing that turns one into a regulated instrument. Reading PYUSD is not structuring an issuance."
+          - id: a
+            label: "The planned Client-Side Mastery course, since KYC checks and compliance screens ultimately run in the client and indexing layer the user touches"
+            correct: false
+            feedback: "That course owns indexing infrastructure and transaction-landing, not RWA issuance or compliance framing."
+        explanation: "This course teaches the compliance-shaped primitives (freeze, permanent delegate, default-frozen, hooks) but deliberately refuses the legal and issuer framing. That RWA-specific issuance and compliance work is the planned DeFi and RWA Engineering course's territory, and it builds directly on the primitives taught here."
+      - id: q3
+        prompt: "A checkpoint brief asks for a soulbound achievement badge minted to a million holders cheaply. Which taught primitive fits, and what makes the answer a 2026 answer?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "A Bubblegum v2 cNFT with set_non_transferable_v2; soulbound compressed NFTs are new in v2 and contradict the 2024 'cNFTs can't be soulbound' folklore"
+            correct: true
+            feedback: "Soulbound is bit 2 of the v2 leaf's flags byte, authorised by a PermanentFreezeDelegate on the tree's Core collection. Cheap at a million and non-transferable, which V1 could not do."
+          - id: a
+            label: "A Token-2022 NonTransferable fungible mint, because soulbound has long been a fungible-only pattern"
+            correct: false
+            feedback: "NonTransferable does make a soulbound fungible, but 'a million cheap badges' is a mass-mint NFT problem, not a fungible-supply one."
+          - id: b
+            label: "A Metaplex Core asset with PermanentFreeze on every badge, because Core is the only soulbound path there is"
+            correct: false
+            feedback: "Core soulbound works for individual assets but is not the cheap-at-a-million answer; minting a million assets cheaply is compression's job."
+          - id: d
+            label: "A Bubblegum V1 tree, since compression is the cheap path and a V1 leaf has no transfer instruction to call, which makes it soulbound by omission anyway"
+            correct: false
+            feedback: "V1 leaves transfer fine and carry no flags byte at all, and they are not upgradeable into v2, so a V1 tree is the one shape that gets the cheapness and loses the property you needed."
+        explanation: "The brief combines two constraints, soulbound AND mass-mint-cheap, that only compression satisfies together. Bubblegum v2's set_non_transferable_v2 is exactly the new capability, and naming why it is current (it overturns the 2024 folklore) is what the close is training you to see."

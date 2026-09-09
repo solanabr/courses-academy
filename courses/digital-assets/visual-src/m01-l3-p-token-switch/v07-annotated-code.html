@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The 9 bytes that swapped the token engine
+     purpose: decode the feature account layout by hand, reusing the byte-reading skill from m01-l2
+     data: bytes: 01 | 80 a2 00 19 00 00 00 00 byte 0: 0x01 = Option tag: Some (an activation slot is set; 0x00 would mean pending) bytes 1-8: u64 little-endian activation slot: 0x19_00_a2_80 = 419,472,000 419,472,000 = the first slot of epoch 971
+     prompt: A single hex byte-strip: one box per byte for 01 80 a2 00 19 00 00 00 00. Bracket byte 0 with the label "Option tag: Some(slot)" and bytes 1-8 with "u64 LE activation slot = 419,472,000 (first slot of epoch 971)". Show the little-endian reassembly under the strip: 80 a2 00 19 -> 0x1900a280 -> 419,472,000.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:563px;height:479px;right:-330px;top:247px;border-radius:45% 63% 56% 38% / 38% 64% 50% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:502px;height:529px;bottom:-291px;left:568px;border-radius:50% 50% 59% 53% / 53% 51% 38% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-2xl); padding:40px 48px;
+           margin-top:26px; }
+  .strip { display:flex; gap:10px; }
+  .byte { width:118px; height:64px; border-radius:var(--radius-md); display:flex; align-items:center;
+          justify-content:center; font-family:var(--font-mono); font-weight:700; font-size:26px; }
+  .byte.tag { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .byte.slot { background:transparent; border:1.5px solid rgba(245,232,202,0.5); color:var(--text-on-dark); }
+  .brackets { display:flex; gap:10px; margin-top:10px; }
+  .bk { height:16px; border-left:2px solid rgba(245,232,202,0.7); border-right:2px solid rgba(245,232,202,0.7);
+        border-bottom:2px solid rgba(245,232,202,0.7); border-radius:0 0 8px 8px; }
+  .bk1 { width:118px; flex:none; }
+  .bk2 { flex:1; }
+  .blabels { display:flex; gap:10px; margin-top:8px; }
+  .bl { font-family:var(--font-body); font-size:16px; line-height:1.3; color:var(--text-on-dark); }
+  .bl1 { width:330px; flex:none; }
+  .bl2 { flex:1; text-align:center; }
+  .bl b { color:var(--stbr-yellow); }
+  .asm { display:flex; align-items:center; gap:16px; margin-top:34px; flex-wrap:nowrap; }
+  .alab { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.11em;
+          text-transform:uppercase; color:rgba(245,232,202,0.65); white-space:nowrap; }
+  .chip { font-family:var(--font-mono); font-weight:700; font-size:20px; color:var(--text-on-dark);
+          border:1.5px solid rgba(245,232,202,0.5); border-radius:var(--radius-pill); padding:8px 18px;
+          white-space:nowrap; }
+  .chip.final { background:var(--stbr-yellow); border-color:var(--stbr-yellow); color:var(--stbr-dark); }
+  .anote { font-family:var(--font-body); font-size:14px; color:rgba(245,232,202,0.7); margin-top:14px; }
+</style>
+  <div class="stbr-eyebrow">decode it by hand, like the mint in m01-l2</div>
+  <h2 class="viz-title">the 9 bytes that swapped the token engine</h2>
+  <div class="panel">
+    <div class="strip">
+      <div class="byte tag">01</div>
+      <div class="byte slot">80</div>
+      <div class="byte slot">a2</div>
+      <div class="byte slot">00</div>
+      <div class="byte slot">19</div>
+      <div class="byte slot">00</div>
+      <div class="byte slot">00</div>
+      <div class="byte slot">00</div>
+      <div class="byte slot">00</div>
+    </div>
+    <div class="brackets">
+      <div class="bk bk1"></div>
+      <div class="bk bk2"></div>
+    </div>
+    <div class="blabels">
+      <div class="bl bl1">byte 0 &mdash; <b>Option tag: 0x01 = Some(slot)</b><br>0x00 would mean pending</div>
+      <div class="bl bl2">bytes 1&ndash;8 &mdash; u64 little-endian activation slot = <b>419,472,000</b> &middot; first slot of epoch 971</div>
+    </div>
+    <div class="asm">
+      <span class="alab">reassemble</span>
+      <span class="chip">80 a2 00 19</span>
+      <svg width="44" height="16"><line x1="0" y1="8" x2="30" y2="8" stroke="#F5E8CA" stroke-width="2"/><polygon points="30,2 44,8 30,14" fill="#F5E8CA"/></svg>
+      <span class="chip">0x1900a280</span>
+      <svg width="44" height="16"><line x1="0" y1="8" x2="30" y2="8" stroke="#F5E8CA" stroke-width="2"/><polygon points="30,2 44,8 30,14" fill="#F5E8CA"/></svg>
+      <span class="chip final">419,472,000</span>
+    </div>
+    <div class="anote">little-endian: reverse the byte order before reading &mdash; the four trailing 00 bytes are the high half of the u64.</div>
+  </div>
+</div>
+</body></html>

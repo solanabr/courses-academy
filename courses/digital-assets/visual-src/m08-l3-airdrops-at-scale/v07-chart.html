@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The withdrawn counter chasing the vested line
+     purpose: show that claim_locked pays the gap between two running totals, which is why claim timing changes the payout sizes but never the sum
+     data: The lab's seed-round-farmer allocation: locked_amount 900,000,000 base units, 90-day linear window (start_ts to end_ts). Vested (continuous line): 0 at day 0, rising linearly to 900,000,000 at day 90. Withdrawn (staircase, one step per claim_locked call in the lab): day 0: claim rejected (InsufficientUnlockedTokens), withdrawn stays 0 day 30: released 300,000,000 -> withdrawn 300,000,000 day 45: released 150,000,000 -> withdrawn 450,000,000 day 90: released 450,000,000 -> withdrawn 900,000,000 Each release = vested(now) - withdrawn(before), never more.
+     prompt: Line chart, x-axis "days since start_ts" 0 to 90, y-axis "base units" 0 to 900,000,000. One straight diagonal line labeled "vested". One staircase line labeled "withdrawn" stepping up at days 30, 45, and 90 to the values given, sitting on or below the diagonal at all times. Shade the vertical gap between the two lines at day 44 and label it "what claim_locked would pay right now". Mark day 0 with a small x and the label "rejected: nothing vested yet".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:403px;right:-255px;top:349px;border-radius:51% 54% 39% 35% / 62% 57% 40% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:544px;bottom:-323px;left:684px;border-radius:43% 37% 51% 53% / 42% 58% 40% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:28px 60px 24px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">claim timing changes payout sizes, never the sum</div>
+    <h2 class="viz-title" style="font-size:34px;margin:6px 0 4px;color:var(--stbr-dark);">The withdrawn counter chasing the vested line</h2>
+    <div style="font-family:var(--font-body);font-size:14px;color:var(--text-muted,#6b7a6f);margin:0 0 8px;">seed-round-farmer allocation &middot; locked_amount 900,000,000 base units &middot; 90-day linear window (start_ts &rarr; end_ts)</div>
+
+    <svg width="1320" height="524" viewBox="0 0 1320 524" style="display:block;">
+      <!-- gridlines every 150M -->
+      <line x1="120" y1="391" x2="1300" y2="391" stroke="#e7e1cf" stroke-width="1"/>
+      <line x1="120" y1="316" x2="1300" y2="316" stroke="#e7e1cf" stroke-width="1"/>
+      <line x1="120" y1="241" x2="1300" y2="241" stroke="#e7e1cf" stroke-width="1"/>
+      <line x1="120" y1="166" x2="1300" y2="166" stroke="#e7e1cf" stroke-width="1"/>
+      <line x1="120" y1="91"  x2="1300" y2="91"  stroke="#e7e1cf" stroke-width="1"/>
+      <line x1="120" y1="16"  x2="1300" y2="16"  stroke="#e7e1cf" stroke-width="1"/>
+      <!-- axes -->
+      <line x1="120" y1="10" x2="120" y2="466" stroke="#1B231D" stroke-width="2"/>
+      <line x1="114" y1="466" x2="1302" y2="466" stroke="#1B231D" stroke-width="2"/>
+      <!-- y labels -->
+      <text x="110" y="471" text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">0</text>
+      <text x="110" y="396" text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">150M</text>
+      <text x="110" y="321" text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">300M</text>
+      <text x="110" y="246" text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">450M</text>
+      <text x="110" y="171" text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">600M</text>
+      <text x="110" y="96"  text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">750M</text>
+      <text x="110" y="21"  text-anchor="end" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">900M</text>
+      <text x="28" y="240" text-anchor="middle" font-size="15" fill="#1B231D" transform="rotate(-90 28 240)" style="font-family:var(--font-body);font-weight:600;">base units</text>
+      <!-- x ticks -->
+      <line x1="120" y1="466" x2="120" y2="474" stroke="#1B231D" stroke-width="2"/>
+      <line x1="510" y1="466" x2="510" y2="474" stroke="#1B231D" stroke-width="2"/>
+      <line x1="705" y1="466" x2="705" y2="474" stroke="#1B231D" stroke-width="2"/>
+      <line x1="900" y1="466" x2="900" y2="474" stroke="#1B231D" stroke-width="2"/>
+      <line x1="1290" y1="466" x2="1290" y2="474" stroke="#1B231D" stroke-width="2"/>
+      <text x="120" y="494" text-anchor="middle" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">0</text>
+      <text x="510" y="494" text-anchor="middle" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">30</text>
+      <text x="705" y="494" text-anchor="middle" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">45</text>
+      <text x="900" y="494" text-anchor="middle" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">60</text>
+      <text x="1290" y="494" text-anchor="middle" font-size="14" fill="#4a5a4e" style="font-family:var(--font-body);">90</text>
+      <text x="710" y="518" text-anchor="middle" font-size="15" fill="#1B231D" style="font-family:var(--font-body);font-weight:600;">days since start_ts</text>
+
+      <!-- the gap claim_locked would pay at day 44 (yellow = the point) -->
+      <rect x="682" y="246" width="20" height="70" fill="#FFD23F" stroke="#1B231D" stroke-width="1.5"/>
+      <line x1="692" y1="318" x2="685" y2="340" stroke="#1B231D" stroke-width="2"/>
+      <rect x="495" y="340" width="380" height="36" rx="18" fill="#FFD23F" stroke="#1B231D" stroke-width="1.5"/>
+      <text x="685" y="363" text-anchor="middle" font-size="15" fill="#1B231D" style="font-family:var(--font-body);font-weight:700;">what claim_locked would pay right now</text>
+
+      <!-- vested: straight diagonal -->
+      <line x1="120" y1="466" x2="1290" y2="16" stroke="#008B4C" stroke-width="4"/>
+      <text x="1000" y="88" font-size="17" fill="#008B4C" style="font-family:var(--font-display);font-weight:800;">vested</text>
+
+      <!-- withdrawn: staircase, one step per claim_locked -->
+      <path d="M120 466 H510 V316 H705 V241 H1290 V16" fill="none" stroke="#1B231D" stroke-width="4"/>
+      <text x="1010" y="268" font-size="17" fill="#1B231D" style="font-family:var(--font-display);font-weight:800;">withdrawn</text>
+      <circle cx="510" cy="316" r="5" fill="#1B231D"/>
+      <circle cx="705" cy="241" r="5" fill="#1B231D"/>
+      <circle cx="1290" cy="16" r="5" fill="#1B231D"/>
+      <text x="522" y="404" font-size="13.5" fill="#4a5a4e" style="font-family:var(--font-body);">day 30 &middot; released 300,000,000</text>
+      <text x="717" y="270" font-size="13.5" fill="#4a5a4e" style="font-family:var(--font-body);">day 45 &middot; released 150,000,000</text>
+      <text x="1275" y="205" text-anchor="end" font-size="13.5" fill="#4a5a4e" style="font-family:var(--font-body);">day 90 &middot; released 450,000,000</text>
+
+      <!-- day 0: claim rejected -->
+      <line x1="113" y1="453" x2="127" y2="467" stroke="#1B231D" stroke-width="3"/>
+      <line x1="113" y1="467" x2="127" y2="453" stroke="#1B231D" stroke-width="3"/>
+      <line x1="135" y1="459" x2="222" y2="450" stroke="#4a5a4e" stroke-width="1.5"/>
+      <text x="228" y="454" font-size="13.5" fill="#4a5a4e" style="font-family:var(--font-body);">day 0 &middot; rejected: nothing vested yet</text>
+    </svg>
+
+    <div style="width:1320px;margin-top:8px;background:var(--stbr-emerald);border-radius:12px;padding:11px 20px;font-family:var(--font-body);font-weight:700;font-size:15.5px;color:var(--stbr-cream);text-align:center;">each release = vested(now) &minus; withdrawn(before), never more &mdash; timing reshapes the steps, the total is always 900,000,000</div>
+  </div>
+</div>
+</body></html>

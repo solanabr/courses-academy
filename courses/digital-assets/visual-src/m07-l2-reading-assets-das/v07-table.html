@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The axes that actually decide a DAS provider
+     purpose: convert provider choice from a brand preference into a checklist the reader can run against their own assets in an afternoon
+     data: Axis | Why it changes your code | How to test it yourself Network coverage | devnet-only integration is blocked if the provider is mainnet-only | run getAsset against a devnet asset you minted Indexing lag | fresh mints render as missing assets in your UI | mint, then poll getAsset and time the first success Method surface | a missing searchAssets filter forces client-side filtering | call searchAssets with the exact filters your view needs Paging behavior | a lagging total breaks naive loops | page a large wallet and compare total against items counted Dialect | _v2 suffixes and options vs displayOptions cost a shim | diff the provider's method names against the canonical spec Error shape | a silent empty array hides an unsupported method | point the reader at a non-DAS RPC and confirm it throws Compression flavor | Bubblegum and ZK compression are different indexes | if you use ZK compression, confirm Photon coverage separately Roster to evaluate | Helius, QuickNode, Alchemy DAS v2, Triton, Shyft; Photon for ZK compression
+     prompt: Three-column designed table with the header row Axis / Why it changes your code / How to test it yourself, and one row per axis from the data. Emphasize the Error shape row. Below the table, a single full-width footer strip listing the roster line verbatim.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:478px;height:470px;top:-262px;right:-262px;border-radius:59% 60% 37% 40% / 38% 41% 63% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:453px;bottom:-262px;left:-262px;border-radius:52% 39% 60% 37% / 48% 52% 39% 64%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ptab { width:100%; border-collapse:collapse; margin-top:12px;
+          background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+          border-radius:var(--radius-lg); overflow:hidden; }
+  .ptab th { background:var(--surface-inverse); color:#F5E8CA;
+             font-family:var(--font-display); font-weight:800; font-size:16px;
+             text-align:left; padding:12px 20px; }
+  .ptab td { border-top:1.5px solid var(--border-subtle); padding:10px 20px;
+             font-family:var(--font-body); font-size:14.5px; line-height:1.35;
+             color:var(--text-secondary); vertical-align:middle; }
+  .ptab td.axis { font-family:var(--font-display); font-weight:900; font-size:16.5px;
+                  color:var(--text-primary); white-space:nowrap; width:220px; }
+  .ptab td.how { font-family:var(--font-mono); font-weight:600; font-size:13.5px;
+                 color:var(--stbr-green); }
+  .ptab tr.hot td { background:rgba(255,210,63,0.32); }
+  .ptab tr.hot td.axis { color:var(--stbr-dark); }
+  .ptab tr.hot td, .ptab tr.hot td.how { color:var(--stbr-dark); font-weight:700; }
+  .roster-strip { margin-top:16px; background:var(--stbr-emerald);
+                  border-radius:var(--radius-lg); padding:14px 24px;
+                  display:flex; align-items:center; gap:16px; }
+  .rs-tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+            letter-spacing:.12em; text-transform:uppercase; color:#F5E8CA;
+            white-space:nowrap; }
+  .rs-txt { font-family:var(--font-body); font-weight:700; font-size:16.5px; color:#F5E8CA; }
+</style>
+  <div class="stbr-eyebrow">a checklist, not a brand preference</div>
+  <h2 class="viz-title" style="font-size:46px;">the axes that actually decide a DAS provider</h2>
+  <table class="ptab">
+    <tr><th style="width:220px;">Axis</th><th>Why it changes your code</th><th>How to test it yourself</th></tr>
+    <tr><td class="axis">Network coverage</td><td>devnet-only integration is blocked if the provider is mainnet-only</td><td class="how">run getAsset against a devnet asset you minted</td></tr>
+    <tr><td class="axis">Indexing lag</td><td>fresh mints render as missing assets in your UI</td><td class="how">mint, then poll getAsset and time the first success</td></tr>
+    <tr><td class="axis">Method surface</td><td>a missing searchAssets filter forces client-side filtering</td><td class="how">call searchAssets with the exact filters your view needs</td></tr>
+    <tr><td class="axis">Paging behavior</td><td>a lagging total breaks naive loops</td><td class="how">page a large wallet and compare total against items counted</td></tr>
+    <tr><td class="axis">Dialect</td><td>_v2 suffixes and options vs displayOptions cost a shim</td><td class="how">diff the provider&rsquo;s method names against the canonical spec</td></tr>
+    <tr class="hot"><td class="axis">Error shape</td><td>a silent empty array hides an unsupported method</td><td class="how">point the reader at a non-DAS RPC and confirm it throws</td></tr>
+    <tr><td class="axis">Compression flavor</td><td>Bubblegum and ZK compression are different indexes</td><td class="how">if you use ZK compression, confirm Photon coverage separately</td></tr>
+  </table>
+  <div class="roster-strip">
+    <span class="rs-tag">roster to evaluate</span>
+    <span class="rs-txt">Helius, QuickNode, Alchemy DAS v2, Triton, Shyft; Photon for ZK compression</span>
+  </div>
+</div>
+</body></html>

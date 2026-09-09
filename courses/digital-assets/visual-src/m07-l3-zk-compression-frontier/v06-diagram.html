@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The proof-staleness window, and why it is a write-path dependency
+     purpose: turn the same-block disqualifier from a rule into a mechanism the reader can re-derive from the root-moves-with-every-write fact
+     data: Write path for one compressed transfer: 1. fetch account + 128-byte validity proof from Photon (Helius / Alchemy) 2. build transaction   <- proof describes tree root R 3. land on leader      <- chain is now at root R' Proof is valid only while R' == R. Quiet subtree  : nothing else touched the tree in the window -> R' == R -> lands. AMM-shaped     : other writers move the root several times per block -> R' != R -> proof stale before the leader sees it. Consequence: the indexer sits in the WRITE path, not just the read path. Indexer down = no proof = no write.
+     prompt: A horizontal three-stage write-path diagram (fetch, build, land) with a shaded "validity window" band spanning stages 2 and 3. Draw two parallel lanes through the band: an upper quiet-subtree lane where the root label stays R the whole way and the transaction lands green, and a lower AMM lane where two unrelated writers inject arrows that flip the root label to R' and R'' mid-band, ending in a red stale-proof rejection. Anchor the fetch stage to a Photon indexer icon labeled "128-byte proof" and mark it as sitting on the write path.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:605px;height:578px;bottom:-322px;right:-322px;border-radius:59% 62% 48% 46% / 41% 63% 47% 35%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:471px;height:345px;left:-296px;top:361px;border-radius:40% 38% 36% 41% / 45% 40% 43% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:24px;padding:34px 44px 28px;">
+    <div class="stbr-eyebrow" style="color:var(--stbr-emerald);text-transform:uppercase;font-family:var(--font-display);font-weight:800;">the root moves with every write</div>
+    <h2 class="viz-title" style="font-size:38px;margin:6px 0 18px;color:var(--stbr-dark);">The proof-staleness window</h2>
+
+    <!-- three write-path stages -->
+    <div style="display:flex;gap:14px;align-items:stretch;margin-bottom:12px;">
+      <div style="flex:1;background:var(--stbr-emerald);border-radius:14px;padding:14px 18px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.06em;color:var(--stbr-cream);">1 &middot; FETCH</div>
+        <div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-cream);margin-top:4px;line-height:1.4;">account + <b>128-byte proof</b> from Photon (Helius / Alchemy)</div>
+        <div style="margin-top:8px;display:inline-block;background:var(--stbr-cream);color:var(--stbr-dark);border-radius:999px;padding:3px 10px;font-family:var(--font-body);font-weight:700;font-size:11.5px;">the indexer sits on the WRITE path</div>
+      </div>
+      <div style="flex:1;border:1.5px solid var(--stbr-emerald);border-radius:14px;padding:14px 18px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.06em;color:var(--stbr-emerald);">2 &middot; BUILD TX</div>
+        <div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);margin-top:4px;line-height:1.4;">proof describes tree root <span style="font-family:var(--font-mono);font-weight:700;">R</span></div>
+      </div>
+      <div style="flex:1;border:1.5px solid var(--stbr-emerald);border-radius:14px;padding:14px 18px;">
+        <div style="font-family:var(--font-display);font-weight:900;font-size:15px;letter-spacing:.06em;color:var(--stbr-emerald);">3 &middot; LAND ON LEADER</div>
+        <div style="font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);margin-top:4px;line-height:1.4;">chain is now at root <span style="font-family:var(--font-mono);font-weight:700;">R&prime;</span></div>
+      </div>
+    </div>
+
+    <!-- validity window band, spanning stages 2-3 -->
+    <div style="display:flex;gap:14px;margin-bottom:14px;">
+      <div style="flex:1;"></div>
+      <div style="flex:2;background:var(--surface-paper,#faf5e6);border:1.5px dashed var(--stbr-green);border-radius:14px;padding:12px 18px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--stbr-dark);margin-bottom:10px;">validity window &mdash; proof valid only while <span style="font-family:var(--font-mono);">R&prime; == R</span></div>
+        <!-- quiet lane -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="flex:none;width:130px;font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--stbr-dark);">quiet subtree</div>
+          <div style="flex:none;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:3px 12px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">R</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);">&rarr; nothing touches the tree &rarr;</div>
+          <div style="flex:none;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:3px 12px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">R</div>
+          <div style="flex:none;margin-left:auto;background:var(--stbr-emerald);color:var(--stbr-cream);border-radius:999px;padding:4px 14px;font-family:var(--font-display);font-weight:900;font-size:13px;">LANDS &#10003;</div>
+        </div>
+        <!-- AMM lane -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="flex:none;width:130px;font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--stbr-dark);">AMM-shaped</div>
+          <div style="flex:none;background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:6px;padding:3px 12px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">R</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);">&#8595; writer &rarr;</div>
+          <div style="flex:none;background:var(--surface-card);border:1.5px solid var(--border-strong,#c9c2ad);border-radius:6px;padding:3px 12px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">R&prime;</div>
+          <div style="font-family:var(--font-body);font-size:12px;color:var(--text-secondary,#4a5a4e);">&#8595; writer &rarr;</div>
+          <div style="flex:none;background:var(--surface-card);border:1.5px solid var(--border-strong,#c9c2ad);border-radius:6px;padding:3px 12px;font-family:var(--font-mono);font-size:13px;color:var(--stbr-dark);">R&Prime;</div>
+          <div style="flex:none;margin-left:auto;background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:999px;padding:4px 14px;font-family:var(--font-display);font-weight:900;font-size:13px;">STALE &mdash; REJECTED</div>
+        </div>
+        <div style="margin-top:8px;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary,#4a5a4e);">other writers move the root several times per block &rarr; <span style="font-family:var(--font-mono);">R&prime; != R</span> before the leader ever sees the tx</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface-inverse,#1B231D);border-radius:14px;padding:14px 22px;display:flex;align-items:center;gap:16px;">
+      <div style="flex:none;font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:.08em;color:var(--stbr-cream);">CONSEQUENCE</div>
+      <div style="font-family:var(--font-body);font-weight:600;font-size:16px;color:var(--stbr-cream);">the indexer is a WRITE-path dependency, not just a read convenience &mdash; indexer down = no proof = no write</div>
+    </div>
+  </div>
+</div>
+</body></html>
