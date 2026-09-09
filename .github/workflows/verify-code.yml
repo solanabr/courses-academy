@@ -1,0 +1,60 @@
+name: verify-code
+
+# Closes content-lint gate 6's deferral: Rust (and future buildable-TS) graded
+# blocks are compiled and run against tests.json here, instead of waiting for
+# runtime grading to discover a broken challenge. Solution must pass every
+# test; starter must fail at least one (failing to compile counts as failing).
+
+on:
+  pull_request:
+    paths:
+      - "courses/**"
+  workflow_dispatch: {}
+
+jobs:
+  verify-deferred-blocks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed courses
+        id: changed
+        run: |
+          BASE="${{ github.event.pull_request.base.sha || 'origin/main' }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            DIRS=$(ls -d courses/*/ | grep -v '_draft\|_template')
+          else
+            DIRS=$(git diff --name-only "$BASE"...HEAD -- courses/ \
+              | grep -oE '^courses/[^/_][^/]*/' | sort -u || true)
+          fi
+          # Only course dirs that actually contain graded rust / buildable blocks.
+          KEEP=""
+          for d in $DIRS; do
+            [ -f "$d/course.yaml" ] || continue
+            if grep -rlq "language: rust\|buildType: buildable" "$d"/lessons/*/lesson.yaml 2>/dev/null; then
+              KEEP="$KEEP $d"
+            fi
+          done
+          echo "dirs=$(echo $KEEP | xargs)" >> "$GITHUB_OUTPUT"
+          echo "Changed courses with deferred blocks: ${KEEP:-none}"
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.changed.outputs.dirs != ''
+        with:
+          toolchain: "1.89"
+
+      - uses: Swatinem/rust-cache@v2
+        if: steps.changed.outputs.dirs != ''
+        with:
+          shared-key: verify-code-blocks
+
+      - name: Install pyyaml
+        if: steps.changed.outputs.dirs != ''
+        run: pip install --quiet pyyaml
+
+      - name: Verify deferred code blocks
+        if: steps.changed.outputs.dirs != ''
+        run: |
+          python3 scripts/verify_code_blocks.py ${{ steps.changed.outputs.dirs }} --work "$RUNNER_TEMP/vb"
