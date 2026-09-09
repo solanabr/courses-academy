@@ -1,6 +1,6 @@
 # 402 Payment Required, For Real
 
-> **Version stamp — checked 2026-07-25.** `@x402/core`, `@x402/svm`, `@x402/express`, `@x402/fetch` at **2.19.0** (published 2026-07-17). `@solana/kit` at **7.0.0**. Everything below is written against those exact versions. If you are reading this more than a few months later, re-check the pins before you copy anything.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@x402/core`, `@x402/svm`, `@x402/express`, `@x402/fetch` — **2.23.0 line** (verified installable). `@solana/kit` — per-workspace peer rule (2026-08-23). Everything below was written against 2.19.0 / kit 7.0.0 and is reconciled at authoring. If you are reading this more than a few months later, re-check the pins before you copy anything.
 
 In module 1 you gave your vault app a paid tier: a Subscription Authority, a Recurring Delegation, one collected charge, and a second charge that correctly refused. That model prices a **relationship** — a subscriber, a period, a cap.
 

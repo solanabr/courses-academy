@@ -118,7 +118,7 @@ blocks:
         multiSelect: false
         options:
           - id: a
-            label: Legacy Token by default; Token-2022 only when a named extension is required — then verify your rail accepts it, because the Subscriptions program rejects any mint with a configured TransferHook
+            label: Legacy Token by default; Token-2022 only when a named extension is required — then verify your rail accepts it, because extension presence changes rail behavior in ways only a devnet test settles
             correct: true
           - id: b
             label: Token-2022 always, because it is the newer standard and legacy Token is being retired
@@ -137,12 +137,19 @@ blocks:
             label: Either one — the Subscriptions program treats both token programs identically
             correct: false
             feedback: >-
-              It supports both token programs, but it rejects a mint with a
-              configured TransferHook. A Token-2022 mint is not automatically
-              acceptable to your rail.
+              It supports both token programs, but not identically. Extensions
+              change rail behavior: a transfer fee changes what lands versus
+              what was authorised, a pausable config can halt pulls, and a
+              transfer hook adds forwarded accounts to every pull CPI. A
+              Token-2022 mint is not automatically equivalent to a legacy one
+              on your rail.
         explanation: >-
-          Pick the extension you need, then check the rail. A TransferHook mint
-          is the concrete case where a valid Token-2022 mint is refused.
+          Pick the extension you need, then check the rail — in both
+          directions. TransferHook is the cautionary tale: its error constant
+          reads like a refusal, but the deployed program forwards resolved hook
+          accounts through its TransferChecked CPI (devnet-verified), so a
+          hooked mint composes. Assumptions fail both ways; only a devnet test
+          against the actual pull path settles what your rail does.
 
       - id: q4
         prompt: >-

@@ -48,6 +48,8 @@ An IDL is a JSON document describing every instruction, its 8-byte discriminator
 
 For years Anchor put that JSON on-chain through instructions built into your own program — the mechanism behind `anchor idl init`. **Anchor 1.0 removed those instructions.** Every tutorial that tells you to run `anchor idl init <PROGRAM_ID>` is describing a mechanism that no longer exists, and there are a great many of them.
 
+One bridge before you write the verb off entirely: the Anchor **V2** release-candidate CLI reuses the `anchor idl` verb names — init, upgrade, fetch — reimplemented on top of the Program Metadata Program. If you meet them later in **Master Anchor V2**, that is the same PMP mechanism under the old names, not the removed legacy instructions coming back — and not a contradiction of this lesson.
+
 The replacement is the **Program Metadata Program**, a separate on-chain program that stores metadata for *any* program, keyed by program id. It is not Anchor-specific and it is not part of your binary — which is the improvement: your program no longer carries instructions whose only purpose is to describe itself.
 
 Publishing to it is one command:

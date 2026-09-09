@@ -1,6 +1,6 @@
 # Which Rail, and Is It Legal Where You Are
 
-> **Version stamp — checked 2026-07-25.** `@solana/kit@7.0.0` · `@solana/subscriptions@0.4.0` (exact) · `@x402/core`, `@x402/svm`, `@x402/express`, `@x402/fetch` all `2.19.0`. Subscriptions Delegation Program: `De1egAFMkMWZSN5rYXRj9CAdheBamobVNubTsi9avR44`. This course is TypeScript only — no Rust, no local toolchain.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@solana/kit` — pin the major your workspace's `@solana-program/*`/client deps peer against (per-workspace rule, 2026-08-23) · `@solana/subscriptions` **0.5.0 line** (peers kit 7.1.1; 0.4.0 is a documented fallback only) · `@x402/core`, `@x402/svm`, `@x402/express`, `@x402/fetch` **2.23.0 line** · `@solana/pay` **1.0.26** (reference-only — never installed here). Subscriptions Delegation Program: `De1egAFMkMWZSN5rYXRj9CAdheBamobVNubTsi9avR44`. This course is TypeScript only — no Rust, no local toolchain. Prose, tables and code below were written against the 2026-07-25 pins (kit 7.0.0, subscriptions 0.4.0, x402 2.19.0, pay 1.0.23) and are reconciled at authoring.
 
 If you came through Course 4 you finished it with a deployed app and a published client. Either way, the app this course starts from earns nothing.
 
@@ -55,7 +55,7 @@ So the honest position is not "Solana Pay is broken and the others are fine". Tw
 
 Name the seam. Pin the versions. Write down which override you took and why. That habit is worth more than the rail.
 
-Solana Pay is on your decision map as an **answer**; it is not on your `package.json`.
+Solana Pay is on your decision map as an **answer**; it is not on your `package.json`. And when the answer *is* Solana Pay, the build-it course exists in-house: **Solana Payments & Commerce** (`solana-payments-commerce`) ships the checkout and POS end to end. This lesson decides; that course builds.
 
 Read the current reference at `solana.com/docs/payments`. Do **not** use `solana.com/developers/payments` — as of 2026-07 it still quotes USDC statistics dated 1/31/22 and a Shopify integration that has moved on.
 
@@ -66,6 +66,8 @@ An HTTP status code turned into a payment protocol. The client calls your route,
 That property is exactly what makes it the agent rail: an autonomous caller with no login and no card can discover a price and satisfy it inside one request cycle. Module 2 is x402 end to end.
 
 ## The legal boundary — BCB Resolution 561
+
+> **Maintenance note (2026-09-05).** The canonical, dated Brazil-compliance fact-set (Res BCB 521 art. 76-A/76-B, Res 561, Lei 14.478 art. 3º, PL 4.308 status) lives in **Solana Payments & Commerce** m06-l2. This lesson teaches the boundary as a *method* and consumes that shared fact-set — it must never fork its own copy. One review ritual updates both courses in one PR whenever the BCB or the bill moves.
 
 If you are building from Brazil, this is the constraint no English-language Solana course is going to tell you about.
 

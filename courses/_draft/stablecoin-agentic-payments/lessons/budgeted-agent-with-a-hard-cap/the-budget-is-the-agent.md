@@ -1,6 +1,6 @@
 # An Agent With a Wallet That Can Say No
 
-> **Version stamp — checked 2026-07-25.** `@solana/subscriptions` **0.4.0 exactly** (the `beta` tag is `0.4.0-rc.2`; this package is pre-1.0 and moving). `@solana/kit` **7.0.0**. `@x402/core`, `@x402/svm`, `@x402/fetch` **2.19.0**.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@solana/subscriptions` **0.5.0 line** (0.4.0 documented fallback only; pre-1.0 and moving). `@solana/kit` — per-workspace peer rule (2026-08-23). `@x402/core`, `@x402/svm`, `@x402/fetch` **2.23.0 line**. Code below was written against the 2026-07-25 pins and is reconciled at authoring.
 
 Here is the scope fence, up front, so you know what this lesson is not.
 
@@ -11,6 +11,8 @@ The problem that matters is this: **an autonomous process needs money, and givin
 You already built the alternative. In lesson 3 you opened a **Fixed Delegation** — a program-enforced allowance with a capped total, drawn down by `transferFixed`. That is the agent's wallet. Not a keypair holding funds: an authorisation, on the user's account, that the program refuses to exceed.
 
 The difference is where the limit lives. A limit in your code is a limit an attacker edits out. A limit in a program-owned account is a limit that survives your code being wrong, your key being stolen, and your loop running a hundred times more than you meant it to. That is why Allowances are documented as the budget primitive for agents, and it is the whole reason this course ends here rather than with a model integration.
+
+One layer is not the whole answer, though. **Solana Payments & Commerce** (`solana-payments-commerce`) teaches the other half of this same question: a **client-side spend control** (`spendControls`, with its $1 default and its silent-decline footgun) enforced in the paying code before a transaction is even built. These are complementary layers, not competing answers — the client-side cap is the cheap, adjustable first guard; the on-chain Fixed Delegation is the one that survives your code being wrong. Use both, and know which one refused you when a payment stops.
 
 ---
 

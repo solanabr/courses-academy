@@ -13,9 +13,9 @@
   },
   {
     "id": "t3",
-    "description": "A configured transfer hook is refused by name",
+    "description": "A configured transfer hook is accepted; the program forwards resolved hook accounts through its transfer CPI",
     "input": "'token-2022', 'transfer-hook', 'transfer-hook'",
-    "expectedOutput": "result.accepted === false && result.reason === 'MINT_HAS_TRANSFER_HOOK'"
+    "expectedOutput": "result.accepted === true && result.reason === 'ok-token-2022-extension-required'"
   },
   {
     "id": "t4",
@@ -43,7 +43,7 @@
   },
   {
     "id": "t8",
-    "description": "With two disqualifying extensions the declared order decides the verdict",
+    "description": "A disqualifying extension refuses the mint even alongside a forwarded transfer hook",
     "input": "'token-2022', 'transfer-hook|permanent-delegate', ''",
     "expectedOutput": "result.reason === 'MINT_HAS_PERMANENT_DELEGATE'"
   },

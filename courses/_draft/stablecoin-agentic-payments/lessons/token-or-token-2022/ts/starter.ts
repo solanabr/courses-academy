@@ -22,7 +22,6 @@ function classifyPaymentMint(
     "pausable",
     "permanent-delegate",
     "transfer-fee",
-    "transfer-hook",
   ];
   const configured = extensions === "" ? [] : extensions.split("|");
 

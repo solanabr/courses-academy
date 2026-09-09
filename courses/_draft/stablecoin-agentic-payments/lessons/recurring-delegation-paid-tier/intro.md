@@ -1,6 +1,6 @@
 # Charge Every Month, Cap Every Month
 
-> **Version stamp — checked 2026-07-25.** `@solana/subscriptions@0.4.0` **exactly** · `@solana/kit@7.0.0`. Program: `De1egAFMkMWZSN5rYXRj9CAdheBamobVNubTsi9avR44`.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@solana/subscriptions` **0.5.0 line** (0.4.0 documented fallback only) · `@solana/kit` — per-workspace peer rule (2026-08-23). Program: `De1egAFMkMWZSN5rYXRj9CAdheBamobVNubTsi9avR44`. Code below was written against 0.4.0 and is reconciled at authoring.
 
 The fixed delegation you opened in lesson 3 is a budget: one total, drawn down, gone. A paid tier is a different shape. You want to charge 25 USDC this month, 25 USDC next month, and never more than 25 USDC in any month no matter how many times your billing job runs.
 

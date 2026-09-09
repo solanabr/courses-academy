@@ -79,7 +79,11 @@ the rent deposit, per vault, for as long as it exists.
 
 That is why lesson 1 walked the arithmetic instead of handing you the number, and why
 `8 + VaultState::INIT_SPACE` is what you would reach for in production. Here you write the sum, because
-here the point is knowing what it is made of.
+here the point is knowing what it is made of. The literal has one more graduation ahead of it, too: in
+Anchor V2 the magic `8` goes as well, and the idiom becomes
+`VaultState::DISCRIMINATOR.len() + VaultState::INIT_SPACE` — every piece of the sum named. That is
+where this number goes next, and it is exactly what **Master Anchor V2** teaches (its migration module
+grades the off-by-8 port bug this line prevents).
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Token or Token-2022: The Decision Rule
 
-> **Version stamp — checked 2026-07-25.** `@solana/kit@7.0.0` · `@solana/subscriptions@0.4.0` (exact) · `@x402/svm@2.19.0` · `@solana-program/token` latest `0.15.0`, `@solana-program/token-2022` latest `0.13.0`. Every dependency range quoted below was read off the published package manifests on that date.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@solana/kit` — per-workspace peer rule (2026-08-23) · `@solana/subscriptions` **0.5.0 line** (0.4.0 documented fallback only) · `@x402/svm` **2.23.0 line** · `@solana-program/token` / `token-2022` — pin at authoring. Every dependency range quoted below was read off the published package manifests on **2026-07-25** and is re-verified at authoring.
 
 This is a checkpoint, not new material. You are about to open a delegation against a specific mint, and the program will either take that mint or refuse it. Before you write the call, get the rule straight.
 
@@ -54,11 +54,11 @@ Pin `@solana-program/token` yourself, at whatever version your own code imports,
 
 Three clauses, and the third is the one everybody skips.
 
-There are around 28 Token-2022 extensions. This course is not going to tour them — Blueshift already owns that material and does it well. What matters here is that **your payment rail gets a veto**, and the Subscriptions Delegation Program uses it.
+There are around 28 Token-2022 extensions. This course is not going to tour them — that depth now lives in-house: **Digital Assets, Tokenization & Token Extensions** (`digital-assets`) owns the extension catalog end to end. What matters here is that **your payment rail gets a veto**, and the Subscriptions Delegation Program uses it.
 
 ## What the rail refuses
 
-Read the error constants shipped in `@solana/subscriptions@0.4.0` and a whole family jumps out:
+Read the error constants shipped in `@solana/subscriptions@0.5.0` (the family is identical in 0.4.0) and a whole family jumps out:
 
 | Error constant (suffix) | Message |
 | --- | --- |
@@ -70,14 +70,16 @@ Read the error constants shipped in `@solana/subscriptions@0.4.0` and a whole fa
 | `MINT_HAS_TRANSFER_FEE` | Mint has TransferFee extension |
 | `MINT_HAS_TRANSFER_HOOK` | Mint has TransferHook extension |
 
-Seven extensions that can disqualify a mint from a delegation. Look at *why* each one is there and the list stops being arbitrary:
+Six extension families the program can refuse — and one constant, `MINT_HAS_TRANSFER_HOOK`, whose name turned out to mean the opposite of what it suggests (see the hook bullet). Look at *why* each one is there and the list stops being arbitrary:
 
 - **NonTransferable** — a delegation is a promise that somebody else can move your tokens. A mint that forbids transfers cannot honour it.
 - **PermanentDelegate** — the mint authority already holds an irrevocable delegate over every account. A user-scoped, user-revocable allowance is a fiction on top of it.
 - **Pausable / MintCloseAuthority** — a third party can invalidate the arrangement out from under both parties.
 - **TransferFee** — the amount that lands is not the amount authorised, so a cap stops meaning what it says.
 - **ConfidentialTransfer** — the balances the program must check are encrypted.
-- **TransferHook** — an arbitrary program runs inside the transfer, so the extra accounts it needs must be discovered and appended before the instruction is built. The SDK ships `resolveTransferHookAccounts` for exactly that; hook support is therefore **path-dependent**, which is the strongest possible argument for the rule's third clause. Do not assume. Test on devnet against the rail you are actually going to use.
+- **TransferHook** — the name reads like a refusal, but the deployed program *composes* with hooks: it forwards the hook's resolved extra accounts straight through its `TransferChecked` CPI, and the client resolves them for you (`resolveTransferHookAccounts`, wired automatically into every transfer path). Devnet-verified 2026-09-05: a hook-only Token-2022 mint is enrolled under a live Subscription Authority, and a successful pull shows the hook program executing inside the transfer CPI. The constant that actually fires is `TRANSFER_HOOK_TOO_MANY_ACCOUNTS` — a cap on forwarded accounts, which only exists because forwarding is the behavior. That is the strongest possible argument for the rule's third clause cutting both ways: do not assume refusal, do not assume acceptance. Test on devnet against the rail you are actually going to use.
+
+> **Verification note (2026-09-05, wave-2 audit).** *Presence* of an extension does not equal refusal on the deployed program: devnet mints carrying PermanentDelegate, Pausable, ConfidentialTransfer, MintCloseAuthority, and TransferFee all have live Subscription Authorities enrolled, and a hook-only mint completed a pull with its hook executing inside the CPI. The `MINT_HAS_*` constants gate on active configuration or specific paths, not bare presence. Before authoring this lesson, re-verify each row against the deployed program and rewrite the table to say *when* each refusal actually fires.
 
 The two errors you will hit most in module 1 have nothing to do with extensions, and are worth memorising now: `AMOUNT_EXCEEDS_LIMIT` ("Transfer amount exceeds delegation limit") for a fixed delegation, and `AMOUNT_EXCEEDS_PERIOD_LIMIT` ("Transfer amount exceeds period limit") for a recurring one. Lesson 4 is built on the second.
 
@@ -85,11 +87,13 @@ The two errors you will hit most in module 1 have nothing to do with extensions,
 
 Write the decision rule as a function. It takes what a decoded mint tells you — which program owns it, which extensions are configured on it — plus the one extension your product actually needs, and it returns a verdict.
 
+The function encodes a *conservative pre-mint policy*, not the program's literal runtime behavior (see the verification note above): treat the six refusal families as disqualifying until you have devnet-proven your pull path against them. TransferHook is deliberately absent — the program forwards hook accounts, so a hook alone does not disqualify.
+
 Check the disqualifying extensions in this fixed order, so the verdict is deterministic when a mint carries more than one:
 
 ```
 confidential-transfer, mint-close-authority, non-transferable,
-pausable, permanent-delegate, transfer-fee, transfer-hook
+pausable, permanent-delegate, transfer-fee
 ```
 
 Verdict codes:
@@ -97,7 +101,7 @@ Verdict codes:
 | Code | Meaning |
 | --- | --- |
 | `INVALID_TOKEN_PROGRAM` | Not owned by either token program. Not a payment mint. |
-| `MINT_HAS_*` | The rail refuses this mint. Names the first disqualifying extension in the order above. |
+| `MINT_HAS_*` | Your policy refuses this mint pending a devnet proof. Names the first disqualifying extension in the order above. |
 | `design-error-extension-requires-token-2022` | You asked for an extension on a legacy Token mint. That is not a thing. |
 | `design-error-required-extension-missing` | Token-2022 mint, but the extension you need is not configured on it. |
 | `ok-legacy-token` | Correct default. |

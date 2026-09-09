@@ -1,6 +1,6 @@
 # Reading a Challenge and Paying It
 
-> **Version stamp — checked 2026-07-25.** `@x402/core`, `@x402/svm`, `@x402/fetch` at **2.19.0** (2026-07-17). `@solana/kit` at **7.0.0**. The frozen v1 line (`x402`, `x402-fetch`, 1.2.0, 2026-04-16) is still on npm and still installable — do not.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@x402/core`, `@x402/svm`, `@x402/fetch` — **2.23.0 line**. `@solana/kit` — per-workspace peer rule (2026-08-23). The frozen v1 line (`x402`, `x402-fetch`, 1.2.0, 2026-04-16) is still on npm and still installable — do not. Code below was written against 2.19.0 and is reconciled at authoring.
 
 Last lesson you were the server. Now you are the caller, and the caller has the harder job: the server publishes one shape and knows what it published. The client has to handle whatever it is handed.
 

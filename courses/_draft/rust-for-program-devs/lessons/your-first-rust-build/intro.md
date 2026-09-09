@@ -16,6 +16,12 @@ You are not going to install Rust. There is no `rustup`, no `cargo`, no toolchai
 
 The editor below sends one file to a build server that already has the Solana platform toolchain on it. It compiles the file for the SBF target — the bytecode format Solana validators execute — and sends back the result. That is the whole loop, and it is the loop for every code exercise in this course and the next.
 
+That promise is this course's defining seam — including against our own catalog, not just against the video courses that make you install things. The elective **Rust & TypeScript Fundamentals for Web3** (`rust-ts-fundamentals`) teaches general Rust the other way on purpose: rustup and cargo on your own machine, thiserror/anyhow, binaries and containers. This course is the zero-install rung of the path: build-server graded, anchor-lang dialect, one artifact — `vault_core.rs` — that Course 3 consumes. Same language, opposite toolchain promise; pick by which promise you need.
+
+### Finished Rust & TypeScript Fundamentals already?
+
+Then its m04–m05 covered what Modules 1–3 teach here — ownership, borrows, checked math, enums, `Result` and derives — in the general-Rust dialect. Take the Module 2 checkpoint quiz (`ownership-checkpoint`) as your placement test and start at Module 3 or Module 4; the anchor-lang layer (`#[account]`, `InitSpace`, `#[error_code]`) will still be new to you.
+
 This first exercise exists to prove that loop works for you, on your network, before any Rust matters. Nothing in the file needs changing.
 
 ## The file, line by line

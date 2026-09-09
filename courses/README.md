@@ -230,4 +230,16 @@ Each lesson owns a permanent **slot** that tracks learner progress, kept separat
 
 See [the block-type table in the root README](../README.md#a-lesson-is-a-list-of-blocks). A lesson is `id`, `slug`, `title`, and a `blocks[]` array. Adding a new kind of activity is a new block type — it never reshapes a course or a lesson.
 
+A lesson may also carry an optional top-level `versionStamp`:
+
+```yaml
+versionStamp:
+  checkedAt: "2026-09-05"        # the date the pins were verified, YYYY-MM-DD
+  packages:                      # package/tool name → version string
+    "@solana/kit": "7.1.1"
+    "@solana/subscriptions": "0.5.0"
+```
+
+It records what the lesson's code was verified against. [CATALOG §6](./CATALOG.md#6-technical-currency-ruling) requires a stamp on every **code-bearing** lesson; the content-lint gate that fails an unstamped code lesson is a pending app-repo work item, so until it lands, review enforces the requirement.
+
 For a `code` block, the reference `solution` must pass `tests.json` and the `starter` must **fail** at least one case. TypeScript challenges are checked automatically when you open a PR; Rust challenges are checked when a learner runs them.

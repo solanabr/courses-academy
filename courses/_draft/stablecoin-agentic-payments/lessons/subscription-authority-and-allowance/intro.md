@@ -1,8 +1,8 @@
 # One Approval, Many Budgets
 
-> **Version stamp — checked 2026-07-25.** `@solana/subscriptions@0.4.0` **exactly** · `@solana/kit@7.0.0` · `@solana/kit-plugin-rpc@0.13.0` · `@solana/kit-plugin-signer` · `@solana-program/token` (pin the exact version you import). Program: `De1egAFMkMWZSN5rYXRj9CAdheBamobVNubTsi9avR44`.
+> **Version stamp — re-stamped 2026-09-05** (first checked 2026-07-25). `@solana/subscriptions` **0.5.0 line** (peers kit 7.1.1; verified installable) · `@solana/kit` — per-workspace peer rule (2026-08-23) · `@solana/kit-plugin-rpc` · `@solana/kit-plugin-signer` · `@solana-program/token` (pin the exact version you import, at authoring). Program: `De1egAFMkMWZSN5rYXRj9CAdheBamobVNubTsi9avR44`. Code below was written against 0.4.0 and is reconciled at authoring.
 >
-> **Pin `0.4.0` exactly.** The `beta` dist-tag currently points at `0.4.0-rc.2`, which is an *older* build than the `latest` release. `@solana/subscriptions@beta` will therefore install you backwards. This package is pre-1.0 and moving — `0.1.0` shipped 2026-05-15 and `0.4.0` on 2026-07-13, four minors in two months. Pin the exact version and re-read the changelog before you bump.
+> **Use the 0.5.0 line; `0.4.0` is a documented fallback only.** This package is pre-1.0 and moving — `0.1.0` shipped 2026-05-15, `0.4.0` on 2026-07-13, and `0.5.0` since — and its dist-tags have pointed backwards before (`beta` sat on `0.4.0-rc.2`, an *older* build than `latest`, so a dist-tag install could move you backwards). Pin an exact version from the line you verified, and re-read the changelog before you bump.
 
 ## Start with the constraint, not the API
 
