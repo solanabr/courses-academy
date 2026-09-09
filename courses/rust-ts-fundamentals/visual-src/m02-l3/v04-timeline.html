@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Without jitter the herd retries as one; with jitter it drains
+     purpose: show the stampede failure mode that motivates jitter, as a timeline rather than a formula
+     data: Lane 1 "no jitter": 5 requests at t=0 all 429; 5 retries exactly at t=500ms all 429; 5 retries exactly at t=1500ms all 429; repeating clumps labeled "synchronized stampede". Lane 2 "equal jitter": 5 requests at t=0 all 429; retries scattered at 282, 382, and 437ms (values measured in the lab's low-cap run); most pass, one retries again alone; label "herd smeared, cap drains".
+     prompt: Two horizontal timelines stacked, shared time axis in milliseconds. Top lane: request dots arriving in tight vertical clumps at repeating instants, every clump marked 429. Bottom lane: the first clump identical, then dots scattered individually along the axis at the measured offsets from data, most marked ok. One short label per lane as given.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:532px;height:519px;bottom:-283px;right:-283px;border-radius:45% 50% 39% 58% / 56% 37% 39% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:538px;height:436px;left:-329px;top:340px;border-radius:49% 55% 38% 47% / 56% 65% 51% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .legend { display:flex; justify-content:flex-end; margin:0 0 10px; gap:22px; align-items:center;
+            font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--text-secondary); }
+  .legend .sw { display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:7px;
+                vertical-align:-2px; }
+  .lane { position:relative; height:150px; background:var(--surface-card);
+          border:2px solid var(--border-subtle); border-radius:var(--radius-xl); }
+  .lane + .lane { margin-top:16px; }
+  .lane-lbl { position:absolute; left:16px; top:12px; font-family:var(--font-body); font-weight:800;
+              font-size:14px; letter-spacing:.09em; text-transform:uppercase; color:var(--text-primary); }
+  .dot { position:absolute; width:16px; height:16px; border-radius:50%; }
+  .ok { background:var(--stbr-emerald); }
+  .rj { background:var(--stbr-dark); }
+  .chip { position:absolute; font-family:var(--font-body); font-weight:800; font-size:13.5px;
+          border-radius:var(--radius-pill); padding:4px 12px; }
+  .chip-rj { background:var(--surface-paper); border:1.5px solid var(--stbr-dark); color:var(--text-primary); }
+  .chip-dk { background:var(--surface-inverse); color:var(--text-on-dark); font-size:15px; padding:7px 18px; }
+  .chip-yl { background:var(--stbr-yellow); color:var(--stbr-dark); font-size:15px; padding:7px 18px; }
+  .chip-ok { background:rgba(0,139,76,.10); border:1.5px solid var(--stbr-emerald); color:var(--stbr-emerald); }
+  .smear { position:absolute; left:354px; width:163px; top:8px; bottom:8px;
+           background:rgba(255,210,63,.30); border:1.5px solid var(--stbr-yellow);
+           border-radius:var(--radius-lg); }
+  .rep { position:absolute; font-family:var(--font-body); font-weight:700; font-size:15px;
+         color:var(--text-muted); }
+  .conn { position:absolute; left:0; top:0; }
+  .axis { position:relative; height:52px; margin-top:8px; }
+  .tick-lbl { position:absolute; top:24px; width:80px; margin-left:-40px; text-align:center;
+              font-family:var(--font-body); font-weight:700; font-size:14px; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">why jitter exists</div>
+  <h2 class="viz-title">without jitter the herd retries as one; with jitter it drains</h2>
+  <div class="legend">
+    <span><span class="sw ok"></span>ok</span>
+    <span><span class="sw rj"></span>429</span>
+  </div>
+  <div class="lane">
+    <div class="lane-lbl">no jitter</div>
+    <div class="dot rj" style="left:142px;top:38px;"></div>
+    <div class="dot rj" style="left:142px;top:60px;"></div>
+    <div class="dot rj" style="left:142px;top:82px;"></div>
+    <div class="dot rj" style="left:142px;top:104px;"></div>
+    <div class="dot rj" style="left:142px;top:126px;"></div>
+    <div class="chip chip-rj" style="left:168px;top:72px;">429 &times;5</div>
+    <div class="dot rj" style="left:532px;top:38px;"></div>
+    <div class="dot rj" style="left:532px;top:60px;"></div>
+    <div class="dot rj" style="left:532px;top:82px;"></div>
+    <div class="dot rj" style="left:532px;top:104px;"></div>
+    <div class="dot rj" style="left:532px;top:126px;"></div>
+    <div class="chip chip-rj" style="left:558px;top:72px;">429 &times;5</div>
+    <div class="dot rj" style="left:1312px;top:38px;"></div>
+    <div class="dot rj" style="left:1312px;top:60px;"></div>
+    <div class="dot rj" style="left:1312px;top:82px;"></div>
+    <div class="dot rj" style="left:1312px;top:104px;"></div>
+    <div class="dot rj" style="left:1312px;top:126px;"></div>
+    <div class="chip chip-rj" style="left:1338px;top:72px;">429 &times;5</div>
+    <div class="chip chip-dk" style="left:790px;top:60px;">synchronized stampede, repeats&hellip;</div>
+  </div>
+  <div class="lane">
+    <div class="lane-lbl">equal jitter</div>
+    <div class="smear"></div>
+    <div class="dot rj" style="left:142px;top:38px;"></div>
+    <div class="dot rj" style="left:142px;top:60px;"></div>
+    <div class="dot rj" style="left:142px;top:82px;"></div>
+    <div class="dot rj" style="left:142px;top:104px;"></div>
+    <div class="dot rj" style="left:142px;top:126px;"></div>
+    <div class="chip chip-rj" style="left:168px;top:72px;">429 &times;5</div>
+    <div class="dot ok" style="left:362px;top:84px;"></div>
+    <div class="rep" style="left:344px;top:106px;">282</div>
+    <div class="dot ok" style="left:440px;top:56px;"></div>
+    <div class="rep" style="left:424px;top:34px;">382</div>
+    <div class="dot rj" style="left:483px;top:100px;"></div>
+    <div class="rep" style="left:467px;top:122px;">437</div>
+    <svg class="conn" width="1456" height="150">
+      <line x1="505" y1="106" x2="840" y2="92" stroke="#306c40" stroke-width="2" stroke-dasharray="6 5"/>
+      <polygon points="848,91 837,87 838,98" fill="#306c40"/>
+    </svg>
+    <div class="dot ok" style="left:852px;top:82px;"></div>
+    <div class="chip chip-ok" style="left:880px;top:76px;">one retries again, alone</div>
+    <div class="chip chip-yl" style="left:534px;top:16px;">herd smeared, cap drains</div>
+  </div>
+  <div class="axis">
+    <svg class="conn" width="1456" height="20">
+      <line x1="150" y1="10" x2="1340" y2="10" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1352,10 1338,4 1338,16" fill="#1b231d"/>
+      <line x1="150" y1="4" x2="150" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="345" y1="4" x2="345" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="540" y1="4" x2="540" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="735" y1="4" x2="735" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="930" y1="4" x2="930" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="1125" y1="4" x2="1125" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+      <line x1="1320" y1="4" x2="1320" y2="16" stroke="#1b231d" stroke-width="2.5"/>
+    </svg>
+    <div class="tick-lbl" style="left:150px;">0</div>
+    <div class="tick-lbl" style="left:345px;">250</div>
+    <div class="tick-lbl" style="left:540px;">500</div>
+    <div class="tick-lbl" style="left:735px;">750</div>
+    <div class="tick-lbl" style="left:930px;">1000</div>
+    <div class="tick-lbl" style="left:1125px;">1250</div>
+    <div class="tick-lbl" style="left:1320px;">1500 ms</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The funding decision tree tx-check encodes
+     purpose: show that the airdrop is a best-effort dependency with a budget, backed by a rehearsed fallback, never a hot retry loop
+     data: start: balance check -> enough? -> yes: proceed to transfer no -> airdrop attempt 1 -> success: proceed fail -> wait 2s -> attempt 2 -> success: proceed fail -> wait 8s -> attempt 3 -> success: proceed fail -> STOP: exit 1, print operator instructions (last resort if the faucet stays dry: the local-validator fallback + the RPC_URL switch; the script prints it, never runs it) annotation on retries: "3 attempts, growing gaps: the m02-l3 discipline. The faucet budget is 2 per 8h; a hot loop burns it in seconds."
+     prompt: Top-to-bottom decision flowchart following the data: balance check, three airdrop attempts with the 2s and 8s waits labeled on the connecting arrows, success edges exiting right to "proceed to transfer", the final failure node ending in the exit-1 fallback box. Put the budget annotation as a callout beside the retry column.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:541px;height:533px;top:-297px;right:-297px;border-radius:62% 41% 54% 55% / 35% 60% 44% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:553px;height:502px;left:-314px;top:119px;border-radius:53% 51% 41% 55% / 37% 51% 52% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 42px 56px 38px; }
+    .mono { font-family: var(--font-mono); }
+    .node { background:#fff; border:2px solid var(--stbr-green); border-radius:var(--radius-lg);
+            display:flex; flex-direction:column; justify-content:center; text-align:center; padding:0 16px; }
+    .node h4 { margin:0; font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--stbr-dark); line-height:1.12; }
+    .node p { margin:3px 0 0; font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); line-height:1.25; }
+    .vcon { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .vlbl { font-family:var(--font-body); font-size:12.5px; font-weight:700; color:var(--stbr-green); line-height:1; margin-bottom:2px; }
+    .vline { width:3px; height:10px; background:var(--stbr-green); }
+    .vtri { width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:9px solid var(--stbr-green); }
+    .hlbl { font-family:var(--font-body); font-size:12.5px; font-weight:700; color:var(--stbr-emerald); text-align:center; line-height:1; }
+    .hline { height:3px; background:var(--stbr-emerald); flex:1; }
+    .htri { width:0; height:0; border-top:7px solid transparent; border-bottom:7px solid transparent; border-left:9px solid var(--stbr-emerald); }
+    .harr { height:58px; display:flex; flex-direction:column; justify-content:center; padding:0 6px; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">tx-check &middot; best-effort funding, never a hot loop</div>
+    <h2 class="viz-title">the funding decision tree tx-check encodes</h2>
+    <div style="display:flex; align-items:flex-start;">
+      <div style="width:470px; flex:none; display:flex; flex-direction:column;">
+        <div class="node" style="height:58px; border-width:3px;"><h4>balance check</h4><p>already enough SOL for the transfer?</p></div>
+        <div class="vcon" style="height:36px;"><span class="vlbl mono">no</span><div class="vline"></div><div class="vtri"></div></div>
+        <div class="node" style="height:58px;"><h4>airdrop: attempt 1</h4></div>
+        <div class="vcon" style="height:36px;"><span class="vlbl">fail &middot; wait 2s</span><div class="vline"></div><div class="vtri"></div></div>
+        <div class="node" style="height:58px;"><h4>airdrop: attempt 2</h4></div>
+        <div class="vcon" style="height:36px;"><span class="vlbl">fail &middot; wait 8s</span><div class="vline"></div><div class="vtri"></div></div>
+        <div class="node" style="height:58px;"><h4>airdrop: attempt 3</h4></div>
+        <div class="vcon" style="height:36px;"><span class="vlbl">fail</span><div class="vline"></div><div class="vtri"></div></div>
+        <div class="node" style="height:118px; background:var(--stbr-yellow); border-color:var(--stbr-yellow);">
+          <h4>STOP: <span class="mono">exit 1</span>, print operator instructions</h4>
+          <p style="color:var(--stbr-dark); font-weight:600;">last resort if the faucet stays dry: the local-validator fallback + the RPC_URL switch, printed for the operator, never auto-run</p>
+        </div>
+      </div>
+      <div style="width:160px; flex:none; display:flex; flex-direction:column;">
+        <div class="harr"><span class="hlbl mono">yes</span><div style="display:flex; align-items:center; margin-top:3px;"><div class="hline"></div><div class="htri"></div></div></div>
+        <div style="height:36px;"></div>
+        <div class="harr"><span class="hlbl">success</span><div style="display:flex; align-items:center; margin-top:3px;"><div class="hline"></div><div class="htri"></div></div></div>
+        <div style="height:36px;"></div>
+        <div class="harr"><span class="hlbl">success</span><div style="display:flex; align-items:center; margin-top:3px;"><div class="hline"></div><div class="htri"></div></div></div>
+        <div style="height:36px;"></div>
+        <div class="harr"><span class="hlbl">success</span><div style="display:flex; align-items:center; margin-top:3px;"><div class="hline"></div><div class="htri"></div></div></div>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column;">
+        <div style="height:340px; background:var(--stbr-emerald); border-radius:var(--radius-xl); display:flex; flex-direction:column; justify-content:center; text-align:center; padding:0 28px;">
+          <h4 style="margin:0; font-family:var(--font-display); font-weight:900; font-size:30px; color:var(--stbr-cream);">proceed to transfer</h4>
+          <p style="margin:8px 0 0; font-family:var(--font-body); font-size:16px; color:var(--stbr-cream); opacity:.88;">the write path runs only once funding is settled</p>
+        </div>
+        <div style="margin-top:24px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); background:var(--surface-paper); padding:18px 22px;">
+          <p style="margin:0; font-family:var(--font-body); font-size:15.5px; color:var(--text-primary); line-height:1.45;"><strong>3 attempts, growing gaps</strong>: the m02-l3 discipline. The faucet budget is <strong>2 per 8h</strong>; a hot loop burns it in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

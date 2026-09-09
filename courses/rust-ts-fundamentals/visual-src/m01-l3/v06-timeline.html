@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: One pipeline, gates accreting module by module
+     purpose: state the CI-thread contract visually: the pulse.yml shipped today is the same file every later module extends
+     data: m01-l3 (today): schedule + probe + status.json commit (SHIP #1) m02-l4: + vitest gate (tests block the probe) m04-l3: + cargo test / clippy / fmt (the pipeline learns Rust) m05-l3: + release builds m06-l4: + container image push to GHCR m09-l2: + the alarm: who monitors the monitor (notifications deferred until here, deliberately)
+     prompt: Horizontal timeline of six milestones, each a card naming the module-lesson and the gate it adds, all connected to one continuous pipe labeled pulse.yml running underneath. Emphasize the first card as the ship moment. Style the last card slightly apart to signal that alerting is deferred, not forgotten.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:495px;height:455px;bottom:-261px;right:-261px;border-radius:47% 55% 51% 55% / 63% 48% 44% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:418px;height:413px;left:-239px;top:131px;border-radius:36% 63% 64% 59% / 57% 41% 49% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .mrow { display: flex; align-items: stretch; gap: 12px; }
+    .mcol { display: flex; flex-direction: column; align-items: center; }
+    .mcard { background: #fff; border: 2px solid var(--stbr-green); border-radius: var(--radius-lg);
+             padding: 16px 16px 14px; height: 208px; width: 100%; }
+    .mcard h4 { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800;
+                font-size: 21px; color: var(--stbr-dark); }
+    .mcard p { margin: 0; font-family: var(--font-body); font-size: 15px;
+               color: var(--text-primary); line-height: 1.35; }
+    .mcard .sub { margin-top: 8px; font-size: 13.5px; color: var(--text-secondary); }
+    .stub { width: 4px; height: 26px; background: var(--stbr-emerald); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">The CI thread &middot; one file, nine modules</div>
+    <h2 class="viz-title" style="margin-bottom:24px;">one pipeline, gates accreting module by module</h2>
+
+    <div class="mrow">
+      <!-- today: the ship moment (THE point, yellow) -->
+      <div class="mcol" style="width:232px;">
+        <div class="mcard" style="background:var(--stbr-yellow); border-color:var(--stbr-yellow);">
+          <div style="display:inline-block; background:var(--stbr-dark); color:var(--stbr-cream);
+                      border-radius:var(--radius-pill); font-family:var(--font-display); font-weight:800;
+                      font-size:14px; padding:3px 12px; margin-bottom:8px;">SHIP #1: today</div>
+          <h4>m01-l3</h4>
+          <p>schedule + probe + status.json commit</p>
+        </div>
+        <div class="stub"></div>
+      </div>
+      <div class="mcol" style="width:196px;">
+        <div class="mcard">
+          <h4>m02-l4</h4>
+          <p>+ vitest gate</p>
+          <p class="sub">tests block the probe</p>
+        </div>
+        <div class="stub"></div>
+      </div>
+      <div class="mcol" style="width:196px;">
+        <div class="mcard">
+          <h4>m04-l3</h4>
+          <p>+ cargo test &middot; clippy &middot; fmt</p>
+          <p class="sub">the pipeline learns Rust</p>
+        </div>
+        <div class="stub"></div>
+      </div>
+      <div class="mcol" style="width:196px;">
+        <div class="mcard">
+          <h4>m05-l3</h4>
+          <p>+ release builds</p>
+        </div>
+        <div class="stub"></div>
+      </div>
+      <div class="mcol" style="width:196px;">
+        <div class="mcard">
+          <h4>m06-l4</h4>
+          <p>+ container image push to GHCR</p>
+        </div>
+        <div class="stub"></div>
+      </div>
+      <!-- the alarm: set apart, deferred not forgotten -->
+      <div class="mcol" style="width:226px; margin-left:32px;">
+        <div class="mcard" style="border:2px dashed var(--stbr-green); background:var(--surface-paper);">
+          <h4>m09-l2</h4>
+          <p>+ the alarm: who monitors the monitor</p>
+          <p class="sub">notifications deferred until here, deliberately</p>
+        </div>
+        <div class="stub"></div>
+      </div>
+    </div>
+
+    <!-- the one continuous pipe -->
+    <div style="background:var(--stbr-emerald); border-radius:var(--radius-pill); padding:12px 26px;
+                display:flex; align-items:center; gap:16px;">
+      <span style="font-family:var(--font-mono); font-weight:700; font-size:20px; color:var(--stbr-cream);">pulse.yml</span>
+      <span style="font-family:var(--font-body); font-size:17px; color:var(--stbr-cream); opacity:.9;">
+        the same file shipped today; every later module extends it, none replaces it</span>
+    </div>
+  </div>
+</div>
+</body></html>

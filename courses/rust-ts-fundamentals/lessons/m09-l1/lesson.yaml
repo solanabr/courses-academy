@@ -1,0 +1,111 @@
+id: lesson-rtf-m09-l1
+slug: m09-l1
+title: "Supply chain: the 86-minute attack"
+skills:
+  - solana-fundamentals
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "cargo-audit": "0.22.2"
+    "typescript": "7.0.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: semver-vuln-matcher
+    type: code
+    language: typescript
+    starter: semver-vuln-matcher/starter.ts
+    solution: semver-vuln-matcher/solution.ts
+    tests: semver-vuln-matcher/tests.json
+    hints:
+      - "String comparison walks characters: at '0.3.9' vs '0.3.10' it compares '9' against '1' and declares 0.3.9 the larger version. That single lie breaks every double-digit component."
+      - "Split each version on '.', map the pieces through Number, then compare major, minor, patch in order, return -1/0/1 at the first difference."
+      - "Treat a missing component as 0 (compare up to three components with `parts[i] ?? 0`) so short versions still compare cleanly."
+  - key: supply-chain-check
+    type: quiz
+    questions:
+      - id: m09-l1-q1
+        prompt: "npm audit flags a high-severity advisory that reaches your tree only as a devDependency of the dashboard build tooling. What is the right first move?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Read the advisory's range, patch, and dependency path first, the path shows whether the exposure is runtime or build-time"
+            correct: true
+            feedback: "Severity rates the bug as if every user ran it in the worst position; the path rates you. Id, range, patched version, path, and only then severity is the reading order, and pnpm why or cargo tree -i answers the path question in ten seconds."
+          - id: b
+            label: "Run npm audit fix immediately, high severity means a confirmed exploit against your app, so patching outranks reading"
+            correct: false
+            feedback: "Severity rates the vulnerability in the abstract, not your exposure, and audit fix can propose semver-major rewrites of your tree. Read the advisory and the path first; act second."
+          - id: a
+            label: "Take the Vercel deployment down, a high-severity advisory anywhere in the tree means the shipped bundle is compromised"
+            correct: false
+            feedback: "The dependency path is the exposure map: a build-time dev dependency does not ship in the production bundle. Build tooling can still matter (it runs on your machine and in CI), but the response is assessment, not an outage."
+          - id: d
+            label: "Mark it accept-risk without tracing the path, since a build-time advisory never reaches runtime exposure"
+            correct: false
+            feedback: "Build tooling runs on your laptop and in CI, which is exactly where the arrayref payload was aimed: a build script that executed at compile time on every machine that resolved the tree. Dev-only lowers the temperature and does not end the reading."
+        explanation: "An audit report is a reading exercise before it is a patching exercise. Severity describes the bug; the dependency path describes YOUR exposure, runtime path, build-time path, and dev-only path are three different decisions. That reading is exactly what the written verdict captures."
+      - id: m09-l1-q2
+        prompt: "cargo audit comes back clean on your workspace, but one crate in your lockfile has a README that says it is unmaintained and its last publish was three years ago. What did the clean report actually tell you?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "That three quiet years are evidence of stability, since a crate with real problems would have collected an advisory long before now"
+            correct: false
+            feedback: "That inference needs someone to have been looking. Advisories get filed by people reading the code and running the tools against it, so a crate with no users and no maintainer produces the same clean report whether it is solid or quietly broken."
+          - id: a
+            label: "Only that no KNOWN advisory matches your lockfile, an unwatched crate can be silently vulnerable, so the checklist still applies"
+            correct: true
+            feedback: "The database holds what someone found, verified and filed, so a crate nobody is watching accumulates silence rather than safety. That is precisely the gap the five abandonment reads cover, and why a clean report plus a dead README is the case where a written verdict earns its keep."
+          - id: b
+            label: "That the crate is safe, the advisory database is comprehensive, so no advisory means no vulnerability exists in any locked version"
+            correct: false
+            feedback: "Advisory databases contain what someone found AND filed. An abandoned crate with no users looking at it accumulates silence, not safety, absence of an advisory is absence of evidence."
+          - id: c
+            label: "Nothing about that crate, cargo audit typically skips unmaintained crates because they are dropped from the advisory index"
+            correct: false
+            feedback: "cargo audit checks every crate in Cargo.lock against the advisory database; nothing is skipped for being unmaintained. The gap is in what the database knows, not in what the tool scans."
+        explanation: "The tool and the checklist cover each other's blind spots: cargo audit catches what the community has filed, and the abandonment checklist (README notices, last-publish, cadence, ecosystem pins) catches the crates nobody is watching anymore. A clean audit plus a dead README is precisely the case where the written verdict earns its keep."
+      - id: m09-l1-q3
+        prompt: "An npm-locked service you have inherited (not your pnpm-workspace station) says \"^1.4.0\" for a dependency in its package.json, package-lock.json resolved it to 1.4.2, and a malicious 1.4.3 was published this morning. Its CI installs with npm ci. Is tonight's build compromised?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Yes, the caret range means every install resolves forward, so CI pulls 1.4.3 the moment it exists"
+            correct: false
+            feedback: "That is how a bare `npm install` with no lockfile behaves. `npm ci` installs exactly what the lockfile recorded, 1.4.2, regardless of what the range would now resolve to."
+          - id: b
+            label: "No, npm ci installs the lockfile's exact 1.4.2; you become exposed only when the lockfile is regenerated or updated"
+            correct: true
+            feedback: "The manifest range states intent, the lockfile records a resolution, and npm ci reproduces the recorded one byte for byte. So the dangerous moment is not the publish, it is the next refresh-the-deps commit made while 1.4.3 is still live."
+          - id: d
+            label: "No, the caret in ^1.4.0 pins the patch digit, so 1.4.3 sits outside the range npm would ever resolve here"
+            correct: false
+            feedback: "Right verdict tonight, wrong mechanism, and the mechanism is what you need tomorrow: a caret accepts every compatible release below the next major, 1.4.3 included. If it excluded 1.4.3, regenerating the lockfile would be safe, and the whole point of the worked example is that it is not."
+          - id: c
+            label: "Yes, unless you first rewrite the manifest to the exact pin \"1.4.2\", ranges in package.json override the lockfile during CI installs"
+            correct: false
+            feedback: "It is the other way around under npm ci: the lockfile IS the install plan, and the manifest range only matters when the lock is re-resolved. The lockfile is the real pin, as long as CI installs from it."
+        explanation: "This is lockfile-as-the-real-pin: the manifest range expresses intent, the lockfile records a resolution, and `npm ci` (like `cargo build --locked`) enforces the recorded resolution byte for byte. The dangerous moment is not the malicious publish, it is the next time someone regenerates the lock while the malicious version is live."
+      - id: m09-l1-q4
+        prompt: "During the 86 minutes arrayref@0.3.10 was live, which builds could actually have pulled the malicious version?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Only projects whose Cargo.toml explicitly requested \"0.3.10\", since everyone else's version requirement excluded the new release"
+            correct: false
+            feedback: "Cargo's bare \"0.3.9\" is caret semantics: it means ^0.3.9 and happily accepts 0.3.10. Nobody had to ask for the malicious version by name, default ranges resolve forward to it."
+          - id: d
+            label: "Just the CI jobs, since a developer's local registry cache would have kept serving the copy of arrayref it already had locally"
+            correct: false
+            feedback: "The cache answers for versions you already fetched, and a fresh resolution asks for a version you have not. The lesson lists the exposed acts on both sides of the wire, a new clone and a cargo update among them, which is a laptop as often as a runner."
+          - id: c
+            label: "Any fresh resolution during the window whose range accepted 0.3.x, Cargo's bare \"0.3.9\" means ^0.3.9, which accepts 0.3.10"
+            correct: true
+            feedback: "A new clone, a CI job with no committed lockfile, a cargo update: three ways to ask the registry a fresh question inside those 86 minutes. Nobody had to name the malicious version, the range said yes on their behalf, which is the deal semver ranges have always offered."
+          - id: a
+            label: "Every project depending on arrayref at any version, a malicious publish retroactively infects existing lockfiles and cached builds"
+            correct: false
+            feedback: "A publish cannot rewrite history: committed lockfiles kept resolving 0.3.9 and earlier, and existing builds were untouched. The exposure was in fresh resolutions during the window, not in what was already locked."
+        explanation: "The 86-minute window is the range mechanism working exactly as designed: SPL Token's `arrayref = \"0.3.9\"` is a compatible-range requirement, so any resolution performed while 0.3.10 was live would take it, while every committed Cargo.lock held the line at its recorded version. Ranges auto-heal AND auto-ingest; the lockfile decides which one you experience."

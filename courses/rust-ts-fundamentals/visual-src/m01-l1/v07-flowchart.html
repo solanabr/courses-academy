@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The readiness check, honestly
+     purpose: turn the prerequisite prose into a decision the reader actually executes
+     data: Start: open MDN Learn Core Scripting, including the async unit Question: can you follow it comfortably, async included? Yes -> start this course now; keep MDN bookmarked Not yet -> do MDN's Core Scripting first, it is free -> return here; the course waits Trap branch off "skip the check": stalls at module two's concurrency lesson, the expensive path
+     prompt: Small vertical flowchart. Start node: open MDN Learn Core Scripting including the async unit. Decision diamond: comfortable, async included? Yes branch leads to a node "start now, keep MDN bookmarked". Not-yet branch leads to "do MDN first, free" with an arrow returning to the start of this course. A dashed third branch labeled "skip the check" leads to a warning node "stall at module 2, the expensive path". Keep it to five nodes plus the diamond.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:551px;height:576px;bottom:-336px;right:-336px;border-radius:44% 39% 62% 39% / 63% 44% 46% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:452px;left:-238px;top:267px;border-radius:35% 52% 39% 59% / 46% 51% 60% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v07-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 52px 30px; }
+    .v07-start { width: 640px; margin: 6px auto 0; background: var(--surface-paper); border: 2px solid var(--border-strong); border-radius: var(--radius-lg); padding: 14px 24px; text-align: center; font-family: var(--font-body); font-size: 19px; color: var(--text-primary); }
+    .v07-start strong { font-family: var(--font-display); font-weight: 800; color: var(--stbr-dark); }
+    .v07-varrow { width: 3px; height: 22px; background: var(--stbr-dark); margin: 0 auto; }
+    .v07-varrow-head { width: 0; height: 0; margin: 0 auto; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 11px solid var(--stbr-dark); }
+    .v07-diamond-wrap { position: relative; height: 224px; }
+    .v07-diamond { position: absolute; left: 50%; top: 50%; width: 158px; height: 158px; transform: translate(-50%, -50%) rotate(45deg); background: var(--surface-card); border: 3px solid var(--stbr-emerald); border-radius: var(--radius-md); }
+    .v07-diamond-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 158px; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 16px; line-height: 1.25; color: var(--stbr-emerald); }
+    .v07-branches { position: relative; height: 92px; }
+    .v07-branches svg { position: absolute; left: 0; top: 0; }
+    .v07-chip { position: absolute; transform: translateX(-50%); border-radius: var(--radius-pill); padding: 6px 15px; font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.04em; white-space: nowrap; }
+    .v07-chip-yes { left: 443px; top: 28px; background: var(--surface-brand); color: var(--stbr-cream); }
+    .v07-chip-notyet { left: 676px; top: 34px; background: var(--surface-card); border: 2px solid var(--stbr-dark); color: var(--stbr-dark); }
+    .v07-chip-skip { left: 909px; top: 28px; background: var(--surface-paper); border: 2px dashed var(--border-strong); color: var(--text-secondary); }
+    .v07-row { display: grid; grid-template-columns: 1fr 1fr 1fr; column-gap: 46px; }
+    .v07-node { height: 158px; border-radius: var(--radius-lg); padding: 18px 22px; text-align: center; }
+    .v07-node-title { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800; font-size: 21px; line-height: 1.2; }
+    .v07-node-sub { margin: 0; font-family: var(--font-body); font-size: 16px; line-height: 1.35; }
+    .v07-yes { background: var(--surface-brand); }
+    .v07-yes .v07-node-title, .v07-yes .v07-node-sub { color: var(--stbr-cream); }
+    .v07-notyet { background: var(--surface-card); border: 2px solid var(--border-strong); }
+    .v07-notyet .v07-node-title { color: var(--stbr-dark); }
+    .v07-notyet .v07-node-sub { color: var(--text-secondary); }
+    .v07-return { display: inline-block; margin-top: 8px; font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--stbr-emerald); border: 1px solid var(--stbr-emerald); border-radius: var(--radius-pill); padding: 4px 12px; }
+    .v07-skip { background: var(--stbr-yellow); }
+    .v07-skip .v07-node-title, .v07-skip .v07-node-sub { color: var(--stbr-dark); }
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">the readiness check</div>
+    <h2 class="viz-title">one honest question before module one</h2>
+    <div class="v07-start"><strong>start:</strong> open MDN Learn: Core Scripting, including the async unit</div>
+    <div class="v07-varrow"></div>
+    <div class="v07-varrow-head"></div>
+    <div class="v07-diamond-wrap">
+      <div class="v07-diamond"></div>
+      <div class="v07-diamond-text">can you follow it comfortably, async included?</div>
+    </div>
+    <div class="v07-branches">
+      <svg width="1352" height="92" viewBox="0 0 1352 92" xmlns="http://www.w3.org/2000/svg">
+        <line x1="676" y1="2" x2="216" y2="80" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="208,88 226,76 216,70" fill="#1B231D"/>
+        <line x1="676" y1="2" x2="676" y2="78" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="668,76 684,76 676,88" fill="#1B231D"/>
+        <line x1="676" y1="2" x2="1136" y2="80" stroke="#1B231D" stroke-width="3" stroke-dasharray="9 7"/>
+        <polygon points="1144,88 1126,76 1136,70" fill="#1B231D"/>
+      </svg>
+      <span class="v07-chip v07-chip-yes">yes</span>
+      <span class="v07-chip v07-chip-notyet">not yet</span>
+      <span class="v07-chip v07-chip-skip">skip the check</span>
+    </div>
+    <div class="v07-row">
+      <div class="v07-node v07-yes">
+        <p class="v07-node-title">start this course now</p>
+        <p class="v07-node-sub">keep MDN bookmarked as you go</p>
+      </div>
+      <div class="v07-node v07-notyet">
+        <p class="v07-node-title">do MDN&#8217;s Core Scripting first</p>
+        <p class="v07-node-sub">it is free</p>
+        <span class="v07-return">&#8617; then return here; the course waits</span>
+      </div>
+      <div class="v07-node v07-skip">
+        <p class="v07-node-title">stalls at module two&#8217;s concurrency lesson</p>
+        <p class="v07-node-sub">the expensive path</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Burst vs pool, from the target's side
+     purpose: show that the same fifty probes arrive as one spike or as a steady trickle depending on who bounds them
+     data: Panel A "Promise.all of 50 fetches": 50 arrows leaving at t=0, hitting a wall labeled "cap: 25/sec" with 25 passing and 25 bouncing back as 429. Measured: 25/50 rejected. Panel B "pool of 5 workers, 250ms latency": arrows leaving in waves of 5, 20 req/s, all passing under the same wall. Measured: 0/50 rejected, 2561ms total.
+     prompt: Side-by-side two-panel comparison. Both panels show a client on the left, a server wall on the right with a gate labeled with the cap. Panel A: a dense fan of 50 arrows all at time zero, half deflected back with a 429 label. Panel B: small groups of 5 arrows spaced along a time axis, all passing through. Under each panel one measured stat line as given in data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:530px;height:563px;bottom:-316px;right:-316px;border-radius:40% 38% 49% 58% / 52% 47% 54% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:484px;height:340px;left:-305px;top:382px;border-radius:56% 62% 63% 65% / 56% 61% 59% 53%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp-row { display:flex; gap:24px; align-items:stretch; }
+  .panel { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-2xl); padding:20px 24px 16px; }
+  .ptag { font-family:var(--font-body); font-weight:800; font-size:14px; letter-spacing:.1em;
+          text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+  .stage { display:block; margin:0 auto; }
+  .stat { margin-top:10px; border-radius:var(--radius-lg); padding:10px 16px; text-align:center;
+          font-family:var(--font-body); font-weight:800; font-size:18px; }
+  .stat-bad { background:var(--surface-paper); border:2px solid var(--stbr-dark); color:var(--text-primary); }
+  .stat-good { background:rgba(0,139,76,.10); border:2px solid var(--stbr-emerald); color:var(--stbr-emerald); }
+  .verdict { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-xl); padding:14px 28px; text-align:center;
+             font-family:var(--font-body); font-weight:800; font-size:20px; }
+</style>
+  <div class="stbr-eyebrow">rate limits, from the target's side</div>
+  <h2 class="viz-title">the same fifty probes: one spike, or a steady trickle</h2>
+  <div class="cmp-row">
+    <div class="panel">
+      <div class="ptag">A: Promise.all of 50 fetches</div>
+      <svg class="stage" width="620" height="344">
+        <!-- client -->
+        <rect x="12" y="155" width="88" height="56" rx="12" fill="#1b231d"/>
+        <text x="56" y="189" text-anchor="middle" font-family="Inter" font-weight="700"
+              font-size="16" fill="#f5e8ca">client</text>
+        <text x="12" y="238" font-family="Inter" font-weight="700"
+              font-size="13" fill="#306c40">t=0: all 50 at once</text>
+        <!-- fan of 50 -->
+        <line x1="100" y1="183" x2="470" y2="40" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="40" x2="554" y2="40" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,40 552,36.6 552,43.4" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="46" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="46" x2="554" y2="46" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,46 552,42.5 552,49.2" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="52" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="52" x2="554" y2="52" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,52 552,48.3 552,55.1" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="58" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="58" x2="554" y2="58" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,58 552,54.1 552,60.9" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="63" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="63" x2="554" y2="63" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,63 552,60.0 552,66.8" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="69" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="69" x2="554" y2="69" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,69 552,65.8 552,72.7" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="75" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="75" x2="554" y2="75" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,75 552,71.7 552,78.5" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="81" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="81" x2="554" y2="81" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,81 552,77.5 552,84.3" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="87" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="87" x2="554" y2="87" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,87 552,83.4 552,90.2" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="93" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="93" x2="554" y2="93" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,93 552,89.2 552,96.1" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="98" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="98" x2="554" y2="98" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,98 552,95.1 552,101.9" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="104" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="104" x2="554" y2="104" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,104 552,100.9 552,107.8" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="110" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="110" x2="554" y2="110" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,110 552,106.8 552,113.6" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="116" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="116" x2="554" y2="116" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,116 552,112.6 552,119.5" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="122" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="122" x2="554" y2="122" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,122 552,118.5 552,125.3" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="128" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="128" x2="554" y2="128" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,128 552,124.3 552,131.2" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="134" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="134" x2="554" y2="134" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,134 552,130.2 552,137.0" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="139" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="139" x2="554" y2="139" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,139 552,136.0 552,142.8" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="145" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="145" x2="554" y2="145" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,145 552,141.9 552,148.7" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="151" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="151" x2="554" y2="151" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,151 552,147.7 552,154.5" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="157" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="157" x2="554" y2="157" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,157 552,153.6 552,160.4" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="163" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="163" x2="554" y2="163" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,163 552,159.4 552,166.2" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="169" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="169" x2="554" y2="169" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,169 552,165.3 552,172.1" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="175" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="175" x2="554" y2="175" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,175 552,171.1 552,177.9" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="470" y2="180" stroke="#008b4c" stroke-width="1.6" opacity="0.75"/>
+        <line x1="482" y1="180" x2="554" y2="180" stroke="#008b4c" stroke-width="1.6" opacity="0.85"/>
+        <polygon points="562,180 552,177.0 552,183.8" fill="#008b4c"/>
+        <line x1="100" y1="183" x2="466" y2="186" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="186" x2="422" y2="193" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,194 426,195.8 424,188.2" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="192" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="192" x2="422" y2="199" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,200 426,201.6 424,194.1" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="198" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="198" x2="422" y2="205" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,206 426,207.4 424,199.9" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="204" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="204" x2="422" y2="211" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,212 426,213.3 424,205.8" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="210" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="210" x2="422" y2="217" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,218 426,219.1 424,211.6" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="216" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="216" x2="422" y2="222" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,224 426,225.0 424,217.5" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="221" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="221" x2="422" y2="228" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,229 426,230.8 424,223.3" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="227" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="227" x2="422" y2="234" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,235 426,236.7 424,229.2" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="233" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="233" x2="422" y2="240" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,241 426,242.5 424,235.0" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="239" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="239" x2="422" y2="246" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,247 426,248.4 424,240.9" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="245" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="245" x2="422" y2="252" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,253 426,254.2 424,246.8" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="251" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="251" x2="422" y2="258" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,259 426,260.1 424,252.6" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="256" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="256" x2="422" y2="263" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,264 426,265.9 424,258.4" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="262" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="262" x2="422" y2="269" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,270 426,271.8 424,264.3" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="268" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="268" x2="422" y2="275" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,276 426,277.6 424,270.1" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="274" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="274" x2="422" y2="281" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,282 426,283.5 424,276.0" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="280" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="280" x2="422" y2="287" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,288 426,289.4 424,281.9" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="286" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="286" x2="422" y2="293" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,294 426,295.2 424,287.7" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="292" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="292" x2="422" y2="299" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,300 426,301.0 424,293.5" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="297" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="297" x2="422" y2="304" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,305 426,306.9 424,299.4" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="303" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="303" x2="422" y2="310" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,311 426,312.8 424,305.2" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="309" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="309" x2="422" y2="316" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,317 426,318.6 424,311.1" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="315" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="315" x2="422" y2="322" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,323 426,324.4 424,316.9" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="321" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="321" x2="422" y2="328" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,329 426,330.3 424,322.8" fill="#1b231d" opacity="0.45"/>
+        <line x1="100" y1="183" x2="466" y2="327" stroke="#1b231d" stroke-width="1.6" opacity="0.55"/>
+        <line x1="464" y1="327" x2="422" y2="334" stroke="#1b231d" stroke-width="1.4" opacity="0.45"/>
+        <polygon points="416,335 426,336.1 424,328.6" fill="#1b231d" opacity="0.45"/>
+        <!-- wall: open gate (top), solid wall (bottom) -->
+        <rect x="470" y="34" width="10" height="156" fill="none" stroke="#008b4c"
+              stroke-width="2.5" stroke-dasharray="7 5" rx="3"/>
+        <rect x="470" y="194" width="10" height="138" fill="#1b231d" rx="3"/>
+        <!-- gate cap label -->
+        <rect x="440" y="2" width="122" height="28" rx="14" fill="none" stroke="#008b4c" stroke-width="2"/>
+        <text x="501" y="21" text-anchor="middle" font-family="Inter" font-weight="700"
+              font-size="14" fill="#008b4c">cap: 25/sec</text>
+        <text x="592" y="64" text-anchor="middle" font-family="Inter" font-weight="700"
+              font-size="14" fill="#008b4c">25 pass</text>
+        <!-- 429 bounce chip -->
+        <rect x="300" y="296" width="150" height="34" rx="17" fill="#ffd23f"/>
+        <text x="375" y="318" text-anchor="middle" font-family="Inter" font-weight="800"
+              font-size="15" fill="#1b231d">429 &times; 25 bounced</text>
+      </svg>
+      <div class="stat stat-bad">measured: 25/50 rejected</div>
+    </div>
+    <div class="panel">
+      <div class="ptag">B: pool of 5 workers, 250ms latency</div>
+      <svg class="stage" width="620" height="344">
+        <text x="205" y="92" text-anchor="middle" font-family="Inter" font-weight="700"
+              font-size="14" fill="#306c40">waves of 5, 20 req/s</text>
+        <line x1="34" y1="120" x2="58" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="65,120 56,116.4 56,123.6" fill="#008b4c"/>
+        <line x1="34" y1="142" x2="58" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="65,142 56,138.4 56,145.6" fill="#008b4c"/>
+        <line x1="34" y1="164" x2="58" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="65,164 56,160.4 56,167.6" fill="#008b4c"/>
+        <line x1="34" y1="186" x2="58" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="65,186 56,182.4 56,189.6" fill="#008b4c"/>
+        <line x1="34" y1="208" x2="58" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="65,208 56,204.4 56,211.6" fill="#008b4c"/>
+        <line x1="72" y1="120" x2="96" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="103,120 94,116.4 94,123.6" fill="#008b4c"/>
+        <line x1="72" y1="142" x2="96" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="103,142 94,138.4 94,145.6" fill="#008b4c"/>
+        <line x1="72" y1="164" x2="96" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="103,164 94,160.4 94,167.6" fill="#008b4c"/>
+        <line x1="72" y1="186" x2="96" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="103,186 94,182.4 94,189.6" fill="#008b4c"/>
+        <line x1="72" y1="208" x2="96" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="103,208 94,204.4 94,211.6" fill="#008b4c"/>
+        <line x1="110" y1="120" x2="134" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="141,120 132,116.4 132,123.6" fill="#008b4c"/>
+        <line x1="110" y1="142" x2="134" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="141,142 132,138.4 132,145.6" fill="#008b4c"/>
+        <line x1="110" y1="164" x2="134" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="141,164 132,160.4 132,167.6" fill="#008b4c"/>
+        <line x1="110" y1="186" x2="134" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="141,186 132,182.4 132,189.6" fill="#008b4c"/>
+        <line x1="110" y1="208" x2="134" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="141,208 132,204.4 132,211.6" fill="#008b4c"/>
+        <line x1="148" y1="120" x2="172" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="179,120 170,116.4 170,123.6" fill="#008b4c"/>
+        <line x1="148" y1="142" x2="172" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="179,142 170,138.4 170,145.6" fill="#008b4c"/>
+        <line x1="148" y1="164" x2="172" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="179,164 170,160.4 170,167.6" fill="#008b4c"/>
+        <line x1="148" y1="186" x2="172" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="179,186 170,182.4 170,189.6" fill="#008b4c"/>
+        <line x1="148" y1="208" x2="172" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="179,208 170,204.4 170,211.6" fill="#008b4c"/>
+        <line x1="186" y1="120" x2="210" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="217,120 208,116.4 208,123.6" fill="#008b4c"/>
+        <line x1="186" y1="142" x2="210" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="217,142 208,138.4 208,145.6" fill="#008b4c"/>
+        <line x1="186" y1="164" x2="210" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="217,164 208,160.4 208,167.6" fill="#008b4c"/>
+        <line x1="186" y1="186" x2="210" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="217,186 208,182.4 208,189.6" fill="#008b4c"/>
+        <line x1="186" y1="208" x2="210" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="217,208 208,204.4 208,211.6" fill="#008b4c"/>
+        <line x1="224" y1="120" x2="248" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="255,120 246,116.4 246,123.6" fill="#008b4c"/>
+        <line x1="224" y1="142" x2="248" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="255,142 246,138.4 246,145.6" fill="#008b4c"/>
+        <line x1="224" y1="164" x2="248" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="255,164 246,160.4 246,167.6" fill="#008b4c"/>
+        <line x1="224" y1="186" x2="248" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="255,186 246,182.4 246,189.6" fill="#008b4c"/>
+        <line x1="224" y1="208" x2="248" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="255,208 246,204.4 246,211.6" fill="#008b4c"/>
+        <line x1="262" y1="120" x2="286" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="293,120 284,116.4 284,123.6" fill="#008b4c"/>
+        <line x1="262" y1="142" x2="286" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="293,142 284,138.4 284,145.6" fill="#008b4c"/>
+        <line x1="262" y1="164" x2="286" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="293,164 284,160.4 284,167.6" fill="#008b4c"/>
+        <line x1="262" y1="186" x2="286" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="293,186 284,182.4 284,189.6" fill="#008b4c"/>
+        <line x1="262" y1="208" x2="286" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="293,208 284,204.4 284,211.6" fill="#008b4c"/>
+        <line x1="300" y1="120" x2="324" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="331,120 322,116.4 322,123.6" fill="#008b4c"/>
+        <line x1="300" y1="142" x2="324" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="331,142 322,138.4 322,145.6" fill="#008b4c"/>
+        <line x1="300" y1="164" x2="324" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="331,164 322,160.4 322,167.6" fill="#008b4c"/>
+        <line x1="300" y1="186" x2="324" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="331,186 322,182.4 322,189.6" fill="#008b4c"/>
+        <line x1="300" y1="208" x2="324" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="331,208 322,204.4 322,211.6" fill="#008b4c"/>
+        <line x1="338" y1="120" x2="362" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="369,120 360,116.4 360,123.6" fill="#008b4c"/>
+        <line x1="338" y1="142" x2="362" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="369,142 360,138.4 360,145.6" fill="#008b4c"/>
+        <line x1="338" y1="164" x2="362" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="369,164 360,160.4 360,167.6" fill="#008b4c"/>
+        <line x1="338" y1="186" x2="362" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="369,186 360,182.4 360,189.6" fill="#008b4c"/>
+        <line x1="338" y1="208" x2="362" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="369,208 360,204.4 360,211.6" fill="#008b4c"/>
+        <line x1="376" y1="120" x2="400" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="407,120 398,116.4 398,123.6" fill="#008b4c"/>
+        <line x1="376" y1="142" x2="400" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="407,142 398,138.4 398,145.6" fill="#008b4c"/>
+        <line x1="376" y1="164" x2="400" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="407,164 398,160.4 398,167.6" fill="#008b4c"/>
+        <line x1="376" y1="186" x2="400" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="407,186 398,182.4 398,189.6" fill="#008b4c"/>
+        <line x1="376" y1="208" x2="400" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="407,208 398,204.4 398,211.6" fill="#008b4c"/>
+        <line x1="482" y1="120" x2="560" y2="120" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="568,120 558,116.2 558,123.8" fill="#008b4c"/>
+        <line x1="482" y1="142" x2="560" y2="142" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="568,142 558,138.2 558,145.8" fill="#008b4c"/>
+        <line x1="482" y1="164" x2="560" y2="164" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="568,164 558,160.2 558,167.8" fill="#008b4c"/>
+        <line x1="482" y1="186" x2="560" y2="186" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="568,186 558,182.2 558,189.8" fill="#008b4c"/>
+        <line x1="482" y1="208" x2="560" y2="208" stroke="#008b4c" stroke-width="2.4"/>
+        <polygon points="568,208 558,204.2 558,211.8" fill="#008b4c"/>
+        <!-- wall: gate open, nothing bounces -->
+        <rect x="446" y="80" width="10" height="250" fill="#1b231d" rx="3"/>
+        <rect x="446" y="104" width="10" height="126" fill="#ffffff" stroke="#008b4c"
+              stroke-width="2.5" stroke-dasharray="7 5" rx="3"/>
+        <rect x="470" y="14" width="122" height="28" rx="14" fill="none" stroke="#008b4c" stroke-width="2"/>
+        <text x="531" y="33" text-anchor="middle" font-family="Inter" font-weight="700"
+              font-size="14" fill="#008b4c">cap: 25/sec</text>
+        <text x="531" y="64" text-anchor="middle" font-family="Inter" font-weight="700"
+              font-size="14" fill="#008b4c">all 50 pass</text>
+        <!-- time axis -->
+        <line x1="34" y1="252" x2="430" y2="252" stroke="#1b231d" stroke-width="2"/>
+        <polygon points="438,252 428,248 428,256" fill="#1b231d"/>
+        <text x="34" y="276" font-family="Inter" font-weight="700" font-size="13" fill="#1b231d">0</text>
+        <text x="430" y="276" text-anchor="end" font-family="Inter" font-weight="700"
+              font-size="13" fill="#1b231d">2561 ms</text>
+      </svg>
+      <div class="stat stat-good">measured: 0/50 rejected &middot; 2561 ms total</div>
+    </div>
+  </div>
+  <div class="verdict">same fifty probes, same cap; spike or trickle depends on who bounds them</div>
+</div>
+</body></html>

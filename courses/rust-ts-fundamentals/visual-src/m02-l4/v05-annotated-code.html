@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Anatomy of a failure report, read like a probe result
+     purpose: teach the learner to extract the three useful facts from vitest failure output before they meet a real one
+     data: FAIL  tests/classify.test.ts > a 400ms probe is degraded, not up AssertionError: expected 'degraded' to be 'up' annotations: line 1, file and test name -> WHICH probe fired (the failing test, by its sentence) "expected 'degraded'" -> the ACTUAL reading (what the code really returned) "to be 'up'" -> the EXPECTED reading (what the assertion demanded) note: vitest phrases it as expected-ACTUAL-to-be-EXPECTED, which trips everyone once
+     prompt: The two output lines from data rendered as terminal text, with three callout annotations pointing at the test name, the actual value, and the expected value, labeled per the data mapping. One footnote strip with the note line.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:500px;height:531px;bottom:-276px;right:-276px;border-radius:64% 36% 59% 64% / 42% 63% 61% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:526px;height:508px;left:-323px;top:215px;border-radius:65% 65% 45% 48% / 37% 45% 44% 41%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 42px 56px 38px; }
+  .term { background: var(--surface-inverse); border-radius: var(--radius-lg);
+          padding: 30px 34px; margin-top: 18px; font-family: var(--font-mono);
+          font-size: 24px; line-height: 2.0; color: var(--stbr-cream); }
+  .term .fail { display: inline-block; background: var(--stbr-cream); color: var(--stbr-dark);
+                font-weight: 700; border-radius: 6px; padding: 0 12px; margin-right: 14px; }
+  .term .actual { color: var(--stbr-yellow); font-weight: 700; }
+  .badge { display: inline-block; width: 30px; height: 30px; border-radius: 50%;
+           background: var(--stbr-emerald); color: #FFFFFF; font-family: var(--font-body);
+           font-weight: 700; font-size: 17px; text-align: center; line-height: 30px;
+           margin-left: 12px; vertical-align: middle; }
+  .notes { display: flex; gap: 20px; margin-top: 20px; }
+  .note { flex: 1; border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg);
+          padding: 16px 20px; }
+  .note .head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .note .head .badge { margin-left: 0; }
+  .note .head .t { font-family: var(--font-display); font-weight: 800; font-size: 20px;
+                   color: var(--text-primary); }
+  .note p { margin: 0; font-family: var(--font-body); font-size: 16.5px; line-height: 1.4;
+            color: var(--text-secondary); }
+  .note p code { font-family: var(--font-mono); font-size: 15px; color: var(--text-primary); }
+  .foot { margin-top: 20px; background: var(--surface-paper); border-radius: var(--radius-pill);
+          padding: 12px 26px; font-family: var(--font-body); font-weight: 600;
+          font-size: 18px; color: var(--text-primary); text-align: center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">read it like a probe result</div>
+  <h2 class="viz-title" style="font-size:46px;">anatomy of a failure report</h2>
+  <div class="term">
+    <div><span class="fail">FAIL</span>tests/classify.test.ts &gt; a 400ms probe is degraded, not up<span class="badge">1</span></div>
+    <div>AssertionError: expected <span class="actual">'degraded'</span><span class="badge">2</span> to be 'up'<span class="badge">3</span></div>
+  </div>
+  <div class="notes">
+    <div class="note">
+      <div class="head"><span class="badge">1</span><div class="t">which probe fired</div></div>
+      <p>the failing test, named by its sentence: the file and the behaviour that broke</p>
+    </div>
+    <div class="note">
+      <div class="head"><span class="badge">2</span><div class="t">the actual reading</div></div>
+      <p>what the code really returned: <code>'degraded'</code></p>
+    </div>
+    <div class="note">
+      <div class="head"><span class="badge">3</span><div class="t">the expected reading</div></div>
+      <p>what the assertion demanded: <code>'up'</code></p>
+    </div>
+  </div>
+  <div class="foot">vitest phrases it as expected-ACTUAL-to-be-EXPECTED; it trips everyone once</div>
+</div>
+</div>
+</body></html>

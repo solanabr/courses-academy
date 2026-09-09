@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Cron targets vs what actually lands
+     purpose: show best-effort scheduling as data: target ticks on one track, drifted and dropped runs on the other, with skew as the measurable gap
+     data: Track 1 (target): ticks at 12:00, 12:30, 13:00, 13:30, 14:00 Track 2 (reality, illustrative shape only, not measured figures): run lands shortly after 12:00 tick, run lands a few minutes after 12:30 tick, 13:00 slot shows NO run (dropped, marked), run lands after 13:30, run lands well after 14:00 (start-of-hour congestion, marked) Annotation: skew = actual landing time minus scheduled tick; GitHub documents no bound, so the lab measures yours
+     prompt: Two parallel horizontal timelines sharing an axis from 12:00 to 14:00. Top track shows five evenly spaced target ticks. Bottom track shows four run markers each displaced right of its tick by varying amounts, and one tick with a struck-through marker labeled dropped. Draw a bracket between one tick and its run labeled skew. Do not put numeric minute values on the displacements; the shape is the message.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:475px;height:341px;right:-228px;top:370px;border-radius:63% 57% 36% 55% / 38% 59% 38% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:440px;height:514px;bottom:-302px;left:778px;border-radius:65% 58% 48% 38% / 63% 53% 36% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 36px; }
+    .tl { position: relative; width: 1350px; height: 356px; margin-top: 6px; }
+    .tlab { position: absolute; top: 18px; width: 90px; text-align: center;
+            font-family: var(--font-display); font-weight: 800; font-size: 20px;
+            color: var(--stbr-dark); }
+    .guide { position: absolute; top: 80px; height: 200px; width: 0;
+             border-left: 2px dashed var(--border-subtle); }
+    .dotA { position: absolute; top: 55px; width: 18px; height: 18px;
+            border-radius: 50%; background: var(--stbr-emerald); }
+    .dotB { position: absolute; top: 279px; width: 22px; height: 22px; border-radius: 50%;
+            background: var(--stbr-emerald); border: 3px solid #fff; }
+    .lanechip { position: absolute; left: 0; width: 122px; text-align: center;
+            font-family: var(--font-display); font-weight: 800; font-size: 16px;
+            border-radius: var(--radius-pill); padding: 6px 0; }
+    .tnote { position: absolute; font-family: var(--font-body); font-size: 14.5px;
+             color: var(--text-secondary); text-align: center; line-height: 1.25; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">Best-effort scheduling &middot; 12:00 &rarr; 14:00</div>
+    <h2 class="viz-title" style="margin-bottom:10px;">cron targets vs what actually lands</h2>
+
+    <div class="tl">
+      <!-- time labels -->
+      <div class="tlab" style="left:135px;">12:00</div>
+      <div class="tlab" style="left:395px;">12:30</div>
+      <div class="tlab" style="left:655px;">13:00</div>
+      <div class="tlab" style="left:915px;">13:30</div>
+      <div class="tlab" style="left:1175px;">14:00</div>
+
+      <!-- vertical guides tick -> reality -->
+      <div class="guide" style="left:180px;"></div>
+      <div class="guide" style="left:440px;"></div>
+      <div class="guide" style="left:700px;"></div>
+      <div class="guide" style="left:960px;"></div>
+      <div class="guide" style="left:1220px;"></div>
+
+      <!-- target track -->
+      <div class="lanechip" style="top:52px; background:var(--stbr-emerald); color:var(--stbr-cream);">target</div>
+      <div style="position:absolute; top:63px; left:150px; width:1180px; height:3px; background:var(--stbr-emerald);"></div>
+      <div class="dotA" style="left:171px;"></div>
+      <div class="dotA" style="left:431px;"></div>
+      <div class="dotA" style="left:691px;"></div>
+      <div class="dotA" style="left:951px;"></div>
+      <div class="dotA" style="left:1211px;"></div>
+
+      <!-- reality track -->
+      <div class="lanechip" style="top:278px; background:var(--stbr-dark); color:var(--stbr-cream);">reality</div>
+      <div class="tnote" style="top:316px; left:0; width:122px;">illustrative shape</div>
+      <div style="position:absolute; top:289px; left:150px; width:1180px; height:3px; background:var(--stbr-dark);"></div>
+
+      <!-- the skew gap: 12:30 tick -> its run (THE point, yellow) -->
+      <div style="position:absolute; top:283px; left:440px; width:58px; height:15px; background:var(--stbr-yellow);"></div>
+      <div style="position:absolute; top:306px; left:440px; width:58px; height:9px;
+                  border-left:2px solid var(--stbr-dark); border-right:2px solid var(--stbr-dark);
+                  border-bottom:2px solid var(--stbr-dark);"></div>
+      <div style="position:absolute; top:322px; left:429px; width:80px; text-align:center;
+                  background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill);
+                  font-family:var(--font-display); font-weight:800; font-size:15px; padding:3px 0;">skew</div>
+
+      <!-- runs (displaced right of their ticks) -->
+      <div class="dotB" style="left:187px;"></div>
+      <div class="dotB" style="left:487px;"></div>
+      <div class="dotB" style="left:989px;"></div>
+      <div class="dotB" style="left:1309px;"></div>
+
+      <!-- 13:00 slot: dropped -->
+      <div style="position:absolute; top:277px; left:689px; width:22px; height:22px;
+                  border-radius:50%; border:3px solid var(--stbr-dark); background:#fff;"></div>
+      <div style="position:absolute; top:287px; left:681px; width:38px; height:3px;
+                  background:var(--stbr-dark); transform:rotate(-45deg);"></div>
+      <div class="tnote" style="top:318px; left:625px; width:150px; font-weight:600; color:var(--stbr-dark);">dropped: no run</div>
+
+      <!-- 14:00 run: well after the tick -->
+      <div class="tnote" style="top:318px; left:1160px; width:190px;">start-of-hour congestion</div>
+    </div>
+
+    <div style="margin-top:14px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+                padding:13px 22px; font-family:var(--font-display); font-weight:800; font-size:21px;
+                color:var(--stbr-cream);">
+      skew = actual landing time &minus; scheduled tick. GitHub documents no bound; the lab measures yours.
+    </div>
+    <div style="margin-top:10px; font-family:var(--font-body); font-size:14px; color:var(--text-muted);">
+      Reality track shows the shape of drift only, not measured figures.
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The cargo-chef three-stage pipeline and what survives a code edit
+     purpose: show which layers rebuild on a source change versus a manifest change, so the caching stops being magic
+     data: Stage chef: rust:1.98 base + cargo-chef installed. Cached until the toolchain pin changes. Stage planner: COPY workspace, run cargo chef prepare, output recipe.json. Reruns on any edit, costs seconds. Stage builder: COPY recipe.json, run cargo chef cook (all dependency crates compile HERE), then COPY workspace, cargo build only your crates. Stage runtime: debian:trixie-slim + the one binary + config. Code-only edit path: planner reruns, recipe.json comes out byte-identical, cook layer stays CACHED, only your crates recompile. Manifest edit path: recipe.json changes, cook layer invalidates, dependencies recompile once.
+     prompt: Vertical four-stage pipeline, one box per stage labeled chef, planner, builder, runtime, arrows downward. Inside builder, two sub-steps: cook dependencies, then build your crates. Two colored side-paths: a green path labeled "code edit" that shows the cook sub-step marked CACHED, and an orange path labeled "manifest edit" showing cook rebuilding. The runtime box drawn much smaller than the rest.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:596px;height:581px;bottom:-328px;right:-328px;border-radius:61% 62% 43% 58% / 56% 58% 52% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:448px;height:369px;left:-263px;top:350px;border-radius:49% 41% 41% 47% / 40% 52% 36% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 38px 52px 34px; overflow: hidden; position: relative; }
+  .v02-head { text-align: left; }
+  .v02-cols { display: flex; gap: 26px; align-items: flex-start; margin-top: 4px; }
+  .v02-side { width: 360px; border-radius: var(--radius-xl); padding: 18px 22px;
+              margin-top: 208px; }
+  .v02-side h4 { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800;
+                 font-size: 16px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .v02-side p { margin: 0; font-family: var(--font-body); font-size: 15.5px; line-height: 1.4; }
+  .v02-code { background: var(--surface-card); border: 3px solid var(--stbr-emerald); }
+  .v02-code h4 { color: var(--stbr-emerald); }
+  .v02-code p { color: var(--text-primary); }
+  .v02-man { background: var(--surface-inverse); }
+  .v02-man h4 { color: var(--text-on-dark); }
+  .v02-man p { color: var(--text-on-dark); }
+  .v02-link { height: 3px; margin-top: 14px; }
+  .v02-link-g { background: var(--stbr-emerald); }
+  .v02-link-d { background: var(--stbr-dark); }
+  .v02-pipe { flex: 1; }
+  .v02-stage { border: 2px solid var(--stbr-ink-300); border-radius: var(--radius-lg);
+               background: var(--surface-paper); padding: 12px 20px; }
+  .v02-stage b { font-family: var(--font-mono); font-size: 18px; color: var(--text-primary); }
+  .v02-stage span { font-family: var(--font-body); font-size: 15px; color: var(--text-secondary); }
+  .v02-stage small { display: block; font-family: var(--font-body); font-size: 13px;
+                     color: var(--text-muted); margin-top: 2px; }
+  .v02-arr { width: 0; margin: 4px auto; border-left: 8px solid transparent;
+             border-right: 8px solid transparent; border-top: 12px solid var(--stbr-dark); }
+  .v02-builder { border: 2.5px solid var(--stbr-emerald); background: var(--surface-card); }
+  .v02-sub { display: flex; gap: 12px; margin-top: 8px; }
+  .v02-substep { flex: 1; border-radius: var(--radius-md); padding: 10px 14px;
+                 border: 1.5px solid var(--stbr-ink-300); background: var(--surface-paper); }
+  .v02-substep b { font-family: var(--font-mono); font-size: 15px; }
+  .v02-substep small { display: block; font-family: var(--font-body); font-size: 12.5px;
+                       color: var(--text-secondary); margin-top: 2px; }
+  .v02-chip { display: inline-block; font-family: var(--font-display); font-weight: 900;
+              font-size: 12px; letter-spacing: 0.08em; border-radius: var(--radius-pill);
+              padding: 3px 10px; margin-left: 6px; vertical-align: 2px; }
+  .v02-cached { background: var(--stbr-yellow); color: var(--text-on-accent); }
+  .v02-rebuild { background: var(--stbr-dark); color: var(--text-on-dark); }
+  .v02-runtime { width: 56%; margin: 0 auto; border: 2px solid var(--stbr-ink-300);
+                 background: var(--surface-paper); padding: 8px 16px; }
+</style>
+<div class="v02-card">
+  <div class="v02-head">
+    <div class="stbr-eyebrow">CARGO-CHEF · LAYER CACHING</div>
+    <h2 class="viz-title">what survives a code edit</h2>
+  </div>
+  <div class="v02-cols">
+    <div class="v02-sidecol" style="width:360px;">
+      <div class="v02-side v02-code">
+        <h4>code-only edit</h4>
+        <p>planner reruns → <b>recipe.json byte-identical</b> → cook layer stays <span class="v02-chip v02-cached">CACHED</span><br>only your crates recompile.</p>
+        <div class="v02-link v02-link-g"></div>
+      </div>
+    </div>
+    <div class="v02-pipe">
+      <div class="v02-stage">
+        <b>chef</b><span>: rust:1.98 base + cargo-chef installed</span>
+        <small>cached until the toolchain pin changes</small>
+      </div>
+      <div class="v02-arr"></div>
+      <div class="v02-stage">
+        <b>planner</b><span>: COPY workspace → cargo chef prepare → recipe.json</span>
+        <small>reruns on any edit, costs seconds</small>
+      </div>
+      <div class="v02-arr"></div>
+      <div class="v02-stage v02-builder">
+        <b>builder</b>
+        <div class="v02-sub">
+          <div class="v02-substep">
+            <b>1 · cook</b><span class="v02-chip v02-cached">code edit: CACHED</span><span class="v02-chip v02-rebuild">manifest edit: rebuilds</span>
+            <small>COPY recipe.json → cargo chef cook: ALL dependency crates compile here</small>
+          </div>
+          <div class="v02-substep">
+            <b>2 · build your crates</b>
+            <small>COPY workspace → cargo build: only your code recompiles</small>
+          </div>
+        </div>
+      </div>
+      <div class="v02-arr"></div>
+      <div class="v02-stage v02-runtime">
+        <b>runtime</b><span>: debian:trixie-slim + the one binary + config</span>
+      </div>
+    </div>
+    <div class="v02-sidecol" style="width:360px;">
+      <div class="v02-side v02-man" style="margin-top:208px;">
+        <h4>manifest edit</h4>
+        <p>recipe.json changes → cook layer <b>invalidates</b> → dependencies recompile once, then cache again.</p>
+        <div class="v02-link v02-link-d"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

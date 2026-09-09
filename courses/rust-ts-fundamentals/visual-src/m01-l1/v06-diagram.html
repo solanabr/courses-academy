@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Pulse Station, the hub you are building toward
+     purpose: give the reader the exact system diagram the capstone asks them to redraw from memory
+     data: Hub: GitHub repo (public) holding code + status.json written by an Actions cron Spoke 1: GitHub Actions, scheduled probes, commits status.json to the repo Spoke 2: Vercel dashboard, fetches the repo's raw status.json, renders the station's face Spoke 3: Cloudflare Workers, TS worker + Rust-to-WASM worker, edge probes with KV last-known-status Spoke 4: Docker/GHCR poller, long-running Rust daemon, runs anywhere, exposes /status Target ring around everything: real URLs + Solana RPC (reads and one transfer)
+     prompt: Hub-and-spoke system diagram. Center hub: a public GitHub repository containing code and a status.json file. Four spokes radiating out: GitHub Actions running scheduled probes and committing status.json back to the hub; a Vercel dashboard fetching the raw status.json from the hub; Cloudflare Workers in two flavors, TypeScript and Rust compiled to WASM, holding last-known status in KV; a Dockerized Rust poller published to GHCR exposing a status endpoint. An outer ring of probe targets: real websites and Solana RPC. Arrows show data flow: probes outward to targets, measurements inward to the hub, the dashboard reading from the hub.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:560px;height:497px;bottom:-290px;right:-290px;border-radius:36% 39% 47% 51% / 60% 56% 58% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:475px;height:424px;left:-270px;top:117px;border-radius:55% 49% 50% 55% / 46% 52% 46% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 48px 28px; }
+    .v06-ring { border: 3px dashed var(--stbr-green); border-radius: var(--radius-2xl); padding: 14px 24px 24px; margin-top: 8px; }
+    .v06-ring-label { margin: 0 0 12px; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: 17px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stbr-green); }
+    .v06-grid { display: grid; grid-template-columns: 368px 1fr 300px 1fr 368px; align-items: stretch; }
+    .v06-spokes { display: flex; flex-direction: column; justify-content: space-between; height: 388px; }
+    .v06-spoke { position: relative; height: 184px; background: var(--surface-paper); border: 2px solid var(--border-strong); border-radius: var(--radius-lg); padding: 18px 20px; }
+    .v06-spoke-title { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--stbr-dark); }
+    .v06-spoke-sub { margin: 0; font-family: var(--font-body); font-size: 16px; line-height: 1.4; color: var(--text-secondary); }
+    .v06-probe-l { position: absolute; left: -19px; top: 84px; width: 0; height: 0; border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-right: 14px solid var(--stbr-green); }
+    .v06-probe-r { position: absolute; right: -19px; top: 84px; width: 0; height: 0; border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left: 14px solid var(--stbr-green); }
+    .v06-conns { display: flex; flex-direction: column; justify-content: space-between; height: 388px; }
+    .v06-conn { position: relative; height: 184px; }
+    .v06-conn-line { position: absolute; left: 0; right: 0; top: 91px; height: 3px; background: var(--stbr-dark); }
+    .v06-arr-r { position: absolute; right: -1px; top: 84px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-left: 13px solid var(--stbr-dark); }
+    .v06-arr-l { position: absolute; left: -1px; top: 84px; width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent; border-right: 13px solid var(--stbr-dark); }
+    .v06-conn-chip { position: absolute; left: 50%; top: 42px; transform: translateX(-50%); z-index: 3; background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); padding: 5px 10px; font-family: var(--font-body); font-size: 13px; color: var(--text-primary); white-space: nowrap; }
+    .v06-hub { height: 388px; background: var(--surface-brand); border-radius: var(--radius-xl); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 24px; }
+    .v06-hub-eyebrow { margin: 0 0 8px; font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stbr-yellow); }
+    .v06-hub-title { margin: 0 0 16px; font-family: var(--font-display); font-weight: var(--weight-black); font-size: 28px; line-height: 1.1; color: var(--stbr-cream); }
+    .v06-hub-chips { display: flex; justify-content: center; margin-bottom: 14px; }
+    .v06-chip-code { background: var(--stbr-dark); color: var(--stbr-cream); font-family: var(--font-mono); font-size: 17px; border-radius: var(--radius-pill); padding: 8px 16px; margin: 0 5px; }
+    .v06-chip-status { background: var(--stbr-yellow); color: var(--stbr-dark); font-family: var(--font-mono); font-weight: 700; font-size: 17px; border-radius: var(--radius-pill); padding: 8px 16px; margin: 0 5px; }
+    .v06-hub-sub { margin: 0; font-family: var(--font-body); font-size: 15px; line-height: 1.4; color: var(--stbr-cream); }
+    .v06-caption { margin-top: 16px; text-align: center; font-family: var(--font-body); font-size: 17px; color: var(--text-secondary); }
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">the capstone system</div>
+    <h2 class="viz-title">pulse station: the hub you are building toward</h2>
+    <div class="v06-ring">
+      <p class="v06-ring-label">target ring &#183; real URLs + Solana RPC (reads and one transfer)</p>
+      <div class="v06-grid">
+        <div class="v06-spokes">
+          <div class="v06-spoke">
+            <div class="v06-probe-l"></div>
+            <p class="v06-spoke-title">GitHub Actions</p>
+            <p class="v06-spoke-sub">scheduled probes; commits status.json back to the repo</p>
+          </div>
+          <div class="v06-spoke">
+            <div class="v06-probe-l"></div>
+            <p class="v06-spoke-title">Cloudflare Workers</p>
+            <p class="v06-spoke-sub">TS worker + Rust&#8209;to&#8209;WASM worker; edge probes with KV last&#8209;known&#8209;status</p>
+          </div>
+        </div>
+        <div class="v06-conns">
+          <div class="v06-conn"><div class="v06-conn-line"></div><div class="v06-arr-r"></div><div class="v06-conn-chip">commits status.json</div></div>
+          <div class="v06-conn"><div class="v06-conn-line"></div><div class="v06-arr-r"></div><div class="v06-conn-chip">measurements in</div></div>
+        </div>
+        <div class="v06-hub">
+          <p class="v06-hub-eyebrow">hub</p>
+          <p class="v06-hub-title">GitHub repo (public)</p>
+          <div class="v06-hub-chips">
+            <span class="v06-chip-code">code</span>
+            <span class="v06-chip-status">status.json</span>
+          </div>
+          <p class="v06-hub-sub">status.json written by an Actions cron</p>
+        </div>
+        <div class="v06-conns">
+          <div class="v06-conn"><div class="v06-conn-line"></div><div class="v06-arr-r"></div><div class="v06-conn-chip">reads status.json</div></div>
+          <div class="v06-conn"><div class="v06-conn-line"></div><div class="v06-arr-l"></div><div class="v06-conn-chip">measurements in</div></div>
+        </div>
+        <div class="v06-spokes">
+          <div class="v06-spoke">
+            <p class="v06-spoke-title">Vercel dashboard</p>
+            <p class="v06-spoke-sub">fetches the repo&#8217;s raw status.json; renders the station&#8217;s face</p>
+          </div>
+          <div class="v06-spoke">
+            <div class="v06-probe-r"></div>
+            <p class="v06-spoke-title">Docker / GHCR poller</p>
+            <p class="v06-spoke-sub">long&#8209;running Rust daemon; runs anywhere; exposes /status</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="v06-caption">probes fan outward to the target ring &#183; measurements flow inward to the hub &#183; the dashboard reads from the hub</div>
+  </div>
+</div>
+</body></html>

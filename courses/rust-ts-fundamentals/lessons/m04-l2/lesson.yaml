@@ -1,0 +1,101 @@
+id: lesson-rtf-m04-l2
+slug: m04-l2
+title: "Errors are values: Result, ?, and the two-crate canon"
+skills:
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "thiserror": "2.0.20"
+    "anyhow": "1.0.104"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m04l2-q1
+        prompt: "Your probe parser now returns Result<LatencyMs, ProbeError>, and the caller ends the line with `?`. When the parser returns an Err, what does `?` actually do?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "It panics with the error's Display message so the failure is visible immediately at the exact line that produced it"
+            correct: false
+            feedback: "That's unwrap's behavior, not ?. The whole point of ? is propagation without crashing."
+          - id: d
+            label: "It returns the Err straight up to main, past every caller in between, the way a thrown exception would"
+            correct: false
+            feedback: "It returns from the enclosing function and no further. Each frame that wants to keep passing the error up needs its own ?, which is why the failure stays visible in every signature it crosses."
+          - id: b
+            label: "It early-returns the Err from the current function, converting it via From into the caller's error type"
+            correct: true
+            feedback: "Early return on the error lane, happy path left flat. The From hop is what lets a foreign error like ParseIntError become your ProbeError, and it is also what the E0277 wall complains about when no conversion exists."
+          - id: c
+            label: "It logs the error to stderr and substitutes the value type's Default so the current function can keep executing"
+            correct: false
+            feedback: "? never fabricates a value or logs anything, execution of the current function STOPS and the error travels up as the return value."
+        explanation: "? is early-return with taste: on Ok it unwraps the value in place; on Err it returns the error from the enclosing function, running it through From so a foreign error can become YOUR error type. That From hop is why ? chains compose across library boundaries."
+      - id: m04l2-q2
+        prompt: "pulse-rs is now an engine module used by a main binary. Where do thiserror and anyhow each belong, per the canon the surveyed Solana repos actually run?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "anyhow in both halves, with .context() breadcrumbs everywhere; typed error variants are for published crates only"
+            correct: false
+            feedback: "It compiles and feels convenient, which is what makes it the common mistake: anyhow erases the type information a caller needs to match on, and your own binary is a caller of your engine today."
+          - id: b
+            label: "thiserror everywhere: since the 2.x line shipped, anyhow is deprecated and its context API was absorbed into thiserror's derive"
+            correct: false
+            feedback: "Nothing was absorbed or deprecated, anyhow 1.x is alive, universal in the surveyed repos, and solves a different half of the problem than thiserror."
+          - id: a
+            label: "anyhow in the engine so callers get flexible, contextual errors; thiserror in the binary where exact variants map to exit codes"
+            correct: false
+            feedback: "This is the canon inverted, anyhow in a library ERASES the variants your callers need to match on; the binary is where matching stops mattering."
+          - id: c
+            label: "thiserror derives the engine's typed error enum for callers to match; anyhow::Result in the reporting binary"
+            correct: true
+            feedback: "The split follows from who reads the error: code matches on variants, humans read a context chain. agave and yellowstone-grpc run thiserror 2.x, photon and jito-relayer 1.x, with anyhow riding along across all of them."
+        explanation: "Libraries owe their callers TYPES (thiserror-derived enums you can match on); binaries owe their operators MESSAGES (anyhow with context). agave and yellowstone run thiserror 2.x today while photon and jito-relayer sit on 1.x, the split itself is a read-your-ecosystem lesson."
+      - id: m04l2-q3
+        prompt: "parse_latency returns Result<u64, ParseIntError> but your function returns Result<u64, ProbeError>, so you write `.map_err(|e| ProbeError::BadFixture(e))`. What IS the `|e| ...` you just wrote?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "A lifetime annotation, the |e| binding ties the returned error to the fixture buffer it was originally parsed from"
+            correct: false
+            feedback: "Lifetime syntax uses <'a> in signatures; |e| declares a closure parameter. Nothing here borrows from the fixture buffer."
+          - id: b
+            label: "A macro invocation, the |..| syntax expands at compile time to rewrite the Err variant's type in the function signature"
+            correct: false
+            feedback: "No macro is involved, |e| is closure syntax, an ordinary runtime value passed to map_err like any argument."
+          - id: d
+            label: "A match pattern, where the pipes let one arm accept either of the error types parse_latency returns"
+            correct: false
+            feedback: "Match arms do use a pipe for or-patterns, which is why the syntax looks familiar, but there is no match here and parse_latency has exactly one error type. Between the pipes is a parameter list."
+          - id: a
+            label: "A closure, an anonymous function, able to capture from its scope, handed to map_err to transform the error lane"
+            correct: true
+            feedback: "An ordinary value: parameter list between the pipes, body after it, passed to map_err like any argument and run only on the Err lane. This one captures nothing yet; the capturing kind arrives with iterators next module."
+        explanation: "This is your first closure, and it's the most common first closure in real Rust: a tiny anonymous function that converts one error type into another so ? can keep flowing. Iterator chains, closures' other home, arrive in m05-l1; the full treatment is TRPL ch13."
+      - id: m04l2-q4
+        prompt: "Your lamports-summing path panicked with 'attempt to add with overflow' in a debug build. A teammate says: ship the release build, it doesn't panic there. What's the truth?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The teammate is right, release builds wrap on overflow by design, and wrapping is the defined, acceptable behavior for u64 totals"
+            correct: false
+            feedback: "Wrapping IS what release does, but for money math a silently wrapped balance is corruption, not correctness, 'defined' does not mean 'right'."
+          - id: d
+            label: "Half right, the wrap is real but a u128 total sidesteps it, so widen the type rather than check every add"
+            correct: false
+            feedback: "A wider type moves the ceiling, it does not add a check, and the values you are summing stay u64 on the wire. The point is not more headroom, it is that the overflow case becomes a value you handle."
+          - id: b
+            label: "Wrong, release builds wrap SILENTLY, corrupting the total; use checked_add and turn None into a ProbeError instead"
+            correct: true
+            feedback: "The teammate is right that the panic stops, which is the worst possible way to be right: a wrapped u64 is a wrong number wearing a straight face, and checked_add turns that into an Option the ? pipeline already handles."
+          - id: c
+            label: "Wrong, release builds panic on overflow exactly like debug builds do; the optimization flag only shortens the panic message"
+            correct: false
+            feedback: "The builds genuinely differ: debug panics, release wraps. That asymmetry is exactly why the bug hides until production."
+        explanation: "Debug builds panic on overflow; release builds wrap silently. With lamports (the lab's worked line uses the 2,039,280-lamport ATA rent figure) a wrapped u64 is a wrong balance nobody notices. checked_add returns Option, and Option feeds the same ? pipeline you just built, overflow becomes an error value like everything else."

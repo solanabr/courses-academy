@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Where doubles stop being exact
+     purpose: show the safe-integer ceiling sitting far below the u64 range the chain actually uses
+     data: Number line, log scale, three markers: 9007199254740991 = Number.MAX_SAFE_INTEGER (2^53 - 1): last exactly-representable integer for a JS number 9007199254740993: first casualty, rounds to 9007199254740992 inside JSON.parse 18446744073709551615 = u64 max: the top of the range lamport balances live in Shaded zone between MAX_SAFE_INTEGER and u64 max labeled "silent rounding territory for number; exact for bigint"
+     prompt: Single horizontal number line with the three labeled markers at the values given and the shaded danger zone between the first and third. Small callout at the second marker showing the one-off rounding. No invented data points beyond these.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:531px;height:476px;bottom:-243px;right:-243px;border-radius:57% 50% 44% 51% / 63% 35% 59% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:557px;height:395px;left:-340px;top:144px;border-radius:64% 51% 57% 65% / 61% 41% 50% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{position:relative;background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:28px;padding:44px 48px 34px;overflow:hidden;}
+  .ch{position:relative;width:1360px;height:414px;margin:12px auto 0;}
+  .lbl{position:absolute;font:500 13px/1.45 var(--font-body);color:var(--text-muted);}
+  .val{font:700 17px/1.3 var(--font-mono);color:var(--text-primary);}
+  .tick{position:absolute;top:192px;width:2px;height:10px;background:var(--border-strong);}
+  .tlab{position:absolute;top:206px;font:500 11px/1 var(--font-mono);color:var(--text-muted);transform:translateX(-50%);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the safe-integer ceiling vs the chain's range</div>
+  <h2 class="viz-title">where doubles stop being exact</h2>
+  <div class="ch">
+    <!-- zones (log scale, 10^0 → u64 max) -->
+    <div style="position:absolute;left:30px;top:177px;width:1076px;height:28px;background:rgba(0,139,76,.10);border-radius:6px 0 0 6px;"></div>
+    <div style="position:absolute;left:1106px;top:177px;width:224px;height:28px;background:rgba(255,210,63,.6);border-radius:0 6px 6px 0;"></div>
+    <!-- axis -->
+    <div style="position:absolute;left:30px;top:190px;width:1300px;height:2px;background:var(--stbr-dark);"></div>
+    <div class="tick" style="left:30px;"></div><div class="tlab" style="left:31px;">1e0</div>
+    <div class="tick" style="left:367px;"></div><div class="tlab" style="left:368px;">1e5</div>
+    <div class="tick" style="left:705px;"></div><div class="tlab" style="left:706px;">1e10</div>
+    <div class="tick" style="left:1042px;"></div><div class="tlab" style="left:1043px;">1e15</div>
+
+    <!-- MAX_SAFE_INTEGER marker -->
+    <div style="position:absolute;left:1105px;top:168px;width:3px;height:46px;background:var(--stbr-dark);"></div>
+    <div style="position:absolute;right:262px;top:238px;width:420px;text-align:right;">
+      <div class="val">9,007,199,254,740,991</div>
+      <div class="lbl" style="position:static;margin-top:3px;">Number.MAX_SAFE_INTEGER (2^53 - 1), the last exactly-representable integer for a JS number</div>
+    </div>
+
+    <!-- danger zone label -->
+    <div style="position:absolute;left:1116px;top:216px;width:200px;text-align:center;">
+      <div style="font:700 12px/1.35 var(--font-body);color:var(--text-primary);">silent rounding territory for <span style="font-family:var(--font-mono);">number</span></div>
+      <div style="font:600 12px/1.35 var(--font-body);color:var(--stbr-emerald);margin-top:2px;">exact for <span style="font-family:var(--font-mono);">bigint</span></div>
+    </div>
+
+    <!-- safe zone caption -->
+    <div class="lbl" style="left:30px;top:238px;width:480px;">every integer up to here is exact for <span style="font-family:var(--font-mono);">number</span></div>
+
+    <!-- first casualty callout -->
+    <div style="position:absolute;left:896px;top:58px;width:420px;border:1.5px solid var(--stbr-dark);background:var(--surface-paper);border-radius:10px;padding:10px 16px;">
+      <div style="font:800 12px/1.3 var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--stbr-green);">the first casualty</div>
+      <div class="val" style="font-size:15px;margin-top:4px;">9,007,199,254,740,993</div>
+      <div class="lbl" style="position:static;margin-top:2px;">JSON.parse silently rounds it to …740,992</div>
+    </div>
+    <div style="position:absolute;left:1105px;top:136px;width:2px;height:26px;background:var(--stbr-dark);"></div>
+    <div style="position:absolute;left:1100px;top:162px;width:0;height:0;border-top:7px solid var(--stbr-dark);border-left:6px solid transparent;border-right:6px solid transparent;"></div>
+
+    <!-- u64 max marker -->
+    <div style="position:absolute;left:1328px;top:168px;width:2px;height:150px;background:var(--stbr-dark);"></div>
+    <div style="position:absolute;right:30px;top:322px;width:520px;text-align:right;">
+      <div class="val">18,446,744,073,709,551,615</div>
+      <div class="lbl" style="position:static;margin-top:3px;">u64 max: the top of the range lamport balances live in</div>
+    </div>
+
+    <!-- caption -->
+    <div style="position:absolute;left:30px;top:390px;font:500 14px/1.4 var(--font-body);color:var(--text-secondary);">number rounds silently past 2^53 - 1; bigint stays exact all the way to u64 max.</div>
+  </div>
+</div>
+</div>
+</body></html>

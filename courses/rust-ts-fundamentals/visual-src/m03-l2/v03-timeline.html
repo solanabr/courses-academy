@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Two delays stack between a probe and a pixel
+     purpose: make the staleness budget concrete so learners debug headers before components
+     data: T+0min: cron fires, fresh latencies measured, status.json committed T+0 to T+30: no new data exists (cron schedule, */30) any 5-min window: CDN serves the cached copy (max-age=300) worst case shown: viewer's cache filled just before the commit -> old rows for ~5 min after fresh data landed next guaranteed-fresh read: cache expiry after the commit
+     prompt: Horizontal timeline spanning 35 minutes. A tall marker at T+0 labeled "cron commits fresh data". A long bracket covering the full span labeled "cron interval: 30 min". A short shaded band starting just before T+0 and extending 5 minutes past it labeled "CDN cache window: max-age=300", with a small browser icon inside it reading old rows. Caption strip: total possible staleness = cron interval + cache window.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:515px;height:481px;top:-282px;right:-282px;border-radius:55% 57% 40% 42% / 42% 41% 65% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:512px;height:440px;bottom:-228px;left:506px;border-radius:58% 45% 35% 41% / 52% 64% 65% 58%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:44px 56px 38px;}
+  .track{position:relative;height:340px;margin-top:14px;}
+  .rule{position:absolute;left:0;right:0;top:212px;height:4px;background:var(--stbr-green);border-radius:2px;}
+  .tick{position:absolute;top:206px;width:2px;height:16px;background:var(--stbr-green);}
+  .tlbl{position:absolute;top:228px;transform:translateX(-50%);font-family:var(--font-body);font-size:12px;color:var(--text-muted);}
+  .band{position:absolute;left:153px;width:231px;top:164px;height:96px;box-sizing:border-box;background:var(--stbr-yellow);border-radius:10px;padding:9px 10px;text-align:center;}
+  .band .bt{font-family:var(--font-display);font-weight:800;font-size:13px;color:var(--stbr-dark);}
+  .band .bs{font-family:var(--font-mono);font-weight:700;font-size:11px;color:var(--stbr-dark);margin-top:2px;}
+  .band .bchip{display:inline-block;margin-top:7px;font-family:var(--font-body);font-size:10.5px;background:var(--stbr-dark);color:var(--stbr-cream);border-radius:999px;padding:3px 9px;}
+  .mark{position:absolute;width:4px;background:var(--stbr-dark);}
+  .mchip{position:absolute;transform:translateX(-50%);white-space:nowrap;font-family:var(--font-display);font-weight:800;font-size:13px;border-radius:999px;padding:6px 15px;}
+  .mchip.dark{background:var(--surface-inverse);color:var(--text-on-dark);}
+  .mchip.em{background:var(--surface-brand);color:var(--text-on-brand);}
+  .bracket{position:absolute;left:192px;width:1152px;top:252px;height:24px;box-sizing:border-box;border-left:3px solid var(--stbr-dark);border-right:3px solid var(--stbr-dark);border-bottom:3px solid var(--stbr-dark);border-radius:0 0 8px 8px;}
+  .blbl{position:absolute;left:192px;width:1152px;top:286px;text-align:center;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);}
+  .verdict{margin-top:14px;background:var(--surface-brand);border-radius:12px;padding:16px 26px;font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-on-brand);text-align:center;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">debug headers before components</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:6px;">two delays stack between a probe and a pixel</h2>
+  <div class="track">
+    <div class="band">
+      <div class="bt">CDN cache window</div>
+      <div class="bs">max-age=300</div>
+      <div class="bchip">browser reads old rows</div>
+    </div>
+    <div class="rule"></div>
+    <div class="tick" style="left:0;"></div><div class="tlbl" style="left:1px;">T-5</div>
+    <div class="tick" style="left:191px;"></div><div class="tlbl" style="left:192px;">T+0</div>
+    <div class="tick" style="left:383px;"></div><div class="tlbl" style="left:384px;">T+5</div>
+    <div class="tick" style="left:575px;"></div><div class="tlbl" style="left:576px;">T+10</div>
+    <div class="tick" style="left:767px;"></div><div class="tlbl" style="left:768px;">T+15</div>
+    <div class="tick" style="left:959px;"></div><div class="tlbl" style="left:960px;">T+20</div>
+    <div class="tick" style="left:1151px;"></div><div class="tlbl" style="left:1152px;">T+25</div>
+    <div class="tick" style="left:1342px;"></div><div class="tlbl" style="left:1336px;">T+30</div>
+    <div class="mark" style="left:190px;top:94px;height:118px;"></div>
+    <div class="mchip dark" style="left:192px;top:52px;">T+0: cron commits fresh data</div>
+    <div class="mark" style="left:382px;top:150px;height:62px;background:var(--stbr-emerald);"></div>
+    <div class="mchip em" style="left:384px;top:110px;">T+5: next guaranteed-fresh read (cache expiry)</div>
+    <div class="bracket"></div>
+    <div class="blbl">cron interval: 30 min (*/30), no new data exists in between</div>
+  </div>
+  <div class="verdict">total possible staleness = cron interval (30 min) + cache window (5 min)</div>
+</div>
+</div>
+</body></html>

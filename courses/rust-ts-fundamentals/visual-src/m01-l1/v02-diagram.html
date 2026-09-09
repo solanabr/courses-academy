@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What a lab is allowed to require
+     purpose: turn the "nothing bookmarked is secretly required" promise into a rule the reader can check any lab against
+     data: Inside the lab boundary: taught material from this and earlier lessons; at most ONE signposted chapter, named in that lesson's 20% box Outside the boundary: the rest of the bookmarked map, never load-bearing for a lab Rule stamped on the boundary: if a lab seems to need more, that is a course bug, not your gap
+     prompt: A single rounded rectangle labeled "any lab in this course". Inside it, two stacked items: "taught material (this + earlier lessons)" and "at most one signposted chapter, from the 20% box". Outside the rectangle, a lighter cloud of bookmark icons labeled "the rest of the bookmarked map" with a crossed arrow showing it never enters. A caption strip: "if a lab needs more than this, that's a course bug, not your gap".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:528px;height:465px;top:-251px;right:-251px;border-radius:62% 37% 43% 40% / 42% 65% 64% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:549px;height:494px;bottom:-296px;left:-296px;border-radius:37% 56% 39% 60% / 63% 57% 61% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 40px 52px 36px; }
+    .v02-main { display: grid; grid-template-columns: 720px 176px 380px; align-items: stretch; margin-top: 10px; }
+    .v02-boundary { border: 4px solid var(--stbr-emerald); border-radius: var(--radius-2xl); padding: 22px 28px 24px; height: 400px; }
+    .v02-boundary-title { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 27px; color: var(--stbr-emerald); margin: 0 0 16px; }
+    .v02-allowed { font-family: var(--font-body); font-size: 21px; color: var(--text-primary); background: var(--surface-paper); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 20px 22px; margin-bottom: 14px; }
+    .v02-allowed strong { font-family: var(--font-display); font-weight: 800; color: var(--stbr-dark); }
+    .v02-one { background: var(--stbr-yellow); border: 1px solid var(--stbr-yellow); }
+    .v02-one strong, .v02-one { color: var(--stbr-dark); }
+    .v02-cross { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; }
+    .v02-cross-line { width: 120px; height: 3px; background: var(--text-muted, #6b7466); }
+    .v02-cross-x { width: 52px; height: 52px; border: 3px solid var(--stbr-dark); border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 900; font-size: 26px; color: var(--stbr-dark); margin: 10px 0; background: var(--surface-card); }
+    .v02-cross-label { font-family: var(--font-body); font-size: 16px; color: var(--text-secondary); text-align: center; }
+    .v02-outside { border: 2px dashed var(--border-strong); border-radius: var(--radius-xl); padding: 20px 22px; height: 400px; background: var(--surface-paper); }
+    .v02-outside-title { font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--text-secondary); margin: 0 0 14px; }
+    .v02-bm { display: inline-block; font-family: var(--font-body); font-size: 16px; color: var(--text-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); padding: 6px 13px; margin: 0 6px 9px 0; background: var(--surface-card); }
+    .v02-caption { margin-top: 24px; background: var(--surface-inverse); color: var(--stbr-cream); border-radius: var(--radius-lg); padding: 15px 24px; font-family: var(--font-display); font-weight: 800; font-size: 24px; text-align: center; }
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">the lab contract</div>
+    <h2 class="viz-title">what a lab is allowed to require</h2>
+    <div class="v02-main">
+      <div class="v02-boundary">
+        <p class="v02-boundary-title">any lab in this course</p>
+        <div class="v02-allowed"><strong>taught material</strong><br>from this and earlier lessons</div>
+        <div class="v02-allowed v02-one"><strong>at most ONE signposted chapter</strong><br>named in that lesson&#8217;s 20% box</div>
+      </div>
+      <div class="v02-cross">
+        <div class="v02-cross-line"></div>
+        <div class="v02-cross-x">&#215;</div>
+        <div class="v02-cross-line"></div>
+        <div class="v02-cross-label">never enters, <br>never load-bearing<br>for a lab</div>
+      </div>
+      <div class="v02-outside">
+        <p class="v02-outside-title">the rest of the bookmarked map</p>
+        <span class="v02-bm">The Rust Book</span>
+        <span class="v02-bm">TS Handbook</span>
+        <span class="v02-bm">MDN</span>
+        <span class="v02-bm">Rustlings</span>
+        <span class="v02-bm">Comprehensive Rust</span>
+        <span class="v02-bm">platform get-starteds</span>
+        <span class="v02-bm">&#8230;</span>
+      </div>
+    </div>
+    <div class="v02-caption">if a lab needs more than this, that&#8217;s a course bug, not your gap</div>
+  </div>
+</div>
+</body></html>

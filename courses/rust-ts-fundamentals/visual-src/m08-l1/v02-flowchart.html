@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What a read is versus what a write is
+     purpose: show why reads cost nothing and writes are the module's one big event
+     data: READ path: your script -> JSON question over HTTP -> RPC node's copy of state -> answer. Annotations: no signature, no fee, never touches consensus. WRITE path: your script -> signed transaction -> RPC node forwards -> consensus -> new state. Annotations: signature required, fee paid, becomes chain history. Caption row: this lesson and the next live entirely on the READ path; the WRITE path opens in m08-l4.
+     prompt: Two horizontal lanes, READ on top and WRITE below, each a left-to-right flow with the nodes listed in the data. The read lane is light and short; the write lane is longer and passes through a consensus stage. Annotate each lane with its properties. No icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:557px;height:517px;top:-298px;right:-298px;border-radius:49% 46% 58% 57% / 43% 60% 57% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:583px;height:532px;bottom:-340px;left:-340px;border-radius:58% 62% 59% 52% / 42% 62% 61% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 38px 56px 34px; overflow: hidden; position: relative; }
+  .v02-lane { border-radius: var(--radius-xl); padding: 18px 26px 20px; }
+  .v02-lane-read { background: rgba(0, 139, 76, 0.08); border: 1.5px solid rgba(0, 139, 76, 0.3);
+                   width: 950px; margin-top: 10px; }
+  .v02-lane-write .v02-node { flex: 1; }
+  .v02-lane-write { background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+                    margin-top: 22px; }
+  .v02-lanehead { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; }
+  .v02-tag { font-family: var(--font-display); font-weight: 900; font-size: 15px;
+             letter-spacing: 0.14em; border-radius: var(--radius-pill); padding: 5px 18px; }
+  .v02-tag-read { background: var(--stbr-emerald); color: var(--text-on-brand); }
+  .v02-tag-write { background: var(--stbr-dark); color: var(--stbr-cream); }
+  .v02-props { font-family: var(--font-body); font-size: 14.5px; color: var(--text-muted); }
+  .v02-flow { display: flex; align-items: center; }
+  .v02-node { background: var(--surface-card); border: 1.5px solid var(--border-strong);
+              border-radius: var(--radius-lg); padding: 15px 20px;
+              font-family: var(--font-body); font-weight: 600; font-size: 16.5px;
+              color: var(--text-primary); text-align: center; }
+  .v02-node-consensus { background: var(--stbr-yellow); border: 2px solid var(--stbr-dark);
+                        color: var(--text-on-accent); font-weight: 700; }
+  .v02-arrow { width: 30px; height: 2.5px; background: var(--stbr-green);
+               position: relative; flex: none; margin: 0 12px 0 6px; }
+  .v02-arrow::after { content: ""; position: absolute; right: -8px; top: -4.5px;
+                      border-left: 9px solid var(--stbr-green);
+                      border-top: 5.5px solid transparent;
+                      border-bottom: 5.5px solid transparent; }
+  .v02-caption { margin-top: 24px; background: var(--surface-brand);
+                 border-radius: var(--radius-lg); padding: 14px 24px;
+                 font-family: var(--font-body); font-size: 16px; color: var(--text-on-brand); }
+  .v02-caption strong { font-weight: 700; }
+</style>
+<div class="v02-card">
+  <div class="stbr-eyebrow">READS COST NOTHING · WRITES ARE THE EVENT</div>
+  <h2 class="viz-title">what a read is versus what a write is</h2>
+  <div class="v02-lane v02-lane-read">
+    <div class="v02-lanehead">
+      <div class="v02-tag v02-tag-read">READ</div>
+      <div class="v02-props">no signature · no fee · never touches consensus</div>
+    </div>
+    <div class="v02-flow">
+      <div class="v02-node">your script</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node">JSON question over HTTP</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node">RPC node's copy of state</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node">answer</div>
+    </div>
+  </div>
+  <div class="v02-lane v02-lane-write">
+    <div class="v02-lanehead">
+      <div class="v02-tag v02-tag-write">WRITE</div>
+      <div class="v02-props">signature required · fee paid · becomes chain history</div>
+    </div>
+    <div class="v02-flow">
+      <div class="v02-node">your script</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node">signed transaction</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node">RPC node forwards</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node v02-node-consensus">consensus</div>
+      <div class="v02-arrow"></div>
+      <div class="v02-node">new state</div>
+    </div>
+  </div>
+  <div class="v02-caption">this lesson and the next live entirely on the <strong>READ</strong> path; the <strong>WRITE</strong> path opens in <strong>m08-l4</strong>.</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Cron refresh: from RPC to the public chain block
+     purpose: show the KV-cached read path and its two failure exits so the learner wires refreshChain from the contract
+     data: path: cron trigger (*/15, from m07-l1) -> scheduled handler -> refreshChain -> getSlot + getBalance per watched address, each wrapped in backoffDelay + equal jitter (max 3 retries) -> stringify bigints -> PULSE_KV.put("chain", snapshot with fetchedAt) serve path: fetch handler -> PULSE_KV.get("chain") -> merged into public JSON next to targets block failure exit A: one read 429s -> jittered retries inside the same tick failure exit B: retries exhausted -> write nothing, previous snapshot keeps serving, next cron retries budget: one extra KV write per tick, 96 ticks/day at */15, comfortably inside the 1,000 writes/day free cap
+     prompt: Left-to-right flowchart with two lanes: a refresh lane from cron trigger to the KV write, and a serve lane from an incoming request through KV to the public JSON. Mark the two failure exits from data as annotated arrows, exit B looping back to the previous snapshot. Footer carries the KV write budget line.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:439px;height:480px;right:-233px;top:163px;border-radius:64% 36% 44% 65% / 37% 45% 43% 55%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:464px;height:496px;bottom:-237px;left:-237px;border-radius:36% 65% 47% 50% / 51% 64% 36% 64%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .viz-title { font-size: 44px; }
+    .v04-card { position: relative; background: var(--surface-card); border-radius: 28px;
+                padding: 32px 48px 26px; overflow: hidden; }
+    .v04-lane-k { font: 800 14px var(--font-display); letter-spacing: .14em;
+                  text-transform: uppercase; color: var(--text-muted); margin: 10px 0 6px; }
+    .v04-lane { position: relative; width: 1280px; height: 100px; }
+    .v04-node { position: absolute; top: 0; height: 100px; background: #FFFFFF;
+                border: 2px solid var(--stbr-green); border-radius: 14px; display: flex;
+                flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+                padding: 6px 10px; text-align: center;
+                font: 700 17px/1.2 var(--font-body); color: var(--stbr-dark); }
+    .v04-node small { font: 500 13px/1.25 var(--font-body); color: var(--text-secondary); }
+    .v04-node code { font-family: var(--font-mono); font-size: 15px; }
+    .v04-arr { position: absolute; top: 42px; }
+    .v04-zone { position: relative; width: 1280px; height: 130px; }
+    .v04-exit { position: absolute; background: var(--stbr-yellow); border-radius: 14px;
+                padding: 10px 16px; font: 700 15px/1.3 var(--font-body); color: var(--stbr-dark); }
+    .v04-badge { background: var(--stbr-yellow); border-radius: 999px; padding: 2px 10px;
+                 font: 800 12.5px var(--font-body); color: var(--stbr-dark); }
+    .v04-foot { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle);
+                font: 500 18px var(--font-body); color: var(--text-secondary); }
+  </style>
+  <div class="v04-card">
+    <div class="stbr-eyebrow">WORKER REFRESH PATH</div>
+    <h2 class="viz-title">cron refresh: from RPC to the public chain block</h2>
+
+    <div class="v04-lane-k">refresh lane: cron path</div>
+    <div class="v04-lane">
+      <div class="v04-node" style="left:0; width:150px;">cron trigger<small><code>*/15</code> &middot; from m07-l1</small></div>
+      <svg class="v04-arr" style="left:150px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:184px; width:160px;">scheduled handler</div>
+      <svg class="v04-arr" style="left:344px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:378px; width:150px;"><code>refreshChain()</code></div>
+      <svg class="v04-arr" style="left:528px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:562px; width:280px;"><span><code>getSlot</code> + <code>getBalance</code> per watched address</span><small>backoffDelay + equal jitter &middot; max 3 retries</small><span class="v04-badge">exit A, on 429: jittered retry, same tick</span></div>
+      <svg class="v04-arr" style="left:842px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:876px; width:150px;">stringify bigints</div>
+      <svg class="v04-arr" style="left:1026px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:1060px; width:220px;"><code>PULSE_KV.put("chain")</code><small>snapshot with <code>fetchedAt</code></small></div>
+    </div>
+
+    <div class="v04-zone">
+      <div style="position:absolute; left:701px; top:0; width:2px; height:26px; background:var(--stbr-dark);"></div>
+      <div class="v04-exit" style="left:340px; top:26px; width:480px;">exit B, retries exhausted &rarr; write nothing: the previous snapshot keeps serving; the next cron tick retries</div>
+      <svg style="position:absolute; left:356px; top:86px; z-index:2;" width="16" height="80"><line x1="8" y1="0" x2="8" y2="70" stroke="#1B231D" stroke-width="2"/><polygon points="2,70 14,70 8,80" fill="#1B231D"/></svg>
+    </div>
+
+    <div class="v04-lane-k" style="margin-top:0;">serve lane: request path</div>
+    <div class="v04-lane">
+      <div class="v04-node" style="left:0; width:200px;">fetch handler<small>incoming request</small></div>
+      <svg class="v04-arr" style="left:200px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:234px; width:260px;"><code>PULSE_KV.get("chain")</code><small>last good snapshot</small></div>
+      <svg class="v04-arr" style="left:494px;" width="34" height="16"><line x1="0" y1="8" x2="22" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="22,2 34,8 22,14" fill="#1B231D"/></svg>
+      <div class="v04-node" style="left:528px; width:400px;"><span>merged into the public JSON<small>next to the <code>targets</code> block</small></span></div>
+    </div>
+
+    <div class="v04-foot">budget: one extra KV write per tick, <strong>96 ticks/day</strong> at <code style="font-family:var(--font-mono);">*/15</code>, comfortably inside the <strong>1,000 writes/day</strong> free cap.</div>
+  </div>
+</div>
+</body></html>

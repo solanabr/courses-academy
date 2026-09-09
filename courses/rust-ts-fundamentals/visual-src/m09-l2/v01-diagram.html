@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The station's blind spot
+     purpose: show that every surface the learner shipped watches something while nothing watches the surfaces themselves, motivating the whole ops layer
+     data: watched by the station: internet targets (poller, 30s ticks) | Solana RPC (edge worker cron) | status.json history (Actions cron, */30) the station's surfaces: pulse-board on Vercel | pulse-edge-ts + the WASM worker on Cloudflare | pollerd + fleet-runner under compose | the Actions cron watchers pointed at those surfaces before this lesson: none this lesson adds: structured events on every surface + the Actions failure notification + persisted heartbeat timestamps
+     prompt: Ring diagram. Outer ring: the watched world (targets, chain, history). Middle ring: the four station surfaces with arrows pointing outward at the world. The center, where arrows pointing back at the surfaces should be, is empty and labeled "who watches these?". A legend notes the three additions this lesson makes, drawn as thin return arrows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:406px;height:362px;right:-223px;top:173px;border-radius:62% 58% 47% 63% / 60% 37% 58% 49%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:598px;height:519px;bottom:-333px;left:-333px;border-radius:58% 62% 56% 50% / 39% 55% 52% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px 34px;}
+  .cols{display:flex;align-items:stretch;gap:0;margin-top:14px;}
+  .col{display:flex;flex-direction:column;gap:10px;flex:1;}
+  .colhead{font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:.12em;
+           text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+  .node{border:2px solid var(--border-strong);border-radius:var(--radius-lg);
+        padding:11px 16px;background:var(--surface-card);}
+  .node b{display:block;font-family:var(--font-display);font-weight:800;font-size:17px;
+          line-height:1.2;color:var(--text-primary);}
+  .node span{font-family:var(--font-body);font-size:13px;line-height:1.35;color:var(--text-secondary);}
+  .arrowcol{width:128px;display:flex;flex-direction:column;justify-content:center;
+            align-items:center;gap:6px;flex:none;}
+  .arrowlabel{font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--text-muted);
+              text-align:center;line-height:1.25;}
+  .blind{flex:1.05;border:3px dashed var(--stbr-dark);border-radius:var(--radius-xl);
+         background:var(--stbr-yellow);padding:22px 24px;display:flex;flex-direction:column;
+         justify-content:center;gap:10px;}
+  .blind b{font-family:var(--font-display);font-weight:900;font-size:30px;line-height:1.05;
+           color:var(--stbr-dark);}
+  .blind span{font-family:var(--font-body);font-size:14px;line-height:1.4;color:var(--stbr-dark);}
+  .legend{margin-top:20px;background:var(--surface-brand);border-radius:var(--radius-xl);
+          padding:16px 26px;display:flex;align-items:center;gap:22px;}
+  .legend .lt{font-family:var(--font-display);font-weight:800;font-size:16px;
+              color:var(--text-on-brand);white-space:nowrap;}
+  .legend .li{display:flex;align-items:center;gap:9px;font-family:var(--font-body);font-size:14px;
+              line-height:1.25;color:var(--text-on-brand);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the ops layer, motivated</div>
+  <h2 class="viz-title">the station&rsquo;s blind spot</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="colhead">watched by the station</div>
+      <div class="node"><b>internet targets</b><span>poller, 30s ticks</span></div>
+      <div class="node"><b>Solana RPC</b><span>edge worker cron</span></div>
+      <div class="node"><b>status.json history</b><span>Actions cron, */30</span></div>
+    </div>
+    <div class="arrowcol">
+      <div class="arrowlabel">the surfaces<br>watch the world</div>
+      <svg width="112" height="34"><line x1="106" y1="17" x2="18" y2="17" stroke="#1B231D" stroke-width="3"/><polygon points="6,17 20,10 20,24" fill="#1B231D"/></svg>
+    </div>
+    <div class="col">
+      <div class="colhead">the station&rsquo;s surfaces</div>
+      <div class="node"><b>pulse-board</b><span>on Vercel</span></div>
+      <div class="node"><b>pulse-edge-ts + WASM worker</b><span>on Cloudflare</span></div>
+      <div class="node"><b>pollerd + fleet-runner</b><span>under compose</span></div>
+      <div class="node"><b>the Actions cron watchers</b><span>scheduled workflows</span></div>
+    </div>
+    <div class="arrowcol">
+      <div class="arrowlabel">watchers pointed<br>back at them</div>
+      <svg width="112" height="34"><line x1="106" y1="17" x2="18" y2="17" stroke="#1B231D" stroke-width="3" stroke-dasharray="7 6"/><polygon points="6,17 20,10 20,24" fill="#1B231D"/></svg>
+    </div>
+    <div class="blind">
+      <b>who watches these?</b>
+      <span>Every surface above watches something out in the world, and before this lesson, <strong>nothing</strong> watched the surfaces themselves.</span>
+    </div>
+  </div>
+  <div class="legend">
+    <div class="lt">this lesson adds the return arrows</div>
+    <div class="li"><svg width="30" height="14"><line x1="28" y1="7" x2="8" y2="7" stroke="#FFD23F" stroke-width="2" stroke-dasharray="4 3"/><polygon points="2,7 10,3 10,11" fill="#FFD23F"/></svg>structured events on every surface</div>
+    <div class="li"><svg width="30" height="14"><line x1="28" y1="7" x2="8" y2="7" stroke="#FFD23F" stroke-width="2" stroke-dasharray="4 3"/><polygon points="2,7 10,3 10,11" fill="#FFD23F"/></svg>the Actions failure notification</div>
+    <div class="li"><svg width="30" height="14"><line x1="28" y1="7" x2="8" y2="7" stroke="#FFD23F" stroke-width="2" stroke-dasharray="4 3"/><polygon points="2,7 10,3 10,11" fill="#FFD23F"/></svg>persisted heartbeat timestamps</div>
+  </div>
+</div>
+</div>
+</body></html>

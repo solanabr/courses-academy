@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One read, three surfaces: the re-ship map
+     purpose: show that the lesson promotes an existing read to existing deployed surfaces rather than building anything new
+     data: center node: "the read: getSlot via @solana/kit (built m08-l1, bench only) + getBalance (new in this lesson's opener)" surface 1: pulse-board on Vercel (shipped m03-l3) -> gains SolanaPanel, polls RPC on an interval (m03-l2 pattern) surface 2: pulse-edge-ts on workers.dev (shipped m07-l1) -> gains chain targets in cron loop, KV-cached (m02-l3 backoff) surface 3: bench scripts (chain-probe.ts, balance.ts) -> stay as the local gauge annotation: every arrow is labeled with the module that already taught it; nothing on this map is new except the two promotion arrows
+     prompt: Hub-and-spoke diagram. One central node for the chain read, three surface nodes around it as labeled in data. The two promotion arrows (to Vercel and to the worker) drawn bold; the bench node connected with a thin arrow labeled "already done". Each arrow carries its module tag from data as a small label.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:591px;height:561px;top:-307px;right:-307px;border-radius:35% 50% 51% 60% / 58% 45% 49% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:489px;height:352px;left:-314px;top:260px;border-radius:38% 53% 54% 44% / 44% 42% 64% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .viz-title { font-size: 46px; }
+    .v01-card { position: relative; background: var(--surface-card); border-radius: 28px;
+                padding: 36px 48px 30px; overflow: hidden; }
+    .v01-map  { display: grid; grid-template-columns: 400px 230px 1fr;
+                grid-template-rows: 140px 140px 140px; row-gap: 18px; margin-top: 12px; }
+    .v01-hub  { grid-column: 1; grid-row: 1 / 4; background: var(--stbr-emerald);
+                border-radius: 20px; padding: 30px 32px; display: flex;
+                flex-direction: column; justify-content: center; gap: 14px; }
+    .v01-hub-k { font: 800 16px var(--font-display); letter-spacing: .14em;
+                 color: var(--stbr-cream); text-transform: uppercase; }
+    .v01-hub h3 { font: 900 30px/1.1 var(--font-display); color: #FFFFFF; margin: 0; }
+    .v01-hub p { font: 500 17px/1.45 var(--font-body); color: var(--stbr-cream); margin: 0; }
+    .v01-hub code { font-family: var(--font-mono); font-weight: 700; color: #FFFFFF; }
+    .v01-con  { grid-column: 2; display: flex; flex-direction: column; align-items: center;
+                justify-content: center; gap: 8px; padding: 0 6px; }
+    .v01-tag  { font: 600 14px var(--font-body); color: var(--stbr-dark);
+                background: var(--surface-paper); border: 1px solid var(--border-subtle);
+                border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+    .v01-surf { grid-column: 3; background: #FFFFFF; border: 2px solid var(--stbr-green);
+                border-radius: 20px; padding: 16px 24px; display: flex;
+                flex-direction: column; justify-content: center; gap: 5px; }
+    .v01-surf.v01-dim { border: 1px solid var(--border-subtle); }
+    .v01-surf h4 { font: 800 22px/1.15 var(--font-display); color: var(--stbr-dark); margin: 0; }
+    .v01-ship { font: 600 13px var(--font-body); letter-spacing: .08em; text-transform: uppercase;
+                color: var(--text-muted); }
+    .v01-surf p { font: 500 16px/1.4 var(--font-body); color: var(--text-secondary); margin: 0; }
+    .v01-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-subtle);
+                font: 500 18px/1.4 var(--font-body); color: var(--text-secondary); }
+    .v01-foot strong { color: var(--stbr-dark); }
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">RE-SHIP MAP</div>
+    <h2 class="viz-title">one read, three surfaces</h2>
+    <div class="v01-map">
+      <div class="v01-hub">
+        <div class="v01-hub-k">the read</div>
+        <h3>getSlot + getBalance</h3>
+        <p><code>getSlot</code> via @solana/kit: built m08&#8209;l1, bench only</p>
+        <p><code>getBalance</code>: new in this lesson&rsquo;s opener</p>
+      </div>
+      <div class="v01-con">
+        <div class="v01-tag">promotion &middot; m03-l2 interval pattern</div>
+        <svg width="200" height="20"><line x1="0" y1="10" x2="178" y2="10" stroke="#FFD23F" stroke-width="6"/><polygon points="176,1 198,10 176,19" fill="#FFD23F"/></svg>
+      </div>
+      <div class="v01-surf">
+        <div class="v01-ship">shipped m03-l3 &middot; Vercel</div>
+        <h4>pulse-board</h4>
+        <p>gains <strong>SolanaPanel</strong>: polls RPC on an interval (the m03-l2 pattern)</p>
+      </div>
+      <div class="v01-con">
+        <div class="v01-tag">promotion &middot; m02-l3 backoff, KV-cached</div>
+        <svg width="200" height="20"><line x1="0" y1="10" x2="178" y2="10" stroke="#FFD23F" stroke-width="6"/><polygon points="176,1 198,10 176,19" fill="#FFD23F"/></svg>
+      </div>
+      <div class="v01-surf">
+        <div class="v01-ship">shipped m07-l1 &middot; workers.dev</div>
+        <h4>pulse-edge-ts</h4>
+        <p>gains <strong>chain targets in the cron loop</strong>, KV-cached (m02-l3 backoff)</p>
+      </div>
+      <div class="v01-con">
+        <div class="v01-tag">already done</div>
+        <svg width="200" height="14"><line x1="0" y1="7" x2="184" y2="7" stroke="#1B231D" stroke-width="2"/><polygon points="184,2 196,7 184,12" fill="#1B231D"/></svg>
+      </div>
+      <div class="v01-surf v01-dim">
+        <div class="v01-ship">local</div>
+        <h4>bench scripts: chain-probe.ts &middot; balance.ts</h4>
+        <p>stay as the local gauge; nothing changes here</p>
+      </div>
+    </div>
+    <div class="v01-foot">nothing on this map is new except <strong>the two promotion arrows</strong>; every arrow is labeled with the module that already taught it.</div>
+  </div>
+</div>
+</body></html>

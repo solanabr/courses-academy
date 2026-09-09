@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The GHCR free-quota reality on the Free plan
+     purpose: make the public-versus-private storage decision legible before the learner pushes
+     data: public images: storage and bandwidth free, with GitHub's own qualifier currently attached; anyone can pull anonymously; matches this course's public station repo private images: 500 MB storage pool on the Free plan; the pool is shared with Actions artifacts from your own CI; pulls require authentication scale reference from the course's own measurements: the m06-l2 naive image weighed gigabytes and would overflow the 500 MB private pool several times over; the m06-l3 multi-stage images fit with room to spare
+     prompt: Two-panel comparison, public on the left and private on the right, rows drawn from data. Under both panels one shared horizontal bar sized as 500 MB with two image-size markers against it, the naive image far beyond the bar's end and the multi-stage image well inside it. Label the qualifier word currently exactly once on the public panel.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:578px;height:561px;top:-306px;right:-306px;border-radius:50% 40% 45% 57% / 48% 44% 47% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:394px;height:472px;bottom:-237px;left:787px;border-radius:47% 58% 42% 35% / 49% 55% 55% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .v4-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 40px 56px 36px; position: relative; overflow: hidden; }
+  .v4-cols { display: flex; gap: 28px; margin-top: 8px; }
+  .v4-col { flex: 1; border: 2px solid var(--border-strong); border-radius: var(--radius-xl);
+            overflow: hidden; }
+  .v4-head { padding: 12px 22px; font-family: var(--font-display); font-weight: 800;
+             font-size: 20px; }
+  .v4-head-pub { background: var(--stbr-emerald); color: var(--text-on-brand); }
+  .v4-head-priv { background: var(--surface-inverse); color: var(--text-on-dark); }
+  .v4-rows { padding: 2px 22px 12px; }
+  .v4-item { padding: 10px 0; border-bottom: 1.5px solid var(--border-subtle);
+             font-family: var(--font-body); font-size: 17.5px; color: var(--text-primary); }
+  .v4-item:last-child { border-bottom: none; }
+  .v4-item small { color: var(--text-muted); font-size: 14px; }
+  .v4-now { background: var(--stbr-yellow); color: var(--text-on-accent);
+            border-radius: var(--radius-xs); padding: 1px 6px; font-weight: 600; }
+  .v4-barzone { margin-top: 26px; }
+  .v4-barlabel { font-family: var(--font-display); font-weight: 800; font-size: 15px;
+                 letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary);
+                 margin-bottom: 12px; }
+  .v4-track { position: relative; height: 96px; }
+  .v4-axis { position: absolute; left: 0; right: 0; top: 58px; height: 2px;
+             background: var(--border-subtle); }
+  .v4-pool { position: absolute; left: 0; top: 40px; width: 240px; height: 38px;
+             background: var(--stbr-emerald); border-radius: var(--radius-sm); }
+  .v4-tick0 { position: absolute; left: 0; top: 82px; font-family: var(--font-mono);
+              font-size: 13px; color: var(--text-muted); }
+  .v4-tick500 { position: absolute; left: 218px; top: 82px; font-family: var(--font-mono);
+                font-size: 13px; color: var(--text-muted); font-weight: 600; }
+  .v4-ms { position: absolute; left: 60px; top: 30px; width: 4px; height: 58px;
+           background: var(--stbr-dark); border-radius: 2px; }
+  .v4-mslabel { position: absolute; left: 84px; top: 0; width: 460px;
+                font-family: var(--font-body); font-size: 15px; color: var(--text-primary); }
+  .v4-mslabel b { font-weight: 700; }
+  .v4-naive { position: absolute; left: 1030px; top: 30px; width: 4px; height: 58px;
+              background: var(--stbr-yellow-600); border-radius: 2px; }
+  .v4-naivelabel { position: absolute; left: 660px; top: 0; width: 350px; text-align: right;
+                   font-family: var(--font-body); font-size: 15px; color: var(--text-primary); }
+  .v4-naivechip { display: inline-block; background: var(--stbr-yellow);
+                  color: var(--text-on-accent); border-radius: var(--radius-sm);
+                  font-weight: 700; padding: 2px 8px; }
+  .v4-over { position: absolute; left: 1046px; top: 47px; font-family: var(--font-body);
+             font-size: 14px; color: var(--text-secondary); white-space: nowrap; }
+</style>
+<div class="v4-card">
+  <div class="stbr-eyebrow">GHCR ON THE FREE PLAN</div>
+  <h2 class="viz-title">public or private, before you push</h2>
+  <div class="v4-cols">
+    <div class="v4-col">
+      <div class="v4-head v4-head-pub">public images</div>
+      <div class="v4-rows">
+        <div class="v4-item">storage and bandwidth free, GitHub's own qualifier: <span class="v4-now">currently</span></div>
+        <div class="v4-item">anyone can pull anonymously</div>
+        <div class="v4-item">matches this course's public station repo</div>
+      </div>
+    </div>
+    <div class="v4-col">
+      <div class="v4-head v4-head-priv">private images</div>
+      <div class="v4-rows">
+        <div class="v4-item">500&nbsp;MB storage pool on the Free plan</div>
+        <div class="v4-item">the pool is shared with Actions artifacts <small>from your own CI</small></div>
+        <div class="v4-item">pulls require authentication</div>
+      </div>
+    </div>
+  </div>
+  <div class="v4-barzone">
+    <div class="v4-barlabel">scale check: the course's own measurements against the 500 MB private pool</div>
+    <div class="v4-track">
+      <div class="v4-mslabel"><b>m06-l3 multi-stage images</b>: fit with room to spare</div>
+      <div class="v4-naivelabel"><span class="v4-naivechip">m06-l2 naive image: gigabytes</span>, overflows the pool several times over</div>
+      <div class="v4-axis"></div>
+      <div class="v4-pool"></div>
+      <div class="v4-ms"></div>
+      <div class="v4-naive"></div>
+      <div class="v4-over">→ far beyond the pool's end</div>
+      <div class="v4-tick0">0</div>
+      <div class="v4-tick500">500 MB: the private pool ends here</div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

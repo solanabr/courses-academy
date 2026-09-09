@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The workspace after this lesson
+     purpose: show the dependency edges: two binaries and soon a third consumer, all leaning on one pure engine crate
+     data: crates/pulse-engine (lib: types, ProbeState machine, serde config, classifier - pure, no I/O) crates/pulse-cli (bin) -> depends on pulse-engine; owns blocking reqwest crates/pulse-pollerd (bin, NEW) -> depends on pulse-engine; owns tokio + axum + async reqwest note: I/O lives in the binaries; the engine compiles anywhere, which m07 will exploit for WASM
+     prompt: Simple dependency graph, engine crate as the root node at the bottom, two binary crates above it with arrows pointing down to the engine, the new pollerd node highlighted. A faded third arrow labeled "m07: the edge worker" hints at a future consumer. Label the engine "pure: no I/O" and each binary with its I/O ownership.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:426px;right:-281px;top:303px;border-radius:41% 63% 44% 35% / 62% 47% 56% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:415px;height:500px;bottom:-280px;left:761px;border-radius:65% 60% 60% 63% / 65% 45% 64% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 36px 54px 32px; }
+    .v06-row { display: flex; gap: 30px; margin-top: 18px; }
+    .v06-crate { flex: 1; border-radius: var(--radius-xl); padding: 20px 24px 18px; text-align: center; }
+    .v06-bin { background: #ffffff; border: 2px solid var(--border-strong); }
+    .v06-new { background: var(--stbr-yellow); border: 2.5px solid var(--stbr-dark); }
+    .v06-future { background: var(--surface-paper); border: 2px dashed var(--border-subtle); opacity: 0.62; }
+    .v06-name { font-family: var(--font-mono); font-weight: 700; font-size: 20px; color: var(--stbr-dark); }
+    .v06-kind { display: inline-block; margin-top: 8px; border-radius: var(--radius-pill); padding: 3px 14px;
+                font-family: var(--font-display); font-weight: 800; font-size: 13px; text-transform: uppercase;
+                letter-spacing: 0.07em; background: var(--surface-inverse); color: var(--stbr-cream); }
+    .v06-new .v06-kind { background: var(--stbr-dark); }
+    .v06-io { margin-top: 10px; font-family: var(--font-body); font-size: 15.5px; color: var(--text-secondary); }
+    .v06-new .v06-io { color: rgba(27,35,29,0.85); font-weight: 600; }
+    .v06-io code { font-family: var(--font-mono); font-size: 14.5px; }
+    .v06-arrows { display: flex; gap: 30px; height: 66px; }
+    .v06-arcol { flex: 1; display: flex; flex-direction: column; align-items: center; }
+    .v06-arline { width: 2.5px; flex: 1; background: var(--stbr-dark); }
+    .v06-arhead { border-top: 10px solid var(--stbr-dark); border-left: 7.5px solid transparent; border-right: 7.5px solid transparent; }
+    .v06-arlbl { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; color: var(--text-muted); padding: 3px 0 2px; }
+    .v06-arcol.v06-faded .v06-arline { background: transparent; border-left: 2.5px dashed #a9b4ab; width: 0; }
+    .v06-arcol.v06-faded .v06-arhead { border-top-color: #a9b4ab; }
+    .v06-engine { background: var(--surface-brand); border-radius: var(--radius-xl); padding: 22px 34px;
+                  display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .v06-engine-left { display: flex; flex-direction: column; }
+    .v06-engine-name { font-family: var(--font-mono); font-weight: 700; font-size: 23px; color: var(--stbr-cream); }
+    .v06-engine-sub { margin-top: 6px; font-family: var(--font-body); font-size: 16px; color: rgba(245,232,202,0.85); }
+    .v06-pure { flex: none; background: var(--stbr-cream); color: var(--stbr-green); border-radius: var(--radius-pill);
+                padding: 9px 22px; font-family: var(--font-display); font-weight: 800; font-size: 18px;
+                text-transform: uppercase; letter-spacing: 0.06em; }
+    .v06-note { margin-top: 20px; font-family: var(--font-body); font-size: 17px; color: var(--text-secondary); text-align: center; }
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">the workspace after this lesson</div>
+    <h2 class="viz-title">two binaries, one pure engine</h2>
+    <div class="v06-row">
+      <div class="v06-crate v06-bin">
+        <div class="v06-name">crates/pulse-cli</div>
+        <span class="v06-kind">bin</span>
+        <div class="v06-io">owns <code>blocking reqwest</code></div>
+      </div>
+      <div class="v06-crate v06-new">
+        <div class="v06-name">crates/pulse-pollerd</div>
+        <span class="v06-kind">bin &#183; new</span>
+        <div class="v06-io">owns <code>tokio + axum + async reqwest</code></div>
+      </div>
+      <div class="v06-crate v06-future">
+        <div class="v06-name">m07: the edge worker</div>
+        <span class="v06-kind">future</span>
+        <div class="v06-io">a third consumer, coming soon</div>
+      </div>
+    </div>
+    <div class="v06-arrows">
+      <div class="v06-arcol"><div class="v06-arlbl">depends on</div><div class="v06-arline"></div><div class="v06-arhead"></div></div>
+      <div class="v06-arcol"><div class="v06-arlbl">depends on</div><div class="v06-arline"></div><div class="v06-arhead"></div></div>
+      <div class="v06-arcol v06-faded"><div class="v06-arlbl">will depend on</div><div class="v06-arline"></div><div class="v06-arhead"></div></div>
+    </div>
+    <div class="v06-engine">
+      <div class="v06-engine-left">
+        <div class="v06-engine-name">crates/pulse-engine</div>
+        <div class="v06-engine-sub">lib &#183; types &#183; ProbeState machine &#183; serde config &#183; classifier</div>
+      </div>
+      <div class="v06-pure">pure: no i/o</div>
+    </div>
+    <div class="v06-note">I/O lives in the binaries; the engine compiles anywhere, which m07 will exploit for WASM.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Sweep time vs target count, sequential blocking vs concurrent probes
+     purpose: make the fan-out threshold visible: the blocking sweep grows linearly while the concurrent sweep stays flat at the slowest single probe
+     data: x-axis: targets in the sweep (1, 5, 10, 20, 40) series "sequential blocking, 2s worst-case each": 2, 10, 20, 40, 80 seconds series "concurrent, all in flight": ~2 seconds at every point (bounded by the slowest probe) reference line: 30-second poll interval, labeled "the schedule you promised"
+     prompt: Line chart, two series over target counts 1 to 40. The sequential series climbs linearly to 80s and crosses a horizontal dashed reference line at 30s labeled "poll interval"; the concurrent series stays flat near 2s. Annotate the crossing point: "the schedule becomes fiction here".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:377px;right:-336px;top:153px;border-radius:50% 65% 45% 46% / 43% 45% 57% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:464px;height:433px;bottom:-247px;left:570px;border-radius:38% 43% 35% 36% / 61% 52% 55% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v03-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 50px 26px; }
+    .v03-head { display: flex; justify-content: space-between; align-items: flex-end; }
+    .v03-legend { display: flex; gap: 22px; padding-bottom: 10px; }
+    .v03-key { display: flex; align-items: center; gap: 8px; font-family: var(--font-body); font-size: 16px; color: var(--text-secondary); }
+    .v03-swatch { width: 26px; height: 6px; border-radius: 3px; }
+    .v03-cap { margin-top: 4px; font-family: var(--font-body); font-size: 17px; color: var(--text-muted); text-align: center; }
+  </style>
+  <div class="v03-card">
+    <div class="v03-head">
+      <div>
+        <div class="stbr-eyebrow">the fan-out threshold</div>
+        <h2 class="viz-title">sweep time vs. target count</h2>
+      </div>
+      <div class="v03-legend">
+        <div class="v03-key"><span class="v03-swatch" style="background:#008B4C;"></span>sequential blocking, 2s worst-case each</div>
+        <div class="v03-key"><span class="v03-swatch" style="background:#306C40;"></span>concurrent, all in flight</div>
+      </div>
+    </div>
+    <svg width="1310" height="500" viewBox="0 0 1310 500">
+      <!-- y gridlines: 0/20/40/60/80 s -->
+      <line x1="80" y1="430" x2="1280" y2="430" stroke="#1B231D" stroke-width="2"/>
+      <line x1="80" y1="330" x2="1280" y2="330" stroke="#E8E0CD" stroke-width="1.5"/>
+      <line x1="80" y1="230" x2="1280" y2="230" stroke="#E8E0CD" stroke-width="1.5"/>
+      <line x1="80" y1="130" x2="1280" y2="130" stroke="#E8E0CD" stroke-width="1.5"/>
+      <line x1="80" y1="30"  x2="1280" y2="30"  stroke="#E8E0CD" stroke-width="1.5"/>
+      <text x="70" y="435" text-anchor="end" font-family="Inter" font-size="16" fill="#5B6B5E">0s</text>
+      <text x="70" y="335" text-anchor="end" font-family="Inter" font-size="16" fill="#5B6B5E">20s</text>
+      <text x="70" y="235" text-anchor="end" font-family="Inter" font-size="16" fill="#5B6B5E">40s</text>
+      <text x="70" y="135" text-anchor="end" font-family="Inter" font-size="16" fill="#5B6B5E">60s</text>
+      <text x="70" y="35"  text-anchor="end" font-family="Inter" font-size="16" fill="#5B6B5E">80s</text>
+      <!-- x ticks: 1/5/10/20/40 targets -->
+      <text x="110"  y="456" text-anchor="middle" font-family="Inter" font-size="16" fill="#5B6B5E">1</text>
+      <text x="230"  y="456" text-anchor="middle" font-family="Inter" font-size="16" fill="#5B6B5E">5</text>
+      <text x="380"  y="456" text-anchor="middle" font-family="Inter" font-size="16" fill="#5B6B5E">10</text>
+      <text x="680"  y="456" text-anchor="middle" font-family="Inter" font-size="16" fill="#5B6B5E">20</text>
+      <text x="1280" y="456" text-anchor="middle" font-family="Inter" font-size="16" fill="#5B6B5E">40</text>
+      <text x="680" y="486" text-anchor="middle" font-family="Inter" font-size="17" font-weight="600" fill="#1B231D">targets in the sweep</text>
+      <!-- 30s reference line -->
+      <line x1="80" y1="280" x2="1280" y2="280" stroke="#1B231D" stroke-width="2.5" stroke-dasharray="10 8"/>
+      <text x="1275" y="270" text-anchor="end" font-family="Inter" font-size="17" font-weight="600" fill="#1B231D">30s poll interval: the schedule you promised</text>
+      <!-- concurrent series: flat ~2s -->
+      <polyline points="110,420 230,420 380,420 680,420 1280,420" fill="none" stroke="#306C40" stroke-width="5"/>
+      <circle cx="110" cy="420" r="6" fill="#306C40" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="230" cy="420" r="6" fill="#306C40" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="380" cy="420" r="6" fill="#306C40" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="680" cy="420" r="6" fill="#306C40" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="1280" cy="420" r="6" fill="#306C40" stroke="#FFFFFF" stroke-width="2"/>
+      <text x="1268" y="404" text-anchor="end" font-family="Inter" font-size="16" fill="#306C40" font-weight="600">~2s at every point, bounded by the slowest probe</text>
+      <!-- sequential series: 2/10/20/40/80 s -->
+      <polyline points="110,420 230,380 380,330 680,230 1280,30" fill="none" stroke="#008B4C" stroke-width="5"/>
+      <circle cx="110" cy="420" r="6" fill="#008B4C" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="230" cy="380" r="6" fill="#008B4C" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="380" cy="330" r="6" fill="#008B4C" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="680" cy="230" r="6" fill="#008B4C" stroke="#FFFFFF" stroke-width="2"/>
+      <circle cx="1280" cy="30" r="6" fill="#008B4C" stroke="#FFFFFF" stroke-width="2"/>
+      <!-- crossing point: sequential hits 30s at 15 targets -->
+      <circle cx="530" cy="280" r="11" fill="#FFD23F" stroke="#1B231D" stroke-width="3"/>
+      <line x1="536" y1="290" x2="560" y2="322" stroke="#1B231D" stroke-width="2"/>
+      <text x="568" y="334" font-family="Inter" font-size="19" font-weight="700" fill="#1B231D">the schedule becomes fiction here</text>
+      <text x="568" y="358" font-family="Inter" font-size="15" fill="#5B6B5E">15 targets &#215; 2s worst case &gt; one 30s tick</text>
+    </svg>
+    <div class="v03-cap">the blocking sweep grows with every target; the concurrent sweep costs the slowest single probe</div>
+  </div>
+</div>
+</body></html>

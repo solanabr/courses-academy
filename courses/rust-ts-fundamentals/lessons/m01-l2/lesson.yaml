@@ -1,0 +1,111 @@
+id: lesson-rtf-m01-l2
+slug: m01-l2
+title: "Node 24, TypeScript 7, and your first probe"
+skills:
+  - solana-fundamentals
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "typescript": "7.0.2"
+    "tsx": "4.23.13"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: latency-stats
+    type: code
+    language: typescript
+    starter: latency-stats/starter.ts
+    solution: latency-stats/solution.ts
+    tests: latency-stats/tests.json
+    hints:
+      - "Sort a COPY of the parsed numbers ascending with a numeric comparator, (a, b) => a - b, before anything else; min and max fall out of the sorted ends."
+      - "Nearest-rank p95 on 20 samples: Math.ceil(0.95 * 20) - 1 = 18, so the answer is the 19th value, not the max."
+      - "Round only the mean, and only at the end: Math.round(x * 100) / 100."
+  - key: toolchain-check
+    type: quiz
+    questions:
+      - id: m01-l2-q1
+        prompt: "Your probe reads `const first = samples[0]` and the compiler insists `first` might be undefined even though you 'know' the array isn't empty. Which flag is speaking, and what is it saying?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "strict, it bans indexing arrays until you've declared their exact length in the type"
+            correct: false
+            feedback: "strict is the umbrella, but nothing in it demands fixed-length types. The specific voice here is the index-access flag, and its ask is a check, not a length declaration."
+          - id: b
+            label: "noUncheckedIndexedAccess, indexing can miss, so the element type includes undefined until you check"
+            correct: true
+            feedback: "This is the flag that makes an indexed read tell the truth: index 0 might not exist, so the element type carries undefined until a guard removes it. What it asks for is a check, not a cast."
+          - id: c
+            label: "exactOptionalPropertyTypes, array elements are optional properties and need the ?. operator everywhere"
+            correct: false
+            feedback: "That flag governs writing undefined into optional object properties, it has nothing to say about array indexing. Mixing the two up is common because both surface 'possibly undefined'."
+          - id: d
+            label: "noUncheckedSideEffectImports, the unchecked flags cover reads whose target may be missing"
+            correct: false
+            feedback: "Same word, different job: that one makes a bare import \"./x\" point at a file that exists. It never looks at an array read, and the two get confused because both start with noUnchecked."
+        explanation: "noUncheckedIndexedAccess makes indexed access tell the truth: samples[0] is T | undefined because index 0 might not exist. One if-check or a bounds guard narrows it, and the class of bug where an empty batch crashes the stats line is deleted from your codebase. This is the exact flag the lesson's planted bug trips."
+      - id: m01-l2-q2
+        prompt: "A teammate's setup script runs `npm i -D typescript@7.0.0` and fails. What's wrong with it?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Nothing, 7.0.0 is the GA release; the registry was probably just having a bad day"
+            correct: false
+            feedback: "It will fail every day: no stable 7.0.0 was ever published. GA landed with patch fixes already in, so the first (and only) stable 7.x on the registry is 7.0.2."
+          - id: c
+            label: "There is no stable 7.0.0 or 7.0.1, stable 7.x on the registry is exactly 7.0.2"
+            correct: true
+            feedback: "GA landed with patch fixes already rolled in, so the stable 7.x line begins and ends at 7.0.2. Prose can say TypeScript 7.0; an install line has to say the version the registry actually holds."
+          - id: b
+            label: "Dev dependencies can't pin exact versions, the line needs a caret range like ^7"
+            correct: false
+            feedback: "Exact pins are perfectly legal in devDependencies (and often wise for a compiler). The install fails because that exact version doesn't exist, not because it's exact."
+          - id: d
+            label: "7.0.0 lives behind the next dist-tag, so the install line needs typescript@next"
+            correct: false
+            feedback: "The next tag carries a 7.1.0 dev build, not a 7.0.0. Ask the registry yourself with npm view typescript dist-tags.latest dist-tags.next and the two tags answer the question in one line."
+        explanation: "A registry quirk worth knowing, and worth confirming yourself with `npm view typescript versions`: no 7.0.0 was ever published in any form, and 7.0.1 exists only as the pre-release 7.0.1-rc, so TypeScript 7's stable line begins and ends at 7.0.2 (checked 2026-09-06). Prose can say 'TypeScript 7.0'; install lines must say 7.0.2. It's also a small preview of a course-long habit: versions are checked against the registry, never assumed."
+      - id: m01-l2-q3
+        prompt: "You try wiring typescript-eslint into the fresh TS 7 project and it refuses to run. Per the lesson's caveat box, what's the actual cause?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "TS 7 dropped the type-checker layers that lint rules depend on for their analysis"
+            correct: false
+            feedback: "The checker is fully there, 7.0 matches 6.0's type-checking behavior. What's missing is the API surface tools use to CALL it; the checking itself is faster than ever."
+          - id: d
+            label: "It needs a global tsc installed on PATH, and npx-scoped installs hide the local one"
+            correct: false
+            feedback: "npx runs the binary in your own node_modules, which is the point of a per-project pin; nothing here is hidden. A linter does not shell out to tsc anyway, it asks the compiler API for types."
+          - id: c
+            label: "The Go compiler emits different JavaScript output that ESLint's own parser can't read"
+            correct: false
+            feedback: "Linters read your source, not the compiler's output, and the native port changes the compiler's implementation language, not what it emits. The gap is the missing programmatic API."
+          - id: a
+            label: "TS 7 shipped with no programmatic API, tools that drive the compiler wait for 7.1"
+            correct: true
+            feedback: "The GA post says 7.1 will ship a new and different API, and until it does, anything that calls the compiler in-process is stuck. That is why wild repos, kit included, still pin 5.x for tooling."
+        explanation: "The GA post says it plainly: 'We expect TypeScript 7.1 to ship with a new (and different) API.' Until then, tooling that programmatically drives the compiler, typescript-eslint, framework language plugins, stays on 5.x/6.x, which is why kit itself builds with typescript ^5.9.3. Fastest compiler ever shipped, ecosystem still catching up: both true at once."
+      - id: m01-l2-q4
+        prompt: "A 2022 blog post warns that your ESM probe can't use a CommonJS-era package without a bundler workaround. In today's Node 24, is that still true?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Yes, ESM and CJS still can't share a process without a bundler translating between them"
+            correct: false
+            feedback: "That was the 2022 reality. Interop has been the runtime's job for a while now, and the last missing direction, require() of an ES module, is stable in Node 24."
+          - id: b
+            label: "No, require(esm) is stable in Node 24; the war is over, so author ESM-first and move on"
+            correct: true
+            feedback: "The runtime absorbed the problem: require(esm) is stable in Node 24 and tsc --init already emits ESM-first settings, so the workaround that post describes is answering a question from 2022."
+          - id: d
+            label: "Yes for packages that ship CommonJS, importing one from ESM still needs a bundler step"
+            correct: false
+            feedback: "That direction has worked in Node for years, and the other one closed in 24. Consuming a CommonJS package from an ESM file is an import, not a build step; the bundler was never part of this."
+          - id: c
+            label: "Only if you launch node with the experimental modules flag that enables cross-loading"
+            correct: false
+            feedback: "No flag needed anymore, the docs' own version history marks require(esm) 'no longer experimental'. Advice that mentions the flag is dated to the transition years."
+        explanation: "The lesson spends exactly one paragraph on ESM because that's what the 2026 reality deserves: require(esm) is stable, tsc --init emits ESM-first settings (module: nodenext), and the decade of interop folklore is now archaeology. Write ESM, consume what you need, spend the reclaimed attention on types."

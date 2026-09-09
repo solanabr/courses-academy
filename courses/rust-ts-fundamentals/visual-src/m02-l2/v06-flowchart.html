@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Startup sequence of the guarded fleet
+     purpose: place the new boundary in the fleet's run order so the reader sees where refusal happens relative to the cron
+     data: cron fires -> check-config/fleet startup -> readFileSync pulse.config.json -> JSON.parse (unknown) -> parseOrExit(configSchema, raw) parseOrExit success -> typed FleetConfig -> probe loop runs on trusted types parseOrExit failure -> error tree printed -> exit 1 -> cron run marked red -> operator fixes the field
+     prompt: Vertical flowchart, six nodes down the spine from cron trigger to parseOrExit, then a fork: right branch to the probe loop (calm styling), left branch to printed tree, exit 1, red cron run, operator fix (alert styling). The fork node is the visual center.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:444px;height:515px;right:-255px;top:212px;border-radius:52% 41% 44% 51% / 63% 46% 45% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:537px;height:532px;bottom:-318px;left:-318px;border-radius:52% 56% 35% 35% / 40% 56% 57% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:28px;padding:36px 48px 34px;}
+  .n{border:1.5px solid var(--border-subtle);background:var(--surface-paper);border-radius:12px;padding:7px 16px;display:flex;flex-direction:column;justify-content:center;text-align:center;font:600 14.5px/1.3 var(--font-body);color:var(--text-primary);}
+  .n .sub{font:500 11px/1.3 var(--font-body);color:var(--text-muted);margin-top:2px;}
+  .n.mono{font-family:var(--font-mono);font-size:13.5px;}
+  .n.gate{background:var(--stbr-yellow);border-color:var(--stbr-yellow);color:var(--stbr-dark);}
+  .n.gate .sub{color:rgba(27,35,29,.72);}
+  .n.alert{background:var(--surface-inverse);border-color:var(--surface-inverse);color:var(--stbr-cream);}
+  .n.alert .sub{color:rgba(245,232,202,.7);}
+  .n.calm{background:var(--stbr-emerald);border-color:var(--stbr-emerald);color:var(--stbr-cream);}
+  .n.calm .sub{color:rgba(245,232,202,.75);}
+  .spine{display:flex;flex-direction:column;align-items:center;margin-top:14px;}
+  .spine .n{width:400px;height:46px;}
+  .va{width:2px;height:12px;background:var(--stbr-dark);position:relative;margin-bottom:7px;}
+  .va::after{content:"";position:absolute;left:-5px;bottom:-7px;border-top:7px solid var(--stbr-dark);border-left:6px solid transparent;border-right:6px solid transparent;}
+  .split{position:relative;width:1360px;height:56px;margin:0 auto;}
+  .split .l{position:absolute;background:var(--stbr-dark);}
+  .split .tip{position:absolute;width:0;height:0;border-top:7px solid var(--stbr-dark);border-left:6px solid transparent;border-right:6px solid transparent;}
+  .blabel{position:absolute;font:800 12px/1.3 var(--font-display);letter-spacing:.06em;text-transform:uppercase;padding:3px 11px;border-radius:999px;}
+  .branches{display:flex;width:1360px;margin:0 auto;gap:40px;align-items:flex-start;}
+  .half{display:flex;align-items:stretch;justify-content:center;min-height:64px;}
+  .half .n{flex:none;}
+  .ha{width:20px;height:2px;background:var(--stbr-dark);align-self:center;flex:none;position:relative;margin:0 6px;}
+  .ha::after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid var(--stbr-dark);border-top:5px solid transparent;border-bottom:5px solid transparent;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">where refusal happens in the run order</div>
+  <h2 class="viz-title">startup sequence of the guarded fleet</h2>
+
+  <div class="spine">
+    <div class="n">cron fires</div>
+    <div class="va"></div>
+    <div class="n">check-config / fleet startup</div>
+    <div class="va"></div>
+    <div class="n mono">readFileSync pulse.config.json</div>
+    <div class="va"></div>
+    <div class="n mono">JSON.parse<span class="sub">the value is still unknown</span></div>
+    <div class="va"></div>
+    <div class="n mono gate" style="height:54px;">parseOrExit(configSchema, raw)<span class="sub">the boundary: the fork below</span></div>
+  </div>
+
+  <div class="split">
+    <div class="l" style="left:679px;top:0;width:2px;height:13px;"></div>
+    <div class="l" style="left:121px;top:13px;width:860px;height:2px;"></div>
+    <div class="l" style="left:121px;top:13px;width:2px;height:30px;"></div>
+    <div class="l" style="left:978px;top:13px;width:2px;height:30px;"></div>
+    <div class="tip" style="left:116px;top:43px;"></div>
+    <div class="tip" style="left:973px;top:43px;"></div>
+    <div class="blabel" style="left:140px;top:21px;background:var(--surface-inverse);color:var(--stbr-cream);">failure</div>
+    <div class="blabel" style="left:998px;top:21px;background:var(--stbr-emerald);color:var(--stbr-cream);">success</div>
+  </div>
+
+  <div class="branches">
+    <div class="half" style="width:820px;">
+      <div class="n alert" style="width:172px;">error tree printed<span class="sub">names the field</span></div>
+      <div class="ha"></div>
+      <div class="n alert mono" style="width:110px;">exit 1</div>
+      <div class="ha"></div>
+      <div class="n alert" style="width:180px;">cron run marked red</div>
+      <div class="ha"></div>
+      <div class="n" style="width:190px;">operator fixes the field</div>
+    </div>
+    <div class="half" style="width:500px;">
+      <div class="n mono" style="width:190px;">typed FleetConfig</div>
+      <div class="ha"></div>
+      <div class="n calm" style="width:230px;">probe loop runs<span class="sub">on trusted types</span></div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

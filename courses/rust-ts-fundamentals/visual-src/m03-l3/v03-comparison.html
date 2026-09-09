@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The same deep link in dev and in production
+     purpose: make the dev-prod asymmetry visible so the 404 stops being mysterious
+     data: request: GET /history dev server: no file match -> silently rewrites to index.html -> app renders (favor built in) production, no vercel.json: no file match -> 404 (a static host serves files, nothing else) production, with rewrite: /(.*) matches -> serves /index.html -> client router renders
+     prompt: Three horizontal lanes, one per scenario in data, each tracing the same GET /history request left to right to its outcome. Mark the dev lane's rewrite step as implicit, the failing production lane's outcome in a warning tone, and the rewrite lane's vercel.json step as the one added block. Label outcomes clearly at the right edge.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:535px;top:-296px;right:-296px;border-radius:36% 60% 41% 43% / 48% 43% 39% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:381px;height:509px;bottom:-320px;left:791px;border-radius:46% 43% 62% 52% / 60% 39% 48% 52%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lane { display:grid; grid-template-columns:250px 1fr 250px; align-items:center;
+          background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:18px 22px; min-height:118px; }
+  .lane + .lane { margin-top:18px; }
+  .lane-lbl .nm { font-family:var(--font-display); font-weight:900; font-size:21px;
+                  color:var(--text-primary); line-height:1.1; }
+  .lane-lbl .sub { font-family:var(--font-mono); font-weight:600; font-size:13.5px;
+                   color:var(--text-muted); margin-top:5px; }
+  .chain { display:flex; align-items:center; gap:10px; padding:0 14px; }
+  .chip { border-radius:var(--radius-lg); padding:11px 15px; text-align:center; }
+  .chip .t { font-family:var(--font-body); font-weight:700; font-size:15.5px;
+             color:var(--text-primary); line-height:1.2; }
+  .chip .s { font-family:var(--font-body); font-weight:600; font-size:12px;
+             color:var(--text-muted); margin-top:3px; }
+  .chip.req { background:var(--surface-inverse); }
+  .chip.req .t { font-family:var(--font-mono); color:var(--text-on-dark); }
+  .chip.step { background:var(--surface-paper); border:1.5px solid var(--border-strong); }
+  .chip.implicit { border-style:dashed; }
+  .chip.implicit .t { font-style:italic; }
+  .chip.added { background:var(--stbr-yellow); border:2px solid var(--stbr-dark); }
+  .chip.added .t { font-family:var(--font-mono); color:var(--stbr-dark); }
+  .chip.added .s { color:var(--stbr-dark); font-weight:700; }
+  .arr { flex:0 0 34px; }
+  .out { border-radius:var(--radius-lg); padding:14px 16px; text-align:center; }
+  .out .t { font-family:var(--font-display); font-weight:900; font-size:20px; line-height:1.1; }
+  .out .s { font-family:var(--font-body); font-weight:600; font-size:12.5px; margin-top:5px; }
+  .out.ok { background:var(--surface-brand); }
+  .out.ok .t { color:var(--text-on-brand); } .out.ok .s { color:var(--stbr-cream); opacity:.85; }
+  .out.bad { background:var(--surface-inverse); border:3px solid var(--stbr-yellow); }
+  .out.bad .t { color:var(--stbr-yellow); } .out.bad .s { color:var(--text-on-dark); opacity:.85; }
+</style>
+  <div class="stbr-eyebrow">why the deep link 404s</div>
+  <h2 class="viz-title">the same GET /history, three ways</h2>
+  <div class="lane">
+    <div class="lane-lbl"><div class="nm">dev server</div><div class="sub">vite dev</div></div>
+    <div class="chain">
+      <div class="chip req"><div class="t">GET /history</div></div>
+      <div class="arr"><svg width="34" height="14"><line x1="2" y1="7" x2="24" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="33,7 22,2 22,12" fill="#306c40"/></svg></div>
+      <div class="chip step"><div class="t">no file match</div></div>
+      <div class="arr"><svg width="34" height="14"><line x1="2" y1="7" x2="24" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="33,7 22,2 22,12" fill="#306c40"/></svg></div>
+      <div class="chip step implicit"><div class="t">silently rewrites to index.html</div><div class="s">implicit: the favor is built in</div></div>
+    </div>
+    <div class="out ok"><div class="t">app renders</div></div>
+  </div>
+  <div class="lane">
+    <div class="lane-lbl"><div class="nm">production</div><div class="sub">no vercel.json</div></div>
+    <div class="chain">
+      <div class="chip req"><div class="t">GET /history</div></div>
+      <div class="arr"><svg width="34" height="14"><line x1="2" y1="7" x2="24" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="33,7 22,2 22,12" fill="#306c40"/></svg></div>
+      <div class="chip step"><div class="t">no file match</div></div>
+      <div class="arr"><svg width="34" height="14"><line x1="2" y1="7" x2="24" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="33,7 22,2 22,12" fill="#306c40"/></svg></div>
+      <div class="chip step" style="background:transparent;border-color:transparent;"><div class="t" style="color:var(--text-muted);font-style:italic;">no rewrite happens</div></div>
+    </div>
+    <div class="out bad"><div class="t">404</div><div class="s">a static host serves files, nothing else</div></div>
+  </div>
+  <div class="lane">
+    <div class="lane-lbl"><div class="nm">production</div><div class="sub">vercel.json rewrite</div></div>
+    <div class="chain">
+      <div class="chip req"><div class="t">GET /history</div></div>
+      <div class="arr"><svg width="34" height="14"><line x1="2" y1="7" x2="24" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="33,7 22,2 22,12" fill="#306c40"/></svg></div>
+      <div class="chip added"><div class="t">/(.*) matches</div><div class="s">the one added block</div></div>
+      <div class="arr"><svg width="34" height="14"><line x1="2" y1="7" x2="24" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="33,7 22,2 22,12" fill="#306c40"/></svg></div>
+      <div class="chip step"><div class="t">serves /index.html</div></div>
+    </div>
+    <div class="out ok"><div class="t">client router renders</div></div>
+  </div>
+</div>
+</body></html>

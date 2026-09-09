@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two honest answers to a five minute cache
+     purpose: weigh cache-busting against a staleness indicator so the challenge reads as a design choice, not busywork
+     data: strategy: cache-bust query string | show staleness honestly freshness: reads bypass the 5-min cache | reads may trail up to cache + cron interval cost: every poll hits origin, forfeits CDN sharing | zero extra load, viewer sees honest age fails when: viewers scale up and hammer origin | nobody reads the indicator this course: both, because the data changes every 30 min anyway
+     prompt: Two-column comparison card with the four row labels from data: freshness, cost, fails when, and a final full-width verdict strip reading "pulse-board ships both". Left column titled with a query-string motif, right column with a stale badge motif. Keep cells to one short line each.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:570px;height:576px;bottom:-329px;right:-329px;border-radius:39% 35% 36% 39% / 44% 56% 58% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:522px;height:460px;left:-293px;top:182px;border-radius:55% 62% 40% 54% / 57% 41% 59% 48%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:44px 56px 40px;}
+  .row{display:flex;gap:14px;margin-top:12px;}
+  .lbl{width:190px;flex:none;display:flex;align-items:center;font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);}
+  .cell{flex:1;box-sizing:border-box;background:var(--surface-paper);border-radius:12px;padding:15px 20px;font-family:var(--font-body);font-size:15.5px;line-height:1.35;color:var(--text-primary);display:flex;align-items:center;}
+  .head{flex:1;box-sizing:border-box;border:2px solid var(--stbr-green);border-radius:16px;background:var(--surface-card);padding:18px 22px;text-align:center;}
+  .head .ht{font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--text-primary);}
+  .head .motif{display:inline-block;margin-top:10px;font-family:var(--font-mono);font-weight:700;font-size:13px;background:var(--surface-inverse);color:var(--text-on-dark);border-radius:9px;padding:7px 13px;}
+  .head .motif.badge{background:var(--surface-card);border:1.5px solid var(--border-strong);color:var(--text-secondary);border-radius:999px;}
+  .verdict{margin-top:22px;background:var(--surface-brand);border-radius:14px;padding:18px 28px;display:flex;align-items:center;justify-content:center;gap:14px;}
+  .verdict .vt{font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-on-brand);}
+  .verdict .pill{font-family:var(--font-display);font-weight:900;font-size:18px;background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:999px;padding:7px 20px;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">a design choice, not busywork</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:14px;">two honest answers to a five-minute cache</h2>
+  <div class="row">
+    <div class="lbl">strategy</div>
+    <div class="head">
+      <div class="ht">cache-bust query string</div>
+      <div class="motif">fetch(url + "?t=" + Date.now())</div>
+    </div>
+    <div class="head">
+      <div class="ht">show staleness honestly</div>
+      <div class="motif badge">updated 12 min ago</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="lbl">freshness</div>
+    <div class="cell">reads bypass the 5-min cache</div>
+    <div class="cell">reads may trail up to cache + cron interval</div>
+  </div>
+  <div class="row">
+    <div class="lbl">cost</div>
+    <div class="cell">every poll hits origin, forfeits CDN sharing</div>
+    <div class="cell">zero extra load; viewer sees an honest age</div>
+  </div>
+  <div class="row">
+    <div class="lbl">fails when</div>
+    <div class="cell">viewers scale up and hammer origin</div>
+    <div class="cell">nobody reads the indicator</div>
+  </div>
+  <div class="verdict">
+    <span class="vt">pulse-board ships</span>
+    <span class="pill">both</span>
+    <span class="vt">since the data only changes every 30 min anyway</span>
+  </div>
+</div>
+</div>
+</body></html>

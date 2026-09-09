@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Anatomy of your first closure
+     purpose: label every part of the map_err line so the syntax stops being noise
+     data: line: parse_latency(line).map_err(|e| ProbeError::BadFixture(e))? annotation on parse_latency(line): produces Result<u64, ParseIntError> annotation on .map_err(...): runs its argument only on the Err lane annotation on |e|: closure parameter, the ParseIntError being transformed annotation on ProbeError::BadFixture(e): closure body, wraps the foreign error in our variant annotation on ?: now both lanes line up, propagate as usual
+     prompt: One line of code rendered large with five callout labels connected by thin leader lines to the segments listed in the data, in reading order left to right. Emphasize the closure segment with a bracket spanning parameter and body.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:469px;height:447px;top:-230px;right:-230px;border-radius:54% 61% 57% 65% / 49% 44% 36% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:528px;height:454px;bottom:-268px;left:-268px;border-radius:37% 43% 64% 38% / 60% 52% 45% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:36px 48px 34px;}
+    .v05-panel{background:var(--surface-inverse);border-radius:var(--radius-xl);padding:34px 30px 24px;margin-top:10px;}
+    .v05-grid{display:grid;grid-template-columns:repeat(5,max-content);justify-content:center;}
+    .v05-seg{font-family:var(--font-mono);font-size:29px;color:var(--text-on-dark);white-space:pre;}
+    .v05-closure{color:var(--stbr-yellow);}
+    .v05-bracket{border-top:4px solid var(--stbr-yellow);margin-top:10px;padding-top:7px;text-align:center;
+                 font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--stbr-yellow);}
+    .v05-bcell{margin-top:10px;}
+    .v05-badge{width:30px;height:30px;border-radius:var(--radius-pill);border:2px solid var(--stbr-cream);
+               color:var(--stbr-cream);font-family:var(--font-mono);font-size:16px;font-weight:700;
+               display:flex;align-items:center;justify-content:center;justify-self:center;margin-top:16px;}
+    .v05-notes{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:22px;}
+    .v05-note{background:var(--surface-paper);border:1.5px solid var(--border-subtle);border-radius:var(--radius-lg);padding:14px 16px;}
+    .v05-nb{width:26px;height:26px;border-radius:var(--radius-pill);background:var(--surface-brand);color:var(--text-on-brand);
+            font-family:var(--font-mono);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+    .v05-nc{font-family:var(--font-mono);font-size:14.5px;font-weight:700;color:var(--stbr-green);margin-bottom:6px;overflow-wrap:break-word;}
+    .v05-nt{font-family:var(--font-body);font-size:15.5px;line-height:1.35;color:var(--text-primary);}
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">CLOSURE ANATOMY</div>
+    <h2 class="viz-title">anatomy of your first closure</h2>
+    <div class="v05-panel">
+      <div class="v05-grid">
+        <div class="v05-seg">parse_latency(line)</div>
+        <div class="v05-seg">.map_err(</div>
+        <div class="v05-seg v05-closure">|e|</div>
+        <div class="v05-seg v05-closure"> ProbeError::BadFixture(e)</div>
+        <div class="v05-seg">)<span style="font-weight:700;">?</span></div>
+        <div></div><div></div>
+        <div class="v05-bracket" style="grid-column:span 2;">the closure: parameter + body</div>
+        <div class="v05-bcell"></div>
+        <div class="v05-badge">1</div>
+        <div class="v05-badge">2</div>
+        <div class="v05-badge">3</div>
+        <div class="v05-badge">4</div>
+        <div class="v05-badge">5</div>
+      </div>
+    </div>
+    <div class="v05-notes">
+      <div class="v05-note">
+        <div class="v05-nb">1</div>
+        <div class="v05-nc">parse_latency(line)</div>
+        <div class="v05-nt">produces <span style="font-family:var(--font-mono);font-size:14px;">Result&lt;u64, ParseIntError&gt;</span></div>
+      </div>
+      <div class="v05-note">
+        <div class="v05-nb">2</div>
+        <div class="v05-nc">.map_err(…)</div>
+        <div class="v05-nt">runs its argument only on the <strong>Err</strong> lane</div>
+      </div>
+      <div class="v05-note">
+        <div class="v05-nb">3</div>
+        <div class="v05-nc">|e|</div>
+        <div class="v05-nt">closure parameter: the <span style="font-family:var(--font-mono);font-size:14px;">ParseIntError</span> being transformed</div>
+      </div>
+      <div class="v05-note">
+        <div class="v05-nb">4</div>
+        <div class="v05-nc">ProbeError::BadFixture(e)</div>
+        <div class="v05-nt">closure body: wraps the foreign error in our variant</div>
+      </div>
+      <div class="v05-note">
+        <div class="v05-nb">5</div>
+        <div class="v05-nc">?</div>
+        <div class="v05-nt">now both lanes line up, propagate as usual</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

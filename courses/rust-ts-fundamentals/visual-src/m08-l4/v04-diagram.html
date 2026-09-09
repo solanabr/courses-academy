@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One signature, three homes: where a key lives changes custody, not math
+     purpose: defuse the "is a file keypair a toy?" doubt and mark the wallet boundary as a course seam, not a capability gap
+     data: Center: 32-byte Ed25519 seed -> derived public key = your address -> identical signature math in all three homes. Home 1: gitignored seed file (this lesson): zero UX, full custody on you, worthless devnet SOL only. Home 2: browser wallet: connection UX, signing prompts, wallet-standard -> the client-side sibling course's territory, in production as this was written, so no slug is quoted. Home 3: hardware device: key never leaves the chip -> out of scope here. Banner: the network verifies the signature, never asks where the key lived.
+     prompt: Hub-and-spoke diagram: the seed-to-address derivation as the hub, three spokes for the file, browser wallet, and hardware homes with their one-line custody notes from the data. Mark the browser-wallet spoke with a course-seam badge naming the sibling course. Banner sentence along the bottom.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:597px;height:579px;top:-329px;right:-329px;border-radius:51% 63% 44% 60% / 55% 58% 36% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:493px;bottom:-252px;left:495px;border-radius:40% 57% 63% 42% / 55% 55% 64% 42%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:42px 56px 36px; }
+    .mono { font-family:var(--font-mono); }
+    .hubc { color:var(--stbr-cream); border:1.5px solid rgba(245,232,202,.55); border-radius:var(--radius-pill);
+            padding:9px 18px; font-size:16.5px; white-space:nowrap; }
+    .harr { display:flex; align-items:center; width:34px; }
+    .hline { height:2.5px; background:var(--stbr-cream); flex:1; opacity:.8; }
+    .htri { width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:8px solid var(--stbr-cream); opacity:.8; }
+    .home { flex:1; border:2px solid var(--stbr-green); border-radius:var(--radius-xl); background:#fff; padding:20px 24px; height:206px; }
+    .home h4 { margin:0 0 10px; font-family:var(--font-display); font-weight:800; font-size:23px; color:var(--stbr-dark); }
+    .home ul { margin:0; padding:0 0 0 18px; font-family:var(--font-body); font-size:15px; color:var(--text-secondary); line-height:1.55; }
+    .chip { display:inline-block; border-radius:var(--radius-pill); padding:5px 13px; font-family:var(--font-body); font-size:13px; font-weight:700; margin-bottom:12px; }
+    .vcon { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .vline { width:3px; height:14px; background:var(--stbr-green); }
+    .vtri { width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:9px solid var(--stbr-green); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">where a key lives changes custody, not math</div>
+    <h2 class="viz-title">one signature, three homes</h2>
+    <div style="background:var(--surface-inverse); border-radius:var(--radius-xl); height:88px; display:flex; align-items:center; justify-content:center; padding:0 30px;">
+      <span class="hubc mono">32-byte Ed25519 seed</span>
+      <div class="harr"><div class="hline"></div><div class="htri"></div></div>
+      <span class="hubc mono">derived public key = your address</span>
+      <div class="harr"><div class="hline"></div><div class="htri"></div></div>
+      <span class="hubc" style="font-family:var(--font-body); font-weight:600;">identical signature math in all three homes</span>
+    </div>
+    <div style="display:flex; gap:24px; height:36px;">
+      <div class="vcon"><div class="vline"></div><div class="vtri"></div></div>
+      <div class="vcon"><div class="vline"></div><div class="vtri"></div></div>
+      <div class="vcon"><div class="vline"></div><div class="vtri"></div></div>
+    </div>
+    <div style="display:flex; gap:24px;">
+      <div class="home">
+        <span class="chip" style="background:var(--stbr-emerald); color:var(--stbr-cream);">this lesson</span>
+        <h4>gitignored seed file</h4>
+        <ul><li>zero UX</li><li>full custody on you</li><li>worthless devnet SOL only</li></ul>
+      </div>
+      <div class="home" style="border-color:var(--stbr-emerald); border-width:3px;">
+        <span class="chip" style="background:var(--stbr-yellow); color:var(--stbr-dark);">course seam &rarr; the client-side course</span>
+        <h4>browser wallet</h4>
+        <ul><li>connection UX</li><li>signing prompts</li><li>wallet-standard</li></ul>
+      </div>
+      <div class="home">
+        <span class="chip" style="background:var(--surface-paper); color:var(--text-muted); border:1.5px solid var(--border-subtle);">out of scope here</span>
+        <h4>hardware device</h4>
+        <ul><li>the key never leaves the chip</li></ul>
+      </div>
+    </div>
+    <div style="margin-top:22px; background:var(--stbr-emerald); border-radius:var(--radius-lg); padding:15px 26px; text-align:center;">
+      <p style="margin:0; font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--stbr-cream);">the network verifies the signature; it never asks where the key lived</p>
+    </div>
+  </div>
+</div>
+</body></html>

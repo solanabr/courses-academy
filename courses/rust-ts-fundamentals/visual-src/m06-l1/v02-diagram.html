@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: 40 blocking threads vs 40 parked tasks on one thread
+     purpose: show that async changes how many waits one thread can hold, not how fast one wait finishes
+     data: left panel: "threads" - 40 OS threads, each holding one blocked HTTP request, each with its own stack; kernel schedules all 40 right panel: "tokio tasks" - 1 worker thread + a task queue of 40 paused probe futures; each future parks at .await; runtime resumes a task when its socket is ready shared caption: both finish the sweep in ~max(single probe latency); the network takes what the network takes note: per-task state is hundreds of bytes; per-thread stacks are megabytes
+     prompt: Two side-by-side panels. Left: 40 small horizontal bars labeled "OS thread + stack", each with a clock icon meaning blocked-on-network. Right: one bar labeled "worker thread" above a tray of 40 small tokens labeled "parked task", with an arrow cycling between tray and thread labeled "resume on socket ready". A shared caption under both: "same wall-clock sweep; wildly different cost per wait".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:488px;height:445px;right:-311px;top:193px;border-radius:38% 48% 59% 64% / 38% 49% 56% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:601px;height:563px;bottom:-331px;left:-331px;border-radius:59% 61% 45% 55% / 42% 43% 60% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 30px 48px 26px; }
+    .v02-cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 28px; margin-top: 12px; }
+    .v02-panel { border: 2px solid var(--border-strong); border-radius: var(--radius-xl); padding: 16px 20px 14px; }
+    .v02-phead { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--text-primary); }
+    .v02-psub { font-family: var(--font-body); font-size: 14.5px; color: var(--text-muted); margin: 2px 0 12px; }
+    .v02-thrgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .v02-thr { height: 24px; background: #ffffff; border: 1.5px solid var(--border-strong); border-radius: 6px;
+               display: flex; align-items: center; gap: 6px; padding: 0 8px;
+               font-family: var(--font-body); font-size: 11px; color: var(--text-secondary); }
+    .v02-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--stbr-dark); }
+    .v02-legend { margin-top: 9px; font-family: var(--font-body); font-size: 13.5px; color: var(--text-muted); }
+    .v02-cost { margin-top: 10px; display: inline-block; background: var(--surface-inverse); color: var(--stbr-cream);
+                border-radius: var(--radius-pill); padding: 6px 16px; font-family: var(--font-body);
+                font-weight: 600; font-size: 14px; }
+    .v02-worker { height: 44px; background: var(--stbr-yellow); border: 2.5px solid var(--stbr-dark);
+                  border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center;
+                  font-family: var(--font-display); font-weight: 800; font-size: 19px; color: var(--stbr-dark); }
+    .v02-cycle { display: flex; justify-content: center; gap: 46px; padding: 6px 0; }
+    .v02-cyc { display: flex; align-items: center; gap: 7px; font-family: var(--font-body); font-size: 13.5px;
+               color: var(--stbr-green); font-weight: 600; }
+    .v02-up { width: 0; border-bottom: 11px solid var(--stbr-emerald); border-left: 6.5px solid transparent;
+              border-right: 6.5px solid transparent; }
+    .v02-down { width: 0; border-top: 11px solid var(--stbr-emerald); border-left: 6.5px solid transparent;
+                border-right: 6.5px solid transparent; }
+    .v02-tray { border: 2px dashed var(--stbr-emerald); border-radius: var(--radius-lg); padding: 10px 12px 12px; }
+    .v02-traylbl { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--stbr-green);
+                   text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .v02-taskgrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; }
+    .v02-task { height: 24px; background: #e6f4ec; border: 1.5px solid var(--stbr-emerald); border-radius: var(--radius-pill);
+                display: flex; align-items: center; justify-content: center;
+                font-family: var(--font-body); font-size: 10px; color: var(--stbr-green); }
+    .v02-caption { margin-top: 20px; display: flex; align-items: center; gap: 20px; }
+    .v02-band { background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-lg);
+                padding: 12px 26px; font-family: var(--font-display); font-weight: 800; font-size: 23px; white-space: nowrap; }
+    .v02-bandnote { flex: 1; font-family: var(--font-body); font-size: 15.5px; color: var(--text-secondary); }
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">what async actually changes</div>
+    <h2 class="viz-title">40 blocking threads vs 40 parked tasks on one thread</h2>
+    <div class="v02-cols">
+      <div class="v02-panel">
+        <div class="v02-phead">threads</div>
+        <div class="v02-psub">40 OS threads: the kernel schedules all 40</div>
+        <div class="v02-thrgrid">
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        <div class="v02-thr"><span class="v02-dot"></span>OS thread + stack</div>
+        </div>
+        <div class="v02-legend"><b>&#9679;</b> = blocked on one HTTP request, holding its own stack</div><br>
+        <span class="v02-cost">cost per wait: an OS thread + a stack measured in MB</span>
+      </div>
+      <div class="v02-panel">
+        <div class="v02-phead">tokio tasks</div>
+        <div class="v02-psub">1 worker thread + a task queue of 40 paused probe futures</div>
+        <div class="v02-worker">worker thread &#215;1</div>
+        <div class="v02-cycle">
+          <div class="v02-cyc"><span class="v02-down"></span>parks at .await</div>
+          <div class="v02-cyc"><span class="v02-up"></span>resume on socket ready</div>
+        </div>
+        <div class="v02-tray">
+          <div class="v02-traylbl">task queue</div>
+          <div class="v02-taskgrid">
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          <div class="v02-task">parked task</div>
+          </div>
+        </div>
+        <br><span class="v02-cost">cost per wait: a parked future, hundreds of bytes</span>
+      </div>
+    </div>
+    <div class="v02-caption">
+      <div class="v02-band">same wall-clock sweep; wildly different cost per wait</div>
+      <div class="v02-bandnote">both finish in ~max(single probe latency); the network takes what the network takes.</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The getBalance result, field by field
+     purpose: map each JSON member to its struct field and show which member is deliberately untyped
+     data: "result": {                      -> BalanceResult "context": {                   -> context: RpcContext "apiVersion": "4.2.1",       -> no field: serde ignores unknown members "slot": 443693778            -> slot: u64 (the slot this answer describes) }, "value": 1                     -> value: u64 (lamports; no bigint ceremony in Rust) }
+     prompt: The JSON fragment on the left with each line connected by an arrow to its annotation on the right, exactly as paired in the data. Highlight the apiVersion line in a muted color with its "ignored" note, and the value line with a small callout contrasting u64 against JavaScript's bigint workaround.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:455px;height:399px;right:-257px;top:185px;border-radius:46% 48% 49% 48% / 54% 60% 46% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:408px;height:479px;bottom:-237px;left:820px;border-radius:51% 45% 38% 43% / 62% 50% 58% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 40px 52px 40px; }
+    .v02-grid { display: grid; grid-template-columns: 620px 90px 1fr; margin-top: 10px; }
+    .v02-code-col { display: flex; flex-direction: column; }
+    .v02-cl { background: var(--surface-inverse); height: 62px; display: flex; align-items: center; padding: 0 26px; font-family: var(--font-mono); font-size: 21px; color: var(--stbr-cream); white-space: pre; }
+    .v02-cl:first-child { border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+    .v02-cl:last-child { border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+    .v02-cl.muted { color: #7C877E; }
+    .v02-mid { display: flex; flex-direction: column; }
+    .v02-conn { height: 62px; display: flex; align-items: center; }
+    .v02-conn-line { flex: 1; height: 3px; background: var(--stbr-emerald); }
+    .v02-conn-head { width: 0; height: 0; border-left: 11px solid var(--stbr-emerald); border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+    .v02-conn.muted .v02-conn-line { background: var(--border-strong); }
+    .v02-conn.muted .v02-conn-head { border-left-color: var(--border-strong); }
+    .v02-ann-col { display: flex; flex-direction: column; }
+    .v02-ann { height: 62px; display: flex; align-items: center; }
+    .v02-chip { border: 2px solid var(--stbr-emerald); border-radius: var(--radius-lg); padding: 7px 16px; font-family: var(--font-body); font-size: 17px; color: var(--text-primary); background: var(--surface-card); }
+    .v02-chip code { font-family: var(--font-mono); font-weight: 700; }
+    .v02-chip.muted { border-color: var(--border-strong); color: var(--text-muted); background: var(--surface-paper); }
+    .v02-chip.hot { border-color: var(--stbr-yellow); background: var(--stbr-yellow); color: var(--stbr-dark); }
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">deserializing getBalance</div>
+    <h2 class="viz-title">every JSON member, mapped or ignored</h2>
+    <div class="v02-grid">
+      <div class="v02-code-col">
+        <div class="v02-cl">"result": {</div>
+        <div class="v02-cl">  "context": {</div>
+        <div class="v02-cl muted">    "apiVersion": "4.2.1",</div>
+        <div class="v02-cl">    "slot": 443693778</div>
+        <div class="v02-cl">  },</div>
+        <div class="v02-cl">  "value": 1</div>
+        <div class="v02-cl">}</div>
+      </div>
+      <div class="v02-mid">
+        <div class="v02-conn"><div class="v02-conn-line"></div><div class="v02-conn-head"></div></div>
+        <div class="v02-conn"><div class="v02-conn-line"></div><div class="v02-conn-head"></div></div>
+        <div class="v02-conn muted"><div class="v02-conn-line"></div><div class="v02-conn-head"></div></div>
+        <div class="v02-conn"><div class="v02-conn-line"></div><div class="v02-conn-head"></div></div>
+        <div class="v02-conn" style="visibility:hidden;"></div>
+        <div class="v02-conn"><div class="v02-conn-line"></div><div class="v02-conn-head"></div></div>
+        <div class="v02-conn" style="visibility:hidden;"></div>
+      </div>
+      <div class="v02-ann-col">
+        <div class="v02-ann"><div class="v02-chip"><code>BalanceResult</code>: the struct this whole object becomes</div></div>
+        <div class="v02-ann"><div class="v02-chip"><code>context: RpcContext</code></div></div>
+        <div class="v02-ann"><div class="v02-chip muted">no field: serde ignores unknown members</div></div>
+        <div class="v02-ann"><div class="v02-chip"><code>slot: u64</code>, the slot this answer describes</div></div>
+        <div class="v02-ann"></div>
+        <div class="v02-ann"><div class="v02-chip hot"><code>value: u64</code>, lamports; no bigint ceremony (JS needs BigInt here)</div></div>
+        <div class="v02-ann"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

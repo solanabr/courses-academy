@@ -1,0 +1,113 @@
+id: lesson-rtf-m05-l1
+slug: m05-l1
+title: "serde: the boundary parser"
+skills:
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "serde": "1.0.229"
+    "serde_json": "1.0.151"
+    "rustc": "1.98.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: kv-config-parser
+    type: code
+    language: rust
+    starter: kv-config-parser/starter.rs
+    solution: kv-config-parser/solution.rs
+    tests: kv-config-parser/tests.json
+    hints:
+      - "pair.split_once('=') splits on the FIRST '=' only and returns Option<(&str, &str)>, None is your \"bad pair\" case."
+      - "Track each field as an Option; after the loop, ok_or_else turns a None into the right \"missing key: <k>\" Err, check name, url, timeout_ms in that fixed order."
+      - "value.parse::<u64>().map_err(|_| format!(\"invalid timeout_ms: {value}\"))?, the m04-l2 error-mapping closure, doing exactly its job."
+      - "Skip empty segments (a trailing ';' makes one) with a continue before splitting."
+  - key: check
+    type: quiz
+    questions:
+      - id: m05l1-q1
+        prompt: "Your config's probe entries carry a \"kind\" field (\"http\" or \"tcp\") with different fields per kind. You model it as a Rust enum with #[serde(tag = \"kind\")]. What does that attribute buy you over leaving the enum untagged?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Tagging switches serde over to compile-time input checking, so a config with a bad kind gets rejected when you build the crate instead of at runtime"
+            correct: false
+            feedback: "No derive can check runtime INPUT at compile time, the config file arrives long after the build. Tagging improves the runtime error, it can't move it."
+          - id: a
+            label: "Untagged enums can't hold variants with different fields at all, so the attribute is what lets Http and Tcp coexist in one enum"
+            correct: false
+            feedback: "Untagged enums compile fine with differing variants, the problem is how they MATCH input (first fit wins), not whether they compile."
+          - id: b
+            label: "The \"kind\" field selects the variant explicitly, so a wrong kind fails with a named error instead of first-match-wins guessing"
+            correct: true
+            feedback: "serde reads the discriminant first and dispatches to exactly one variant, which is why a bad kind comes back as `unknown variant grpc, expected http or tcp` with a line and column attached."
+          - id: d
+            label: "Tagging also closes the entry to unknown fields, so a typo like \"timout_ms\" beside \"kind\" becomes a named error instead of ignored data"
+            correct: false
+            feedback: "Different attribute, and one you cannot pair with this struct anyway: serde ignores unknown JSON fields by default, and deny_unknown_fields is documented as not combining with the flatten Target uses."
+        explanation: "Internally tagged representation reads the discriminant field first and dispatches to exactly one variant, the same job your TS discriminated union's \"kind\" field does for zod. Untagged means serde tries variants in order and takes the first that fits, which silently mis-parses ambiguous data and produces vague errors when nothing fits."
+      - id: m05l1-q2
+        prompt: "In m02-l2 you wrote a zod schema and derived the TypeScript type from it with z.infer. Today you wrote a Rust struct and derived the parser from it. What is the shared discipline underneath both?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Code generation: each tool emits the parser from one declaration, so the type and the validator can never drift apart"
+            correct: false
+            feedback: "Only serde emits anything. zod's schema is a runtime value that walks your data, and z.infer reads a type off it; nothing is generated, which is why the two directions are opposite."
+          - id: a
+            label: "Runtime schema objects: both libraries build a validator value that walks the raw input and returns either cleaned data or a structured list of issues"
+            correct: false
+            feedback: "That describes zod's mechanism, not the shared idea, serde generates parsing CODE at compile time; there is no runtime schema object walking your input."
+          - id: b
+            label: "Defensive validation: both let you re-check the parsed values anywhere in the program, so every function can guard its own inputs"
+            correct: false
+            feedback: "Re-checking everywhere is the anti-pattern this discipline replaces, the whole point is to establish trust ONCE, at the boundary."
+          - id: c
+            label: "Parse, don't validate: cross the boundary once, into a type that cannot represent the bad states, and the rest of the program trusts it"
+            correct: true
+            feedback: "Same refusal at the door in both languages, and Rust enforces it harder because there is no any-shaped hatch to smuggle unparsed data past the parser."
+        explanation: "Both tools turn untrusted bytes into a trusted type at the edge, after that, no function needs to re-check. The direction differs (zod infers the type from the schema; serde derives the parser from the type) but the discipline is identical, and Rust adds compile-time enforcement: there is no untyped escape hatch to smuggle unparsed data past the boundary."
+      - id: m05l1-q3
+        prompt: "Your first pipeline is targets.iter().filter(|t| t.enabled).map(to_probe_target), and nothing has run yet. What makes it execute?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Nothing extra, each adapter runs eagerly as it is chained, and the values are already transformed into a new collection by the time map returns"
+            correct: false
+            feedback: "That is how JS array chains behave (each .map allocates a new array immediately), Rust adapters build a description and do no work until consumed."
+          - id: c
+            label: "Awaiting it, filter and map return futures, so the chain needs an async runtime spun up around it before any element is produced"
+            correct: false
+            feedback: "No futures here, iterators are synchronous and lazy. Async arrives next module for I/O; laziness is a separate idea."
+          - id: d
+            label: "Naming the collection type on the binding, an inert chain starts pulling as soon as the compiler knows what container to build"
+            correct: false
+            feedback: "The annotation answers E0282, which asks collect WHAT to build, not WHETHER to run. A for loop needs no annotation and still drives the chain."
+          - id: a
+            label: "A consumer like collect() or a for loop, iterator adapters are lazy and only describe the work until something drains them"
+            correct: true
+            feedback: "The consumer pulls each element through the whole chain in one pass, which is also why no intermediate collection gets allocated per step."
+        explanation: "Adapters (filter, map) are lazy: they wrap the iterator and describe a transformation. A consumer, collect, sum, a for loop, pulls elements through the whole chain one at a time. That's also why Rust chains don't allocate an intermediate collection per step the way chained JS array methods do. Full treatment: TRPL ch13, this lesson's go-deeper box."
+      - id: m05l1-q4
+        prompt: "serde_json::from_str::<Config>(&raw) hits a config where timeout_ms is the string \"fast\". What lands in your program?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "A panic at the parse site, type mismatches inside derived parsers are unrecoverable and abort before your code resumes"
+            correct: false
+            feedback: "Nothing panics unless YOU unwrap it, the derived parser returns the failure as a value, exactly like every parser you wrote in m04-l2."
+          - id: b
+            label: "An Err value carrying what went wrong and where (line and column), which your ? chain propagates like any other boundary failure"
+            correct: true
+            feedback: "The drill prints it verbatim: `invalid type: string \"fast\", expected u64 at line 16 column 25`, routed by the same map_err plumbing as every other failure in the engine."
+          - id: d
+            label: "An Err naming the offending field but not its position, since line and column need a pass through serde_json::Value"
+            correct: false
+            feedback: "Position comes free. serde_json tracks line and column as it reads, so the one-step from_str error already prints `at line 16 column 25` with no Value detour."
+          - id: c
+            label: "An Ok(Config) with timeout_ms set to its type default, plus a warning, serde recovers leniently unless you opt into strict mode"
+            correct: false
+            feedback: "serde is strict by default, no silent defaults, no warnings. (Opt-in lenience exists per-field via #[serde(default)], which is the opposite arrangement.)"
+        explanation: "from_str returns Result<Config, serde_json::Error>, and the error knows its line and column, a parse failure is a value that flows through the same map_err/? plumbing as everything else in the engine. This is why the hand-rolled parser you wrote in the challenge and the derived one are drop-in equals at the type level; serde just writes better errors than you were going to."

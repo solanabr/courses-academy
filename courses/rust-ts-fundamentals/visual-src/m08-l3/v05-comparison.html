@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: One generic, three result shapes
+     purpose: prove the transport line is shape-agnostic before the challenge asks for a fourth method
+     data: columns: getBalance | getSlot | getHealth (the challenge) result member: object with context + value | bare number | the string "ok" T in rpc_call::<T>: BalanceResult | u64 | String transport code changed: none | none | none fixture for the happy-path test: live-captured envelope | {"jsonrpc":"2.0","result":443692896,"id":1} | write it yourself
+     prompt: Three-column table with the four rows listed, one column per RPC method. Emphasize the "transport code changed: none, none, none" row as the takeaway. Mark the getHealth column header as "challenge" with a subtle badge.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:541px;height:346px;right:-302px;top:270px;border-radius:38% 45% 40% 58% / 58% 44% 58% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:581px;height:526px;bottom:-292px;left:-292px;border-radius:36% 46% 59% 44% / 59% 47% 35% 52%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 38px 52px 40px; }
+    .v05-card .viz-title { font-size: 48px; }
+    .v05-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .v05-table th { background: var(--surface-inverse); color: var(--stbr-cream); font-family: var(--font-mono); font-weight: 700; font-size: 21px; text-align: left; padding: 14px 20px; }
+    .v05-table th:first-child { border-radius: var(--radius-lg) 0 0 0; background: transparent; }
+    .v05-table th:last-child { border-radius: 0 var(--radius-lg) 0 0; }
+    .v05-table td { font-family: var(--font-body); font-size: 18px; color: var(--text-primary); padding: 15px 20px; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+    .v05-table td.lab { font-family: var(--font-display); font-weight: 800; font-size: 17px; width: 280px; }
+    .v05-table td code, .v05-table td.mono { font-family: var(--font-mono); font-size: 17px; }
+    .v05-badge { display: inline-block; background: transparent; border: 2px solid var(--stbr-emerald); color: var(--stbr-emerald); font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; border-radius: var(--radius-pill); padding: 2px 10px; margin-left: 10px; vertical-align: middle; }
+    tr.v05-hot td { background: #FFF3C4; border-top: 3px solid var(--stbr-yellow); border-bottom: 3px solid var(--stbr-yellow); font-weight: 700; }
+    .v05-band { margin-top: 20px; background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-display); font-weight: 800; font-size: 23px; text-align: center; }
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">shape-agnostic transport</div>
+    <h2 class="viz-title">one generic, three result shapes</h2>
+    <table class="v05-table">
+      <tr>
+        <th></th>
+        <th>getBalance</th>
+        <th>getSlot</th>
+        <th>getHealth<span class="v05-badge" style="border-color:var(--stbr-cream);color:var(--stbr-cream);">challenge</span></th>
+      </tr>
+      <tr>
+        <td class="lab">result member</td>
+        <td>object with <code>context</code> + <code>value</code></td>
+        <td>bare number</td>
+        <td>the string <code>"ok"</code></td>
+      </tr>
+      <tr>
+        <td class="lab">T in <code>rpc_call::&lt;T&gt;</code></td>
+        <td class="mono">BalanceResult</td>
+        <td class="mono">u64</td>
+        <td class="mono">String</td>
+      </tr>
+      <tr class="v05-hot">
+        <td class="lab">transport code changed</td>
+        <td>none</td>
+        <td>none</td>
+        <td>none</td>
+      </tr>
+      <tr>
+        <td class="lab">fixture for the happy-path test</td>
+        <td>live-captured envelope</td>
+        <td class="mono" style="font-size:15px;">{"jsonrpc":"2.0",<br>"result":443692896,"id":1}</td>
+        <td>write it yourself</td>
+      </tr>
+    </table>
+    <div class="v05-band">the transport line never moves; only T does</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Digit-pinning vs peer-range pinning
+     purpose: contrast the two pinning strategies so the learner can articulate why the taught rule survives churn
+     data: strategy A, pin the tutorial's digit: source = a dated blog post or course page; fails when the ecosystem moves (two majors in ten weeks); failure mode = install-time peer error, or silent staleness strategy B, pin the peer range: source = npm view <your-dep> peerDependencies, run in YOUR workspace, today; survives churn because the contract updates with the packages; failure mode = none until you override it shared truth: digits belong only in install lines verified at run time
+     prompt: Two-column comparison card, one strategy per column with its source, churn behavior, and failure mode as rows from data. Strategy B visually favored. The shared truth line spans both columns as a footer.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:440px;height:466px;top:-230px;right:-230px;border-radius:56% 50% 64% 52% / 49% 37% 62% 59%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:483px;height:498px;left:-244px;top:175px;border-radius:49% 56% 36% 42% / 35% 46% 63% 60%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .viz-title { font-size: 46px; }
+    .v06-card { position: relative; background: var(--surface-card); border-radius: 28px;
+                padding: 36px 52px 32px; overflow: hidden; }
+    .v06-grid { display: grid; grid-template-columns: 170px 1fr 1fr; column-gap: 18px;
+                row-gap: 12px; margin-top: 14px; }
+    .v06-gut  { display: flex; align-items: center; font: 800 14px var(--font-display);
+                letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+    .v06-head { border-radius: 16px; padding: 16px 22px; min-height: 72px; display: flex;
+                align-items: center; justify-content: space-between; gap: 12px; }
+    .v06-head h3 { font: 900 23px/1.15 var(--font-display); margin: 0; }
+    .v06-a .v06-head, .v06-headA { background: var(--surface-paper);
+                border: 1px solid var(--border-subtle); }
+    .v06-headA h3 { color: var(--stbr-dark); }
+    .v06-headB { background: var(--stbr-emerald); }
+    .v06-headB h3 { color: #FFFFFF; }
+    .v06-pill { background: var(--stbr-yellow); color: var(--stbr-dark); border-radius: 999px;
+                padding: 5px 14px; font: 800 14px var(--font-body); white-space: nowrap; }
+    .v06-cell { border-radius: 14px; padding: 16px 22px; min-height: 84px; display: flex;
+                flex-direction: column; justify-content: center;
+                font: 500 18px/1.4 var(--font-body); color: var(--text-secondary); }
+    .v06-cellA { background: #FFFFFF; border: 1px solid var(--border-subtle); }
+    .v06-cellB { background: #E8F3ED; border-left: 4px solid var(--stbr-emerald); }
+    .v06-cell strong { color: var(--stbr-dark); }
+    .v06-cell code { font-family: var(--font-mono); font-size: 16px; color: var(--stbr-green);
+                     font-weight: 700; }
+    .v06-verdict { grid-column: 1 / 4; background: var(--stbr-emerald); border-radius: 16px;
+                   padding: 18px 26px; text-align: center;
+                   font: 800 24px var(--font-display); color: var(--stbr-cream); }
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">DEPENDENCY PINNING</div>
+    <h2 class="viz-title">pin the digit vs pin the peer range</h2>
+    <div class="v06-grid">
+      <div></div>
+      <div class="v06-head v06-headA"><h3>strategy A: pin the tutorial&rsquo;s digit</h3></div>
+      <div class="v06-head v06-headB"><h3>strategy B: pin the peer range</h3><span class="v06-pill">the taught rule</span></div>
+
+      <div class="v06-gut">source</div>
+      <div class="v06-cell v06-cellA">a dated blog post or course page, frozen the day it was written</div>
+      <div class="v06-cell v06-cellB"><span><code>npm view &lt;your-dep&gt; peerDependencies</code>, run in <strong>your</strong> workspace, <strong>today</strong></span></div>
+
+      <div class="v06-gut">under churn</div>
+      <div class="v06-cell v06-cellA"><span><strong>fails when the ecosystem moves</strong>: two majors shipped in ten weeks</span></div>
+      <div class="v06-cell v06-cellB"><span><strong>survives</strong>: the contract updates with the packages themselves</span></div>
+
+      <div class="v06-gut">failure mode</div>
+      <div class="v06-cell v06-cellA">install-time peer error, or worse, silent staleness</div>
+      <div class="v06-cell v06-cellB">none, until you override it</div>
+
+      <div class="v06-verdict">shared truth: digits belong only in install lines verified at run time</div>
+    </div>
+  </div>
+</div>
+</body></html>

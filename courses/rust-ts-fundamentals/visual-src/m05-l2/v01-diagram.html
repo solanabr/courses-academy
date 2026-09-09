@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The split, before and after
+     purpose: show what moved where and who consumes the engine crate from here on
+     data: BEFORE: pulse-rs (one crate) = main.rs + config.rs + engine.rs + tests AFTER: workspace root Cargo.toml (virtual, no code) -> crates/pulse-engine (lib): config.rs, engine.rs, tests -> crates/pulse-cli (bin): main.rs, depends on pulse-engine by path future consumers of pulse-engine: the CLI (now), the test suite (now), the daemon (later in M6), a WASM worker (later in the deploy tier)
+     prompt: Two-panel before/after diagram. Left panel: a single box labeled as one crate containing three file names stacked. Right panel: a small root manifest box on top, two crate boxes below it, engine box listing the two pure modules and tests, cli box listing main.rs with an arrow into the engine box. Along the bottom of the right panel, three faded future-consumer boxes pointing at the engine. Emphasis on the engine box as the center of gravity.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:543px;height:540px;top:-286px;right:-286px;border-radius:57% 38% 50% 62% / 60% 43% 49% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:465px;height:544px;bottom:-306px;left:438px;border-radius:37% 56% 47% 54% / 41% 57% 55% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-row { display:flex; gap:24px; align-items:stretch; }
+    .v01-card { background:var(--surface-card); border:1px solid var(--border-subtle);
+                border-radius:var(--radius-2xl); padding:28px; }
+    .v01-panel-label { font-family:var(--font-display); font-weight:var(--weight-bold);
+                text-transform:uppercase; letter-spacing:0.12em; font-size:14px;
+                color:var(--text-muted); margin-bottom:14px; }
+    .v01-file { font-family:var(--font-mono); font-size:17px; color:var(--text-primary);
+                background:var(--surface-paper); border:1px solid var(--border-subtle);
+                border-radius:var(--radius-md); padding:9px 14px; margin-bottom:10px; }
+    .v01-crate-name { font-family:var(--font-display); font-weight:var(--weight-black);
+                font-size:22px; color:var(--text-primary); }
+    .v01-crate-kind { font-family:var(--font-body); font-size:13px; color:var(--text-muted);
+                margin:2px 0 12px; }
+    .v01-chip { display:inline-block; font-family:var(--font-body); font-size:13px;
+                font-weight:600; border-radius:var(--radius-pill); padding:6px 14px; }
+  </style>
+
+  <div class="stbr-eyebrow">what moved where</div>
+  <h2 class="viz-title">the split, before and after</h2>
+
+  <div class="v01-row">
+    <!-- BEFORE -->
+    <div class="v01-card" style="width:330px; display:flex; flex-direction:column;">
+      <div class="v01-panel-label">before: one crate</div>
+      <div class="v01-crate-name">pulse-rs</div>
+      <div class="v01-crate-kind">everything in one Cargo.toml</div>
+      <div class="v01-file">main.rs</div>
+      <div class="v01-file">config.rs</div>
+      <div class="v01-file">engine.rs</div>
+      <div class="v01-file" style="margin-bottom:0;">tests/</div>
+    </div>
+
+    <!-- transition arrow -->
+    <div style="display:flex; align-items:center;">
+      <svg width="56" height="24" viewBox="0 0 56 24">
+        <line x1="0" y1="12" x2="40" y2="12" stroke="#1B231D" stroke-width="3"/>
+        <polygon points="40,4 56,12 40,20" fill="#1B231D"/>
+      </svg>
+    </div>
+
+    <!-- AFTER -->
+    <div class="v01-card" style="flex:1; padding:24px 28px;">
+      <div class="v01-panel-label">after: a workspace</div>
+
+      <!-- root manifest -->
+      <div style="background:var(--surface-brand); border-radius:var(--radius-lg);
+                  padding:12px 20px; text-align:center;">
+        <span style="font-family:var(--font-mono); font-size:17px; color:var(--stbr-cream);">
+          workspace root Cargo.toml</span>
+        <span style="font-family:var(--font-body); font-size:14px; color:var(--stbr-cream); opacity:0.85;">
+          &nbsp;·&nbsp;virtual: no code</span>
+      </div>
+
+      <!-- two down arrows -->
+      <div style="display:flex; justify-content:space-around; height:34px;">
+        <svg width="18" height="34" viewBox="0 0 18 34">
+          <line x1="9" y1="0" x2="9" y2="22" stroke="#306C40" stroke-width="3"/>
+          <polygon points="2,22 16,22 9,34" fill="#306C40"/>
+        </svg>
+        <svg width="18" height="34" viewBox="0 0 18 34">
+          <line x1="9" y1="0" x2="9" y2="22" stroke="#306C40" stroke-width="3"/>
+          <polygon points="2,22 16,22 9,34" fill="#306C40"/>
+        </svg>
+      </div>
+
+      <!-- the two crates -->
+      <div style="display:flex; gap:0; align-items:stretch;">
+        <div style="flex:1.15; background:#FFF6D6; border:3px solid var(--stbr-yellow);
+                    border-radius:var(--radius-xl); padding:16px 20px;">
+          <div class="v01-crate-name">crates/pulse-engine</div>
+          <div class="v01-crate-kind">lib: the center of gravity</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="v01-file" style="margin:0;">config.rs</span>
+            <span class="v01-file" style="margin:0;">engine.rs</span>
+            <span class="v01-file" style="margin:0;">tests/</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; width:130px; flex-direction:column; justify-content:center;">
+          <span style="font-family:var(--font-body); font-size:12px; color:var(--text-muted); margin-bottom:4px;">depends by path</span>
+          <svg width="110" height="16" viewBox="0 0 110 16">
+            <line x1="110" y1="8" x2="14" y2="8" stroke="#306C40" stroke-width="3"/>
+            <polygon points="14,1 0,8 14,15" fill="#306C40"/>
+          </svg>
+        </div>
+        <div style="flex:0.85; background:var(--surface-card); border:1px solid var(--border-strong);
+                    border-radius:var(--radius-xl); padding:16px 20px;">
+          <div class="v01-crate-name">crates/pulse-cli</div>
+          <div class="v01-crate-kind">bin: the thin front door</div>
+          <span class="v01-file" style="margin:0; display:inline-block;">main.rs</span>
+        </div>
+      </div>
+
+      <!-- consumers strip -->
+      <div style="margin-top:18px; border-top:1px solid var(--border-subtle); padding-top:14px;
+                  display:flex; align-items:center; gap:10px;">
+        <span style="font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--text-secondary);">
+          who consumes pulse-engine →</span>
+        <span class="v01-chip" style="background:var(--surface-brand); color:var(--stbr-cream);">the CLI · now</span>
+        <span class="v01-chip" style="background:var(--surface-brand); color:var(--stbr-cream);">the test suite · now</span>
+        <span class="v01-chip" style="background:var(--surface-paper); color:var(--text-muted); border:1px dashed var(--border-strong);">a daemon · later, M6</span>
+        <span class="v01-chip" style="background:var(--surface-paper); color:var(--text-muted); border:1px dashed var(--border-strong);">a WASM worker · deploy tier</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

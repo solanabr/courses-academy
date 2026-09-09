@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The trait is a socket, sources are plugs
+     purpose: show why drive() names the trait instead of the struct, and what m05 will plug in
+     data: socket: trait ProbeSource, method next_latency(&mut self) -> Option<u64>, frozen interface plug today: FixtureSource (Vec of latencies plus a cursor), implemented this lesson plug m05-l3: HTTP probe source, same trait, no changes to drive() consumer: drive<S: ProbeSource>, holds state, calls next_state per pull
+     prompt: Socket-and-plug diagram. Center: a socket labeled with the ProbeSource trait and its next_latency signature, marked "frozen interface". Left plug labeled FixtureSource, connected solid, tagged "this lesson". Right plug labeled HTTP probe source, dashed, tagged "m05-l3, same trait". Below the socket, the drive function box consuming it through a generic bound arrow.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:484px;right:-301px;top:199px;border-radius:65% 64% 47% 43% / 49% 37% 61% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:424px;height:516px;bottom:-306px;left:765px;border-radius:50% 37% 50% 54% / 38% 45% 47% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .rowx { display:grid; grid-template-columns:1fr 92px 1.25fr 92px 1fr; align-items:center;
+          margin-top:10px; }
+  .plug { background:var(--surface-card); border:2.5px solid var(--stbr-green);
+          border-radius:var(--radius-xl); padding:22px 22px; min-height:190px;
+          display:flex; flex-direction:column; justify-content:center; }
+  .plug.future { border-style:dashed; }
+  .plug .nm { font-family:var(--font-mono); font-weight:700; font-size:21px;
+              color:var(--text-primary); }
+  .plug .sub { font-family:var(--font-body); font-weight:600; font-size:15px;
+               color:var(--text-secondary); margin-top:8px; line-height:1.35; }
+  .plug .tag { align-self:flex-start; margin-top:14px; font-family:var(--font-body);
+               font-weight:800; font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+               border-radius:var(--radius-pill); padding:5px 12px; }
+  .tag.now { background:var(--surface-brand); color:var(--text-on-brand); }
+  .tag.later { background:var(--surface-paper); border:1.5px solid var(--border-strong);
+               color:var(--text-primary); }
+  .lead { display:flex; align-items:center; justify-content:center; }
+  .socket { background:var(--surface-inverse); border-radius:var(--radius-xl);
+            padding:26px 28px; min-height:210px; display:flex; flex-direction:column;
+            justify-content:center; align-items:center; text-align:center; }
+  .socket .nm { font-family:var(--font-mono); font-weight:700; font-size:24px;
+                color:var(--stbr-cream); }
+  .socket .sig { font-family:var(--font-mono); font-size:16.5px; color:var(--stbr-cream);
+                 opacity:.85; margin-top:12px; }
+  .socket .frozen { margin-top:16px; background:var(--stbr-yellow); color:var(--stbr-dark);
+                    border-radius:var(--radius-pill); padding:6px 16px;
+                    font-family:var(--font-body); font-weight:800; font-size:13px;
+                    letter-spacing:.12em; text-transform:uppercase; }
+  .below { display:flex; flex-direction:column; align-items:center; margin-top:2px; }
+  .bound { font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+           color:var(--stbr-emerald); background:var(--surface-card);
+           border:1.5px solid var(--stbr-emerald); border-radius:var(--radius-pill);
+           padding:3px 12px; margin:4px 0; }
+  .drive { background:var(--surface-card); border:2.5px solid var(--stbr-emerald);
+           border-radius:var(--radius-xl); padding:18px 30px; text-align:center; }
+  .drive .nm { font-family:var(--font-mono); font-weight:700; font-size:20px;
+               color:var(--text-primary); }
+  .drive .sub { font-family:var(--font-body); font-weight:600; font-size:15px;
+                color:var(--text-secondary); margin-top:6px; }
+</style>
+  <div class="stbr-eyebrow">why drive() names the trait, not the struct</div>
+  <h2 class="viz-title">the trait is a socket, sources are plugs</h2>
+  <div class="rowx">
+    <div class="plug">
+      <div class="nm">FixtureSource</div>
+      <div class="sub">a Vec&lt;u64&gt; of latencies plus a cursor, implemented this lesson</div>
+      <div class="tag now">this lesson</div>
+    </div>
+    <div class="lead"><svg width="92" height="16"><line x1="4" y1="8" x2="78" y2="8" stroke="#008b4c" stroke-width="3"/><polygon points="88,8 76,2 76,14" fill="#008b4c"/></svg></div>
+    <div class="socket">
+      <div class="nm">trait ProbeSource</div>
+      <div class="sig">fn next_latency(&amp;mut self) -&gt; Option&lt;u64&gt;</div>
+      <div class="frozen">frozen interface</div>
+    </div>
+    <div class="lead"><svg width="92" height="16"><line x1="88" y1="8" x2="14" y2="8" stroke="#306c40" stroke-width="3" stroke-dasharray="7 6"/><polygon points="4,8 16,2 16,14" fill="#306c40"/></svg></div>
+    <div class="plug future">
+      <div class="nm">HTTP probe source</div>
+      <div class="sub">same trait, no changes to drive()</div>
+      <div class="tag later">m05-l3</div>
+    </div>
+  </div>
+  <div class="below">
+    <svg width="16" height="46"><polygon points="8,4 2,16 14,16" fill="#008b4c"/><line x1="8" y1="14" x2="8" y2="44" stroke="#008b4c" stroke-width="3"/></svg>
+    <div class="bound">S: ProbeSource</div>
+    <div class="drive">
+      <div class="nm">fn drive&lt;S: ProbeSource&gt;(&hellip;)</div>
+      <div class="sub">holds the state, calls next_state once per pull</div>
+    </div>
+  </div>
+</div>
+</body></html>

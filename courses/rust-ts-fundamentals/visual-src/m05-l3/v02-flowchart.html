@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One probe, from argv to printed line
+     purpose: trace the full path of a single probe so the reader sees where parsing ends and I/O begins
+     data: argv -> clap parse -> Command::Probe { url, timeout } -> blocking Client (timeout set) -> send() -> Result Ok branch: status + elapsed -> printed probe line Err branch: reqwest::Error -> map_err -> ProbeError::Unreachable -> ? -> anyhow in main
+     prompt: Left-to-right flowchart of the probe path with the nodes above. After send(), fork into an Ok branch ending in the printed line and an Err branch ending in main's error report. Label the map_err edge as the taxonomy bridge.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:549px;height:527px;top:-332px;right:-332px;border-radius:38% 55% 39% 64% / 53% 43% 35% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:472px;height:432px;left:-241px;top:285px;border-radius:37% 44% 45% 35% / 55% 37% 59% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 44px 34px;}
+    .v02-lane{display:flex;align-items:stretch;justify-content:center;}
+    .v02-node{background:var(--surface-card);border:2px solid var(--stbr-green);border-radius:12px;padding:12px 15px;font:600 17px/1.2 var(--font-body);color:var(--text-primary);display:flex;flex-direction:column;justify-content:center;text-align:center;}
+    .v02-node small{font:400 13px/1.2 var(--font-body);color:var(--text-secondary);margin-top:3px;}
+    .v02-node .mono{font-family:var(--font-mono);font-size:16px;font-weight:600;}
+    .v02-dark{background:var(--surface-inverse);border-color:var(--surface-inverse);color:var(--stbr-cream);}
+    .v02-dark small{color:#b9c7bd;}
+    .v02-arrc{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 7px;}
+    .v02-arr{width:32px;height:2px;background:var(--stbr-emerald);position:relative;}
+    .v02-arr::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--stbr-emerald);border-top:6px solid transparent;border-bottom:6px solid transparent;}
+    .v02-bchip{font:700 11px/1.1 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--stbr-green);border:1px solid var(--stbr-green);border-radius:var(--radius-pill);padding:3px 8px;margin-top:5px;white-space:nowrap;}
+    .v02-result{display:flex;justify-content:center;margin:16px 0;}
+    .v02-result span{font:500 15px/1 var(--font-mono);color:var(--text-secondary);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:8px 18px;}
+    .v02-branch{display:flex;align-items:stretch;justify-content:center;margin-bottom:14px;}
+    .v02-pill{border-radius:var(--radius-pill);padding:10px 20px;font:800 18px/1 var(--font-display);display:flex;align-items:center;margin-right:12px;}
+    .v02-ok{background:var(--stbr-emerald);color:var(--stbr-cream);}
+    .v02-err{background:var(--surface-inverse);color:var(--stbr-cream);}
+    .v02-yellow{background:var(--stbr-yellow);border-color:var(--stbr-yellow);color:var(--stbr-dark);}
+    .v02-yellow small{color:#4b431c;font-weight:600;}
+    .v02-end{background:rgba(0,139,76,.10);}
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">pulse-cli · the probe path</div>
+    <h2 class="viz-title">one probe, from argv to printed line</h2>
+    <div class="v02-lane" style="margin-top:6px;">
+      <div class="v02-node"><span class="mono">argv</span></div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node">clap parse</div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node"><span class="mono">Command::Probe { url, timeout }</span></div>
+      <div class="v02-arrc"><div class="v02-arr"></div><div class="v02-bchip">parsing ends · I/O begins</div></div>
+      <div class="v02-node">blocking <span class="mono">Client</span><small>timeout set</small></div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node v02-dark"><span class="mono">send()</span></div>
+    </div>
+    <div class="v02-result"><span>send() returns Result&lt;Response, reqwest::Error&gt;; the path forks here</span></div>
+    <div class="v02-branch">
+      <div class="v02-pill v02-ok">Ok</div>
+      <div class="v02-node">status + elapsed</div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node v02-end">printed probe line</div>
+    </div>
+    <div class="v02-branch" style="margin-bottom:0;">
+      <div class="v02-pill v02-err">Err</div>
+      <div class="v02-node"><span class="mono">reqwest::Error</span></div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node v02-yellow"><span class="mono">map_err</span><small>the taxonomy bridge</small></div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node"><span class="mono">ProbeError::Unreachable</span></div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node"><span class="mono">?</span></div>
+      <div class="v02-arrc"><div class="v02-arr"></div></div>
+      <div class="v02-node v02-dark">anyhow in <span class="mono">main</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

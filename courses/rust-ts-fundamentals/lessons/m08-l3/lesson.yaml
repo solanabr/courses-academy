@@ -1,0 +1,103 @@
+id: lesson-rtf-m08-l3
+slug: m08-l3
+title: "The Rust path: raw JSON-RPC"
+skills:
+  - solana-fundamentals
+  - solana-kit
+  - rpc-reads
+  - transactions
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "thiserror": "2.0.20"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: rust-path-check
+    type: quiz
+    questions:
+      - id: m08-l3-q1
+        prompt: "The TS surfaces use a client library; the Rust daemon POSTs raw JSON-RPC. Why does the course refuse to reach for the solana-client crate here?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "solana-client is effectively unmaintained, so depending on it is a supply-chain liability"
+            correct: false
+            feedback: "It's actively maintained inside the mainline Solana Rust ecosystem, abandonment isn't the argument. The argument is fit: a transaction-submission transport stack is dead weight under a two-read poller."
+          - id: d
+            label: "Rust has no canonical client crate of its own, so hand-rolling is the only path here"
+            correct: false
+            feedback: "There is a typed Rust path, and the lesson names it rather than hiding it: solana-rpc-client plus the granular solana-* crates, which is where reads graduate when they outgrow this pattern. Hand-rolling is a fit decision for a two-read poller, not a gap in the ecosystem."
+          - id: a
+            label: "solana-client bundles a QUIC/TPU submission transport a two-read poller never calls"
+            correct: true
+            feedback: "It is the kitchen-sink client: QUIC and UDP clients, the TPU client that talks straight to block leaders, connection caching, streamer machinery. That is the equipment of something firing transactions at validators, and you compile, audit and re-pin all of it to ask two questions on a timer."
+          - id: c
+            label: "solana-client cannot perform reads at all, it exists only to submit transactions"
+            correct: false
+            feedback: "It reads fine, it's the kitchen-sink client precisely because it does everything. The point is what ELSE it drags in for a program that will only ever ask two questions."
+        explanation: "The call this lesson makes: for a fundamentals reader, plain JSON-RPC over reqwest + serde_json reinforces the skills the course already built and carries zero Solana-crate churn. solana-client exists for full clients that submit transactions over QUIC to leaders, a different job. When reads outgrow this pattern, the typed path is solana-rpc-client and the granular crates in the go-deeper box."
+      - id: m08-l3-q2
+        prompt: "A teammate counters: 'solana-rpc-client has MORE direct dependencies than solana-client, your slim crate argument is backwards.' What's the honest reply?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "They must be counting dev-dependencies; by normal deps solana-client is much larger"
+            correct: false
+            feedback: "No, by raw direct-dep count solana-rpc-client genuinely comes out ahead (light type-crates add up). Disputing their count loses; the count is real and it's the wrong axis."
+          - id: b
+            label: "They're right on the count, wrong on the axis, slimness means transport scope here"
+            correct: true
+            feedback: "Concede the number, keep the conclusion: 29 direct deps against 35 is real, and neither figure touches what differentiates the two, which is that one carries QUIC, TPU and streamer machinery a reader never calls. Argue from the axis that separates them, because a learner who counts will check."
+          - id: c
+            label: "Dependency counts don't matter at all in Rust, since the compiler strips unused code"
+            correct: false
+            feedback: "Dead-code elimination doesn't erase the costs of a big tree, compile time, audit surface, and churn all scale with what you pull in. Counts matter; RAW counts just don't rank these two crates correctly."
+          - id: d
+            label: "Concede the count and adopt solana-client, since its 29 direct deps beat the other 35"
+            correct: false
+            feedback: "Following the count where it leads is how a good number produces a bad decision. The 29-dep crate is the one carrying the submission transport stack, so conceding the axis hands you the heavier client for a job that makes two reads."
+        explanation: "The corrected research row exists for this exact exchange: solana-rpc-client has more direct deps by raw count, yet zero of the QUIC/TPU/streamer transport machinery. The defensible claim is scoped, 'no submission transport a reader never uses', and the meta-lesson is to argue from the axis that actually differentiates, because a learner who counts will catch you."
+      - id: m08-l3-q3
+        prompt: "Your balance probe deserializes cleanly, but a probe against a mistyped method name returns HTTP 200 and your poller marks the target healthy. What did you miss?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "JSON-RPC reports failures inside a 200 response, you must check the envelope's error member"
+            correct: true
+            feedback: "Transport did its job: it delivered a well-formed reply whose body reads {\"error\":{\"code\":-32601,\"message\":\"Method not found\"}}. A probe that reads only response.status() marks that healthy forever, and a monitor that reports wrong is worse than no monitor, because people believe it."
+          - id: a
+            label: "A reqwest timeout, the request hung and the stale success from the previous tick leaked through"
+            correct: false
+            feedback: "A hang would surface as a slow or errored tick, not a clean 200. The response arrived promptly, the problem is what was INSIDE it."
+          - id: b
+            label: "The retry budget, a single attempt isn't enough to distinguish healthy from unhealthy"
+            correct: false
+            feedback: "No retry policy fixes this: every attempt would return the same misleading 200. The bug is in classification, not persistence."
+          - id: d
+            label: "The typo itself, a checked method-name constant would have prevented the call"
+            correct: false
+            feedback: "That patches one instance and leaves the hole open. An unhealthy node answers through the same error member with a perfectly spelled method, so the classification bug outlives every typo you eliminate. The envelope check is what makes plane three visible at all."
+        explanation: "The transport layer succeeded, HTTP did its job delivering a well-formed reply that happens to say 'error' in JSON-RPC's own envelope. That's why the ProbeRpcError taxonomy gives the in-envelope error its own variant, distinct from transport and status failures: four different failure planes, four different remediations, one greppable name each when m09-l2's logging lands."
+      - id: m08-l3-q4
+        prompt: "You merged the chain-probe module and pushed. What turns that commit into the re-shipped station, and what did YOU have to do beyond the push?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "You cut a GitHub Release so the workflow attaches a new binary, which GHCR then mirrors"
+            correct: false
+            feedback: "Releases-with-binaries was m05-l3's ship, a different artifact on a different path. GHCR images build from the container workflow on push, no release tag involved, and GHCR mirrors nothing."
+          - id: b
+            label: "You rebuild with cargo --release and docker push from your own machine, as CI can't reach GHCR"
+            correct: false
+            feedback: "CI has been pushing to GHCR with GITHUB_TOKEN since m06-l4, that was the whole point of ship #3. Hand-pushing from a laptop would bypass the tests-gate and reintroduce works-on-my-machine."
+          - id: a
+            label: "CI rebuilds and pushes the GHCR image from the same M6 pipeline, nothing new; you pull and run it"
+            correct: true
+            feedback: "The workspace, the Dockerfile and the workflow are all untouched since m06-l4, so the commit inherits the ship it landed in. Your manual steps were the ones that prove it from outside: docker pull, docker run, curl /status, and read a live mainnet slot back."
+          - id: d
+            label: "The Dockerfile needed the new module in its copy list before CI could build the image"
+            correct: false
+            feedback: "The cargo-chef multi-stage build copies the workspace, so a new module inside an existing crate is invisible to it. Check your own diff: the manifest gained one thiserror line and the ops files gained nothing, which is exactly the property the re-ship was staged to demonstrate."
+        explanation: "The re-ship IS the lesson's demonstration: the M6 pipeline, test, build multi-stage, push to GHCR, consumed the new probe module without a single ops change. Code that lands in an already-shipping system inherits its ship. Your only manual steps were the ones proving it worked: pull the fresh image, run it, curl /status."

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two runs, red then green, and what each proves
+     purpose: pair the planted-lint run with the fixed run so the learner reads Actions output as evidence, not decoration
+     data: run 1, planted clone: rust job fails at cargo clippy -D warnings (clone on a Copy type); cargo test had already passed; probe skipped; no status.json commit run 2, after revert: cargo test, clippy, fmt --check all pass; typecheck and vitest jobs green beside them; probe runs; status.json committed proof pair: run 1 proves the gate can refuse; run 2 proves the engine passes it
+     prompt: Two stacked horizontal job-sequence bars, one per Actions run. Top bar: the rust job's three steps with clippy marked failed and the probe step marked skipped. Bottom bar: all steps green through to a status.json commit node. Label the pair "refusal proven, then passage earned".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:580px;height:519px;top:-313px;right:-313px;border-radius:41% 60% 36% 53% / 57% 60% 48% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:364px;height:557px;bottom:-320px;left:395px;border-radius:50% 64% 37% 58% / 41% 47% 52% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .run { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-xl); padding:18px 22px; display:flex;
+         align-items:center; gap:18px; margin-top:14px; }
+  .run .who { flex:none; width:212px; }
+  .run .who .r { font-family:var(--font-display); font-weight:900; font-size:24px;
+                 color:var(--text-primary); line-height:1.1; }
+  .run .who .s { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+                 color:var(--text-secondary); margin-top:6px; line-height:1.35; }
+  .run .who .p { display:inline-block; margin-top:10px; font-family:var(--font-body);
+                 font-weight:800; font-size:11.5px; letter-spacing:.1em;
+                 text-transform:uppercase; color:var(--stbr-emerald);
+                 border:1.5px solid var(--stbr-emerald); border-radius:var(--radius-pill);
+                 padding:3px 10px; }
+  .steps { display:flex; align-items:center; gap:8px; flex:1; }
+  .st { border-radius:var(--radius-lg); padding:9px 12px; text-align:center; }
+  .st .c { font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+           color:var(--text-primary); white-space:nowrap; }
+  .st .k { font-family:var(--font-body); font-weight:800; font-size:10.5px;
+           letter-spacing:.1em; text-transform:uppercase; margin-top:4px; }
+  .st.pass { background:var(--surface-card); border:2px solid var(--stbr-emerald); }
+  .st.pass .k { color:var(--stbr-emerald); }
+  .st.fail { background:var(--stbr-yellow); border:2px solid var(--stbr-yellow); }
+  .st.fail .c, .st.fail .k { color:var(--stbr-dark); }
+  .st.skip { background:var(--surface-paper); border:2px dashed var(--border-strong); }
+  .st.skip .c { color:var(--text-muted); }
+  .st.skip .k { color:var(--text-muted); }
+  .st.dark { background:var(--surface-inverse); border:2px solid var(--surface-inverse); }
+  .st.dark .c { color:var(--stbr-cream); }
+  .st.dark .k { color:var(--stbr-cream); opacity:.75; }
+  .st.done { background:var(--surface-brand); border:2px solid var(--surface-brand); }
+  .st.done .c { color:var(--text-on-brand); }
+  .st.done .k { color:var(--text-on-brand); opacity:.85; }
+  .arw { flex:none; }
+  .caption { margin-top:18px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-lg); padding:15px 24px; text-align:center;
+             font-family:var(--font-display); font-weight:900; font-size:22px; }
+</style>
+  <div class="stbr-eyebrow">read Actions output as evidence, not decoration</div>
+  <h2 class="viz-title">two runs, red then green, and what each proves</h2>
+  <div class="run">
+    <div class="who">
+      <div class="r">run 1</div>
+      <div class="s">planted lint: .clone() on a Copy type</div>
+      <div class="p">proves the gate can refuse</div>
+    </div>
+    <div class="steps">
+      <div class="st pass"><div class="c">cargo test</div><div class="k">&#10003; passed</div></div>
+      <div class="arw"><svg width="26" height="12"><line x1="1" y1="6" x2="15" y2="6" stroke="#306c40" stroke-width="2.5"/><polygon points="25,6 14,1 14,11" fill="#306c40"/></svg></div>
+      <div class="st fail"><div class="c">cargo clippy -D warnings</div><div class="k">&#10007; failed</div></div>
+      <div class="arw"><svg width="26" height="12"><line x1="1" y1="6" x2="15" y2="6" stroke="#306c40" stroke-width="2.5"/><polygon points="25,6 14,1 14,11" fill="#306c40"/></svg></div>
+      <div class="st skip"><div class="c">cargo fmt --check</div><div class="k">not reached</div></div>
+      <div class="arw"><svg width="26" height="12"><line x1="1" y1="6" x2="15" y2="6" stroke="#306c40" stroke-width="2.5"/><polygon points="25,6 14,1 14,11" fill="#306c40"/></svg></div>
+      <div class="st skip"><div class="c">probe</div><div class="k">skipped</div></div>
+      <div class="arw"><svg width="26" height="12"><line x1="1" y1="6" x2="15" y2="6" stroke="#306c40" stroke-width="2.5"/><polygon points="25,6 14,1 14,11" fill="#306c40"/></svg></div>
+      <div class="st dark"><div class="c">no status.json</div><div class="k">no commit</div></div>
+    </div>
+  </div>
+  <div class="run">
+    <div class="who">
+      <div class="r">run 2</div>
+      <div class="s">after the revert: TS jobs green beside the rust job</div>
+      <div class="p">proves the engine passes it</div>
+    </div>
+    <div class="steps">
+      <div class="st pass"><div class="c">tsc --noEmit</div><div class="k">&#10003;</div></div>
+      <div class="st pass"><div class="c">vitest run</div><div class="k">&#10003;</div></div>
+      <div class="st pass"><div class="c">cargo test</div><div class="k">&#10003;</div></div>
+      <div class="st pass"><div class="c">cargo clippy</div><div class="k">&#10003;</div></div>
+      <div class="st pass"><div class="c">cargo fmt --check</div><div class="k">&#10003;</div></div>
+      <div class="arw"><svg width="26" height="12"><line x1="1" y1="6" x2="15" y2="6" stroke="#306c40" stroke-width="2.5"/><polygon points="25,6 14,1 14,11" fill="#306c40"/></svg></div>
+      <div class="st pass"><div class="c">probe</div><div class="k">runs</div></div>
+      <div class="arw"><svg width="26" height="12"><line x1="1" y1="6" x2="15" y2="6" stroke="#306c40" stroke-width="2.5"/><polygon points="25,6 14,1 14,11" fill="#306c40"/></svg></div>
+      <div class="st done"><div class="c">status.json</div><div class="k">committed</div></div>
+    </div>
+  </div>
+  <div class="caption">refusal proven, then passage earned</div>
+</div>
+</body></html>

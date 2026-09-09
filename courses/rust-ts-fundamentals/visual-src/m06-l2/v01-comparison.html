@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three container runtimes, one honest pricing table
+     purpose: let the reader pick a runtime in under a minute by seeing who pays and who does not
+     data: Docker Desktop 4.89.0: free for personal use, education, OSS, and businesses under 250 employees AND under $10M revenue; paid tiers beyond that. Easiest install, biggest app. OrbStack: free for personal use; commercial use $8/user/mo. macOS only, fast and light. colima v0.10.3: free open source, CLI-only, macOS/Linux. You bring the docker CLI yourself. For this course's audience: all three are free.
+     prompt: Three-column comparison card, one column per runtime (Docker Desktop 4.89.0, OrbStack, colima v0.10.3). Rows: price for a learner, price at work, platform, install style. Bottom banner row spanning all columns: "for this course, all three are free".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:511px;height:398px;right:-310px;top:141px;border-radius:56% 37% 38% 50% / 51% 55% 38% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:411px;height:521px;bottom:-321px;left:393px;border-radius:53% 60% 56% 65% / 35% 44% 65% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 40px;}
+    .v01-grid{display:grid;grid-template-columns:200px 1fr 1fr 1fr;column-gap:18px;row-gap:0;margin-top:10px;}
+    .v01-colhead{font-family:var(--font-display);font-weight:800;font-size:23px;color:var(--text-primary);
+                 background:var(--surface-paper);border:2px solid var(--stbr-emerald);border-radius:var(--radius-lg);
+                 padding:14px 18px 12px;text-align:center;}
+    .v01-colsub{display:block;font-family:var(--font-body);font-weight:500;font-size:15px;color:var(--text-muted);margin-top:2px;}
+    .v01-rowlab{font-family:var(--font-display);font-weight:800;font-size:16px;text-transform:uppercase;
+                letter-spacing:.06em;color:var(--text-secondary);display:flex;align-items:center;
+                border-bottom:1.5px solid var(--border-subtle);padding:14px 4px;}
+    .v01-cell{font-family:var(--font-body);font-size:17.5px;line-height:1.35;color:var(--text-primary);
+              display:flex;align-items:center;justify-content:center;text-align:center;
+              border-bottom:1.5px solid var(--border-subtle);padding:14px 10px;}
+    .v01-free{display:inline-block;background:var(--surface-accent);color:var(--text-on-accent);
+              font-weight:700;border-radius:var(--radius-pill);padding:4px 14px;}
+    .v01-verdict{margin-top:26px;background:var(--surface-brand);color:var(--text-on-brand);
+                 border-radius:var(--radius-xl);padding:18px 26px;font-family:var(--font-display);
+                 font-weight:800;font-size:26px;text-align:center;}
+    .v01-hd{height:16px;}
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">PICK A RUNTIME IN UNDER A MINUTE</div>
+    <h2 class="viz-title">three container runtimes, one honest pricing table</h2>
+    <div class="v01-grid">
+      <div></div>
+      <div class="v01-colhead">Docker Desktop<span class="v01-colsub">4.89.0</span></div>
+      <div class="v01-colhead">OrbStack<span class="v01-colsub">macOS native</span></div>
+      <div class="v01-colhead">colima<span class="v01-colsub">v0.10.3</span></div>
+
+      <div class="v01-hd"></div><div class="v01-hd"></div><div class="v01-hd"></div><div class="v01-hd"></div>
+
+      <div class="v01-rowlab">price for a learner</div>
+      <div class="v01-cell"><span class="v01-free">free</span>&nbsp;&nbsp;personal · education · OSS</div>
+      <div class="v01-cell"><span class="v01-free">free</span>&nbsp;&nbsp;personal use</div>
+      <div class="v01-cell"><span class="v01-free">free</span>&nbsp;&nbsp;open source</div>
+
+      <div class="v01-rowlab">price at work</div>
+      <div class="v01-cell"><div>free under 250 employees<br>AND &lt;$10M revenue; paid tiers beyond</div></div>
+      <div class="v01-cell"><div>$8 / user / mo<br>for commercial use</div></div>
+      <div class="v01-cell">free: open source</div>
+
+      <div class="v01-rowlab">platform</div>
+      <div class="v01-cell">macOS · Windows · Linux</div>
+      <div class="v01-cell">macOS only</div>
+      <div class="v01-cell">macOS · Linux</div>
+
+      <div class="v01-rowlab" style="border-bottom:none;">install style</div>
+      <div class="v01-cell" style="border-bottom:none;">easiest install, but the biggest app</div>
+      <div class="v01-cell" style="border-bottom:none;">fast and light</div>
+      <div class="v01-cell" style="border-bottom:none;">CLI-only; you bring the docker CLI yourself</div>
+    </div>
+    <div class="v01-verdict">for this course, all three are free; pick by platform, not price</div>
+  </div>
+</div>
+</body></html>

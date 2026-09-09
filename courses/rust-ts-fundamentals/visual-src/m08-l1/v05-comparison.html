@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Same epoch, shrinking wall clock
+     purpose: show that a fixed slot count times a changing slot time moves every epoch deadline
+     data: Left column, 400ms era: 432,000 slots x 0.4s = 172,800s = 48 hours Right column, 300ms era: 432,000 slots x 0.3s = 129,600s = 36 hours Shared header: an epoch is ALWAYS 432,000 slots Delta callout: 12 hours vanished from every epoch, with no epoch resize
+     prompt: Two side-by-side columns under one shared header, each showing the three-step arithmetic from the data block ending in its hour figure, with the hour figures visually dominant. A callout between them states the 12-hour difference. Flat, numeric, no decoration.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:546px;height:475px;right:-300px;top:213px;border-radius:43% 61% 59% 57% / 36% 35% 42% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:556px;height:507px;bottom:-320px;left:-320px;border-radius:49% 39% 43% 43% / 48% 36% 50% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v05-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 38px 56px 34px; overflow: hidden; position: relative; }
+  .v05-shared { margin-top: 10px; background: var(--surface-brand);
+                border-radius: var(--radius-lg); padding: 14px 24px; text-align: center;
+                font-family: var(--font-display); font-weight: 800; font-size: 20px;
+                color: var(--text-on-brand); letter-spacing: 0.02em; }
+  .v05-shared strong { font-weight: 900; letter-spacing: 0.08em; }
+  .v05-row { display: flex; align-items: stretch; gap: 24px; margin-top: 24px; }
+  .v05-colbox { width: 560px; border-radius: var(--radius-xl); padding: 24px 34px 28px;
+                text-align: center; }
+  .v05-col-400 { background: var(--surface-paper); border: 1.5px solid var(--border-subtle); }
+  .v05-col-300 { background: rgba(0, 139, 76, 0.08); border: 2px solid var(--stbr-emerald); }
+  .v05-era { font-family: var(--font-display); font-weight: 900; font-size: 15px;
+             letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
+  .v05-col-400 .v05-era { color: var(--text-muted); }
+  .v05-col-300 .v05-era { color: var(--stbr-emerald); }
+  .v05-step { font-family: var(--font-mono); font-size: 21px; color: var(--text-secondary);
+              margin-bottom: 8px; }
+  .v05-hours { font-family: var(--font-display); font-weight: 900; font-size: 92px;
+               line-height: 1; margin-top: 14px; color: var(--text-primary); }
+  .v05-hours small { font-size: 34px; font-weight: 800; }
+  .v05-col-300 .v05-hours { color: var(--stbr-emerald); }
+  .v05-mid { width: 176px; display: flex; align-items: center; justify-content: center; }
+  .v05-callout { background: var(--stbr-yellow); border: 2px solid var(--stbr-dark);
+                 border-radius: var(--radius-xl); padding: 20px 16px; text-align: center;
+                 color: var(--text-on-accent); }
+  .v05-delta { font-family: var(--font-display); font-weight: 900; font-size: 42px;
+               line-height: 1; margin-bottom: 8px; }
+  .v05-deltatxt { font-family: var(--font-body); font-weight: 600; font-size: 14px;
+                  line-height: 1.4; }
+</style>
+<div class="v05-card">
+  <div class="stbr-eyebrow">FIXED SLOT COUNT × CHANGING SLOT TIME</div>
+  <h2 class="viz-title">same epoch, shrinking wall clock</h2>
+  <div class="v05-shared">an epoch is <strong>ALWAYS 432,000 slots</strong></div>
+  <div class="v05-row">
+    <div class="v05-colbox v05-col-400">
+      <div class="v05-era">400 ms era</div>
+      <div class="v05-step">432,000 slots × 0.4 s</div>
+      <div class="v05-step">= 172,800 s</div>
+      <div class="v05-hours">48<small> hours</small></div>
+    </div>
+    <div class="v05-mid">
+      <div class="v05-callout">
+        <div class="v05-delta">−12 h</div>
+        <div class="v05-deltatxt">12 hours vanished from every epoch, with no epoch resize</div>
+      </div>
+    </div>
+    <div class="v05-colbox v05-col-300">
+      <div class="v05-era">300 ms era</div>
+      <div class="v05-step">432,000 slots × 0.3 s</div>
+      <div class="v05-step">= 129,600 s</div>
+      <div class="v05-hours">36<small> hours</small></div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

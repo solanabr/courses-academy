@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Malicious insertion vs sudden disappearance
+     purpose: separate the two supply-chain failure classes so the reader picks the right defense for each
+     data: class 1, malicious insertion: arrayref, 2026-08-20; hostile code ENTERS via a version range; window measured in minutes; defense: lockfile discipline + audit tooling + reading ranges honestly class 2, sudden disappearance: left-pad, March 2016, 273 packages unpublished; trusted code LEAVES; damage measured ecosystem-wide within the hour; defense: abandonment signals read BEFORE adoption, plus registries later restricting unpublish shared truth: both travel through transitive edges the developer never consciously chose
+     prompt: Two-column comparison card. Left column for malicious insertion with the arrayref incident facts, right column for sudden disappearance with the left-pad facts. Each column lists failure direction, speed, and the matching defense. A single full-width footer row states the shared truth about transitive edges. Keep the two columns visually parallel.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:599px;height:535px;top:-337px;right:-337px;border-radius:44% 41% 47% 36% / 41% 39% 61% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:575px;height:544px;bottom:-310px;left:-310px;border-radius:46% 51% 47% 53% / 53% 53% 38% 37%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:42px 52px 40px;}
+  .cols{display:flex;gap:24px;margin-top:22px;}
+  .col{flex:1;border:1.5px solid var(--border-subtle);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;}
+  .col-h{background:var(--surface-inverse);padding:16px 24px 14px;}
+  .col-h h3{margin:0;font-family:var(--font-display);font-weight:900;font-size:24px;color:var(--text-on-dark);}
+  .col-h p{margin:3px 0 0;font-family:var(--font-body);font-size:13.5px;color:rgba(245,232,202,.85);}
+  .attr{padding:13px 24px;border-top:1px solid var(--border-subtle);}
+  .attr .k{font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.08em;
+           text-transform:uppercase;color:var(--stbr-emerald);margin-bottom:3px;}
+  .attr .v{font-family:var(--font-body);font-size:15px;line-height:1.42;color:var(--text-primary);}
+  .attr.def{background:var(--stbr-yellow);padding-bottom:18px;flex:1;}
+  .attr.def .k{color:var(--stbr-dark);}
+  .verdict{margin-top:24px;background:var(--surface-brand);border-radius:14px;padding:16px 28px;
+           font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.35;color:var(--text-on-brand);text-align:center;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">two supply-chain failure classes</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 0;">malicious insertion vs sudden disappearance</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="col-h">
+        <h3>class 1: malicious insertion</h3>
+        <p>arrayref &middot; 2026-08-20</p>
+      </div>
+      <div class="attr"><div class="k">failure direction</div>
+        <div class="v">hostile code <b>ENTERS</b> via a version range</div></div>
+      <div class="attr"><div class="k">speed</div>
+        <div class="v">window measured in minutes</div></div>
+      <div class="attr def"><div class="k">matching defense</div>
+        <div class="v">lockfile discipline + audit tooling + reading ranges honestly</div></div>
+    </div>
+    <div class="col">
+      <div class="col-h">
+        <h3>class 2: sudden disappearance</h3>
+        <p>left-pad &middot; March 2016 &middot; 273 packages unpublished</p>
+      </div>
+      <div class="attr"><div class="k">failure direction</div>
+        <div class="v">trusted code <b>LEAVES</b> the registry</div></div>
+      <div class="attr"><div class="k">speed</div>
+        <div class="v">damage measured ecosystem-wide within the hour</div></div>
+      <div class="attr def"><div class="k">matching defense</div>
+        <div class="v">abandonment signals read <b>before</b> adoption; registries later restricted unpublish</div></div>
+    </div>
+  </div>
+  <div class="verdict">shared truth: both travel through transitive edges the developer never consciously chose</div>
+</div>
+</div>
+</body></html>

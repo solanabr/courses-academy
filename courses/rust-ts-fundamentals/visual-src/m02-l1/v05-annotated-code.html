@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The assertNever mechanism, annotated
+     purpose: show precisely why the default arm compiles today and fails by name the day a variant is added
+     data: switch (result.kind) { case 'ok': ...        // eliminates ok case 'timeout': ...   // eliminates timeout case 'http-error': ...// eliminates http-error default: return assertNever(result); // today: result narrowed to never, call compiles // add a 'dns-error' variant: result is { kind: 'dns-error'; ... } here // tsc: error TS2345: Argument of type '{ kind: "dns-error"; host: string; }' //      is not assignable to parameter of type 'never' }
+     prompt: A code panel of the switch statement with three case lines and the default arm. Two annotation callouts on the default arm: one labeled "all variants handled: leftover type is never, compiles" and one labeled "new variant added: leftover is not never, compile error names it here". The error text from the data block appears in the second callout.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:452px;height:467px;top:-237px;right:-237px;border-radius:48% 61% 54% 58% / 49% 41% 44% 63%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:366px;height:513px;bottom:-307px;left:485px;border-radius:52% 57% 51% 50% / 52% 45% 53% 55%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 36px;}
+    .v05-code{background:var(--surface-inverse);border-radius:var(--radius-xl);padding:30px 34px;
+              font-family:var(--font-mono);font-size:20px;line-height:1.7;color:var(--stbr-cream);}
+    .v05-cm{color:#8fae97;}
+    .v05-kw{color:#ffd23f;}
+    .v05-hl{background:rgba(255,210,63,0.16);border-left:5px solid var(--stbr-yellow);margin-left:-34px;padding-left:29px;margin-right:-34px;padding-right:34px;}
+    .v05-callout{border-radius:var(--radius-xl);padding:18px 22px;font-family:var(--font-body);font-size:18px;line-height:1.4;box-sizing:border-box;}
+    .v05-tag{font-family:var(--font-display);font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">EXHAUSTIVENESS AS A COMPILE ERROR</div>
+    <h2 class="viz-title">the assertNever mechanism, annotated</h2>
+    <div style="display:flex;gap:0;align-items:center;margin-top:24px;">
+      <div class="v05-code" style="width:760px;flex:none;">
+        <div><span class="v05-kw">switch</span> (result.kind) {</div>
+        <div>&nbsp;&nbsp;<span class="v05-kw">case</span> 'ok': ...         <span class="v05-cm">// eliminates ok</span></div>
+        <div>&nbsp;&nbsp;<span class="v05-kw">case</span> 'timeout': ...    <span class="v05-cm">// eliminates timeout</span></div>
+        <div>&nbsp;&nbsp;<span class="v05-kw">case</span> 'http-error': ... <span class="v05-cm">// eliminates http-error</span></div>
+        <div>&nbsp;&nbsp;<span class="v05-kw">default</span>:</div>
+        <div class="v05-hl">&nbsp;&nbsp;&nbsp;&nbsp;<span class="v05-kw">return</span> assertNever(result);</div>
+        <div>}</div>
+      </div>
+      <div style="width:56px;flex:none;display:flex;flex-direction:column;gap:110px;align-items:center;">
+        <svg width="56" height="18" style="display:block;"><line x1="56" y1="9" x2="16" y2="9" stroke="#008b4c" stroke-width="2.5"/><polygon points="2,9 18,3 18,15" fill="#008b4c"/></svg>
+        <svg width="56" height="18" style="display:block;"><line x1="56" y1="9" x2="16" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="2,9 18,3 18,15" fill="#1b231d"/></svg>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:22px;">
+        <div class="v05-callout" style="border:2.5px solid var(--stbr-emerald);background:var(--surface-card);color:var(--text-primary);height:158px;">
+          <div class="v05-tag" style="color:var(--stbr-emerald);">today: compiles</div>
+          all three variants handled above, so <span style="font-family:var(--font-mono);">result</span> is narrowed to <span style="font-family:var(--font-mono);font-weight:600;">never</span> here; the call type-checks.
+        </div>
+        <div class="v05-callout" style="background:var(--surface-accent);color:var(--text-on-accent);height:322px;padding-bottom:24px;">
+          <div class="v05-tag">add a 'dns-error' variant: fails by name</div>
+          leftover type is no longer <span style="font-family:var(--font-mono);font-weight:600;">never</span>; the compile error points at this exact line:
+          <div style="font-family:var(--font-mono);font-size:15.5px;line-height:1.45;margin-top:10px;background:var(--surface-inverse);color:var(--stbr-cream);border-radius:10px;padding:12px 16px;">error TS2345: Argument of type<br>'{ kind: "dns-error"; host: string; }'<br>is not assignable to parameter of type 'never'</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The Rust tier's exit map
+     purpose: close the tier with an honest map of what was taught, what is drilled, and where each closed door leads
+     data: taught in M4-M5 (you have it): ownership reading, Result/Option/?, thiserror taxonomy, structs/enums/traits in practice, serde, cargo workspaces and profiles, clap, one blocking fetch, CI-published binary drill yards: Rustlings (cargo install rustlings; official fix-the-code exercises), Comprehensive Rust (Google's free Android-team onboarding course) closed doors -> where they live: lifetimes-beyond-reading, unsafe, macro authoring -> Rustonomicon (its own disclaimer says turn back); async internals -> named again in m06 where Rust goes on-chain -> the Anchor course; the account and transaction concepts underneath -> the Bitcoin-to-Solana evolution course named paid option: Rust for TypeScript Developers, ThePrimeagen, 5h19m, 2023-04-25, paid
+     prompt: A map-style diagram with a large center region listing the taught skills, two side boxes for the drill resources, and closed-door icons on the edge each labeled with its destination resource or course as in the data. Keep the paid option visually separate and labeled as paid.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:460px;height:414px;top:-229px;right:-229px;border-radius:43% 52% 40% 61% / 41% 47% 43% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:553px;height:402px;left:-311px;top:306px;border-radius:62% 47% 62% 41% / 45% 61% 37% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v07-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:36px 44px 30px;}
+    .v07-map{display:grid;grid-template-columns:300px 1fr 430px;column-gap:20px;margin-top:4px;align-items:stretch;}
+    .v07-sechead{font:700 13px/1.2 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+    .v07-drill{display:flex;flex-direction:column;}
+    .v07-dcard{border:2px solid var(--stbr-green);border-radius:12px;padding:12px 15px;margin-bottom:12px;}
+    .v07-dcard b{font:800 18px/1.2 var(--font-display);color:var(--stbr-green);display:block;}
+    .v07-dcard span{font:400 14px/1.35 var(--font-body);color:var(--text-secondary);display:block;margin-top:4px;}
+    .v07-dcard .mono{font-family:var(--font-mono);font-size:13px;color:var(--text-primary);}
+    .v07-center{background:var(--surface-brand);border-radius:16px;padding:16px 22px 18px;color:var(--stbr-cream);}
+    .v07-center h3{margin:0 0 4px;font:800 24px/1.15 var(--font-display);color:var(--stbr-cream);display:flex;align-items:center;}
+    .v07-have{background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:var(--radius-pill);padding:6px 13px;font:800 13px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;margin-left:12px;}
+    .v07-skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+    .v07-skills span{background:rgba(245,232,202,.14);border:1px solid rgba(245,232,202,.45);border-radius:8px;padding:7px 12px;font:500 15px/1.2 var(--font-body);color:var(--stbr-cream);}
+    .v07-doors{display:flex;flex-direction:column;}
+    .v07-door{display:flex;align-items:center;border:1px solid var(--border-strong);border-radius:12px;padding:9px 13px;margin-bottom:9px;background:var(--surface-paper);}
+    .v07-slab{flex:none;width:20px;height:30px;background:var(--surface-inverse);border-radius:8px 8px 2px 2px;position:relative;margin-right:13px;}
+    .v07-slab::after{content:"";position:absolute;right:3px;top:14px;width:4px;height:4px;border-radius:50%;background:var(--stbr-cream);}
+    .v07-door b{font:700 15px/1.25 var(--font-body);color:var(--text-primary);display:block;}
+    .v07-door span{font:400 13px/1.3 var(--font-body);color:var(--text-secondary);display:block;margin-top:1px;}
+    .v07-door span em{font-style:normal;font-weight:700;color:var(--stbr-green);}
+    .v07-paid{margin-top:14px;border:2px dashed var(--border-strong);border-radius:12px;padding:11px 18px;display:flex;align-items:center;}
+    .v07-ptag{flex:none;background:var(--surface-inverse);color:var(--stbr-cream);border-radius:var(--radius-pill);padding:6px 14px;font:800 13px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;margin-right:16px;}
+    .v07-paid span{font:500 16px/1.3 var(--font-body);color:var(--text-secondary);}
+    .v07-paid b{color:var(--text-primary);}
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">M4 and M5 close-out</div>
+    <h2 class="viz-title">the Rust tier's exit map</h2>
+    <div class="v07-map">
+      <div class="v07-drill">
+        <div class="v07-sechead">drill yards: keep practicing</div>
+        <div class="v07-dcard"><b>Rustlings</b><span><span class="mono">cargo install rustlings</span>official fix-the-code exercises</span></div>
+        <div class="v07-dcard"><b>Comprehensive Rust</b><span>Google's free Android-team onboarding course</span></div>
+      </div>
+      <div class="v07-center">
+        <h3>taught in M4 and M5 <span class="v07-have">you have it</span></h3>
+        <div class="v07-skills">
+          <span>ownership reading</span>
+          <span>Result / Option / ?</span>
+          <span>thiserror taxonomy</span>
+          <span>structs, enums &amp; traits in practice</span>
+          <span>serde</span>
+          <span>cargo workspaces &amp; profiles</span>
+          <span>clap</span>
+          <span>one blocking fetch</span>
+          <span>CI-published binary</span>
+        </div>
+      </div>
+      <div class="v07-doors">
+        <div class="v07-sechead">closed doors: where each one leads</div>
+        <div class="v07-door"><div class="v07-slab"></div><div><b>lifetimes-beyond-reading · unsafe · macro authoring</b><span>→ <em>Rustonomicon</em>, its own disclaimer says turn back</span></div></div>
+        <div class="v07-door"><div class="v07-slab"></div><div><b>async internals</b><span>→ named again in <em>m06</em></span></div></div>
+        <div class="v07-door"><div class="v07-slab"></div><div><b>where Rust goes on-chain</b><span>→ <em>the Anchor course</em></span></div></div>
+        <div class="v07-door" style="margin-bottom:0;"><div class="v07-slab"></div><div><b>account &amp; transaction concepts underneath</b><span>→ <em>the Bitcoin-to-Solana evolution course</em></span></div></div>
+      </div>
+    </div>
+    <div class="v07-paid"><div class="v07-ptag">paid option</div><span><b>Rust for TypeScript Developers</b>: ThePrimeagen · 5h19m · 2023-04-25 · paid</span></div>
+  </div>
+</div>
+</body></html>

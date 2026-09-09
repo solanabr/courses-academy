@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The pauses-not-bills overage model
+     purpose: show the documented sequence when a Hobby limit is exceeded, and the branch that does not exist
+     data: usage crosses a limit (e.g. 100 GB Fast Data Transfer) -> the exceeded feature pauses, in most cases -> 30-day window passes -> feature resumes documented exception: Web Analytics resumes after 7 days branch that does not exist on Hobby: metered overage billing -> invoice (no billing cycle, so no bill can occur)
+     prompt: Left-to-right flowchart of the four-step pause sequence from data. Below it, a grayed crossed-out branch labeled as the path that does not exist, leading to an invoice icon. Note the Web Analytics seven-day exception as a small annotation on the pause node.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:463px;height:499px;top:-243px;right:-243px;border-radius:44% 51% 50% 55% / 44% 65% 39% 36%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:444px;height:498px;bottom:-308px;left:539px;border-radius:62% 62% 56% 62% / 55% 42% 47% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .seq { display:grid; grid-template-columns:1fr 44px 1fr 44px 1fr 44px 1fr;
+         row-gap:14px; align-items:stretch; margin-top:10px; }
+  .fnode { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-xl); padding:20px 18px; min-height:138px;
+           display:flex; flex-direction:column; justify-content:center; text-align:center; }
+  .fnode .t { font-family:var(--font-body); font-weight:800; font-size:19px;
+              color:var(--text-primary); line-height:1.25; }
+  .fnode .s { font-family:var(--font-body); font-weight:600; font-size:14px;
+              color:var(--text-secondary); margin-top:8px; }
+  .fnode.pause { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark); }
+  .fnode.pause .t, .fnode.pause .s { color:var(--stbr-dark); }
+  .fnode.resume { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .fnode.resume .t { color:var(--text-on-brand); }
+  .harr { align-self:center; display:flex; justify-content:center; }
+  .anno { font-family:var(--font-body); font-weight:600; font-size:14px; line-height:1.35;
+          color:var(--text-primary); background:var(--surface-paper);
+          border:1.5px solid var(--border-strong); border-radius:var(--radius-lg);
+          padding:10px 14px; text-align:center; }
+  .anno b { font-weight:800; }
+  .ghost { margin-top:30px; border:2px dashed var(--border-strong);
+           border-radius:var(--radius-2xl); padding:20px 26px; display:flex;
+           align-items:center; gap:18px; position:relative; }
+  .ghost .lbl { flex:0 0 300px; font-family:var(--font-display); font-weight:900;
+                font-size:21px; line-height:1.15; color:var(--text-primary); }
+  .gwrap { flex:1; display:flex; align-items:center; gap:14px; position:relative; opacity:.55; }
+  .gnode { background:var(--surface-paper); border:2px solid var(--border-strong);
+           border-radius:var(--radius-lg); padding:14px 20px; text-align:center;
+           font-family:var(--font-body); font-weight:700; font-size:17px;
+           color:var(--text-muted); flex:1; }
+  .strike { position:absolute; left:-8px; right:-8px; top:50%; margin-top:-2px;
+            border-top:4px solid var(--stbr-dark); transform:rotate(-2deg); }
+  .ghost .why { flex:0 0 260px; font-family:var(--font-body); font-weight:700;
+                font-size:15px; line-height:1.35; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">pauses, not bills</div>
+  <h2 class="viz-title">what actually happens when a Hobby limit is hit</h2>
+  <div class="seq">
+    <div class="fnode"><div class="t">usage crosses a limit</div><div class="s">e.g. 100 GB Fast Data Transfer</div></div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="fnode pause"><div class="t">the exceeded feature pauses</div><div class="s">in most cases</div></div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="fnode"><div class="t">30-day window passes</div></div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="fnode resume"><div class="t">feature resumes</div></div>
+    <div class="anno" style="grid-column:3;">documented exception: <b>Web Analytics resumes after 7 days</b></div>
+  </div>
+  <div class="ghost">
+    <div class="lbl">the branch that does not exist on Hobby</div>
+    <div class="gwrap">
+      <div class="gnode">metered overage billing</div>
+      <svg width="40" height="16"><line x1="2" y1="8" x2="28" y2="8" stroke="#8a8f88" stroke-width="2.5"/><polygon points="38,8 26,2 26,14" fill="#8a8f88"/></svg>
+      <div class="gnode">invoice</div>
+      <div class="strike"></div>
+    </div>
+    <div class="why">no billing cycle on Hobby, so no bill can occur</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The musl allocator saga, 2020 to now
+     purpose: carry the lesson's emotional spine, that the loudest musl critic fixed it with our default base, with every number attributed
+     data: 2020-05: Andy Grove publishes "Why does musl make my Rust code so slow?", measuring ~30x on his multi-threaded benchmark. 2020-05: Grove tries jemalloc on musl; it segfaults in his setup. 2020-05: Grove's fix ships: runtime image moved to debian slim, musl abandoned. Ongoing: ripgrep ships jemalloc-on-musl in its main.rs, the working version of the fix Grove could not land. 2020s follow-ups: independent benchmarks measure musl's default-allocator penalty at 2x to 20x depending on workload. Today: this course's runtime default is debian:trixie-slim, the same family Grove landed on.
+     prompt: Horizontal timeline with five markers. First three cluster at May 2020: the ~30x measurement, the jemalloc segfault, the move to debian slim. A fourth marker for ripgrep's jemalloc-on-musl approach, a fifth for later 2x-to-20x measurements. End cap labeled with the course default debian trixie slim. Attribute each number to its benchmark in small text under its marker.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:563px;height:549px;top:-308px;right:-308px;border-radius:53% 49% 38% 62% / 47% 40% 51% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:527px;height:531px;bottom:-299px;left:-299px;border-radius:36% 35% 54% 40% / 46% 40% 60% 54%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .v04-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 40px 56px 30px; overflow: hidden; position: relative; }
+  .v04-tl { position: relative; height: 470px; margin-top: 6px; }
+  .v04-band { position: absolute; left: -12px; top: 0; width: 600px; height: 470px;
+              background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+              border-radius: var(--radius-xl); }
+  .v04-bandlab { position: absolute; top: 10px; left: 18px; font-family: var(--font-display);
+                 font-weight: 800; font-size: 13px; letter-spacing: 0.14em;
+                 text-transform: uppercase; color: var(--text-muted); }
+  .v04-line { position: absolute; left: 4px; right: 4px; top: 231px; height: 4px;
+              background: var(--stbr-dark); border-radius: 2px; }
+  .v04-cols { position: relative; display: flex; height: 470px; }
+  .v04-col { display: flex; flex-direction: column; }
+  .v04-top { height: 221px; display: flex; flex-direction: column;
+             justify-content: flex-end; padding: 0 10px 16px; }
+  .v04-dotrow { height: 24px; display: flex; align-items: center; justify-content: center; }
+  .v04-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--stbr-emerald);
+             border: 3px solid var(--surface-card); }
+  .v04-dot-end { background: var(--stbr-yellow); border-color: var(--stbr-dark); }
+  .v04-bot { height: 225px; padding: 16px 10px 0; }
+  .v04-date { font-family: var(--font-display); font-weight: 800; font-size: 12.5px;
+              letter-spacing: 0.1em; text-transform: uppercase; color: var(--stbr-emerald);
+              margin-bottom: 4px; }
+  .v04-h { font-family: var(--font-body); font-weight: 700; font-size: 17px;
+           line-height: 1.25; color: var(--text-primary); margin-bottom: 5px; }
+  .v04-s { font-family: var(--font-body); font-size: 12.5px; line-height: 1.35;
+           color: var(--text-muted); }
+  .v04-endchip { display: inline-block; font-family: var(--font-mono); font-size: 14px;
+                 background: var(--stbr-yellow); color: var(--text-on-accent);
+                 border-radius: var(--radius-pill); padding: 4px 12px; margin-bottom: 6px; }
+</style>
+<div class="v04-card">
+  <div class="stbr-eyebrow">WHY NOT MUSL · 2020 → NOW</div>
+  <h2 class="viz-title">the musl allocator saga</h2>
+  <div class="v04-tl">
+    <div class="v04-band"><div class="v04-bandlab">may 2020: three weeks, one blog post</div></div>
+    <div class="v04-line"></div>
+    <div class="v04-cols">
+      <div class="v04-col" style="width:196px;">
+        <div class="v04-top">
+          <div class="v04-date">2020-05</div>
+          <div class="v04-h">~30x slowdown measured</div>
+          <div class="v04-s">Andy Grove, "Why does musl make my Rust code so slow?", his multi-threaded benchmark</div>
+        </div>
+        <div class="v04-dotrow"><div class="v04-dot"></div></div>
+        <div class="v04-bot"></div>
+      </div>
+      <div class="v04-col" style="width:196px;">
+        <div class="v04-top"></div>
+        <div class="v04-dotrow"><div class="v04-dot"></div></div>
+        <div class="v04-bot">
+          <div class="v04-date">2020-05</div>
+          <div class="v04-h">jemalloc on musl segfaults</div>
+          <div class="v04-s">Grove tries the obvious fix; it crashes in his setup</div>
+        </div>
+      </div>
+      <div class="v04-col" style="width:196px;">
+        <div class="v04-top">
+          <div class="v04-date">2020-05</div>
+          <div class="v04-h">the fix ships: debian slim</div>
+          <div class="v04-s">Grove moves the runtime image to debian slim; musl abandoned</div>
+        </div>
+        <div class="v04-dotrow"><div class="v04-dot"></div></div>
+        <div class="v04-bot"></div>
+      </div>
+      <div class="v04-col" style="width:266px;">
+        <div class="v04-top"></div>
+        <div class="v04-dotrow"><div class="v04-dot"></div></div>
+        <div class="v04-bot">
+          <div class="v04-date">ongoing</div>
+          <div class="v04-h">ripgrep ships jemalloc-on-musl</div>
+          <div class="v04-s">in its main.rs: the working version of the fix Grove couldn't land</div>
+        </div>
+      </div>
+      <div class="v04-col" style="width:266px;">
+        <div class="v04-top">
+          <div class="v04-date">2020s follow-ups</div>
+          <div class="v04-h">2x to 20x penalty confirmed</div>
+          <div class="v04-s">independent benchmarks of musl's default allocator; the cost depends on the workload</div>
+        </div>
+        <div class="v04-dotrow"><div class="v04-dot"></div></div>
+        <div class="v04-bot"></div>
+      </div>
+      <div class="v04-col" style="width:224px;">
+        <div class="v04-top"></div>
+        <div class="v04-dotrow"><div class="v04-dot v04-dot-end"></div></div>
+        <div class="v04-bot">
+          <div class="v04-date" style="color: var(--stbr-dark);">today</div>
+          <div class="v04-endchip">debian:trixie-slim</div>
+          <div class="v04-s">this course's runtime default: the same family Grove landed on</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

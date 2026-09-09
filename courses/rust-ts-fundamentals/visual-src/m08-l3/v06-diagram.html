@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: pulse-pollerd after this lesson: two loops, one door
+     purpose: place the new chain loop in the architecture the learner already owns so the wiring step is assembly, not invention
+     data: loop 1 (m06-l1): poll_loop -> fleet probes via reqwest -> writes StatusMap loop 2 (new): chain_loop -> getSlot + getBalance via rpc_call -> writes ChainState (slot, balance, last_error by plane) both states -> AppState -> axum /status handler -> JSON { targets, chain } on port 8080 shared rule on both loops: awaits complete before the lock; snapshot under the guard, serialize outside
+     prompt: Architecture diagram with two loop boxes on the left as listed, each with an arrow into its own state box, both state boxes feeding one AppState node that feeds the /status handler and the JSON response on the right. Mark the chain loop and its state with a "new" accent; annotate the shared lock rule beneath both loops.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:399px;right:-256px;top:388px;border-radius:42% 41% 59% 46% / 52% 43% 58% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:568px;bottom:-334px;left:512px;border-radius:46% 54% 38% 49% / 51% 46% 44% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 38px 48px 40px; }
+    .v06-card .viz-title { font-size: 46px; }
+    .v06-flow { display: flex; align-items: stretch; margin-top: 14px; height: 372px; }
+    .v06-col { display: flex; flex-direction: column; justify-content: center; }
+    .v06-col.two { justify-content: space-between; }
+    .v06-slot { height: 174px; display: flex; flex-direction: column; justify-content: center; }
+    .v06-box { border: 2px solid var(--stbr-green); border-radius: var(--radius-xl); background: var(--surface-card); padding: 14px 18px; box-sizing: border-box; }
+    .v06-box.hot { border: 3px solid var(--stbr-yellow); }
+    .v06-bt { font-family: var(--font-mono); font-weight: 700; font-size: 20px; color: var(--text-primary); }
+    .v06-bs { font-family: var(--font-body); font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
+    .v06-tag { display: inline-block; font-family: var(--font-display); font-weight: 800; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; border-radius: var(--radius-pill); padding: 2px 9px; margin-bottom: 6px; background: var(--surface-paper); border: 1px solid var(--border-subtle); color: var(--text-secondary); }
+    .v06-tag.new { background: var(--stbr-yellow); border-color: var(--stbr-yellow); color: var(--stbr-dark); }
+    .v06-arr { display: flex; align-items: center; width: 44px; }
+    .v06-arr-line { flex: 1; height: 3px; background: var(--stbr-dark); }
+    .v06-arr-head { width: 0; height: 0; border-left: 10px solid var(--stbr-dark); border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+    .v06-app { background: var(--surface-brand); border-radius: var(--radius-xl); color: var(--stbr-cream); font-family: var(--font-mono); font-weight: 700; font-size: 21px; text-align: center; padding: 34px 8px; width: 150px; box-sizing: border-box; }
+    .v06-handler { border: 2px solid var(--stbr-green); border-radius: var(--radius-xl); padding: 18px 14px; text-align: center; width: 198px; box-sizing: border-box; }
+    .v06-json { background: var(--surface-inverse); border-radius: var(--radius-xl); color: var(--stbr-cream); font-family: var(--font-mono); font-size: 16px; padding: 16px 16px; white-space: pre; width: 224px; box-sizing: border-box; line-height: 1.5; }
+    .v06-rule { background: var(--surface-paper); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 12px 18px; font-family: var(--font-body); font-size: 16px; color: var(--text-primary); margin-top: 22px; }
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">pulse-pollerd after this lesson</div>
+    <h2 class="viz-title">two loops, one door</h2>
+    <div class="v06-flow">
+      <div class="v06-col two" style="width:292px;">
+        <div class="v06-slot"><div class="v06-box">
+          <span class="v06-tag">m06-l1</span>
+          <div class="v06-bt">poll_loop</div>
+          <div class="v06-bs">fleet probes via reqwest</div>
+        </div></div>
+        <div class="v06-slot"><div class="v06-box hot">
+          <span class="v06-tag new">new</span>
+          <div class="v06-bt">chain_loop</div>
+          <div class="v06-bs">getSlot + getBalance via rpc_call</div>
+        </div></div>
+      </div>
+      <div class="v06-col two" style="width:44px;">
+        <div class="v06-slot"><div class="v06-arr"><div class="v06-arr-line"></div><div class="v06-arr-head"></div></div></div>
+        <div class="v06-slot"><div class="v06-arr"><div class="v06-arr-line"></div><div class="v06-arr-head"></div></div></div>
+      </div>
+      <div class="v06-col two" style="width:292px;">
+        <div class="v06-slot"><div class="v06-box">
+          <div class="v06-bt">StatusMap</div>
+          <div class="v06-bs">per-target probe results</div>
+        </div></div>
+        <div class="v06-slot"><div class="v06-box hot">
+          <span class="v06-tag new">new</span>
+          <div class="v06-bt">ChainState</div>
+          <div class="v06-bs">slot &#183; balance &#183; last_error by plane</div>
+        </div></div>
+      </div>
+      <div class="v06-col" style="width:52px;">
+        <svg width="52" height="372" style="display:block;">
+          <path d="M 2 87 L 44 176" fill="none" stroke="#1B231D" stroke-width="3"/>
+          <path d="M 2 285 L 44 196" fill="none" stroke="#1B231D" stroke-width="3"/>
+          <polygon points="48,182 34,168 32,182" fill="#1B231D"/>
+          <polygon points="48,190 34,204 32,190" fill="#1B231D"/>
+        </svg>
+      </div>
+      <div class="v06-col"><div class="v06-app">AppState</div></div>
+      <div class="v06-col"><div class="v06-arr"><div class="v06-arr-line"></div><div class="v06-arr-head"></div></div></div>
+      <div class="v06-col"><div class="v06-handler"><div class="v06-bt">axum /status handler</div></div></div>
+      <div class="v06-col"><div class="v06-arr"><div class="v06-arr-line"></div><div class="v06-arr-head"></div></div></div>
+      <div class="v06-col"><div class="v06-json">{
+  "targets": &#8230;,
+  "chain": &#8230;
+}
+<span style="font-family:var(--font-body);font-size:13px;color:#A8B3AA;">port 8080</span></div></div>
+    </div>
+    <div class="v06-rule"><strong>shared rule on both loops:</strong> awaits complete before the lock: snapshot under the guard, serialize outside.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: One design, two compilers, one holds the pen
+     purpose: make the TS-union-to-Rust-enum transfer explicit so the learner sees zero new design work
+     data: left, TypeScript: ProbeResult discriminated union; exhaustive switch on kind; assertNever in default arm; opt-in guarantee right, Rust: enum with data-carrying variants; match over the enum; exhaustiveness is the default; E0004 names missing arms shared annotation: same sum type, same closed set, same refactor-checklist behavior differing annotation: TS requires the never-check pattern; Rust match refuses to compile without every arm
+     prompt: Two code panels side by side, TypeScript union plus switch on the left, Rust enum plus match on the right. Connect the union pipe syntax to the enum variants with a bracket labeled "same sum type". Annotate the TS default arm "opt-in via assertNever" and the Rust match "exhaustive by default, no opt-in needed".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:455px;height:507px;top:-243px;right:-243px;border-radius:36% 40% 51% 63% / 36% 57% 46% 56%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:423px;height:407px;bottom:-222px;left:634px;border-radius:46% 62% 62% 63% / 64% 45% 47% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:grid; grid-template-columns:1fr 150px 1fr; align-items:stretch; margin-top:6px; }
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-xl); padding:20px 26px; }
+  .panel .ph { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+               opacity:.75; margin-bottom:12px; }
+  .code { font-family:var(--font-mono); font-size:15.5px; line-height:1.55;
+          color:var(--stbr-cream); white-space:pre; }
+  .code .hl { background:rgba(255,210,63,.22); border-radius:4px; display:inline-block;
+              width:100%; }
+  .code .dim { opacity:.55; font-style:italic; }
+  .tie { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .tie .row { display:flex; align-items:center; }
+  .tie .dash { width:28px; height:0; border-top:2.5px dashed var(--stbr-emerald); }
+  .tie .eq { width:56px; height:56px; border-radius:var(--radius-pill);
+             background:var(--surface-brand); color:var(--text-on-brand);
+             font-family:var(--font-display); font-weight:900; font-size:30px;
+             display:flex; align-items:center; justify-content:center; margin:0 3px; }
+  .tie .lbl { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--text-primary);
+              text-align:center; margin-top:12px; line-height:1.5; }
+  .annos { display:grid; grid-template-columns:1fr 150px 1fr; margin-top:16px; }
+  .anno { border-radius:var(--radius-lg); padding:12px 16px; font-family:var(--font-body);
+          font-weight:700; font-size:15.5px; line-height:1.35; text-align:center; }
+  .anno.ts { background:var(--surface-paper); border:1.5px solid var(--border-strong);
+             color:var(--text-primary); }
+  .anno.rs { background:var(--stbr-yellow); color:var(--stbr-dark); font-weight:800; }
+  .spacer { }
+  .verdict { margin-top:16px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-lg); padding:16px 24px; text-align:center;
+             font-family:var(--font-display); font-weight:900; font-size:21px; }
+</style>
+  <div class="stbr-eyebrow">TS union &rarr; Rust enum, zero new design work</div>
+  <h2 class="viz-title">one design, two compilers, one holds the pen</h2>
+  <div class="cols">
+    <div class="panel">
+      <div class="ph">TypeScript: discriminated union + switch</div>
+      <div class="code">type ProbeResult =
+  | { kind: "ok";      latencyMs: number }
+  | { kind: "timeout"; afterMs: number }
+  | { kind: "refused" };
+
+switch (r.kind) {
+  case "ok":      return up(r.latencyMs);
+  case "timeout": return degraded(r.afterMs);
+  case "refused": return down();
+<span class="hl">  default:        return assertNever(r);</span>
+}</div>
+    </div>
+    <div class="tie">
+      <div class="row">
+        <div class="dash"></div>
+        <div class="eq">=</div>
+        <div class="dash"></div>
+      </div>
+      <div class="lbl">same sum type<br>same closed set</div>
+    </div>
+    <div class="panel">
+      <div class="ph">Rust: enum + match</div>
+      <div class="code">enum ProbeResult {
+    Ok      { latency_ms: u64 },
+    Timeout { after_ms: u64 },
+    Refused,
+}
+
+match r {
+    Ok { latency_ms } =&gt; up(latency_ms),
+    Timeout { after_ms } =&gt; degraded(after_ms),
+    Refused =&gt; down(),
+<span class="dim">    // no default arm; E0004 names missing arms</span>
+}</div>
+    </div>
+  </div>
+  <div class="annos">
+    <div class="anno ts">exhaustiveness is <b>opt-in</b>: the default arm must call assertNever</div>
+    <div class="spacer"></div>
+    <div class="anno rs">exhaustive by default, no opt-in needed</div>
+  </div>
+  <div class="verdict">same sum type, same closed set, same refactor-checklist behavior</div>
+</div>
+</body></html>

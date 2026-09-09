@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The panel's poll tick and where its budget goes
+     purpose: trace one polling tick and make the per-tab request spend visible against the shared public caps
+     data: loop: mount -> poll() -> getSlot (1 req) -> getBalance (1 req) -> derive slotTimeMs from previous sample -> setState -> wait POLL_MS (10s) -> poll() budget ledger: 2 requests / 10s / tab; caps shared per IP: 100 per 10s total, 40 per 10s per method failure exit: any throw -> error state rendered, next tick retries scale note: roughly 40 tabs on one NAT saturate the per-method lane
+     prompt: Circular flow loop with the five stages from data, request-costing badges on the two RPC calls. A side ledger panel totals the per-tab spend against both published caps. One exit arrow from the loop into an error state that rejoins at the next tick. Keep the scale note as a caption.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:491px;height:498px;right:-289px;top:122px;border-radius:56% 41% 45% 50% / 47% 44% 64% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:435px;height:411px;bottom:-235px;left:596px;border-radius:50% 47% 58% 62% / 37% 44% 64% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .viz-title { font-size: 44px; }
+    .v03-card { position: relative; background: var(--surface-card); border-radius: 28px;
+                padding: 30px 48px 24px; overflow: hidden; }
+    .v03-body { display: flex; gap: 44px; margin-top: 10px; align-items: flex-start; }
+    .v03-loop { position: relative; width: 740px; height: 520px; margin-left: 18px; flex: none; }
+    .v03-col  { position: absolute; left: 70px; top: 0; width: 380px; display: flex;
+                flex-direction: column; align-items: center; }
+    .v03-node { width: 100%; height: 56px; background: #FFFFFF; border: 2px solid var(--stbr-green);
+                border-radius: 14px; display: flex; align-items: center; justify-content: center;
+                gap: 10px; font: 700 20px var(--font-body); color: var(--stbr-dark); flex: none; }
+    .v03-node code { font-family: var(--font-mono); font-size: 19px; }
+    .v03-req  { background: var(--stbr-yellow); color: var(--stbr-dark); border-radius: 999px;
+                padding: 3px 12px; font: 800 14px var(--font-body); letter-spacing: .04em; }
+    .v03-mount { height: 40px; padding: 0 22px; background: var(--surface-paper);
+                 border: 1px solid var(--border-subtle); border-radius: 999px; display: flex;
+                 align-items: center; font: 600 16px var(--font-body); color: var(--text-secondary);
+                 flex: none; }
+    .v03-chip { position: absolute; background: #FFFFFF; border: 1px solid var(--border-subtle);
+                border-radius: 999px; padding: 3px 10px; font: 600 13px var(--font-body);
+                color: var(--text-secondary); white-space: nowrap; }
+    .v03-rail { position: absolute; left: 12px; top: 88px; width: 58px; height: 380px;
+                border-left: 3px solid var(--stbr-dark); border-top: 3px solid var(--stbr-dark);
+                border-bottom: 3px solid var(--stbr-dark);
+                border-radius: 16px 0 0 16px; }
+    .v03-ledger { flex: none; width: 440px; background: var(--stbr-dark); border-radius: 20px;
+                  padding: 26px 32px; color: var(--stbr-cream); }
+    .v03-ledger h3 { font: 800 24px var(--font-display); color: #FFFFFF; margin: 0 0 18px; }
+    .v03-big { display: inline-block; background: var(--stbr-yellow); color: var(--stbr-dark);
+               border-radius: 12px; padding: 8px 16px; font: 900 26px var(--font-display); }
+    .v03-lbl { font: 500 16px/1.4 var(--font-body); color: var(--stbr-cream); margin: 10px 0 0; }
+    .v03-div { border-top: 1px solid #4A544C; margin: 20px 0 14px; }
+    .v03-caprow { display: flex; justify-content: space-between; align-items: baseline;
+                  margin-top: 12px; }
+    .v03-caprow b { font: 800 22px var(--font-display); color: #FFFFFF; }
+    .v03-caprow span { font: 500 15px var(--font-body); color: #C9D2CB; }
+    .v03-caption { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle);
+                   font: 500 18px var(--font-body); color: var(--text-secondary); }
+  </style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">REQUEST BUDGET</div>
+    <h2 class="viz-title">one poll tick, and where its budget goes</h2>
+    <div class="v03-body">
+      <div class="v03-loop">
+        <div class="v03-rail"></div>
+        <svg style="position:absolute; left:58px; top:80px;" width="14" height="16"><polygon points="0,1 12,8 0,15" fill="#1B231D"/></svg>
+        <div class="v03-chip" style="left:-16px; top:252px; background:var(--surface-card);">every tick</div>
+        <div class="v03-col">
+          <div class="v03-mount">mount</div>
+          <svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2"/><polygon points="2,11 14,11 8,20" fill="#1B231D"/></svg>
+          <div class="v03-node"><code>poll()</code></div>
+          <svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2"/><polygon points="2,11 14,11 8,20" fill="#1B231D"/></svg>
+          <div class="v03-node"><code>getSlot</code> <span class="v03-req">1 req</span></div>
+          <svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2"/><polygon points="2,11 14,11 8,20" fill="#1B231D"/></svg>
+          <div class="v03-node"><code>getBalance</code> <span class="v03-req">1 req</span></div>
+          <svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2"/><polygon points="2,11 14,11 8,20" fill="#1B231D"/></svg>
+          <div class="v03-node" style="font-size:17px;">derive <code style="font-size:16px;">slotTimeMs</code>&nbsp;from previous sample</div>
+          <svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2"/><polygon points="2,11 14,11 8,20" fill="#1B231D"/></svg>
+          <div class="v03-node"><code>setState</code></div>
+          <svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1B231D" stroke-width="2"/><polygon points="2,11 14,11 8,20" fill="#1B231D"/></svg>
+          <div class="v03-node">wait <code>POLL_MS</code>: 10&thinsp;s</div>
+        </div>
+        <!-- failure exit -->
+        <div class="v03-chip" style="left:446px; top:202px;">any throw</div>
+        <svg style="position:absolute; left:452px; top:232px;" width="44" height="16"><line x1="0" y1="8" x2="32" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="32,2 44,8 32,14" fill="#1B231D"/></svg>
+        <div style="position:absolute; left:498px; top:212px; width:230px; height:56px;
+                    background:#FFFFFF; border:2px solid var(--stbr-dark); border-radius:14px;
+                    display:flex; align-items:center; justify-content:center;
+                    font:700 18px var(--font-body); color:var(--stbr-dark);">error state rendered</div>
+        <div style="position:absolute; left:612px; top:268px; width:2px; height:186px;
+                    background:var(--stbr-dark);"></div>
+        <div class="v03-chip" style="left:626px; top:340px; white-space:normal; width:96px;
+                    text-align:center; border-radius:12px;">next tick retries</div>
+        <svg style="position:absolute; left:450px; top:454px;" width="164" height="16"><line x1="164" y1="8" x2="12" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="12,2 0,8 12,14" fill="#1B231D"/></svg>
+      </div>
+      <div class="v03-ledger">
+        <h3>budget ledger</h3>
+        <span class="v03-big">2 req / 10&thinsp;s</span>
+        <p class="v03-lbl">per tab: this panel&rsquo;s total spend each tick</p>
+        <div class="v03-div"></div>
+        <p class="v03-lbl" style="letter-spacing:.1em; text-transform:uppercase; font-size:13px; color:#9AA79E;">shared public caps, per IP</p>
+        <div class="v03-caprow"><b>100 req / 10&thinsp;s</b><span>total, all methods</span></div>
+        <div class="v03-caprow"><b>40 req / 10&thinsp;s</b><span>per method</span></div>
+      </div>
+    </div>
+    <div class="v03-caption">scale: roughly <strong>40 tabs behind one NAT</strong> saturate the 40 req / 10&thinsp;s per-method lane.</div>
+  </div>
+</div>
+</body></html>

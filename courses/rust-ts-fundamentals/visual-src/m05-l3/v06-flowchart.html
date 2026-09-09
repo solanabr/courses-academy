@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: From tag push to a stranger running your binary
+     purpose: show the full delivery pipeline the challenge builds, including where the tests gate it
+     data: git tag v0.1.0 + push -> pulse.yml triggers on tags -> rust job (test, clippy, fmt) must pass -> release job: cargo build --release -> gh release create attaches pulse-cli-linux-x86_64 -> GitHub Release page -> stranger downloads on a clean Linux machine -> ./pulse-cli-linux-x86_64 probe <url> -> real probe line, no source, no toolchain
+     prompt: Left-to-right pipeline flowchart with the stages above. Mark the rust job as a gate that can stop the flow. Split the final stage visually to emphasize the stranger's machine has no source code and no Rust toolchain installed.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:517px;top:-311px;right:-311px;border-radius:35% 61% 50% 63% / 60% 46% 64% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:456px;height:488px;bottom:-230px;left:-230px;border-radius:58% 51% 55% 39% / 53% 50% 40% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 44px 34px;}
+    .v06-lane{display:flex;align-items:stretch;}
+    .v06-node{flex:1;background:var(--surface-card);border:2px solid var(--stbr-green);border-radius:12px;padding:12px 13px;font:600 16px/1.25 var(--font-body);color:var(--text-primary);display:flex;flex-direction:column;justify-content:center;text-align:center;}
+    .v06-node small{font:400 13px/1.25 var(--font-body);color:var(--text-secondary);margin-top:3px;}
+    .v06-node .mono{font-family:var(--font-mono);font-size:14px;font-weight:600;}
+    .v06-gate{background:var(--stbr-yellow);border-color:var(--stbr-yellow);color:var(--stbr-dark);}
+    .v06-gate small{color:#4b431c;font-weight:700;}
+    .v06-arrc{width:40px;display:flex;align-items:center;justify-content:center;}
+    .v06-arr{width:26px;height:2px;background:var(--stbr-emerald);position:relative;}
+    .v06-arr::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--stbr-emerald);border-top:6px solid transparent;border-bottom:6px solid transparent;}
+    .v06-arrL{width:26px;height:2px;background:var(--stbr-emerald);position:relative;}
+    .v06-arrL::before{content:"";position:absolute;left:-2px;top:-5px;border-right:9px solid var(--stbr-emerald);border-top:6px solid transparent;border-bottom:6px solid transparent;}
+    .v06-elbow{display:flex;justify-content:flex-end;padding-right:116px;margin:6px 0;}
+    .v06-elbow .stem{display:flex;flex-direction:column;align-items:center;}
+    .v06-vline{width:2px;height:22px;background:var(--stbr-emerald);}
+    .v06-vhead{width:0;height:0;border-top:9px solid var(--stbr-emerald);border-left:6px solid transparent;border-right:6px solid transparent;}
+    .v06-panel{flex:1;display:flex;align-items:stretch;border:2px dashed var(--stbr-dark);border-radius:14px;padding:12px;position:relative;margin-top:14px;}
+    .v06-ptag{position:absolute;top:-13px;left:18px;background:var(--surface-inverse);color:var(--stbr-cream);border-radius:var(--radius-pill);padding:5px 14px;font:700 13px/1 var(--font-body);letter-spacing:.05em;}
+    .v06-row2{display:flex;align-items:stretch;}
+    .v06-fixed{flex:none;width:242px;}
+    .v06-row2 .v06-arrc{margin-top:14px;}
+    .v06-row2 .v06-fixed{margin-top:14px;}
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">the delivery pipeline</div>
+    <h2 class="viz-title">from tag push to a stranger running your binary</h2>
+    <div class="v06-lane" style="margin-top:6px;">
+      <div class="v06-node"><span class="mono">git tag v0.1.0</span> + push</div>
+      <div class="v06-arrc"><div class="v06-arr"></div></div>
+      <div class="v06-node"><span class="mono">pulse.yml</span><small>triggers on tags</small></div>
+      <div class="v06-arrc"><div class="v06-arr"></div></div>
+      <div class="v06-node v06-gate">rust job: test · clippy · fmt<small>GATE: a failure stops the flow here</small></div>
+      <div class="v06-arrc"><div class="v06-arr"></div></div>
+      <div class="v06-node">release job<small><span class="mono">cargo build --release</span></small></div>
+      <div class="v06-arrc"><div class="v06-arr"></div></div>
+      <div class="v06-node"><span class="mono">gh release create</span><small>attaches <span class="mono">pulse-cli-linux-x86_64</span></small></div>
+    </div>
+    <div class="v06-elbow"><div class="stem"><div class="v06-vline"></div><div class="v06-vhead"></div></div></div>
+    <div class="v06-row2">
+      <div class="v06-panel">
+        <div class="v06-ptag">a clean Linux machine: no source code, no Rust toolchain</div>
+        <div class="v06-node">real probe line<small>it just runs</small></div>
+        <div class="v06-arrc"><div class="v06-arrL"></div></div>
+        <div class="v06-node"><span class="mono">./pulse-cli-linux-x86_64 probe &lt;url&gt;</span></div>
+        <div class="v06-arrc"><div class="v06-arrL"></div></div>
+        <div class="v06-node">stranger downloads the binary</div>
+      </div>
+      <div class="v06-arrc"><div class="v06-arrL"></div></div>
+      <div class="v06-node v06-fixed">GitHub Release page</div>
+    </div>
+  </div>
+</div>
+</body></html>

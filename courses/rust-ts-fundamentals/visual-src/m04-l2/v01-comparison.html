@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two ways for a function to fail
+     purpose: contrast the invisible exception channel with the failure encoded in the return type
+     data: Exceptions (TS, Java, Python): signature says string -> T | failure travels an invisible second channel | caller may not know the function throws | cost surfaces at runtime, often in production Errors as values (Rust, Go): signature says string -> Result<T, E> | failure is the return value | caller cannot touch T without deciding about E | cost surfaces at compile time, as ceremony Shared truth: the failure exists either way; the only choice is whether the signature admits it
+     prompt: Two-panel comparison. Left panel shows a function box with one labeled output arrow and a second dashed arrow escaping the box's side, unlabeled, toward a surprised caller. Right panel shows one solid output arrow carrying a two-slot value labeled Ok or Err into a caller that must branch. Caption bar underneath states the shared truth line.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:465px;height:447px;top:-241px;right:-241px;border-radius:35% 53% 63% 43% / 57% 50% 39% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:598px;height:551px;bottom:-315px;left:-315px;border-radius:51% 64% 60% 51% / 37% 38% 64% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:36px 48px 32px;}
+    .v01-cols{display:flex;gap:24px;margin-top:6px;}
+    .v01-col{flex:1;border:2px solid var(--border-strong);border-radius:var(--radius-xl);overflow:hidden;background:var(--surface-card);}
+    .v01-colhd{font-family:var(--font-display);font-weight:900;font-size:23px;padding:12px 22px;}
+    .v01-mini{padding:18px 20px;background:var(--surface-paper);border-bottom:1.5px solid var(--border-subtle);min-height:118px;
+              display:flex;flex-direction:column;justify-content:center;gap:16px;}
+    .v01-mrow{display:flex;align-items:center;}
+    .v01-box{background:var(--surface-card);border:2px solid var(--stbr-dark);border-radius:var(--radius-md);
+             padding:8px 13px;font-family:var(--font-mono);font-size:15.5px;color:var(--text-primary);white-space:nowrap;}
+    .v01-line{flex:1;height:0;border-top:3px solid var(--stbr-dark);}
+    .v01-dline{flex:1;height:0;border-top:3px dashed var(--text-muted);}
+    .v01-head{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark);}
+    .v01-dhead{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--text-muted);}
+    .v01-chip{font-family:var(--font-body);font-weight:600;font-size:13px;padding:3px 10px;border-radius:var(--radius-pill);white-space:nowrap;}
+    .v01-slot{display:flex;margin:0 5px;border-radius:var(--radius-pill);overflow:hidden;border:2px solid var(--stbr-dark);}
+    .v01-slot div{font-family:var(--font-mono);font-size:14px;padding:4px 11px;}
+    .v01-row{font-family:var(--font-body);font-size:17.5px;line-height:1.3;color:var(--text-primary);padding:11px 22px;border-top:1.5px solid var(--border-subtle);}
+    .v01-mono{font-family:var(--font-mono);font-size:16px;}
+    .v01-verdict{background:var(--surface-brand);color:var(--text-on-brand);border-radius:var(--radius-xl);
+                 padding:16px 26px;margin-top:18px;font-family:var(--font-display);font-weight:800;font-size:22px;text-align:center;}
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">THE FAILURE CHANNEL</div>
+    <h2 class="viz-title">two ways for a function to fail</h2>
+    <div class="v01-cols">
+      <div class="v01-col">
+        <div class="v01-colhd" style="background:var(--surface-inverse);color:var(--text-on-dark);">exceptions: TS, Java, Python</div>
+        <div class="v01-mini">
+          <div class="v01-mrow">
+            <div class="v01-box">parse(s: string) → number</div>
+            <div class="v01-line" style="margin-left:5px;"></div>
+            <div class="v01-chip" style="background:var(--surface-card);border:1.5px solid var(--border-strong);margin:0 4px;">T</div>
+            <div class="v01-line"></div><div class="v01-head"></div>
+            <div class="v01-box" style="margin-left:5px;">caller</div>
+          </div>
+          <div class="v01-mrow">
+            <div style="width:96px;"></div>
+            <div class="v01-dline"></div>
+            <div class="v01-chip" style="background:var(--surface-card);border:1.5px dashed var(--text-muted);color:var(--text-secondary);margin:0 4px;">throw: the invisible second channel</div>
+            <div class="v01-dline"></div><div class="v01-dhead"></div>
+            <div class="v01-chip" style="background:var(--surface-inverse);color:var(--text-on-dark);margin-left:5px;">?! surprised caller</div>
+          </div>
+        </div>
+        <div class="v01-row">signature says <span class="v01-mono">string → T</span>, no hint of failure</div>
+        <div class="v01-row">failure travels an invisible second channel</div>
+        <div class="v01-row">caller may not know the function throws</div>
+        <div class="v01-row">cost surfaces at <strong>runtime</strong>, often in production</div>
+      </div>
+      <div class="v01-col">
+        <div class="v01-colhd" style="background:var(--surface-brand);color:var(--text-on-brand);">errors as values: Rust, Go</div>
+        <div class="v01-mini">
+          <div class="v01-mrow">
+            <div class="v01-box">parse(s: string) → Result&lt;u64, E&gt;</div>
+            <div class="v01-line" style="margin-left:5px;"></div>
+            <div class="v01-slot">
+              <div style="background:var(--surface-brand);color:var(--text-on-brand);">Ok(v)</div>
+              <div style="background:var(--surface-accent);color:var(--text-on-accent);font-weight:700;">Err(e)</div>
+            </div>
+            <div class="v01-line"></div><div class="v01-head"></div>
+            <div class="v01-box" style="margin-left:5px;">caller must branch</div>
+          </div>
+          <div class="v01-mrow" style="justify-content:center;">
+            <div class="v01-chip" style="background:var(--surface-card);border:1.5px solid var(--border-strong);color:var(--text-secondary);">one solid arrow: the failure rides inside the return value</div>
+          </div>
+        </div>
+        <div class="v01-row">signature says <span class="v01-mono">string → Result&lt;T, E&gt;</span></div>
+        <div class="v01-row">failure <strong>is</strong> the return value</div>
+        <div class="v01-row">caller cannot touch <span class="v01-mono">T</span> without deciding about <span class="v01-mono">E</span></div>
+        <div class="v01-row">cost surfaces at <strong>compile time</strong>, as ceremony</div>
+      </div>
+    </div>
+    <div class="v01-verdict">the failure exists either way; the only choice is whether the signature admits it</div>
+  </div>
+</div>
+</body></html>

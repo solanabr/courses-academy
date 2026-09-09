@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What one word of CLI actually did
+     purpose: demystify the vercel command by showing the four concrete stages between your terminal and the URL
+     data: your terminal (vercel) -> source uploaded to Vercel -> build machine runs vite build -> emitted dist/ pushed to the CDN -> production URL serves static files annotations: framework detected from the repo (Vite preset); build runs on Vercel's machine, not yours; nothing executes per-request afterward
+     prompt: Horizontal left-to-right flowchart with five nodes as listed in data, one arrow per hop. Under the second and third nodes add the two annotations about framework detection and remote build. Mark the final node as static-only with a small callout reading "no server runs per request". Monospace labels, minimal styling.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:482px;height:475px;bottom:-253px;right:-253px;border-radius:65% 40% 38% 61% / 36% 35% 47% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:527px;height:422px;left:-336px;top:383px;border-radius:47% 41% 47% 55% / 49% 50% 62% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow-grid { display:grid; grid-template-columns:1fr 44px 1fr 44px 1fr 44px 1fr 44px 1fr;
+               column-gap:0; row-gap:16px; align-items:stretch; margin-top:10px; }
+  .node { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-xl); padding:20px 16px; min-height:150px;
+          display:flex; flex-direction:column; justify-content:center; text-align:center; }
+  .node .stage { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                 letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted);
+                 margin-bottom:10px; }
+  .node .main { font-family:var(--font-mono); font-weight:700; font-size:21px;
+                color:var(--text-primary); line-height:1.2; }
+  .node .sub { font-family:var(--font-body); font-weight:600; font-size:15px;
+               color:var(--text-secondary); margin-top:8px; line-height:1.3; }
+  .node.final { border-color:var(--stbr-emerald); background:rgba(0,139,76,.06); }
+  .harr { align-self:center; display:flex; align-items:center; justify-content:center; }
+  .anno { font-family:var(--font-body); font-weight:600; font-size:14.5px; line-height:1.35;
+          color:var(--text-primary); background:var(--surface-paper);
+          border:1.5px solid var(--border-strong); border-radius:var(--radius-lg);
+          padding:12px 14px; text-align:center; }
+  .anno b { font-weight:800; }
+  .callout { background:var(--stbr-yellow); color:var(--stbr-dark);
+             border-radius:var(--radius-lg); padding:12px 14px; text-align:center; }
+  .callout .tag { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+                  letter-spacing:.12em; text-transform:uppercase; margin-bottom:4px; }
+  .callout .txt { font-family:var(--font-display); font-weight:900; font-size:18px;
+                  line-height:1.15; }
+</style>
+  <div class="stbr-eyebrow">one command, four hops</div>
+  <h2 class="viz-title">what one word of CLI actually did</h2>
+  <div class="flow-grid">
+    <div class="node">
+      <div class="stage">start</div>
+      <div class="main">vercel</div>
+      <div class="sub">your terminal</div>
+    </div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="node">
+      <div class="stage">upload</div>
+      <div class="main">source</div>
+      <div class="sub">uploaded to Vercel</div>
+    </div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="node">
+      <div class="stage">build</div>
+      <div class="main">vite build</div>
+      <div class="sub">on a build machine</div>
+    </div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="node">
+      <div class="stage">deploy</div>
+      <div class="main">dist/</div>
+      <div class="sub">emitted output pushed to the CDN</div>
+    </div>
+    <div class="harr"><svg width="44" height="16"><line x1="2" y1="8" x2="32" y2="8" stroke="#306c40" stroke-width="2.5"/><polygon points="42,8 30,2 30,14" fill="#306c40"/></svg></div>
+    <div class="node final">
+      <div class="stage">live</div>
+      <div class="main">production URL</div>
+      <div class="sub">serves static files</div>
+    </div>
+    <div class="anno" style="grid-column:3;">framework <b>detected from the repo</b>: the Vite preset</div>
+    <div class="anno" style="grid-column:5;">build runs on <b>Vercel&rsquo;s machine</b>, not yours</div>
+    <div class="callout" style="grid-column:9;">
+      <div class="tag">static-only</div>
+      <div class="txt">no server runs per request</div>
+    </div>
+  </div>
+</div>
+</body></html>

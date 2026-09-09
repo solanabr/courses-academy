@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Anatomy of the finished chain gauge
+     purpose: show the four-stage structure and the one data dependency learners most often wire wrong
+     data: Stage 1, vitals: getHealth + getSlot -> prints "health: ok | slot: <n>" Stage 2, evidence: getRecentPerformanceSamples(20) -> sum numSlots (bigint) and samplePeriodSecs (number) Stage 3, gauge: totalSecs / Number(totalSlots) * 1000 -> prints measured vs 300ms target with signed % gap Stage 4, epoch clock: 432,000n constant + slot from stage 1 + MEASURED ms from stage 3 -> prints epoch, slots left, hours left Key dependency arrow: stage 3's measured value feeds stage 4; the 300ms target must NOT
+     prompt: A vertical four-stage schematic of a script, each stage a box with its label, inputs, and printed output from the data block. Draw the dependency arrow from stage 3 into stage 4 prominently, and a crossed-out arrow from the target constant into stage 4. Monospace labels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:455px;top:-245px;right:-245px;border-radius:51% 54% 41% 39% / 53% 40% 58% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:374px;height:465px;bottom:-222px;left:546px;border-radius:42% 63% 61% 64% / 52% 62% 35% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v07-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 32px 56px 26px; overflow: hidden; position: relative; }
+  .v07-wrap { position: relative; height: 560px; margin-top: 8px; }
+  .v07-panel { position: absolute; left: 0; top: 0; width: 950px; height: 560px;
+               background: var(--surface-inverse); border-radius: var(--radius-xl);
+               padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .v07-row { height: 110px; background: rgba(245, 232, 202, 0.06);
+             border-left: 4px solid var(--stbr-emerald); border-radius: var(--radius-md);
+             padding: 13px 22px; display: flex; flex-direction: column;
+             justify-content: center; gap: 6px; }
+  .v07-stage { align-self: flex-start; font-family: var(--font-display); font-weight: 800;
+               font-size: 12px; letter-spacing: 0.13em; text-transform: uppercase;
+               background: var(--stbr-emerald); color: var(--text-on-brand);
+               border-radius: var(--radius-pill); padding: 3px 12px; }
+  .v07-in { font-family: var(--font-mono); font-size: 16px; color: var(--stbr-cream); }
+  .v07-out { font-family: var(--font-mono); font-size: 13.5px;
+             color: rgba(245, 232, 202, 0.72); }
+  .v07-meas { color: var(--stbr-yellow); font-weight: 700; }
+  .v07-flowtri { position: absolute; width: 0; height: 0;
+                 border-top: 12px solid rgba(245, 232, 202, 0.45);
+                 border-left: 9px solid transparent; border-right: 9px solid transparent; }
+  .v07-seg { position: absolute; background: var(--stbr-yellow); }
+  .v07-yhead { position: absolute; left: 948px; top: 423px; width: 0; height: 0;
+               border-right: 15px solid var(--stbr-yellow);
+               border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .v07-ylabel { position: absolute; left: 1016px; top: 330px; width: 300px;
+                background: var(--stbr-yellow); color: var(--text-on-accent);
+                border-radius: var(--radius-lg); padding: 12px 18px;
+                font-family: var(--font-body); font-weight: 600; font-size: 15px;
+                line-height: 1.4; }
+  .v07-ylabel code { font-family: var(--font-mono); font-weight: 700; }
+  .v07-notchip { position: absolute; left: 1016px; top: 462px;
+                 font-family: var(--font-mono); font-weight: 700; font-size: 15px;
+                 color: var(--text-primary); border: 2px solid var(--stbr-dark);
+                 border-radius: var(--radius-md); padding: 7px 14px;
+                 background: var(--surface-paper); }
+  .v07-notline { position: absolute; left: 962px; top: 478px; width: 54px; height: 0;
+                 border-top: 3px dashed var(--text-muted); }
+  .v07-nothead { position: absolute; left: 948px; top: 472px; width: 0; height: 0;
+                 border-right: 14px solid var(--text-muted);
+                 border-top: 7.5px solid transparent; border-bottom: 7.5px solid transparent; }
+  .v07-x { position: absolute; left: 973px; top: 458px; font-family: var(--font-display);
+           font-weight: 900; font-size: 32px; line-height: 1; color: var(--stbr-dark); }
+  .v07-notsub { position: absolute; left: 1016px; top: 508px; width: 310px;
+                font-family: var(--font-body); font-size: 13.5px; line-height: 1.4;
+                color: var(--text-muted); }
+</style>
+<div class="v07-card">
+  <div class="stbr-eyebrow">FOUR STAGES · ONE DEPENDENCY WIRED WRONG MOST OFTEN</div>
+  <h2 class="viz-title">anatomy of the finished chain gauge</h2>
+  <div class="v07-wrap">
+    <div class="v07-panel">
+      <div class="v07-row">
+        <div class="v07-stage">stage 1 · vitals</div>
+        <div class="v07-in">getHealth() + getSlot()</div>
+        <div class="v07-out">→ prints "health: ok | slot: &lt;n&gt;"</div>
+      </div>
+      <div class="v07-row">
+        <div class="v07-stage">stage 2 · evidence</div>
+        <div class="v07-in">getRecentPerformanceSamples(20)</div>
+        <div class="v07-out">→ sum numSlots (bigint) · sum samplePeriodSecs (number)</div>
+      </div>
+      <div class="v07-row">
+        <div class="v07-stage">stage 3 · gauge</div>
+        <div class="v07-in">totalSecs / Number(totalSlots) * 1000</div>
+        <div class="v07-out">→ prints measured vs 300 ms target, with signed % gap</div>
+      </div>
+      <div class="v07-row">
+        <div class="v07-stage">stage 4 · epoch clock</div>
+        <div class="v07-in">432,000n + slot (stage 1) + <span class="v07-meas">MEASURED ms (stage 3)</span></div>
+        <div class="v07-out">→ prints epoch · slots left · hours left</div>
+      </div>
+      <div class="v07-flowtri" style="left: 466px; top: 136px;"></div>
+      <div class="v07-flowtri" style="left: 466px; top: 262px;"></div>
+      <div class="v07-flowtri" style="left: 466px; top: 388px;"></div>
+    </div>
+    <div class="v07-seg" style="left: 950px; top: 329px; width: 50px; height: 5px;"></div>
+    <div class="v07-seg" style="left: 995px; top: 329px; width: 5px; height: 105px;"></div>
+    <div class="v07-seg" style="left: 962px; top: 429px; width: 38px; height: 5px;"></div>
+    <div class="v07-yhead"></div>
+    <div class="v07-ylabel">stage 3's <code>measured</code> value feeds stage 4; the epoch clock runs on the ms you measured</div>
+    <div class="v07-notchip">TARGET_MS = 300</div>
+    <div class="v07-notline"></div>
+    <div class="v07-nothead"></div>
+    <div class="v07-x">×</div>
+    <div class="v07-notsub">the 300 ms target must NOT feed the epoch clock</div>
+  </div>
+</div>
+</div>
+</body></html>

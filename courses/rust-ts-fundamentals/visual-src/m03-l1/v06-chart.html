@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Three kit majors in ten weeks
+     purpose: make the case, with dated releases, for pinning by rule instead of by remembered digit
+     data: series: @solana/kit major releases (npm time data, probed 2026-09-02) 2026-06-16: 6.10.0 (last 6.x minor) 2026-06-30: 7.0.0 2026-08-21: 8.0.0 annotation: helius-sdk 3.1.0 still peers ^6.9.0 across this whole span
+     prompt: Horizontal date axis from early June to early September 2026. Three release markers at the listed dates, major releases visually heavier than the 6.10.0 minor. A horizontal band underneath spans the full axis labeled "helius-sdk peers ^6.9.0 the entire time". The gap between the band and the markers is the story; label it "the digits rot, the rule holds".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:435px;height:484px;bottom:-220px;right:-220px;border-radius:65% 53% 42% 52% / 60% 41% 64% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:553px;height:409px;left:-305px;top:250px;border-radius:61% 43% 46% 43% / 52% 36% 62% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:44px 64px 36px;}
+  .mono{font-family:var(--font-mono);}
+  .plot{position:relative;height:400px;margin-top:20px;}
+  .axis{position:absolute;left:0;right:0;top:212px;height:3px;background:var(--stbr-dark);border-radius:2px;}
+  .mk{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;}
+  .stem{width:2.5px;background:var(--stbr-emerald);}
+  .mdot{position:absolute;transform:translate(-50%,-50%);top:213px;width:13px;height:13px;border-radius:50%;background:var(--stbr-dark);border:3px solid var(--surface-card);}
+  .rel{border-radius:10px;padding:8px 16px;text-align:center;margin-bottom:0;}
+  .maj{background:var(--surface-brand);color:var(--text-on-brand);}
+  .maj .v{font-family:var(--font-mono);font-weight:700;font-size:21px;line-height:1.15;}
+  .maj .d{font-family:var(--font-body);font-size:12px;}
+  .min{background:var(--surface-card);border:2px solid var(--stbr-emerald);color:var(--text-primary);}
+  .min .v{font-family:var(--font-mono);font-weight:700;font-size:16px;line-height:1.15;}
+  .min .d{font-family:var(--font-body);font-size:11.5px;color:var(--text-secondary);}
+  .tick{position:absolute;top:222px;transform:translateX(-50%);font-family:var(--font-body);font-size:12.5px;color:var(--text-muted);}
+  .tickbar{position:absolute;top:212px;width:1.5px;height:8px;background:var(--text-muted);transform:translateX(-50%);}
+  .gap{position:absolute;left:0;right:0;top:262px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-primary);}
+  .band{position:absolute;left:0;right:0;top:308px;height:52px;background:var(--surface-accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-on-accent);}
+  .cap{position:absolute;left:0;right:0;top:372px;text-align:center;font-family:var(--font-body);font-size:13px;color:var(--text-muted);}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">pin by rule, not by remembered digit</div>
+  <h2 class="viz-title" style="font-size:46px;margin:4px 0 0;">three kit majors in ten weeks</h2>
+  <div class="plot">
+    <div class="axis"></div>
+    <div class="tickbar" style="left:0.5%;"></div><div class="tick" style="left:0.5%;">Jun 2026</div>
+    <div class="tickbar" style="left:31.2%;"></div><div class="tick" style="left:31.2%;">Jul</div>
+    <div class="tickbar" style="left:63.5%;"></div><div class="tick" style="left:63.5%;">Aug</div>
+    <div class="tickbar" style="left:95.8%;"></div><div class="tick" style="left:95.8%;">Sep</div>
+    <div class="mk" style="left:15.6%;top:118px;">
+      <div class="rel min"><div class="v">6.10.0</div><div class="d">Jun 16 &middot; last 6.x minor</div></div>
+      <div class="stem" style="height:34px;"></div>
+    </div>
+    <div class="mk" style="left:30.2%;top:66px;">
+      <div class="rel maj"><div class="v">7.0.0</div><div class="d">Jun 30 &middot; major</div></div>
+      <div class="stem" style="height:82px;"></div>
+    </div>
+    <div class="mk" style="left:84.4%;top:66px;">
+      <div class="rel maj"><div class="v">8.0.0</div><div class="d">Aug 21 &middot; major</div></div>
+      <div class="stem" style="height:82px;"></div>
+    </div>
+    <div class="mdot" style="left:15.6%;"></div>
+    <div class="mdot" style="left:30.2%;"></div>
+    <div class="mdot" style="left:84.4%;"></div>
+    <div class="gap">the digits rot, the rule holds</div>
+    <div class="band"><span>helius-sdk 3.1.0 peers <span class="mono" style="margin:0 8px;">^6.9.0</span> the entire time</span></div>
+    <div class="cap">@solana/kit major releases: npm time data, probed 2026-09-02</div>
+  </div>
+</div>
+</div>
+</body></html>

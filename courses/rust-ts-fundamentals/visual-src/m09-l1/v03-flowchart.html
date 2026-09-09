@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Severity rates the bug, the path rates your exposure
+     purpose: give the reader a decision path from an audit finding to a proportionate response
+     data: start: audit finding appears step 1: read advisory id and vulnerable range; is YOUR locked version inside the range? if no: note and close step 2: trace the dependency path (pnpm why / npm ls / cargo tree -i) branch runtime path: reachable in shipped or scheduled code; treat as urgent, plan the upgrade to the patched version branch build or dev-only path: runs on laptops and CI only; assess, schedule, do not panic-patch step 3: write the verdict in AUDIT.md either way: dep heading, then signal read, exposure path, decision, action
+     prompt: Vertical flowchart. Entry node for a new audit finding, a diamond asking whether the locked version falls in the vulnerable range, then a path-tracing node feeding a two-way branch: a runtime-path branch marked urgent and a build-or-dev-path branch marked assess and schedule. Both branches converge on a final node for the written verdict. Label the branch edges with the three path-tracing commands as small code chips.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:445px;top:-233px;right:-233px;border-radius:50% 45% 61% 50% / 49% 37% 45% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:552px;height:434px;left:-329px;top:118px;border-radius:43% 48% 48% 63% / 36% 55% 64% 37%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:30px 52px 30px;}
+  .flow{display:flex;flex-direction:column;align-items:center;margin-top:12px;}
+  .node{background:var(--surface-card);border:2px solid var(--stbr-emerald);border-radius:14px;
+        padding:10px 26px;text-align:center;}
+  .node h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--text-primary);}
+  .node p{margin:2px 0 0;font-family:var(--font-body);font-size:13px;line-height:1.35;color:var(--text-secondary);}
+  .start{border-color:var(--stbr-dark);border-radius:999px;padding:9px 30px;}
+  .arr{width:0;height:16px;border-left:2px solid var(--stbr-dark);position:relative;}
+  .arr::after{content:"";position:absolute;left:-6px;bottom:-8px;border-left:6px solid transparent;
+              border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);}
+  .arr .lbl{position:absolute;left:12px;top:-2px;font-family:var(--font-display);font-weight:800;
+            font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--stbr-emerald);}
+  .qrow{display:flex;align-items:center;gap:14px;}
+  .q{border-width:3px;border-radius:26px;background:var(--surface-paper);}
+  .no{display:flex;align-items:center;gap:8px;}
+  .no .h{width:34px;height:0;border-top:2px solid var(--stbr-dark);position:relative;}
+  .no .h::after{content:"";position:absolute;right:-8px;top:-6px;border-top:5px solid transparent;
+                border-bottom:5px solid transparent;border-left:8px solid var(--stbr-dark);}
+  .no .chip{border:1.5px solid var(--border-strong);border-radius:999px;padding:6px 16px;
+            font-family:var(--font-body);font-size:13px;color:var(--text-secondary);white-space:nowrap;}
+  .cmds{display:flex;gap:10px;justify-content:center;margin-top:7px;}
+  .cmd{font-family:var(--font-mono);font-weight:700;font-size:13px;background:var(--surface-inverse);
+       color:var(--text-on-dark);border-radius:8px;padding:5px 11px;}
+  .branches-wrap{width:1120px;margin-top:2px;}
+  .branches{display:flex;gap:26px;width:100%;}
+  .br{flex:1;display:flex;flex-direction:column;align-items:center;}
+  .brcard{width:100%;border-radius:14px;padding:13px 24px;text-align:center;}
+  .urgent{background:var(--stbr-yellow);}
+  .urgent h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--stbr-dark);}
+  .urgent p{margin:3px 0 0;font-family:var(--font-body);font-size:13px;line-height:1.38;color:var(--stbr-dark);}
+  .calm{background:var(--surface-paper);border:1.5px solid var(--border-subtle);}
+  .calm h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--text-primary);}
+  .calm p{margin:3px 0 0;font-family:var(--font-body);font-size:13px;line-height:1.38;color:var(--text-secondary);}
+  .final{margin-top:16px;width:1120px;background:var(--surface-brand);border-radius:14px;padding:13px 28px;text-align:center;}
+  .final h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--text-on-brand);}
+  .final p{margin:3px 0 0;font-family:var(--font-body);font-size:13.5px;color:rgba(245,232,202,.9);}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">from finding to proportionate response</div>
+  <h2 class="viz-title" style="font-size:38px;margin:2px 0 0;">severity rates the bug, the path rates your exposure</h2>
+  <div class="flow">
+    <div class="node start"><h4>audit finding appears</h4></div>
+    <div class="arr"></div>
+    <div class="qrow">
+      <div class="node q"><h4>is YOUR locked version inside the vulnerable range?</h4>
+        <p>read the advisory id and the vulnerable range first</p></div>
+      <div class="no"><div class="h"></div><div class="chip">no &rarr; note and close</div></div>
+    </div>
+    <div class="arr"><span class="lbl">yes</span></div>
+    <div class="node"><h4>trace the dependency path</h4>
+      <div class="cmds"><span class="cmd">pnpm why</span><span class="cmd">npm ls</span><span class="cmd">cargo tree -i</span></div>
+    </div>
+    <div class="arr"></div>
+    <div class="branches">
+      <div class="br">
+        <div class="brcard urgent"><h4>runtime path: urgent</h4>
+          <p>reachable in shipped or scheduled code; plan the upgrade to the patched version</p></div>
+      </div>
+      <div class="br">
+        <div class="brcard calm"><h4>build / dev-only path: assess &amp; schedule</h4>
+          <p>runs on laptops and CI only; do not panic-patch</p></div>
+      </div>
+    </div>
+    <div class="final"><h4>write the verdict in AUDIT.md, either way</h4>
+      <p>dep heading, then: signal read &middot; exposure path &middot; decision &middot; action</p></div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,110 @@
+id: lesson-rtf-m04-l1
+slug: m04-l1
+title: "Ownership is the point"
+skills:
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "rustc": "1.98.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: fix-the-borrow
+    type: code
+    language: rust
+    starter: fix-the-borrow/starter.rs
+    solution: fix-the-borrow/solution.rs
+    tests: fix-the-borrow/tests.json
+    hints:
+      - "The error is E0382: use of moved value. The FIRST call consumed the Vec."
+      - "Change both helper signatures from Vec<u64> to &[u64]; a &Vec<u64> coerces to &[u64] automatically."
+      - "At the call sites, pass &latencies. Iterating a slice gives you &u64, destructure with `for &l in`."
+  - key: check
+    type: quiz
+    questions:
+      - id: m04l1-q1
+        prompt: "You wrote `let fleet = targets;` and then called `classify(targets)` two lines later. The compiler rejects it with E0382: use of moved value. What is it actually telling you?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The binding was not declared mut, so moving it into `fleet` consumed it; a `let mut targets` would keep both names usable"
+            correct: false
+            feedback: "mut decides whether a binding can be changed, not who owns the value. Add it and the move happens identically, because both names would still be claiming one allocation."
+          - id: b
+            label: "The Vec's memory was already freed at the move, so using `targets` would read dangling memory the runtime has not collected yet"
+            correct: false
+            feedback: "Nothing is freed at the move, the data is alive and owned by `fleet`. The rejection is about ambiguous ownership, not dangling memory."
+          - id: c
+            label: "Vec is not a Copy type, so Rust requires you to call .clone() before every function call that takes one by value"
+            correct: false
+            feedback: "Clone is one escape hatch, not a requirement, borrowing with & is the idiomatic fix, and this lesson's challenge forbids the clone dodge."
+          - id: a
+            label: "Ownership of the Vec moved to `fleet`; two live owners would make cleanup ambiguous, so the old binding's access ended"
+            correct: true
+            feedback: "The data is alive and well under its new name. What ended is your old one, because two bindings believing they own one allocation is exactly the ambiguity the rule exists to delete."
+        explanation: "A move transfers ownership: exactly one binding is responsible for the value's cleanup and mutation at any time. The compiler ends the old binding's access so 'who owns this?' always has one answer."
+      - id: m04l1-q2
+        prompt: "A teammate from your TS module asks: 'Why does Rust make this a compile-time fight instead of just running a garbage collector like Node does?' The honest answer:"
+        multiSelect: false
+        options:
+          - id: d
+            label: "It runs the collector's work at compile time, tracing which values are still reachable and freeing the rest"
+            correct: false
+            feedback: "No reachability is traced anywhere. The compiler frees a value where its owner leaves scope, which is why you can point at the line, and why ownership is a discipline rather than an early GC."
+          - id: b
+            label: "Ownership gives deterministic cleanup and rules out data races and aliasing bugs at compile time, with no runtime paying for it"
+            correct: true
+            feedback: "Cleanup lands at a line you can point to, and the one-writer-XOR-many-readers rule that saves a reference from a reallocated buffer is the data-race rule wearing single-threaded clothes."
+          - id: c
+            label: "Rust programs cannot detect unreachable objects at runtime, so static ownership rules are the only memory strategy available to it"
+            correct: false
+            feedback: "Runtime GC for Rust is possible in principle (and Rc/Arc exist), ownership is a design choice for zero-cost, deterministic safety, not a workaround for a missing capability."
+          - id: a
+            label: "GC pauses are unacceptable on blockchains, so Rust forbids heap allocation and keeps every value on the stack instead"
+            correct: false
+            feedback: "Rust heap-allocates freely (Vec, String, Box). Ownership governs WHO frees the heap, it does not forbid using it."
+        explanation: "The trade is explicit: Rust moves the memory-management work from a runtime collector to compile-time rules. You pay in borrow-checker friction; you get deterministic frees, no GC pauses, and whole bug classes (use-after-free, data races) rejected before the program exists."
+      - id: m04l1-q3
+        prompt: "You hold `let worst = &latencies[0];` and three lines later, while `worst` is still used, you call `latencies.push(next)`. The compiler refuses. Which rule fired?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Only one reference of any kind may exist at a time, so the shared borrow must be dropped before anything else touches the Vec"
+            correct: false
+            feedback: "Many SHARED borrows may coexist happily, the rule only forbids mixing readers with a writer, not having several readers."
+          - id: c
+            label: "Many shared readers OR one exclusive writer, never both: push needs &mut self while your shared & is still live"
+            correct: true
+            feedback: "push takes &mut self and your shared borrow is still live, so reader and writer overlap. A push can reallocate the buffer, which would leave `worst` pointing at memory nobody owns."
+          - id: b
+            label: "A Vec becomes read-only forever once any reference to its contents has been taken anywhere in the program"
+            correct: false
+            feedback: "Borrows have scopes, once the last use of `worst` passes, the Vec is fully mutable again. Nothing is permanent."
+          - id: d
+            label: "The shared borrow is too weak, `worst` has to be a &mut so it and the push share one exclusive handle"
+            correct: false
+            feedback: "Two exclusive borrows of one Vec is the stricter error, not the fix. Borrows have scopes: let the read finish before the write begins and this compiles with the shared borrow exactly as written."
+        explanation: "Aliasing XOR mutation: push can reallocate the Vec's buffer, which would leave `worst` dangling. The checker sees a live reader and a would-be writer overlapping and rejects the ambiguity, this is the data-race rule in single-threaded clothing."
+      - id: m04l1-q4
+        prompt: "Fresh install day: rustup is in, `cargo new pulse-rs` worked. Which tool from the lesson's toolchain tour is NOT available on your stable toolchain?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "miri, it is nightly-only; clippy, rustfmt, and rust-analyzer all ship as components of the stable channel"
+            correct: true
+            feedback: "The stable box is fuller than the myths suggest: clippy and rustfmt arrive with the default profile, rust-analyzer is one rustup component add away. miri is the one that genuinely needs nightly."
+          - id: d
+            label: "rustfmt, formatting comes from a separate cargo install, because rustup itself ships only rustc and cargo binaries"
+            correct: false
+            feedback: "rustfmt lands with the default rustup profile, so cargo fmt works on day one. Reaching for cargo install here is how people end up with a third-party substitute for a first-party tool they own."
+          - id: b
+            label: "rust-analyzer, the IDE engine is a separate editor-marketplace product and is not distributed as a rustup component at all"
+            correct: false
+            feedback: "rust-analyzer IS a rustup component of the stable channel (your editor may bundle its own copy, but stable ships it)."
+          - id: c
+            label: "clippy, lints land on nightly first and each lint only reaches the stable channel one full release train later"
+            correct: false
+            feedback: "clippy ships in the stable box, current and ready, `cargo clippy` works on day one of a stable install."
+        explanation: "The stable box holds clippy, rustfmt, and rust-analyzer; miri is the one honesty-note exception (nightly-only). Knowing what is in the box stops you from installing third-party substitutes for tools you already have."

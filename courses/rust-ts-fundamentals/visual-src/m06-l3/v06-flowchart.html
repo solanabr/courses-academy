@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Run-once script versus interval service, one entry point
+     purpose: show both modes sharing runSweep and the abort path that makes docker stop clean
+     data: entry -> parse args and FLEET_INTERVAL no interval set -> runSweep once -> exit 0 (the cron's unchanged path) interval set -> loop: runSweep -> abortable sleep(interval) -> back to loop check SIGTERM or SIGINT -> AbortController fires -> sleep wakes immediately -> loop condition fails -> clean exit log -> exit 0 anti-pattern branch, crossed out: exit after one sweep + restart: always -> restart churn as a fake scheduler
+     prompt: Flowchart with one entry node splitting into two lanes. Left lane: single sweep then exit, labeled as the cron path. Right lane: a loop of sweep and sleep with a signal bolt entering from the side, aborting the sleep and draining to a clean exit node. Below, a small crossed-out box showing the restart-policy loop anti-pattern. Monospace labels for runSweep and FLEET_INTERVAL.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:518px;height:483px;top:-258px;right:-258px;border-radius:63% 37% 43% 47% / 44% 63% 51% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:368px;height:528px;bottom:-339px;left:706px;border-radius:51% 41% 48% 48% / 53% 37% 37% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 34px 52px 30px; overflow: hidden; position: relative; }
+  .v06-card .viz-title { font-size: 46px; margin: 4px 0 14px; }
+  .v06-entry { width: 560px; margin: 0 auto; border: 2.5px solid var(--stbr-dark);
+               border-radius: var(--radius-lg); background: var(--surface-paper);
+               padding: 10px 20px; text-align: center; font-family: var(--font-body);
+               font-size: 17px; font-weight: 600; color: var(--text-primary); }
+  .v06-entry code { font-family: var(--font-mono); font-size: 15.5px; font-weight: 400; }
+  .v06-split { position: relative; height: 46px; }
+  .v06-hbar { position: absolute; top: 14px; left: 230px; width: 698px; height: 3px;
+              background: var(--stbr-dark); }
+  .v06-stub { position: absolute; top: 0; left: 674px; width: 3px; height: 17px;
+              background: var(--stbr-dark); }
+  .v06-drop { position: absolute; top: 14px; width: 3px; height: 18px; background: var(--stbr-dark); }
+  .v06-tri  { position: absolute; top: 32px; width: 0;
+              border-left: 8px solid transparent; border-right: 8px solid transparent;
+              border-top: 11px solid var(--stbr-dark); }
+  .v06-lanes { display: flex; gap: 44px; }
+  .v06-lane { border-radius: var(--radius-xl); padding: 14px 18px; }
+  .v06-lane-cron { width: 460px; border: 2px solid var(--stbr-ink-300); background: var(--surface-paper); }
+  .v06-lane-svc  { flex: 1; border: 2.5px solid var(--stbr-emerald); background: var(--surface-card); }
+  .v06-lanehead { font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+                  margin-bottom: 8px; }
+  .v06-lane-svc .v06-lanehead { color: var(--stbr-emerald); }
+  .v06-node { border: 1.5px solid var(--stbr-ink-300); border-radius: var(--radius-md);
+              background: var(--surface-card); padding: 8px 14px; font-family: var(--font-body);
+              font-size: 15px; color: var(--text-primary); }
+  .v06-node code { font-family: var(--font-mono); font-size: 14px; }
+  .v06-arr { width: 0; margin: 3px auto; border-left: 7px solid transparent;
+             border-right: 7px solid transparent; border-top: 10px solid var(--stbr-dark); }
+  .v06-loop { border: 2px dashed var(--stbr-emerald); border-radius: var(--radius-lg);
+              padding: 10px 14px; display: flex; align-items: flex-end; gap: 12px; }
+  .v06-loopcol { flex: 1; }
+  .v06-looplab { font-family: var(--font-display); font-weight: 800; font-size: 12px;
+                 letter-spacing: 0.1em; text-transform: uppercase; color: var(--stbr-emerald);
+                 margin-bottom: 6px; }
+  .v06-sig { width: 250px; background: var(--stbr-yellow); border-radius: var(--radius-md);
+             padding: 9px 13px; font-family: var(--font-body); font-size: 13.5px;
+             color: var(--text-on-accent); }
+  .v06-sig b { display: block; font-family: var(--font-mono); font-size: 13.5px; }
+  .v06-sigarr { width: 26px; height: 3px; background: var(--stbr-yellow-700); position: relative;
+                margin-bottom: 22px; }
+  .v06-sigarr::before { content: ""; position: absolute; left: -10px; top: -6px;
+              border-right: 10px solid var(--stbr-yellow-700);
+              border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+  .v06-anti { margin-top: 14px; border: 2px dashed var(--status-danger);
+              border-radius: var(--radius-lg); padding: 9px 20px;
+              font-family: var(--font-body); font-size: 15px; color: var(--text-secondary); }
+  .v06-anti b { color: var(--status-danger); }
+  .v06-anti code { font-family: var(--font-mono); font-size: 14px; text-decoration: line-through; }
+</style>
+<div class="v06-card">
+  <div class="stbr-eyebrow">ONE ENTRY POINT · TWO MODES</div>
+  <h2 class="viz-title">run-once script vs interval service</h2>
+  <div class="v06-entry">entry: parse args + <code>FLEET_INTERVAL</code></div>
+  <div class="v06-split">
+    <div class="v06-stub"></div>
+    <div class="v06-hbar"></div>
+    <div class="v06-drop" style="left:228px;"></div><div class="v06-tri" style="left:221px;"></div>
+    <div class="v06-drop" style="left:926px;"></div><div class="v06-tri" style="left:919px;"></div>
+  </div>
+  <div class="v06-lanes">
+    <div class="v06-lane v06-lane-cron">
+      <div class="v06-lanehead">no interval set: the cron's unchanged path</div>
+      <div class="v06-node"><code>runSweep()</code> once</div>
+      <div class="v06-arr"></div>
+      <div class="v06-node"><code>exit 0</code></div>
+    </div>
+    <div class="v06-lane v06-lane-svc">
+      <div class="v06-lanehead">interval set: long-running service</div>
+      <div class="v06-loop">
+        <div class="v06-loopcol">
+          <div class="v06-looplab">loop ↺</div>
+          <div class="v06-node"><code>runSweep()</code></div>
+          <div class="v06-arr"></div>
+          <div class="v06-node">abortable <code>sleep(interval)</code> → back to loop</div>
+        </div>
+        <div class="v06-sigarr"></div>
+        <div class="v06-sig"><b>SIGTERM / SIGINT</b>AbortController fires; the sleep wakes immediately</div>
+      </div>
+      <div class="v06-arr"></div>
+      <div class="v06-node">loop condition fails → clean exit log</div>
+      <div class="v06-arr"></div>
+      <div class="v06-node"><code>exit 0</code>; <i>docker stop</i> comes back clean</div>
+    </div>
+  </div>
+  <div class="v06-anti"><b>✗ anti-pattern:</b>&nbsp; <code>exit after one sweep</code> + <code>restart: always</code>; restart churn as a fake scheduler</div>
+</div>
+</div>
+</body></html>

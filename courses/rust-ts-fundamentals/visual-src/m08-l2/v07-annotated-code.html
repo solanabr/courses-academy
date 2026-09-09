@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The worker's public JSON after the re-ship
+     purpose: show the exact shape step 5 must produce so the learner can diff their output against the contract
+     data: { "updatedAt": "2026-09-02T14:31:07.412Z",   <- fetch-handler stamp (m07-l1, unchanged) "targets": [ ...status entries... ],        <- the existing status block (m07-l1, unchanged) "chain": {                                  <- new, read from PULSE_KV key "chain" "slot": "443693604",                      <- bigint stringified, never raw "balances": { "So11111111111111111111111111111111111111112": "1807515117625" }, "fetchedAt": "2026-09-02T14:30:02.108Z"   <- the snapshot's own age, older than updatedAt } }
+     prompt: A JSON document rendered as code with margin annotations from the arrow notes in data, each annotation connected to its line. Emphasize that the two timestamps differ and why. Monospace, compact.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:461px;height:359px;right:-234px;top:391px;border-radius:53% 43% 36% 43% / 42% 35% 62% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:376px;height:451px;bottom:-252px;left:778px;border-radius:54% 59% 65% 51% / 45% 50% 64% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .viz-title { font-size: 44px; }
+    .v07-card { position: relative; background: var(--surface-card); border-radius: 28px;
+                padding: 30px 48px 26px; overflow: hidden; }
+    .v07-panel { background: var(--stbr-dark); border-radius: 20px; padding: 28px 34px;
+                 margin-top: 12px; }
+    .v07-row { display: flex; align-items: center; height: 40px; }
+    .v07-code { font: 500 19px var(--font-mono); color: var(--stbr-cream); white-space: pre; }
+    .v07-code .k { color: #8FD6B0; }
+    .v07-lead { flex: 1; border-bottom: 1px dotted #56605A; margin: 0 16px; min-width: 24px; }
+    .v07-note { flex: none; border-radius: 999px; padding: 5px 14px;
+                font: 700 14px var(--font-body); white-space: nowrap;
+                background: var(--stbr-emerald); color: #FFFFFF; }
+    .v07-note.hot { background: var(--stbr-yellow); color: var(--stbr-dark); }
+    .v07-hotline { border-left: 4px solid var(--stbr-yellow); margin-left: -20px;
+                   padding-left: 16px; }
+    .v07-foot { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle);
+                font: 500 18px/1.45 var(--font-body); color: var(--text-secondary); }
+    .v07-foot code { font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+                     color: var(--stbr-green); }
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">THE PUBLIC CONTRACT</div>
+    <h2 class="viz-title">the worker&rsquo;s JSON after the re-ship</h2>
+    <div class="v07-panel">
+      <div class="v07-row"><span class="v07-code">{</span></div>
+      <div class="v07-row v07-hotline"><span class="v07-code">  <span class="k">"updatedAt"</span>: "2026-09-02T14:31:07.412Z",</span><span class="v07-lead"></span><span class="v07-note hot">fetch-handler stamp: m07-l1, unchanged</span></div>
+      <div class="v07-row"><span class="v07-code">  <span class="k">"targets"</span>: [ &hellip;status entries&hellip; ],</span><span class="v07-lead"></span><span class="v07-note">existing status block: m07-l1, unchanged</span></div>
+      <div class="v07-row"><span class="v07-code">  <span class="k">"chain"</span>: {</span><span class="v07-lead"></span><span class="v07-note">NEW: read from PULSE_KV key "chain"</span></div>
+      <div class="v07-row"><span class="v07-code">    <span class="k">"slot"</span>: "443693604",</span><span class="v07-lead"></span><span class="v07-note">bigint stringified, never raw</span></div>
+      <div class="v07-row"><span class="v07-code">    <span class="k">"balances"</span>: {</span></div>
+      <div class="v07-row"><span class="v07-code">      "So11111111111111111111111111111111111111112": "1807515117625"</span></div>
+      <div class="v07-row"><span class="v07-code">    },</span></div>
+      <div class="v07-row v07-hotline"><span class="v07-code">    <span class="k">"fetchedAt"</span>: "2026-09-02T14:30:02.108Z"</span><span class="v07-lead"></span><span class="v07-note hot">the snapshot&rsquo;s own age, older than updatedAt</span></div>
+      <div class="v07-row"><span class="v07-code">  }</span></div>
+      <div class="v07-row"><span class="v07-code">}</span></div>
+    </div>
+    <div class="v07-foot">the two timestamps differ by design: <code>updatedAt</code> is when the worker answered this request; <code>fetchedAt</code> is when the cron last reached the RPC. the served chain block is always a little older than the response that carries it.</div>
+  </div>
+</div>
+</body></html>

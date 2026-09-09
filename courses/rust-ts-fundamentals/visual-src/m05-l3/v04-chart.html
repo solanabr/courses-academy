@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The same code, measured in both profiles
+     purpose: make the dev-vs-release gap visceral with real measured numbers so debug benchmarking dies here
+     data: Latency-stats pass, 20 passes over 5,000,000 samples, one machine, 2026-09-02: dev profile: 983 ms release profile: 67 ms Binary size: dev 18M, release 6.4M
+     prompt: Two grouped horizontal bars comparing dev and release runtime in ms, with the measured values labeled on the bars, plus a small secondary pair for binary size. Caption that the values are one real machine's measurement, not a canonical number.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:525px;height:544px;bottom:-291px;right:-291px;border-radius:44% 62% 54% 49% / 37% 62% 44% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:468px;height:509px;left:-220px;top:173px;border-radius:37% 54% 46% 60% / 45% 63% 47% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v04-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 34px;}
+    .v04-sec{font:700 14px/1 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:14px 0 12px;}
+    .v04-row{display:grid;grid-template-columns:150px 1fr;column-gap:18px;align-items:center;margin-bottom:12px;}
+    .v04-lbl{font:700 19px/1.1 var(--font-body);color:var(--text-primary);text-align:right;}
+    .v04-track{display:flex;align-items:center;}
+    .v04-bar{height:52px;border-radius:8px;display:flex;align-items:center;}
+    .v04-dev{background:var(--surface-brand);}
+    .v04-rel{background:var(--stbr-yellow);}
+    .v04-in{font:800 20px/1 var(--font-body);color:var(--stbr-cream);margin-left:auto;padding-right:16px;}
+    .v04-out{font:800 20px/1 var(--font-body);color:var(--text-primary);margin-left:12px;white-space:nowrap;}
+    .v04-chip{margin-left:16px;background:var(--surface-inverse);color:var(--stbr-cream);border-radius:var(--radius-pill);padding:8px 15px;font:700 16px/1 var(--font-body);white-space:nowrap;}
+    .v04-sm .v04-bar{height:34px;}
+    .v04-sm .v04-in{font-size:17px;}
+    .v04-sm .v04-out{font-size:17px;}
+    .v04-cap{margin-top:18px;padding-top:14px;border-top:1px solid var(--border-subtle);font:400 15px/1.4 var(--font-body);color:var(--text-secondary);}
+  </style>
+  <div class="v04-card">
+    <div class="stbr-eyebrow">cargo profiles · measured</div>
+    <h2 class="viz-title">the same code, measured in both profiles</h2>
+    <div class="v04-sec">runtime: latency-stats pass, 20 passes over 5,000,000 samples (ms, shorter is faster)</div>
+    <div class="v04-row">
+      <div class="v04-lbl">dev</div>
+      <div class="v04-track"><div class="v04-bar v04-dev" style="width:1000px;"><span class="v04-in">983 ms</span></div></div>
+    </div>
+    <div class="v04-row">
+      <div class="v04-lbl">release</div>
+      <div class="v04-track"><div class="v04-bar v04-rel" style="width:68px;"></div><span class="v04-out">67 ms</span><span class="v04-chip">≈ 15× faster, same source, same machine</span></div>
+    </div>
+    <div class="v04-sec" style="margin-top:26px;">binary size (smaller is smaller)</div>
+    <div class="v04-row v04-sm">
+      <div class="v04-lbl">dev</div>
+      <div class="v04-track"><div class="v04-bar v04-dev" style="width:500px;"><span class="v04-in">18 M</span></div></div>
+    </div>
+    <div class="v04-row v04-sm">
+      <div class="v04-lbl">release</div>
+      <div class="v04-track"><div class="v04-bar v04-rel" style="width:178px;"></div><span class="v04-out">6.4 M</span></div>
+    </div>
+    <div class="v04-cap">One real machine's measurement (2026-09-02), not a canonical number; your absolute values will differ. The gap is the lesson: never benchmark a dev build.</div>
+  </div>
+</div>
+</body></html>

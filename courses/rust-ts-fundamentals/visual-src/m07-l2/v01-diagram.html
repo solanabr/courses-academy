@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The seam, drawn across the whole workspace
+     purpose: show exactly which crates cross into WASM and which stay home, and why the line falls where it does
+     data: PORTS to wasm32-unknown-unknown: crates/pulse-engine (pure): classify_latency + Verdict, ProbeState + next_state, serde config + fixture types. Deps: serde, serde_json, thiserror. Zero OS calls. STAYS HOME (native only): crates/pulse-cli: blocking reqwest (needs sockets + threads) crates/pulse-pollerd: tokio runtime + axum (needs sockets, timers, threads) SUPPLIED BY THE PLATFORM instead: fetch, KV, cron -> via the worker crate's bindings + generated JS glue
+     prompt: A vertical seam line down the middle. Left side labeled as the WASM side holding one crate box (pulse-engine) listing its pure contents and three dependency chips. Right side holding two crate boxes (pulse-cli, pulse-pollerd) each annotated with the OS facility that anchors it to native. Below the seam, a platform bar (fetch, KV, cron) with an arrow feeding the left side. The seam line is the visual protagonist.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:517px;height:556px;top:-299px;right:-299px;border-radius:39% 52% 57% 40% / 46% 65% 36% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:427px;height:441px;bottom:-235px;left:617px;border-radius:36% 59% 61% 38% / 55% 63% 62% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 40px 52px 36px; }
+    .body { position: relative; height: 468px; margin-top: 6px; }
+    .side-hd { font-family: var(--font-display); font-weight: 800; font-size: 17px;
+               letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; }
+    .crate { border: 2px solid var(--border-strong); border-radius: var(--radius-xl);
+             background: var(--surface-card); padding: 16px 20px; }
+    .crate h4 { margin: 0 0 6px; font-family: var(--font-mono); font-size: 19px;
+                color: var(--stbr-dark); }
+    .crate p { margin: 3px 0 0; font-family: var(--font-body); font-size: 14.5px;
+               color: var(--text-secondary); line-height: 1.35; }
+    .row-item { font-family: var(--font-body); font-size: 15px; color: var(--stbr-dark);
+                border-bottom: 1px solid var(--border-subtle); padding: 6px 0; margin: 0; }
+    .chip { display: inline-block; font-family: var(--font-mono); font-size: 13px;
+            background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+            border-radius: var(--radius-pill); padding: 4px 12px; margin: 10px 6px 0 0;
+            color: var(--stbr-green); }
+    .anchor { display: inline-block; font-family: var(--font-body); font-weight: 700;
+              font-size: 13px; background: var(--stbr-dark); color: var(--stbr-cream);
+              border-radius: var(--radius-pill); padding: 4px 12px; margin-top: 10px; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">what ports to wasm &middot; what stays native</div>
+    <h2 class="viz-title">the seam, drawn across the whole workspace</h2>
+
+    <div class="body">
+      <!-- the seam: the protagonist -->
+      <div style="position:absolute; left:648px; top:0; width:8px; height:378px;
+                  background:var(--stbr-yellow); border-radius:4px;"></div>
+      <div style="position:absolute; left:560px; top:172px; width:184px; text-align:center;
+                  background:var(--stbr-dark); color:var(--stbr-cream); border-radius:var(--radius-pill);
+                  padding:8px 0; font-family:var(--font-display); font-weight:800; font-size:15px;
+                  letter-spacing:0.06em;">the seam</div>
+
+      <!-- left: ports to wasm -->
+      <div style="position:absolute; left:0; top:0; width:600px;">
+        <p class="side-hd" style="color:var(--stbr-emerald);">ports to wasm32-unknown-unknown</p>
+        <div class="crate" style="border-color:var(--stbr-emerald);">
+          <h4>crates/pulse-engine<span style="font-family:var(--font-body);font-size:14px;color:var(--stbr-emerald);font-weight:700;">: pure</span></h4>
+          <p class="row-item">classify_latency + Verdict</p>
+          <p class="row-item">ProbeState + next_state</p>
+          <p class="row-item" style="border-bottom:none;">serde config + fixture types</p>
+          <span class="chip">serde</span><span class="chip">serde_json</span><span class="chip">thiserror</span>
+          <p style="margin:10px 0 0; font-family:var(--font-display); font-weight:800; font-size:14px;
+                    color:var(--stbr-emerald); letter-spacing:0.05em;">ZERO OS CALLS: that&rsquo;s why it crosses</p>
+        </div>
+      </div>
+
+      <!-- right: stays home -->
+      <div style="position:absolute; right:0; top:0; width:600px;">
+        <p class="side-hd" style="color:var(--stbr-dark);">stays home: native only</p>
+        <div class="crate" style="margin-bottom:14px;">
+          <h4>crates/pulse-cli</h4>
+          <p>blocking reqwest</p>
+          <span class="anchor">needs sockets + threads</span>
+        </div>
+        <div class="crate">
+          <h4>crates/pulse-pollerd</h4>
+          <p>tokio runtime + axum</p>
+          <span class="anchor">needs sockets, timers, threads</span>
+        </div>
+      </div>
+
+      <!-- arrow from platform bar up into the wasm side -->
+      <div style="position:absolute; left:296px; top:346px; width:4px; height:52px;
+                  background:var(--stbr-emerald);"></div>
+      <div style="position:absolute; left:288px; top:334px; width:0; height:0;
+                  border-left:10px solid transparent; border-right:10px solid transparent;
+                  border-bottom:14px solid var(--stbr-emerald);"></div>
+
+      <!-- platform bar -->
+      <div style="position:absolute; left:0; right:0; bottom:0; height:70px;
+                  background:var(--surface-brand); border-radius:var(--radius-xl);
+                  display:flex; align-items:center; padding:0 28px;">
+        <p style="margin:0; font-family:var(--font-display); font-weight:800; font-size:18px;
+                  color:var(--text-on-brand); flex:0 0 auto;">supplied by the platform instead</p>
+        <div style="flex:1; display:flex; justify-content:flex-end; gap:14px;">
+          <span style="font-family:var(--font-mono); font-size:16px; background:var(--stbr-cream);
+                       color:var(--stbr-green); border-radius:var(--radius-pill); padding:7px 20px;">fetch</span>
+          <span style="font-family:var(--font-mono); font-size:16px; background:var(--stbr-cream);
+                       color:var(--stbr-green); border-radius:var(--radius-pill); padding:7px 20px;">KV</span>
+          <span style="font-family:var(--font-mono); font-size:16px; background:var(--stbr-cream);
+                       color:var(--stbr-green); border-radius:var(--radius-pill); padding:7px 20px;">cron</span>
+          <span style="font-family:var(--font-body); font-size:14px; color:var(--stbr-cream);
+                       align-self:center;">via the worker crate&rsquo;s bindings + generated JS glue</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

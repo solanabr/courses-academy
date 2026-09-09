@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Everything after docker push is somebody's scheduler
+     purpose: land the deploy-seam idea by showing one push feeding every downstream runner through the same pull verb
+     data: green Actions run -> docker push -> ghcr.io/owner/pulse-pollerd ghcr.io fans out via docker pull to: your laptop running docker compose up; a teammate's docker run; CI itself on a later run; any future scheduler or cloud runtime seam label between push and the fan-out: the deploy seam, this course teaches everything left of it
+     prompt: Left-to-right flowchart. One node for the CI run, an arrow labeled docker push into a central registry node named ghcr.io, then four fan-out arrows each labeled docker pull reaching the four consumers from data. A vertical dashed line through the registry labeled the deploy seam, with a caption that the course teaches the left side and signposts the right.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:513px;height:523px;top:-307px;right:-307px;border-radius:42% 58% 45% 63% / 63% 37% 37% 64%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:402px;height:510px;bottom:-312px;left:653px;border-radius:42% 55% 49% 57% / 53% 43% 45% 55%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v3-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 40px 56px 34px; position: relative; overflow: hidden; }
+  .v3-row { display: flex; align-items: center; margin-top: 6px; }
+  .v3-ci { width: 236px; background: var(--stbr-emerald); color: var(--text-on-brand);
+           border-radius: var(--radius-lg); padding: 18px 18px; text-align: center; }
+  .v3-ci b { font-family: var(--font-display); font-weight: 800; font-size: 20px; display: block; }
+  .v3-ci small { font-family: var(--font-body); font-size: 13.5px; opacity: 0.85;
+                 display: block; margin-top: 5px; }
+  .v3-push { width: 148px; display: flex; flex-direction: column; align-items: center;
+             padding: 0 8px; }
+  .v3-chip { font-family: var(--font-mono); font-size: 13.5px; color: var(--text-primary);
+             background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+             border-radius: var(--radius-pill); padding: 4px 10px; margin-bottom: 9px;
+             white-space: nowrap; }
+  .v3-line { position: relative; width: 100%; height: 3.5px; background: var(--stbr-dark);
+             border-radius: 2px; }
+  .v3-line::after { content: ""; position: absolute; right: -2px; top: -7px;
+                    border-left: 14px solid var(--stbr-dark);
+                    border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+  .v3-reg { width: 258px; background: var(--surface-inverse); color: var(--text-on-dark);
+            border-radius: var(--radius-lg); padding: 20px 18px; text-align: center; }
+  .v3-reg b { font-family: var(--font-display); font-weight: 900; font-size: 26px; display: block; }
+  .v3-reg code { display: block; font-family: var(--font-mono); font-size: 12.5px;
+                 color: var(--stbr-ink-300); margin-top: 8px; }
+  .v3-seam { width: 118px; display: flex; flex-direction: column; align-items: center;
+             align-self: stretch; padding: 4px 0; position: relative; }
+  .v3-cross { position: absolute; left: -4px; right: -4px; top: calc(50% - 2px);
+              height: 3.5px; background: var(--stbr-dark); border-radius: 2px; }
+  .v3-seamchip { background: var(--stbr-yellow); color: var(--text-on-accent);
+                 font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                 letter-spacing: 0.08em; text-transform: uppercase; text-align: center;
+                 border-radius: var(--radius-md); padding: 6px 10px; margin-bottom: 8px; }
+  .v3-seamline { flex: 1; width: 0; border-left: 4px dashed var(--stbr-yellow-600); }
+  .v3-fan { width: 186px; position: relative; }
+  .v3-fan svg { display: block; }
+  .v3-pull { position: absolute; top: 6px; left: 36px; }
+  .v3-cons { width: 384px; display: flex; flex-direction: column; gap: 18px; }
+  .v3-con { height: 86px; box-sizing: border-box; background: var(--surface-card);
+            border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+            padding: 12px 18px; display: flex; flex-direction: column; justify-content: center; }
+  .v3-con b { font-family: var(--font-display); font-weight: 800; font-size: 18px;
+              color: var(--text-primary); }
+  .v3-con code { font-family: var(--font-mono); font-size: 13.5px; color: var(--text-secondary);
+                 margin-top: 3px; }
+  .v3-cap { margin-top: 22px; text-align: center; font-family: var(--font-body);
+            font-size: 18.5px; color: var(--text-secondary); }
+  .v3-cap b { color: var(--text-primary); }
+</style>
+<div class="v3-card">
+  <div class="stbr-eyebrow">THE DEPLOY SEAM</div>
+  <h2 class="viz-title">everything after docker push is somebody's scheduler</h2>
+  <div class="v3-row">
+    <div class="v3-ci"><b>green Actions run</b><small>CI, on push to main</small></div>
+    <div class="v3-push">
+      <div class="v3-chip">docker push</div>
+      <div class="v3-line"></div>
+    </div>
+    <div class="v3-reg"><b>ghcr.io</b><code>ghcr.io/owner/pulse-pollerd</code></div>
+    <div class="v3-seam">
+      <div class="v3-seamchip">the deploy seam</div>
+      <div class="v3-seamline"></div>
+      <div class="v3-cross"></div>
+    </div>
+    <div class="v3-fan">
+      <div class="v3-chip v3-pull">docker pull</div>
+      <svg width="170" height="394" viewBox="0 0 170 394">
+        <path d="M4 197 L150 43"  stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M4 197 L150 147" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M4 197 L150 251" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M4 197 L150 355" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <polygon points="166,43 148,34 148,52"   fill="#1B231D"/>
+        <polygon points="166,147 148,138 148,156" fill="#1B231D"/>
+        <polygon points="166,251 148,242 148,260" fill="#1B231D"/>
+        <polygon points="166,355 148,346 148,364" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="v3-cons">
+      <div class="v3-con"><b>your laptop</b><code>docker compose up</code></div>
+      <div class="v3-con"><b>a teammate</b><code>docker run</code></div>
+      <div class="v3-con"><b>CI itself</b><code>a later run</code></div>
+      <div class="v3-con"><b>any future scheduler</b><code>or cloud runtime</code></div>
+    </div>
+  </div>
+  <div class="v3-cap"><b>this course teaches everything left of the seam</b>; the right side is the same pull verb, signposted, not taught.</div>
+</div>
+</div>
+</body></html>

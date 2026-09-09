@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: pulse-pollerd at runtime
+     purpose: show the two halves of the daemon and the shared state they meet in
+     data: pulse.config.json -> into_targets() -> poll loop (tokio interval, every 30s) poll loop -> spawn N probes (JoinSet) -> next_state() per result -> shared StatusMap (Arc + Mutex) curl GET /status -> axum handler -> reads StatusMap -> JSON response note: the loop WRITES the map; the handler only READS it; neither waits for the other
+     prompt: Left-to-right flowchart with two lanes converging on a central store. Top lane: config file -> poll loop -> N parallel probe tasks -> state machine update -> "StatusMap (Arc<Mutex<...>>)" drawn as a cylinder. Bottom lane: "curl /status" -> axum handler -> the same cylinder, arrow labeled "read snapshot". Caption: "one writer loop, many cheap readers".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:544px;height:513px;bottom:-283px;right:-283px;border-radius:51% 53% 37% 46% / 60% 43% 37% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:561px;height:391px;left:-338px;top:138px;border-radius:40% 42% 59% 40% / 36% 50% 45% 44%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 46px 28px; }
+    .v05-flow { display: flex; align-items: stretch; margin-top: 16px; }
+    .v05-lanes { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 34px; }
+    .v05-lane { display: flex; align-items: center; }
+    .v05-lane-2 { justify-content: flex-end; }
+    .v05-node { background: #ffffff; border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+                padding: 12px 16px; min-height: 82px; display: flex; flex-direction: column; justify-content: center;
+                font-family: var(--font-body); font-weight: 700; font-size: 17px; color: var(--text-primary); text-align: center; }
+    .v05-node small { font-family: var(--font-body); font-weight: 500; font-size: 13.5px; color: var(--text-muted); margin-top: 3px; }
+    .v05-mono { font-family: var(--font-mono); font-weight: 600; font-size: 15.5px; }
+    .v05-ar { flex: none; align-self: center; width: 30px; height: 2.5px; background: var(--stbr-dark);
+              position: relative; margin: 0 2px 0 0; }
+    .v05-ar::after { content: ""; position: absolute; right: -8px; top: -5.5px; border-left: 9px solid var(--stbr-dark);
+                     border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v05-arwrap { flex: none; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0 2px; }
+    .v05-arwrap .v05-ar { width: 86px; margin: 0; }
+    .v05-arlbl { font-family: var(--font-body); font-weight: 700; font-size: 11.5px; color: var(--stbr-green);
+                 text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
+    .v05-cylwrap { flex: none; width: 218px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .v05-cyl { position: relative; width: 208px; }
+    .v05-cyl-top { position: relative; z-index: 2; height: 44px; border-radius: 50%; background: #ffdd66;
+                   border: 2.5px solid var(--stbr-dark); }
+    .v05-cyl-body { margin-top: -22px; height: 148px; background: var(--stbr-yellow); border: 2.5px solid var(--stbr-dark);
+                    border-top: none; border-radius: 0 0 104px 104px / 0 0 22px 22px;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 20px; }
+    .v05-cyl-body b { font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--stbr-dark); }
+    .v05-cyl-body code { font-family: var(--font-mono); font-size: 14.5px; color: var(--stbr-dark); margin-top: 4px; }
+    .v05-cyl-body small { font-family: var(--font-body); font-size: 13px; color: rgba(27,35,29,0.7); margin-top: 5px; }
+    .v05-caption { margin-top: 24px; display: flex; align-items: center; gap: 20px; }
+    .v05-band { background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-lg);
+                padding: 13px 26px; font-family: var(--font-display); font-weight: 800; font-size: 24px; white-space: nowrap; }
+    .v05-band-note { flex: 1; font-family: var(--font-body); font-size: 16px; color: var(--text-secondary); }
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">two halves, one store</div>
+    <h2 class="viz-title">pulse-pollerd at runtime</h2>
+    <div class="v05-flow">
+      <div class="v05-lanes">
+        <div class="v05-lane">
+          <div class="v05-node" style="flex:1.05;"><span class="v05-mono">pulse.config.json</span><small>target list on disk</small></div>
+          <div class="v05-ar"></div>
+          <div class="v05-node" style="flex:1;"><span class="v05-mono">into_targets()</span></div>
+          <div class="v05-ar"></div>
+          <div class="v05-node" style="flex:1;">poll loop<small>tokio interval, 30s</small></div>
+          <div class="v05-ar"></div>
+          <div class="v05-node" style="flex:1;">spawn N probes<small>JoinSet</small></div>
+          <div class="v05-ar"></div>
+          <div class="v05-node" style="flex:1;"><span class="v05-mono">next_state()</span><small>per result</small></div>
+        </div>
+        <div class="v05-lane v05-lane-2">
+          <div class="v05-node" style="flex:0 0 300px;"><span class="v05-mono">curl GET /status</span><small>any shell, any time</small></div>
+          <div class="v05-ar"></div>
+          <div class="v05-node" style="flex:0 0 300px;">axum handler<small>reads the map, replies JSON</small></div>
+        </div>
+      </div>
+      <div style="flex:none; display:flex; flex-direction:column; justify-content:space-between; padding: 12px 0 14px;">
+        <div class="v05-arwrap"><span class="v05-arlbl">writes</span><div class="v05-ar"></div></div>
+        <div class="v05-arwrap"><div class="v05-ar"></div><span class="v05-arlbl">read snapshot</span></div>
+      </div>
+      <div class="v05-cylwrap">
+        <div class="v05-cyl">
+          <div class="v05-cyl-top"></div>
+          <div class="v05-cyl-body">
+            <b>StatusMap</b>
+            <code>Arc + Mutex</code>
+            <small>shared state</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="v05-caption">
+      <div class="v05-band">one writer loop, many cheap readers</div>
+      <div class="v05-band-note">the loop <b>writes</b> the map; the handler only <b>reads</b> it, so neither waits for the other.</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,103 @@
+id: lesson-rtf-m06-l1
+slug: m06-l1
+title: "A daemon, not a script: tokio + a /status endpoint"
+skills:
+  - solana-fundamentals
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "tokio": "1.53.1"
+    "axum": "0.8.9"
+    "reqwest": "0.13.4"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m06-l1-q1
+        prompt: "Your poller probes 40 targets every 30 seconds, and each probe spends almost all its time waiting on the network. What does tokio's async model actually buy you here?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "One thread can park all 40 in-flight requests and resume each task when its I/O completes"
+            correct: true
+            feedback: "A parked task is a few hundred bytes of state, so 40 in flight cost roughly one thread. Same suspension model as m02-l3's TS fleet, with the scheduler now a crate in your lockfile."
+          - id: a
+            label: "Each individual HTTP request completes faster, because async I/O has lower latency than blocking I/O"
+            correct: false
+            feedback: "Async does not speed up a single request, the network takes what the network takes. It changes how many WAITS one thread can hold at once, not how long each wait lasts."
+          - id: b
+            label: "The runtime spawns one OS thread per target, so the kernel schedules all 40 probes at once"
+            correct: false
+            feedback: "That describes plain threads, not async. Tokio's point is the opposite: many tasks multiplexed onto few threads, parked while they wait."
+          - id: d
+            label: "The runtime spreads probe work across all your cores, so one sweep finally uses the whole CPU"
+            correct: false
+            feedback: "That is parallelism, and these probes have almost no CPU work to spread. The thread is parked in a syscall waiting for bytes; more cores buy nothing when nobody is computing."
+        explanation: "Async is a concurrency model for waiting. Your probes are I/O-bound: the runtime parks each task at its .await and resumes it when the socket has news, so 40 concurrent probes cost roughly one thread instead of 40. This is the same suspension model you used in m02-l3's TS fleet, tokio just makes the runtime an explicit dependency instead of an ambient event loop."
+      - id: m06-l1-q2
+        prompt: "Your M5 CLI does one blocking fetch, prints the latency, and exits. A teammate suggests migrating it to tokio 'for performance'. What does that migration actually buy?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Nothing much, a single request that blocks once and exits has no fan-out for a runtime to exploit"
+            correct: true
+            feedback: "The migration buys a dependency and an annotation. Async pays at fan-out, which is exactly why the poller in this lesson earns tokio and the CLI still does not."
+          - id: c
+            label: "It is required anyway, reqwest cannot make any request without a tokio runtime present to drive it"
+            correct: false
+            feedback: "You disproved this yourself in m05-l3: reqwest's `blocking` feature is exactly the sanctioned no-runtime path for simple tools."
+          - id: d
+            label: "Overlap inside the one request: DNS, the TCP handshake and TLS run concurrently instead of in sequence"
+            correct: false
+            feedback: "Those phases are sequential by protocol: you cannot handshake with an address you have not resolved. Async overlaps separate requests, never the stages inside one."
+          - id: b
+            label: "Lower latency on that one request, since async I/O bypasses the blocking syscall path in the kernel"
+            correct: false
+            feedback: "The request itself is not faster, async changes scheduling of many waits, not the duration of one. For a single fetch the runtime is pure overhead."
+        explanation: "Async pays at fan-out. One blocking call in a short-lived CLI is the honest right-size, which is why m05-l3 taught blocking reqwest first and why this lesson only reaches for tokio once the poller needs many concurrent probes on a schedule."
+      - id: m06-l1-q3
+        prompt: "You migrate the probe from m05-l3's blocking fetch to the async form for the poll loop. What is the actual delta in your code and Cargo.toml?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The request switches protocols, async reqwest negotiates HTTP/2 while blocking stays HTTP/1.1"
+            correct: false
+            feedback: "Protocol negotiation is independent of the blocking/async split. The delta is the execution model, not the wire format."
+          - id: b
+            label: "Same crate: drop the `blocking` feature, and the call sites gain .await inside the runtime"
+            correct: true
+            feedback: "Three edits, one manifest line and two source lines. That small diff is why m05-l3 met reqwest in blocking form first instead of meeting it tangled up with a runtime."
+          - id: a
+            label: "Swap to a different crate, the async client ships as a separate package from blocking reqwest"
+            correct: false
+            feedback: "Same crate. The blocking client is a feature-gated wrapper inside reqwest itself; async is the crate's default face."
+          - id: d
+            label: "Only the call sites: add .await, and Rust's built-in executor drives the futures for you"
+            correct: false
+            feedback: "There is no built-in executor. An async fn call builds a value describing the work and something has to drive it, which is why #[tokio::main] is the third edit and the only genuinely new one."
+        explanation: "This is why the course sequenced reqwest this way: you met reqwest in blocking form when one fetch was all you needed, so the async migration is a visible, small delta, feature flag out.await in, runtime around it, instead of a first contact tangled up with tokio."
+      - id: m06-l1-q4
+        prompt: "The /status handler must read the same probe-state the poll loop writes. How does the worked axum drop-in share that state?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Both sides write through a global `static mut` that the loop and handler share directly"
+            correct: false
+            feedback: "Rust denies unsynchronized `static mut` references (deny-by-default in edition 2024) precisely because this is a data race. The compiler is vetoing this design for you."
+          - id: a
+            label: "The handler re-runs every probe on demand, so each /status request produces fresh results"
+            correct: false
+            feedback: "That would make /status as slow as a full sweep and hammer your targets on every curl. The endpoint reports state; the loop owns producing it."
+          - id: c
+            label: "The state lives behind an Arc with interior synchronization, cloned into the handler at router build time"
+            correct: true
+            feedback: "Cloning an Arc copies a pointer and bumps a counter, so the loop and the router hold two handles on one map. The corollary is the lock rule: snapshot under the guard, serialize after it drops."
+          - id: d
+            label: "with_state clones the HashMap into the router, so the handler reads its own copy and never blocks the loop"
+            correct: false
+            feedback: "Then /status would answer with whatever the map held at boot, which is empty. It is the Arc that gets cloned, not the map, and the Mutex underneath is what arbitrates the two handles."
+        explanation: "The drop-in's one real idea: shared ownership (Arc) plus synchronized interior access, with the handler holding a cheap clone of the pointer. The lesson's footgun list is the corollary, never hold the lock across an .await. You edit this seam; you do not have to invent it."

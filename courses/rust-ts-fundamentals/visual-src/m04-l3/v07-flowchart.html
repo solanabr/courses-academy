@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One pipeline, two languages, three gates
+     purpose: show the grown workflow with the rust job gating the same probe the TS gates already guard
+     data: triggers: push, schedule (*/30 * * * *) gates: typecheck (npx tsc --noEmit), test (npx vitest run), rust (cargo test, cargo clippy -D warnings, cargo fmt --check) edges: typecheck -> probe; test -> probe; rust -> probe (all via needs) red path: any gate fails -> probe skipped -> status.json not published
+     prompt: Left to right pipeline flowchart. Trigger node into three parallel gate nodes, the new rust gate visually marked as newly added, all three feeding one probe node that ends at a status artifact. Failure stub from the rust gate labeled "red: cron publishes nothing".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:600px;height:574px;bottom:-336px;right:-336px;border-radius:42% 64% 50% 65% / 60% 48% 41% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:445px;height:421px;left:-261px;top:202px;border-radius:45% 42% 49% 60% / 56% 40% 48% 47%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .pipe { position:relative; width:1456px; height:570px; margin-top:6px; }
+  .pipe svg.wires { position:absolute; left:0; top:0; }
+  .node { position:absolute; background:var(--surface-card); border:2.5px solid var(--stbr-green);
+          border-radius:var(--radius-xl); padding:14px 18px; display:flex;
+          flex-direction:column; justify-content:center; }
+  .node .nm { font-family:var(--font-display); font-weight:900; font-size:21px;
+              color:var(--text-primary); line-height:1.1; }
+  .node .cmd { font-family:var(--font-mono); font-weight:700; font-size:14px;
+               color:var(--text-secondary); margin-top:6px; line-height:1.5; }
+  .node.rust { border-color:var(--stbr-emerald); border-width:3px; }
+  .newtag { position:absolute; top:-16px; right:14px; background:var(--stbr-yellow);
+            color:var(--stbr-dark); border-radius:var(--radius-pill); padding:4px 13px;
+            font-family:var(--font-body); font-weight:800; font-size:12px;
+            letter-spacing:.12em; text-transform:uppercase; }
+  .node.dark { background:var(--surface-inverse); border-color:var(--surface-inverse); }
+  .node.dark .nm { color:var(--stbr-cream); font-size:18px; }
+  .node.dark .cmd { color:var(--stbr-cream); opacity:.8; }
+  .chip { position:absolute; font-family:var(--font-body); font-weight:800; font-size:12.5px;
+          letter-spacing:.1em; text-transform:uppercase; background:var(--surface-card);
+          border:1.5px solid var(--border-strong); border-radius:var(--radius-pill);
+          padding:4px 12px; color:var(--text-primary); white-space:nowrap; }
+</style>
+  <div class="stbr-eyebrow">the rust job gates the same probe the TS gates guard</div>
+  <h2 class="viz-title">one pipeline, two languages, three gates</h2>
+  <div class="pipe">
+    <svg class="wires" width="1456" height="570">
+      <!-- trigger -> typecheck -->
+      <line x1="235" y1="258" x2="408" y2="82" stroke="#306c40" stroke-width="2.5"/>
+      <polygon points="418,72 411.6,85.4 404.4,78.4" fill="#306c40"/>
+      <!-- trigger -> test -->
+      <line x1="235" y1="268" x2="406" y2="268" stroke="#306c40" stroke-width="2.5"/>
+      <polygon points="420,268 406,262 406,274" fill="#306c40"/>
+      <!-- trigger -> rust -->
+      <line x1="235" y1="290" x2="408" y2="455" stroke="#306c40" stroke-width="2.5"/>
+      <polygon points="418,465 404.6,458.9 411.5,451.7" fill="#306c40"/>
+      <!-- typecheck -> probe -->
+      <line x1="750" y1="72" x2="936" y2="252" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="946,262 932.5,255.8 939.5,248.6" fill="#008b4c"/>
+      <!-- test -> probe -->
+      <line x1="750" y1="268" x2="934" y2="268" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="948,268 934,262 934,274" fill="#008b4c"/>
+      <!-- rust -> probe -->
+      <line x1="750" y1="478" x2="936" y2="296" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="946,286 939.5,299.4 932.5,292.3" fill="#008b4c"/>
+      <!-- probe -> status.json -->
+      <line x1="1150" y1="268" x2="1236" y2="268" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="1248,268 1234,262 1234,274" fill="#008b4c"/>
+      <!-- red path: any gate fails -> probe skipped -->
+      <line x1="750" y1="505" x2="986" y2="505" stroke="#1b231d" stroke-width="2.5" stroke-dasharray="8 7"/>
+      <polygon points="1000,505 986,499 986,511" fill="#1b231d"/>
+    </svg>
+    <div class="node" style="left:10px; top:212px; width:225px; height:112px;">
+      <div class="nm">trigger</div>
+      <div class="cmd" style="font-size:12.5px; white-space:nowrap;">push<br>schedule */30 * * * *</div>
+    </div>
+    <div class="node" style="left:420px; top:22px; width:305px; height:100px;">
+      <div class="nm">typecheck</div>
+      <div class="cmd">npx tsc --noEmit</div>
+    </div>
+    <div class="node" style="left:420px; top:218px; width:305px; height:100px;">
+      <div class="nm">test</div>
+      <div class="cmd">npx vitest run</div>
+    </div>
+    <div class="node rust" style="left:420px; top:398px; width:305px; height:150px;">
+      <div class="newtag">new this lesson</div>
+      <div class="nm">rust</div>
+      <div class="cmd">cargo test<br>cargo clippy -D warnings<br>cargo fmt --check</div>
+    </div>
+    <div class="node" style="left:950px; top:210px; width:190px; height:116px;">
+      <div class="nm">probe</div>
+      <div class="cmd">runs only when all three gates pass</div>
+    </div>
+    <div class="node" style="left:1250px; top:210px; width:196px; height:116px;">
+      <div class="nm">status.json</div>
+      <div class="cmd">published</div>
+    </div>
+    <div class="node dark" style="left:1000px; top:462px; width:446px; height:86px;">
+      <div class="nm">probe skipped</div>
+      <div class="cmd">status.json not published</div>
+    </div>
+    <div class="chip" style="left:806px; top:238px;">needs</div>
+    <div class="chip" style="left:748px; top:462px;">red: cron publishes nothing</div>
+  </div>
+</div>
+</body></html>

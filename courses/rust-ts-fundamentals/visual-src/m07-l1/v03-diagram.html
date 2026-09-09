@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Why last-known-status lives in KV, not in a variable
+     purpose: show the state bug (per-isolate memory) and the fix (one shared namespace all isolates read)
+     data: bug path: cron isolate in city A writes to a top-level variable -> isolate dies -> fetch isolate in city B reads its own fresh variable -> undefined, status "resets" fix path: cron isolate writes status:<target> JSON into the PULSE_KV namespace -> KV propagates -> fetch isolates in any city read the same keys (eventually consistent, entries carry checkedAt)
+     prompt: Top half shows the failing path: two isolate boxes in different cities each holding a private variable, with a broken arrow between them and a question mark at the reader. Bottom half shows both isolates connected to one wide shared cylinder labeled PULSE_KV holding keys status:example, status:solana-rpc, with a small clock label "eventually consistent" on the propagation arrows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:540px;height:522px;bottom:-333px;right:-333px;border-radius:40% 45% 50% 42% / 35% 46% 49% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:432px;height:483px;left:-241px;top:79px;border-radius:60% 57% 37% 62% / 65% 39% 42% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v03-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 46px 28px; }
+    .v03-sec { border: 2px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 14px 20px 16px; }
+    .v03-sec + .v03-sec { margin-top: 16px; }
+    .v03-tag { display: inline-block; border-radius: var(--radius-pill); padding: 5px 14px; font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 10px; }
+    .v03-tag-bug { background: var(--surface-inverse); color: var(--stbr-cream); }
+    .v03-tag-fix { background: var(--surface-brand); color: var(--stbr-cream); }
+    .v03-flow { display: flex; align-items: center; }
+    .v03-node { flex: 1; background: #ffffff; border: 2px solid var(--border-strong); border-radius: var(--radius-lg); padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; min-height: 96px; }
+    .v03-node b { font-family: var(--font-display); font-weight: 800; font-size: 16.5px; color: var(--text-primary); }
+    .v03-chip { margin-top: 6px; background: var(--surface-paper); border: 1.5px solid var(--border-subtle); border-radius: var(--radius-md); padding: 4px 9px; font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); align-self: flex-start; }
+    .v03-node small { font-family: var(--font-body); font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+    .v03-dark { background: var(--surface-inverse); border-color: var(--surface-inverse); }
+    .v03-dark b { color: var(--stbr-cream); }
+    .v03-dark small { color: rgba(245,232,202,0.75); }
+    .v03-ar { flex: none; align-self: center; width: 34px; height: 2.5px; background: var(--stbr-dark); position: relative; margin: 0 12px 0 4px; }
+    .v03-ar::after { content: ""; position: absolute; right: -8px; top: -5.5px; border-left: 9px solid var(--stbr-dark); border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v03-brk { flex: none; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0 10px; }
+    .v03-brkline { display: flex; align-items: center; gap: 6px; }
+    .v03-brkseg { width: 26px; height: 0; border-top: 3px dashed var(--stbr-dark); }
+    .v03-brkx { width: 26px; height: 26px; border: 2.5px solid var(--stbr-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: var(--stbr-dark); font-family: var(--font-body); }
+    .v03-brklbl { font-family: var(--font-body); font-weight: 700; font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .v03-arwrap { flex: none; align-self: center; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0 10px; }
+    .v03-arwrap .v03-ar { width: 96px; margin: 0; }
+    .v03-arlbl { font-family: var(--font-body); font-weight: 700; font-size: 12.5px; color: var(--stbr-green); white-space: nowrap; }
+    .v03-arsub { font-family: var(--font-body); font-size: 11.5px; color: var(--text-muted); white-space: nowrap; }
+    .v03-cylwrap { flex: none; width: 264px; display: flex; flex-direction: column; align-items: center; }
+    .v03-cyl { width: 254px; }
+    .v03-cyl-top { position: relative; z-index: 2; height: 38px; border-radius: 50%; background: #ffdd66; border: 2.5px solid var(--stbr-dark); }
+    .v03-cyl-body { margin-top: -19px; height: 128px; background: var(--stbr-yellow); border: 2.5px solid var(--stbr-dark); border-top: none; border-radius: 0 0 127px 127px / 0 0 20px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 16px; }
+    .v03-cyl-body b { font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--stbr-dark); }
+    .v03-cyl-body code { font-family: var(--font-mono); font-size: 13.5px; color: var(--stbr-dark); margin-top: 3px; }
+    .v03-cyl-body small { font-family: var(--font-body); font-size: 12px; color: rgba(27,35,29,0.75); margin-top: 4px; }
+  </style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">state at the edge</div>
+    <h2 class="viz-title">why last-known-status lives in KV, not a variable</h2>
+    <div class="v03-sec">
+      <div class="v03-tag v03-tag-bug">the bug: a variable is per-isolate</div>
+      <div class="v03-flow">
+        <div class="v03-node"><b>cron isolate &#183; city A</b><div class="v03-chip">let lastStatus = &#8230;</div><small>writes a top-level variable, then the isolate dies</small></div>
+        <div class="v03-brk"><div class="v03-brkline"><div class="v03-brkseg"></div><div class="v03-brkx">&#10005;</div><div class="v03-brkseg"></div></div><span class="v03-brklbl">no shared memory</span></div>
+        <div class="v03-node"><b>fetch isolate &#183; city B</b><div class="v03-chip">its own fresh variable</div><small>reads &#8594; undefined</small></div>
+        <div class="v03-ar"></div>
+        <div class="v03-node v03-dark" style="flex:0 0 250px;"><b>reader sees &#8220;?&#8221;</b><small>the status just &#8220;reset&#8221;</small></div>
+      </div>
+    </div>
+    <div class="v03-sec">
+      <div class="v03-tag v03-tag-fix">the fix: one shared namespace</div>
+      <div class="v03-flow">
+        <div class="v03-node"><b>cron isolate &#183; any run</b><small>writes each target&#8217;s status as JSON; every entry carries <b>checkedAt</b></small></div>
+        <div class="v03-arwrap"><span class="v03-arlbl">KV put status:&lt;target&gt;</span><div class="v03-ar"></div></div>
+        <div class="v03-cylwrap">
+          <div class="v03-cyl">
+            <div class="v03-cyl-top"></div>
+            <div class="v03-cyl-body">
+              <b>PULSE_KV</b>
+              <code>status:example</code>
+              <code>status:solana-rpc</code>
+              <small>one namespace, every city</small>
+            </div>
+          </div>
+        </div>
+        <div class="v03-arwrap"><span class="v03-arlbl">KV get</span><div class="v03-ar"></div><span class="v03-arsub">eventually consistent</span></div>
+        <div class="v03-node"><b>fetch isolates &#183; any city</b><small>all read the same keys; the answer survives every isolate death</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

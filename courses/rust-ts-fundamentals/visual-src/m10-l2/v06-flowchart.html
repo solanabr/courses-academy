@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The re-verify loop, handed over
+     purpose: turn the re-probe habit into the small closed loop the graduate runs for the life of the station
+     data: Trigger: fresh install, failed install, or a dated pin older than the need at hand Step 1: probe the live source (registry peers, release schedule, your own measurement) Step 2: compare against the pin table Match -> stamp today's date, done Drift -> update the pin + date, run the suite, let CI judge Either path ends back at: trust the table until the next trigger
+     prompt: Compact circular loop diagram with five nodes: a trigger node, a probe node, a compare diamond, and two outcome nodes for match and drift that both feed back into a trust-the-table state. Label the probe node with three example probes: registry peers, release schedule, own measurement. Keep it small and calm, a habit not an architecture.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:488px;height:467px;top:-220px;right:-220px;border-radius:41% 56% 58% 63% / 41% 63% 58% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:471px;height:504px;bottom:-270px;left:748px;border-radius:42% 63% 40% 49% / 62% 52% 62% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow" style="color:var(--stbr-emerald);">a habit, not an architecture</div>
+  <h2 class="viz-title" style="margin:8px 0 0 0;color:var(--text-primary);font-family:var(--font-display);font-weight:900;">the re-verify loop, handed over</h2>
+
+  <div style="position:relative;width:1456px;height:580px;margin-top:34px;">
+
+    <!-- connector layer -->
+    <svg width="1456" height="580" viewBox="0 0 1456 580"
+         style="position:absolute;left:0;top:0;" fill="none">
+      <!-- trigger -> probe -->
+      <line x1="365" y1="75" x2="456" y2="75" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="456,68 468,75 456,82" fill="#306C40"/>
+      <!-- probe -> compare -->
+      <line x1="865" y1="75" x2="976" y2="75" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="976,68 988,75 976,82" fill="#306C40"/>
+      <!-- compare -> match (down) -->
+      <line x1="1165" y1="154" x2="1165" y2="238" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="1158,238 1165,250 1172,238" fill="#306C40"/>
+      <!-- compare -> drift (elbow along right margin) -->
+      <path d="M 1336 75 H 1420 V 472 H 1356" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="1356,465 1344,472 1356,479" fill="#306C40"/>
+      <!-- match -> trust (elbow left, then down) -->
+      <path d="M 985 305 H 330 V 392" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="323,392 330,404 337,392" fill="#306C40"/>
+      <!-- drift -> trust (straight left) -->
+      <line x1="985" y1="472" x2="572" y2="472" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="572,465 560,472 572,479" fill="#306C40"/>
+      <!-- trust -> trigger (loop closes, up the left side) -->
+      <line x1="150" y1="396" x2="150" y2="166" stroke="#306C40" stroke-width="2.5"/>
+      <polygon points="143,166 150,154 157,166" fill="#306C40"/>
+    </svg>
+
+    <!-- trigger -->
+    <div style="position:absolute;left:40px;top:0;width:320px;height:150px;box-sizing:border-box;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:var(--radius-xl);padding:20px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stbr-emerald);">trigger</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--stbr-dark);margin-top:6px;">a reason to look</div>
+      <div style="font-family:var(--font-body);font-size:16px;line-height:1.4;color:var(--text-secondary);margin-top:8px;">fresh install &middot; failed install &middot; a pin dated older than the need at hand</div>
+    </div>
+
+    <!-- step 1: probe -->
+    <div style="position:absolute;left:470px;top:0;width:390px;height:180px;box-sizing:border-box;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:var(--radius-xl);padding:20px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stbr-emerald);">step 1</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--stbr-dark);margin-top:6px;">probe the live source</div>
+      <div style="display:flex;gap:8px;margin-top:14px;">
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--stbr-dark);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:6px 12px;">registry peers</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--stbr-dark);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:6px 12px;">release schedule</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--stbr-dark);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:6px 12px;">your own measurement</div>
+      </div>
+    </div>
+
+    <!-- step 2: compare (decision) -->
+    <div style="position:absolute;left:990px;top:0;width:350px;height:150px;box-sizing:border-box;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:var(--radius-xl);padding:20px 24px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:14px;height:14px;background:var(--stbr-emerald);transform:rotate(45deg);"></div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stbr-emerald);">step 2 &middot; decide</div>
+      </div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--stbr-dark);margin-top:8px;">compare against the pin table</div>
+      <div style="font-family:var(--font-body);font-size:16px;color:var(--text-secondary);margin-top:6px;">does the live world still match?</div>
+    </div>
+
+    <!-- outcome: match -->
+    <div style="position:absolute;left:990px;top:250px;width:350px;height:110px;box-sizing:border-box;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:var(--radius-xl);padding:18px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stbr-emerald);">match</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--stbr-dark);margin-top:6px;">stamp today&rsquo;s date: done</div>
+    </div>
+
+    <!-- outcome: drift -->
+    <div style="position:absolute;left:990px;top:405px;width:350px;height:135px;box-sizing:border-box;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:var(--radius-xl);padding:18px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stbr-emerald);">drift</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--stbr-dark);margin-top:6px;">update the pin + date</div>
+      <div style="font-family:var(--font-body);font-size:16px;line-height:1.35;color:var(--text-secondary);margin-top:4px;">run the suite, let CI judge</div>
+    </div>
+
+    <!-- resting state: trust the table (the accent) -->
+    <div style="position:absolute;left:40px;top:400px;width:520px;height:140px;box-sizing:border-box;background:var(--stbr-yellow);border-radius:var(--radius-xl);padding:24px 28px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--stbr-dark);">resting state</div>
+      <div style="font-family:var(--font-display);font-weight:900;font-size:30px;color:var(--stbr-dark);margin-top:6px;">trust the table</div>
+      <div style="font-family:var(--font-body);font-size:17px;color:var(--stbr-dark);margin-top:6px;">until the next trigger fires</div>
+    </div>
+
+    <!-- branch + loop labels -->
+    <div style="position:absolute;left:1123px;top:182px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--stbr-emerald);background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:3px 12px;">match</div>
+    <div style="position:absolute;left:1390px;top:256px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--stbr-emerald);background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:3px 10px;">drift</div>
+    <div style="position:absolute;left:92px;top:262px;font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--stbr-emerald);background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:3px 12px;">the loop closes</div>
+  </div>
+</div>
+</body></html>

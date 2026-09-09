@@ -1,0 +1,156 @@
+id: lesson-rtf-m04-l3
+slug: m04-l3
+title: "Enums are state machines"
+skills:
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "rustc": "1.98.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: probe-state-machine
+    type: code
+    language: rust
+    starter: probe-state-machine/starter.rs
+    solution: probe-state-machine/solution.rs
+    tests: probe-state-machine/tests.json
+    hints:
+      - "Define enum ProbeState { Pending, Up, Degraded, Down } and a parse_state(&str) -> Option<ProbeState>; return \"Invalid\" when parsing fails."
+      - "Match on the tuple (state, probe_ok), the compiler will list every arm you haven't written yet."
+      - "The Degraded ladder needs a match guard: (Degraded, false) if consecutive_failures >= 3 goes Down, otherwise it stays Degraded."
+      - "derive Debug on the enum and return format!(\"{:?}\", next) to get the exact state names the tests expect."
+  - key: check-states
+    type: quiz
+    questions:
+      - id: m04l3-q1
+        prompt: "You add a Maintenance variant to ProbeState and the build breaks in three files. Your TS instincts say you broke the project. Why is this the feature?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Enums are ABI-breaking, so any new variant forces dependent code to rebuild, the errors are Rust's cache invalidation working as designed"
+            correct: false
+            feedback: "This isn't about rebuilding or ABI, the errors are semantic: specific match expressions no longer cover every case and must decide what Maintenance means."
+          - id: c
+            label: "Every non-exhaustive match is now a compile error naming exactly where transition logic must learn about Maintenance, a guided refactor"
+            correct: true
+            feedback: "You asked the project a question and got every relevant site back by name, with line numbers. That inventory is the concrete answer to how you change code you are afraid of."
+          - id: b
+            label: "The compiler marks each site so you can drop in a `_ => {}` catch-all arm per file and get back to green quickly"
+            correct: false
+            feedback: "A catch-all silences the compiler by selling the guarantee: future variants would sail through unhandled. It's the anti-pattern, not the fix."
+          - id: d
+            label: "It is not the feature, it is the cost of enums: a struct of boolean flags would absorb a new state without disturbing any transition code"
+            correct: false
+            feedback: "Absorbing it silently is the failure mode, not the fix: flags let a new state flow through logic that never decided what it means. The noise is the contract, and it is the same trade a catch-all arm sells away."
+        explanation: "This is 'how do you change code you're afraid of?' answered: the exhaustiveness check turns a risky refactor into a checklist the compiler writes for you. It is the TS exhaustive switch with the compiler holding the pen, and no never-hack needed to opt in."
+      - id: m04l3-q2
+        prompt: "The machine must never go Pending → Degraded. Where does that rule live so the illegal transition is IMPOSSIBLE, not just caught?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "In a debug_assert! at every call site that checks the state pair before any assignment is allowed to happen"
+            correct: false
+            feedback: "Asserts are runtime checks that vanish in release builds and rely on every caller remembering, the lesson's whole point is moving the rule into the structure."
+          - id: d
+            label: "In a test asserting that Pending never yields Degraded, so CI catches the illegal transition"
+            correct: false
+            feedback: "A test catches, which is the word the question is contrasting with. It samples the inputs you thought of and reports afterwards; the match makes the transition something no input can produce."
+          - id: a
+            label: "In next_state's match over (state, outcome): no arm produces Degraded from Pending, so no code path exists"
+            correct: true
+            feedback: "The rule lives nowhere because it does not need to: with no arm producing it, there is no path that performs it. Unrepresentable beats validated, exactly as the m02-l1 union beat a runtime check."
+          - id: c
+            label: "In a #[non_exhaustive] attribute on the Degraded variant, preventing outside modules from ever constructing it directly"
+            correct: false
+            feedback: "#[non_exhaustive] changes how OTHER crates match and construct the type, it does not express transition rules between variants."
+        explanation: "Make illegal states (and transitions) unrepresentable: the enum defines the states, the match defines the legal moves, and anything absent from the match simply cannot happen. Validation you don't have to remember beats validation you might forget."
+      - id: m04l3-q3
+        prompt: "For the flavored beat you modeled Transfer/Delegate/Close instruction data as one Rust enum instead of three structs plus a `kind` string. What makes the enum the right shape for an instruction set?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Solana's runtime requires enum-shaped interfaces from Rust programs, so a struct-per-instruction design would fail to compile on-chain"
+            correct: false
+            feedback: "The runtime mandates no Rust shapes at all, programs receive raw bytes. The enum is a modeling choice that pays off in the type system."
+          - id: d
+            label: "A fourth operation slots in later without touching the code that already dispatches, unlike a struct per instruction"
+            correct: false
+            feedback: "Backwards, and the Maintenance drill showed why: a new variant breaks every match until each one decides what it means. That churn is the guarantee you are buying, not a cost the enum spares you."
+          - id: b
+            label: "An instruction is one of a closed set, each with its own payload, the enum plus exhaustive match forces every variant to be handled"
+            correct: true
+            feedback: "Closed set, per-variant payload, exhaustive dispatch. That is why a real program's instruction enum reads as home once you have modeled one, and why a kind string plus three structs is stringly-typed hoping."
+          - id: a
+            label: "Enums serialize to a more compact byte layout than separate structs, which keeps transactions under the size limit and fees lower"
+            correct: false
+            feedback: "Wire size depends on the serialization scheme, not the Rust-side shape, the enum's win is in the type system, not the bytes."
+        explanation: "A closed set of operations, each carrying different data, dispatched exhaustively: that is a sum type's home game. What programs then DO with instructions is the Anchor course's territory; the underlying account-and-transaction concepts live in the Bitcoin-to-Solana evolution course."
+  - key: check-pairing
+    type: quiz
+    questions:
+      - id: m04l3-q4
+        prompt: "Gate #3 now runs cargo test, clippy, and fmt in CI. A teammate objects: 'the compiler already type-checks, why pay for a lint step too?' What does clippy add?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "clippy flags correct-but-suspect code, lossy casts, ignored Results, needless clones, findings the type checker never gates on"
+            correct: true
+            feedback: "The type checker proves the code is well formed; clippy argues about whether it is wise. The planted needless clone is the proof: cargo test passed it happily because it was correct, just unwise."
+          - id: b
+            label: "Honestly not much, clippy is a formatting tool like rustfmt, and teams keep it in CI mostly to guarantee consistent diffs"
+            correct: false
+            feedback: "Formatting is rustfmt's job. clippy's lints are semantic: lossy casts, ignored Results, needless clones, review findings, not style."
+          - id: a
+            label: "clippy re-runs the borrow checker with stricter settings, catching the ownership and aliasing bugs that plain rustc silently misses"
+            correct: false
+            feedback: "The borrow checker runs identically in both, clippy sits ABOVE type-correctness, flagging code that compiles fine but smells wrong."
+          - id: d
+            label: "It audits the dependency tree for advisories, the step that catches a compromised crate before it ever reaches a build"
+            correct: false
+            feedback: "That is a different tool and a later lesson: clippy reads your own source and never looks at what your dependencies are up to. Supply-chain auditing is its own gate, with its own crate."
+        explanation: "Type-checking proves the code is well-formed; clippy argues about whether it's WISE. In the pairing table it's the eslint seat: same job, different flag, and with -D warnings it goes from advice to gate."
+      - id: m04l3-q5
+        prompt: "CI fails on cargo fmt --check, but the code compiles and every test passes locally. What is this gate for, and what's the right move?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Run cargo fmt and commit, the gate exists so diffs show logic, not style noise; it's the prettier seat from your TS pipeline"
+            correct: true
+            feedback: "Cheapest step on the pipeline, most social peace per second: nobody spends a review comment on brace placement again, and when it goes red the fix is one command with no judgment calls in it."
+          - id: b
+            label: "Loosen the CI step so formatting differences warn instead of block, style should never stand between a green suite and a merge"
+            correct: false
+            feedback: "A warn-only style gate decays into no gate; the value is that NOBODY debates style in review because the machine settled it."
+          - id: d
+            label: "Add a cargo fmt step ahead of the check so that CI formats the whole tree itself and the gate always passes"
+            correct: false
+            feedback: "A gate's job is to refuse, not to fix. CI reformatting the tree either throws the change away at the end of the job or commits on your behalf, and either way the local habit never forms."
+          - id: c
+            label: "Drop the job as redundant, rustfmt is advisory, and the compiler normalizes formatting anyway when it parses the source"
+            correct: false
+            feedback: "The compiler never rewrites your source; unformatted code merges fine without the gate and pollutes every future diff."
+        explanation: "fmt --check is the cheapest gate on the pipeline and buys the most social peace: diffs show logic changes only. One command fixes any failure. In the pairing: prettier for the TS fleet, rustfmt for the engine, same idea, different flag."
+      - id: m04l3-q6
+        prompt: "The driving question was 'how do you change code you're afraid of?' After this lesson, what concretely changed about refactoring the Rust engine?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "A red gate catches a missing arm, broken test, or suspect cast BEFORE the cron ships a bad engine, the contract vitest enforces on the fleet"
+            correct: true
+            feedback: "Both halves of the station are now gated on one workflow, so it works on my machine and it will pass CI became the same sentence. That identity is worth more than any single test in the suite."
+          - id: a
+            label: "Nothing operational yet, the gates document intent, but they only start protecting the engine once M5 attaches the release build to the same workflow"
+            correct: false
+            feedback: "The protection is live NOW: the workflow runs on every push, and you watched it go red on a planted lint before the fix."
+          - id: d
+            label: "The transition tests became redundant, since an exhaustive match already proves every state pair is handled correctly"
+            correct: false
+            feedback: "Exhaustiveness proves every pair is handled, never that it is handled RIGHT. Fill an arm with the wrong target state and the compiler stays quiet; the five transition tests are what notice."
+          - id: c
+            label: "Refactors can now merge without human review, since a green pipeline is proof the change is behaviorally correct end to end"
+            correct: false
+            feedback: "Green means the gates you wrote all pass, it bounds the damage a change can do, it doesn't prove the change is right. Review still thinks; gates just never forget."
+        explanation: "The answer to the driving question is a system, not courage: exhaustive matches turn refactors into compiler-guided checklists, and the test/lint/fmt gate catches what slips. It's the same safety the TS fleet has had since m02-l4, one pipeline, two languages, three gates."

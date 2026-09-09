@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The multi-stage rule: only the last box ships
+     purpose: fix the one idea before any syntax, so every Dockerfile line below reads as an application of it
+     data: Box 1, build stage: rust toolchain + full source tree + target/ build cache + the compiled binary. Heavy, discarded after the build. Box 2, runtime stage: debian slim base + the one binary carried over + the config file. This is the entire shipped image. One arrow between them labeled COPY --from=builder, carrying only /app/target/release/pulse-pollerd. Rule caption: final image = final stage base + explicit COPYs, nothing else.
+     prompt: Two boxes side by side. Left box large and visually heavy, stacked with toolchain, source, build cache, and a small highlighted binary inside. Right box small and nearly empty: slim base, the binary, a config file. A single arrow from left to right labeled COPY --from, carrying only the binary. Caption under the right box: "only this ships". The left box fades at the edge to suggest it is discarded.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:526px;height:445px;top:-241px;right:-241px;border-radius:46% 55% 58% 38% / 35% 45% 46% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:515px;height:475px;bottom:-293px;left:421px;border-radius:48% 64% 49% 51% / 53% 49% 58% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v01-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 44px 56px 40px; overflow: hidden; position: relative; }
+  .v01-row { display: flex; align-items: stretch; gap: 0; margin-top: 8px; }
+  .v01-stage { border-radius: var(--radius-xl); padding: 22px 26px; }
+  .v01-build { width: 640px; border: 3px dashed var(--stbr-ink-300);
+               background: linear-gradient(90deg, var(--surface-paper) 55%, rgba(250,243,227,0) 100%); }
+  .v01-run   { width: 400px; border: 3px solid var(--stbr-emerald); background: var(--surface-card); }
+  .v01-stagelabel { font-family: var(--font-display); font-weight: 800; font-size: 15px;
+                    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); }
+  .v01-run .v01-stagelabel { color: var(--stbr-emerald); }
+  .v01-item { font-family: var(--font-body); font-size: 19px; color: var(--text-primary);
+              background: var(--surface-card); border: 1.5px solid var(--stbr-ink-300);
+              border-radius: var(--radius-md); padding: 10px 16px; margin-top: 12px; }
+  .v01-item small { display: block; font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .v01-bin { background: var(--stbr-yellow); border: 1.5px solid var(--stbr-yellow-700);
+             color: var(--text-on-accent); font-weight: 600; }
+  .v01-bin code { font-family: var(--font-mono); font-size: 15px; font-weight: 400; }
+  .v01-tag { margin-top: 16px; font-family: var(--font-body); font-size: 14px;
+             font-style: italic; color: var(--text-muted); }
+  .v01-mid { width: 260px; display: flex; flex-direction: column; justify-content: center;
+             align-items: center; padding: 0 6px; }
+  .v01-arrowline { position: relative; width: 100%; height: 4px; background: var(--stbr-dark);
+                   border-radius: 2px; }
+  .v01-arrowline::after { content: ""; position: absolute; right: -2px; top: -8px;
+                          border-left: 16px solid var(--stbr-dark);
+                          border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
+  .v01-copy { font-family: var(--font-mono); font-size: 15px; color: var(--text-primary);
+              background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+              border-radius: var(--radius-pill); padding: 6px 14px; margin-bottom: 12px; }
+  .v01-carry { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary);
+               margin-top: 12px; text-align: center; }
+  .v01-ships { margin-top: 16px; font-family: var(--font-display); font-weight: 900;
+               font-size: 22px; color: var(--stbr-emerald); }
+  .v01-ships small { display: block; font-family: var(--font-body); font-weight: 400;
+                     font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .v01-rule { margin-top: 26px; background: var(--surface-inverse); color: var(--text-on-dark);
+              border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-body);
+              font-size: 19px; text-align: center; }
+  .v01-rule code { font-family: var(--font-mono); font-size: 17px; }
+</style>
+<div class="v01-card">
+  <div class="stbr-eyebrow">MULTI-STAGE BUILDS</div>
+  <h2 class="viz-title">only the last box ships</h2>
+  <div class="v01-row">
+    <div class="v01-stage v01-build">
+      <div class="v01-stagelabel">stage 1 · build</div>
+      <div class="v01-item">rust toolchain <small>rustc + cargo, the whole compiler</small></div>
+      <div class="v01-item">full source tree</div>
+      <div class="v01-item">target/ build cache</div>
+      <div class="v01-item v01-bin">compiled binary <code>pulse-pollerd</code></div>
+      <div class="v01-tag">heavy: discarded after the build</div>
+    </div>
+    <div class="v01-mid">
+      <div class="v01-copy">COPY --from=builder</div>
+      <div class="v01-arrowline"></div>
+      <div class="v01-carry">carries only<br>/app/target/release/pulse-pollerd</div>
+    </div>
+    <div class="v01-stage v01-run">
+      <div class="v01-stagelabel">stage 2 · runtime</div>
+      <div class="v01-item">debian slim base</div>
+      <div class="v01-item v01-bin">the one binary <code>pulse-pollerd</code></div>
+      <div class="v01-item">config file</div>
+      <div class="v01-ships">only this ships <small>this is the entire shipped image</small></div>
+    </div>
+  </div>
+  <div class="v01-rule">final image&nbsp;=&nbsp;final stage base&nbsp;+&nbsp;explicit <code>COPY</code>s, nothing else</div>
+</div>
+</div>
+</body></html>

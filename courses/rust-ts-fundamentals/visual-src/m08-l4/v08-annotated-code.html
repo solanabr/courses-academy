@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The tx-check contract, function by function
+     purpose: map the four pieces the learner assembles onto the interface the station (and m10-l1) will rely on
+     data: loadOrCreateSigner(): Promise<KeyPairSigner>. Same seed file, same address, every run. Creates + logs on first run. ensureBalance(signer): early-return if balance >= MIN_BALANCE; else airdrop, 3 attempts, 0/2/8s gaps, generic catch; throws operator-grade error naming the local fallback. main(): signer -> ensureBalance -> fresh recipient -> fetch blockhash -> pipe (6 steps) -> sendAndConfirm -> print "confirmed: <sig>" + explorer link on devnet. process contract: exit 0 iff a transfer confirmed; exit 1 with a loud reason otherwise. Invoked as: npx tsx tx-check.ts, switched by RPC_URL / RPC_WS_URL.
+     prompt: Annotated code-map card: four blocks (loadOrCreateSigner, ensureBalance, main, process contract) laid out vertically with the contract text as side annotations. Highlight the process contract block: "exit 0 iff confirmed" and the two env var names, since downstream lessons call this interface.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:543px;top:-322px;right:-322px;border-radius:57% 35% 52% 36% / 44% 52% 62% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:533px;height:517px;bottom:-295px;left:-295px;border-radius:43% 56% 46% 59% / 55% 42% 62% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:42px 56px 38px; }
+    .mono { font-family:var(--font-mono); }
+    .row { display:flex; gap:20px; height:104px; }
+    .codep { width:600px; flex:none; background:var(--surface-inverse); border-radius:var(--radius-lg);
+             padding:0 24px; display:flex; flex-direction:column; justify-content:center; }
+    .codep .sig { margin:0; font-family:var(--font-mono); font-weight:700; font-size:18px; color:var(--stbr-cream); line-height:1.35; }
+    .codep .sub { margin:6px 0 0; font-family:var(--font-mono); font-size:14px; color:var(--stbr-cream); opacity:.68; line-height:1.35; }
+    .ann { flex:1; border:2px solid var(--border-subtle); border-radius:var(--radius-lg); background:#fff;
+           padding:0 22px; display:flex; flex-direction:column; justify-content:center; }
+    .ann p { margin:0; font-family:var(--font-body); font-size:15px; color:var(--text-primary); line-height:1.4; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">the four pieces you assemble &middot; the interface m10-l1 relies on</div>
+    <h2 class="viz-title">the tx-check contract, function by function</h2>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="row">
+        <div class="codep">
+          <p class="sig">loadOrCreateSigner(): Promise&lt;KeyPairSigner&gt;</p>
+          <p class="sub">// same seed file, same address, every run</p>
+        </div>
+        <div class="ann"><p>Deterministic identity: creates the gitignored seed file and logs the address on the first run, reloads it on every run after.</p></div>
+      </div>
+      <div class="row">
+        <div class="codep">
+          <p class="sig">ensureBalance(signer)</p>
+          <p class="sub">// airdrop: 3 attempts, 0 / 2s / 8s gaps, generic catch</p>
+        </div>
+        <div class="ann"><p>Early-return if balance &ge; <span class="mono">MIN_BALANCE</span>; otherwise airdrop. On exhaustion it throws an operator-grade error naming the local-validator fallback.</p></div>
+      </div>
+      <div class="row">
+        <div class="codep">
+          <p class="sig">main()</p>
+          <p class="sub">// signer &rarr; ensureBalance &rarr; fresh recipient &rarr; blockhash &rarr; pipe(6) &rarr; sendAndConfirm</p>
+        </div>
+        <div class="ann"><span><p>The whole write path in order; on success prints <span class="mono">confirmed: &lt;sig&gt;</span> plus an explorer link on devnet.</p></span></div>
+      </div>
+      <div class="row">
+        <div class="codep" style="border:3px solid var(--stbr-yellow);">
+          <p class="sig">process contract</p>
+          <p class="sub">// exit 0 &hArr; a transfer confirmed &middot; exit 1 + a loud reason otherwise</p>
+        </div>
+        <div class="ann" style="background:#fdf3cf; border-color:var(--stbr-yellow);"><span><p><strong>Downstream trusts only this:</strong> m10-l1 invokes <span class="mono">npx tsx tx-check.ts</span> and reads the exit code. Target switched by <span class="mono">RPC_URL</span> / <span class="mono">RPC_WS_URL</span>.</p></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

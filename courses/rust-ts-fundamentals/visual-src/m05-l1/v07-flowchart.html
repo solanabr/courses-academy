@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: A config contract evolves with two signatories
+     purpose: sequence the four failures and fixes of step 2 so the learner can locate where they are when an error appears
+     data: 1. Rust schema evolves (kind + enabled) -> old file fails: missing field `kind` at line 9 column 5 2. file updated with kind fields + tcp entry -> Rust parser green 3. same file hits old zod schema -> Unrecognized key: "kind" (strictObject doing its job) 4. zod schema becomes discriminatedUnion("kind"...) -> both parsers green on one file
+     prompt: Vertical four-step sequence diagram alternating between a Rust lane and a TypeScript lane with the shared config file drawn between them. Each numbered step from data is an arrow with its outcome labeled, failures marked red with their monospace error text, recoveries marked green. Final state: both lanes green against the single file.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:396px;right:-259px;top:144px;border-radius:55% 60% 60% 52% / 65% 57% 64% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:505px;height:435px;bottom:-242px;left:-242px;border-radius:41% 41% 40% 40% / 43% 50% 63% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 34px 48px 30px; }
+    .card .viz-title { font-size: 44px; }
+    .lane-h { width: 560px; flex: none; text-align: center; font-family: var(--font-display);
+              font-weight: 900; font-size: 21px; color: var(--stbr-emerald); }
+    .step { width: 560px; flex: none; border: 2px solid var(--stbr-green);
+            border-radius: var(--radius-lg); background: #fff; padding: 10px 16px;
+            min-height: 94px; display: flex; flex-direction: column; justify-content: center; }
+    .step h4 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 18.5px;
+               color: var(--stbr-dark); line-height: 1.2; }
+    .step h4 .n { display: inline-block; width: 26px; height: 26px; border-radius: 50%;
+                  background: var(--stbr-dark); color: var(--stbr-cream); text-align: center;
+                  line-height: 26px; font-size: 15px; margin-right: 8px; }
+    .chip-fail { align-self: flex-start; margin-top: 7px; background: var(--stbr-yellow);
+                 border-radius: var(--radius-md); padding: 4px 12px;
+                 font-family: var(--font-mono); font-size: 14.5px; font-weight: 700;
+                 color: var(--stbr-dark); }
+    .chip-pass { align-self: flex-start; margin-top: 7px; background: var(--stbr-emerald);
+                 border-radius: var(--radius-pill); padding: 4px 14px;
+                 font-family: var(--font-body); font-size: 14.5px; font-weight: 700;
+                 color: var(--stbr-cream); }
+    .mid { width: 232px; flex: none; position: relative; }
+    .har { position: absolute; top: 50%; margin-top: -2px; display: flex; align-items: center; }
+    .har-line { height: 3px; background: var(--stbr-green); flex: 1; }
+    .har-l { width: 0; height: 0; border-top: 7px solid transparent;
+             border-bottom: 7px solid transparent; border-right: 10px solid var(--stbr-green); }
+    .har-r { width: 0; height: 0; border-top: 7px solid transparent;
+             border-bottom: 7px solid transparent; border-left: 10px solid var(--stbr-green); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">step 2 &middot; the four failures and fixes, in order</div>
+    <h2 class="viz-title" style="margin-bottom:14px;">a config contract evolves with two signatories</h2>
+
+    <!-- lane headers + the shared file -->
+    <div style="display:flex; align-items:center; margin-bottom:6px;">
+      <div class="lane-h">Rust &middot; serde</div>
+      <div style="width:232px; flex:none; background:var(--surface-paper); border:2px solid var(--stbr-dark);
+                  border-radius:var(--radius-lg); padding:8px 6px; text-align:center;">
+        <p style="margin:0; font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--stbr-dark);">pulse.config.json</p>
+        <p style="margin:2px 0 0; font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary);">the shared file</p>
+      </div>
+      <div class="lane-h">TypeScript &middot; zod</div>
+    </div>
+
+    <!-- steps around the file spine -->
+    <div style="position:relative;">
+      <div style="position:absolute; top:0; bottom:0; left:674px; width:4px; background:var(--stbr-dark); opacity:.25;"></div>
+
+      <!-- step 1: Rust fails -->
+      <div style="display:flex; align-items:stretch; margin-bottom:10px;">
+        <div class="step">
+          <h4><span class="n">1</span>Rust schema evolves: adds <span style="font-family:var(--font-mono);">kind</span> + <span style="font-family:var(--font-mono);">enabled</span></h4>
+          <span class="chip-fail">FAIL&ensp;missing field `kind` at line 9 column 5</span>
+        </div>
+        <div class="mid"><div class="har" style="left:0; right:118px;"><div class="har-l"></div><div class="har-line"></div></div></div>
+        <div style="width:560px; flex:none;"></div>
+      </div>
+
+      <!-- step 2: file updated, Rust green -->
+      <div style="display:flex; align-items:stretch; margin-bottom:10px;">
+        <div class="step" style="border-color:var(--stbr-emerald);">
+          <h4><span class="n">2</span>file updated: <span style="font-family:var(--font-mono);">kind</span> on every entry + a tcp entry</h4>
+          <span class="chip-pass">Rust parser green &#10003;</span>
+        </div>
+        <div class="mid"><div class="har" style="left:0; right:118px;"><div class="har-l"></div><div class="har-line"></div></div></div>
+        <div style="width:560px; flex:none;"></div>
+      </div>
+
+      <!-- step 3: TS fails -->
+      <div style="display:flex; align-items:stretch; margin-bottom:10px;">
+        <div style="width:560px; flex:none;"></div>
+        <div class="mid"><div class="har" style="left:114px; right:0;"><div class="har-line"></div><div class="har-r"></div></div></div>
+        <div class="step">
+          <h4><span class="n">3</span>same file hits the old zod schema</h4>
+          <span class="chip-fail">FAIL&ensp;Unrecognized key: "kind"</span>
+          <span style="margin-top:4px; font-family:var(--font-body); font-size:13px; color:var(--text-secondary);">strictObject doing its job</span>
+        </div>
+      </div>
+
+      <!-- step 4: TS green -->
+      <div style="display:flex; align-items:stretch;">
+        <div style="width:560px; flex:none;"></div>
+        <div class="mid"><div class="har" style="left:114px; right:0;"><div class="har-line"></div><div class="har-r"></div></div></div>
+        <div class="step" style="border-color:var(--stbr-emerald);">
+          <h4><span class="n">4</span>zod schema becomes <span style="font-family:var(--font-mono);">discriminatedUnion("kind", &hellip;)</span></h4>
+          <span class="chip-pass">TS parser green &#10003;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- final state -->
+    <div style="margin-top:14px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+                padding:12px 24px; text-align:center;">
+      <p style="margin:0; font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--stbr-cream);">
+        final state: both parsers green against the single file &#10003;&#10003;</p>
+    </div>
+  </div>
+</div>
+</body></html>

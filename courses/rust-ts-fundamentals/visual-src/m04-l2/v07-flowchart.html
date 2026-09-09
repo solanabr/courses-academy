@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Which treatment does this unwrap deserve
+     purpose: turn the three-fixes intuition from rep 2 into a reusable decision path
+     data: start: a fallible call currently wearing unwrap question 1: is this a test or a throwaway spike? yes -> unwrap stays, a panic here is the failure report question 2: does the caller need to know this failed? yes -> propagate with ?, adding a map_err closure when the error types differ question 3: is there a defensible default value? yes -> unwrap_or_default, with a comment defending the swallow otherwise: turn the missing case into a returned Err via ok_or
+     prompt: Top-to-bottom decision flowchart with three diamond question nodes in the order listed and four terminal boxes, one per treatment. Route the yes branches right into their terminals and the no branches downward to the next question. Style the test-code terminal differently to mark it as the one place unwrap survives.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:401px;right:-289px;top:298px;border-radius:37% 61% 61% 57% / 57% 46% 64% 50%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:494px;height:477px;bottom:-241px;left:-241px;border-radius:54% 59% 60% 58% / 40% 60% 52% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v07-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:32px 48px 28px;}
+    .v07-stage{position:relative;height:540px;margin-top:8px;}
+    .v07-node{position:absolute;background:var(--surface-card);border:2.5px solid var(--stbr-dark);border-radius:var(--radius-lg);}
+    .v07-q{left:40px;width:400px;height:64px;display:flex;align-items:center;gap:12px;padding:0 18px;}
+    .v07-dia{width:18px;height:18px;background:var(--stbr-emerald);transform:rotate(45deg);border-radius:3px;flex:none;}
+    .v07-qt{font-family:var(--font-body);font-weight:600;font-size:19px;line-height:1.25;color:var(--text-primary);}
+    .v07-term{left:552px;width:790px;height:84px;padding:12px 22px;display:flex;flex-direction:column;justify-content:center;}
+    .v07-tt{font-family:var(--font-mono);font-weight:700;font-size:21px;color:var(--stbr-emerald);}
+    .v07-ts{font-family:var(--font-body);font-size:16px;line-height:1.3;color:var(--text-secondary);margin-top:4px;}
+    .v07-vline{position:absolute;left:240px;width:0;border-left:3px solid var(--stbr-dark);}
+    .v07-hline{position:absolute;height:0;border-top:3px solid var(--stbr-dark);}
+    .v07-headd{position:absolute;left:233px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:12px solid var(--stbr-dark);}
+    .v07-headr{position:absolute;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid var(--stbr-dark);}
+    .v07-chip{position:absolute;font-family:var(--font-body);font-weight:700;font-size:14px;padding:2px 11px;border-radius:var(--radius-pill);white-space:nowrap;}
+    .v07-yes{background:var(--surface-brand);color:var(--text-on-brand);}
+    .v07-no{background:var(--surface-paper);border:1.5px solid var(--border-strong);color:var(--text-primary);}
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">UNWRAP TRIAGE</div>
+    <h2 class="viz-title">which treatment does this unwrap deserve?</h2>
+    <div class="v07-stage">
+
+      <!-- start -->
+      <div class="v07-node" style="left:40px;top:0;width:400px;height:78px;padding:10px 18px;">
+        <div class="v07-tt" style="color:var(--text-primary);">some_call().unwrap()</div>
+        <div class="v07-ts">start: a fallible call currently wearing unwrap</div>
+      </div>
+      <div class="v07-vline" style="top:78px;height:28px;"></div>
+      <div class="v07-headd" style="top:106px;"></div>
+
+      <!-- Q1 -->
+      <div class="v07-node v07-q" style="top:122px;">
+        <div class="v07-dia"></div>
+        <div class="v07-qt">is this a test or a throwaway spike?</div>
+      </div>
+      <div class="v07-hline" style="left:440px;top:152px;width:96px;"></div>
+      <div class="v07-headr" style="left:536px;top:145px;"></div>
+      <div class="v07-chip v07-yes" style="left:456px;top:118px;">yes</div>
+      <div class="v07-node v07-term" style="top:112px;background:var(--surface-accent);border-color:var(--stbr-dark);">
+        <div class="v07-tt" style="color:var(--text-on-accent);">unwrap stays: the one place it survives</div>
+        <div class="v07-ts" style="color:var(--text-on-accent);">a panic here is the failure report</div>
+      </div>
+      <div class="v07-vline" style="top:186px;height:20px;"></div>
+      <div class="v07-headd" style="top:206px;"></div>
+      <div class="v07-chip v07-no" style="left:258px;top:186px;">no</div>
+
+      <!-- Q2 -->
+      <div class="v07-node v07-q" style="top:230px;">
+        <div class="v07-dia"></div>
+        <div class="v07-qt">does the caller need to know this failed?</div>
+      </div>
+      <div class="v07-hline" style="left:440px;top:260px;width:96px;"></div>
+      <div class="v07-headr" style="left:536px;top:253px;"></div>
+      <div class="v07-chip v07-yes" style="left:456px;top:226px;">yes</div>
+      <div class="v07-node v07-term" style="top:220px;">
+        <div class="v07-tt">propagate with ?</div>
+        <div class="v07-ts">adding a <span style="font-family:var(--font-mono);">map_err</span> closure when the error types differ</div>
+      </div>
+      <div class="v07-vline" style="top:294px;height:20px;"></div>
+      <div class="v07-headd" style="top:314px;"></div>
+      <div class="v07-chip v07-no" style="left:258px;top:294px;">no</div>
+
+      <!-- Q3 -->
+      <div class="v07-node v07-q" style="top:338px;">
+        <div class="v07-dia"></div>
+        <div class="v07-qt">is there a defensible default value?</div>
+      </div>
+      <div class="v07-hline" style="left:440px;top:368px;width:96px;"></div>
+      <div class="v07-headr" style="left:536px;top:361px;"></div>
+      <div class="v07-chip v07-yes" style="left:456px;top:334px;">yes</div>
+      <div class="v07-node v07-term" style="top:328px;">
+        <div class="v07-tt">unwrap_or_default()</div>
+        <div class="v07-ts">with a comment defending the swallow</div>
+      </div>
+      <div class="v07-vline" style="top:402px;height:20px;"></div>
+      <div class="v07-headd" style="top:422px;"></div>
+      <div class="v07-chip v07-no" style="left:258px;top:402px;">otherwise</div>
+
+      <!-- otherwise terminal -->
+      <div class="v07-node v07-term" style="left:40px;top:446px;width:660px;background:var(--surface-brand);border-color:var(--stbr-green);">
+        <div class="v07-tt" style="color:var(--text-on-brand);">ok_or → return Err</div>
+        <div class="v07-ts" style="color:var(--text-on-brand);">turn the missing case into a returned <span style="font-family:var(--font-mono);">Err</span> via <span style="font-family:var(--font-mono);">ok_or</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

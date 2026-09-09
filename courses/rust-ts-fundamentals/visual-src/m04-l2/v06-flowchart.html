@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One fixture line through the survivable pipeline
+     purpose: trace both lanes from raw text to the report so the end-to-end flow is one picture
+     data: fixture.txt line -> parse_latency -> Result<u64, ParseIntError> Err lane: map_err closure wraps into ProbeError::BadFixture -> printed as an Err report line Ok lane: sanity gate (over 60,000ms becomes ProbeError::OutOfRange) -> LatencyMs -> classify_latency -> printed verdict, latency kept for the total both lanes: rejoin at the report, loop continues to the next line, run always completes
+     prompt: Left-to-right pipeline flowchart. A text-line node feeds a parse node that forks into a red error lane and a green value lane; the green lane passes through a gate node that can divert to the red lane; both lanes converge on a report node with a loop-back arrow to the next line. Label the convergence with the run completing regardless of lane.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:464px;height:477px;bottom:-252px;right:-252px;border-radius:60% 39% 53% 64% / 49% 45% 49% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:462px;left:-304px;top:309px;border-radius:48% 51% 53% 56% / 51% 61% 47% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:36px 48px 30px;}
+    .v06-flow{display:grid;grid-template-columns:158px 30px 196px 92px 1fr 30px 172px;grid-template-rows:auto auto;
+              row-gap:64px;align-items:center;margin-top:14px;}
+    .v06-node{background:var(--surface-card);border:2.5px solid var(--stbr-dark);border-radius:var(--radius-lg);padding:11px 14px;}
+    .v06-nt{font-family:var(--font-mono);font-size:16.5px;font-weight:700;color:var(--text-primary);line-height:1.25;}
+    .v06-ns{font-family:var(--font-body);font-size:13.5px;line-height:1.3;color:var(--text-secondary);margin-top:4px;}
+    .v06-arr{display:flex;align-items:center;}
+    .v06-line{flex:1;height:0;border-top:3px solid var(--stbr-dark);}
+    .v06-head{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid var(--stbr-dark);}
+    .v06-fork{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0 6px;}
+    .v06-fl{font-family:var(--font-mono);font-weight:700;font-size:13px;padding:1px 9px;border-radius:var(--radius-pill);white-space:nowrap;}
+    .v06-lane{display:flex;align-items:center;gap:0;border-radius:var(--radius-lg);padding:9px 12px;}
+    .v06-span{grid-row:1/3;align-self:stretch;display:flex;flex-direction:column;justify-content:center;}
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">END-TO-END</div>
+    <h2 class="viz-title">one fixture line through the survivable pipeline</h2>
+    <div class="v06-flow">
+      <!-- entry (spans both lanes) -->
+      <div class="v06-node v06-span" style="grid-column:1;">
+        <div class="v06-nt" style="font-family:var(--font-body);">fixture.txt line</div>
+        <div class="v06-ns">one raw text line</div>
+      </div>
+      <div class="v06-arr v06-span" style="grid-column:2;justify-content:center;"><div class="v06-line"></div><div class="v06-head"></div></div>
+      <!-- parse (spans both lanes) -->
+      <div class="v06-node v06-span" style="grid-column:3;">
+        <div class="v06-nt">parse_latency</div>
+        <div class="v06-ns" style="font-family:var(--font-mono);">→ Result&lt;u64, ParseIntError&gt;</div>
+      </div>
+      <!-- fork arrows -->
+      <div class="v06-fork" style="grid-column:4;grid-row:1;">
+        <div class="v06-fl" style="background:var(--surface-brand);color:var(--text-on-brand);">Ok(ms)</div>
+        <div class="v06-arr" style="width:100%;"><div class="v06-line" style="border-color:var(--stbr-emerald);"></div><div class="v06-head" style="border-left-color:var(--stbr-emerald);"></div></div>
+      </div>
+      <div class="v06-fork" style="grid-column:4;grid-row:2;">
+        <div class="v06-fl" style="background:var(--surface-accent);color:var(--text-on-accent);">Err(e)</div>
+        <div class="v06-arr" style="width:100%;"><div class="v06-line"></div><div class="v06-head"></div></div>
+      </div>
+      <!-- Ok lane -->
+      <div class="v06-lane" style="grid-column:5;grid-row:1;background:rgba(0,139,76,0.08);">
+        <div class="v06-node" style="width:252px;border-color:var(--stbr-emerald);position:relative;">
+          <div class="v06-nt" style="color:var(--stbr-emerald);font-family:var(--font-body);">sanity gate</div>
+          <div class="v06-ns">over 60,000 ms becomes <span style="font-family:var(--font-mono);">OutOfRange</span></div>
+          <div style="position:absolute;left:46%;bottom:-66px;height:60px;border-left:3px dashed var(--stbr-dark);"></div>
+          <div style="position:absolute;left:46%;bottom:-76px;margin-left:-6px;width:0;height:0;border-left:7.5px solid transparent;border-right:7.5px solid transparent;border-top:11px solid var(--stbr-dark);"></div>
+          <div class="v06-fl" style="position:absolute;left:54%;bottom:-48px;background:var(--surface-card);border:1.5px dashed var(--stbr-dark);color:var(--text-primary);">diverts to the Err lane</div>
+        </div>
+        <div class="v06-arr" style="width:26px;"><div class="v06-line" style="border-color:var(--stbr-emerald);"></div><div class="v06-head" style="border-left-color:var(--stbr-emerald);"></div></div>
+        <div class="v06-node" style="flex:1;border-color:var(--stbr-emerald);">
+          <div class="v06-nt">LatencyMs → classify_latency</div>
+          <div class="v06-ns">verdict printed · latency kept for the total</div>
+        </div>
+      </div>
+      <!-- Err lane -->
+      <div class="v06-lane" style="grid-column:5;grid-row:2;background:rgba(255,210,63,0.16);">
+        <div class="v06-node" style="width:276px;background:var(--surface-accent);border-color:var(--stbr-dark);">
+          <div class="v06-nt" style="color:var(--text-on-accent);">map_err closure</div>
+          <div class="v06-ns" style="color:var(--text-on-accent);">wraps into <span style="font-family:var(--font-mono);">ProbeError::BadFixture</span></div>
+        </div>
+        <div class="v06-arr" style="width:26px;"><div class="v06-line"></div><div class="v06-head"></div></div>
+        <div class="v06-node" style="flex:1;">
+          <div class="v06-nt" style="font-family:var(--font-body);">Err report line</div>
+          <div class="v06-ns">printed: the line is recorded, not fatal</div>
+        </div>
+      </div>
+      <!-- converge arrows -->
+      <div class="v06-arr" style="grid-column:6;grid-row:1;"><div class="v06-line"></div><div class="v06-head"></div></div>
+      <div class="v06-arr" style="grid-column:6;grid-row:2;"><div class="v06-line"></div><div class="v06-head"></div></div>
+      <!-- report (spans both lanes) -->
+      <div class="v06-node v06-span" style="grid-column:7;background:var(--surface-brand);border-color:var(--stbr-green);">
+        <div class="v06-nt" style="color:var(--text-on-brand);font-family:var(--font-body);">report</div>
+        <div class="v06-ns" style="color:var(--text-on-brand);">both lanes rejoin here; the run always completes</div>
+      </div>
+    </div>
+    <!-- loop back to the next line -->
+    <div style="position:relative;height:54px;margin-top:14px;">
+      <div style="position:absolute;right:84px;top:-8px;height:34px;border-left:3px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:79px;right:85px;top:26px;border-top:3px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:79px;top:-2px;height:28px;border-left:3px solid var(--stbr-dark);"></div>
+      <div style="position:absolute;left:71.5px;top:-12px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:11px solid var(--stbr-dark);margin-left:2px;"></div>
+      <div style="position:absolute;left:0;right:0;top:12px;text-align:center;">
+        <span style="background:var(--surface-card);border:1.5px solid var(--border-strong);border-radius:var(--radius-pill);
+                     padding:4px 18px;font-family:var(--font-body);font-weight:600;font-size:15.5px;color:var(--text-primary);">loop continues to the next line</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

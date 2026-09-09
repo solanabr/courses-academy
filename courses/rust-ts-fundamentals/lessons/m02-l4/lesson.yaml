@@ -1,0 +1,101 @@
+id: lesson-rtf-m02-l4
+slug: m02-l4
+title: "Tests are probes for your code: vitest"
+skills:
+  - solana-kit
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "vitest": "4.1.11"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m02l4-q1
+        prompt: "You wired `vitest run` as a job the cron's probe step `needs:`. Why must the TESTS gate the CRON, specifically, rather than just running on pushes?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Running the tests first warms the runner's dependency cache, so the probe step starts faster and stays inside the job's time budget"
+            correct: false
+            feedback: "Cache warmth is incidental, the gate is about correctness of what gets PUBLISHED, not about speed of the publisher."
+          - id: d
+            label: "The push-triggered suite already proves what lands on main, so a scheduled run usually inherits that proof and the edge is ceremony"
+            correct: false
+            feedback: "A suite that goes red on a push stops nothing by itself. Without the needs edge the test job runs beside the probe, so the same run can commit a fresh status.json while the tests fail next to it."
+          - id: b
+            label: "The cron publishes from the default branch on a schedule, ungated, a broken classifier ships a wrong status.json every thirty minutes"
+            correct: true
+            feedback: "A scheduled run takes the latest commit on the default branch and publishes whatever it produces, with nobody watching. Stalled beats lying, and the needs edge is what buys the stall."
+          - id: a
+            label: "Scheduled workflows refuse to start when any other workflow in the repo is failing, so a red test job would block the cron automatically anyway"
+            correct: false
+            feedback: "No such coupling exists, an independent red workflow blocks nothing. The gate only exists because YOU wrote the needs: edge into the cron's own workflow."
+        explanation: "Scheduled workflows run the latest commit on the default branch, so a bad merge doesn't fail once, it publishes a lie on schedule, indefinitely, while looking green. The needs: edge makes the pipeline refuse: no green suite, no probe, no status.json. That is gate #2 on the one pipeline this course grows to the capstone."
+      - id: m02l4-q2
+        prompt: "Testing the 5-attempt backoff schedule with real timers takes about fifteen seconds of wall clock. With vi.useFakeTimers, what changes?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The suite trades precision for speed, so you assert that roughly five waits happened instead of pinning each delay's exact value"
+            correct: false
+            feedback: "Precision is what the fake clock buys, not what it costs. Landing on 499 and then 500 is the whole exercise, and a roughly-five-waits assertion is what you would settle for against a real clock."
+          - id: a
+            label: "The fake clock shrinks every delay to one millisecond, so the schedule runs the same code path just fast enough to assert on"
+            correct: false
+            feedback: "Delays aren't shrunk, they're not WAITED. The scheduled times keep their exact values; you jump the clock to them, which is why the assertions stay exact."
+          - id: b
+            label: "Fake timers only intercept setInterval, so the backoff's promise-based delays still wait in real time and the suite stays slow"
+            correct: false
+            feedback: "vi.useFakeTimers intercepts the timer functions your delays sit on, advance the clock and the pending timers fire; the pattern is exactly built for this test."
+          - id: c
+            label: "You advance the clock synchronously past each delay, the exact 500/1000/2000ms schedule asserts in milliseconds of real time"
+            correct: true
+            feedback: "The delays are not shortened, they are simply not waited on. Each scheduled instant keeps its exact value and you jump the clock onto it, which is what lets the test pin 500 and 1000 by name."
+        explanation: "Fake timers replace waiting with control: the test advances the clock to each scheduled instant and asserts what fired. The schedule's exact values stay pinned, which is the point, because the m02-l3 formula IS a contract, and the suite runs in milliseconds, which keeps it in the cron's gate without stretching the pipeline."
+      - id: m02l4-q3
+        prompt: "Coverage reports 100% on the classifier, and a teammate declares it fully tested. The lesson's 'signal, not idol' framing says what?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Coverage is noise either way, the honest read is to stop reporting it and judge the suite in review instead"
+            correct: false
+            feedback: "Half the framing gets lost that way. An uncovered branch is a target with no probe pointed at it, which is worth reading every time; what the warning rejects is treating the percentage as the goal."
+          - id: b
+            label: "100% line coverage is unreachable in code using assertNever, so the report itself indicates the tooling was configured wrong"
+            correct: false
+            feedback: "Unreachable arms usually show up as the LAST uncovered branches, not as proof of misconfiguration, and the point stands regardless of the exact number."
+          - id: c
+            label: "Coverage measures assertion strength per branch, so 100% genuinely does mean each behavior is checked, the framing warns only against gaming the metric"
+            correct: false
+            feedback: "Coverage counts execution, not verification, a suite of tests with no meaningful assertions can still score 100%. That gap is the whole warning."
+          - id: a
+            label: "100% proves every line RAN under some test, it proves nothing about whether the assertions on those lines would catch a wrong answer"
+            correct: true
+            feedback: "Coverage counts execution, not verification. A suite that calls every function and asserts nothing scores perfectly, so the number says where nobody is looking and nothing about the quality of the looking."
+        explanation: "Coverage answers 'what never ran?', a genuinely useful signal, because an untested branch is a probe target nobody is watching. It cannot answer 'would a bug be caught?', because it counts execution, not assertion quality. Read the uncovered branches, fix the ones that matter, and never turn the number into the goal."
+      - id: m02l4-q4
+        prompt: "You rewrote the classifier's five boundary checks as one test.each table. Beyond less typing, what did the table buy?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "test.each fans the rows out across worker threads, so the boundary suite finishes faster as the table grows over time"
+            correct: false
+            feedback: "Parallelism happens at the file level regardless, the table's value is in the shape of the spec, not the scheduling."
+          - id: d
+            label: "Exhaustiveness, every variant missing a row fails the suite the way a missing switch arm fails the compiler"
+            correct: false
+            feedback: "Nothing audits the table for completeness: a row you forget simply does not exist and the suite stays green. Exhaustiveness comes from the switch and assertNever, which is why both live in the source."
+          - id: c
+            label: "Table syntax is jest-only in spirit, in vitest it desugars to a for-loop, so the real win is portability when reading anza's jest repos"
+            correct: false
+            feedback: "test.each is first-class in vitest, no desugaring caveat, and its value here is spec-shape, not cross-framework reading practice."
+          - id: b
+            label: "The table IS the spec, rendered executable, every boundary pair sits in one readable grid, and a new edge case is a one-line row"
+            correct: true
+            feedback: "Read the rows out loud and you are reading the contract: 399 up, 400 degraded, 1000 degraded, 1001 down. The next rule learned the hard way costs exactly one line to pin forever."
+        explanation: "A table test turns the classifier's contract into data: (input, expected) rows that read like the spec they enforce. When m02-l1's challenge added the 429-is-degraded rule, that was one row; when a boundary bug is found in production, the regression pin is one row. The cheapest tests to extend are the ones most likely to be extended."

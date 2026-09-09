@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One config file, two parsers, opposite derivations
+     purpose: make the accretion seam concrete by showing both languages deriving from a single source of truth in opposite directions
+     data: Center: pulse.config.json (one file on disk) Left side (TypeScript): configSchema (runtime value) --z.infer-> FleetConfig type; schema walks input at runtime Right side (Rust): Config struct (type) --derive(Deserialize)-> generated parser; parser generated at compile time Bottom label: same discipline, parse don't validate; opposite direction of derivation
+     prompt: Symmetric three-column diagram. Center column holds one file node labeled pulse.config.json. Left column shows the TypeScript pair: a schema box with an arrow labeled z.infer pointing to a type box. Right column shows the Rust pair: a struct box with an arrow labeled derive(Deserialize) pointing to a generated-parser box. Both outer columns have an arrow consuming the center file. Bottom caption row names the shared discipline and the opposite arrow directions.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:467px;height:499px;right:-245px;top:211px;border-radius:36% 47% 39% 56% / 44% 53% 46% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:558px;bottom:-316px;left:-316px;border-radius:44% 62% 47% 54% / 59% 44% 38% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .side { border: 2px solid var(--stbr-green); border-radius: var(--radius-xl);
+            padding: 22px 26px; width: 476px; flex: none; }
+    .box { background: var(--surface-paper); border: 2px solid var(--stbr-green);
+           border-radius: var(--radius-lg); padding: 12px 16px; text-align: center; }
+    .box h4 { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 19px;
+              color: var(--stbr-dark); }
+    .box p { margin: 4px 0 0; font-family: var(--font-body); font-size: 14px;
+             color: var(--text-secondary); }
+    .vdrop { display: flex; flex-direction: column; align-items: center; padding: 4px 0; }
+    .vline { width: 3px; height: 20px; background: var(--stbr-emerald); }
+    .vhead { width: 0; height: 0; border-left: 7px solid transparent;
+             border-right: 7px solid transparent; border-top: 10px solid var(--stbr-emerald); }
+    .vlbl { font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+            color: var(--stbr-emerald); margin: 2px 0; }
+    .har { display: flex; align-items: center; flex: 1; }
+    .har-line { height: 3px; background: var(--stbr-green); flex: 1; }
+    .har-r { width: 0; height: 0; border-top: 7px solid transparent;
+             border-bottom: 7px solid transparent; border-left: 10px solid var(--stbr-green); }
+    .har-l { width: 0; height: 0; border-top: 7px solid transparent;
+             border-bottom: 7px solid transparent; border-right: 10px solid var(--stbr-green); }
+    .lane-h { font-family: var(--font-display); font-weight: 900; font-size: 20px;
+              color: var(--stbr-emerald); margin: 0 0 14px; text-align: center; }
+    .cap { margin: 14px 0 0; font-family: var(--font-body); font-size: 14.5px;
+           color: var(--text-secondary); text-align: center; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">the accretion seam &middot; one source of truth</div>
+    <h2 class="viz-title" style="margin-bottom:34px;">one config file, two parsers, opposite derivations</h2>
+
+    <div style="display:flex; align-items:center;">
+      <!-- TypeScript side -->
+      <div class="side">
+        <p class="lane-h">TypeScript</p>
+        <div class="box"><h4>configSchema</h4><p>a runtime value (zod)</p></div>
+        <div class="vdrop"><div class="vline"></div><div class="vlbl">z.infer</div><div class="vline"></div><div class="vhead"></div></div>
+        <div class="box"><h4>FleetConfig</h4><p>the type: derived from the value</p></div>
+        <p class="cap">the schema walks the input <strong>at runtime</strong></p>
+      </div>
+
+      <!-- file -> TS parser -->
+      <div class="har"><div class="har-l"></div><div class="har-line"></div>
+        <span style="font-family:var(--font-body); font-size:13.5px; font-weight:600; color:var(--stbr-green); padding:0 6px;">parses</span>
+        <div class="har-line"></div></div>
+
+      <!-- center: the one file -->
+      <div style="width:252px; flex:none; background:var(--stbr-yellow); border-radius:var(--radius-xl);
+                  padding:28px 18px; text-align:center;">
+        <p style="margin:0; font-family:var(--font-mono); font-weight:700; font-size:21px; color:var(--stbr-dark);">pulse.config.json</p>
+        <p style="margin:6px 0 0; font-family:var(--font-body); font-size:14.5px; color:var(--stbr-dark);">one file on disk</p>
+      </div>
+
+      <!-- file -> Rust parser -->
+      <div class="har"><div class="har-line"></div>
+        <span style="font-family:var(--font-body); font-size:13.5px; font-weight:600; color:var(--stbr-green); padding:0 6px;">parses</span>
+        <div class="har-line"></div><div class="har-r"></div></div>
+
+      <!-- Rust side -->
+      <div class="side">
+        <p class="lane-h">Rust</p>
+        <div class="box"><h4>Config struct</h4><p>a type</p></div>
+        <div class="vdrop"><div class="vline"></div><div class="vlbl">derive(Deserialize)</div><div class="vline"></div><div class="vhead"></div></div>
+        <div class="box"><h4>generated parser</h4><p>the parser: derived from the type</p></div>
+        <p class="cap">the parser is generated <strong>at compile time</strong></p>
+      </div>
+    </div>
+
+    <!-- verdict band -->
+    <div style="margin-top:32px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+                padding:16px 24px; text-align:center;">
+      <p style="margin:0; font-family:var(--font-display); font-weight:800; font-size:22px; color:var(--stbr-cream);">
+        same discipline: parse, don&rsquo;t validate &middot; opposite direction of derivation:
+        value&nbsp;&rarr;&nbsp;type on the left, type&nbsp;&rarr;&nbsp;parser on the right</p>
+    </div>
+  </div>
+</div>
+</body></html>

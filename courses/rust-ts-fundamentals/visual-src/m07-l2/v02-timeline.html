@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: One purity bet, five lessons of compounding
+     purpose: show that today's port is the planned payoff of decisions made modules ago, not a lucky break
+     data: m03-l1: pulse-core extracted to a pnpm workspace package (TS purity, for the dashboard + cron) m04-l1..l3: pulse-rs engine built pure on fixtures; ProbeState machine, typed errors m05-l2: workspace split; pulse-engine becomes a library crate; "future consumer: a WASM worker" written down m07-l1: pulse-core's pure half ports to workerd unchanged; node-touching half replaced by platform fetch + KV m07-l2 (today): pulse-engine compiles to wasm32-unknown-unknown untouched; second edge deploy
+     prompt: A left-to-right timeline with five milestone nodes labeled by lesson id and a short caption each. The m05-l2 node carries a small quoted annotation about the future WASM consumer. The final node is emphasized and connects back to the m03-l1 and m04 nodes with a thin arc labeled as the same discipline in both languages.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:521px;height:352px;right:-310px;top:329px;border-radius:63% 54% 64% 40% / 43% 60% 49% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:468px;height:467px;bottom:-244px;left:-244px;border-radius:65% 56% 41% 42% / 50% 35% 49% 64%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 40px 52px 36px; }
+    .tl { position: relative; height: 440px; margin-top: 4px; }
+    .dot { position: absolute; width: 22px; height: 22px; border-radius: 50%;
+           background: var(--stbr-emerald); border: 3px solid var(--surface-card); }
+    .lbl { position: absolute; width: 250px; text-align: center; font-family: var(--font-body); }
+    .lbl .id { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 17px;
+               color: var(--stbr-emerald); }
+    .lbl .cap { margin: 5px 0 0; font-size: 14px; color: var(--stbr-dark); font-weight: 600;
+                line-height: 1.35; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">why today&rsquo;s port was cheap</div>
+    <h2 class="viz-title">one purity bet, five lessons of compounding</h2>
+
+    <div class="tl">
+      <!-- arc: the last node reaches back to m03/m04 -->
+      <p style="position:absolute; top:8px; left:70px; width:1170px; margin:0; text-align:center;
+                font-family:var(--font-display); font-weight:800; font-size:22px; color:var(--stbr-emerald);">
+        the same discipline in both languages</p>
+      <div style="position:absolute; top:48px; left:70px; width:1170px; height:56px;
+                  border:3px solid var(--stbr-emerald); border-bottom:none;
+                  border-radius:28px 28px 0 0;"></div>
+      <!-- ticks dropping the arc onto m03-l1, m04 and m07-l2 -->
+      <div style="position:absolute; top:104px; left:68px; width:3px; height:142px; background:var(--stbr-emerald);"></div>
+      <div style="position:absolute; top:104px; left:348px; width:3px; height:142px; background:var(--stbr-emerald);"></div>
+      <div style="position:absolute; top:104px; left:1238px; width:3px; height:142px; background:var(--stbr-emerald);"></div>
+
+      <!-- m05-l2 written-down bet, quoted -->
+      <div style="position:absolute; top:118px; left:496px; width:270px; background:var(--surface-paper);
+                  border:2px solid var(--stbr-dark); border-radius:var(--radius-lg);
+                  padding:12px 16px; text-align:center;">
+        <p style="margin:0; font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--stbr-dark);">
+          &ldquo;future consumer: a WASM worker&rdquo;</p>
+        <p style="margin:4px 0 0; font-family:var(--font-body); font-size:13px; color:var(--text-secondary);">
+          written down in m05-l2, cashed in today</p>
+      </div>
+      <div style="position:absolute; top:196px; left:629px; width:3px; height:50px; background:var(--stbr-dark);"></div>
+
+      <!-- baseline -->
+      <div style="position:absolute; top:250px; left:30px; right:30px; height:4px;
+                  background:var(--stbr-green); border-radius:2px;"></div>
+      <!-- today's payoff span: the one yellow thing -->
+      <div style="position:absolute; top:245px; left:930px; width:310px; height:14px;
+                  background:var(--stbr-yellow); border-radius:7px;"></div>
+
+      <!-- markers -->
+      <div class="dot" style="top:241px; left:59px;"></div>
+      <div class="dot" style="top:241px; left:339px;"></div>
+      <div class="dot" style="top:241px; left:619px; background:var(--stbr-dark);"></div>
+      <div class="dot" style="top:241px; left:919px;"></div>
+      <div class="dot" style="top:236px; left:1224px; width:32px; height:32px;
+                              background:var(--stbr-yellow); border-color:var(--stbr-dark);"></div>
+
+      <!-- labels below -->
+      <div class="lbl" style="top:290px; left:-45px; width:230px;">
+        <p class="id">m03-l1</p>
+        <p class="cap">pulse-core extracted to a pnpm workspace package: TS purity for the dashboard + cron</p>
+      </div>
+      <div class="lbl" style="top:290px; left:225px;">
+        <p class="id">m04-l1..l3</p>
+        <p class="cap">pulse-rs engine built pure on fixtures: ProbeState machine, typed errors</p>
+      </div>
+      <div class="lbl" style="top:290px; left:505px;">
+        <p class="id" style="color:var(--stbr-dark);">m05-l2</p>
+        <p class="cap">workspace split: pulse-engine becomes a library crate</p>
+      </div>
+      <div class="lbl" style="top:290px; left:805px;">
+        <p class="id">m07-l1</p>
+        <p class="cap">pulse-core&rsquo;s pure half ports to workerd unchanged; platform fetch + KV replace node</p>
+      </div>
+      <div class="lbl" style="top:290px; left:1102px;">
+        <p class="id" style="color:var(--stbr-dark);">m07-l2 &middot; today</p>
+        <p class="cap" style="font-weight:700;">pulse-engine compiles to wasm32-unknown-unknown untouched: second edge deploy</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

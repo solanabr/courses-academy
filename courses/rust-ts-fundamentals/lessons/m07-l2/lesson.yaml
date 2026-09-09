@@ -1,0 +1,101 @@
+id: lesson-rtf-m07-l2
+slug: m07-l2
+title: "The payoff: Rust on the same edge"
+skills:
+  - solana-kit
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "worker": "0.8.5"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: edge-tier-gate-check
+    type: quiz
+    questions:
+      - id: m07-l2-q1
+        prompt: "Your engine crate compiled to wasm32 first try, but a teammate's 'quick fix' adding reqwest to it breaks the build. Why does one of them cross the seam and the other refuse?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "reqwest is too large a dependency, WASM binaries have a size cap that big crates exceed"
+            correct: false
+            feedback: "Size limits exist but that's not the failure here: reqwest itself compiles on wasm32 (it carries a browser backend); the blocking module the CLI leans on is conditionally compiled away, so the code that touches it fails with E0433. An I/O boundary, not a size cap."
+          - id: d
+            label: "The core is no_std while reqwest drags std in, and wasm32-unknown-unknown has no std to link against"
+            correct: false
+            feedback: "The engine is std through and through, Strings and Vecs everywhere, and it still compiles for this target. What the target withholds is threads, sockets, a filesystem and a clock, not the standard library."
+          - id: c
+            label: "reqwest is async, and WASM has no event loop of its own to drive futures, so no async Rust code can run in a worker at all"
+            correct: false
+            feedback: "The template's own handler is an async fn, and workerd drives those futures through the JS event loop it already owns. What is missing is the OS layer tokio and reqwest's transport need: an I/O boundary, not an async one."
+          - id: a
+            label: "The core is logic with no OS dependencies; wasm32-unknown-unknown has no sockets or threads, I/O comes from the platform"
+            correct: true
+            feedback: "Unknown OS is the specification, not a placeholder. mio says it in its own compile_error: there is no epoll or kqueue to wrap, so the crate refuses before a byte ships."
+        explanation: "wasm32-unknown-unknown means unknown OS: no sockets, no threads, no filesystem. Pure computation, classifiers, state machines, serde types, compiles clean; anything that opens a connection needs the platform's fetch via the worker crate instead. This is the M4 purity bet paying out, and the same seam m07-l1 taught in TS."
+      - id: m07-l2-q2
+        prompt: "Cargo.toml for the worker says `worker = \"0.8\"` rather than the latest patch you saw on crates.io. Following m05-l2's pin-reading skill, what is this pin telling you?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "0.8 is shorthand for ^0.8.0, which cargo happily resolves to 0.9, so the pin decides nothing at all"
+            correct: false
+            feedback: "Caret ranges narrow below 1.0: ^0.8.0 means at least 0.8.0 and under 0.9.0, so cargo will not cross that line for you. The digit you wrote is the decision, which is why it is worth reading."
+          - id: c
+            label: "0.8 is the last version supporting wasm32, newer lines dropped the WASM target"
+            correct: false
+            feedback: "WASM is the whole point of workers-rs, no line dropped it. The pin is about pre-1.0 semver semantics, where 0.9 is allowed to break you the way 2.0 would elsewhere."
+          - id: a
+            label: "The project is stale, a well-maintained project would track the newest release line"
+            correct: false
+            feedback: "That's the abandonment-signal reflex misapplied: a deliberate conservative pin on a pre-1.0 SDK is maintenance, not neglect. The signals from m03-l4 (README, last-publish) tell staleness; a pin alone doesn't."
+          - id: b
+            label: "The crate is pre-1.0, where minor versions may break, the pin holds the 0.8 line on purpose"
+            correct: true
+            feedback: "A 0.x minor carries the breaking-change rights a 2.0 carries elsewhere, so the pin says stay here until I choose to migrate, and 0.9 is a release-notes decision rather than a free upgrade."
+        explanation: "Under semver, pre-1.0 minors carry breaking-change rights, so `worker = \"0.8\"` says 'stay on this line until I choose to migrate.' The same ecosystem-pin-reading you practiced on agave's Cargo.toml in m05-l2, applied to your own project: a pin is a decision you can read."
+      - id: m07-l2-q3
+        prompt: "You want the workers to store probe-history files. R2 has a real free tier (10 GB-month, free egress), so why does this course make R2 an optional extension instead of a core lab?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Enabling R2 requires linking a payment method even for free use, it fails the course's no-card rule"
+            correct: true
+            feedback: "So KV carries the core path and R2 becomes a clearly-labeled optional extension. Note what the reason is NOT: the allowance is generous and the product fits; the gate is the card, before a cent is spent."
+          - id: b
+            label: "Object storage belongs to a sibling Academy course, and this course never teaches what a sibling owns"
+            correct: false
+            feedback: "No sibling course owns R2, the hand-off map covers Solana depth, Anchor, wallets, and tokens. R2 is out of the CORE path for a cost-honesty reason, not a boundary one."
+          - id: a
+            label: "R2's free tier is too small for a whole fleet's probe history, so the lab would hit the cap mid-module"
+            correct: false
+            feedback: "10 GB-month dwarfs a probe fleet's JSON output, the allowance is generous. The blocker isn't quota; it's what enabling the product asks of you first."
+          - id: d
+            label: "R2 sits behind the same $5/mo Workers Paid plan that Containers needs, so the blocker is a bill and not a card"
+            correct: false
+            feedback: "Containers is the one behind Workers Paid. R2's storage genuinely costs nothing at this scale, which is what makes its card requirement the more interesting exclusion: free, and still gated."
+        explanation: "The course's deploy-sanity rule is free tier, no card in the core path. Community-thread evidence says enabling R2 requires a payment method even at $0, so KV carries the core path and R2 becomes a clearly-labeled optional extension for learners who choose to link a card. Same rule that keeps Cloudflare Containers ($5/mo Workers Paid) a signpost."
+      - id: m07-l2-q4
+        prompt: "Both of your workers, TS yesterday, Rust today, went live with the identical `npx wrangler deploy` command. What is the module's takeaway from that?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Rust and TypeScript compile to equivalent output, so the choice between them is only style"
+            correct: false
+            feedback: "They produce very different artifacts (WASM module vs JS) with different trade-offs, this very lesson's tradeoff section says the TS worker is often the pragmatic default. What's shared is the platform's interface, not the languages' equivalence."
+          - id: d
+            label: "wrangler detects the project's language and runs the matching build, so the deploy contract looks identical"
+            correct: false
+            feedback: "It detects nothing. wrangler.toml's [build] block names the command, and yours happens to invoke worker-build; put any command there that emits an entry file and the same deploy verb ships it."
+          - id: a
+            label: "The platform contract, handler shape, bindings, cron, is the artifact; the language behind it is interchangeable"
+            correct: true
+            feedback: "Ask the discriminating question: what did wrangler need to know about your language? Nothing. It ran a build command out of a config file and uploaded the result, which is all it ever did."
+          - id: b
+            label: "wrangler transpiles Rust to JavaScript during the build step, so both deploys really ship the same kind of code to the edge"
+            correct: false
+            feedback: "No transpilation happens, the Rust is compiled to WASM by worker-build and runs as WASM next to JS glue. The deploys are identical because the CONTRACT is, not because the code is."
+        explanation: "The module's closing law: the edge platform defines a contract (fetch/scheduled handlers, KV bindings, cron, one deploy command) and doesn't care what satisfies it. That's why the station could bring both of its engines to the edge, and it's the same idea you'll reuse whenever a platform, not a language, defines the seam."

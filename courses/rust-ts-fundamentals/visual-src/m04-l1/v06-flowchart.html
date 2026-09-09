@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One engine, three bodies
+     purpose: show where the fixture-fed pure core built today sits in the course's accretion ladder
+     data: today, m04: pulse-rs pure core -> types + classify_latency, fixture-fed, no IO m05: same core + real HTTP probe arm -> a Rust service that measures for real m07: same core compiled to WASM -> the classifier at the edge annotation: purity today is the property that makes the later two bodies possible
+     prompt: Left-to-right flowchart of three stages sharing one highlighted core block that persists across all three. Stage one shows the core alone with a fixture feeding it, stage two adds an HTTP arm around the unchanged core, stage three wraps the same core in a WASM badge. Caption ties purity to portability.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:442px;height:483px;top:-233px;right:-233px;border-radius:56% 58% 50% 63% / 45% 52% 64% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:527px;bottom:-324px;left:-324px;border-radius:46% 56% 55% 57% / 61% 47% 36% 61%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 52px 32px; }
+    .v06-row { display: grid; grid-template-columns: 1fr 54px 1fr 54px 1fr; margin-top: 14px; }
+    .v06-stage { border: 2px solid var(--border-subtle); border-radius: var(--radius-xl);
+                 padding: 16px 20px 16px; height: 404px; text-align: center; }
+    .v06-mod { display: inline-block; border-radius: var(--radius-pill); font-family: var(--font-display);
+               font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em;
+               padding: 5px 14px; margin: 0 0 6px; border: 2px solid var(--stbr-emerald); color: var(--stbr-green); }
+    .v06-mod-now { background: var(--surface-brand); color: var(--stbr-cream); }
+    .v06-st { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 22px;
+              color: var(--text-primary); margin: 0 0 14px; height: 30px; }
+    .v06-fixture { display: inline-block; background: var(--surface-paper); border: 1px solid var(--border-subtle);
+                   border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 15px;
+                   color: var(--text-secondary); padding: 8px 14px; }
+    .v06-stemcol { display: flex; flex-direction: column; align-items: center; height: 34px; margin-top: 4px; }
+    .v06-stem { width: 2px; height: 22px; background: var(--stbr-dark); }
+    .v06-tri { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
+               border-top: 8px solid var(--stbr-dark); }
+    .v06-core { background: var(--stbr-yellow); border-radius: var(--radius-md); padding: 14px 16px; }
+    .v06-cn { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 21px;
+              color: var(--stbr-dark); margin: 0; }
+    .v06-cs { font-family: var(--font-mono); font-size: 15px; color: var(--stbr-green); margin: 4px 0 0; }
+    .v06-wrap { border: 3px solid var(--stbr-emerald); border-radius: var(--radius-lg);
+                padding: 8px 12px 12px; margin-top: 38px; }
+    .v06-wrap-wasm { border-color: var(--stbr-dark); }
+    .v06-wl { font-family: var(--font-display); font-weight: 800; font-size: 15px; text-transform: uppercase;
+              letter-spacing: 0.08em; color: var(--stbr-green); margin: 0 0 8px; }
+    .v06-wrap-wasm .v06-wl { color: var(--stbr-dark); }
+    .v06-note { font-family: var(--font-body); font-size: 15px; line-height: 1.35;
+                color: var(--text-secondary); margin: 14px 0 0; }
+    .v06-arrow { display: flex; align-items: center; height: 404px; }
+    .v06-aline { flex: 1; height: 2px; background: var(--stbr-dark); }
+    .v06-atri { width: 0; height: 0; border-top: 7px solid transparent; border-bottom: 7px solid transparent;
+                border-left: 10px solid var(--stbr-dark); }
+    .v06-verdict { margin-top: 20px; background: var(--surface-brand); color: var(--stbr-cream);
+                   border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-display);
+                   font-weight: 800; font-size: 24px; text-align: center; }
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">the accretion ladder</div>
+    <h2 class="viz-title">one engine, three bodies</h2>
+    <div class="v06-row">
+      <div class="v06-stage">
+        <span class="v06-mod v06-mod-now">today &#183; m04</span>
+        <p class="v06-st">fixture-fed pure core</p>
+        <span class="v06-fixture">latency fixtures &#183; no IO</span>
+        <div class="v06-stemcol"><div class="v06-stem"></div><div class="v06-tri"></div></div>
+        <div class="v06-core">
+          <p class="v06-cn">pulse-rs core</p>
+          <p class="v06-cs">types + classify_latency</p>
+        </div>
+        <p class="v06-note">pure functions only: no IO anywhere in the crate</p>
+      </div>
+      <div class="v06-arrow"><div class="v06-aline"></div><div class="v06-atri"></div></div>
+      <div class="v06-stage">
+        <span class="v06-mod">m05</span>
+        <p class="v06-st">a service that measures</p>
+        <div class="v06-wrap">
+          <p class="v06-wl">+ real HTTP probe arm</p>
+          <div class="v06-core">
+            <p class="v06-cn">pulse-rs core</p>
+            <p class="v06-cs">types + classify_latency</p>
+          </div>
+        </div>
+        <p class="v06-note">the probe arm does the IO; the core stays unchanged</p>
+      </div>
+      <div class="v06-arrow"><div class="v06-aline"></div><div class="v06-atri"></div></div>
+      <div class="v06-stage">
+        <span class="v06-mod">m07</span>
+        <p class="v06-st">the classifier at the edge</p>
+        <div class="v06-wrap v06-wrap-wasm">
+          <p class="v06-wl">compiled to WASM</p>
+          <div class="v06-core">
+            <p class="v06-cn">pulse-rs core</p>
+            <p class="v06-cs">types + classify_latency</p>
+          </div>
+        </div>
+        <p class="v06-note">the same core, recompiled; nothing rewritten</p>
+      </div>
+    </div>
+    <div class="v06-verdict">purity today is what makes the later two bodies possible</div>
+  </div>
+</div>
+</body></html>

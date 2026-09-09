@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Dependency-first layer order, the node edition
+     purpose: make the layer boundary visible so the reader can place the same boundary in any future Dockerfile
+     data: COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./ plus each packages/*/package.json -> the dependency layer's only inputs; changes rarely RUN pnpm install --frozen-lockfile -> the expensive layer; cached while the files above are unchanged COPY . . -> the source layer; changes constantly; sits BELOW the install so its churn cannot touch it RUN build steps -> recompile only your code wrong order for contrast: COPY . . first would chain the install layer to every source edit
+     prompt: A Dockerfile excerpt on the left as monospace lines, a cache-lifetime bar on the right of each line: long bars for the manifest copy and install lines, short bars for the source copy and build lines. Below, a small crossed-out variant with COPY . . above the install, its install bar shortened to match, labeled "every edit pays the install again".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:460px;right:-265px;top:302px;border-radius:58% 55% 48% 39% / 49% 41% 45% 61%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:461px;height:440px;bottom:-249px;left:-249px;border-radius:39% 59% 50% 37% / 48% 43% 37% 41%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v03-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 40px 56px 36px; overflow: hidden; position: relative; }
+  .v03-panel { background: var(--surface-inverse); border-radius: var(--radius-xl);
+               padding: 22px 28px; }
+  .v03-legend { font-family: var(--font-body); font-size: 13px; color: var(--stbr-ink-300);
+                text-align: right; margin-bottom: 10px; }
+  .v03-line { display: flex; align-items: center; gap: 24px; padding: 9px 0;
+              border-bottom: 1px solid var(--border-on-dark); }
+  .v03-line:last-child { border-bottom: none; }
+  .v03-codecell { width: 830px; }
+  .v03-codecell code { display: block; font-family: var(--font-mono); font-size: 16.5px;
+                       color: var(--text-on-dark); }
+  .v03-codecell small { display: block; font-family: var(--font-body); font-size: 12.5px;
+                        color: var(--stbr-ink-300); margin-top: 3px; }
+  .v03-barcell { flex: 1; }
+  .v03-bar { height: 22px; border-radius: var(--radius-sm); background: var(--stbr-emerald); }
+  .v03-bar-hot { background: var(--stbr-yellow); }
+  .v03-barlab { font-family: var(--font-body); font-size: 12px; color: var(--stbr-ink-300);
+                margin-top: 3px; }
+  .v03-wrong { margin-top: 22px; display: flex; align-items: center; gap: 24px; }
+  .v03-wrongpanel { background: var(--surface-inverse); border-radius: var(--radius-lg);
+                    padding: 14px 28px; width: 830px; opacity: 0.82; }
+  .v03-wrongpanel .v03-wtitle { font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                    letter-spacing: 0.12em; text-transform: uppercase; color: var(--stbr-ink-300);
+                    margin-bottom: 6px; }
+  .v03-wrongpanel code { display: block; font-family: var(--font-mono); font-size: 15.5px;
+                         color: var(--text-on-dark); padding: 2px 0; }
+  .v03-strike { text-decoration: line-through; }
+  .v03-wrongbars { flex: 1; }
+  .v03-wrongbar { height: 18px; width: 90px; border-radius: var(--radius-sm);
+                  background: var(--stbr-ink-500); margin-bottom: 6px; }
+  .v03-wronglab { font-family: var(--font-body); font-size: 14px; font-weight: 600;
+                  color: var(--status-danger); }
+</style>
+<div class="v03-card">
+  <div class="stbr-eyebrow">DEPENDENCY-FIRST LAYERS · NODE EDITION</div>
+  <h2 class="viz-title">the layer boundary, made visible</h2>
+  <div class="v03-panel">
+    <div class="v03-legend">bar = how long the layer stays cached →</div>
+    <div class="v03-line">
+      <div class="v03-codecell">
+        <code>COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./</code>
+        <code>COPY packages/*/package.json ./packages/*/</code>
+        <small>the dependency layer's only inputs; these files change rarely</small>
+      </div>
+      <div class="v03-barcell">
+        <div class="v03-bar" style="width:100%;"></div>
+        <div class="v03-barlab">cached across almost every build</div>
+      </div>
+    </div>
+    <div class="v03-line">
+      <div class="v03-codecell">
+        <code>RUN pnpm install --frozen-lockfile</code>
+        <small>the expensive layer, cached while the files above are unchanged</small>
+      </div>
+      <div class="v03-barcell">
+        <div class="v03-bar v03-bar-hot" style="width:100%;"></div>
+        <div class="v03-barlab">lives as long as the manifests above it</div>
+      </div>
+    </div>
+    <div class="v03-line">
+      <div class="v03-codecell">
+        <code>COPY . .</code>
+        <small>the source layer, changes constantly; sits BELOW the install so its churn can't touch it</small>
+      </div>
+      <div class="v03-barcell">
+        <div class="v03-bar" style="width:24%;"></div>
+        <div class="v03-barlab">invalidated by every edit</div>
+      </div>
+    </div>
+    <div class="v03-line">
+      <div class="v03-codecell">
+        <code>RUN pnpm run build</code>
+        <small>recompile only your code</small>
+      </div>
+      <div class="v03-barcell">
+        <div class="v03-bar" style="width:24%;"></div>
+        <div class="v03-barlab">reruns with the source layer</div>
+      </div>
+    </div>
+  </div>
+  <div class="v03-wrong">
+    <div class="v03-wrongpanel">
+      <div class="v03-wtitle">✗ wrong order</div>
+      <code class="v03-strike">COPY . .</code>
+      <code class="v03-strike">RUN pnpm install --frozen-lockfile</code>
+    </div>
+    <div class="v03-wrongbars">
+      <div class="v03-wrongbar"></div>
+      <div class="v03-wrongbar"></div>
+      <div class="v03-wronglab">every edit pays the install again; the install layer is chained to every source edit</div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

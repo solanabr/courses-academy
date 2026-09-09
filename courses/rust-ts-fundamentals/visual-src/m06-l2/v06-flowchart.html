@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The path of one curl, host to container and back
+     purpose: show where -p sits in the request path and why forgetting it strands the request on the host
+     data: curl on host -> host port 8080 -> docker port mapping (-p 8080:8080) -> container network namespace -> pulse-pollerd bound on 0.0.0.0:8080 -> /status JSON back along the same path failure branch 1: no -p flag -> host port 8080 has no listener -> connection refused failure branch 2: poller bound to 127.0.0.1 inside container -> mapping forwards but nothing accepts -> hang/reset
+     prompt: Left-to-right request flow: curl, host port 8080, a gate labeled "-p 8080:8080", container boundary drawn as a box wall, pulse-pollerd process bound to 0.0.0.0:8080, response arrow returning. Two red dead-end branches: one before the gate labeled "no -p: connection refused", one inside labeled "bound to 127.0.0.1: unreachable".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:503px;top:-313px;right:-313px;border-radius:55% 63% 38% 51% / 41% 63% 57% 43%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:472px;height:479px;bottom:-268px;left:498px;border-radius:41% 50% 58% 62% / 53% 54% 37% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 36px;}
+    .v06-n{background:var(--surface-card);border:2px solid var(--stbr-green);border-radius:var(--radius-lg);
+           padding:14px 16px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:96px;}
+    .v06-nt{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-primary);line-height:1.15;}
+    .v06-ns{font-family:var(--font-mono);font-size:14px;color:var(--text-secondary);margin-top:5px;}
+    .v06-arr{width:44px;flex:none;display:flex;align-items:center;justify-content:center;}
+    .v06-fail{background:var(--surface-accent);color:var(--text-on-accent);border-radius:var(--radius-lg);
+              padding:14px 18px;font-family:var(--font-body);font-size:15.5px;line-height:1.35;}
+    .v06-ft{font-family:var(--font-display);font-weight:800;font-size:15px;text-transform:uppercase;
+            letter-spacing:.05em;margin-bottom:5px;}
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">WHERE -p SITS IN THE PATH</div>
+    <h2 class="viz-title">the path of one curl, host to container and back</h2>
+
+    <div style="display:flex;align-items:stretch;margin-top:16px;">
+      <div class="v06-n" style="width:150px;flex:none;"><div class="v06-nt">curl</div><div class="v06-ns">on the host</div></div>
+      <div class="v06-arr"><svg width="44" height="14" style="display:block;"><line x1="0" y1="7" x2="30" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="42,7 28,1 28,13" fill="#1b231d"/></svg></div>
+      <div class="v06-n" style="width:190px;flex:none;"><div class="v06-nt">host port 8080</div><div class="v06-ns">localhost:8080</div></div>
+      <div class="v06-arr"><svg width="44" height="14" style="display:block;"><line x1="0" y1="7" x2="30" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="42,7 28,1 28,13" fill="#008b4c"/></svg></div>
+      <div class="v06-n" style="width:220px;flex:none;background:var(--surface-brand);border-color:var(--stbr-emerald);"><div class="v06-nt" style="color:var(--text-on-brand);">port mapping</div><div class="v06-ns" style="color:var(--stbr-cream-200);">-p 8080:8080</div></div>
+      <div class="v06-arr"><svg width="44" height="14" style="display:block;"><line x1="0" y1="7" x2="30" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="42,7 28,1 28,13" fill="#008b4c"/></svg></div>
+      <div style="flex:1;border:3px solid var(--stbr-dark);border-radius:var(--radius-xl);padding:14px 18px;background:var(--surface-paper);">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:8px;">container network namespace</div>
+        <div class="v06-n" style="border-color:var(--stbr-emerald);"><div class="v06-nt">pulse-pollerd</div><div class="v06-ns">bound on 0.0.0.0:8080</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:16px;margin:18px 0 26px;">
+      <svg width="1010" height="16" style="display:block;flex:none;"><line x1="1010" y1="8" x2="16" y2="8" stroke="#008b4c" stroke-width="2.5" stroke-dasharray="8 5"/><polygon points="0,8 18,1 18,15" fill="#008b4c"/></svg>
+      <div style="font-family:var(--font-body);font-weight:700;font-size:16.5px;color:var(--stbr-emerald);">/status JSON returns along the same path</div>
+    </div>
+
+    <div style="display:flex;align-items:flex-start;">
+      <div style="width:194px;flex:none;"></div>
+      <div style="width:400px;flex:none;">
+        <svg width="400" height="30" style="display:block;"><line x1="97" y1="0" x2="97" y2="22" stroke="#1b231d" stroke-width="2.5"/><polygon points="97,30 91,20 103,20" fill="#1b231d"/></svg>
+        <div class="v06-fail">
+          <div class="v06-ft">dead end 1: no -p flag</div>
+          host port 8080 has no listener; the request never leaves the host → <strong>connection refused</strong>
+        </div>
+      </div>
+      <div style="flex:1;"></div>
+      <div style="width:470px;flex:none;">
+        <svg width="470" height="30" style="display:block;"><line x1="235" y1="0" x2="235" y2="22" stroke="#1b231d" stroke-width="2.5"/><polygon points="235,30 229,20 241,20" fill="#1b231d"/></svg>
+        <div class="v06-fail">
+          <div class="v06-ft">dead end 2: bound to 127.0.0.1 inside</div>
+          the mapping forwards, but nothing accepts on the container's external interface → <strong>hang / reset</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

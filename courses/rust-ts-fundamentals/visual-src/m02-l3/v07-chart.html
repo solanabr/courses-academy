@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The same fifty targets, three disciplines, measured
+     purpose: land the before/after as numbers the learner just produced, not claims
+     data: Grouped bars, one group per run, metric one: 429s in final report, metric two: wall time. Run A naive burst (cap 25): 25 of 50 rejected, ~instant but half-blind. Run B pool of 5 + backoff (cap 25): 0 rejected, 2561ms, 0 retries. Run C pool of 5 + backoff (cap 5): 0 rejected, 13647ms, 59 retries absorbed. Annotation: latency bought civility; the failure count is the metric that matters for a monitor.
+     prompt: Bar chart with three groups labeled naive burst, pooled cap 25, pooled cap 5. Primary bar per group: 429s in the final report (25, 0, 0), emphasized. Secondary bar or dot marker: wall time in ms (near-zero, 2561, 13647) on a second axis. One annotation line from data under the chart. No invented values; use exactly the numbers given.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:474px;height:426px;top:-228px;right:-228px;border-radius:38% 50% 40% 62% / 41% 54% 47% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:519px;height:373px;left:-282px;top:207px;border-radius:57% 53% 59% 44% / 62% 54% 53% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .legend { display:flex; gap:34px; justify-content:flex-end; margin:2px 8px 10px 0;
+            font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--text-secondary); }
+  .legend .sw { display:inline-block; width:15px; height:15px; border-radius:4px; margin-right:8px;
+                vertical-align:-2px; }
+  .chart { display:flex; align-items:flex-end; height:378px; border-bottom:2.5px solid var(--stbr-dark);
+           padding:0 70px; }
+  .grp { flex:1; display:flex; align-items:flex-end; justify-content:center; gap:18px; height:378px; }
+  .bar { width:122px; height:378px; display:flex; flex-direction:column; justify-content:flex-end; }
+  .val { text-align:center; font-family:var(--font-body); font-weight:800; font-size:19px;
+         color:var(--text-primary); margin-bottom:6px; }
+  .val small { display:block; font-size:13px; font-weight:700; color:var(--text-muted); }
+  .fill { border-radius:10px 10px 0 0; }
+  .f429 { background:var(--stbr-yellow); border:2px solid rgba(27,35,29,.25); border-bottom:none; }
+  .ftime { background:var(--stbr-emerald); }
+  .glabels { display:flex; padding:0 70px; margin-top:12px; }
+  .gl { flex:1; text-align:center; }
+  .gl .nm { font-family:var(--font-display); font-weight:800; font-size:21px; color:var(--text-primary); }
+  .gl .sub { display:inline-block; margin-top:6px; font-family:var(--font-body); font-weight:700;
+             font-size:14px; color:var(--stbr-green); background:rgba(0,139,76,.08);
+             border:1.5px solid rgba(0,139,76,.3); border-radius:var(--radius-pill); padding:3px 14px; }
+  .gl .sub.bad { color:var(--text-primary); background:var(--surface-paper); border-color:var(--stbr-dark); }
+  .annot { margin-top:18px; background:var(--surface-inverse); color:var(--text-on-dark);
+           border-radius:var(--radius-xl); padding:14px 28px; text-align:center;
+           font-family:var(--font-body); font-weight:800; font-size:20px; }
+</style>
+  <div class="stbr-eyebrow">the lab's numbers, not claims</div>
+  <h2 class="viz-title">the same fifty targets, three disciplines, measured</h2>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--stbr-yellow);"></span>429s in the final report</span>
+    <span><span class="sw" style="background:var(--stbr-emerald);"></span>wall time (ms)</span>
+  </div>
+  <div class="chart">
+    <div class="grp">
+      <div class="bar"><div class="val">25<small>of 50 rejected</small></div><div class="fill f429" style="height:330px;"></div></div>
+      <div class="bar"><div class="val">~0 ms<small>near-instant</small></div><div class="fill ftime" style="height:6px;"></div></div>
+    </div>
+    <div class="grp">
+      <div class="bar"><div class="val">0<small>rejected</small></div><div class="fill f429" style="height:6px;"></div></div>
+      <div class="bar"><div class="val">2561 ms</div><div class="fill ftime" style="height:63px;"></div></div>
+    </div>
+    <div class="grp">
+      <div class="bar"><div class="val">0<small>rejected</small></div><div class="fill f429" style="height:6px;"></div></div>
+      <div class="bar"><div class="val">13647 ms</div><div class="fill ftime" style="height:330px;"></div></div>
+    </div>
+  </div>
+  <div class="glabels">
+    <div class="gl"><div class="nm">naive burst &middot; cap 25</div><div class="sub bad">half-blind: 25/50 unmeasured</div></div>
+    <div class="gl"><div class="nm">pool of 5 + backoff &middot; cap 25</div><div class="sub">0 retries</div></div>
+    <div class="gl"><div class="nm">pool of 5 + backoff &middot; cap 5</div><div class="sub">59 retries absorbed</div></div>
+  </div>
+  <div class="annot">latency bought civility; the failure count is the metric that matters for a monitor</div>
+</div>
+</body></html>

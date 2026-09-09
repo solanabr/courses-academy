@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: wrangler.jsonc, walked line by line
+     purpose: make each config field legible as a promise before the reader deploys against it
+     data: "name": "pulse-edge-ts" -> the worker's identity and the first label of your workers.dev URL "main": "src/index.ts" -> the module whose default export supplies the fetch and scheduled handlers "compatibility_date": "2026-09-02" -> pins runtime behavior to a date so platform updates never change your worker under you "triggers".crons: ["*/15 * * * *"] -> invoke the scheduled handler every 15 minutes, cadence chosen by the KV write budget "kv_namespaces": binding PULSE_KV -> exposes the namespace as env.PULSE_KV, typed, no connection string anywhere
+     prompt: The five-line jsonc config rendered as code with margin annotations, one per field, each annotation stating the promise that line makes. Emphasize the crons line and the kv binding line with subtle highlight bars since the lab's two completion holes hang off them.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:586px;height:587px;bottom:-339px;right:-339px;border-radius:40% 35% 65% 57% / 46% 44% 43% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:544px;height:442px;left:-332px;top:319px;border-radius:55% 49% 52% 36% / 52% 46% 48% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v07-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 46px 28px; }
+    .v07-cols { display: flex; gap: 26px; margin-top: 14px; align-items: flex-start; }
+    .v07-code { flex: none; width: 640px; background: var(--surface-inverse); border-radius: var(--radius-xl); padding: 18px 0; }
+    .v07-ln { height: 78px; display: flex; align-items: center; padding: 0 24px; font-family: var(--font-mono); font-size: 17px; color: var(--stbr-cream); white-space: nowrap; }
+    .v07-ln-brace { height: 34px; color: rgba(245,232,202,0.55); }
+    .v07-ln-hi { background: rgba(255,210,63,0.14); border-left: 5px solid var(--stbr-yellow); padding-left: 19px; }
+    .v07-ln .v07-key { font-weight: 700; }
+    .v07-ln .v07-val { color: rgba(245,232,202,0.85); }
+    .v07-ln-hi .v07-val { color: var(--stbr-yellow); font-weight: 700; }
+    .v07-notes { flex: 1; display: flex; flex-direction: column; padding-top: 18px; }
+    .v07-sp { height: 34px; }
+    .v07-note { height: 78px; display: flex; align-items: center; position: relative; padding-left: 24px; }
+    .v07-note::before { content: ""; position: absolute; left: 0; top: 50%; margin-top: -8px; border-right: 12px solid var(--stbr-emerald); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+    .v07-notebox { border-left: 4px solid var(--stbr-emerald); background: var(--surface-paper); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 9px 16px; font-family: var(--font-body); font-size: 15px; color: var(--text-primary); line-height: 1.35; width: 100%; }
+    .v07-notebox b { font-family: var(--font-display); }
+    .v07-note-hi .v07-notebox { border-left-color: var(--stbr-yellow); background: rgba(255,210,63,0.18); }
+    .v07-note-hi::before { border-right-color: var(--stbr-yellow); }
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">config as promises</div>
+    <h2 class="viz-title">wrangler.jsonc, walked line by line</h2>
+    <div class="v07-cols">
+      <div class="v07-code">
+        <div class="v07-ln v07-ln-brace">{</div>
+        <div class="v07-ln"><span class="v07-key">&quot;name&quot;</span>:&nbsp;<span class="v07-val">&quot;pulse-edge-ts&quot;</span>,</div>
+        <div class="v07-ln"><span class="v07-key">&quot;main&quot;</span>:&nbsp;<span class="v07-val">&quot;src/index.ts&quot;</span>,</div>
+        <div class="v07-ln"><span class="v07-key">&quot;compatibility_date&quot;</span>:&nbsp;<span class="v07-val">&quot;2026-09-02&quot;</span>,</div>
+        <div class="v07-ln v07-ln-hi"><span class="v07-key">&quot;triggers&quot;</span>:&nbsp;{&nbsp;<span class="v07-key">&quot;crons&quot;</span>:&nbsp;<span class="v07-val">[&quot;*/15 * * * *&quot;]</span>&nbsp;},</div>
+        <div class="v07-ln v07-ln-hi"><span class="v07-key">&quot;kv_namespaces&quot;</span>:&nbsp;[{&nbsp;<span class="v07-key">&quot;binding&quot;</span>:&nbsp;<span class="v07-val">&quot;PULSE_KV&quot;</span>&nbsp;}]</div>
+        <div class="v07-ln v07-ln-brace">}</div>
+      </div>
+      <div class="v07-notes">
+        <div class="v07-sp"></div>
+        <div class="v07-note"><div class="v07-notebox"><b>the worker&#8217;s identity</b>, and the first label of your workers.dev URL</div></div>
+        <div class="v07-note"><div class="v07-notebox"><b>the entry module</b>; its default export supplies the fetch and scheduled handlers</div></div>
+        <div class="v07-note"><div class="v07-notebox"><b>pins runtime behavior to a date</b>; platform updates never change your worker under you</div></div>
+        <div class="v07-note v07-note-hi"><div class="v07-notebox"><b>invoke the scheduled handler every 15 minutes</b>; cadence chosen by the KV write budget</div></div>
+        <div class="v07-note v07-note-hi"><div class="v07-notebox"><b>exposes the namespace as env.PULSE_KV</b>; typed, no connection string anywhere</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

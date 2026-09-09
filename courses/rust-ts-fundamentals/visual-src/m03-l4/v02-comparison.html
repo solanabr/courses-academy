@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The failure that only TypeScript consumers see
+     purpose: make the types-condition stakes concrete by contrasting what JS and TS consumers experience under the same broken map
+     data: broken map (no types condition beside the JS entry): node consumer: import works, classifyProbe runs, no symptom at all typescript consumer: error TS7016, module has no declarations, every import is any correct map (types condition first, beside default): node consumer: identical behavior typescript consumer: full types, ProbeResult narrowing intact, go-to-definition lands in index.d.ts the rule: TypeScript resolves through the exports map too; declarations the map does not expose do not exist
+     prompt: Two-column comparison card, columns labeled broken map and correct map. Each column has two rows, node consumer and TypeScript consumer, with a one-line outcome each. The broken map's TypeScript row highlighted as the silent failure. Footer carries the rule line verbatim from data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:503px;top:-303px;right:-303px;border-radius:56% 37% 56% 61% / 48% 63% 46% 42%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:513px;height:482px;bottom:-269px;left:508px;border-radius:58% 57% 42% 59% / 47% 38% 64% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 48px 44px;">
+    <div class="stbr-eyebrow">exports map &middot; types condition</div>
+    <h2 class="viz-title">the failure that only TypeScript consumers see</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:28px;">
+      <!-- broken map column -->
+      <div style="border:2px solid var(--border-strong);border-radius:var(--radius-xl);overflow:hidden;display:flex;flex-direction:column;">
+        <div style="background:var(--surface-inverse);padding:16px 22px;">
+          <div style="font-family:var(--font-display);font-size:24px;font-weight:900;color:var(--text-on-dark);">broken map</div>
+          <div style="font-family:var(--font-body);font-size:14px;color:var(--text-on-dark);opacity:0.75;margin-top:3px;">no <span style="font-family:var(--font-mono);">types</span> condition beside the JS entry</div>
+        </div>
+        <div style="padding:16px 22px;border-bottom:1px solid var(--border-subtle);min-height:96px;">
+          <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--stbr-emerald);letter-spacing:0.04em;">NODE CONSUMER</div>
+          <div style="font-family:var(--font-body);font-size:16.5px;color:var(--text-primary);margin-top:6px;line-height:1.45;">import works, <span style="font-family:var(--font-mono);">classifyProbe</span> runs; no symptom at all</div>
+        </div>
+        <div style="padding:16px 22px;background:#FFF3C9;flex:1;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--stbr-dark);letter-spacing:0.04em;">TYPESCRIPT CONSUMER</div>
+            <div style="background:var(--stbr-yellow);border-radius:var(--radius-pill);padding:3px 12px;font-family:var(--font-display);font-size:12.5px;font-weight:800;color:var(--text-on-accent);letter-spacing:0.06em;">THE SILENT FAILURE</div>
+          </div>
+          <div style="font-family:var(--font-body);font-size:16.5px;font-weight:600;color:var(--text-primary);margin-top:6px;line-height:1.45;"><span style="font-family:var(--font-mono);font-weight:700;">error TS7016</span>: module has no declarations; every import is <span style="font-family:var(--font-mono);font-weight:700;">any</span></div>
+        </div>
+      </div>
+      <!-- correct map column -->
+      <div style="border:2px solid var(--stbr-emerald);border-radius:var(--radius-xl);overflow:hidden;display:flex;flex-direction:column;">
+        <div style="background:var(--surface-brand);padding:16px 22px;">
+          <div style="font-family:var(--font-display);font-size:24px;font-weight:900;color:var(--text-on-brand);">correct map</div>
+          <div style="font-family:var(--font-body);font-size:14px;color:var(--text-on-brand);opacity:0.85;margin-top:3px;"><span style="font-family:var(--font-mono);">types</span> condition first, beside <span style="font-family:var(--font-mono);">default</span></div>
+        </div>
+        <div style="padding:16px 22px;border-bottom:1px solid var(--border-subtle);min-height:96px;">
+          <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--stbr-emerald);letter-spacing:0.04em;">NODE CONSUMER</div>
+          <div style="font-family:var(--font-body);font-size:16.5px;color:var(--text-primary);margin-top:6px;line-height:1.45;">identical behavior</div>
+        </div>
+        <div style="padding:16px 22px;flex:1;">
+          <div style="font-family:var(--font-mono);font-size:14px;font-weight:700;color:var(--stbr-emerald);letter-spacing:0.04em;">TYPESCRIPT CONSUMER</div>
+          <div style="font-family:var(--font-body);font-size:16.5px;color:var(--text-primary);margin-top:6px;line-height:1.45;">full types: <span style="font-family:var(--font-mono);">ProbeResult</span> narrowing intact; go-to-definition lands in <span style="font-family:var(--font-mono);">index.d.ts</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- verdict band -->
+    <div style="margin-top:26px;background:var(--surface-brand);border-radius:var(--radius-lg);padding:18px 26px;">
+      <div style="font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text-on-brand);line-height:1.4;">TypeScript resolves through the exports map too; declarations the map does not expose do not exist.</div>
+    </div>
+  </div>
+</div>
+</body></html>

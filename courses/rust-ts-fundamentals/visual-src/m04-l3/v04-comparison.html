@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two toolchains, one discipline
+     purpose: cement the pairing so the learner can navigate either ecosystem's CI by analogy
+     data: rows: test runner (vitest 4.x, cargo test), formatter (prettier, cargo fmt), linter (eslint, cargo clippy), type gate (tsc --noEmit, cargo check) TS column caveat: each tool is a separate dev-dependency with its own config Rust column caveat: all ship as rustup components of the stable toolchain, no install verdict row: same four jobs, different flags, one pipeline gates both
+     prompt: Two-column comparison card, TypeScript fleet on the left and Rust engine on the right, four rows pairing each TS tool with its cargo counterpart, connected by equals signs. Footer band across both columns reading "one pipeline, two languages, four shared jobs".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:437px;bottom:-226px;right:-226px;border-radius:50% 36% 60% 51% / 56% 45% 37% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:455px;height:439px;left:-280px;top:180px;border-radius:52% 41% 55% 64% / 45% 54% 37% 46%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { display:grid; grid-template-columns:200px 1fr 84px 1fr; column-gap:14px;
+         row-gap:12px; align-items:stretch; margin-top:6px; }
+  .colhead { font-family:var(--font-display); font-weight:900; font-size:23px;
+             color:var(--text-on-brand); background:var(--surface-brand);
+             border-radius:var(--radius-lg); padding:12px 18px; text-align:center; }
+  .colhead.deep { background:var(--surface-brand-deep); }
+  .job { display:flex; flex-direction:column; justify-content:center; }
+  .job .t { font-family:var(--font-body); font-weight:800; font-size:13px;
+            letter-spacing:.11em; text-transform:uppercase; color:var(--text-muted); }
+  .cell { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-lg); padding:10px 18px; display:flex;
+          flex-direction:column; justify-content:center; }
+  .cell .tool { font-family:var(--font-body); font-weight:700; font-size:13.5px;
+                color:var(--text-secondary); }
+  .cell .cmd { font-family:var(--font-mono); font-weight:700; font-size:18px;
+               color:var(--text-primary); margin-top:2px; }
+  .eq { display:flex; align-items:center; justify-content:center; }
+  .eq .c { width:46px; height:46px; border-radius:var(--radius-pill);
+           background:var(--stbr-yellow); color:var(--stbr-dark);
+           font-family:var(--font-display); font-weight:900; font-size:24px;
+           display:flex; align-items:center; justify-content:center; }
+  .caveat { font-family:var(--font-body); font-weight:600; font-size:14px; line-height:1.35;
+            color:var(--text-primary); background:var(--surface-paper);
+            border:1.5px solid var(--border-strong); border-radius:var(--radius-lg);
+            padding:10px 14px; text-align:center; }
+  .caveat b { font-weight:800; }
+  .verdict { margin-top:16px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-lg); padding:16px 24px; text-align:center;
+             font-family:var(--font-display); font-weight:900; font-size:22px; }
+</style>
+  <div class="stbr-eyebrow">navigate either ecosystem&rsquo;s CI by analogy</div>
+  <h2 class="viz-title">two toolchains, one discipline</h2>
+  <div class="cmp">
+    <div></div>
+    <div class="colhead">TypeScript fleet</div>
+    <div></div>
+    <div class="colhead deep">Rust engine</div>
+
+    <div class="job"><div class="t">test runner</div></div>
+    <div class="cell"><div class="tool">vitest 4.x</div><div class="cmd">npx vitest run</div></div>
+    <div class="eq"><div class="c">=</div></div>
+    <div class="cell"><div class="tool">rustup component</div><div class="cmd">cargo test</div></div>
+
+    <div class="job"><div class="t">formatter</div></div>
+    <div class="cell"><div class="tool">prettier</div><div class="cmd">npx prettier --check .</div></div>
+    <div class="eq"><div class="c">=</div></div>
+    <div class="cell"><div class="tool">rustup component</div><div class="cmd">cargo fmt</div></div>
+
+    <div class="job"><div class="t">linter</div></div>
+    <div class="cell"><div class="tool">eslint</div><div class="cmd">npx eslint .</div></div>
+    <div class="eq"><div class="c">=</div></div>
+    <div class="cell"><div class="tool">rustup component</div><div class="cmd">cargo clippy</div></div>
+
+    <div class="job"><div class="t">type gate</div></div>
+    <div class="cell"><div class="tool">typescript compiler</div><div class="cmd">npx tsc --noEmit</div></div>
+    <div class="eq"><div class="c">=</div></div>
+    <div class="cell"><div class="tool">rustup component</div><div class="cmd">cargo check</div></div>
+
+    <div></div>
+    <div class="caveat">each tool is a <b>separate dev-dependency</b> with its own config</div>
+    <div></div>
+    <div class="caveat">all ship as <b>rustup components</b> of the stable toolchain; nothing to install</div>
+  </div>
+  <div class="verdict">same four jobs, different flags; one pipeline gates both</div>
+</div>
+</body></html>

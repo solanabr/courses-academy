@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Nothing runs until collect pulls
+     purpose: show iterator adapters as a lazy description that a consumer drains one element at a time
+     data: Vec<Target> -> .iter() -> .filter(enabled) -> .map(to_probe_target) -> description only, zero work done collect() at the end pulls: element 1 through filter then map, element 2 through filter then map, disabled elements dropped at filter Output: Vec<ProbeTarget> built in one pass, no intermediate Vec between filter and map
+     prompt: Two-lane flowchart. Top lane shows the chain being built left to right as linked adapter nodes with a caption "a description, zero work done". Bottom lane shows collect pulling individual elements right to left through the same chain, one element highlighted being dropped at the filter stage. End node: the final vector, annotated "one pass, no intermediate collections".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:356px;right:-265px;top:192px;border-radius:35% 59% 41% 41% / 44% 55% 36% 48%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:456px;bottom:-272px;left:682px;border-radius:62% 42% 36% 62% / 35% 62% 44% 37%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .lane-tag { display: inline-block; background: var(--stbr-green); color: var(--stbr-cream);
+                border-radius: var(--radius-pill); padding: 4px 14px;
+                font-family: var(--font-display); font-weight: 800; font-size: 15px;
+                margin-bottom: 10px; }
+    .nd { background: #fff; border: 2px solid var(--stbr-green); border-radius: var(--radius-lg);
+          padding: 12px 14px; text-align: center; display: flex; flex-direction: column;
+          justify-content: center; }
+    .nd h4 { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 18px;
+             color: var(--stbr-dark); }
+    .nd p { margin: 4px 0 0; font-family: var(--font-body); font-size: 13.5px;
+            color: var(--text-secondary); }
+    .ar { display: flex; align-items: center; width: 34px; flex: none; }
+    .ar-line { height: 3px; background: var(--stbr-green); flex: 1; }
+    .ar-r { width: 0; height: 0; border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent; border-left: 10px solid var(--stbr-green); }
+    .ar-l { width: 0; height: 0; border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent; border-right: 10px solid var(--stbr-dark); }
+    .el { width: 168px; flex: none; font-family: var(--font-mono); font-size: 14.5px;
+          background: var(--surface-paper); border: 2px solid var(--border-strong);
+          border-radius: var(--radius-pill); padding: 7px 12px; text-align: center;
+          color: var(--stbr-dark); }
+    .stage { width: 158px; flex: none; font-family: var(--font-body); font-size: 14.5px;
+             border: 2px solid var(--stbr-green); border-radius: var(--radius-md);
+             padding: 7px 10px; text-align: center; color: var(--stbr-dark); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">iterators &middot; lazy until consumed</div>
+    <h2 class="viz-title" style="margin-bottom:24px;">nothing runs until collect pulls</h2>
+
+    <!-- lane 1: the chain as a description -->
+    <div>
+      <span class="lane-tag">1 &middot; build the chain</span>
+      <div style="display:flex; align-items:stretch;">
+        <div class="nd" style="width:200px;"><h4>Vec&lt;Target&gt;</h4><p>the source</p></div>
+        <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+        <div class="nd" style="width:150px;"><h4>.iter()</h4></div>
+        <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+        <div class="nd" style="width:220px;"><h4>.filter(enabled)</h4></div>
+        <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+        <div class="nd" style="width:280px;"><h4>.map(to_probe_target)</h4></div>
+        <div style="flex:1; display:flex; align-items:center; padding-left:24px;">
+          <span style="font-family:var(--font-body); font-size:16px; font-weight:600; color:var(--stbr-emerald);">
+            a description, zero work done</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- lane 2: collect drains it -->
+    <div style="margin-top:26px; border-top:1.5px solid var(--border-subtle); padding-top:18px;">
+      <span class="lane-tag" style="background:var(--stbr-emerald);">2 &middot; collect() drains it</span>
+
+      <!-- pull direction -->
+      <div style="display:flex; align-items:center; margin:2px 0 10px; width:806px;">
+        <div class="ar-l"></div>
+        <div style="height:3px; background:var(--stbr-dark); flex:1;"></div>
+        <span style="font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--stbr-dark); padding-left:10px;">
+          the pull travels right&nbsp;&rarr;&nbsp;left, one element at a time</span>
+      </div>
+
+      <div style="display:flex; align-items:stretch;">
+        <!-- element journeys -->
+        <div style="display:flex; flex-direction:column; gap:10px; width:700px; flex:none;">
+          <div style="display:flex; align-items:center;">
+            <div class="el">target "rpc"</div>
+            <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+            <div class="stage">filter &#10003;</div>
+            <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+            <div class="stage">map &#10003;</div>
+            <div class="ar" style="width:auto; flex:1;"><div class="ar-line"></div><div class="ar-r"></div></div>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <div class="el">target "api"</div>
+            <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+            <div class="stage">filter &#10003;</div>
+            <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+            <div class="stage">map &#10003;</div>
+            <div class="ar" style="width:auto; flex:1;"><div class="ar-line"></div><div class="ar-r"></div></div>
+          </div>
+          <div style="display:flex; align-items:center;">
+            <div class="el" style="border-style:dashed;">target "old"</div>
+            <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+            <div class="stage" style="background:var(--stbr-yellow); border-color:var(--stbr-yellow); font-weight:700;">
+              dropped at filter</div>
+            <div style="width:226px; flex:none; display:flex; align-items:center; padding-left:12px;">
+              <span style="font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary);">
+                enabled: false</span></div>
+          </div>
+        </div>
+
+        <!-- collect + output -->
+        <div class="nd" style="width:170px; background:var(--stbr-emerald); border-color:var(--stbr-emerald);">
+          <h4 style="color:var(--stbr-cream);">collect()</h4>
+          <p style="color:var(--stbr-cream); opacity:.85;">the consumer</p>
+        </div>
+        <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+        <div class="nd" style="flex:1;">
+          <h4>Vec&lt;ProbeTarget&gt;</h4>
+          <p style="font-weight:600; color:var(--stbr-emerald);">one pass, no intermediate Vec between filter and map</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

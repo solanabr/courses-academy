@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One workflow run, from event to green check
+     purpose: show the reader the objects they just created (trigger, workflow, job, steps, runner) wired in execution order
+     data: push event (or schedule tick) -> GitHub matches .github/workflows/pulse.yml -> job "probe" queued -> fresh ubuntu-latest runner boots -> steps run in order (checkout -> setup node -> run probe -> commit result) -> runner destroyed -> green check on the commit annotation on runner: a standard GitHub-hosted runner, the free kind for public repos
+     prompt: Left-to-right flowchart with seven nodes as listed in data, one arrow per hop. Render the four steps as a small vertical stack inside the "steps run in order" node. Annotate the runner node with the standard-runner note. Mark the final node with a green check motif.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:528px;height:513px;top:-256px;right:-256px;border-radius:56% 60% 45% 64% / 53% 45% 38% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:436px;left:-284px;top:141px;border-radius:57% 36% 51% 52% / 51% 42% 65% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .fc-node { background: #fff; border: 2px solid var(--stbr-green);
+               border-radius: var(--radius-lg); padding: 14px 16px; text-align: center; }
+    .fc-node h4 { margin: 0; font-family: var(--font-display); font-weight: 800;
+                  font-size: 21px; color: var(--stbr-dark); line-height: 1.15; }
+    .fc-node p { margin: 6px 0 0; font-family: var(--font-body); font-size: 15px;
+                 color: var(--text-secondary); line-height: 1.3; }
+    .ar { display: flex; align-items: center; width: 34px; flex: none; }
+    .ar-line { height: 3px; background: var(--stbr-green); flex: 1; }
+    .ar-r { width: 0; height: 0; border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent; border-left: 10px solid var(--stbr-green); }
+    .ar-l { width: 0; height: 0; border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent; border-right: 10px solid var(--stbr-green); }
+    .step { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-sm);
+            background: var(--surface-paper); font-family: var(--font-mono);
+            font-size: 13.5px; color: var(--stbr-dark); padding: 4px 8px; margin-top: 5px; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">CI pipeline &middot; execution order</div>
+    <h2 class="viz-title" style="margin-bottom:26px;">one workflow run, from event to green check</h2>
+
+    <!-- top row: nodes 1-4 -->
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div class="fc-node" style="width:286px;">
+        <h4>push event</h4><p>or a schedule tick</p>
+      </div>
+      <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+      <div class="fc-node" style="width:300px;">
+        <h4>GitHub matches the file</h4>
+        <p style="font-family:var(--font-mono);">.github/workflows/pulse.yml</p>
+      </div>
+      <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+      <div class="fc-node" style="width:270px;">
+        <h4>job &ldquo;probe&rdquo; queued</h4><p>waiting for a machine</p>
+      </div>
+      <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+      <div class="fc-node" style="width:296px;">
+        <h4>fresh ubuntu-latest runner boots</h4>
+        <p style="display:inline-block; background:var(--stbr-yellow); color:var(--stbr-dark);
+                  border-radius:var(--radius-pill); padding:3px 10px; font-size:13.5px; font-weight:600;">
+          standard GitHub-hosted runner: the free kind for public repos</p>
+      </div>
+    </div>
+
+    <!-- serpentine: down under node 4, then bottom row right-to-left -->
+    <div style="display:flex; justify-content:flex-end;">
+      <div style="width:296px; display:flex; justify-content:center; padding:2px 0;">
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          <div style="width:3px; height:26px; background:var(--stbr-green);"></div>
+          <div style="width:0; height:0; border-left:7px solid transparent;
+                      border-right:7px solid transparent; border-top:10px solid var(--stbr-green);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch;">
+      <div class="fc-node" style="width:280px; border-color:var(--stbr-emerald); background:var(--stbr-emerald); display:flex; flex-direction:column; justify-content:center;">
+        <h4 style="color:var(--stbr-cream);"><span style="display:inline-block; width:34px; height:34px; border-radius:50%; background:var(--stbr-cream); color:var(--stbr-emerald); font-size:22px; line-height:34px; vertical-align:middle; margin-right:8px;">&#10003;</span>green check on the commit</h4>
+        <p style="color:var(--stbr-cream); opacity:.85;">the run passed, visible on the repo</p>
+      </div>
+      <div class="ar"><div class="ar-l"></div><div class="ar-line"></div></div>
+      <div class="fc-node" style="width:250px; display:flex; flex-direction:column; justify-content:center;">
+        <h4>runner destroyed</h4><p>nothing survives but what you committed</p>
+      </div>
+      <div class="ar"><div class="ar-l"></div><div class="ar-line"></div></div>
+      <div class="fc-node" style="flex:1; text-align:left;">
+        <h4 style="text-align:center;">steps run in order</h4>
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <div style="flex:1;"><div class="step">1&ensp;checkout</div><div class="step">2&ensp;setup node</div></div>
+          <div style="flex:1;"><div class="step">3&ensp;run probe</div><div class="step">4&ensp;commit result</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

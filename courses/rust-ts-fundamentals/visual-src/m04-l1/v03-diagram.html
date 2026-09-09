@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Many readers XOR one writer
+     purpose: make the aliasing rule visual before the lab makes it personal
+     data: allowed state A: latencies -> three & readers attached, zero writers allowed state B: latencies -> one &mut writer attached, zero readers rejected state: latencies -> one live & reader plus push wanting &mut, E0502 danger being prevented: push may reallocate the buffer, leaving the reader pointing at freed memory
+     prompt: Three-panel state diagram of one vector. Panel one: several reader arrows, all green. Panel two: a single writer arrow, green. Panel three: a reader arrow and a writer arrow attached simultaneously, marked rejected with an E0502 tag, with a small inset showing the buffer moving during reallocation and the reader arrow left dangling.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:440px;height:348px;right:-261px;top:406px;border-radius:57% 38% 48% 37% / 61% 54% 60% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:365px;height:523px;bottom:-296px;left:770px;border-radius:36% 61% 44% 60% / 47% 45% 61% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v03-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 52px 32px; }
+    .v03-panels { display: grid; grid-template-columns: 1fr 1fr 1.18fr; column-gap: 20px; margin-top: 12px; }
+    .v03-panel { border: 2px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 16px 20px 16px; height: 424px; }
+    .v03-panel-bad { border: 3px solid var(--stbr-yellow); }
+    .v03-status { display: inline-block; border-radius: var(--radius-pill); font-family: var(--font-display);
+                  font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.08em;
+                  padding: 5px 14px; margin: 0 0 8px; }
+    .v03-status-ok { background: var(--surface-brand); color: var(--stbr-cream); }
+    .v03-status-bad { background: var(--stbr-yellow); color: var(--stbr-dark); }
+    .v03-pt { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 21px;
+              color: var(--text-primary); margin: 0 0 14px; }
+    .v03-chips { display: flex; justify-content: center; gap: 24px; height: 84px; }
+    .v03-bcol { display: flex; flex-direction: column; align-items: center; }
+    .v03-chip { font-family: var(--font-mono); font-size: 17px; padding: 8px 13px; border-radius: var(--radius-sm);
+                border: 2px solid var(--stbr-emerald); color: var(--stbr-green); background: var(--surface-card); }
+    .v03-chip-w { background: var(--surface-brand); border-color: var(--surface-brand); color: var(--stbr-cream); }
+    .v03-chip-want { background: var(--surface-inverse); border-color: var(--surface-inverse); color: var(--stbr-cream); }
+    .v03-stemcol { display: flex; flex-direction: column; align-items: center; }
+    .v03-stem { width: 2px; height: 27px; background: var(--stbr-dark); margin-top: 4px; }
+    .v03-tri { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent;
+               border-top: 8px solid var(--stbr-dark); }
+    .v03-vec { border: 2px solid var(--stbr-dark); border-radius: var(--radius-sm); padding: 10px 14px;
+               font-family: var(--font-mono); font-size: 18px; color: var(--stbr-dark); text-align: center; }
+    .v03-note { font-family: var(--font-body); font-size: 15px; line-height: 1.35; color: var(--text-secondary);
+                margin: 14px 0 0; text-align: center; }
+    .v03-inset { background: var(--surface-paper); border: 1px solid var(--border-subtle);
+                 border-radius: var(--radius-md); padding: 10px 14px 12px; margin-top: 14px; }
+    .v03-it { font-family: var(--font-display); font-weight: 800; font-size: 13px; text-transform: uppercase;
+              letter-spacing: 0.08em; color: var(--text-muted); margin: 0 0 8px; }
+    .v03-irow { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .v03-ibuf { font-family: var(--font-mono); font-size: 14px; padding: 6px 10px; border-radius: var(--radius-xs); }
+    .v03-ibuf-old { border: 2px dashed var(--border-strong); color: var(--text-muted); text-decoration: line-through; }
+    .v03-ibuf-new { border: 2px solid var(--stbr-emerald); color: var(--stbr-green); }
+    .v03-iarr { display: flex; align-items: center; }
+    .v03-iline { width: 24px; height: 2px; background: var(--stbr-dark); }
+    .v03-itri { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+                border-left: 7px solid var(--stbr-dark); }
+    .v03-icap { font-family: var(--font-body); font-size: 14px; line-height: 1.3; color: var(--text-secondary);
+                margin: 8px 0 0; text-align: center; }
+    .v03-verdict { margin-top: 20px; background: var(--surface-brand); color: var(--stbr-cream);
+                   border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-display);
+                   font-weight: 800; font-size: 24px; text-align: center; }
+  </style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">the aliasing rule</div>
+    <h2 class="viz-title">many readers XOR one writer</h2>
+    <div class="v03-panels">
+      <div class="v03-panel">
+        <span class="v03-status v03-status-ok">allowed</span>
+        <p class="v03-pt">three readers, zero writers</p>
+        <div class="v03-chips">
+          <div class="v03-bcol"><span class="v03-chip">&amp;</span><div class="v03-stem"></div><div class="v03-tri"></div></div>
+          <div class="v03-bcol"><span class="v03-chip">&amp;</span><div class="v03-stem"></div><div class="v03-tri"></div></div>
+          <div class="v03-bcol"><span class="v03-chip">&amp;</span><div class="v03-stem"></div><div class="v03-tri"></div></div>
+        </div>
+        <div class="v03-vec">latencies &#183; [212 | 487 | 1204]</div>
+        <p class="v03-note">every borrow is read-only; the buffer cannot change under anyone</p>
+      </div>
+      <div class="v03-panel">
+        <span class="v03-status v03-status-ok">allowed</span>
+        <p class="v03-pt">one writer, zero readers</p>
+        <div class="v03-chips">
+          <div class="v03-bcol"><span class="v03-chip v03-chip-w">&amp;mut</span><div class="v03-stem"></div><div class="v03-tri"></div></div>
+        </div>
+        <div class="v03-vec">latencies &#183; [212 | 487 | 1204]</div>
+        <p class="v03-note">exclusive access: free to mutate, even to reallocate</p>
+      </div>
+      <div class="v03-panel v03-panel-bad">
+        <span class="v03-status v03-status-bad">rejected &#183; E0502</span>
+        <p class="v03-pt">a reader plus a writer</p>
+        <div class="v03-chips">
+          <div class="v03-bcol"><span class="v03-chip">&amp;</span><div class="v03-stem"></div><div class="v03-tri"></div></div>
+          <div class="v03-bcol"><span class="v03-chip v03-chip-want">push wants &amp;mut</span><div class="v03-stem"></div><div class="v03-tri"></div></div>
+        </div>
+        <div class="v03-vec">latencies &#183; [212 | 487 | 1204]</div>
+        <div class="v03-inset">
+          <p class="v03-it">the danger being prevented</p>
+          <div class="v03-irow">
+            <span class="v03-ibuf v03-ibuf-old">old buffer</span>
+            <span class="v03-iarr"><span class="v03-iline"></span><span class="v03-itri"></span></span>
+            <span class="v03-ibuf v03-ibuf-new">buffer after push</span>
+          </div>
+          <p class="v03-icap">push may reallocate; the live &amp; reader would point at freed memory</p>
+        </div>
+      </div>
+    </div>
+    <div class="v03-verdict">any number of readers, or exactly one writer, never both at once</div>
+  </div>
+</div>
+</body></html>

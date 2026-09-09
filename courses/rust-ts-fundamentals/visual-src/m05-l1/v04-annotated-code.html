@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: How one JSON entry maps onto the tagged enum
+     purpose: show field-by-field which struct or variant each key of a config entry lands in
+     data: { "kind": "tcp",          -> read FIRST, selects ProbeKind::Tcp "name": "rpc",          -> Target.name "host": "127.0.0.1",    -> Tcp variant field (via flatten) "port": 8899,           -> Tcp variant field (via flatten) "intervalSecs": 30,     -> Target.interval_secs (rename_all camelCase) "timeoutMs": 1000,      -> Target.timeout_ms "enabled": false }      -> Target.enabled (would default to true if absent)
+     prompt: Annotated code panel. Left side shows the seven-line JSON object exactly as in data. Each line gets a right-side annotation arrow naming its destination: the kind line highlighted as the discriminant read first, host and port marked as variant fields arriving through flatten, the camelCase lines marked with their snake_case struct fields, and enabled marked with its default-if-absent behavior.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:608px;height:526px;top:-323px;right:-323px;border-radius:53% 62% 43% 48% / 38% 55% 46% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:542px;height:591px;bottom:-335px;left:-335px;border-radius:48% 52% 56% 48% / 42% 37% 43% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .row { display: flex; align-items: stretch; }
+    .code { width: 560px; flex: none; background: var(--surface-inverse);
+            font-family: var(--font-mono); font-size: 19px; color: var(--stbr-cream);
+            padding: 14px 26px; display: flex; align-items: center; white-space: pre; }
+    .conn { width: 58px; flex: none; display: flex; align-items: center; }
+    .conn-line { height: 3px; background: var(--stbr-green); flex: 1; }
+    .conn-head { width: 0; height: 0; border-top: 7px solid transparent;
+                 border-bottom: 7px solid transparent; border-left: 10px solid var(--stbr-green); }
+    .anno { flex: 1; margin: 5px 0; background: var(--surface-paper);
+            border: 2px solid var(--stbr-green); border-radius: var(--radius-md);
+            padding: 6px 16px; display: flex; align-items: center; gap: 12px; }
+    .anno b { font-family: var(--font-mono); font-weight: 700; font-size: 17px;
+              color: var(--stbr-dark); }
+    .anno span { font-family: var(--font-body); font-size: 14.5px; color: var(--text-secondary); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">serde &middot; tagged enum &middot; field by field</div>
+    <h2 class="viz-title" style="margin-bottom:26px;">how one JSON entry maps onto the tagged enum</h2>
+
+    <div style="display:flex;">
+      <div style="width:560px; flex:none; background:var(--stbr-green); border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+                  padding:10px 26px; font-family:var(--font-mono); font-size:15px; color:var(--stbr-cream);">
+        pulse.config.json &middot; one entry</div>
+    </div>
+
+    <div class="row">
+      <div class="code" style="background:#33402f;"><span style="color:var(--stbr-yellow); font-weight:700;">{ "kind": "tcp",</span></div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno" style="background:var(--stbr-yellow); border-color:var(--stbr-yellow);">
+        <b>ProbeKind::Tcp</b><span style="color:var(--stbr-dark); font-weight:600;">read FIRST: the discriminant selects the variant</span></div>
+    </div>
+    <div class="row">
+      <div class="code">  "name": "rpc",</div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno"><b>Target.name</b></div>
+    </div>
+    <div class="row">
+      <div class="code">  "host": "127.0.0.1",</div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno"><b>Tcp variant field</b><span>arrives via <b style="font-size:14.5px;">#[serde(flatten)]</b></span></div>
+    </div>
+    <div class="row">
+      <div class="code">  "port": 8899,</div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno"><b>Tcp variant field</b><span>via flatten</span></div>
+    </div>
+    <div class="row">
+      <div class="code">  "intervalSecs": 30,</div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno"><b>Target.interval_secs</b><span><b style="font-size:14.5px;">rename_all = "camelCase"</b></span></div>
+    </div>
+    <div class="row">
+      <div class="code">  "timeoutMs": 1000,</div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno"><b>Target.timeout_ms</b><span>same rename rule</span></div>
+    </div>
+    <div class="row">
+      <div class="code" style="border-radius:0 0 var(--radius-lg) var(--radius-lg);">  "enabled": false }</div>
+      <div class="conn"><div class="conn-line"></div><div class="conn-head"></div></div>
+      <div class="anno"><span><b>Target.enabled</b><span>would default to <b style="font-size:14.5px;">true</b> if absent</span></span></div>
+    </div>
+  </div>
+</div>
+</body></html>

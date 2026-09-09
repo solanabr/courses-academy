@@ -1,0 +1,112 @@
+id: lesson-rtf-m02-l1
+slug: m02-l1
+title: "Make impossible states unrepresentable"
+skills:
+  - solana-kit
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "typescript": "7.0.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: classify-probe-result
+    type: code
+    language: typescript
+    starter: classify-probe-result/starter.ts
+    solution: classify-probe-result/solution.ts
+    tests: classify-probe-result/tests.json
+    hints:
+      - "Declare the union first: { kind: 'ok'; latencyMs } | { kind: 'timeout'; budgetMs } | { kind: 'http-error'; status }, each variant carries exactly its own data."
+      - "Write parseProbe(kind, value): ProbeResult | null and handle null as 'invalid' BEFORE the switch, parse at the boundary, then trust the type."
+      - "Mind the boundaries: 400 and 1000 are both 'degraded'; only strictly above 1000 is 'down'. A 429 http-error means the target answered, 'degraded', not 'down'."
+      - "Close the switch with default: return assertNever(result), then delete an arm and watch tsc name it."
+  - key: check
+    type: quiz
+    questions:
+      - id: m02l1-q1
+        prompt: "Your switch over result.kind ends with `default: return assertNever(result)`. You add a 'dns-error' variant and tsc errors at that line. What is the mechanism?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The classifier's declared return type stopped covering the new variant, so the default arm's return is what tsc rejects"
+            correct: false
+            feedback: "Read the error text: it complains about an ARGUMENT not assignable to parameter of type 'never'. assertNever returns `never`, which is assignable to any return type, and Verdict never changed."
+          - id: b
+            label: "Handling every variant narrows result to `never` in the default arm; the new variant makes it non-never, so the call stops type-checking"
+            correct: true
+            feedback: "Narrowing does all the work: each handled case peels one variant off, and when the leftover is `never` the call is legal. Add a variant and the leftover has a value again, so tsc names it at that line."
+          - id: a
+            label: "A dns-error object reached the default arm while the tests ran, so assertNever threw at runtime and vitest surfaced the failure"
+            correct: false
+            feedback: "No code ran, this is a COMPILE error. The never-check works before the program exists; that is the whole point of opting into exhaustiveness."
+          - id: c
+            label: "assertNever is a compiler intrinsic: tsc treats any function with that name specially inside switch statements and re-checks the case list"
+            correct: false
+            feedback: "assertNever is an ordinary function you wrote, the magic is entirely in narrowing. Any function taking `never` would behave identically."
+        explanation: "Exhaustiveness is a feature you opt into: handle every variant and the default arm's value narrows to never, which accepts nothing. Add a variant and the leftover type is no longer never, the compile fails at exactly the sites that must learn about the new case. It is a refactor checklist the compiler writes for you."
+      - id: m02l1-q2
+        prompt: "You retype the fetched config from `any` to `unknown`. Nothing about the runtime changed. What actually changed for you, day to day?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "unknown makes JSON.parse reject malformed input at runtime, so bad config now throws at the boundary instead of propagating inward"
+            correct: false
+            feedback: "Types are erased, unknown adds zero runtime behavior. Runtime rejection is a parser's job, which is exactly what zod does next lesson."
+          - id: c
+            label: "You cannot touch the value until you narrow it, every use site must prove a shape first, enforced by the compiler"
+            correct: true
+            feedback: "Same erased runtime, opposite defaults: any permits every operation and asks nothing, unknown permits none until a typeof or discriminant check has done the proving. The friction is the feature."
+          - id: d
+            label: "The compiler infers the config's real shape from the parsed JSON, so its own fields start autocompleting right away"
+            correct: false
+            feedback: "JSON.parse hands back bytes nobody has proven anything about; there is no shape to infer from at compile time. Autocomplete arrives only after you narrow, or after next lesson's schema parses it for you."
+          - id: a
+            label: "Nothing meaningful, unknown is an alias for any that style guides prefer, and both erase to the same JavaScript when compiled"
+            correct: false
+            feedback: "They erase the same, but they type-check opposite ways: any lets every operation through unchecked; unknown lets none through until you narrow."
+        explanation: "any is the compiler resigning; unknown is the compiler demanding proof. Same runtime, opposite defaults: any permits everything and spreads through your code; unknown permits nothing until narrowed, which forces the parse-at-the-boundary discipline the fleet is about to adopt."
+      - id: m02l1-q3
+        prompt: "The lesson's boiled-down v0 record is `{ status: string; latencyMs?: number }`, the two fields that decide health. `probe.ts` now models that same outcome as the ProbeResult union. What class of bug did the union delete outright?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "latencyMs is now always defined on every variant, so consumers can drop their undefined-checks across the whole codebase"
+            correct: false
+            feedback: "latencyMs exists ONLY on the 'ok' variant, that precision is the point. Consumers narrow to the arm first, then the field is guaranteed within it."
+          - id: b
+            label: "Status-string typos now throw a TypeError the moment the object is created, instead of propagating silently into status.json"
+            correct: false
+            feedback: "Nothing throws, the win is at compile time: the typo'd object has no valid type, so the code that builds it never compiles in the first place."
+          - id: a
+            label: "Incoherent combinations, 'ok' with no latency, a typo'd 'okay', a latency on a timeout, can no longer be constructed"
+            correct: true
+            feedback: "Each variant carries exactly its own evidence, so the lies lose their spelling. They are not caught at some check; there is no longer a way to write them down in the first place."
+          - id: d
+            label: "Malformed records read back from status.json can no longer enter the fleet, because they match none of the union's variants"
+            correct: false
+            feedback: "Types are erased, so the union proves things about values your code constructs and nothing at all about bytes off the disk. Guarding that border takes a runtime parse, which is why parseProbe returns null."
+        explanation: "Make impossible states unrepresentable: each variant carries exactly its own data, so the incoherent combinations simply have no encoding. Validation you never have to remember beats validation someone will eventually forget, v0's polite lie was one forgotten check away, permanently."
+      - id: m02l1-q4
+        prompt: "The guest frame: plenty of web2 shops still ship happily on plain JavaScript. Why did typed languages win web3 specifically?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Security audits typically refuse to sign off on untyped code that moves money, so the ecosystem standardised on types early"
+            correct: false
+            feedback: "Audits concentrate on the on-chain program, and no review board made this call for the ecosystem. The pressure came from the cost of being wrong once, which is why teams adopted types before anyone required it."
+          - id: b
+            label: "A wrong state in money code is an irreversible loss, not a bug ticket, compile-time proof is cheap insurance against it"
+            correct: true
+            feedback: "Web2 pays for a wrong state with an apology and a Tuesday fix. On a ledger designed so nobody can un-happen a transfer, the same mistake has no refund path, and that is what makes a free proof worth its ceremony."
+          - id: c
+            label: "Typed code compiles to faster JavaScript, and on-chain fee markets punish slow clients, so the ecosystem converged on TS for performance"
+            correct: false
+            feedback: "TS types are erased at compile time, the emitted JS is the same speed. The win is correctness under stakes, not throughput."
+          - id: a
+            label: "Blockchain VMs execute compiled bytecode, so dynamically-typed languages cannot target them and typed toolchains became mandatory"
+            correct: false
+            feedback: "Client code, the half you are writing, runs wherever JS runs; no VM forces types on it. The pressure is economic, not technical."
+        explanation: "Web2 ships bugs and patches them; web3 frequently cannot, a drained account does not un-drain. When the cost of a wrong state is unbounded and irreversible, proofs the compiler can make for free stop being ceremony and start being the cheapest insurance available. Money code can't shrug."

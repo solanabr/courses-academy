@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Edge worker or Docker poller: who does which job
+     purpose: turn the trade-off paragraph into a placement rule the reader can apply to future workloads
+     data: runtime: workerd isolate, no node builtins | full node/rust process in a container lifetime: per-event, ephemeral | long-lived daemon state: KV (eventually consistent, 1,000 free writes/day) | process memory + any store you run compute: 10 ms CPU per invocation, waiting is free | as much CPU as the host gives you where it runs: hundreds of cities | one machine you pick right job: probes, light glue, serving snapshots | heavy computation, batch statistics, anything node-specific
+     prompt: Two-column comparison table, columns "pulse-edge-ts (Workers Free)" and "pulse-pollerd (Docker)". Rows for runtime, lifetime, state, compute, footprint, right job. Keep both columns neutral in tone, no winner styling; bottom row highlighted as the takeaway.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:525px;height:361px;right:-328px;top:149px;border-radius:55% 63% 36% 56% / 41% 58% 38% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:432px;height:518px;bottom:-271px;left:516px;border-radius:46% 52% 39% 58% / 46% 64% 37% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 46px 28px; }
+    .v06-grid { display: grid; grid-template-columns: 186px 1fr 1fr; margin-top: 14px;
+                border: 2px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; }
+    .v06-corner { background: var(--surface-brand); }
+    .v06-colh { background: var(--surface-brand); color: var(--stbr-cream); padding: 12px 18px; border-left: 1.5px solid rgba(245,232,202,0.3); }
+    .v06-colh b { font-family: var(--font-display); font-weight: 800; font-size: 19px; display: block; }
+    .v06-colh code { font-family: var(--font-mono); font-size: 17px; }
+    .v06-colh small { font-family: var(--font-body); font-size: 12.5px; color: rgba(245,232,202,0.8); }
+    .v06-rowh { background: var(--surface-paper); padding: 11px 18px; font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--text-primary); display: flex; align-items: center; border-top: 1.5px solid var(--border-subtle); }
+    .v06-cell { background: #ffffff; padding: 11px 18px; font-family: var(--font-body); font-size: 15px; color: var(--text-primary); border-top: 1.5px solid var(--border-subtle); border-left: 1.5px solid var(--border-subtle); display: flex; align-items: center; min-height: 58px; }
+    .v06-key { background: rgba(255,210,63,0.25); font-weight: 700; }
+    .v06-keyh { background: rgba(255,210,63,0.45); }
+    .v06-band { margin-top: 18px; background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-lg); padding: 13px 24px; font-family: var(--font-display); font-weight: 800; font-size: 21px; text-align: center; }
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">placement rule</div>
+    <h2 class="viz-title">edge worker or Docker poller: who does which job</h2>
+    <div class="v06-grid">
+      <div class="v06-corner"></div>
+      <div class="v06-colh"><b><code>pulse-edge-ts</code></b><small>Workers Free</small></div>
+      <div class="v06-colh"><b><code>pulse-pollerd</code></b><small>Docker</small></div>
+      <div class="v06-rowh">runtime</div>
+      <div class="v06-cell">workerd isolate: no node builtins</div>
+      <div class="v06-cell">full node/rust process in a container</div>
+      <div class="v06-rowh">lifetime</div>
+      <div class="v06-cell">per-event, ephemeral</div>
+      <div class="v06-cell">long-lived daemon</div>
+      <div class="v06-rowh">state</div>
+      <div class="v06-cell">KV: eventually consistent, 1,000 free writes/day</div>
+      <div class="v06-cell">process memory + any store you run</div>
+      <div class="v06-rowh">compute</div>
+      <div class="v06-cell">10&#8202;ms CPU per invocation; waiting is free</div>
+      <div class="v06-cell">as much CPU as the host gives you</div>
+      <div class="v06-rowh">where it runs</div>
+      <div class="v06-cell">hundreds of cities</div>
+      <div class="v06-cell">one machine you pick</div>
+      <div class="v06-rowh v06-keyh">right job</div>
+      <div class="v06-cell v06-key">probes, light glue, serving snapshots</div>
+      <div class="v06-cell v06-key">heavy computation, batch statistics, anything node-specific</div>
+    </div>
+    <div class="v06-band">place the workload where its constraints don&#8217;t bite: probes and glue at the edge, heavy or node-specific work in the container</div>
+  </div>
+</div>
+</body></html>

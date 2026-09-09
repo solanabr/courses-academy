@@ -1,0 +1,112 @@
+id: lesson-rtf-m03-l1
+slug: m03-l1
+title: "package.json is a contract: workspaces, engines, peers"
+skills:
+  - solana-kit
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "pnpm": "11.25.0"
+    "typescript": "7.0.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: semver-range-check
+    type: code
+    language: typescript
+    starter: semver-range-check/starter.ts
+    solution: semver-range-check/solution.ts
+    tests: semver-range-check/tests.json
+    hints:
+      - "Check the two-character operator first: range.startsWith('>=') must be tested before the single-character forms."
+      - "Every operator case is 'slice off the operator, parseSemver the rest, then compare', the helpers are already written below the graded function."
+      - "For the caret: if compare(v, base) < 0 it fails immediately; then same major when base major > 0, same major AND minor when base major is 0."
+      - "The tilde is the caret-zero rule applied at every major: at or above the base, same major and same minor."
+  - key: check
+    type: quiz
+    questions:
+      - id: m03l1-q1
+        prompt: "You install helius-sdk (which peers @solana/kit ^6.9.0) and then run `npm i @solana/kit@latest`, which is two majors ahead. npm refuses with a peer-conflict error. What is the resolver actually protecting?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "You from a stale dependency: the error is npm flagging that helius-sdk has fallen behind kit's current release line"
+            correct: false
+            feedback: "npm has no opinion about staleness; it read the declared ranges and found no version satisfying all of them. Note the transitive lines in the error too: @solana-program/* carry their own kit ranges."
+          - id: c
+            label: "The declared compatibility contract: helius-sdk was built against kit 6.x, pin kit to what your deps peer against"
+            correct: true
+            feedback: "A peer range records which instances the library has actually been tested sharing. Forcing kit 8 beside it just moves the failure from install time, where it is loud, to runtime, where it is quiet."
+          - id: a
+            label: "Nothing real, peerDependencies are informational metadata, and the error is a legacy strictness default you can safely force past"
+            correct: false
+            feedback: "Modern npm enforces peers because the conflict is real: helius-sdk's code calls kit APIs from the 6.x line it was built and tested against."
+          - id: b
+            label: "Disk layout, two kit majors cannot be deduped into one node_modules tree, so the resolver blocks the install to avoid duplication"
+            correct: false
+            feedback: "npm can physically nest conflicting versions; the refusal is about the declared compatibility contract, not about where files sit on disk."
+        explanation: "A peer range is the library saying 'I run alongside a kit YOU provide, in this range.' Satisfy it and everything links; ignore it and you're running the library against an API surface it never saw. The durable rule, pin what your deps peer against, per workspace, matters precisely because the digits rot: kit shipped two majors in just over nine weeks."
+      - id: m03l1-q2
+        prompt: "pulse-core's package.json says `\"some-dep\": \"^6.9.0\"`. A teammate asks exactly which versions a fresh install may resolve to. The correct reading:"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Any 6.x release at all, 6.0.0 included, since the caret pins only the major and ignores the base version"
+            correct: false
+            feedback: "The base is a floor, not decoration: 6.0.0 does not satisfy ^6.9.0. You are asking for the fixes that shipped up to 6.9.0, plus whatever lands after them without leaving major 6."
+          - id: c
+            label: "Any version at or above 6.9.0, including future majors, as long as the publisher followed semver when versioning them"
+            correct: false
+            feedback: "The caret hard-stops before the next major, that boundary is exactly where semver says breaking changes live, so no range crosses it on trust."
+          - id: a
+            label: "Anything at or above 6.9.0 but below 7.0.0, minor and patch walks inside major 6, never a new major"
+            correct: true
+            feedback: "The caret trusts semver's core promise, that breaking changes only ride a major bump, so it walks minors and patches freely and stops exactly where breakage is allowed to live."
+          - id: b
+            label: "Only versions matching 6.9.x, the caret admits patch releases but treats a minor bump as a breaking change"
+            correct: false
+            feedback: "That's the tilde's behavior (~6.9.0). The caret trusts the whole major line: 6.10, 6.11, anything under 7."
+        explanation: "^X.Y.Z admits >=X.Y.Z <(X+1).0.0, everything semver promises is non-breaking. The one exception is major 0, where the minor becomes the breaking slot (^0.3.9 admits 0.3.10, never 0.4.0), which is why the caret-zero rule gets its own tests in this lesson's challenge."
+      - id: m03l1-q3
+        prompt: "Why extract pulse-core into a workspace package NOW instead of letting the dashboard copy the classifier file next lesson?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "A second real consumer is arriving, with the workspace link, fleet and dashboard import the SAME classifier from one source of truth"
+            correct: true
+            feedback: "Copies drift the week one of them takes a boundary fix, and both stay green in their own tests while the two dashboards disagree about production. The link is what makes disagreement impossible."
+          - id: c
+            label: "Vite cannot bundle files that sit outside its project root, so the dashboard physically cannot reach the fleet's source without a package"
+            correct: false
+            feedback: "Bundlers can be configured around file locations, the reason is drift: two copies of the classifier stop agreeing the week one gets a bug fix."
+          - id: a
+            label: "npm requires code to live in its own package before any of it can be published, so the extraction is publishing paperwork done early"
+            correct: false
+            feedback: "You could restructure right before publishing, the extraction's value is upstream of npm: one source of truth for multiple consumers."
+          - id: d
+            label: "The classifier has stopped changing, so a package boundary can freeze that shape in place before the dashboard ever imports a copy of it"
+            correct: false
+            feedback: "Stability is not the trigger; a second consumer is. Code nobody edits is the safest thing to copy. It is code that takes a fix in one copy and not the other that makes the boundary worth its ceremony."
+        explanation: "The honest extraction rule: extract when the second consumer is real, not speculative. Ours is, m03-l2's dashboard imports the classifier, M7's edge worker imports the pure core. Copies drift; a workspace package keeps every consumer on the same code and forces you to design the public surface once."
+      - id: m03l1-q4
+        prompt: "You're writing the Dockerfile beat later in the course and need pnpm inside a fresh Node container. The lesson's durable install path is:"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The official Node base images already carry pnpm alongside npm, so the Dockerfile can simply call it and move on"
+            correct: false
+            feedback: "Those images ship Node and npm and nothing else. The thing that used to make pnpm appear was corepack, which Node's TSC voted out in 2025, which is the whole reason the install line is explicit."
+          - id: c
+            label: "npm i -g pnpm at a pinned version, npm is always present, and the explicit pin survives Node's corepack removal"
+            correct: true
+            feedback: "Boring and durable: npm exists on every Node there is, and the digit sits where a human can read it, matching the packageManager field, the CI job and M6's Dockerfile."
+          - id: b
+            label: "Nothing to install, the packageManager field makes npm itself delegate to pnpm automatically on any modern Node"
+            correct: false
+            feedback: "packageManager is a pin that tools MAY honor; npm does not transform into pnpm because a field asks it to."
+          - id: a
+            label: "corepack enable, corepack ships with every Node release and reads the packageManager field to activate the pinned pnpm"
+            correct: false
+            feedback: "That works on Node 24 LTS but not durably: corepack is no longer distributed with Node 25+, so the habit breaks on the next base image."
+        explanation: "The TSC voted corepack out of Node distributions from v25.0.0; it remains in Node 24 LTS, but a habit that dies on the next LTS is a bad habit. npm i -g pnpm pinned to a version works everywhere Node does, and it's exactly the line m06-l3's node image will use."

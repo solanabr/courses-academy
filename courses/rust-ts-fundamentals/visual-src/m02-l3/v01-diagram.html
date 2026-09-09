@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: A promise settles once; await suspends the function, not the program
+     purpose: give sync-only learners the three states and the suspension model in one picture
+     data: Left: promise state machine. pending -> fulfilled (value) | pending -> rejected (error). Settles once, never changes again. Right: timeline with two lanes. Lane "your function": runs, hits await fetch(), SUSPENDS (dashed), resumes with value. Lane "event loop": keeps running during the suspension (timer callbacks, other fetches, the local server). Caption: await parks one function; the program keeps moving.
+     prompt: Two-panel diagram. Left panel: small three-state machine, pending at top with two arrows down to fulfilled and rejected, note "settles once". Right panel: two horizontal timeline lanes, the top lane shows a function bar interrupted by a dashed "suspended" gap between "await" and "resume", the bottom lane shows the event loop bar continuous through that same gap with small tick marks labeled timers and other fetches. One caption line under both panels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:546px;height:402px;right:-309px;top:285px;border-radius:51% 48% 38% 40% / 48% 41% 40% 59%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:587px;height:559px;bottom:-320px;left:-320px;border-radius:48% 39% 40% 53% / 63% 48% 61% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .row2 { display:flex; gap:24px; align-items:stretch; }
+  .card { background:var(--surface-card); border:2px solid var(--border-subtle); border-radius:var(--radius-2xl); padding:24px 28px; }
+  .ptag { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:14px; }
+  .sm { width:392px; flex:0 0 392px; }
+  .state { font-family:var(--font-mono); font-weight:700; font-size:20px; text-align:center; padding:13px 8px; border-radius:var(--radius-lg); }
+  .pending { background:var(--surface-paper); border:2px solid var(--border-strong); color:var(--text-primary); width:190px; margin:0 auto; }
+  .ends { display:flex; gap:16px; }
+  .ends .state { flex:1; }
+  .fulfilled { background:rgba(0,139,76,.10); border:2px solid var(--stbr-emerald); color:var(--stbr-emerald); }
+  .rejected { background:var(--surface-inverse); border:2px solid var(--surface-inverse); color:var(--text-on-dark); }
+  .sub { display:block; font-family:var(--font-body); font-weight:600; font-size:13px; margin-top:3px; }
+  .fulfilled .sub { color:var(--stbr-green); }
+  .rejected .sub { color:var(--stbr-ink-300, #b9c1ba); }
+  .oncenote { margin-top:16px; text-align:center; font-family:var(--font-body); font-weight:700; font-size:15px; color:var(--text-secondary); }
+  .tl { flex:1; }
+  .lanes { position:relative; width:100%; }
+  .marks { position:relative; height:30px; }
+  .mk { position:absolute; top:0; font-family:var(--font-mono); font-weight:700; font-size:14px; color:var(--stbr-green); background:rgba(0,139,76,.08); border:1.5px solid rgba(0,139,76,.3); border-radius:var(--radius-pill); padding:3px 12px; }
+  .lane { display:flex; align-items:center; gap:14px; height:56px; margin-top:0; }
+  .lane + .lane { margin-top:18px; }
+  .lbl { flex:0 0 140px; font-family:var(--font-body); font-weight:800; font-size:14px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-primary); }
+  .seg { height:56px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:700; font-size:15px; text-align:center; }
+  .runs { width:200px; background:var(--stbr-emerald); color:var(--text-on-brand); }
+  .susp { width:356px; background:var(--stbr-yellow); color:var(--stbr-dark); border:2.5px dashed var(--stbr-dark); }
+  .resume { width:250px; background:var(--stbr-emerald); color:var(--text-on-brand); }
+  .loopbar { width:806px; background:var(--stbr-green); color:var(--text-on-brand); display:flex; align-items:center; justify-content:space-evenly; }
+  .tick { font-family:var(--font-body); font-weight:700; font-size:13.5px; color:var(--stbr-cream); border:1.5px solid rgba(245,232,202,.5); border-radius:var(--radius-pill); padding:4px 12px; }
+  .guide { position:absolute; width:0; border-left:2px dashed var(--border-strong); top:30px; height:130px; }
+  .cap { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand); border-radius:var(--radius-xl); padding:16px 28px; text-align:center; font-family:var(--font-body); font-weight:800; font-size:20px; }
+</style>
+  <div class="stbr-eyebrow">promises &amp; await, in one picture</div>
+  <h2 class="viz-title">a promise settles once; await parks a function, not the program</h2>
+  <div class="row2">
+    <div class="card sm">
+      <div class="ptag">promise state machine</div>
+      <div class="state pending">pending</div>
+      <svg width="336" height="76" style="display:block;margin:0 auto;">
+        <line x1="168" y1="4" x2="78" y2="62" stroke="#008b4c" stroke-width="3"/>
+        <polygon points="78,62 88,50 96,60" fill="#008b4c"/>
+        <line x1="168" y1="4" x2="258" y2="62" stroke="#1b231d" stroke-width="3"/>
+        <polygon points="258,62 240,60 248,50" fill="#1b231d"/>
+      </svg>
+      <div class="ends">
+        <div class="state fulfilled">fulfilled<span class="sub">(value)</span></div>
+        <div class="state rejected">rejected<span class="sub">(error)</span></div>
+      </div>
+      <div class="oncenote">settles once, never changes again</div>
+    </div>
+    <div class="card tl">
+      <div class="ptag">two lanes during one await</div>
+      <div class="lanes">
+        <div class="guide" style="left:354px;"></div>
+        <div class="guide" style="left:710px;"></div>
+        <div class="marks">
+          <div class="mk" style="left:288px;">await fetch()</div>
+          <div class="mk" style="left:652px;">value arrives</div>
+        </div>
+        <div class="lane">
+          <div class="lbl">your function</div>
+          <div class="seg runs">runs</div>
+          <div class="seg susp">suspended: parked, not blocking</div>
+          <div class="seg resume">resumes with value</div>
+        </div>
+        <div class="lane">
+          <div class="lbl">event loop</div>
+          <div class="seg loopbar">
+            <span class="tick">timer callbacks</span>
+            <span class="tick">other fetches</span>
+            <span class="tick">the local server</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">await parks one function; the program keeps moving.</div>
+</div>
+</body></html>

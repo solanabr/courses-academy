@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "input": "'ok', 120",
+    "expectedOutput": "result === 'up'",
+    "description": "fast ok probe is up"
+  },
+  {
+    "id": "t2",
+    "input": "'ok', 400",
+    "expectedOutput": "result === 'degraded'",
+    "description": "the 400ms boundary is degraded, not up"
+  },
+  {
+    "id": "t3",
+    "input": "'ok', 1000",
+    "expectedOutput": "result === 'degraded'",
+    "description": "1000ms is still inside the degraded band"
+  },
+  {
+    "id": "t4",
+    "input": "'ok', 1001",
+    "expectedOutput": "result === 'down'",
+    "description": "past the degraded band is down"
+  },
+  {
+    "id": "t5",
+    "input": "'timeout', 5000",
+    "expectedOutput": "result === 'down'",
+    "description": "a timeout is down regardless of the budget that expired"
+  },
+  {
+    "id": "t6",
+    "input": "'http-error', 429",
+    "expectedOutput": "result === 'degraded'",
+    "description": "rate-limited target answered, degraded, not down"
+  },
+  {
+    "id": "t7",
+    "input": "'http-error', 503",
+    "expectedOutput": "result === 'down'",
+    "description": "a 5xx answer is down"
+  },
+  {
+    "id": "t8",
+    "input": "'gibberish', 0",
+    "expectedOutput": "result === 'invalid'",
+    "description": "unknown kinds parse to null and classify as invalid"
+  }
+]

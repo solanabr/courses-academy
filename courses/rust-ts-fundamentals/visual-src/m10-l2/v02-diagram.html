@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Pulse Station as built
+     purpose: reprint the lesson-one hub diagram now that every spoke exists, closing the loop the opener drew
+     data: Hub: GitHub repo (public) holding code + status.json written by an Actions cron Spoke 1: GitHub Actions, scheduled probes, tests in both languages gate the cron Spoke 2: Vercel dashboard, fetches raw status.json, renders fleet + Solana + worker panels Spoke 3: Cloudflare Workers, TS worker + Rust-to-WASM worker, KV last-known status Spoke 4: Docker/GHCR poller, long-running Rust daemon, exposes /status with chain reads Target ring: real URLs + Solana RPC (reads and one confirmed transfer)
+     prompt: Hub-and-spoke system diagram identical in topology to the course opener's version. Center hub: a public GitHub repository with code and status.json. Four spokes: GitHub Actions cron committing status.json back; a Vercel dashboard reading the raw file; two Cloudflare Workers, one TypeScript and one Rust compiled to WASM, with KV; a Dockerized Rust poller from GHCR exposing a status endpoint. Outer ring of probe targets including Solana RPC. Add a small check mark on every spoke to mark them as built and verified.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:507px;height:356px;right:-284px;top:270px;border-radius:39% 65% 44% 37% / 63% 42% 64% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:517px;height:483px;bottom:-254px;left:-254px;border-radius:65% 36% 51% 36% / 56% 39% 43% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 52px 30px; }
+    .v02-title { font-size: 48px; margin: 6px 0 16px; }
+    .v02-stage { position: relative; width: 1352px; height: 452px; }
+    .v02-wires { position: absolute; left: 0; top: 0; }
+    .v02-node { position: absolute; border-radius: var(--radius-xl); }
+    .v02-spoke { width: 400px; background: var(--surface-paper); border: 1.5px solid var(--border-strong);
+                 padding: 16px 20px 14px; }
+    .v02-spoke h3 { font-family: var(--font-display); font-weight: 800; font-size: 21px;
+                    color: var(--text-primary); margin: 0 0 6px; line-height: 1.1; }
+    .v02-spoke p { font-family: var(--font-body); font-size: 15px; color: var(--text-secondary);
+                   margin: 0; line-height: 1.35; }
+    .v02-check { position: absolute; top: -14px; right: 16px; display: flex; align-items: center; gap: 6px;
+                 background: var(--surface-accent); color: var(--text-on-accent);
+                 border-radius: var(--radius-pill); padding: 4px 12px;
+                 font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                 letter-spacing: 0.06em; }
+    .v02-hub { left: 456px; top: 146px; width: 440px; background: var(--surface-brand);
+               padding: 20px 26px 18px; text-align: center; }
+    .v02-hub h3 { font-family: var(--font-display); font-weight: 900; font-size: 26px;
+                  color: var(--text-on-brand); margin: 0 0 6px; }
+    .v02-hub p { font-family: var(--font-body); font-size: 15px; color: var(--text-on-brand);
+                 opacity: 0.92; margin: 0; line-height: 1.35; }
+    .v02-ring { display: flex; align-items: center; justify-content: center; gap: 16px;
+                margin-top: 14px; background: var(--surface-inverse); border-radius: var(--radius-xl);
+                padding: 14px 24px; width: 1352px; }
+    .v02-ring .k { font-family: var(--font-display); font-weight: 800; font-size: 16px;
+                   letter-spacing: 0.08em; color: var(--stbr-yellow); text-transform: uppercase; }
+    .v02-ring .t { font-family: var(--font-body); font-size: 17px; color: var(--text-on-dark); }
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">every spoke built &amp; verified</div>
+    <h2 class="viz-title v02-title">pulse station, as built</h2>
+    <div class="v02-stage">
+      <svg class="v02-wires" width="1352" height="452" viewBox="0 0 1352 452">
+        <line x1="380" y1="122" x2="486" y2="160" stroke="#306C40" stroke-width="2.5"/>
+        <line x1="972" y1="122" x2="866" y2="160" stroke="#306C40" stroke-width="2.5"/>
+        <line x1="380" y1="330" x2="500" y2="240" stroke="#306C40" stroke-width="2.5"/>
+        <line x1="972" y1="330" x2="852" y2="240" stroke="#306C40" stroke-width="2.5"/>
+      </svg>
+      <div class="v02-node v02-spoke" style="left:0; top:24px;">
+        <div class="v02-check">&#10003; built</div>
+        <h3>github actions</h3>
+        <p>scheduled probes on a cron; tests in both languages gate the run before status.json commits back</p>
+      </div>
+      <div class="v02-node v02-spoke" style="left:952px; top:24px;">
+        <div class="v02-check">&#10003; built</div>
+        <h3>vercel dashboard</h3>
+        <p>fetches raw status.json; renders the fleet, Solana and worker panels live</p>
+      </div>
+      <div class="v02-node v02-hub">
+        <h3>github repo (public)</h3>
+        <p>the hub: code + status.json, written by the Actions cron; every spoke reads or writes this one file</p>
+      </div>
+      <div class="v02-node v02-spoke" style="left:0; top:314px;">
+        <div class="v02-check">&#10003; built</div>
+        <h3>cloudflare workers</h3>
+        <p>TS worker + Rust-to-WASM worker at the edge, KV holding last-known status</p>
+      </div>
+      <div class="v02-node v02-spoke" style="left:952px; top:314px;">
+        <div class="v02-check">&#10003; built</div>
+        <h3>docker / ghcr poller</h3>
+        <p>long-running Rust daemon from GHCR; exposes /status with chain reads</p>
+      </div>
+    </div>
+    <div class="v02-ring">
+      <span class="k">target ring</span>
+      <span class="t">real URLs + Solana RPC: reads and one confirmed devnet transfer</span>
+    </div>
+  </div>
+</div>
+</body></html>

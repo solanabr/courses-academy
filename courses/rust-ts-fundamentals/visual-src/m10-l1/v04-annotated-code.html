@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The check helper contract
+     purpose: fix the one interface every authored check must satisfy so eight learner-written checks stay uniform
+     data: check () { local name="$1"; shift        <- first arg is the printed label if "$@" >/dev/null 2>&1; then <- everything after the label runs as the command under test echo "OK   $name"           <- success is the command exiting 0, nothing else else echo "FAIL $name" fi } Usage: check "edge 6: poller answers" curl -fsS http://localhost:8080/status Or: check "edge 2: status fresh" status_fresh   (a bash function you define above it)
+     prompt: A code card showing the bash helper with the three inline arrow annotations from the data block rendered as callouts to the right of their lines, plus the two usage lines beneath in a slightly separated block. Monospace, minimal decoration.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:496px;height:417px;right:-255px;top:285px;border-radius:40% 37% 37% 45% / 63% 57% 54% 47%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:540px;height:529px;bottom:-303px;left:-303px;border-radius:57% 45% 35% 43% / 53% 46% 47% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card04{background:var(--surface-card);border-radius:var(--radius-2xl);padding:30px 44px 34px;position:relative;}
+    .stage04{position:relative;width:1368px;height:372px;margin-top:8px;}
+    .code04{position:absolute;left:0;top:0;width:740px;height:372px;background:var(--surface-inverse);border-radius:16px;padding:34px 30px;}
+    .code04 pre{margin:0;font:500 19px/38px var(--font-mono);color:var(--stbr-cream);white-space:pre;}
+    .code04 .hl{color:var(--stbr-yellow);}
+    .note04{position:absolute;width:470px;border:2px solid var(--stbr-emerald);border-radius:12px;background:var(--surface-card);padding:12px 16px;font:600 15px/1.35 var(--font-body);color:var(--text-primary);}
+    .note04 .nl{display:block;font:800 11.5px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--stbr-emerald);margin-bottom:5px;}
+    .note04.key{border-color:var(--stbr-yellow);background:#FFF6D6;}
+    .note04.key .nl{color:var(--stbr-dark);}
+    .usage04{margin-top:18px;background:var(--surface-paper);border:1.5px solid var(--border-strong);border-radius:12px;padding:16px 24px;}
+    .usage04 .ul{font:700 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:9px;}
+    .usage04 pre{margin:0;font:500 16.5px/30px var(--font-mono);color:var(--text-primary);white-space:pre;}
+    .usage04 .cm{color:var(--text-muted);}
+  </style>
+  <div class="card04">
+    <div class="stbr-eyebrow">demo script · the one interface</div>
+    <h2 class="viz-title">the check helper contract</h2>
+    <div class="stage04">
+      <svg width="1368" height="372" style="position:absolute;left:0;top:0;">
+        <line x1="746" y1="91"  x2="852" y2="55"  stroke="#008B4C" stroke-width="2"/>
+        <circle cx="746" cy="91" r="4" fill="#008B4C"/>
+        <line x1="746" y1="129" x2="852" y2="172" stroke="#008B4C" stroke-width="2"/>
+        <circle cx="746" cy="129" r="4" fill="#008B4C"/>
+        <line x1="746" y1="167" x2="852" y2="292" stroke="#1B231D" stroke-width="2"/>
+        <circle cx="746" cy="167" r="4" fill="#1B231D"/>
+      </svg>
+      <div class="code04"><pre>check () {
+  local name="$1"; shift
+  if "$@" &gt;/dev/null 2&gt;&amp;1; then
+    echo <span class="hl">"OK   $name"</span>
+  else
+    echo "FAIL $name"
+  fi
+}</pre></div>
+      <div class="note04" style="left:856px;top:14px;">
+        <span class="nl">the label</span>
+        the first argument is the printed label; <code>shift</code> drops it before the command runs
+      </div>
+      <div class="note04" style="left:856px;top:134px;">
+        <span class="nl">the command under test</span>
+        everything after the label runs as the command itself: <code>"$@"</code>, output silenced
+      </div>
+      <div class="note04 key" style="left:856px;top:256px;">
+        <span class="nl">the verdict</span>
+        success is the command exiting 0, <b>nothing else</b>. no grepping output, no vibes.
+      </div>
+    </div>
+    <div class="usage04">
+      <div class="ul">usage: a raw command, or a bash function you define above it</div>
+      <pre>check "edge 6: poller answers"  curl -fsS http://localhost:8080/status
+check "edge 2: status fresh"    status_fresh   <span class="cm"># a function defined above</span></pre>
+    </div>
+  </div>
+</div>
+</body></html>

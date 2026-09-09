@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two failure classes and where each one surfaces
+     purpose: give the learner the classification the challenge asks them to derive, verified after they attempt it
+     data: failing build (type error, bad import): surfaces in Vercel's build logs; deploy never happens; previous deployment keeps serving missing config (env var absent): build succeeds, deploy happens; failure surfaces at runtime as the board's error state (or a blank page if you skipped lab step 3) operator takeaway: code failures stop at the build wall; configuration failures walk right through it and greet your users
+     prompt: Two-column comparison card. Left column, build-time failure, tracing a bad commit into build logs with the deploy blocked and the old version still live. Right column, runtime configuration failure, tracing a clean build into a deployed page showing an error state. Footer carries the operator takeaway line verbatim from data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:546px;top:-283px;right:-283px;border-radius:57% 47% 57% 60% / 42% 60% 53% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:456px;height:470px;bottom:-229px;left:-229px;border-radius:44% 52% 43% 42% / 60% 41% 59% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:10px;
+         align-items:stretch; }
+  .col { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-2xl); padding:22px 26px; display:flex;
+         flex-direction:column; }
+  .col-head { border-radius:var(--radius-lg); padding:11px 18px; margin-bottom:16px; }
+  .col-head .kind { font-family:var(--font-body); font-weight:800; font-size:11.5px;
+                    letter-spacing:.12em; text-transform:uppercase; margin-bottom:3px; }
+  .col-head .nm { font-family:var(--font-display); font-weight:900; font-size:22px;
+                  line-height:1.1; }
+  .col-head.build { background:var(--surface-inverse); }
+  .col-head.build .kind { color:var(--stbr-cream); opacity:.7; }
+  .col-head.build .nm { color:var(--text-on-dark); }
+  .col-head.conf { background:var(--surface-paper); border:1.5px solid var(--border-strong); }
+  .col-head.conf .kind { color:var(--text-muted); }
+  .col-head.conf .nm { color:var(--text-primary); }
+  .cnode { border-radius:var(--radius-lg); padding:11px 16px; text-align:center;
+           background:var(--surface-paper); border:1.5px solid var(--border-strong); }
+  .cnode .t { font-family:var(--font-body); font-weight:700; font-size:16.5px;
+              color:var(--text-primary); line-height:1.25; }
+  .cnode .s { font-family:var(--font-body); font-weight:600; font-size:12.5px;
+              color:var(--text-muted); margin-top:3px; }
+  .cnode code { font-family:var(--font-mono); font-weight:700; }
+  .cnode.wall { background:var(--surface-inverse); border-color:var(--surface-inverse); }
+  .cnode.wall .t { color:var(--text-on-dark); }
+  .cnode.wall .s { color:var(--stbr-cream); opacity:.8; }
+  .cnode.safe { background:rgba(0,139,76,.08); border:1.5px solid var(--stbr-emerald); }
+  .cnode.safe .t { color:var(--stbr-green); }
+  .cnode.hero { background:var(--stbr-yellow); border:2px solid var(--stbr-dark); }
+  .cnode.hero .t, .cnode.hero .s { color:var(--stbr-dark); }
+  .varr { text-align:center; height:22px; }
+  .verdict { margin-top:20px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-xl); padding:16px 28px;
+             font-family:var(--font-body); font-weight:700; font-size:17.5px; line-height:1.4; }
+  .verdict b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">classify the failure first</div>
+  <h2 class="viz-title">two failure classes and where each one surfaces</h2>
+  <div class="cmp">
+    <div class="col">
+      <div class="col-head build"><div class="kind">failure class 1</div><div class="nm">failing build</div></div>
+      <div class="cnode"><div class="t">bad commit pushed</div><div class="s">type error, bad import</div></div>
+      <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+      <div class="cnode wall"><div class="t">surfaces in Vercel&rsquo;s build logs</div><div class="s">the build wall: it stops here</div></div>
+      <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+      <div class="cnode"><div class="t">deploy never happens</div></div>
+      <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+      <div class="cnode safe"><div class="t">previous deployment keeps serving</div><div class="s">users never see the break</div></div>
+    </div>
+    <div class="col">
+      <div class="col-head conf"><div class="kind">failure class 2</div><div class="nm">missing config</div></div>
+      <div class="cnode"><div class="t">env var absent</div><div class="s">the code itself is fine</div></div>
+      <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+      <div class="cnode"><div class="t">build succeeds</div><div class="s">nothing stops at the wall</div></div>
+      <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+      <div class="cnode"><div class="t">deploy happens</div></div>
+      <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+      <div class="cnode hero"><div class="t">surfaces at runtime: the board&rsquo;s error state</div><div class="s">or a blank page, if you skipped lab step 3</div></div>
+    </div>
+  </div>
+  <div class="verdict">operator takeaway: <b>code failures stop at the build wall; configuration failures walk right through it and greet your users.</b></div>
+</div>
+</body></html>

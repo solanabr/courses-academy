@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Who frees the memory, three answers
+     purpose: position ownership as one of three possible answers to the same unavoidable question
+     data: Question: allocated memory must be freed exactly once. By whom? GC languages (Node, Go, Java): a runtime collector | cost: CPU + pauses at runtime | bug classes: leaks still possible, no compile-time help Manual (C, C++): the programmer, on trust | cost: your discipline | bug classes: use-after-free, double-free, dangling pointers Rust: the compiler, via ownership rules | cost: borrow-checker friction while writing | bug classes: rejected before the program exists
+     prompt: Three-column comparison card. One shared question banner on top. Each column names the answer, who does the work, when the cost is paid, and which bug classes survive. Highlight the Rust column's "cost paid at compile time" cell as the structural difference.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:496px;height:438px;top:-239px;right:-239px;border-radius:51% 53% 63% 51% / 47% 48% 50% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:366px;height:519px;bottom:-316px;left:583px;border-radius:65% 44% 38% 38% / 44% 44% 55% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 52px 34px; }
+    .v01-q { background: var(--surface-inverse); color: var(--stbr-cream); border-radius: var(--radius-lg);
+             padding: 13px 24px; font-family: var(--font-display); font-weight: 800; font-size: 25px;
+             text-align: center; margin-top: 2px; }
+    .v01-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; column-gap: 22px; margin-top: 20px; }
+    .v01-col { border: 2px solid var(--border-subtle); border-radius: var(--radius-xl); overflow: hidden; }
+    .v01-col-rust { border-color: var(--stbr-emerald); }
+    .v01-chead { padding: 13px 20px 11px; border-bottom: 1px solid var(--border-subtle); height: 92px; }
+    .v01-lang { font-family: var(--font-body); font-size: 15px; color: var(--text-muted); margin: 0 0 4px; }
+    .v01-answer { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 23px;
+                  line-height: 1.12; color: var(--text-primary); margin: 0; }
+    .v01-chead-rust { background: var(--surface-brand); }
+    .v01-chead-rust .v01-lang { color: rgba(245,232,202,0.78); }
+    .v01-chead-rust .v01-answer { color: var(--stbr-cream); }
+    .v01-cell { padding: 10px 20px 10px; border-bottom: 1px solid var(--border-subtle); }
+    .v01-cell-cost { height: 80px; }
+    .v01-cell-when { height: 84px; }
+    .v01-cell-bugs { height: 92px; border-bottom: none; }
+    .v01-k { font-family: var(--font-display); font-weight: 800; font-size: 13px; text-transform: uppercase;
+             letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 4px; }
+    .v01-v { font-family: var(--font-body); font-size: 18px; line-height: 1.28; color: var(--text-primary); margin: 0; }
+    .v01-cell-hot { background: var(--stbr-yellow); }
+    .v01-cell-hot .v01-k { color: var(--stbr-green); }
+    .v01-cell-hot .v01-v { color: var(--stbr-dark); font-weight: 700; }
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">memory management</div>
+    <h2 class="viz-title">who frees the memory?</h2>
+    <div class="v01-q">allocated memory must be freed exactly once, but by whom?</div>
+    <div class="v01-cols">
+      <div class="v01-col">
+        <div class="v01-chead">
+          <p class="v01-lang">GC languages &#183; Node, Go, Java</p>
+          <p class="v01-answer">a runtime collector</p>
+        </div>
+        <div class="v01-cell v01-cell-cost"><p class="v01-k">the cost</p><p class="v01-v">CPU + pauses</p></div>
+        <div class="v01-cell v01-cell-when"><p class="v01-k">when it&#8217;s paid</p><p class="v01-v">at runtime, every run</p></div>
+        <div class="v01-cell v01-cell-bugs"><p class="v01-k">bug classes that survive</p><p class="v01-v">leaks still possible, no compile-time help</p></div>
+      </div>
+      <div class="v01-col">
+        <div class="v01-chead">
+          <p class="v01-lang">manual &#183; C, C++</p>
+          <p class="v01-answer">the programmer, on trust</p>
+        </div>
+        <div class="v01-cell v01-cell-cost"><p class="v01-k">the cost</p><p class="v01-v">your discipline</p></div>
+        <div class="v01-cell v01-cell-when"><p class="v01-k">when it&#8217;s paid</p><p class="v01-v">at runtime, in production</p></div>
+        <div class="v01-cell v01-cell-bugs"><p class="v01-k">bug classes that survive</p><p class="v01-v">use-after-free &#183; double-free &#183; dangling pointers</p></div>
+      </div>
+      <div class="v01-col v01-col-rust">
+        <div class="v01-chead v01-chead-rust">
+          <p class="v01-lang">Rust</p>
+          <p class="v01-answer">the compiler, via ownership</p>
+        </div>
+        <div class="v01-cell v01-cell-cost"><p class="v01-k">the cost</p><p class="v01-v">borrow-checker friction while writing</p></div>
+        <div class="v01-cell v01-cell-when v01-cell-hot"><p class="v01-k">when it&#8217;s paid</p><p class="v01-v">at compile time, before the program exists</p></div>
+        <div class="v01-cell v01-cell-bugs"><p class="v01-k">bug classes that survive</p><p class="v01-v">rejected before the program exists</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

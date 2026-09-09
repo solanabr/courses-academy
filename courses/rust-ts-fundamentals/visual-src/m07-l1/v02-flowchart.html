@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Porting pulse across the seam
+     purpose: show module by module which pulse code ports to workerd unchanged and what replaces the parts that cannot
+     data: ports unchanged (pure core, via npm): ProbeResult union -> classifyProbe -> backoffDelay does not resolve in workerd (node shell): readFileSync config -> replaced by an in-code target list + env bindings process.env -> replaced by env bindings (vars + secrets) long-lived process memory -> replaced by Workers KV node http server -> replaced by the fetch handler setInterval poll loop -> replaced by the cron trigger + scheduled handler
+     prompt: Two-column mapping flowchart. Left column labeled "node shell (stays behind)" lists config file read, process.env, process memory, http server, setInterval loop, each crossed with a small break icon. Right column labeled "workerd replacement" lists in-code targets plus bindings, env bindings, KV, fetch handler, cron trigger. A separate green lane across the top carries pulse-core (union, classifier, backoff) straight through untouched with an npm package chip.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:485px;height:465px;right:-307px;top:157px;border-radius:59% 63% 39% 44% / 56% 47% 42% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:373px;height:517px;bottom:-301px;left:561px;border-radius:57% 41% 48% 49% / 44% 65% 64% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 46px 28px; }
+    .v02-lane { margin-top: 14px; background: var(--surface-brand); border-radius: var(--radius-lg); padding: 11px 18px; display: flex; align-items: center; gap: 14px; }
+    .v02-lanechip { flex: none; background: var(--stbr-yellow); color: var(--stbr-dark); border-radius: var(--radius-pill); padding: 7px 16px; font-family: var(--font-display); font-weight: 800; font-size: 15px; white-space: nowrap; }
+    .v02-laneflow { flex: 1; display: flex; align-items: center; gap: 8px; }
+    .v02-lanenode { flex: 1; background: #ffffff; border-radius: var(--radius-md); padding: 8px 10px; text-align: center; font-family: var(--font-mono); font-weight: 600; font-size: 14.5px; color: var(--text-primary); }
+    .v02-lanear { flex: none; width: 20px; height: 2.5px; background: var(--stbr-cream); position: relative; margin-right: 6px; }
+    .v02-lanear::after { content: ""; position: absolute; right: -7px; top: -4.75px; border-left: 8px solid var(--stbr-cream); border-top: 6px solid transparent; border-bottom: 6px solid transparent; }
+    .v02-npm { flex: none; font-family: var(--font-body); font-size: 13px; color: var(--stbr-cream); white-space: nowrap; }
+    .v02-heads { display: flex; gap: 66px; margin: 18px 0 8px; }
+    .v02-head { flex: 1; font-family: var(--font-display); font-weight: 800; font-size: 19px; color: var(--text-primary); }
+    .v02-head small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 13px; color: var(--text-muted); margin-top: 1px; }
+    .v02-rows { display: flex; flex-direction: column; gap: 9px; }
+    .v02-row { display: flex; align-items: stretch; }
+    .v02-left, .v02-right { flex: 1; border-radius: var(--radius-md); padding: 8px 14px; display: flex; align-items: center; gap: 12px; min-height: 56px; }
+    .v02-left { background: var(--surface-paper); border: 1.5px solid var(--border-subtle); }
+    .v02-right { background: #ffffff; border: 2px solid var(--stbr-emerald); }
+    .v02-x { flex: none; width: 24px; height: 24px; border: 2px solid var(--stbr-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-body); font-weight: 800; font-size: 13px; color: var(--stbr-dark); }
+    .v02-nm { font-family: var(--font-mono); font-weight: 600; font-size: 15.5px; color: var(--text-primary); }
+    .v02-nm small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 12.5px; color: var(--text-muted); margin-top: 1px; }
+    .v02-ar { flex: none; width: 38px; align-self: center; height: 2.5px; background: var(--stbr-dark); position: relative; margin: 0 16px 0 6px; }
+    .v02-ar::after { content: ""; position: absolute; right: -8px; top: -5.5px; border-left: 9px solid var(--stbr-dark); border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">porting across the seam</div>
+    <h2 class="viz-title">porting pulse across the seam</h2>
+    <div class="v02-lane">
+      <div class="v02-lanechip">ports unchanged</div>
+      <div class="v02-laneflow">
+        <div class="v02-lanenode">ProbeResult union</div><div class="v02-lanear"></div>
+        <div class="v02-lanenode">classifyProbe</div><div class="v02-lanear"></div>
+        <div class="v02-lanenode">backoffDelay</div>
+      </div>
+      <div class="v02-npm">pulse-core &#183; pure &#183; via npm</div>
+    </div>
+    <div class="v02-heads">
+      <div class="v02-head">node shell (stays behind)<small>none of this resolves in workerd</small></div>
+      <div class="v02-head">workerd replacement<small>what takes over the job</small></div>
+    </div>
+    <div class="v02-rows">
+      <div class="v02-row">
+        <div class="v02-left"><div class="v02-x">&#10005;</div><div class="v02-nm">readFileSync(config)<small>reads targets from disk</small></div></div>
+        <div class="v02-ar"></div>
+        <div class="v02-right"><div class="v02-nm">in-code target list + env bindings<small>no filesystem at the edge</small></div></div>
+      </div>
+      <div class="v02-row">
+        <div class="v02-left"><div class="v02-x">&#10005;</div><div class="v02-nm">process.env<small>ambient environment</small></div></div>
+        <div class="v02-ar"></div>
+        <div class="v02-right"><div class="v02-nm">env bindings<small>vars + secrets, passed to each handler</small></div></div>
+      </div>
+      <div class="v02-row">
+        <div class="v02-left"><div class="v02-x">&#10005;</div><div class="v02-nm">long-lived process memory<small>state dies with each isolate</small></div></div>
+        <div class="v02-ar"></div>
+        <div class="v02-right"><div class="v02-nm">Workers KV<small>one namespace all isolates share</small></div></div>
+      </div>
+      <div class="v02-row">
+        <div class="v02-left"><div class="v02-x">&#10005;</div><div class="v02-nm">node http server<small>no sockets to own</small></div></div>
+        <div class="v02-ar"></div>
+        <div class="v02-right"><div class="v02-nm">fetch handler<small>the platform routes requests to you</small></div></div>
+      </div>
+      <div class="v02-row">
+        <div class="v02-left"><div class="v02-x">&#10005;</div><div class="v02-nm">setInterval poll loop<small>nothing stays up to tick</small></div></div>
+        <div class="v02-ar"></div>
+        <div class="v02-right"><div class="v02-nm">cron trigger + scheduled handler<small>the platform does the waking</small></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

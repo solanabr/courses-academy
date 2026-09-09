@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The minimal client-side chain model
+     purpose: fix the four ideas and their one-line definitions as a single map the reader can carry
+     data: Four boxes around a center label "the chain, as a client sees it": 1. Accounts hold lamports, an address with a balance and data (1 SOL = 1,000,000,000 lamports) 2. Programs are code, a program is an account whose data is executable (noted, not explored) 3. Transactions mutate, the only way state changes; reads are free, writes are signed 4. RPC is the read door, a node answering JSON questions about state, no fee, no wallet Footnote edge leaving the map: "everything deeper -> the Bitcoin-to-Solana evolution course"
+     prompt: A 2x2 grid of four labeled boxes around a small central hub label. Each box carries its bold three-word idea and its one-sentence definition from the data block. One dashed arrow exits the grid to a footnote box naming the sibling-course handoff. Clean, flat, no icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:535px;bottom:-281px;right:-281px;border-radius:35% 35% 44% 52% / 60% 45% 64% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:462px;height:490px;left:-237px;top:300px;border-radius:45% 42% 40% 46% / 46% 47% 37% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v01-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 38px 56px 30px; overflow: hidden; position: relative; }
+  .v01-map { display: flex; align-items: stretch; margin-top: 10px; }
+  .v01-col { display: flex; flex-direction: column; gap: 22px; width: 566px; }
+  .v01-hub { width: 212px; display: flex; align-items: center; justify-content: center;
+             position: relative; }
+  .v01-hubline { position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+                 background: var(--border-subtle); }
+  .v01-hubbox { position: relative; width: 168px; text-align: center;
+                background: var(--surface-inverse); color: var(--stbr-cream);
+                border-radius: var(--radius-xl); padding: 24px 14px;
+                font-family: var(--font-display); font-weight: 800; font-size: 17.5px;
+                line-height: 1.35; }
+  .v01-box { border: 1.5px solid var(--border-subtle); background: var(--surface-paper);
+             border-radius: var(--radius-xl); padding: 22px 26px; height: 168px; }
+  .v01-box-rpc { background: rgba(255, 210, 63, 0.22); border: 2px solid var(--stbr-yellow); }
+  .v01-num { display: inline-block; font-family: var(--font-display); font-weight: 900;
+             font-size: 13px; letter-spacing: 0.12em; color: var(--text-on-brand);
+             background: var(--stbr-emerald); border-radius: var(--radius-pill);
+             padding: 3px 12px; margin-bottom: 10px; }
+  .v01-box-rpc .v01-num { background: var(--stbr-dark); }
+  .v01-idea { font-family: var(--font-display); font-weight: 800; font-size: 24px;
+              color: var(--text-primary); margin-bottom: 8px; }
+  .v01-def { font-family: var(--font-body); font-size: 15.5px; line-height: 1.45;
+             color: var(--text-secondary); }
+  .v01-foot { display: flex; align-items: center; gap: 0; margin-top: 26px; }
+  .v01-dash { width: 132px; height: 0; border-top: 2.5px dashed var(--stbr-green);
+              margin-left: 40px; }
+  .v01-dashhead { width: 0; height: 0; border-left: 11px solid var(--stbr-green);
+                  border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+  .v01-footbox { margin-left: 14px; border: 1.5px dashed var(--stbr-green);
+                 border-radius: var(--radius-lg); padding: 12px 22px;
+                 font-family: var(--font-body); font-size: 15.5px; color: var(--text-secondary); }
+  .v01-footbox strong { color: var(--stbr-green); font-weight: 700; }
+</style>
+<div class="v01-card">
+  <div class="stbr-eyebrow">CLIENT-SIDE CHAIN MODEL · FOUR IDEAS, ONE MAP</div>
+  <h2 class="viz-title">the minimal client-side chain model</h2>
+  <div class="v01-map">
+    <div class="v01-col">
+      <div class="v01-box">
+        <div class="v01-num">1</div>
+        <div class="v01-idea">accounts hold lamports</div>
+        <div class="v01-def">an address with a balance and data; 1 SOL = 1,000,000,000 lamports</div>
+      </div>
+      <div class="v01-box">
+        <div class="v01-num">3</div>
+        <div class="v01-idea">transactions mutate</div>
+        <div class="v01-def">the only way state changes; reads are free, writes are signed</div>
+      </div>
+    </div>
+    <div class="v01-hub">
+      <div class="v01-hubline"></div>
+      <div class="v01-hubbox">the chain,<br>as a client<br>sees it</div>
+    </div>
+    <div class="v01-col">
+      <div class="v01-box">
+        <div class="v01-num">2</div>
+        <div class="v01-idea">programs are code</div>
+        <div class="v01-def">a program is an account whose data is executable; noted here, not explored</div>
+      </div>
+      <div class="v01-box v01-box-rpc">
+        <div class="v01-num">4</div>
+        <div class="v01-idea">RPC is the read door</div>
+        <div class="v01-def">a node answering JSON questions about state; no fee, no wallet</div>
+      </div>
+    </div>
+  </div>
+  <div class="v01-foot">
+    <div class="v01-dash"></div>
+    <div class="v01-dashhead"></div>
+    <div class="v01-footbox">everything deeper → the <strong>Bitcoin-to-Solana evolution</strong> course</div>
+  </div>
+</div>
+</div>
+</body></html>

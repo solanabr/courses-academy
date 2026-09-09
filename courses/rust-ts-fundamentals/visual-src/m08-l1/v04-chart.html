@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Slot time, target versus measured
+     purpose: make the target-measurement gap concrete with the three dated numbers the lesson froze
+     data: Bars, milliseconds per slot: target (SIMD-0525 stage 2): 300 measured, research sweep 2026-09-01 (20 samples): 316 measured, write-time re-probe 2026-09-02 (20 samples): 313.6 Reference line at 300ms labeled "target".
+     prompt: A three-bar chart with a horizontal reference line at 300. Bars labeled and valued as in the data block, y-axis in milliseconds starting at 280 to make the gap readable without exaggerating it. One annotation: measured runs about five percent above target.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:545px;height:539px;top:-338px;right:-338px;border-radius:36% 41% 61% 39% / 46% 46% 58% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:474px;height:374px;left:-289px;top:122px;border-radius:36% 61% 41% 62% / 41% 60% 49% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v04-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 38px 56px 30px; overflow: hidden; position: relative; }
+  .v04-plot { position: relative; height: 430px; margin: 26px 40px 0 84px; }
+  .v04-grid { position: absolute; left: 0; right: 0; height: 1.5px;
+              background: var(--border-subtle); }
+  .v04-ylab { position: absolute; left: -66px; width: 54px; text-align: right;
+              font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);
+              margin-top: -8px; }
+  .v04-target { position: absolute; left: 0; right: 0; top: 215px; height: 0;
+                border-top: 3px dashed var(--stbr-dark); }
+  .v04-targetlab { position: absolute; right: 4px; top: 188px;
+                   font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                   letter-spacing: 0.1em; text-transform: uppercase;
+                   background: var(--stbr-dark); color: var(--stbr-cream);
+                   border-radius: var(--radius-pill); padding: 3px 12px; }
+  .v04-bars { position: absolute; left: 0; right: 0; bottom: 0; height: 430px;
+              display: flex; justify-content: space-around; align-items: flex-end; }
+  .v04-barcol { display: flex; flex-direction: column; align-items: center;
+                justify-content: flex-end; width: 210px; }
+  .v04-val { font-family: var(--font-display); font-weight: 900; font-size: 26px;
+             color: var(--text-primary); margin-bottom: 8px; }
+  .v04-bar { width: 190px; border-radius: 10px 10px 0 0; overflow: hidden;
+             display: flex; flex-direction: column; }
+  .v04-gap { background: var(--stbr-yellow); }
+  .v04-base { background: var(--stbr-emerald); }
+  .v04-base-solo { border-radius: 10px 10px 0 0; }
+  .v04-xrow { display: flex; justify-content: space-around; margin: 14px 40px 0 84px; }
+  .v04-xlab { width: 210px; text-align: center; font-family: var(--font-body);
+              font-weight: 600; font-size: 15px; line-height: 1.35;
+              color: var(--text-secondary); }
+  .v04-xlab span { display: block; font-weight: 400; font-size: 13px;
+                   color: var(--text-muted); margin-top: 2px; }
+  .v04-cap { display: flex; align-items: center; gap: 12px; margin: 20px 40px 0 84px;
+             font-family: var(--font-body); font-size: 15px; color: var(--text-secondary); }
+  .v04-key { width: 16px; height: 16px; border-radius: 4px; background: var(--stbr-yellow);
+             border: 1.5px solid var(--stbr-dark); flex: none; }
+  .v04-axnote { margin-left: auto; font-size: 13px; color: var(--text-muted); }
+</style>
+<div class="v04-card">
+  <div class="stbr-eyebrow">MILLISECONDS PER SLOT · THREE FROZEN NUMBERS</div>
+  <h2 class="viz-title">slot time: target versus measured</h2>
+  <div class="v04-plot">
+    <div class="v04-grid" style="top: 0;"><div class="v04-ylab">320 ms</div></div>
+    <div class="v04-grid" style="top: 107.5px;"><div class="v04-ylab">310 ms</div></div>
+    <div class="v04-grid" style="top: 215px;"><div class="v04-ylab">300 ms</div></div>
+    <div class="v04-grid" style="top: 322.5px;"><div class="v04-ylab">290 ms</div></div>
+    <div class="v04-grid" style="top: 430px;"><div class="v04-ylab">280 ms</div></div>
+    <div class="v04-bars">
+      <div class="v04-barcol">
+        <div class="v04-val">300</div>
+        <div class="v04-bar"><div class="v04-base v04-base-solo" style="height: 215px;"></div></div>
+      </div>
+      <div class="v04-barcol">
+        <div class="v04-val">316</div>
+        <div class="v04-bar">
+          <div class="v04-gap" style="height: 172px;"></div>
+          <div class="v04-base" style="height: 215px;"></div>
+        </div>
+      </div>
+      <div class="v04-barcol">
+        <div class="v04-val">313.6</div>
+        <div class="v04-bar">
+          <div class="v04-gap" style="height: 146px;"></div>
+          <div class="v04-base" style="height: 215px;"></div>
+        </div>
+      </div>
+    </div>
+    <div class="v04-target"></div>
+    <div class="v04-targetlab">target · 300 ms</div>
+  </div>
+  <div class="v04-xrow">
+    <div class="v04-xlab">target<span>SIMD-0525 stage 2</span></div>
+    <div class="v04-xlab">measured: research sweep<span>2026-09-01 · 20 samples</span></div>
+    <div class="v04-xlab">measured: write-time re-probe<span>2026-09-02 · 20 samples</span></div>
+  </div>
+  <div class="v04-cap">
+    <div class="v04-key"></div>
+    <div>the gap: measured runs about five percent above target</div>
+    <div class="v04-axnote">y-axis starts at 280 ms to make the gap readable</div>
+  </div>
+</div>
+</div>
+</body></html>

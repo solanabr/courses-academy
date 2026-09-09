@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The lifecycle of a bug that can never come back
+     purpose: show the fixture habit as a pipeline from live bug to permanent regression pin
+     data: Stage 1: bug ships (m02-l2's typo'd config, swallowed politely) Stage 2: bug fixed (zod boundary refuses the file at startup) Stage 3: evidence frozen (sabotaged config checked in at tests/fixtures/pulse.bad.json) Stage 4: refusal asserted (a test pins that safeParse rejects it, naming the field) Stage 5: forever after (loosen the schema and the suite goes red before the cron publishes)
+     prompt: Five-stage horizontal pipeline, one node per stage from data, arrows left to right. The third node is drawn as a snowflake/frozen file icon to mark the promotion from war story to fixture. The fifth node loops a red arrow back to the fourth, labeled "regression returns -> test fails first". Keep labels short, one line each.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:428px;right:-237px;top:252px;border-radius:39% 62% 60% 52% / 50% 53% 52% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:549px;height:495px;bottom:-268px;left:-268px;border-radius:51% 48% 40% 59% / 46% 51% 62% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 44px 52px 40px; }
+  .pipe { display: flex; align-items: stretch; margin-top: 26px; }
+  .node { flex: 1; background: var(--surface-card); border: 1.5px solid var(--border-strong);
+          border-radius: var(--radius-lg); padding: 18px 18px 16px; display: block;
+          min-height: 196px; }
+  .node.frozen { background: var(--stbr-yellow); border-color: var(--stbr-yellow); }
+  .stageno { font-family: var(--font-display); font-weight: 800; font-size: 14px;
+             letter-spacing: 0.12em; text-transform: uppercase; color: var(--stbr-emerald);
+             display: flex; align-items: center; gap: 8px; }
+  .node.frozen .stageno { color: var(--stbr-dark); }
+  .node h3 { font-family: var(--font-display); font-weight: 900; font-size: 25px;
+             line-height: 1.05; color: var(--text-primary); margin: 8px 0 8px; }
+  .node p { font-family: var(--font-body); font-size: 15.5px; line-height: 1.35;
+            color: var(--text-secondary); margin: 0; }
+  .node.frozen p { color: var(--stbr-dark); }
+  .pipearrow { width: 42px; display: flex; align-items: center; justify-content: center; }
+  .loopwrap { position: relative; height: 84px; margin-top: 6px; }
+  .loop { position: absolute; left: 71.2%; width: 20.6%; top: 0; height: 44px;
+          border-left: 3px solid var(--stbr-dark); border-right: 3px solid var(--stbr-dark);
+          border-bottom: 3px solid var(--stbr-dark); border-radius: 0 0 18px 18px; }
+  .loop .tip { position: absolute; left: -10px; top: -14px; width: 0; height: 0;
+               border-left: 8px solid transparent; border-right: 8px solid transparent;
+               border-bottom: 14px solid var(--stbr-dark); }
+  .looplabel { position: absolute; left: 66%; width: 31%; top: 32px; text-align: center; }
+  .looplabel span { display: inline-block; background: var(--surface-card);
+                    border: 1.5px solid var(--stbr-dark); border-radius: var(--radius-pill);
+                    padding: 7px 18px; font-family: var(--font-body); font-weight: 600;
+                    font-size: 16px; color: var(--text-primary); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">from war story to fixture</div>
+  <h2 class="viz-title" style="font-size:46px;">the lifecycle of a bug that can never come back</h2>
+  <div class="pipe">
+    <div class="node">
+      <div class="stageno">stage 1</div>
+      <h3>bug ships</h3>
+      <p>the typo&#8217;d config from m02-l2, swallowed politely</p>
+    </div>
+    <div class="pipearrow"><svg width="42" height="24"><line x1="2" y1="12" x2="26" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="40,12 24,4 24,20" fill="#1B231D"/></svg></div>
+    <div class="node">
+      <div class="stageno">stage 2</div>
+      <h3>bug fixed</h3>
+      <p>the zod boundary refuses the file at startup</p>
+    </div>
+    <div class="pipearrow"><svg width="42" height="24"><line x1="2" y1="12" x2="26" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="40,12 24,4 24,20" fill="#1B231D"/></svg></div>
+    <div class="node frozen">
+      <div class="stageno"><svg width="22" height="22"><line x1="11" y1="1" x2="11" y2="21" stroke="#1B231D" stroke-width="2.5"/><line x1="2" y1="6" x2="20" y2="16" stroke="#1B231D" stroke-width="2.5"/><line x1="2" y1="16" x2="20" y2="6" stroke="#1B231D" stroke-width="2.5"/></svg> stage 3</div>
+      <h3>evidence frozen</h3>
+      <p>the sabotaged config checked in at tests/fixtures/pulse.bad.json</p>
+    </div>
+    <div class="pipearrow"><svg width="42" height="24"><line x1="2" y1="12" x2="26" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="40,12 24,4 24,20" fill="#1B231D"/></svg></div>
+    <div class="node">
+      <div class="stageno">stage 4</div>
+      <h3>refusal asserted</h3>
+      <p>a test pins that safeParse rejects it, naming the field</p>
+    </div>
+    <div class="pipearrow"><svg width="42" height="24"><line x1="2" y1="12" x2="26" y2="12" stroke="#1B231D" stroke-width="3.5"/><polygon points="40,12 24,4 24,20" fill="#1B231D"/></svg></div>
+    <div class="node">
+      <div class="stageno">stage 5</div>
+      <h3>forever after</h3>
+      <p>loosen the schema and the suite goes red before the cron publishes</p>
+    </div>
+  </div>
+  <div class="loopwrap">
+    <div class="loop"><div class="tip"></div></div>
+    <div class="looplabel"><span>regression returns &#8594; test fails first</span></div>
+  </div>
+</div>
+</div>
+</body></html>

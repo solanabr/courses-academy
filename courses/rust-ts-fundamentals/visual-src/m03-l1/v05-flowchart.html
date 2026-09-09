@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What the resolver checks when you ask for kit latest
+     purpose: show the peer-conflict refusal as a contract check, not an npm quirk
+     data: step 1: your package.json requests @solana/kit@latest (8.2.0 at probe time) step 2: resolver walks installed deps -> finds helius-sdk 3.1.0 step 3: reads helius-sdk peerDependencies -> @solana/kit ^6.9.0 step 4: checks 8.2.0 against ^6.9.0 -> fails (caret stops before 7.0.0) outcome A (conflict): ERESOLVE, install refused, contract surfaced at install time outcome B (if you force past it): both install, helius-sdk runs against an untested kit API surface at runtime
+     prompt: Vertical flowchart of the four resolver steps, ending in a two-way branch: the refusal path (marked as the safe outcome) and the force-past path (marked as deferred, hidden risk). Put the range check "8.2.0 vs ^6.9.0" on the decision node in monospace. Keep node text short.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:560px;height:533px;top:-282px;right:-282px;border-radius:50% 36% 45% 53% / 37% 37% 51% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:551px;height:516px;bottom:-274px;left:-274px;border-radius:65% 45% 39% 65% / 62% 49% 61% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:28px 56px 26px;}
+  .mono{font-family:var(--font-mono);}
+  .flow{display:flex;flex-direction:column;align-items:center;margin-top:10px;}
+  .step{width:680px;background:var(--surface-card);border:2px solid var(--border-strong);border-radius:12px;padding:9px 18px;display:flex;align-items:center;gap:14px;}
+  .num{width:28px;height:28px;flex:none;border-radius:50%;background:var(--stbr-emerald);color:var(--text-on-brand);font-family:var(--font-display);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;}
+  .t{font-family:var(--font-body);font-size:15px;color:var(--text-primary);line-height:1.35;}
+  .va{width:2px;height:16px;background:var(--stbr-dark);}
+  .vh{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);}
+  .dec{width:680px;border:2.5px solid var(--stbr-emerald);border-radius:12px;padding:10px 18px;display:flex;align-items:center;gap:14px;}
+  .chip{font-family:var(--font-mono);font-weight:700;font-size:14px;background:var(--surface-inverse);color:var(--text-on-dark);border-radius:8px;padding:5px 10px;flex:none;}
+  .branch{position:relative;width:1100px;height:148px;margin-top:4px;}
+  .side{position:absolute;top:0;width:520px;display:flex;flex-direction:column;align-items:center;}
+  .side.l{left:6px;}
+  .side.r{right:6px;}
+  .lbl{font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:4px;}
+  .out{width:520px;border-radius:14px;padding:12px 20px;}
+  .out h3{font-family:var(--font-display);font-weight:800;font-size:20px;margin:0 0 5px;}
+  .out p{font-family:var(--font-body);font-size:13.5px;line-height:1.4;margin:0;}
+  .a{background:var(--surface-accent);color:var(--text-on-accent);border:2px solid var(--stbr-dark);}
+  .b{background:var(--surface-inverse);color:var(--text-on-dark);}
+  .b h3{color:var(--text-on-dark);}
+  .b p{color:var(--text-on-dark);}
+  .a h3{color:var(--text-on-accent);}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">a peer conflict is a contract check</div>
+  <h2 class="viz-title" style="font-size:42px;margin:4px 0 8px;">what the resolver checks when you ask for kit latest</h2>
+  <div class="flow">
+    <div class="step"><div class="num">1</div><div class="t">your package.json requests <span class="mono" style="font-weight:700;">@solana/kit@latest</span>, <span class="mono">8.2.0</span> at probe time</div></div>
+    <div class="va"></div><div class="vh"></div>
+    <div class="step"><div class="num">2</div><div class="t">resolver walks the installed deps &rarr; finds <span class="mono" style="font-weight:700;">helius-sdk 3.1.0</span></div></div>
+    <div class="va"></div><div class="vh"></div>
+    <div class="step"><div class="num">3</div><div class="t">reads its peerDependencies &rarr; <span class="mono" style="font-weight:700;">@solana/kit ^6.9.0</span></div></div>
+    <div class="va"></div><div class="vh"></div>
+    <div class="dec"><div class="num">4</div><div class="chip">8.2.0 vs ^6.9.0</div><div class="t"><strong>fails</strong>: the caret stops before 7.0.0</div></div>
+    <div class="branch">
+      <div class="side l">
+        <div class="lbl">conflict</div>
+        <div class="va"></div><div class="vh"></div>
+        <div class="out a">
+          <h3>ERESOLVE: install refused</h3>
+          <p>the contract surfaced at install time: the safe outcome</p>
+        </div>
+      </div>
+      <div class="side r">
+        <div class="lbl">--force past it</div>
+        <div class="va"></div><div class="vh"></div>
+        <div class="out b">
+          <h3>both install anyway</h3>
+          <p>helius-sdk runs against an untested kit API surface at runtime; the risk is deferred and hidden</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

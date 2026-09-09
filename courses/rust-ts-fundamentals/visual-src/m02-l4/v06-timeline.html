@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: What the fake clock does to fifteen seconds of backoff
+     purpose: show that the test jumps the clock to each scheduled instant instead of shrinking or waiting the delays
+     data: t=0: attempt 1 fires (returns 429) t=500: retry 1 fires t=1500: retry 2 fires t=3500: retry 3 fires t=7500: retry 4 fires t=15500: retry 5 fires, run resolves caption: the test advances the clock to each instant; real elapsed time is milliseconds
+     prompt: Horizontal timeline with six markers at the instants listed in data, labeled with their attempt number and fake-clock time. Above the line, an arrow hopping marker to marker labeled "advanceTimersByTimeAsync". Below the line one caption from data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:532px;height:568px;top:-311px;right:-311px;border-radius:43% 48% 54% 35% / 65% 38% 64% 42%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:413px;height:527px;bottom:-328px;left:640px;border-radius:60% 57% 50% 64% / 45% 47% 63% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 42px 44px 36px; }
+  .apichip { display: inline-block; background: var(--surface-inverse); color: var(--stbr-cream);
+             font-family: var(--font-mono); font-size: 19px; border-radius: var(--radius-pill);
+             padding: 9px 24px; margin-top: 10px; }
+  .tl { position: relative; height: 230px; margin-top: 26px; }
+  .rule { position: absolute; left: 96px; right: 96px; top: 96px; height: 3px;
+          background: var(--stbr-dark); }
+  .dot { position: absolute; top: 88px; width: 19px; height: 19px; border-radius: 50%;
+         background: var(--stbr-emerald); }
+  .hop { position: absolute; top: 38px; height: 50px; width: 230px;
+         border-top: 3px solid var(--stbr-yellow); border-left: 3px solid var(--stbr-yellow);
+         border-right: 3px solid var(--stbr-yellow); border-radius: 115px 115px 0 0; }
+  .hop .tip { position: absolute; right: -9px; bottom: -4px; width: 0; height: 0;
+              border-left: 7px solid transparent; border-right: 7px solid transparent;
+              border-top: 13px solid var(--stbr-yellow); }
+  .delta { position: absolute; top: 2px; width: 230px; text-align: center;
+           font-family: var(--font-body); font-weight: 700; font-size: 16px;
+           color: var(--text-primary); }
+  .tick { position: absolute; top: 122px; width: 220px; text-align: center; }
+  .tick .tt { font-family: var(--font-mono); font-weight: 700; font-size: 19px;
+              color: var(--text-primary); }
+  .tick .td { font-family: var(--font-body); font-size: 15.5px; line-height: 1.3;
+              color: var(--text-secondary); margin-top: 3px; }
+  .cap { margin-top: 6px; font-family: var(--font-body); font-size: 18px;
+         color: var(--text-secondary); text-align: center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">fifteen seconds of backoff, zero seconds waited</div>
+  <h2 class="viz-title" style="font-size:44px;">what the fake clock does to fifteen seconds of backoff</h2>
+  <div style="text-align:center;"><span class="apichip">await vi.advanceTimersByTimeAsync(...)</span></div>
+  <div class="tl">
+    <div class="rule"></div>
+    <div class="hop" style="left:110px;"><div class="tip"></div></div>
+    <div class="hop" style="left:340px;"><div class="tip"></div></div>
+    <div class="hop" style="left:570px;"><div class="tip"></div></div>
+    <div class="hop" style="left:800px;"><div class="tip"></div></div>
+    <div class="hop" style="left:1030px;"><div class="tip"></div></div>
+    <div class="delta" style="left:110px;">+500 ms</div>
+    <div class="delta" style="left:340px;">+1000 ms</div>
+    <div class="delta" style="left:570px;">+2000 ms</div>
+    <div class="delta" style="left:800px;">+4000 ms</div>
+    <div class="delta" style="left:1030px;">+8000 ms</div>
+    <div class="dot" style="left:101px;"></div>
+    <div class="dot" style="left:331px;"></div>
+    <div class="dot" style="left:561px;"></div>
+    <div class="dot" style="left:791px;"></div>
+    <div class="dot" style="left:1021px;"></div>
+    <div class="dot" style="left:1251px;"></div>
+    <div class="tick" style="left:0;"><div class="tt">t=0</div><div class="td">attempt 1 fires (returns 429)</div></div>
+    <div class="tick" style="left:230px;"><div class="tt">t=500</div><div class="td">retry 1 fires</div></div>
+    <div class="tick" style="left:460px;"><div class="tt">t=1500</div><div class="td">retry 2 fires</div></div>
+    <div class="tick" style="left:690px;"><div class="tt">t=3500</div><div class="td">retry 3 fires</div></div>
+    <div class="tick" style="left:920px;"><div class="tt">t=7500</div><div class="td">retry 4 fires</div></div>
+    <div class="tick" style="left:1148px;"><div class="tt">t=15500</div><div class="td">retry 5 fires, run resolves</div></div>
+  </div>
+  <div class="cap">the test advances the clock to each instant; real elapsed time is milliseconds (spacing schematic, not to scale)</div>
+</div>
+</div>
+</body></html>

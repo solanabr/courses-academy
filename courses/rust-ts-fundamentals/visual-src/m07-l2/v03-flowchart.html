@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What one wrangler deploy actually runs for Rust
+     purpose: demystify the stacked toolchain so the learner can read build output and place failures
+     data: npx wrangler deploy -> [build] command: worker-build -> cargo build --target wasm32-unknown-unknown (your crate + pulse-engine) -> wasm-bindgen (generates JS glue + type marshalling) -> wasm-opt (shrinks the .wasm) -> emits build/index.js shim + module -> wrangler uploads shim + wasm, binds KV, prints https://pulse-edge-rs.<subdomain>.workers.dev failure triage: exotic glue error -> run cargo check natively first
+     prompt: A vertical pipeline with the deploy command at top, an expanded build stage showing the four inner steps in order, then the upload step ending in a URL chip. A small side callout carries the triage tip about checking natively when glue errors look exotic. Keep the four inner tools visually subordinate to the single top-level command.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:434px;right:-300px;top:201px;border-radius:43% 51% 53% 46% / 41% 62% 64% 64%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:533px;height:521px;bottom:-279px;left:-279px;border-radius:44% 46% 43% 41% / 47% 45% 44% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 38px 52px 34px; position: relative; }
+    .col { display: flex; flex-direction: column; align-items: center; }
+    .varrow { width: 4px; height: 24px; background: var(--stbr-dark); }
+    .vhead { width: 0; height: 0; border-left: 9px solid transparent;
+             border-right: 9px solid transparent; border-top: 12px solid var(--stbr-dark); }
+    .step { background: var(--surface-card); border: 2px solid var(--border-strong);
+            border-radius: var(--radius-lg); padding: 12px 14px; width: 236px; }
+    .step h5 { margin: 0; font-family: var(--font-mono); font-size: 14.5px;
+               color: var(--stbr-dark); line-height: 1.3; }
+    .step p { margin: 5px 0 0; font-family: var(--font-body); font-size: 12.5px;
+              color: var(--text-secondary); line-height: 1.3; }
+    .harrow { display: flex; align-items: center; }
+    .harrow .l { width: 16px; height: 3px; background: var(--stbr-emerald); }
+    .harrow .h { width: 0; height: 0; border-top: 7px solid transparent;
+                 border-bottom: 7px solid transparent; border-left: 9px solid var(--stbr-emerald); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">the stacked toolchain, demystified</div>
+    <h2 class="viz-title" style="font-size:48px;">what one <span style="color:var(--stbr-emerald);">wrangler deploy</span> actually runs for rust</h2>
+
+    <div class="col" style="margin-top:6px;">
+      <!-- the single top-level command -->
+      <div style="background:var(--surface-inverse); color:var(--stbr-cream); font-family:var(--font-mono);
+                  font-size:22px; font-weight:700; border-radius:var(--radius-pill); padding:12px 40px;">
+        npx wrangler deploy</div>
+
+      <div class="varrow" style="margin-top:8px;"></div>
+      <span style="font-family:var(--font-body); font-size:13px; color:var(--text-secondary); margin:2px 0;">
+        [build] command</span>
+      <div class="varrow" style="height:12px;"></div><div class="vhead"></div>
+
+      <!-- expanded build stage -->
+      <div style="border:3px solid var(--stbr-emerald); border-radius:var(--radius-xl);
+                  background:var(--surface-paper); padding:14px 18px 16px; width:1180px; margin-top:4px;">
+        <p style="margin:0 0 10px; font-family:var(--font-display); font-weight:800; font-size:17px;
+                  color:var(--stbr-emerald); letter-spacing:0.04em;">worker-build: the build stage, expanded</p>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="step">
+            <h5>cargo build --target wasm32-unknown-unknown</h5>
+            <p>your crate + pulse-engine</p>
+          </div>
+          <div class="harrow"><div class="l"></div><div class="h"></div></div>
+          <div class="step">
+            <h5>wasm-bindgen</h5>
+            <p>generates JS glue + type marshalling</p>
+          </div>
+          <div class="harrow"><div class="l"></div><div class="h"></div></div>
+          <div class="step">
+            <h5>wasm-opt</h5>
+            <p>shrinks the .wasm</p>
+          </div>
+          <div class="harrow"><div class="l"></div><div class="h"></div></div>
+          <div class="step">
+            <h5>emits build/index.js</h5>
+            <p>shim + wasm module</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="varrow" style="margin-top:10px;"></div><div class="vhead"></div>
+
+      <!-- upload -->
+      <div style="border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+                  background:var(--surface-card); padding:12px 28px; margin-top:2px;">
+        <p style="margin:0; font-family:var(--font-body); font-weight:700; font-size:17px; color:var(--stbr-dark);">
+          wrangler uploads shim + wasm, binds KV</p>
+      </div>
+
+      <div class="varrow" style="margin-top:10px;"></div><div class="vhead"></div>
+
+      <!-- the URL it prints -->
+      <div style="background:var(--surface-brand); color:var(--text-on-brand); font-family:var(--font-mono);
+                  font-size:18px; border-radius:var(--radius-pill); padding:11px 34px; margin-top:2px;">
+        https://pulse-edge-rs.&lt;subdomain&gt;.workers.dev</div>
+    </div>
+
+    <!-- failure-triage callout: the one yellow thing -->
+    <div style="position:absolute; right:52px; top:452px; width:250px; background:var(--stbr-yellow);
+                border-radius:var(--radius-lg); padding:14px 16px;">
+      <p style="margin:0; font-family:var(--font-display); font-weight:900; font-size:15px;
+                color:var(--stbr-dark); letter-spacing:0.04em;">FAILURE TRIAGE</p>
+      <p style="margin:6px 0 0; font-family:var(--font-body); font-size:13.5px; color:var(--stbr-dark);
+                line-height:1.35;">exotic glue error? run <span style="font-family:var(--font-mono); font-weight:700;">cargo check</span> natively first; most &ldquo;wasm&rdquo; failures are plain Rust errors.</p>
+    </div>
+    <div style="position:absolute; right:190px; top:414px; width:3px; height:38px;
+                background:var(--stbr-dark);"></div>
+  </div>
+</div>
+</body></html>

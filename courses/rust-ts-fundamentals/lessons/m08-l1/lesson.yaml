@@ -1,0 +1,117 @@
+id: lesson-rtf-m08-l1
+slug: m08-l1
+title: "A chain is a target: the minimal model + first reads"
+skills:
+  - solana-fundamentals
+  - solana-kit
+  - rpc-reads
+  - transactions
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "@solana/kit": "8.2.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: epoch-clock
+    type: code
+    language: typescript
+    starter: epoch-clock/starter.ts
+    solution: epoch-clock/solution.ts
+    tests: epoch-clock/tests.json
+    hints:
+      - "Math.floor, not Math.round, a slot 60% through epoch 3 is still in epoch 3."
+      - "slot % 432000 tells you how far you ARE; the countdown wants how far you have LEFT."
+      - "slotMs is milliseconds: an hour is 3,600,000 of them."
+  - key: chain-model-check
+    type: quiz
+    questions:
+      - id: m08-l1-q1
+        prompt: "Your probe script calls getSlot twice, ten seconds apart, and the number climbed by about 33. What did you just observe?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Your own request latency, since each call takes about 300ms round-trip"
+            correct: false
+            feedback: "Round-trip latency affects WHEN you see the number, not the number itself. Ten seconds at ~300ms per slot is ~33 slots, the arithmetic matches the network's cadence, not your connection's."
+          - id: d
+            label: "The block height rising by 33, since every slot fills with a block"
+            correct: false
+            feedback: "Slot and block are not synonyms: the slot is the tick of the clock, the block is what lands in it, and a slot with no block still advances the counter. getSlot returns ticks, so block height is the number you did not read."
+          - id: e
+            label: "A 33-slot backlog this RPC node might still be working through"
+            correct: false
+            feedback: "A node still catching up would say so: getHealth answered ok before you started. And a replaying node would race ahead of wall-clock time, while 33 ticks in ten seconds is exactly the pace the live network is producing them at."
+          - id: a
+            label: "The RPC node processing 33 of your queued read requests in order"
+            correct: false
+            feedback: "Reads don't queue as chain events, your two getSlot calls were just questions. The slot counter advanced on its own, whether or not anyone asked."
+          - id: b
+            label: "The chain's heartbeat, a new slot ticking roughly every 300ms"
+            correct: true
+            feedback: "Ten seconds over 33 ticks lands near 300ms, which is the post-SIMD-0525 target the network has run since epoch 1024. The counter moved because validators kept producing slots, not because you asked twice."
+        explanation: "A slot is the network's clock tick, the unit in which the chain schedules block production. At the post-SIMD-0525 300ms target, ten seconds is about 33 slots. This is the whole point of the gauge: the chain publishes its own heartbeat, and getSlot is the stethoscope."
+      - id: m08-l1-q2
+        prompt: "After the 400ms-to-300ms upgrade, your gauge shows epochs lasting 36 hours instead of 48. Nobody announced an epoch change. What happened?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The upgrade also shortened epochs from 432,000 to 324,000 slots to compensate"
+            correct: false
+            feedback: "No, ticks_per_slot and the 432,000-slot epoch both stayed fixed through SIMD-0525. Check the arithmetic: 432,000 x 300ms is exactly 36 hours with no epoch resize needed."
+          - id: c
+            label: "Epochs stay fixed at 432,000 slots, so wall-clock length tracks slot time"
+            correct: true
+            feedback: "432,000 times 0.3 seconds is 129,600 seconds, exactly 36 hours. Nothing about the epoch was changed; the multiplier moved, and every schedule keyed to epoch boundaries moved with it."
+          - id: b
+            label: "Your clock is buggy: epoch duration is defined in hours and cannot drift"
+            correct: false
+            feedback: "Backwards, epochs are defined in SLOTS, not hours. The wall-clock duration is the derived quantity, which is exactly why it moved when slot time did."
+          - id: d
+            label: "The feature gate activated mid-epoch, so this one epoch alone came up short"
+            correct: false
+            feedback: "Feature gates flip at an epoch boundary, never partway through one: the stage-2 gate landed in epoch 1023 and the behavior switched at the start of 1024. And 36 hours is the new steady state, not a one-off transition."
+        explanation: "The epoch is a slot-count, not a duration: 432,000 slots, always. Wall-clock epoch length = 432,000 x slot time, so 400ms gives 48h and 300ms gives 36h. Your epoch-clock challenge computes exactly this, one fixed constant, one measured variable."
+      - id: m08-l1-q3
+        prompt: "Your 20-sample gauge averages 316ms where the network publishes 300ms. A teammate says your measurement must be wrong. Who's right?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The teammate: your HTTP round-trip time is leaking into the slot-time numbers"
+            correct: false
+            feedback: "getRecentPerformanceSamples reports the node's own recorded slot timings, your connection latency affects fetching the samples, not the values inside them. The research sweep measured the same 316 ms."
+          - id: c
+            label: "Neither: the 300ms change hasn't activated yet, so both numbers are stale"
+            correct: false
+            feedback: "The stage-2 gate is decodable on-chain, activated at epoch 1024, 2026-08-28. The upgrade is live; the gap between 300 and 316 is the normal daylight between a target and a running system."
+          - id: a
+            label: "You: 300ms is a target, and live networks measure somewhat above their targets"
+            correct: true
+            feedback: "A target is an engineering intention and a measurement is what happened. Two independent runs, 316ms and 313.6ms on different days, put the gap around five percent, which is what a live system looks like rather than a defect."
+          - id: d
+            label: "The teammate: a live network holds its target, so 316ms signals trouble"
+            correct: false
+            feedback: "No running system holds its target exactly, and this one publishes the evidence: 316ms on 2026-09-01, 313.6ms the next day, a 20-sample window spanning 309.3 to 326.1ms with nothing flagged. Five percent above target is the ordinary state, not an incident."
+        explanation: "Targets versus measurements is the course's oldest lesson wearing chain clothes: the network aims at 300ms and measured 316 ms at research time (~5% above). Publish what you measure. Your own station's dashboard should get the same honesty, a claimed uptime and a measured uptime are different numbers."
+      - id: m08-l1-q4
+        prompt: "Your probe read the slot, the health, and (next lesson) balances, all without a wallet, a key, or a fee. What makes that possible?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The public RPC covers your read fees out of a shared faucet allowance everyone draws on"
+            correct: false
+            feedback: "There's no fee being covered, reads simply aren't chain events. Fees exist to pay for state MUTATION, which is what transactions do and queries don't."
+          - id: d
+            label: "Kit opens a fee-free read session, so no key is needed for queries"
+            correct: false
+            feedback: "The lesson's first read was a raw curl POST with no client library at all, and it came back just as free. Kit adds types and a nicer call shape on top of the same JSON-RPC door; it does not negotiate anything with the node."
+          - id: c
+            label: "Read requests are free-tier transactions that validators process without signatures"
+            correct: false
+            feedback: "A read never becomes a transaction at all, it never touches consensus. Only writes are transactions, which is why m08-l4's single transfer is the module's big event and reads are three lines."
+          - id: b
+            label: "RPC is the read door, a node answering questions about state, no transaction"
+            correct: true
+            feedback: "The node holds a copy of state and answers JSON questions about it, the way any web server answers a GET. Nothing was signed, nothing was paid for, and no validator recorded that you asked."
+        explanation: "The minimal model's fourth idea: RPC nodes hold a copy of state and answer questions about it. Reading is asking; writing is a signed transaction that mutates. That asymmetry shapes this whole module, three lessons of free reads from two languages, then one carefully-earned write."

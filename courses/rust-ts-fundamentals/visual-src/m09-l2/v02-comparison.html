@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Printf noise vs boundary events, judged by one incident question
+     purpose: show why structured events answer "when did it flip" with a single grep while prose logging cannot
+     data: question: when did the api target last flip from up to degraded? style A "printf prose": lines like "probe had a problem, retrying soon" | no named fields | grep matches everything or nothing | answer: re-read the whole log by eye style B "boundary events": {"event":"state_change","from":"Up","target":"api","to":"Degraded","ts":1788312345} | fields = the question's nouns | answer: grep '"event":"state_change"' + the target name, read ts style C "log everything, every iteration": full state dump per loop pass | the flip exists but is buried under thousands of identical lines | and it torches per-day event budgets on the worker side
+     prompt: Three-column comparison card headed by the incident question. Column A shows a fuzzy prose log line and a crossed-out grep. Column B shows one compact JSON event line with the from/to/ts fields highlighted and a green one-line grep beneath it. Column C shows a wall of identical dump lines with the one useful line lost in the middle. Verdict strip under column B: "the question shapes the schema".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:459px;height:467px;top:-238px;right:-238px;border-radius:39% 43% 61% 46% / 62% 59% 60% 58%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:517px;height:553px;bottom:-302px;left:-302px;border-radius:49% 49% 39% 39% / 39% 38% 61% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:34px 48px 30px;}
+  .qband{margin-top:12px;background:var(--surface-inverse);border-radius:var(--radius-lg);
+         padding:12px 22px;display:flex;align-items:baseline;gap:14px;}
+  .qband .ql{font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.14em;
+             text-transform:uppercase;color:var(--stbr-yellow);white-space:nowrap;}
+  .qband .qt{font-family:var(--font-mono);font-size:17px;color:var(--stbr-cream);}
+  .cols{display:flex;gap:18px;margin-top:18px;align-items:stretch;}
+  .colc{flex:1;display:flex;flex-direction:column;gap:10px;border:2px solid var(--border-subtle);
+        border-radius:var(--radius-xl);padding:16px 18px;background:var(--surface-card);}
+  .colc.win{border:3px solid var(--stbr-emerald);}
+  .chead{font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.15;
+         color:var(--text-primary);}
+  .ctag{font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.12em;
+        text-transform:uppercase;color:var(--text-muted);}
+  .code{background:var(--surface-inverse);border-radius:var(--radius-md);padding:12px 14px;
+        font-family:var(--font-mono);font-size:12px;line-height:1.55;color:var(--stbr-cream);
+        overflow:hidden;}
+  .code .dim{color:#8a938c;}
+  .code .hl{background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:3px;padding:0 2px;
+            font-weight:700;}
+  .greprow{font-family:var(--font-mono);font-size:12.5px;line-height:1.4;border-radius:var(--radius-md);
+           padding:8px 12px;}
+  .grep-bad{background:var(--surface-paper);color:var(--text-muted);text-decoration:line-through;}
+  .grep-good{background:var(--stbr-emerald);color:var(--stbr-cream);font-weight:600;}
+  .ans{margin-top:auto;font-family:var(--font-body);font-size:13.5px;line-height:1.35;
+       color:var(--text-secondary);}
+  .ans b{color:var(--text-primary);}
+  .verdict{margin-top:18px;background:var(--surface-brand);border-radius:var(--radius-xl);
+           padding:15px 26px;display:flex;align-items:baseline;gap:16px;}
+  .verdict b{font-family:var(--font-display);font-weight:900;font-size:22px;color:var(--text-on-brand);
+             white-space:nowrap;}
+  .verdict span{font-family:var(--font-body);font-size:14.5px;color:var(--text-on-brand);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">one incident question as judge</div>
+  <h2 class="viz-title" style="font-size:44px;">printf noise vs boundary events</h2>
+  <div class="qband">
+    <span class="ql">the question</span>
+    <span class="qt">when did the api target last flip from up to degraded?</span>
+  </div>
+  <div class="cols">
+    <div class="colc">
+      <div class="ctag">style a</div>
+      <div class="chead">printf prose</div>
+      <div class="code">
+        probe had a problem, retrying soon<br>
+        still flaky, will try again<br>
+        probe had a problem, retrying soon<br>
+        <span class="dim">&hellip; no named fields, no target, no state</span>
+      </div>
+      <div class="greprow grep-bad">grep "problem" station.log</div>
+      <div class="ans"><b>matches everything or nothing.</b> Answer: re-read the whole log by eye.</div>
+    </div>
+    <div class="colc win">
+      <div class="ctag" style="color:var(--stbr-emerald);">style b</div>
+      <div class="chead">boundary events</div>
+      <div class="code">
+        {"event":"state_change",<br>
+        &nbsp;"target":"api",<br>
+        &nbsp;<span class="hl">"from":"Up"</span>,<br>
+        &nbsp;<span class="hl">"to":"Degraded"</span>,<br>
+        &nbsp;<span class="hl">"ts":1788312345</span>}
+      </div>
+      <div class="greprow grep-good">grep '"event":"state_change"' | grep api</div>
+      <div class="ans"><b>fields = the question&rsquo;s nouns.</b> Answer: one grep, read <b>ts</b>.</div>
+    </div>
+    <div class="colc">
+      <div class="ctag">style c</div>
+      <div class="chead">log everything, every iteration</div>
+      <div class="code">
+        <span class="dim">{"iter":58229,"state":"Up","targets":[..12..]}</span><br>
+        <span class="dim">{"iter":58230,"state":"Up","targets":[..12..]}</span><br>
+        {"iter":58231,"state":"Degraded",&hellip;}<br>
+        <span class="dim">{"iter":58232,"state":"Degraded","targets":[..]}</span><br>
+        <span class="dim">{"iter":58233,"state":"Degraded","targets":[..]}</span>
+      </div>
+      <div class="greprow grep-bad">the flip exists, buried in thousands of twins</div>
+      <div class="ans"><b>identical lines swallow the flip</b>, and torch the worker&rsquo;s per-day event budget.</div>
+    </div>
+  </div>
+  <div class="verdict">
+    <b>the question shapes the schema</b>
+    <span>style B wins because its fields are exactly the nouns the incident question asks about.</span>
+  </div>
+</div>
+</div>
+</body></html>

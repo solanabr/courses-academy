@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Target versus measured, live on your own dashboard
+     purpose: ground the course's targets-versus-measurements discipline in the one number pair the Solana panel now displays
+     data: Two bars: "network target" = 300 ms per slot (SIMD-0525 stage 2, live at epoch 1024, 2026-08-28). "measured" = 316 ms average slot time (20-sample probe, 2026-09-01), about 5% above target. Caption: your dashboard reports the measured bar; the demo script checks what IS, not what the spec promises.
+     prompt: A minimal two-bar horizontal chart with the target bar and the measured bar, values labeled at bar ends in milliseconds, the small gap between them visually emphasized with a bracket labeled roughly five percent. One-line dated caption beneath.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:443px;height:474px;right:-220px;top:130px;border-radius:65% 36% 43% 49% / 41% 63% 41% 36%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:457px;height:451px;bottom:-240px;left:793px;border-radius:53% 36% 41% 50% / 60% 51% 47% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card05{background:var(--surface-card);border-radius:var(--radius-2xl);padding:34px 48px 36px;position:relative;}
+    .chart05{position:relative;width:1360px;height:400px;margin-top:14px;}
+    .brow05{position:absolute;left:0;width:1360px;height:96px;}
+    .blab05{position:absolute;left:0;top:0;width:250px;}
+    .blab05 b{display:block;font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--text-primary);}
+    .blab05 span{display:block;font:400 13px/1.35 var(--font-body);color:var(--text-secondary);margin-top:4px;}
+    .bar05{position:absolute;left:270px;top:6px;height:84px;border-radius:0 12px 12px 0;}
+    .bval05{position:absolute;top:30px;font-family:var(--font-display);font-weight:900;font-size:26px;}
+    .guide05{position:absolute;top:0;height:330px;border-left:2.5px dashed var(--stbr-dark);opacity:.55;}
+    .brk05{position:absolute;top:238px;height:14px;border-left:2.5px solid var(--stbr-dark);border-right:2.5px solid var(--stbr-dark);border-bottom:2.5px solid var(--stbr-dark);}
+    .brklab05{position:absolute;top:262px;font:800 17px/1.2 var(--font-body);color:var(--text-primary);}
+    .cap05{margin-top:6px;border-top:1.5px solid var(--border-subtle);padding-top:14px;font:600 17px/1.4 var(--font-body);color:var(--text-primary);}
+    .cap05 span{color:var(--text-muted);font-weight:400;}
+  </style>
+  <div class="card05">
+    <div class="stbr-eyebrow">Solana panel · targets vs measurements</div>
+    <h2 class="viz-title">slot time: the spec vs your probe</h2>
+    <div class="chart05">
+      <div class="brow05" style="top:0;">
+        <div class="blab05"><b>network target</b><span>300 ms per slot: SIMD-0525 stage&nbsp;2, live at epoch&nbsp;1024 (2026-08-28)</span></div>
+        <div class="bar05" style="width:948px;background:var(--stbr-emerald);"></div>
+        <div class="bval05" style="left:1234px;color:var(--stbr-emerald);">300 ms</div>
+      </div>
+      <div class="brow05" style="top:126px;">
+        <div class="blab05"><b>measured</b><span>316 ms average: 20-sample probe on your dashboard (2026-09-01)</span></div>
+        <div class="bar05" style="width:998px;background:var(--stbr-yellow);"></div>
+        <div class="bval05" style="left:1284px;color:var(--stbr-dark);">316 ms</div>
+      </div>
+      <div class="guide05" style="left:1218px;"></div>
+      <div class="brk05" style="left:1218px;width:50px;"></div>
+      <div class="brklab05" style="left:1180px;">&asymp; 5% above target</div>
+    </div>
+    <div class="cap05">your dashboard reports the measured bar; the demo script checks what <b>is</b>, not what the spec promises. <span>targets dated 2026-08-28 · probe dated 2026-09-01</span></div>
+  </div>
+</div>
+</body></html>

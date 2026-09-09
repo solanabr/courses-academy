@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: pulse-edge-ts end to end
+     purpose: fix the full dataflow from cron fire to public JSON so each lab piece has a place
+     data: cron trigger (*/15) -> scheduled handler -> for each target [example, protected-demo, solana-rpc]: probeOnce via platform fetch (429 -> backoffDelay + jitter -> retry) -> ProbeResult -> classifyProbe (pulse-core, unchanged) -> StatusEntry JSON -> KV put status:<name> browser / curl / m10-l1 dashboard -> fetch handler -> KV list prefix status: -> KV get json -> Response.json { updatedAt, targets } secret lane: .dev.vars locally / wrangler secret put in prod -> env.PROBE_TOKEN -> protected-demo header
+     prompt: Left-to-right flowchart in two lanes. Top lane: cron clock node into scheduled handler, fanning to three target chips, each through a probe node (429 loop-back arrow labeled backoff) into a classifier chip labeled pulse-core, then into a KV cylinder. Bottom lane: a browser node into the fetch handler, reading from the same KV cylinder, out to a JSON document node. A small key icon feeds the protected-demo chip from an env.PROBE_TOKEN chip.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:532px;height:480px;top:-261px;right:-261px;border-radius:51% 40% 58% 57% / 56% 62% 54% 48%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:524px;height:495px;bottom:-259px;left:-259px;border-radius:54% 45% 40% 61% / 64% 41% 38% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v08-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 30px 46px 26px; }
+    .v08-flow { display: flex; flex-direction: column; margin-top: 12px; }
+    .v08-lane { display: flex; align-items: stretch; }
+    .v08-node { flex: none; background: #ffffff; border: 2px solid var(--border-strong); border-radius: var(--radius-lg); padding: 8px 12px; display: flex; flex-direction: column; justify-content: center; text-align: center; min-height: 96px; }
+    .v08-node b { font-family: var(--font-display); font-weight: 800; font-size: 15.5px; color: var(--text-primary); }
+    .v08-node small { font-family: var(--font-body); font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+    .v08-node .v08-mono { font-family: var(--font-mono); font-weight: 600; font-size: 13.5px; color: var(--text-primary); }
+    .v08-tchips { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
+    .v08-tchip { background: var(--surface-paper); border: 1.5px solid var(--border-subtle); border-radius: var(--radius-pill); padding: 1.5px 8px; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-primary); }
+    .v08-ar { flex: none; align-self: center; width: 26px; height: 2.5px; background: var(--stbr-dark); position: relative; margin: 0 14px 0 6px; }
+    .v08-ar::after { content: ""; position: absolute; right: -8px; top: -5.5px; border-left: 9px solid var(--stbr-dark); border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v08-vrow { position: relative; height: 34px; }
+    .v08-var { position: absolute; left: 1053px; top: 0; width: 2.5px; height: 25px; background: var(--stbr-dark); }
+    .v08-var::after { content: ""; position: absolute; left: -5.75px; bottom: -8px; border-top: 9px solid var(--stbr-dark); border-left: 7px solid transparent; border-right: 7px solid transparent; }
+    .v08-vlbl { position: absolute; left: 0; top: 6px; width: 1035px; text-align: right; font-family: var(--font-body); font-weight: 700; font-size: 13px; color: var(--stbr-green); }
+    .v08-vlbl code { font-family: var(--font-mono); font-size: 12.5px; }
+    .v08-l2 { position: relative; height: 148px; display: flex; align-items: center; }
+    .v08-secret { display: flex; align-items: center; }
+    .v08-secret .v08-node { min-height: 84px; }
+    .v08-spill { flex: none; align-self: center; background: var(--surface-inverse); color: var(--stbr-cream); border-radius: var(--radius-pill); padding: 5px 14px; font-family: var(--font-display); font-weight: 800; font-size: 12.5px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 16px; }
+    .v08-cylwrap { position: absolute; left: 905px; top: 0; width: 300px; }
+    .v08-cyl-top { position: relative; z-index: 2; height: 38px; border-radius: 50%; background: #ffdd66; border: 2.5px solid var(--stbr-dark); }
+    .v08-cyl-body { margin-top: -19px; height: 128px; background: var(--stbr-yellow); border: 2.5px solid var(--stbr-dark); border-top: none; border-radius: 0 0 150px 150px / 0 0 20px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 16px; }
+    .v08-cyl-body b { font-family: var(--font-display); font-weight: 800; font-size: 22px; color: var(--stbr-dark); }
+    .v08-cyl-body code { font-family: var(--font-mono); font-size: 13.5px; color: var(--stbr-dark); margin-top: 3px; }
+    .v08-arpair { flex: none; align-self: center; width: 300px; display: flex; flex-direction: column; gap: 4px; padding: 0 10px; }
+    .v08-arpair-row { display: flex; flex-direction: column; align-items: center; }
+    .v08-arlbl { font-family: var(--font-body); font-weight: 700; font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .v08-arlbl code { font-family: var(--font-mono); font-size: 11.5px; }
+    .v08-line-r { width: 100%; height: 2.5px; background: var(--stbr-dark); position: relative; margin: 3px 0; }
+    .v08-line-r::after { content: ""; position: absolute; right: -1px; top: -5.5px; border-left: 9px solid var(--stbr-dark); border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v08-line-l { width: 100%; height: 2.5px; background: var(--stbr-dark); position: relative; margin: 3px 0; }
+    .v08-line-l::after { content: ""; position: absolute; left: -1px; top: -5.5px; border-right: 9px solid var(--stbr-dark); border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v08-band { margin-top: 18px; background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-lg); padding: 12px 22px; font-family: var(--font-body); font-size: 16px; text-align: center; }
+    .v08-band b { font-family: var(--font-display); }
+  </style>
+  <div class="v08-card">
+    <div class="stbr-eyebrow">end to end</div>
+    <h2 class="viz-title">pulse-edge-ts end to end</h2>
+    <div class="v08-flow">
+      <div class="v08-lane">
+        <div class="v08-node" style="width:110px;"><b>cron</b><span class="v08-mono">*/15</span></div>
+        <div class="v08-ar"></div>
+        <div class="v08-node" style="width:140px;"><b>scheduled handler</b></div>
+        <div class="v08-ar"></div>
+        <div class="v08-node" style="width:160px;"><b>for each target</b>
+          <div class="v08-tchips"><div class="v08-tchip">example</div><div class="v08-tchip">protected-demo</div><div class="v08-tchip">solana-rpc</div></div>
+        </div>
+        <div class="v08-ar"></div>
+        <div class="v08-node" style="width:180px;"><b>probeOnce</b><small>platform fetch<br>429 &#8594; backoffDelay + jitter &#8594; retry</small></div>
+        <div class="v08-ar"></div>
+        <div class="v08-node" style="width:150px;"><b>classifyProbe</b><small>pulse-core, unchanged<br>ProbeResult in</small></div>
+        <div class="v08-ar"></div>
+        <div class="v08-node" style="width:170px;"><b>KV put</b><span class="v08-mono">status:&lt;name&gt;</span><small>StatusEntry JSON</small></div>
+      </div>
+      <div class="v08-vrow"><span class="v08-vlbl">writes, every 15 minutes</span><div class="v08-var"></div></div>
+      <div class="v08-l2">
+        <div class="v08-secret">
+          <div class="v08-spill">secret lane</div>
+          <div class="v08-node" style="width:250px;"><span class="v08-mono">.dev.vars</span><small>locally</small><span class="v08-mono">wrangler secret put</span><small>in prod</small></div>
+          <div class="v08-ar"></div>
+          <div class="v08-node" style="width:170px;"><span class="v08-mono">env.PROBE_TOKEN</span></div>
+          <div class="v08-ar"></div>
+          <div class="v08-node" style="width:200px;"><b>protected-demo header</b><small>sent with that probe only</small></div>
+        </div>
+        <div class="v08-cylwrap">
+          <div class="v08-cyl-top"></div>
+          <div class="v08-cyl-body"><b>PULSE_KV</b><code>status:&lt;name&gt; keys</code></div>
+        </div>
+      </div>
+      <div class="v08-vrow"><span class="v08-vlbl">reads: <code>KV list</code> prefix <code>status:</code> + <code>KV get</code> json</span><div class="v08-var"></div></div>
+      <div class="v08-lane" style="justify-content:flex-end;">
+        <div class="v08-node" style="width:280px;"><b>browser / curl / m10-l1 dashboard</b><small>anyone, anywhere</small></div>
+        <div class="v08-arpair">
+          <div class="v08-arpair-row"><span class="v08-arlbl">request</span><div class="v08-line-r"></div></div>
+          <div class="v08-arpair-row"><div class="v08-line-l"></div><span class="v08-arlbl"><code>Response.json {&#8202;updatedAt, targets&#8202;}</code></span></div>
+        </div>
+        <div class="v08-node" style="width:320px;"><b>fetch handler</b><small>reads the same keys the cron wrote</small></div>
+        <div style="flex:none;width:149px;"></div>
+      </div>
+    </div>
+    <div class="v08-band"><b>one store, two lanes:</b> the cron lane writes <b>status:&lt;name&gt;</b> every 15 minutes; every request, from any city, reads the same keys back as JSON.</div>
+  </div>
+</div>
+</body></html>

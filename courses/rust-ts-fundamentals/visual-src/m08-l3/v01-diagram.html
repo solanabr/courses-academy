@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The JSON-RPC 2.0 envelope, both directions
+     purpose: fix the four request fields and the either-or response members before the lesson builds types around them
+     data: request: { jsonrpc: "2.0", id: 1, method: "getBalance", params: ["<address>"] } response, success: { jsonrpc: "2.0", id: 1, result: <method-specific shape> } response, failure: { jsonrpc: "2.0", id: 1, error: { code: -32601, message: "Method not found" } } rule: a response carries result OR error, never both; id echoes the request
+     prompt: Two-panel diagram. Left panel: one request envelope as a labeled JSON card with the four fields called out. Right panel: two response cards stacked, the success one carrying result, the failure one carrying error with code and message, joined by an either-or bracket. An arrow from the request id to both response ids labeled "echoed".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:551px;top:-311px;right:-311px;border-radius:48% 57% 64% 52% / 47% 43% 44% 47%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:522px;height:526px;bottom:-333px;left:523px;border-radius:51% 50% 38% 51% / 59% 40% 47% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 40px 52px 40px; }
+    .v01-grid { display: grid; grid-template-columns: 560px 150px 1fr; align-items: center; margin-top: 10px; }
+    .v01-panel { background: var(--surface-inverse); border-radius: var(--radius-xl); padding: 22px 26px 24px; }
+    .v01-panel-tag { display: inline-block; background: var(--stbr-emerald); color: var(--stbr-cream); font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: var(--radius-pill); padding: 5px 14px; margin-bottom: 14px; }
+    .v01-line { display: flex; align-items: center; justify-content: space-between; height: 44px; }
+    .v01-code { font-family: var(--font-mono); font-size: 19px; color: var(--stbr-cream); white-space: pre; }
+    .v01-note { font-family: var(--font-body); font-size: 14px; color: #A8B3AA; margin-left: 18px; white-space: nowrap; }
+    .v01-resp { background: var(--surface-card); border: 2px solid var(--border-strong); border-radius: var(--radius-xl); padding: 16px 22px 18px; }
+    .v01-resp .v01-code { color: var(--text-primary); }
+    .v01-resp .v01-line { height: 36px; }
+    .v01-resp-tag { display: inline-block; font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; border-radius: var(--radius-pill); padding: 4px 12px; margin-bottom: 8px; }
+    .v01-hi { background: var(--stbr-emerald); color: var(--stbr-cream); border-radius: var(--radius-sm); padding: 2px 8px; }
+    .v01-or { display: flex; align-items: center; gap: 14px; margin: 12px 0; }
+    .v01-or-line { flex: 1; height: 2px; background: var(--border-strong); }
+    .v01-or-pill { background: var(--stbr-yellow); color: var(--stbr-dark); font-family: var(--font-display); font-weight: 900; font-size: 17px; border-radius: var(--radius-pill); padding: 8px 18px; white-space: nowrap; }
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">json-rpc 2.0</div>
+    <h2 class="viz-title">one envelope, both directions</h2>
+    <div class="v01-grid">
+      <div class="v01-panel">
+        <span class="v01-panel-tag">request</span>
+        <div class="v01-line"><span class="v01-code">{</span></div>
+        <div class="v01-line"><span class="v01-code">  "jsonrpc": "2.0",</span><span class="v01-note">protocol version, always "2.0"</span></div>
+        <div class="v01-line"><span class="v01-code">  "id": 1,</span><span class="v01-note">correlation id you choose</span></div>
+        <div class="v01-line"><span class="v01-code">  "method": "getBalance",</span><span class="v01-note">what to call</span></div>
+        <div class="v01-line"><span class="v01-code">  "params": ["&lt;address&gt;"]</span><span class="v01-note">arguments, positional</span></div>
+        <div class="v01-line"><span class="v01-code">}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <svg width="150" height="360" style="display:block;">
+          <path d="M 6 180 L 60 180 L 138 84" fill="none" stroke="#1B231D" stroke-width="3"/>
+          <path d="M 60 180 L 138 292" fill="none" stroke="#1B231D" stroke-width="3"/>
+          <polygon points="138,84 124,82 130,96" fill="#1B231D"/>
+          <polygon points="138,292 124,294 130,280" fill="#1B231D"/>
+        </svg>
+        <div style="font-family:var(--font-body);font-size:15px;font-weight:600;color:var(--text-primary);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:var(--radius-pill);padding:5px 12px;margin-top:8px;white-space:nowrap;">id echoed</div>
+      </div>
+      <div>
+        <div class="v01-resp" style="border-color:var(--stbr-emerald);">
+          <span class="v01-resp-tag" style="background:var(--stbr-emerald);color:var(--stbr-cream);">response &#183; success</span>
+          <div class="v01-line"><span class="v01-code">{ "jsonrpc": "2.0", "id": 1,</span></div>
+          <div class="v01-line"><span class="v01-code">  <span class="v01-hi">"result"</span>: &lt;method-specific shape&gt; }</span></div>
+        </div>
+        <div class="v01-or"><div class="v01-or-line"></div><div class="v01-or-pill">result OR error, never both</div><div class="v01-or-line"></div></div>
+        <div class="v01-resp">
+          <span class="v01-resp-tag" style="background:var(--surface-inverse);color:var(--stbr-cream);">response &#183; failure</span>
+          <div class="v01-line"><span class="v01-code">{ "jsonrpc": "2.0", "id": 1,</span></div>
+          <div class="v01-line"><span class="v01-code">  "error": { "code": -32601,</span></div>
+          <div class="v01-line"><span class="v01-code">    "message": "Method not found" } }</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

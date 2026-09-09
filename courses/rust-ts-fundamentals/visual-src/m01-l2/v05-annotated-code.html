@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The timing pair that brackets the await
+     purpose: burn in the timestamp, await, timestamp, subtract pattern the whole course reuses
+     data: const started = performance.now();   <- annotation: clock starts, before any network work const res = await fetch(url);        <- annotation: the awaited work being measured const latencyMs = performance.now() - started;   <- annotation: clock read again, difference is the latency pitfall: taking the second reading before the await measures request setup, not the round trip
+     prompt: The three code lines in monospace with the three annotations as connected side labels in reading order. Beneath, a one-line pitfall callout about misplacing the second reading. Emphasize the bracket structure visually.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:461px;height:472px;right:-227px;top:167px;border-radius:56% 61% 40% 59% / 62% 52% 58% 46%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:438px;height:490px;bottom:-300px;left:442px;border-radius:54% 54% 61% 59% / 52% 42% 60% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:28px;padding:44px 56px 40px;overflow:hidden;">
+    <div class="stbr-eyebrow">timestamp &middot; await &middot; timestamp &middot; subtract</div>
+    <h2 class="viz-title" style="font-size:50px;">the timing pair that brackets the await</h2>
+
+    <div style="display:flex;align-items:center;gap:0;margin-top:36px;">
+      <!-- code panel -->
+      <div style="position:relative;width:830px;background:var(--surface-inverse);border-radius:20px;padding:28px 24px 28px 0;">
+        <!-- yellow bracket spanning line 1 -> line 3 -->
+        <div style="position:absolute;left:26px;top:70px;width:6px;height:204px;border-radius:3px;background:var(--stbr-yellow);"></div>
+        <div style="position:absolute;left:26px;top:70px;width:22px;height:6px;border-radius:3px;background:var(--stbr-yellow);"></div>
+        <div style="position:absolute;left:26px;top:268px;width:22px;height:6px;border-radius:3px;background:var(--stbr-yellow);"></div>
+
+        <div style="height:96px;display:flex;align-items:center;padding-left:68px;">
+          <div style="font-family:var(--font-mono);font-size:22px;color:var(--stbr-cream);">const started = performance.now();</div>
+        </div>
+        <div style="height:96px;display:flex;align-items:center;padding-left:68px;">
+          <div style="font-family:var(--font-mono);font-size:22px;color:var(--stbr-cream);">const res = await fetch(url);</div>
+        </div>
+        <div style="height:96px;display:flex;align-items:center;padding-left:68px;">
+          <div style="font-family:var(--font-mono);font-size:22px;color:var(--stbr-cream);">const latencyMs = performance.now() - started;</div>
+        </div>
+      </div>
+
+      <!-- annotations -->
+      <div style="flex:1;display:flex;flex-direction:column;padding:28px 0;">
+        <div style="height:96px;display:flex;align-items:center;">
+          <svg width="56" height="16"><line x1="0" y1="8" x2="56" y2="8" stroke="#008B4C" stroke-width="2"/></svg>
+          <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-emerald);border-radius:14px;padding:12px 18px;font-family:var(--font-body);font-size:17px;line-height:1.3;color:var(--text-primary);">clock starts, before any network work</div>
+        </div>
+        <div style="height:96px;display:flex;align-items:center;">
+          <svg width="56" height="16"><line x1="0" y1="8" x2="56" y2="8" stroke="#008B4C" stroke-width="2"/></svg>
+          <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-emerald);border-radius:14px;padding:12px 18px;font-family:var(--font-body);font-size:17px;line-height:1.3;color:var(--text-primary);">the awaited work being measured</div>
+        </div>
+        <div style="height:96px;display:flex;align-items:center;">
+          <svg width="56" height="16"><line x1="0" y1="8" x2="56" y2="8" stroke="#008B4C" stroke-width="2"/></svg>
+          <div style="flex:1;background:var(--surface-card);border:2px solid var(--stbr-emerald);border-radius:14px;padding:12px 18px;font-family:var(--font-body);font-size:17px;line-height:1.3;color:var(--text-primary);">clock read again; the difference is the latency</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- pitfall -->
+    <div style="margin-top:26px;display:flex;align-items:center;gap:18px;border:2px solid var(--border-strong);border-radius:16px;padding:16px 22px;">
+      <div style="background:var(--surface-inverse);color:var(--stbr-cream);font-family:var(--font-display);font-weight:900;font-size:14px;letter-spacing:0.1em;text-transform:uppercase;border-radius:999px;padding:6px 16px;">pitfall</div>
+      <div style="font-family:var(--font-body);font-size:18px;color:var(--text-primary);">taking the second reading <strong>before</strong> the await measures request setup, not the round trip</div>
+    </div>
+  </div>
+</div>
+</body></html>

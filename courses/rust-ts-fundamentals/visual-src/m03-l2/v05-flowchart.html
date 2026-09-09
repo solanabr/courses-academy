@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Effect cleanup, or the poller stack
+     purpose: show why the cleanup return is load-bearing by contrasting the two hot-reload outcomes
+     data: with cleanup: mount -> setInterval -> hot reload -> cleanup runs (clearInterval) -> remount -> setInterval => always exactly 1 live poller without cleanup: mount -> setInterval -> hot reload -> remount -> setInterval -> ... => pollers accumulate, one per reload, network tab fills
+     prompt: Two horizontal lanes sharing a timeline of repeated hot reloads. Top lane "with cleanup": at each reload an old interval icon is crossed out before a new one starts, count stays at one. Bottom lane "without cleanup": interval icons accumulate left to right, with a rising counter reaching four and a small overflowing network-tab motif at the end. Emphasize the single differing step: the cleanup return.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:491px;top:-243px;right:-243px;border-radius:62% 56% 59% 63% / 47% 60% 58% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:508px;left:-323px;top:122px;border-radius:54% 57% 40% 55% / 60% 59% 52% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:42px 56px 36px;}
+  .hrow{display:flex;margin-top:24px;}
+  .hspace{width:250px;flex:none;}
+  .hcell{width:235px;flex:none;text-align:center;font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);padding-bottom:8px;}
+  .hres{width:130px;flex:none;text-align:center;font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);padding-bottom:8px;}
+  .lane{display:flex;align-items:stretch;margin-top:12px;}
+  .llabel{width:236px;flex:none;box-sizing:border-box;margin-right:14px;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;justify-content:center;}
+  .llabel.em{background:var(--surface-brand);}
+  .llabel.dk{background:var(--surface-inverse);}
+  .llabel .lt{font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--text-on-brand);}
+  .llabel .lc{font-family:var(--font-mono);font-size:11.5px;color:rgba(245,232,202,.85);margin-top:7px;}
+  .ecell{width:225px;flex:none;box-sizing:border-box;margin-right:10px;border:2px solid var(--stbr-green);border-radius:12px;background:var(--surface-card);padding:11px 12px;display:flex;flex-direction:column;justify-content:center;text-align:center;}
+  .ecell .m{font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:var(--text-primary);}
+  .ecell .note{font-family:var(--font-body);font-size:10.5px;color:var(--text-muted);margin-top:4px;}
+  .clean{align-self:center;font-family:var(--font-display);font-weight:800;font-size:11px;background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:999px;padding:4px 10px;margin-bottom:6px;}
+  .dots{display:flex;justify-content:center;align-items:center;margin-top:8px;}
+  .d{width:13px;height:13px;border-radius:50%;background:var(--stbr-emerald);margin:0 3px;}
+  .d.dead{background:var(--stbr-dark);}
+  .dx{font-family:var(--font-display);font-weight:900;font-size:13px;color:var(--text-muted);margin:0 3px;}
+  .rcell{width:130px;flex:none;box-sizing:border-box;border-radius:12px;background:var(--surface-paper);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8px;}
+  .rcell .big{font-family:var(--font-display);font-weight:900;font-size:44px;line-height:1;}
+  .rcell .rs{font-family:var(--font-body);font-size:10.5px;color:var(--text-secondary);margin-top:6px;line-height:1.3;}
+  .cap{margin-top:20px;font-family:var(--font-body);font-size:15px;color:var(--text-secondary);}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">why the cleanup return is load-bearing</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:0;">effect cleanup, or the poller stack</h2>
+  <div class="hrow">
+    <div class="hspace"></div>
+    <div class="hcell">mount</div>
+    <div class="hcell">hot reload #1</div>
+    <div class="hcell">hot reload #2</div>
+    <div class="hcell">hot reload #3</div>
+    <div class="hres">live pollers</div>
+  </div>
+  <div class="lane">
+    <div class="llabel em">
+      <div class="lt">with cleanup</div>
+      <div class="lc">return () =&gt; clearInterval(id)</div>
+    </div>
+    <div class="ecell">
+      <div class="m">setInterval(poll)</div>
+      <div class="dots"><span class="d"></span></div>
+    </div>
+    <div class="ecell">
+      <div class="clean">cleanup runs &rarr; clearInterval</div>
+      <div class="m">remount &rarr; setInterval</div>
+      <div class="dots"><span class="dx">&#10005;</span><span class="d"></span></div>
+    </div>
+    <div class="ecell">
+      <div class="clean">cleanup runs &rarr; clearInterval</div>
+      <div class="m">remount &rarr; setInterval</div>
+      <div class="dots"><span class="dx">&#10005;</span><span class="d"></span></div>
+    </div>
+    <div class="ecell">
+      <div class="clean">cleanup runs &rarr; clearInterval</div>
+      <div class="m">remount &rarr; setInterval</div>
+      <div class="dots"><span class="dx">&#10005;</span><span class="d"></span></div>
+    </div>
+    <div class="rcell">
+      <div class="big" style="color:var(--stbr-emerald);">1</div>
+      <div class="rs">always exactly one</div>
+    </div>
+  </div>
+  <div class="lane">
+    <div class="llabel dk">
+      <div class="lt">without cleanup</div>
+      <div class="lc">no return value</div>
+    </div>
+    <div class="ecell">
+      <div class="m">setInterval(poll)</div>
+      <div class="dots"><span class="d"></span></div>
+    </div>
+    <div class="ecell">
+      <div class="m">remount &rarr; setInterval</div>
+      <div class="note">old interval still alive</div>
+      <div class="dots"><span class="d dead"></span><span class="d"></span></div>
+    </div>
+    <div class="ecell">
+      <div class="m">remount &rarr; setInterval</div>
+      <div class="note">two still alive</div>
+      <div class="dots"><span class="d dead"></span><span class="d dead"></span><span class="d"></span></div>
+    </div>
+    <div class="ecell">
+      <div class="m">remount &rarr; setInterval</div>
+      <div class="note">three still alive</div>
+      <div class="dots"><span class="d dead"></span><span class="d dead"></span><span class="d dead"></span><span class="d"></span></div>
+    </div>
+    <div class="rcell">
+      <div class="big" style="color:var(--stbr-dark);">4</div>
+      <div class="rs">one per reload; the network tab fills</div>
+    </div>
+  </div>
+  <div class="cap">the two lanes differ by exactly one step: the cleanup return. Without it, every hot reload leaves the previous poller running.</div>
+</div>
+</div>
+</body></html>

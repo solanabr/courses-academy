@@ -1,0 +1,32 @@
+[
+  {
+    "id": "t1",
+    "input": "vec![120, 340, 930], 500",
+    "expectedOutput": "max=930,over=1",
+    "description": "one slow target: max is 930ms and only it crosses the 500ms threshold"
+  },
+  {
+    "id": "t2",
+    "input": "vec![100, 200, 300], 250",
+    "expectedOutput": "max=300,over=1",
+    "description": "a healthy fleet with one probe over the line"
+  },
+  {
+    "id": "t3",
+    "input": "vec![900, 901, 950], 100",
+    "expectedOutput": "max=950,over=3",
+    "description": "everything is slow: all three latencies exceed the threshold"
+  },
+  {
+    "id": "t4",
+    "input": "vec![], 500",
+    "expectedOutput": "max=0,over=0",
+    "description": "an empty fixture list reports max=0 and zero over"
+  },
+  {
+    "id": "t5",
+    "input": "vec![500, 499], 500",
+    "expectedOutput": "max=500,over=0",
+    "description": "over counts STRICTLY greater, exactly-at-threshold does not count"
+  }
+]

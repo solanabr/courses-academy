@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: VS Code full build, TypeScript 6 vs TypeScript 7
+     purpose: make the native-port speedup concrete with the GA post's own benchmark
+     data: series: full type-check build time in seconds TypeScript 6 (self-hosted compiler): 125.7 TypeScript 7 (native Go compiler): 10.6 source: TypeScript 7 GA announcement, 2026-07-08
+     prompt: Two horizontal bars, same scale, labeled with the values 125.7s and 10.6s. The shorter bar should read as the dramatic result. Caption the source and date beneath. No gridlines beyond what the two values need.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:510px;height:513px;right:-311px;top:99px;border-radius:65% 65% 55% 37% / 49% 50% 36% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:429px;height:496px;bottom:-289px;left:694px;border-radius:47% 35% 40% 37% / 61% 46% 65% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:28px;padding:48px 64px 44px;overflow:hidden;">
+    <div class="stbr-eyebrow">the native-port speedup, in one build</div>
+    <h2 class="viz-title" style="font-size:50px;">VS Code full type-check: TypeScript 6 vs TypeScript 7</h2>
+
+    <div style="margin-top:52px;display:flex;flex-direction:column;gap:44px;">
+      <!-- TypeScript 6 -->
+      <div style="display:flex;align-items:center;gap:24px;">
+        <div style="width:330px;text-align:right;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--text-primary);">TypeScript 6</div>
+          <div style="font-family:var(--font-body);font-size:15px;color:var(--text-secondary);">self-hosted compiler</div>
+        </div>
+        <div style="flex:1;">
+          <div style="position:relative;height:72px;border-radius:0 14px 14px 0;background:var(--stbr-emerald);width:100%;">
+            <div style="position:absolute;right:20px;top:0;height:72px;display:flex;align-items:center;font-family:var(--font-display);font-weight:900;font-size:28px;color:var(--stbr-cream);">125.7&thinsp;s</div>
+          </div>
+        </div>
+      </div>
+      <!-- TypeScript 7 -->
+      <div style="display:flex;align-items:center;gap:24px;">
+        <div style="width:330px;text-align:right;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--text-primary);">TypeScript 7</div>
+          <div style="font-family:var(--font-body);font-size:15px;color:var(--text-secondary);">native Go compiler</div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;gap:18px;">
+          <div style="height:72px;width:8.43%;border-radius:0 14px 14px 0;background:var(--stbr-yellow);"></div>
+          <div style="font-family:var(--font-display);font-weight:900;font-size:28px;color:var(--text-primary);">10.6&thinsp;s</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- axis note + caption -->
+    <div style="margin-top:44px;padding-top:20px;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-muted);">full type-check build time in seconds, shorter is faster</div>
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-muted);">source: TypeScript 7 GA announcement, 2026-07-08</div>
+    </div>
+  </div>
+</div>
+</body></html>

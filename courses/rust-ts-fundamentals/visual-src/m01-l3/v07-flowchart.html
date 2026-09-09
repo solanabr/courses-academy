@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Why the merge is the switch, not the ceremony
+     purpose: show that the cron only becomes real once pulse.yml reaches the default branch, so step 4 reads as activation rather than process theater
+     data: Side branch lane: commit on feat/cron-workflow -> pulse.yml exists, but only here -> the "*/30 * * * *" schedule is decorative, no tick ever fires Gate: gh pr create --fill -> gh pr merge --squash -> pulse.yml now sits on main, the default branch Live outcome 1 (immediate): the squash merge IS a push to main, so the push trigger fires one run within seconds Live outcome 2 (from now on): every :00 and :30 UTC tick runs the file as it stands on main's latest commit Annotation: the pulse-bot status.json commit lands on main too, and the recursion guard is what keeps it from starting a run of its own
+     prompt: Left-to-right flowchart in two lanes. The top lane is the side branch: a commit node feeding a greyed, struck-through clock node labeled decorative. The bottom lane begins at the merge node and forks into the two live outcomes, an immediate push-triggered run and a repeating scheduled run drawn on a clock motif. Render the merge node as the single gate both lanes pass through. Attach the bot-commit annotation to the bottom lane as a small side note.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:508px;right:-232px;top:323px;border-radius:44% 60% 54% 39% / 40% 60% 40% 45%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:621px;height:571px;bottom:-339px;left:-339px;border-radius:49% 50% 55% 57% / 50% 43% 63% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 42px 52px 36px; }
+    .lane { display: flex; align-items: stretch; }
+    .lchip { width: 158px; flex: none; display: flex; align-items: center; }
+    .lchip span { display: inline-block; font-family: var(--font-display); font-weight: 800;
+                  font-size: 15px; border-radius: var(--radius-pill); padding: 6px 13px; }
+    .nd { background: #fff; border: 2px solid var(--stbr-green); border-radius: var(--radius-lg);
+          padding: 12px 16px; text-align: center; display: flex; flex-direction: column;
+          justify-content: center; }
+    .nd h4 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 19px;
+             color: var(--stbr-dark); line-height: 1.15; }
+    .nd p { margin: 5px 0 0; font-family: var(--font-body); font-size: 14.5px;
+            color: var(--text-secondary); line-height: 1.3; }
+    .ghost { border: 2px dashed var(--text-muted); background: var(--surface-paper); }
+    .ghost h4 { color: var(--text-muted); }
+    .ar { display: flex; align-items: center; width: 36px; flex: none; }
+    .ar-line { height: 3px; background: var(--text-muted); flex: 1; }
+    .ar-r { width: 0; height: 0; border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent; border-left: 10px solid var(--text-muted); }
+    .dn { display: flex; flex-direction: column; align-items: center; }
+    .dn .l { width: 3px; height: 20px; background: var(--stbr-green); }
+    .dn .h { width: 0; height: 0; border-left: 7px solid transparent;
+             border-right: 7px solid transparent; border-top: 10px solid var(--stbr-green); }
+    .gseg { background: #fff; border-radius: var(--radius-md); padding: 7px 14px;
+            font-family: var(--font-mono); font-size: 16.5px; color: var(--stbr-dark); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">Activation &middot; step 4 of the lab</div>
+    <h2 class="viz-title" style="margin-bottom:18px;">why the merge is the switch, not the ceremony</h2>
+
+    <!-- side branch lane: nothing here is live -->
+    <div class="lane">
+      <div class="lchip"><span style="background:var(--stbr-dark); color:var(--stbr-cream);">side branch</span></div>
+      <div class="nd ghost" style="width:330px;">
+        <h4>commit on feat/cron-workflow</h4>
+      </div>
+      <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+      <div class="nd ghost" style="width:330px;">
+        <h4>pulse.yml exists, but only here</h4>
+      </div>
+      <div class="ar"><div class="ar-line"></div><div class="ar-r"></div></div>
+      <div class="nd ghost" style="flex:1;">
+        <h4 style="font-family:var(--font-mono); text-decoration:line-through;">*/30 * * * *</h4>
+        <p>the schedule is decorative: no tick ever fires</p>
+      </div>
+    </div>
+
+    <div class="dn" style="margin:8px 0 6px;"><div class="l"></div><div class="h"></div></div>
+
+    <!-- THE gate (yellow: the merge is the switch) -->
+    <div style="background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:13px 22px;
+                display:flex; align-items:center; justify-content:center; gap:14px;">
+      <span style="font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--stbr-dark);">the gate</span>
+      <span class="gseg">gh pr create --fill</span>
+      <span style="font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--stbr-dark);">&rarr;</span>
+      <span class="gseg">gh pr merge --squash</span>
+      <span style="font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--stbr-dark);">&rarr;</span>
+      <span style="font-family:var(--font-body); font-weight:600; font-size:17px; color:var(--stbr-dark);">pulse.yml now sits on main, the default branch</span>
+    </div>
+
+    <!-- fork: two live outcomes -->
+    <div style="display:flex; margin:6px 0;">
+      <div style="width:158px; flex:none;"></div>
+      <div style="flex:1; display:flex; justify-content:center;"><div class="dn"><div class="l"></div><div class="h"></div></div></div>
+      <div style="width:20px; flex:none;"></div>
+      <div style="flex:1; display:flex; justify-content:center;"><div class="dn"><div class="l"></div><div class="h"></div></div></div>
+    </div>
+    <div class="lane">
+      <div class="lchip"><span style="background:var(--stbr-emerald); color:var(--stbr-cream);">main: live</span></div>
+      <div class="nd" style="flex:1; border-color:var(--stbr-emerald);"><span><h4>live outcome 1: immediate</h4>
+        <p>the squash merge <strong>is</strong> a push to main &rarr; one run fires within seconds</p></span></div>
+      <div style="width:20px; flex:none;"></div>
+      <div class="nd" style="flex:1; border-color:var(--stbr-emerald);">
+        <h4>live outcome 2: from now on</h4>
+        <p>every :00 and :30 UTC tick runs the file as it stands on main&rsquo;s latest commit</p>
+      </div>
+    </div>
+
+    <!-- bot-commit annotation -->
+    <div style="margin-top:16px; margin-left:158px; border:1.5px solid var(--border-subtle);
+                border-radius:var(--radius-md); background:var(--surface-paper); padding:10px 18px;
+                font-family:var(--font-body); font-size:15.5px; color:var(--text-primary); line-height:1.35;">
+      the pulse-bot&rsquo;s status.json commit lands on main too; the recursion guard is what keeps
+      <em>that</em> push from starting a run of its own.
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three ways to read a chain from Rust
+     purpose: make the transport-scope argument legible and show why raw dep counts point the wrong way
+     data: columns: hand-rolled (this lesson) | solana-rpc-client 4.2.2 | solana-client 4.2.2 direct deps added: 0 new (reqwest, serde_json, thiserror already yours) | 35 | 29 + 1 dev QUIC / TPU / streamer transport: none | none | full stack typed helpers for every RPC method: you write what you use | yes | yes who upgrades your types when the RPC evolves: you | the maintainers | the maintainers right for: two reads on a timer, a fundamentals course | a real indexer or service | full clients that submit transactions to leaders
+     prompt: Three-column comparison table with the six rows as listed. Highlight the transport row as the deciding axis with an accent border, and add a small caution badge on the direct-deps row noting "raw counts rank these wrong". Keep the hand-rolled column visually first, not winner-styled.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:551px;top:-316px;right:-316px;border-radius:43% 41% 52% 60% / 40% 64% 62% 44%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:457px;height:534px;bottom:-296px;left:408px;border-radius:43% 40% 36% 64% / 64% 37% 56% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v04-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 38px 52px 40px; }
+    .v04-card .viz-title { font-size: 48px; }
+    .v04-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .v04-table th { background: var(--surface-inverse); color: var(--stbr-cream); font-family: var(--font-display); font-weight: 800; font-size: 20px; text-align: left; padding: 14px 18px; }
+    .v04-table th:first-child { border-radius: var(--radius-lg) 0 0 0; background: transparent; }
+    .v04-table th:last-child { border-radius: 0 var(--radius-lg) 0 0; }
+    .v04-table td { font-family: var(--font-body); font-size: 17px; color: var(--text-primary); padding: 13px 18px; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+    .v04-table td.lab { font-family: var(--font-display); font-weight: 800; font-size: 17px; width: 300px; }
+    .v04-sub { display: block; font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+    .v04-badge { display: inline-block; background: var(--surface-inverse); color: var(--stbr-cream); font-family: var(--font-body); font-weight: 700; font-size: 13px; border-radius: var(--radius-pill); padding: 3px 10px; margin-top: 5px; }
+    tr.v04-hot td { background: #FFF3C4; border-top: 3px solid var(--stbr-yellow); border-bottom: 3px solid var(--stbr-yellow); }
+    .v04-hot-tag { display: inline-block; background: var(--stbr-yellow); color: var(--stbr-dark); font-family: var(--font-display); font-weight: 900; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; border-radius: var(--radius-pill); padding: 3px 10px; margin-top: 5px; }
+    tr.v04-verdict td { background: var(--surface-brand); color: var(--stbr-cream); border-bottom: none; }
+    tr.v04-verdict td .v04-sub { color: #CFE6D6; }
+    tr.v04-verdict td:first-child { border-radius: 0 0 0 var(--radius-lg); }
+    tr.v04-verdict td:last-child { border-radius: 0 0 var(--radius-lg) 0; }
+  </style>
+  <div class="v04-card">
+    <div class="stbr-eyebrow">transport scope, not dep counts</div>
+    <h2 class="viz-title">three ways to read a chain from Rust</h2>
+    <table class="v04-table">
+      <tr>
+        <th></th>
+        <th>hand-rolled (this lesson)</th>
+        <th>solana-rpc-client 4.2.2</th>
+        <th>solana-client 4.2.2</th>
+      </tr>
+      <tr>
+        <td class="lab">direct deps added<br><span class="v04-badge">&#9888; raw counts rank these wrong</span></td>
+        <td>0 new<span class="v04-sub">reqwest, serde_json, thiserror already yours</span></td>
+        <td>35</td>
+        <td>29 + 1 dev</td>
+      </tr>
+      <tr class="v04-hot">
+        <td class="lab">QUIC / TPU / streamer transport<br><span class="v04-hot-tag">the deciding axis</span></td>
+        <td>none</td>
+        <td>none</td>
+        <td>full stack</td>
+      </tr>
+      <tr>
+        <td class="lab">typed helpers for every RPC method</td>
+        <td>you write what you use</td>
+        <td>yes</td>
+        <td>yes</td>
+      </tr>
+      <tr>
+        <td class="lab">who upgrades your types when the RPC evolves</td>
+        <td>you</td>
+        <td>the maintainers</td>
+        <td>the maintainers</td>
+      </tr>
+      <tr class="v04-verdict">
+        <td class="lab" style="color:var(--stbr-cream);">right for</td>
+        <td>two reads on a timer, a fundamentals course</td>
+        <td>a real indexer or service</td>
+        <td>full clients that submit transactions to leaders</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,96 @@
+id: lesson-rtf-m10-l1
+slug: m10-l1
+title: "Assembly: the station, whole"
+skills:
+  - solana-kit
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: station-check
+    type: quiz
+    questions:
+      - id: m10-l1-q1
+        prompt: "During the opening checkpoint, a learner draws an arrow from the Dockerized poller to the Vercel dashboard. Against the hub topology you actually built, what is wrong with that edge?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The direction is flipped: the dashboard polls the poller's /status endpoint over the public internet"
+            correct: false
+            feedback: "The dashboard never reaches the poller in either direction. The poller runs on your machine with no public surface; exposing it would mean tunneling or paid hosting, both deliberately out of scope. The dashboard's sources are status.json, kit reads, and the worker endpoint."
+          - id: a
+            label: "It does not exist: the poller is local-only, poked from your machine; no public surface reaches it"
+            correct: true
+            feedback: "Three arrows are deliberately absent from the hub, and this is one of them: nothing reaches into the poller, neither worker consumes anything, and the poller feeds no public surface. The free tier bought three public surfaces, and the container is not one of them."
+          - id: c
+            label: "It is almost right: pushing the image to GHCR is what gives the running container its public URL"
+            correct: false
+            feedback: "GHCR hosts the IMAGE, not a running container, pulling and running it happens on your machine, which has no public URL. A registry is storage, not hosting; that distinction is exactly what m06-l4 taught."
+          - id: d
+            label: "The arrow is indirect: the cron commits the poller's data, so the dashboard reads it from status.json"
+            correct: false
+            feedback: "That is the route an extension would have to build, not an edge the station has. The cron probes public targets from a runner that has never heard of your laptop, so nothing of the poller's reaches status.json today. Carrying poller data through the pipeline is exactly the design work the challenge's panel option asks for."
+        explanation: "The hub has no poller-to-dashboard edge and no public path to the poller at all. The dashboard's three data sources are the cron-produced status.json, live kit reads, and the TS worker's public JSON endpoint. Knowing which edges do NOT exist is as much a part of understanding the system as knowing which do, that is why the checkpoint is drawn from memory before the docs come back out."
+      - id: m10-l1-q2
+        prompt: "The worker-status panel is the capstone's only NEW wiring, yet the lesson insists it requires zero new skills. What makes that claim true?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The dashboard already binds to the worker's KV namespace, so the panel just reads shared state"
+            correct: false
+            feedback: "KV bindings exist only inside Cloudflare Workers, a Vercel-hosted SPA cannot bind to a KV namespace. The worker's fetch handler exists precisely to serve its KV snapshot as public JSON so anything can poll it over HTTP."
+          - id: b
+            label: "It composes two taught skills: the m03-l2 polling pattern aimed at the m07-l1 JSON endpoint"
+            correct: true
+            feedback: "A zod schema at the boundary, a discriminated state union, useEffect with a cleaned-up interval: the dashboard has polled a public JSON URL that way since module three, and the worker has served its snapshot that way since module seven. New capability out of owned parts is the whole thesis."
+          - id: a
+            label: "Vercel and Cloudflare share an integration that auto-wires deployed projects to each other"
+            correct: false
+            feedback: "No such auto-wiring is used or taught. The panel is plain application code in the dashboard: a fetch on an interval against a public URL. Reaching for a platform integration you never learned would break the capstone's taught-skills-only rule."
+          - id: d
+            label: "Both surfaces are TypeScript, so the panel imports the worker's JSON types straight from pulse-core"
+            correct: false
+            feedback: "The worker is its own npm project outside the station's pnpm workspace, which is why m09-l1 counted its lockfile separately. Nothing is importable across that line, so the panel gets its own schema file for the payload shape and validates at the boundary like every other feed."
+        explanation: "The capstone's one new edge is taught-skill composition, stated out loud: the dashboard polls a public JSON URL exactly the way it has polled status.json since m03-l2, and the worker has served its KV snapshot as public JSON since m07-l1. The capstone's one new edge proves the course's thesis, by the end, new capability comes from composing what you own, not from learning another tool."
+      - id: m10-l1-q3
+        prompt: "While verifying the pipeline edge you notice the cron's status.json commit never retriggers the workflow. In the station's design, what is that behavior?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "A bot-author filter: push triggers skip commits authored by a bot, so those events create no new runs"
+            correct: false
+            feedback: "The guard keys on the token that created the event, not on who the commit says it is from. Swap GITHUB_TOKEN for a PAT and the identical bot-looking commit starts spawning runs, which is exactly why the escape hatch works and why the default is the thing holding this edge up."
+          - id: a
+            label: "A misconfiguration: the workflow's push trigger needs a path filter added so that it fires on that commit"
+            correct: false
+            feedback: "Backwards, if that commit DID fire the push workflow, the cron would trigger itself forever. No path filter is missing; the platform is refusing the recursion for you, and you want it refused."
+          - id: c
+            label: "The GITHUB_TOKEN recursion guard working as designed: workflow-authored events don't create new runs"
+            correct: true
+            feedback: "This is the one edge in the hub whose correctness rests on a platform behavior nobody in this course wrote, so name it in your diagram as a guarantee rather than luck. The documented escape hatch, a PAT or GitHub App token, is precisely the knob that would set your station spinning."
+          - id: b
+            label: "A quirk of cron: scheduled workflows only ever run on the schedule, so no commit triggers anything in this repo"
+            correct: false
+            feedback: "Commits still trigger push-based workflows normally in this repo, your test gate runs on push. The exception is narrower: events created using GITHUB_TOKEN do not spawn new runs; a human push does."
+        explanation: "You met the mechanism in m01-l3, so the capstone asks a different question about it: not what it does, but what it is load-bearing FOR. Edge 1 is the only edge in the hub whose correctness depends on a platform behavior nobody in this course wrote, and the station's whole heartbeat rests on it, so a reader of your architecture diagram has to know it is a designed guarantee rather than luck. That is the operator's read: name the platform behaviors your system leans on, and know which of them you would have had to build yourself. The escape hatch (a PAT or GitHub App token) is exactly the knob that would break this station if someone reached for it without asking why the default was chosen."
+      - id: m10-l1-q4
+        prompt: "For the solo extension, a learner shortlists three ideas: a new expected-status-code probe type wired end to end, a Telegram alert via a bot SDK, and deploying the poller to a Kubernetes cluster. Which one satisfies the extension's rules?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The new probe-target type: fleet types, worker check, dashboard row, composed from taught skills"
+            correct: true
+            feedback: "Pure composition, end to end: a variant in the fleet's target union, the check logic in a worker, a row on the dashboard. Nothing new enters the tree, which is the point of the rule, since ten modules went into replacing the reflex of reaching for a tool with the skill of selecting one."
+          - id: b
+            label: "The Telegram alert: alerts are one of the three named extension categories, so any alert qualifies"
+            correct: false
+            feedback: "The category is allowed; the implementation is not. A bot SDK is an untaught dependency, so it breaks the taught-skills-only rule. An in-bounds alert composes what you own, like a worker-written degraded flag the Actions run checks and fails loudly on."
+          - id: d
+            label: "The probe type and the Telegram alert both qualify, since neither one adds a platform the station lacks"
+            correct: false
+            feedback: "Platforms are not the boundary; taught skills are. The Telegram idea adds no platform and still fails, because the bot SDK is a dependency nobody taught you to evaluate. Rewrite that same alert as a degraded flag an Actions step reads and it comes back in bounds."
+          - id: c
+            label: "The Kubernetes deploy: it extends the ops layer, which is the newest skill and freshest in memory"
+            correct: false
+            feedback: "K8s was explicitly signposted out of scope at the M6 tier-gate and never taught. The extension proves you can grow the system with the stack you actually own, orchestration is a different course's problem."
+        explanation: "The extension's one rule is taught skills only, and it is the assignment itself: prove you can extend a real system without a tutorial. A new probe-target type is pure composition, a union variant in the fleet, a check in the worker, a row on the dashboard. The other two each smuggle in an untaught tool, which is exactly the reflex this course spent ten modules replacing with selection."

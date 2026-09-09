@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The same four versions, sorted two ways
+     purpose: put the planted bug on one readable line so the reader enters the challenge already knowing which comparison lies and exactly where
+     data: Columns: version | rank under string comparison, lowest to highest | rank under numeric comparison, major then minor then patch | inside the exercise range >=0.3.0 <0.3.11 Row 1: 0.3.0 | 1st, lowest | 1st, lowest | yes, the lower bound is inclusive Row 2: 0.3.9 | 4th, highest, because the character 9 beats the character 1 | 2nd | yes, and the lockfile-held 0.3.9 crowd was never in danger in the real incident Row 3: 0.3.10 | 2nd | 3rd | yes, and this is the one hostile release, yanked rather than patched Row 4: 0.3.11 | 3rd | 4th, highest | no, the upper bound is exclusive Footer: only the numeric column answers the auditor's question, and compareVersions currently computes the string column
+     prompt: Four-column table, four version rows. Render the string-comparison column in an error tone and the numeric column in a correct tone. Draw a small swap motif linking the two cells of the 0.3.9 and 0.3.10 rows to show the ordering flipping between columns. Versions set in monospace. Render the footer as a full-width caption strip beneath the table.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:424px;height:392px;right:-233px;top:150px;border-radius:46% 48% 55% 42% / 45% 37% 53% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:569px;bottom:-339px;left:455px;border-radius:50% 54% 64% 62% / 52% 46% 52% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:36px 52px 34px;}
+  .tbl{position:relative;margin-top:18px;border:1.5px solid var(--border-subtle);border-radius:14px;overflow:hidden;}
+  .row{display:flex;height:92px;border-top:1px solid var(--border-subtle);}
+  .row.hd{height:60px;background:var(--surface-inverse);border-top:none;}
+  .cell{display:flex;flex-direction:column;justify-content:center;padding:0 20px;}
+  .cv{width:200px;}
+  .cs{width:378px;background:rgba(255,210,63,.32);}
+  .cg{width:64px;padding:0;}
+  .cn{width:328px;background:rgba(0,139,76,.10);}
+  .cr{flex:1;}
+  .hd .cell{background:none;}
+  .hd .h{font-family:var(--font-display);font-weight:900;font-size:14.5px;line-height:1.2;color:var(--text-on-dark);}
+  .hd .s{font-family:var(--font-body);font-size:11.5px;color:rgba(245,232,202,.75);margin-top:2px;}
+  .ver{font-family:var(--font-mono);font-weight:700;font-size:20px;color:var(--text-primary);}
+  .rank{font-family:var(--font-display);font-weight:900;font-size:17px;color:var(--text-primary);}
+  .note{font-family:var(--font-body);font-size:12.5px;line-height:1.35;color:var(--text-secondary);margin-top:3px;}
+  .swap{position:absolute;left:578px;top:174px;}
+  .foot{margin-top:16px;background:var(--surface-brand);border-radius:12px;padding:13px 26px;text-align:center;
+        font-family:var(--font-display);font-weight:800;font-size:17px;line-height:1.4;color:var(--text-on-brand);}
+  .foot code{font-family:var(--font-mono);font-weight:700;font-size:16px;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">find the planted bug before you open the file</div>
+  <h2 class="viz-title" style="font-size:40px;margin:2px 0 0;">the same four versions, sorted two ways</h2>
+  <div class="tbl">
+    <div class="row hd">
+      <div class="cell cv"><div class="h">version</div></div>
+      <div class="cell cs"><div class="h">rank: string comparison</div><div class="s">lowest to highest &middot; what compareVersions computes</div></div>
+      <div class="cell cg"></div>
+      <div class="cell cn"><div class="h">rank: numeric comparison</div><div class="s">major, then minor, then patch</div></div>
+      <div class="cell cr"><div class="h">inside &gt;=0.3.0 &lt;0.3.11 ?</div><div class="s">the exercise range</div></div>
+    </div>
+    <div class="row">
+      <div class="cell cv"><span class="ver">0.3.0</span></div>
+      <div class="cell cs"><span class="rank">1st: lowest</span></div>
+      <div class="cell cg"></div>
+      <div class="cell cn"><span class="rank">1st: lowest</span></div>
+      <div class="cell cr"><span class="rank">yes</span><span class="note">the lower bound is inclusive</span></div>
+    </div>
+    <div class="row">
+      <div class="cell cv"><span class="ver">0.3.9</span></div>
+      <div class="cell cs"><span class="rank">4th: highest</span><span class="note">the character &ldquo;9&rdquo; beats the character &ldquo;1&rdquo;</span></div>
+      <div class="cell cg"></div>
+      <div class="cell cn"><span class="rank">2nd</span></div>
+      <div class="cell cr"><span class="rank">yes</span><span class="note">and the lockfile-held 0.3.9 crowd was never in danger in the real incident</span></div>
+    </div>
+    <div class="row">
+      <div class="cell cv"><span class="ver">0.3.10</span></div>
+      <div class="cell cs"><span class="rank">2nd</span></div>
+      <div class="cell cg"></div>
+      <div class="cell cn"><span class="rank">3rd</span></div>
+      <div class="cell cr"><span class="rank">yes</span><span class="note">the one hostile release, yanked rather than patched</span></div>
+    </div>
+    <div class="row">
+      <div class="cell cv"><span class="ver">0.3.11</span></div>
+      <div class="cell cs"><span class="rank">3rd</span></div>
+      <div class="cell cg"></div>
+      <div class="cell cn"><span class="rank">4th: highest</span></div>
+      <div class="cell cr"><span class="rank">no</span><span class="note">the upper bound is exclusive</span></div>
+    </div>
+    <div class="swap">
+      <svg width="64" height="140" viewBox="0 0 64 140">
+        <line x1="8" y1="24" x2="50" y2="116" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="56,120 44,116 50,107" fill="#1B231D"/>
+        <line x1="8" y1="116" x2="50" y2="24" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="56,20 44,24 50,33" fill="#1B231D"/>
+      </svg>
+    </div>
+  </div>
+  <div class="foot">only the numeric column answers the auditor&rsquo;s question, and <code>compareVersions</code> currently computes the string column</div>
+</div>
+</div>
+</body></html>

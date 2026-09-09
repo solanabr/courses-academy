@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What you run versus what libraries promise
+     purpose: separate the runtime on your machine from the support floors packages declare, so neither number gets misread as the other
+     data: what you run: Node 24 (current LTS line as of 2026-09-02; Node 26 LTS handover scheduled 2026-10-28) what surveyed libraries promise (engines floors observed in the wild): >=20 and ^22 one named example: @solana/kit declares engines.node >=20.18.0 what pulse-core honestly claims today: >=24 (the only runtime its tests have touched) the rule: claim what you test; widen when CI tests wider
+     prompt: Two-column comparison. Left column "what you run" holds a single large Node 24 chip with the dated LTS footnote beneath it. Right column "what libraries promise" stacks three floor chips (>=20, ^22, kit's >=20.18.0) plus pulse-core's >=24 chip visually set apart at the bottom. A single caption row under both columns carries the rule from the data block. Monospace for all version literals.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:509px;bottom:-275px;right:-275px;border-radius:43% 46% 62% 59% / 60% 65% 37% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:501px;height:418px;left:-315px;top:197px;border-radius:40% 37% 39% 65% / 54% 55% 44% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 32px;}
+  .cols{display:flex;gap:28px;align-items:stretch;margin-top:6px;}
+  .col{flex:1;border:2px solid var(--border-strong);border-radius:16px;padding:20px 24px;}
+  .ch{font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin:0 0 16px;}
+  .mono{font-family:var(--font-mono);}
+  .bigchip{background:var(--surface-brand);color:var(--text-on-brand);border-radius:14px;padding:26px 24px;text-align:center;}
+  .bigchip .v{font-family:var(--font-mono);font-weight:700;font-size:44px;line-height:1;}
+  .foot{font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);line-height:1.45;margin-top:14px;}
+  .floor{display:flex;align-items:center;gap:12px;border:1.5px solid var(--border-subtle);background:var(--surface-paper);border-radius:10px;padding:9px 14px;margin-bottom:9px;}
+  .floor .v{font-family:var(--font-mono);font-weight:700;font-size:17px;color:var(--text-primary);min-width:130px;}
+  .floor .n{font-family:var(--font-body);font-size:12.5px;color:var(--text-muted);}
+  .ours{display:flex;align-items:center;gap:12px;background:var(--surface-accent);border:1.5px solid var(--stbr-dark);border-radius:10px;padding:11px 14px;margin-top:14px;}
+  .ours .v{font-family:var(--font-mono);font-weight:700;font-size:17px;color:var(--text-on-accent);min-width:130px;}
+  .ours .n{font-family:var(--font-body);font-size:12.5px;color:var(--text-on-accent);}
+  .verdict{margin-top:22px;background:var(--surface-brand);color:var(--text-on-brand);border-radius:12px;padding:14px 20px;font-family:var(--font-display);font-weight:800;font-size:20px;text-align:center;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">runtimes vs support floors</div>
+  <h2 class="viz-title" style="font-size:46px;margin:4px 0 18px;">what you run versus what libraries promise</h2>
+  <div class="cols">
+    <div class="col">
+      <p class="ch">what you run</p>
+      <div class="bigchip"><div class="v">Node 24</div></div>
+      <div class="foot">current LTS line as of 2026-09-02; the Node 26 LTS handover is scheduled for 2026-10-28. This is a <strong>runtime</strong>: the one executable actually on your machine.</div>
+    </div>
+    <div class="col">
+      <p class="ch">what libraries promise</p>
+      <div class="floor"><div class="v">&gt;=20</div><div class="n">engines floor observed in surveyed libraries</div></div>
+      <div class="floor"><div class="v">^22</div><div class="n">engines floor observed in surveyed libraries</div></div>
+      <div class="floor"><div class="v">&gt;=20.18.0</div><div class="n"><span class="mono">@solana/kit</span> declares this in <span class="mono">engines.node</span></div></div>
+      <div style="border-top:1.5px dashed var(--border-strong);margin-top:4px;"></div>
+      <div class="ours"><div class="v">&gt;=24</div><div class="n"><strong>pulse-core</strong> today, the only runtime its tests have touched</div></div>
+    </div>
+  </div>
+  <div class="verdict">claim what you test; widen the floor only when CI tests wider</div>
+</div>
+</div>
+</body></html>

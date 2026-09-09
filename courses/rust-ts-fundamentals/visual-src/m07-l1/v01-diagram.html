@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: A node process versus a fleet of isolates
+     purpose: make the isolate model concrete before the reader hits its consequences (statelessness, no node builtins)
+     data: left: pulse-pollerd (m06) = one node process, one machine, boots once, owns process memory, runs until stopped right: pulse-edge-ts (m07) = many short-lived isolates inside workerd, spawned per event in many cities, two entry points (fetch handler, scheduled handler), no shared memory between isolates shared: both import the same pulse-core classifier
+     prompt: Two-panel diagram. Left panel: a single tall box labeled "node process (pulse-pollerd)" on one machine icon, with a memory block inside it and a long lifetime arrow. Right panel: a world map suggestion with many small identical boxes labeled "isolate", each with short lifetime arrows and two entry ports labeled fetch and scheduled. A shared module chip labeled pulse-core feeds both panels.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:458px;height:520px;right:-250px;top:199px;border-radius:61% 55% 58% 65% / 49% 60% 35% 37%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:529px;height:476px;bottom:-236px;left:723px;border-radius:56% 37% 42% 53% / 39% 46% 48% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 46px 30px; }
+    .v01-panels { display: flex; gap: 26px; margin-top: 14px; height: 400px; }
+    .v01-panel { flex: 1; border: 2px solid var(--border-strong); border-radius: var(--radius-xl); padding: 16px 20px; display: flex; flex-direction: column; background: #ffffff; }
+    .v01-ptitle { font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--text-primary); }
+    .v01-ptitle code { font-family: var(--font-mono); font-size: 19px; }
+    .v01-psub { font-family: var(--font-body); font-size: 13.5px; color: var(--text-muted); margin: 2px 0 10px; }
+    .v01-frame { flex: 1; border: 2px dashed var(--stbr-green); border-radius: var(--radius-lg); padding: 12px 14px; display: flex; flex-direction: column; }
+    .v01-framelbl { font-family: var(--font-body); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--stbr-green); margin-bottom: 8px; }
+    .v01-proc { flex: 1; background: var(--surface-inverse); border-radius: var(--radius-lg); padding: 14px 16px; display: flex; flex-direction: column; }
+    .v01-proc b { font-family: var(--font-display); font-weight: 800; font-size: 19px; color: var(--stbr-cream); }
+    .v01-proc small { font-family: var(--font-body); font-size: 13px; color: rgba(245,232,202,0.75); margin-top: 2px; }
+    .v01-mem { margin-top: auto; border: 1.5px solid rgba(245,232,202,0.55); border-radius: var(--radius-md); padding: 8px 12px; font-family: var(--font-mono); font-size: 13.5px; color: var(--stbr-cream); }
+    .v01-life { margin-top: 12px; display: flex; align-items: center; gap: 10px; }
+    .v01-lifelbl { font-family: var(--font-body); font-weight: 700; font-size: 13px; color: var(--text-secondary); white-space: nowrap; }
+    .v01-lifeline { flex: 1; height: 2.5px; background: var(--stbr-dark); position: relative; }
+    .v01-lifeline::after { content: ""; position: absolute; right: -1px; top: -5.5px; border-left: 9px solid var(--stbr-dark); border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v01-ports { display: flex; gap: 12px; margin-bottom: 12px; }
+    .v01-port { flex: 1; background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-pill); padding: 6px 12px; text-align: center; font-family: var(--font-mono); font-weight: 600; font-size: 14px; position: relative; }
+    .v01-port::after { content: ""; position: absolute; left: 50%; margin-left: -7px; bottom: -8px; border-top: 8px solid var(--surface-brand); border-left: 7px solid transparent; border-right: 7px solid transparent; }
+    .v01-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
+    .v01-iso { background: var(--stbr-yellow); border: 2px solid var(--stbr-dark); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .v01-iso b { font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--stbr-dark); }
+    .v01-iso small { font-family: var(--font-body); font-size: 11.5px; color: rgba(27,35,29,0.75); margin-top: 1px; }
+    .v01-note { margin-top: 12px; font-family: var(--font-body); font-size: 13.5px; color: var(--text-secondary); text-align: center; }
+    .v01-band { margin-top: 24px; position: relative; background: var(--surface-brand); border-radius: var(--radius-lg); padding: 13px 26px; display: flex; align-items: center; gap: 16px; }
+    .v01-band::before, .v01-band::after { content: ""; position: absolute; top: -12px; border-bottom: 12px solid var(--surface-brand); border-left: 10px solid transparent; border-right: 10px solid transparent; }
+    .v01-band::before { left: 24%; }
+    .v01-band::after { right: 24%; }
+    .v01-bandchip { background: var(--stbr-cream); color: var(--stbr-dark); border-radius: var(--radius-pill); padding: 6px 16px; font-family: var(--font-mono); font-weight: 700; font-size: 16px; white-space: nowrap; }
+    .v01-bandtxt { font-family: var(--font-body); font-size: 16px; color: var(--stbr-cream); }
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">the isolate model</div>
+    <h2 class="viz-title">a node process versus a fleet of isolates</h2>
+    <div class="v01-panels">
+      <div class="v01-panel">
+        <div class="v01-ptitle"><code>pulse-pollerd</code> (m06)</div>
+        <div class="v01-psub">one node process on one machine: boots once, owns its memory</div>
+        <div class="v01-frame">
+          <div class="v01-framelbl">one machine</div>
+          <div class="v01-proc">
+            <b>node process</b>
+            <small>a single long-lived runtime</small>
+            <div class="v01-mem">process memory: owned, always warm</div>
+          </div>
+        </div>
+        <div class="v01-life"><span class="v01-lifelbl">boots once</span><div class="v01-lifeline"></div><span class="v01-lifelbl">runs until stopped</span></div>
+      </div>
+      <div class="v01-panel">
+        <div class="v01-ptitle"><code>pulse-edge-ts</code> (m07)</div>
+        <div class="v01-psub">many short-lived isolates inside workerd, spawned per event</div>
+        <div class="v01-frame">
+          <div class="v01-framelbl">workerd &#183; many cities</div>
+          <div class="v01-ports"><div class="v01-port">fetch</div><div class="v01-port">scheduled</div></div>
+          <div class="v01-grid">
+            <div class="v01-iso"><b>isolate</b><small>per event</small></div>
+            <div class="v01-iso"><b>isolate</b><small>per event</small></div>
+            <div class="v01-iso"><b>isolate</b><small>per event</small></div>
+            <div class="v01-iso"><b>isolate</b><small>per event</small></div>
+            <div class="v01-iso"><b>isolate</b><small>per event</small></div>
+            <div class="v01-iso"><b>isolate</b><small>per event</small></div>
+          </div>
+        </div>
+        <div class="v01-note">short-lived &#183; two entry points (fetch, scheduled) &#183; <b>no shared memory between isolates</b></div>
+      </div>
+    </div>
+    <div class="v01-band">
+      <div class="v01-bandchip">pulse-core</div>
+      <div class="v01-bandtxt">shared: both sides import the <b>same classifier</b>: one npm package, two very different runtimes.</div>
+    </div>
+  </div>
+</div>
+</body></html>

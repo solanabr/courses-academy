@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The blockhash lifetime window
+     purpose: make the roughly 45 second expiry concrete (150 slots x 300ms) so build-then-wait-then-send is understood as guaranteed failure
+     data: t=0s: rpc.getLatestBlockhash() fetched t=0-2s: message built, signed, sent (the happy path, well inside the window) t=~45s: blockhash no longer recent (150 slots x the course's taught 300ms slot time); network rejects the transaction t=120s: the build-at-startup-send-later script from the footgun arrives here: dead on arrival, every time annotation: "expiry is a feature: dead transactions stay dead instead of landing hours later"
+     prompt: Horizontal timeline from t=0 to t=120s with the four events from the data placed as markers. Shade the region up to roughly 45s as the valid window and the region after it as expired; the happy-path send sits inside the window, the delayed send clearly outside. The feature annotation goes under the expired region.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:386px;right:-295px;top:130px;border-radius:49% 44% 60% 52% / 50% 41% 60% 55%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:530px;height:489px;bottom:-262px;left:411px;border-radius:53% 46% 38% 49% / 41% 59% 43% 36%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:42px 56px 36px; }
+    .mono { font-family:var(--font-mono); }
+    .evt { position:absolute; }
+    .evt h5 { margin:0; font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--stbr-dark); }
+    .evt p { margin:4px 0 0; font-family:var(--font-body); font-size:14.5px; color:var(--text-secondary); line-height:1.35; }
+    .tick { position:absolute; width:2.5px; background:var(--stbr-green); }
+    .dot { position:absolute; width:20px; height:20px; border-radius:50%; border:4px solid #fff; top:134px; }
+    .zone-lbl { position:absolute; top:96px; font-family:var(--font-body); font-size:13px; font-weight:700;
+                letter-spacing:.07em; text-transform:uppercase; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">build, sign, send: inside the window</div>
+    <h2 class="viz-title">the blockhash lifetime window</h2>
+    <div style="position:relative; height:312px; margin-top:8px;">
+      <!-- window shading -->
+      <div style="position:absolute; left:0; top:88px; width:37.5%; height:126px; background:#e8f3ec; border-radius:12px 0 0 12px;"></div>
+      <div style="position:absolute; left:37.5%; top:88px; width:62.5%; height:126px; background:#efe9d8; border-radius:0 12px 12px 0;"></div>
+      <span class="zone-lbl" style="left:18px; color:var(--stbr-emerald);">valid window &middot; blockhash still recent</span>
+      <span class="zone-lbl" style="left:calc(37.5% + 18px); color:var(--text-muted);">expired &middot; rejected on arrival</span>
+      <!-- the bar -->
+      <div style="position:absolute; left:0; top:141px; width:37.5%; height:13px; background:var(--stbr-emerald); border-radius:7px 0 0 7px;"></div>
+      <div style="position:absolute; left:37.5%; top:141px; width:62.5%; height:13px; background:var(--stbr-dark); border-radius:0 7px 7px 0;"></div>
+      <!-- markers -->
+      <div class="dot" style="left:-8px; background:var(--stbr-emerald);"></div>
+      <div class="dot" style="left:calc(2% - 6px); background:#fff; border-color:var(--stbr-emerald);"></div>
+      <div class="dot" style="left:calc(37.5% - 10px); background:var(--stbr-dark);"></div>
+      <div class="dot" style="right:-8px; background:var(--stbr-yellow); border-color:var(--stbr-dark);"></div>
+      <!-- above labels -->
+      <div class="evt" style="left:0; top:0; width:330px;">
+        <h5>t = 0s</h5>
+        <p><span class="mono">rpc.getLatestBlockhash()</span> fetched</p>
+      </div>
+      <div class="tick" style="left:8px; top:52px; height:82px;"></div>
+      <div class="evt" style="left:calc(37.5% - 160px); top:0; width:320px; text-align:center;">
+        <h5>t &asymp; 45s &middot; 150 slots &times; 300ms</h5>
+        <p>blockhash no longer recent; the network rejects the transaction</p>
+      </div>
+      <div class="tick" style="left:calc(37.5% - 1px); top:52px; height:82px; background:var(--stbr-dark);"></div>
+      <!-- below labels -->
+      <div class="tick" style="left:calc(2% + 1px); top:154px; height:64px;"></div>
+      <div class="evt" style="left:2%; top:224px; width:430px;">
+        <h5>t = 0 to 2s &middot; the happy path</h5>
+        <p>message built, signed, sent, well inside the window</p>
+      </div>
+      <div class="tick" style="right:8px; top:154px; height:64px; background:var(--stbr-dark);"></div>
+      <div class="evt" style="right:0; top:224px; width:470px; text-align:right; background:var(--stbr-yellow); border-radius:var(--radius-md); padding:12px 16px;">
+        <h5>t = 120s &middot; dead on arrival, every time</h5>
+        <p style="color:var(--stbr-dark);">the build-at-startup, send-later footgun script arrives here</p>
+      </div>
+    </div>
+    <p style="margin:12px 0 0; text-align:right; font-family:var(--font-body); font-style:italic; font-size:15.5px; color:var(--text-secondary);">expiry is a feature: dead transactions stay dead instead of landing hours later</p>
+  </div>
+</div>
+</body></html>

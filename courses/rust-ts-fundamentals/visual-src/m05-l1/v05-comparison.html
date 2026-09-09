@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Tagged dispatch versus untagged guessing
+     purpose: contrast the failure behavior the learner will see when the kind field is wrong under each representation
+     data: axis: representation | how a variant is chosen | bad input error | ambiguous input tagged (tag = "kind") | discriminant field read first, one variant parsed | unknown variant `grpc`, expected `http` or `tcp`, with line and column | impossible, the tag decides untagged | try variants in order, first fit wins | data did not match any variant of untagged enum | silently parses as the first matching shape
+     prompt: Two-column comparison card, one column per representation, three labeled rows: how a variant is chosen, what a bad input error looks like, what happens on ambiguous input. Render the two error strings from data in monospace. Visually flag the untagged column's ambiguous-input cell as the silent hazard.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:581px;height:494px;top:-312px;right:-312px;border-radius:37% 64% 59% 55% / 50% 52% 46% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:450px;bottom:-259px;left:-259px;border-radius:64% 43% 47% 43% / 57% 45% 62% 61%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .cmp-row { display: flex; align-items: stretch; gap: 16px; }
+    .cmp-lbl { width: 232px; flex: none; display: flex; align-items: center;
+               font-family: var(--font-display); font-weight: 800; font-size: 18px;
+               color: var(--stbr-dark); line-height: 1.2; padding: 12px 0; }
+    .cell { flex: 1; border: 2px solid var(--border-subtle); border-radius: var(--radius-md);
+            padding: 12px 18px; margin: 5px 0; display: flex; flex-direction: column;
+            justify-content: center; font-family: var(--font-body); font-size: 16px;
+            color: var(--stbr-dark); line-height: 1.35; }
+    .err { background: var(--surface-inverse); border-color: var(--surface-inverse);
+           font-family: var(--font-mono); font-size: 15.5px; color: var(--stbr-cream); }
+    .colh { flex: 1; border-radius: var(--radius-lg); padding: 14px 18px; text-align: center; }
+    .colh h3 { margin: 0; font-family: var(--font-display); font-weight: 900; font-size: 24px;
+               color: var(--stbr-cream); }
+    .colh p { margin: 3px 0 0; font-family: var(--font-mono); font-size: 14.5px;
+              color: var(--stbr-cream); opacity: .85; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">serde enum representations &middot; failure behavior</div>
+    <h2 class="viz-title" style="margin-bottom:24px;">tagged dispatch versus untagged guessing</h2>
+
+    <!-- column headers -->
+    <div class="cmp-row">
+      <div style="width:232px; flex:none;"></div>
+      <div class="colh" style="background:var(--stbr-emerald);">
+        <h3>tagged</h3><p>#[serde(tag = "kind")]</p></div>
+      <div class="colh" style="background:var(--surface-inverse);">
+        <h3>untagged</h3><p>#[serde(untagged)]</p></div>
+    </div>
+
+    <!-- row 1 -->
+    <div class="cmp-row" style="border-bottom:1.5px solid var(--border-subtle);">
+      <div class="cmp-lbl">how a variant is chosen</div>
+      <div class="cell">discriminant field read first; exactly one variant is parsed</div>
+      <div class="cell">variants tried in order; first fit wins</div>
+    </div>
+
+    <!-- row 2 -->
+    <div class="cmp-row" style="border-bottom:1.5px solid var(--border-subtle);">
+      <div class="cmp-lbl">bad input error</div>
+      <div class="cell err">unknown variant `grpc`, expected `http` or `tcp`
+        <span style="font-family:var(--font-body); font-size:13.5px; color:var(--stbr-cream); opacity:.8; margin-top:5px;">&hellip;with line and column</span></div>
+      <div class="cell err">data did not match any variant of untagged enum
+        <span style="font-family:var(--font-body); font-size:13.5px; color:var(--stbr-cream); opacity:.8; margin-top:5px;">no field, no line, no column</span></div>
+    </div>
+
+    <!-- row 3 -->
+    <div class="cmp-row">
+      <div class="cmp-lbl">ambiguous input</div>
+      <div class="cell" style="border-color:var(--stbr-emerald);">
+        <strong style="color:var(--stbr-emerald);">impossible</strong>: the tag decides</div>
+      <div class="cell" style="background:var(--stbr-yellow); border-color:var(--stbr-yellow);">
+        <span style="font-weight:600;">silently parses as the first matching shape</span>
+        <span style="align-self:flex-start; margin-top:6px; background:var(--stbr-dark); color:var(--stbr-cream);
+                     border-radius:var(--radius-pill); padding:3px 12px; font-size:13px; font-weight:700;
+                     letter-spacing:.06em;">THE SILENT HAZARD</span></div>
+    </div>
+
+    <!-- verdict band -->
+    <div style="margin-top:22px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+                padding:15px 24px; text-align:center;">
+      <p style="margin:0; font-family:var(--font-display); font-weight:800; font-size:21px; color:var(--stbr-cream);">
+        tag it: the discriminant dispatches, errors point at the field, and ambiguity cannot exist</p>
+    </div>
+  </div>
+</div>
+</body></html>

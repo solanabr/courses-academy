@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="_brand.css">
+<link rel="stylesheet" href="_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; position: relative; overflow: hidden;
+         background: var(--surface-page); padding: 0; }
+  .bg { position: absolute; top: 0; left: 0; width: 1600px; height: 900px;
+        object-fit: cover; }
+  .vignette { position: absolute; top: 0; left: 0; width: 1600px; height: 900px;
+              background: linear-gradient(180deg, rgba(27,35,29,0.32) 0%,
+                          rgba(27,35,29,0.10) 42%, rgba(27,35,29,0.40) 100%); }
+  .stbr-decor { top: 0; right: 0; bottom: 0; left: 0; }  /* banner body has no padding */
+  .stage { position: absolute; top: 0; left: 0; width: 1600px; height: 900px; z-index: 1;
+           display: flex; align-items: center; justify-content: center; }
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+          padding: 56px 72px 60px; width: 1240px; }
+  .card-top { display: flex; justify-content: space-between; align-items: center;
+              margin-bottom: 30px; }
+  .card-top .stbr-eyebrow { font-size: 24px; }
+  .card-title { font-family: var(--font-display); font-weight: var(--weight-black);
+                color: var(--text-primary); font-size: 74px; line-height: 1.06;
+                letter-spacing: var(--tracking-tight); margin: 0 0 44px;
+                text-wrap: balance; }
+  .meta { display: flex; gap: 16px; align-items: center; }
+  /* inline-BLOCK, not inline-flex: WeasyPrint double-draws borders on inline-flex */
+  .pill { display: inline-block; padding: 13px 28px;
+          border-radius: var(--radius-pill); font-family: var(--font-display);
+          font-weight: var(--weight-bold); font-size: 23px; letter-spacing: 0.08em;
+          text-transform: uppercase; white-space: nowrap; }
+  .pill svg { vertical-align: -4px; margin-right: 8px; }
+  .pill--level { background: var(--stbr-emerald); color: var(--text-on-brand); }
+  .pill--stat  { border: var(--border-bold) solid var(--stbr-dark);
+                 color: var(--text-primary); }
+  .pill--xp    { background: var(--stbr-yellow); color: var(--text-on-accent);
+                 margin-left: auto; }
+</style></head>
+<body>
+<!-- COURSE BANNER: the Academy course thumbnail (card shows it at 400x225 — keep
+     text short and large; judge legibility at 25% zoom). AUTHOR the .card content:
+     eyebrow, title (break lines with <br> if needed), pill texts. Rules and both
+     modes: skills/content-gen/references/banner.md.
+     WeasyPrint-safe CSS only: NO filter/backdrop-filter (photo blur is pre-baked
+     into banner-bg-blur.png by `render-banner`), no box shadows, no CSS
+     background images via url, NO emoji (the XP bolt is inline SVG). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:509px;height:527px;top:-276px;right:-276px;border-radius:38% 48% 44% 40% / 61% 52% 44% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:450px;height:406px;left:-269px;top:371px;border-radius:55% 46% 62% 63% / 62% 57% 37% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:623px;height:577px;bottom:-336px;right:-336px;border-radius:46% 58% 41% 54% / 57% 38% 45% 54%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="stage">
+  <div class="card">
+    <div class="card-top">
+      <div class="stbr-eyebrow">// WEB3 FOUNDATIONS</div>
+      <img src="logo.svg" style="height: 46px;" alt="">
+    </div>
+    <h1 class="card-title">Rust &amp; TypeScript<br>Fundamentals for Web3</h1>
+    <div class="meta">
+      <span class="pill pill--level">BEGINNER</span>
+      <span class="pill pill--stat">31 LESSONS &middot; 52 HOURS</span>
+      <span class="pill pill--xp"><svg width="18" height="26" viewBox="0 0 16 24"><polygon points="9,0 0,14 6,14 5,24 16,9 9,9" fill="#1b231d"/></svg>500 XP</span>
+    </div>
+  </div>
+</div>
+</body></html>

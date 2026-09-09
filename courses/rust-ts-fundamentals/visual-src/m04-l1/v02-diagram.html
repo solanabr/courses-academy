@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: A move transfers ownership, it does not free the data
+     purpose: correct the most common misreading of E0382 before it settles in
+     data: before call: latencies (owner) -> Vec[212, 487, 1204] during call: sum_latencies' parameter (new owner) -> same Vec, untouched, alive after the move: latencies binding: access ended, crossed out, points at nothing compiler note on the crossed binding: E0382 if used again
+     prompt: Two-panel diagram. Left panel: one binding box labeled as owner with an arrow to a vector of three numbers. Right panel: the same vector alive, now pointed to by the helper's parameter box; the original binding box remains but is crossed out with a small E0382 tag. A caption arrow states the data never moved or died, the name did.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:486px;height:414px;right:-303px;top:323px;border-radius:53% 51% 63% 48% / 64% 47% 37% 64%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:497px;height:489px;bottom:-235px;left:-235px;border-radius:55% 63% 49% 42% / 51% 51% 42% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 52px 32px; }
+    .v02-panels { display: grid; grid-template-columns: 1fr 140px 1fr; margin-top: 12px; }
+    .v02-panel { border: 2px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 16px 22px 18px; height: 372px; }
+    .v02-ph { font-family: var(--font-display); font-weight: 800; font-size: 15px; text-transform: uppercase;
+              letter-spacing: 0.1em; color: var(--text-muted); margin: 0 0 16px; text-align: center; }
+    .v02-bindrow { display: flex; justify-content: center; align-items: flex-start; gap: 16px; height: 104px; }
+    .v02-bind { border: 2px solid var(--stbr-emerald); border-radius: var(--radius-md); padding: 10px 18px; text-align: center; }
+    .v02-bname { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0; }
+    .v02-brole { font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--stbr-emerald); margin: 3px 0 0; }
+    .v02-bind-dead { border: 2px dashed var(--border-strong); }
+    .v02-bind-dead .v02-bname { text-decoration: line-through; color: var(--text-muted); }
+    .v02-bind-dead .v02-brole { color: var(--text-muted); }
+    .v02-e0382 { display: inline-block; background: var(--surface-inverse); color: var(--stbr-cream);
+                 border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 13px;
+                 padding: 3px 10px; margin-top: 6px; }
+    .v02-stemcol { display: flex; flex-direction: column; align-items: center; height: 48px; }
+    .v02-stem { width: 2px; height: 34px; background: var(--stbr-dark); }
+    .v02-stem-dash { width: 0; height: 30px; border-left: 2px dashed var(--border-strong); }
+    .v02-tri { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
+               border-top: 9px solid var(--stbr-dark); }
+    .v02-nothing { font-family: var(--font-body); font-size: 15px; color: var(--text-muted); text-align: center; margin: 2px 0 0; }
+    .v02-vec { display: flex; justify-content: center; }
+    .v02-cell { border: 2px solid var(--stbr-dark); padding: 11px 20px; font-family: var(--font-mono);
+                font-size: 21px; color: var(--stbr-dark); margin-left: -2px; background: var(--surface-card); }
+    .v02-cell:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); margin-left: 0; }
+    .v02-cell:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .v02-cell-live { background: var(--stbr-yellow); }
+    .v02-veclabel { font-family: var(--font-body); font-size: 15px; color: var(--text-secondary); text-align: center; margin: 8px 0 0; }
+    .v02-halves { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; }
+    .v02-half { display: flex; flex-direction: column; align-items: center; }
+    .v02-move { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 372px; }
+    .v02-movechip { font-family: var(--font-mono); font-size: 15px; color: var(--stbr-dark);
+                    background: var(--surface-paper); border: 1px solid var(--border-subtle);
+                    border-radius: var(--radius-pill); padding: 4px 12px; margin-bottom: 10px; }
+    .v02-movearrow { display: flex; align-items: center; }
+    .v02-moveline { width: 92px; height: 3px; background: var(--stbr-dark); }
+    .v02-movetri { width: 0; height: 0; border-top: 8px solid transparent; border-bottom: 8px solid transparent;
+                   border-left: 11px solid var(--stbr-dark); }
+    .v02-verdict { margin-top: 20px; background: var(--surface-brand); color: var(--stbr-cream);
+                   border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-display);
+                   font-weight: 800; font-size: 24px; text-align: center; }
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">reading E0382</div>
+    <h2 class="viz-title">a move transfers ownership; it does not free the data</h2>
+    <div class="v02-panels">
+      <div class="v02-panel">
+        <p class="v02-ph">before the call</p>
+        <div class="v02-bindrow">
+          <div class="v02-bind">
+            <p class="v02-bname">latencies</p>
+            <p class="v02-brole">owner</p>
+          </div>
+        </div>
+        <div class="v02-stemcol"><div class="v02-stem"></div><div class="v02-tri"></div></div>
+        <div class="v02-vec">
+          <div class="v02-cell">212</div><div class="v02-cell">487</div><div class="v02-cell">1204</div>
+        </div>
+        <p class="v02-veclabel">Vec&lt;u64&gt; &#183; one heap buffer</p>
+      </div>
+      <div class="v02-move">
+        <div class="v02-movechip">sum_latencies(latencies)</div>
+        <div class="v02-movearrow"><div class="v02-moveline"></div><div class="v02-movetri"></div></div>
+      </div>
+      <div class="v02-panel">
+        <p class="v02-ph">during &amp; after the move</p>
+        <div class="v02-halves">
+          <div class="v02-half">
+            <div class="v02-bindrow">
+              <div class="v02-bind v02-bind-dead">
+                <p class="v02-bname">latencies</p>
+                <p class="v02-brole">access ended</p>
+                <span class="v02-e0382">E0382 if used again</span>
+              </div>
+            </div>
+            <div class="v02-stemcol"><div class="v02-stem-dash"></div></div>
+            <p class="v02-nothing">&#10005; points at nothing</p>
+          </div>
+          <div class="v02-half">
+            <div class="v02-bindrow">
+              <div class="v02-bind">
+                <p class="v02-bname">latencies</p>
+                <p class="v02-brole">new owner &#183; fn param</p>
+              </div>
+            </div>
+            <div class="v02-stemcol"><div class="v02-stem"></div><div class="v02-tri"></div></div>
+            <div class="v02-vec">
+              <div class="v02-cell v02-cell-live">212</div><div class="v02-cell v02-cell-live">487</div><div class="v02-cell v02-cell-live">1204</div>
+            </div>
+            <p class="v02-veclabel">same buffer, untouched &amp; alive</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="v02-verdict">the data never moved and never died; the name did</div>
+  </div>
+</div>
+</body></html>

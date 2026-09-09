@@ -1,0 +1,100 @@
+id: lesson-rtf-m03-l2
+slug: m03-l2
+title: "React as a consumer: the dashboard"
+skills:
+  - solana-kit
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "zod": "4.5.4"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m03l2-q1
+        prompt: "The cron ran 8 minutes ago and committed fresh data, but your board still shows the old numbers. The network tab shows a 200 on the raw status.json fetch. Most likely cause?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "React batched the state update and won't re-render until the next user interaction forces the component tree to reconcile"
+            correct: false
+            feedback: "setState from your polling effect re-renders promptly, React isn't holding data hostage. The stale bytes arrived stale: check the response headers, not the component."
+          - id: d
+            label: "The effect's empty dependency array means it fetched once on mount and has not asked for the file again since"
+            correct: false
+            feedback: "The empty array governs how often the EFFECT runs, not how often it fetches: it starts a setInterval that keeps polling. A board that had stopped asking would show no request in the network tab at all."
+          - id: a
+            label: "The raw endpoint caches for 5 minutes behind a CDN, your 200 was a cache HIT; cache-bust or render the staleness"
+            correct: true
+            feedback: "The stale bytes arrived stale, so no component change helps. max-age=300 with a strong etag through Fastly means your board can trail reality by the cron interval plus the cache window."
+          - id: c
+            label: "GitHub rate-limits raw fetches to one fresh read per 10 minutes per IP and serves a stale copy for requests in between"
+            correct: false
+            feedback: "No such limit is documented anywhere, the sweep specifically recorded the ABSENCE of raw.* rate limits. The observable, probed mechanism is the 5-minute CDN cache."
+        explanation: "Two delays stack between a probe and a pixel: the cron's own schedule, then the CDN's cache-control: max-age=300 (probed live, Fastly, strong etag, MISS→HIT observed). Read it in devtools, then decide: cache-bust with a query string, or render the staleness honestly with a last-updated indicator. This lesson does both."
+      - id: m03l2-q2
+        prompt: "raw.githubusercontent serves your status.json with content-type: text/plain, yet `await res.json()` parses it without complaint. Why?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "GitHub's CDN negotiates the type per client: browsers that send an Accept: application/json header get the correct MIME on the wire"
+            correct: false
+            feedback: "The probe checked this shape of variance, the headers came back identical regardless of request headers. No negotiation; it's text/plain for everyone."
+          - id: a
+            label: "The browser rewrites the content-type to application/json when the URL ends in .json, so by the time fetch sees it the header is corrected"
+            correct: false
+            feedback: "Browsers don't rewrite response headers from file extensions, the header arrives as text/plain and stays that way; the parsing behavior lives in fetch's spec, not in a rewrite."
+          - id: d
+            label: "text/plain sits on the fetch spec's own allowlist of JSON-compatible content types, so this parse is permitted through"
+            correct: false
+            feedback: "No list gets consulted, which is the part worth keeping. json() reads the body and never asks what the header claimed, so nothing about text/plain was ever approved for this."
+          - id: b
+            label: "Response.json() parses the body as JSON regardless of MIME, though tools that sniff content-type can still reject it"
+            correct: true
+            feedback: "The fetch spec parses the body you asked it to parse and leaves the header unread. Convenient, and slightly dishonest: swap in a client that sniffs the type and this same response becomes a bug report."
+        explanation: "The WHATWG fetch spec parses the body you asked it to parse, MIME be damned. That's convenient and slightly dishonest, which is why the lesson shows the header in devtools: the day you swap in an HTTP library that sniffs content-type, this exact response becomes a bug report."
+      - id: m03l2-q3
+        prompt: "In consumer-level terms: where does the fetched status data LIVE in your dashboard, and what makes the table repaint when new data arrives?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "In a module-level variable next to the component, reassigning it triggers React's file watcher, which hot-reloads the changed component"
+            correct: false
+            feedback: "Module variables are invisible to React's render cycle (and hot-reload is a dev-server feature, not a data path). Only state setters schedule re-renders."
+          - id: d
+            label: "In the polling effect's closure, where each tick re-runs the effect and the parsed JSON reaches the table with no setter"
+            correct: false
+            feedback: "Effects run after a render; they do not cause one, and the interval fires the callback rather than re-running the effect. A value that never leaves the closure never reaches the JSX the component returned."
+          - id: c
+            label: "In a useState hook, the polling effect calls its setter with the parsed JSON, and that state change is what schedules the re-render"
+            correct: true
+            feedback: "One direction only: state in, render out, pixels last. The setter is the single doorbell React answers, so anything that has to appear on screen has to live in state."
+          - id: a
+            label: "In the DOM itself, React reads the current table contents back on each poll and patches only the cells whose text changed"
+            correct: false
+            feedback: "React never reads state back out of the DOM, the DOM is output. Data flows one way: state to render to pixels."
+        explanation: "The whole consumer-level model in one sentence: state is the input, the component is a pure function of it, the DOM is the output, and setState is the only doorbell. Everything deeper, context, reducers, server components, is the client-side mastery course's territory, and the lesson says so by name."
+      - id: m03l2-q4
+        prompt: "The board imports pulse-core's classifier for its status colors instead of reimplementing the three-line function locally. What does that import actually prove?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Bundle efficiency: importing from a workspace package lets Vite tree-shake the classifier to fewer bytes than a local copy would compile to"
+            correct: false
+            feedback: "A three-line local copy would bundle just as small, the win isn't bytes, it's that two consumers can never drift apart on what 'degraded' means."
+          - id: d
+            label: "That duplication is worth removing, the same three-line function written twice is code nobody should repeat"
+            correct: false
+            feedback: "Repetition alone is cheap here; three lines twice costs nothing to type. What the import buys is that the copy which quietly disagrees after someone retunes the latency band cannot exist."
+          - id: c
+            label: "Type safety: cross-package imports are the only place Vite runs the TypeScript checker, so the boundary is where type errors get caught"
+            correct: false
+            feedback: "Type-checking covers the whole project regardless of package boundaries, the import's value is one source of truth, not a special checking mode."
+          - id: a
+            label: "The m03-l1 boundary is real: fleet and dashboard demonstrably run the SAME classification code, one fix reaching both"
+            correct: true
+            feedback: "Last lesson the extraction was an argument; this line makes it a pixel. A green row on the board and a green verdict in the cron cannot disagree, because they are one function with two callers."
+        explanation: "This is the extraction demonstrated, not asserted: last lesson promised a second real consumer, and here it is, the exact classifier that gates the cron now colors the pixels. When m08-l2 adds chain-status rows, the same import means the fleet, the board, and eventually the edge worker all agree on what the colors mean."

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What the pulse pipeline costs on a public vs a private repo
+     purpose: make the m01-l1 "your repo is public" prerequisite pay off visibly, in the vendor's own billing terms
+     data: Row 1: Metering | public repo: none, usage is free and unmetered on standard runners | private repo: metered, Free plan includes 2,000 minutes/month Row 2: This pipeline (48 runs/day, ~1 min each) | public: $0, forever | private: ~1,440 min/month of a 2,000 min budget, before any other CI Row 3: Larger runners | always charged, even on public repos | always charged Row 4: Source | GitHub billing docs, quoted 2026-09-02 | same
+     prompt: Two-column comparison table, public repo vs private repo, four rows as in data. Highlight the public column's zero-cost cells. Render the larger-runners row as a full-width caution strip since it applies to both columns.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:565px;height:550px;top:-297px;right:-297px;border-radius:44% 35% 36% 38% / 38% 37% 41% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:475px;height:398px;left:-297px;top:159px;border-radius:49% 65% 63% 62% / 58% 36% 52% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 40px; }
+    .cmp { display: grid; grid-template-columns: 330px 1fr 1fr; }
+    .cmp > div { padding: 16px 20px; font-family: var(--font-body); font-size: 17px;
+                 line-height: 1.35; color: var(--text-primary);
+                 border-bottom: 1.5px solid var(--border-subtle); }
+    .cmp .hd { font-family: var(--font-display); font-weight: 800; font-size: 22px;
+               border-bottom: none; padding: 14px 20px; }
+    .cmp .lbl { font-family: var(--font-display); font-weight: 700; font-size: 18px;
+                color: var(--stbr-dark); background: var(--surface-paper); }
+    .zero { background: #FFF4CC; }
+    .chip0 { display: inline-block; background: var(--stbr-yellow); color: var(--stbr-dark);
+             font-family: var(--font-display); font-weight: 800; font-size: 17px;
+             border-radius: var(--radius-pill); padding: 3px 12px; margin-right: 8px; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">Actions billing &middot; the m01-l1 prerequisite pays off</div>
+    <h2 class="viz-title" style="margin-bottom:22px;">what the pulse pipeline costs: public vs private repo</h2>
+
+    <div class="cmp">
+      <div class="hd"></div>
+      <div class="hd" style="background:var(--stbr-emerald); color:var(--stbr-cream); border-radius:var(--radius-md) var(--radius-md) 0 0;">public repo</div>
+      <div class="hd" style="background:var(--stbr-dark); color:var(--stbr-cream); border-radius:var(--radius-md) var(--radius-md) 0 0; margin-left:12px;">private repo</div>
+
+      <div class="lbl">metering</div>
+      <div class="zero"><span class="chip0">free</span>usage is unmetered on standard runners</div>
+      <div style="margin-left:12px;">metered: Free plan includes 2,000 minutes/month</div>
+
+      <div class="lbl">this pipeline<br><span style="font-weight:400; font-family:var(--font-body); font-size:15px; color:var(--text-secondary);">48 runs/day, ~1 min each</span></div>
+      <div class="zero"><span class="chip0">$0</span>forever</div>
+      <div style="margin-left:12px;">~1,440 min/month of a 2,000-min budget, before any other CI</div>
+    </div>
+
+    <!-- larger-runners caution: applies to BOTH columns -->
+    <div style="margin-top:14px; border:2px solid var(--stbr-green); border-left:10px solid var(--stbr-green);
+                border-radius:var(--radius-md); background:var(--surface-paper); padding:12px 20px;
+                font-family:var(--font-body); font-size:17px; color:var(--text-primary);">
+      <strong style="font-family:var(--font-display);">larger runners:</strong>
+      always charged, even on public repos. The free tier is standard runners only.
+    </div>
+
+    <div style="margin-top:16px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+                padding:14px 22px; font-family:var(--font-display); font-weight:800; font-size:22px;
+                color:var(--stbr-cream);">
+      public repo + standard runners &rarr; this pipeline costs $0, forever.
+    </div>
+
+    <div style="margin-top:12px; font-family:var(--font-body); font-size:14px; color:var(--text-muted);">
+      Source (both columns): GitHub billing docs, quoted 2026-09-02.
+    </div>
+  </div>
+</div>
+</body></html>

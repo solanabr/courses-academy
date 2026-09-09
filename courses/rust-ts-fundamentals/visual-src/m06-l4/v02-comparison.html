@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What compose does versus what it deliberately does not
+     purpose: fence compose to local dev before the reader mistakes the file for a production deployment
+     data: inside compose's jurisdiction: one file declares the stack; one command up and down; service-name DNS between containers; env and ports wired; startup ordering via depends_on outside, on purpose: scheduling across machines; healing when a host dies; replicas and load balancing; rolling updates; readiness (depends_on orders startup only) where outside lives: orchestrators such as Kubernetes, named and signposted in this lesson's tier-gate, not taught in this course
+     prompt: Two-column comparison. Left column titled inside the jurisdiction with the five capabilities from data as rows. Right column titled outside on purpose with the five absences as rows and a footer row naming orchestrators as the tier-gate hand-off. Equal visual weight, no winner styling: the point is a boundary, not a scoreboard.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:481px;height:452px;bottom:-255px;right:-255px;border-radius:46% 48% 40% 62% / 54% 40% 49% 45%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:529px;height:443px;left:-321px;top:355px;border-radius:50% 42% 64% 54% / 64% 46% 60% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v2-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 40px 56px 36px; position: relative; overflow: hidden; }
+  .v2-cols { display: flex; gap: 28px; margin-top: 10px; }
+  .v2-col { flex: 1; border: 2px solid var(--border-strong); border-radius: var(--radius-xl);
+            overflow: hidden; }
+  .v2-head { padding: 13px 22px; font-family: var(--font-display); font-weight: 800;
+             font-size: 20px; letter-spacing: 0.02em; }
+  .v2-head-in { background: var(--stbr-emerald); color: var(--text-on-brand); }
+  .v2-head-out { background: var(--surface-inverse); color: var(--text-on-dark); }
+  .v2-rowlist { padding: 4px 22px 10px; }
+  .v2-item { display: flex; align-items: baseline; gap: 12px; padding: 10px 0;
+             border-bottom: 1.5px solid var(--border-subtle);
+             font-family: var(--font-body); font-size: 18px; color: var(--text-primary); }
+  .v2-item:last-child { border-bottom: none; }
+  .v2-dot { flex: none; width: 10px; height: 10px; border-radius: 50%;
+            background: var(--stbr-emerald); position: relative; top: -1px; }
+  .v2-dot-out { background: var(--stbr-ink-300); }
+  .v2-item small { color: var(--text-muted); font-size: 14.5px; }
+  .v2-foot { margin: 0 14px 14px; background: rgba(255,210,63,0.28);
+             border: 1.5px solid var(--stbr-yellow-600); border-radius: var(--radius-md);
+             padding: 10px 14px; font-family: var(--font-body); font-size: 15.5px;
+             color: var(--text-primary); }
+  .v2-foot b { font-weight: 700; }
+  .v2-verdict { margin-top: 24px; background: var(--surface-brand); color: var(--text-on-brand);
+                border-radius: var(--radius-lg); padding: 15px 26px; text-align: center;
+                font-family: var(--font-body); font-size: 19.5px; }
+  .v2-verdict b { font-family: var(--font-display); font-weight: 800; }
+</style>
+<div class="v2-card">
+  <div class="stbr-eyebrow">COMPOSE'S JURISDICTION</div>
+  <h2 class="viz-title">what compose does, and deliberately does not</h2>
+  <div class="v2-cols">
+    <div class="v2-col">
+      <div class="v2-head v2-head-in">inside the jurisdiction</div>
+      <div class="v2-rowlist">
+        <div class="v2-item"><span class="v2-dot"></span>one file declares the stack</div>
+        <div class="v2-item"><span class="v2-dot"></span>one command <small>up and down</small></div>
+        <div class="v2-item"><span class="v2-dot"></span>service-name DNS between containers</div>
+        <div class="v2-item"><span class="v2-dot"></span>env and ports wired</div>
+        <div class="v2-item"><span class="v2-dot"></span>startup ordering via depends_on</div>
+      </div>
+    </div>
+    <div class="v2-col">
+      <div class="v2-head v2-head-out">outside, on purpose</div>
+      <div class="v2-rowlist">
+        <div class="v2-item"><span class="v2-dot v2-dot-out"></span>scheduling across machines</div>
+        <div class="v2-item"><span class="v2-dot v2-dot-out"></span>healing when a host dies</div>
+        <div class="v2-item"><span class="v2-dot v2-dot-out"></span>replicas and load balancing</div>
+        <div class="v2-item"><span class="v2-dot v2-dot-out"></span>rolling updates</div>
+        <div class="v2-item"><span class="v2-dot v2-dot-out"></span>readiness <small>depends_on orders startup only</small></div>
+      </div>
+      <div class="v2-foot"><b>where "outside" lives:</b> orchestrators such as Kubernetes, named and signposted in this lesson's tier-gate, not taught in this course.</div>
+    </div>
+  </div>
+  <div class="v2-verdict"><b>the point is a boundary, not a scoreboard</b>: compose runs your local dev stack; production scheduling is a different tool's job.</div>
+</div>
+</div>
+</body></html>

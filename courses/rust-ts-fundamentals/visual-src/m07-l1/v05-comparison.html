@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Where a value lives, by how secret it is
+     purpose: fix the three-tier rule so the reader never commits a token inside the wrangler config
+     data: wrangler config "vars": committed plaintext | for public config only (target names, cadence labels) | readable by anyone with the repo .dev.vars: dotenv syntax, gitignored by the scaffold | local dev values, read by wrangler dev | never leaves your machine wrangler secret put: encrypted at Cloudflare | production secrets | write-only after set, shows as a name, no value
+     prompt: Three-column comparison card. Columns titled vars (committed).dev.vars (gitignored), and wrangler secret put (encrypted). Rows: where it lives, what belongs there, who can read it. Color the vars column with a caution tint and add a small crossed-out token icon in its "what belongs there" cell.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:500px;height:503px;right:-323px;top:206px;border-radius:59% 44% 56% 49% / 55% 48% 48% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:489px;height:479px;bottom:-269px;left:-269px;border-radius:37% 64% 44% 45% / 44% 65% 62% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05x-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 46px 28px; }
+    .v05x-grid { display: grid; grid-template-columns: 196px 1fr 1fr 1fr; gap: 0; margin-top: 16px;
+                 border: 2px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; }
+    .v05x-corner { background: var(--surface-inverse); }
+    .v05x-colh { background: var(--surface-inverse); color: var(--stbr-cream); padding: 13px 18px; border-left: 1.5px solid rgba(245,232,202,0.25); }
+    .v05x-colh b { font-family: var(--font-mono); font-weight: 700; font-size: 18px; display: block; }
+    .v05x-colh small { font-family: var(--font-body); font-size: 12.5px; color: rgba(245,232,202,0.75); }
+    .v05x-rowh { background: var(--surface-paper); padding: 14px 18px; font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--text-primary); display: flex; align-items: center; border-top: 1.5px solid var(--border-subtle); }
+    .v05x-cell { background: #ffffff; padding: 14px 18px; font-family: var(--font-body); font-size: 15px; color: var(--text-primary); border-top: 1.5px solid var(--border-subtle); border-left: 1.5px solid var(--border-subtle); display: flex; flex-direction: column; justify-content: center; gap: 6px; min-height: 88px; }
+    .v05x-cell small { font-size: 12.5px; color: var(--text-muted); }
+    .v05x-warn { background: rgba(255,210,63,0.22); }
+    .v05x-strike { align-self: flex-start; display: flex; align-items: center; gap: 8px; background: var(--surface-inverse); border-radius: var(--radius-pill); padding: 5px 14px; white-space: nowrap; }
+    .v05x-strike code { font-family: var(--font-mono); font-size: 13px; color: var(--stbr-cream); text-decoration: line-through; }
+    .v05x-strike span { font-family: var(--font-body); font-weight: 800; font-size: 13px; color: var(--stbr-yellow); }
+    .v05x-band { margin-top: 18px; background: var(--surface-brand); color: var(--stbr-cream); border-radius: var(--radius-lg); padding: 13px 24px; font-family: var(--font-display); font-weight: 800; font-size: 21px; text-align: center; }
+    .v05x-band code { font-family: var(--font-mono); font-size: 19px; }
+  </style>
+  <div class="v05x-card">
+    <div class="stbr-eyebrow">secrets, three tiers</div>
+    <h2 class="viz-title">where a value lives, by how secret it is</h2>
+    <div class="v05x-grid">
+      <div class="v05x-corner"></div>
+      <div class="v05x-colh"><b>vars</b><small>in the wrangler config, committed</small></div>
+      <div class="v05x-colh"><b>.dev.vars</b><small>gitignored by the scaffold</small></div>
+      <div class="v05x-colh"><b>wrangler secret put</b><small>encrypted</small></div>
+      <div class="v05x-rowh">where it lives</div>
+      <div class="v05x-cell v05x-warn">committed plaintext, right in the wrangler config</div>
+      <div class="v05x-cell">a dotenv-syntax file on your machine</div>
+      <div class="v05x-cell">encrypted at Cloudflare</div>
+      <div class="v05x-rowh">what belongs there</div>
+      <div class="v05x-cell v05x-warn">public config only: target names, cadence labels<div class="v05x-strike"><code>PROBE_TOKEN</code><span>&#10005; never</span></div></div>
+      <div class="v05x-cell">local dev values, read by <b>wrangler dev</b></div>
+      <div class="v05x-cell">production secrets</div>
+      <div class="v05x-rowh">who can read it</div>
+      <div class="v05x-cell v05x-warn">anyone with the repo</div>
+      <div class="v05x-cell">never leaves your machine</div>
+      <div class="v05x-cell">write-only after set, shows as a name, no value</div>
+    </div>
+    <div class="v05x-band">public names in <code>vars</code> &#183; local values in <code>.dev.vars</code> &#183; real tokens only via <code>wrangler secret put</code></div>
+  </div>
+</div>
+</body></html>

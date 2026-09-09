@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "input": "1n",
+    "expectedOutput": "result === '0.000000001'",
+    "description": "one lamport needs all nine fractional digits"
+  },
+  {
+    "id": "t2",
+    "input": "1000000000n",
+    "expectedOutput": "result === '1'",
+    "description": "a whole SOL prints with no decimal point"
+  },
+  {
+    "id": "t3",
+    "input": "1500000000n",
+    "expectedOutput": "result === '1.5'",
+    "description": "trailing zeros in the fraction are trimmed"
+  },
+  {
+    "id": "t4",
+    "input": "2500000n",
+    "expectedOutput": "result === '0.0025'",
+    "description": "the padding case: 2,500,000 lamports is 0.0025 SOL, not 0.25"
+  },
+  {
+    "id": "t5",
+    "input": "123456789123456789n",
+    "expectedOutput": "result === '123456789.123456789'",
+    "description": "a balance above 2^53 lamports, Number-based math would corrupt this"
+  },
+  {
+    "id": "t6",
+    "input": "0n",
+    "expectedOutput": "result === '0'",
+    "description": "zero lamports is just 0"
+  }
+]

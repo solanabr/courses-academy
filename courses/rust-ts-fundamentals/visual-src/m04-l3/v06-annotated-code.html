@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The compiler writes the refactor worksheet
+     purpose: show the add-a-variant error as a checklist the learner walks, not a failure to fear
+     data: error line: error[E0004]: non-exhaustive patterns: `(ProbeState::Maintenance, _)` not covered pointer: the match in next_state, exact file and line callout 1: the error names the new variant and the exact match that must decide its meaning callout 2: one error per catch-all-free match; the list is the complete blast radius callout 3: silent site, is_alerting, absent from the list because matches! hides a wildcard arm
+     prompt: A compiler error panel showing the E0004 text for the Maintenance variant with an arrow to the match expression it names. Three annotation callouts as listed in data, the third one styled as a warning since the wildcard site stays silent. Frame the whole panel with the caption "a checklist, not a crash".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:470px;height:468px;top:-256px;right:-256px;border-radius:35% 59% 41% 51% / 45% 58% 64% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:583px;height:480px;bottom:-300px;left:-300px;border-radius:59% 54% 36% 59% / 49% 51% 45% 44%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:grid; grid-template-columns:1fr 470px; column-gap:24px; margin-top:8px;
+          align-items:stretch; }
+  .panel { background:var(--surface-inverse); border-radius:var(--radius-xl); padding:22px 26px; }
+  .panel .ph { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+               letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-cream);
+               opacity:.75; margin-bottom:12px; }
+  .code { font-family:var(--font-mono); font-size:15px; line-height:1.55;
+          color:var(--stbr-cream); white-space:pre; }
+  .code .err { font-weight:700; }
+  .code .hl { background:rgba(0,139,76,.4); border-radius:4px; display:inline-block; width:100%; }
+  .code .dim { opacity:.55; }
+  .silent { margin-top:16px; border:2.5px dashed var(--stbr-yellow);
+            border-radius:var(--radius-lg); padding:12px 16px; }
+  .callouts { display:flex; flex-direction:column; justify-content:center; gap:16px; }
+  .co { display:flex; align-items:flex-start; gap:14px; background:var(--surface-card);
+        border:2px solid var(--border-subtle); border-radius:var(--radius-xl);
+        padding:16px 18px; }
+  .co .n { flex:none; width:40px; height:40px; border-radius:var(--radius-pill);
+           background:var(--surface-brand); color:var(--text-on-brand);
+           font-family:var(--font-display); font-weight:900; font-size:20px;
+           display:flex; align-items:center; justify-content:center; }
+  .co .tx { font-family:var(--font-body); font-weight:600; font-size:16px; line-height:1.4;
+            color:var(--text-primary); padding-top:6px; }
+  .co .tx b { font-weight:800; }
+  .co .tx code { font-family:var(--font-mono); font-weight:700; font-size:14.5px; }
+  .co.warn { background:var(--stbr-yellow); border-color:var(--stbr-yellow); }
+  .co.warn .n { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .co.warn .tx { color:var(--stbr-dark); }
+  .caption { margin-top:18px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-lg); padding:15px 24px; text-align:center;
+             font-family:var(--font-display); font-weight:900; font-size:22px; }
+</style>
+  <div class="stbr-eyebrow">add a variant, walk the list</div>
+  <h2 class="viz-title">the compiler writes the refactor worksheet</h2>
+  <div class="wrap">
+    <div class="panel">
+      <div class="ph">cargo check, after adding ProbeState::Maintenance</div>
+      <div class="code"><span class="err">error[E0004]: non-exhaustive patterns:
+       `(ProbeState::Maintenance, _)` not covered</span>
+  --&gt; src/state.rs:41:11
+   |
+<span class="hl">41 |     match (state, result) {</span>
+   |           ^^^^^^^^^^^^^^^ pattern not covered
+   |
+<span class="dim">   = note: the match in next_state must decide
+           what Maintenance means</span></div>
+      <div class="silent">
+        <div class="code"><span class="dim">// compiles silently, never appears on the list</span>
+fn is_alerting(s: &amp;ProbeState) -&gt; bool {
+    matches!(s, Down | Degraded) <span class="dim">// hidden wildcard</span>
+}</div>
+      </div>
+    </div>
+    <div class="callouts">
+      <div class="co">
+        <div class="n">1</div>
+        <div class="tx">the error <b>names the new variant</b> and the exact match (file and line) that must decide its meaning</div>
+      </div>
+      <div class="co">
+        <div class="n">2</div>
+        <div class="tx">one error per catch-all-free match: the list is the <b>complete blast radius</b> of the new variant</div>
+      </div>
+      <div class="co warn">
+        <div class="n">!</div>
+        <div class="tx">silent site: <code>is_alerting</code> is absent from the list; <code>matches!</code> hides a wildcard arm</div>
+      </div>
+    </div>
+  </div>
+  <div class="caption">a checklist, not a crash</div>
+</div>
+</body></html>

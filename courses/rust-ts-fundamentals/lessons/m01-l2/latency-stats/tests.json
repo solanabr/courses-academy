@@ -1,0 +1,26 @@
+[
+  {
+    "id": "t1",
+    "input": "'100'",
+    "expectedOutput": "result.min === 100 && result.max === 100 && result.mean === 100 && result.p95 === 100",
+    "description": "a single sample is its own min, max, mean, and p95"
+  },
+  {
+    "id": "t2",
+    "input": "'120,340,95,210,180'",
+    "expectedOutput": "result.min === 95 && result.max === 340 && result.mean === 189 && result.p95 === 340",
+    "description": "five unsorted samples: min 95, max 340, mean 189, p95 340"
+  },
+  {
+    "id": "t3",
+    "input": "'1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20'",
+    "expectedOutput": "result.min === 1 && result.max === 20 && result.mean === 10.5 && result.p95 === 19",
+    "description": "twenty samples: nearest-rank p95 is the 19th value, not the max"
+  },
+  {
+    "id": "t4",
+    "input": "'10,11,13'",
+    "expectedOutput": "result.min === 10 && result.max === 13 && result.mean === 11.33 && result.p95 === 13",
+    "description": "mean rounds to 2 decimal places (34/3 -> 11.33)"
+  }
+]

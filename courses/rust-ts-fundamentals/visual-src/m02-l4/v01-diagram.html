@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The station starts monitoring itself
+     purpose: map the uptime-monitor concepts the learner already owns onto their testing equivalents
+     data: outward monitor -> inward monitor (the suite) probe a target -> call a function expected reading (status 200, latency under budget) -> assertion (expect(...).toBe(...)) a 429 / timeout -> a failing test status.json on a schedule -> the CI test job on every push "nobody watching a target" -> "nobody testing a branch" arrows mean: same discipline, new direction
+     prompt: Two-column mapping diagram. Left column labeled "the fleet, probing outward", right column labeled "the suite, probing inward". Five rows pairing the concepts listed in data, connected by horizontal arrows left to right. One caption line under the diagram: "same discipline, pointed inward".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:545px;height:566px;bottom:-332px;right:-332px;border-radius:42% 51% 62% 45% / 47% 47% 59% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:516px;height:440px;left:-274px;top:90px;border-radius:53% 63% 59% 39% / 63% 60% 48% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 40px 52px 34px; }
+  .map { display: grid; grid-template-columns: 1fr 96px 1fr; column-gap: 0; row-gap: 10px;
+         align-items: stretch; margin-top: 18px; }
+  .colhead { font-family: var(--font-display); font-weight: 800; font-size: 19px;
+             letter-spacing: 0.08em; text-transform: uppercase; text-align: center;
+             border-radius: var(--radius-pill); padding: 11px 16px; }
+  .colhead-out { background: var(--surface-inverse); color: var(--text-on-dark); }
+  .colhead-in  { background: var(--surface-brand);   color: var(--text-on-brand); }
+  .cell { background: var(--surface-card); border: 1.5px solid var(--border-strong);
+          border-radius: var(--radius-lg); padding: 9px 20px; min-height: 62px;
+          display: flex; flex-direction: column; justify-content: center; }
+  .cell .t { font-family: var(--font-body); font-weight: 600; font-size: 21px;
+             color: var(--text-primary); line-height: 1.25; }
+  .cell .s { font-family: var(--font-mono); font-size: 14px; color: var(--text-muted);
+             margin-top: 2px; }
+  .arrowcell { display: flex; align-items: center; justify-content: center; }
+  .cap { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+  .cap .txt { font-family: var(--font-display); font-weight: 800; font-size: 24px;
+              color: var(--text-primary); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">from outward monitor to inward monitor</div>
+  <h2 class="viz-title" style="font-size:48px;">the station starts monitoring itself</h2>
+  <div class="map">
+    <div class="colhead colhead-out">the fleet, probing outward</div>
+    <div class="arrowcell"></div>
+    <div class="colhead colhead-in">the suite, probing inward</div>
+
+    <div class="cell"><div class="t">probe a target</div></div>
+    <div class="arrowcell"><svg width="96" height="26"><line x1="6" y1="13" x2="72" y2="13" stroke="#FFD23F" stroke-width="5"/><polygon points="90,13 70,4 70,22" fill="#FFD23F"/></svg></div>
+    <div class="cell"><div class="t">call a function</div></div>
+
+    <div class="cell"><div class="t">expected reading</div><div class="s">status 200, latency under budget</div></div>
+    <div class="arrowcell"><svg width="96" height="26"><line x1="6" y1="13" x2="72" y2="13" stroke="#FFD23F" stroke-width="5"/><polygon points="90,13 70,4 70,22" fill="#FFD23F"/></svg></div>
+    <div class="cell"><div class="t">assertion</div><div class="s">expect(...).toBe(...)</div></div>
+
+    <div class="cell"><div class="t">a 429 / timeout</div></div>
+    <div class="arrowcell"><svg width="96" height="26"><line x1="6" y1="13" x2="72" y2="13" stroke="#FFD23F" stroke-width="5"/><polygon points="90,13 70,4 70,22" fill="#FFD23F"/></svg></div>
+    <div class="cell"><div class="t">a failing test</div></div>
+
+    <div class="cell"><div class="t">status.json on a schedule</div></div>
+    <div class="arrowcell"><svg width="96" height="26"><line x1="6" y1="13" x2="72" y2="13" stroke="#FFD23F" stroke-width="5"/><polygon points="90,13 70,4 70,22" fill="#FFD23F"/></svg></div>
+    <div class="cell"><div class="t">the CI test job on every push</div></div>
+
+    <div class="cell"><div class="t">nobody watching a target</div></div>
+    <div class="arrowcell"><svg width="96" height="26"><line x1="6" y1="13" x2="72" y2="13" stroke="#FFD23F" stroke-width="5"/><polygon points="90,13 70,4 70,22" fill="#FFD23F"/></svg></div>
+    <div class="cell"><div class="t">nobody testing a branch</div></div>
+  </div>
+  <div class="cap">
+    <svg width="64" height="20"><line x1="4" y1="10" x2="44" y2="10" stroke="#FFD23F" stroke-width="5"/><polygon points="60,10 42,2 42,18" fill="#FFD23F"/></svg>
+    <div class="txt">same discipline, pointed inward</div>
+  </div>
+</div>
+</div>
+</body></html>

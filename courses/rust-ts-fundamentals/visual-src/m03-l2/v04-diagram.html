@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One classifier, every consumer
+     purpose: show the m03-l1 boundary carrying its second real consumer, with the future ones queued
+     data: packages/pulse-core [ProbeResult union, parseProbe, classifyProbe, assertNever] <- workspace:* <- packages/pulse-fleet (cron, gates status.json) <- workspace:* <- packages/pulse-board (colors the rows) NEW today dashed future consumers: M7 edge worker; m08-l2 Solana panel
+     prompt: Hub-and-spoke dependency diagram. Center: pulse-core listing its four exports. Two solid arrows pointing in, from pulse-fleet (labeled "gates the cron") and pulse-board (labeled "colors the rows", badged NEW). Two dashed ghost boxes, edge worker and Solana panel, with dashed arrows also pointing at the hub. Caption: every consumer agrees on what degraded means, by construction.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:500px;top:-256px;right:-256px;border-radius:57% 37% 38% 50% / 41% 48% 44% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:481px;height:415px;bottom:-223px;left:403px;border-radius:61% 42% 35% 37% / 45% 56% 61% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:44px 56px 40px;}
+  .wrap{display:flex;justify-content:center;margin-top:28px;}
+  .col{width:320px;flex:none;display:flex;flex-direction:column;justify-content:space-between;height:344px;}
+  .acol{width:96px;flex:none;display:flex;flex-direction:column;justify-content:space-between;height:344px;}
+  .pcard{box-sizing:border-box;height:160px;border:2px solid var(--stbr-green);border-radius:16px;background:var(--surface-card);padding:16px 20px;display:flex;flex-direction:column;justify-content:center;position:relative;}
+  .pcard .t{font-family:var(--font-mono);font-weight:700;font-size:17px;color:var(--text-primary);}
+  .pcard .s{font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:8px;line-height:1.35;}
+  .pcard.ghost{border:2px dashed var(--border-strong);background:var(--surface-paper);}
+  .pcard.ghost .t,.pcard.ghost .s{color:var(--text-muted);}
+  .new{position:absolute;top:-13px;right:16px;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:.07em;text-transform:uppercase;background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:999px;padding:4px 12px;}
+  .fut{position:absolute;top:-13px;right:16px;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:.07em;text-transform:uppercase;background:var(--surface-card);border:1.5px dashed var(--border-strong);color:var(--text-muted);border-radius:999px;padding:3px 11px;}
+  .harr{box-sizing:border-box;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .harr .lbl{font-family:var(--font-mono);font-weight:700;font-size:11px;color:var(--text-secondary);margin-bottom:5px;}
+  .harr .row{display:flex;align-items:center;width:84px;}
+  .harr .ln{flex:1;height:3px;background:var(--stbr-dark);}
+  .harr .dln{flex:1;height:0;border-top:3px dashed var(--border-strong);}
+  .harr .trir{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--stbr-dark);}
+  .harr .tril{width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:9px solid var(--stbr-dark);}
+  .harr.ghosted .trir{border-left-color:var(--border-strong);}
+  .harr.ghosted .tril{border-right-color:var(--border-strong);}
+  .harr.ghosted .lbl{color:var(--text-muted);}
+  .hub{width:400px;flex:none;box-sizing:border-box;height:344px;background:var(--surface-inverse);border-radius:20px;padding:26px 32px;display:flex;flex-direction:column;justify-content:center;}
+  .hub .tag{align-self:flex-start;font-family:var(--font-display);font-weight:800;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--surface-brand);color:var(--text-on-brand);border-radius:999px;padding:4px 12px;}
+  .hub .t{font-family:var(--font-mono);font-weight:700;font-size:22px;color:var(--text-on-dark);margin:12px 0 14px;}
+  .exp{display:flex;align-items:center;margin-top:8px;}
+  .exp .bar{width:5px;height:20px;background:var(--stbr-emerald);border-radius:3px;margin-right:12px;}
+  .exp .e{font-family:var(--font-mono);font-size:15px;color:var(--text-on-dark);}
+  .verdict{margin-top:30px;background:var(--surface-brand);border-radius:12px;padding:16px 26px;font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-on-brand);text-align:center;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">the m03-l1 boundary, now with two consumers</div>
+  <h2 class="viz-title" style="font-size:42px;margin-bottom:6px;">one classifier, every consumer</h2>
+  <div class="wrap">
+    <div class="col">
+      <div class="pcard">
+        <div class="t">packages/pulse-fleet</div>
+        <div class="s">the cron: gates status.json before it commits</div>
+      </div>
+      <div class="pcard ghost">
+        <div class="fut">future</div>
+        <div class="t">edge worker</div>
+        <div class="s">M7: same union at the edge</div>
+      </div>
+    </div>
+    <div class="acol">
+      <div class="harr"><span class="lbl">workspace:*</span><span class="row"><span class="ln"></span><span class="trir"></span></span></div>
+      <div class="harr ghosted"><span class="lbl">planned</span><span class="row"><span class="dln"></span><span class="trir"></span></span></div>
+    </div>
+    <div class="hub">
+      <div class="tag">the shared boundary</div>
+      <div class="t">packages/pulse-core</div>
+      <div class="exp"><span class="bar"></span><span class="e">ProbeResult (union)</span></div>
+      <div class="exp"><span class="bar"></span><span class="e">parseProbe()</span></div>
+      <div class="exp"><span class="bar"></span><span class="e">classifyProbe()</span></div>
+      <div class="exp"><span class="bar"></span><span class="e">assertNever()</span></div>
+    </div>
+    <div class="acol">
+      <div class="harr"><span class="lbl">workspace:*</span><span class="row"><span class="tril"></span><span class="ln"></span></span></div>
+      <div class="harr ghosted"><span class="lbl">planned</span><span class="row"><span class="tril"></span><span class="dln"></span></span></div>
+    </div>
+    <div class="col">
+      <div class="pcard">
+        <div class="new">new today</div>
+        <div class="t">packages/pulse-board</div>
+        <div class="s">colors the rows, the second real consumer</div>
+      </div>
+      <div class="pcard ghost">
+        <div class="fut">future</div>
+        <div class="t">Solana panel</div>
+        <div class="s">m08-l2: on-chain rows, same classifier</div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">every consumer agrees on what &ldquo;degraded&rdquo; means, by construction</div>
+</div>
+</div>
+</body></html>

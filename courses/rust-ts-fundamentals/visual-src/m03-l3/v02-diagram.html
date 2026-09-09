@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One repo, one project, one Root Directory
+     purpose: show how a single Vercel project deploys just pulse-board out of a three-package workspace
+     data: pulse-station repo -> packages/ -> pulse-core, pulse-fleet, pulse-board Vercel project "pulse-board": Root Directory = packages/pulse-board siblings not deployed; unaffected projects auto-skipped on push (workspace declared, unique names, deps declared)
+     prompt: Left side: a repository box containing a packages directory with three package boxes. Right side: a single Vercel project box with an arrow to packages/pulse-board only, labeled "Root Directory". Gray out the two sibling packages with a note "not deployed; skipped when unaffected". Keep the layout clean and two-column.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:408px;right:-279px;top:375px;border-radius:65% 64% 40% 65% / 61% 62% 44% 59%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:374px;height:519px;bottom:-316px;left:438px;border-radius:53% 48% 58% 38% / 56% 56% 36% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:grid; grid-template-columns:620px 170px 1fr; align-items:start; margin-top:8px; }
+  .repo { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-2xl); padding:24px; }
+  .repo-head { background:var(--surface-inverse); color:var(--text-on-dark);
+               border-radius:var(--radius-lg); padding:12px 18px; height:50px;
+               display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .repo-head .nm { font-family:var(--font-mono); font-weight:700; font-size:20px; }
+  .repo-head .tag { font-family:var(--font-body); font-weight:700; font-size:12px;
+                    letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-cream);
+                    opacity:.75; margin-left:auto; }
+  .dirlbl { font-family:var(--font-mono); font-weight:700; font-size:17px;
+            color:var(--text-secondary); height:26px; margin-bottom:10px; }
+  .pkg { border-radius:var(--radius-lg); padding:0 18px; height:60px;
+         display:flex; align-items:center; gap:12px; }
+  .pkg + .pkg { margin-top:12px; }
+  .pkg .nm { font-family:var(--font-mono); font-weight:700; font-size:19px; }
+  .pkg .role { font-family:var(--font-body); font-weight:600; font-size:14px; margin-left:auto; }
+  .pkg.mut { background:var(--surface-paper); border:1.5px dashed var(--border-strong);
+             color:var(--text-muted); }
+  .pkg.mut .nm, .pkg.mut .role { color:var(--text-muted); }
+  .mut-note { font-family:var(--font-body); font-weight:600; font-size:13.5px; font-style:italic;
+              color:var(--text-muted); height:22px; margin:8px 0 8px 6px; }
+  .pkg.hero { background:var(--stbr-yellow); color:var(--stbr-dark); border:2px solid var(--stbr-dark); }
+  .pkg.hero .nm, .pkg.hero .role { color:var(--stbr-dark); }
+  .mid { position:relative; height:400px; }
+  .mid .chip { position:absolute; top:258px; left:5px; width:160px; text-align:center;
+               font-family:var(--font-body); font-weight:800; font-size:12.5px;
+               letter-spacing:.08em; text-transform:uppercase; color:var(--text-on-brand);
+               background:var(--stbr-emerald); border-radius:var(--radius-pill); padding:6px 0; }
+  .mid svg { position:absolute; top:302px; left:0; }
+  .vproj { background:var(--surface-card); border:2px solid var(--stbr-emerald);
+           border-radius:var(--radius-2xl); padding:22px 26px; margin-top:200px; }
+  .vproj .kind { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                 letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-emerald);
+                 margin-bottom:6px; }
+  .vproj .nm { font-family:var(--font-display); font-weight:900; font-size:30px;
+               color:var(--text-primary); margin-bottom:14px; }
+  .vproj .setting { background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+                    border-radius:var(--radius-lg); padding:12px 16px;
+                    font-family:var(--font-mono); font-size:16px; color:var(--text-primary); }
+  .vproj .setting b { color:var(--stbr-emerald); font-weight:700; }
+  .footband { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand);
+              border-radius:var(--radius-xl); padding:16px 26px; display:flex;
+              align-items:center; gap:16px; }
+  .footband .lead { font-family:var(--font-body); font-weight:700; font-size:17px; }
+  .footband .cond { font-family:var(--font-mono); font-weight:700; font-size:14px;
+                    background:rgba(245,232,202,.16); border-radius:var(--radius-pill);
+                    padding:6px 14px; }
+</style>
+  <div class="stbr-eyebrow">monorepo, one deploy target</div>
+  <h2 class="viz-title">one repo, one project, one Root Directory</h2>
+  <div class="cols">
+    <div class="repo">
+      <div class="repo-head"><span class="nm">pulse-station</span><span class="tag">repository</span></div>
+      <div class="dirlbl">packages/</div>
+      <div class="pkg mut"><span class="nm">pulse-core</span><span class="role">shared logic</span></div>
+      <div class="pkg mut"><span class="nm">pulse-fleet</span><span class="role">CLI</span></div>
+      <div class="mut-note">not deployed, skipped when unaffected</div>
+      <div class="pkg hero"><span class="nm">pulse-board</span><span class="role">web app: deployed</span></div>
+    </div>
+    <div class="mid">
+      <div class="chip">Root Directory</div>
+      <svg width="170" height="40"><line x1="166" y1="20" x2="20" y2="20" stroke="#008b4c" stroke-width="3"/><polygon points="4,20 22,11 22,29" fill="#008b4c"/></svg>
+    </div>
+    <div class="vproj">
+      <div class="kind">Vercel project</div>
+      <div class="nm">pulse-board</div>
+      <div class="setting">Root Directory = <b>packages/pulse-board</b></div>
+    </div>
+  </div>
+  <div class="footband">
+    <span class="lead">unaffected projects auto-skip on push, because the workspace is honest:</span>
+    <span class="cond">workspace declared</span>
+    <span class="cond">unique names</span>
+    <span class="cond">deps declared</span>
+  </div>
+</div>
+</body></html>

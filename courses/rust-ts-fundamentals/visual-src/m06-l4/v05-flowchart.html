@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The pipeline after SHIP number three
+     purpose: show the images job joining the grown workflow downstream of every existing gate
+     data: push to main -> typecheck (npx tsc --noEmit), test (npx vitest run), rust (cargo test, clippy, fmt --check) run in parallel all three -> images job: ghcr login with GITHUB_TOKEN -> build both multi-stage images -> push four tags to ghcr.io schedule tick -> probe job only; the if-gate keeps images out of cron runs probe job continues committing status.json as since m01-l3
+     prompt: Directed graph, left to right. A push node feeding three parallel gate nodes, all converging on the images job drawn as a two-step box for login and push, ending in a registry node labeled ghcr.io with four small tag chips. A separate schedule node routing only to the probe job below, visibly bypassing the images job, with the if-gate condition written on that bypass.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:445px;top:-247px;right:-247px;border-radius:49% 38% 56% 48% / 63% 57% 64% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:406px;height:503px;bottom:-266px;left:680px;border-radius:57% 63% 41% 64% / 44% 44% 40% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v5-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 38px 56px 34px; position: relative; overflow: hidden; }
+  .v5-row { display: flex; align-items: center; margin-top: 6px; }
+  .v5-push { width: 180px; background: var(--stbr-emerald); color: var(--text-on-brand);
+             border-radius: var(--radius-lg); padding: 16px 14px; text-align: center; }
+  .v5-push b { font-family: var(--font-display); font-weight: 800; font-size: 19px; display: block; }
+  .v5-push small { font-family: var(--font-body); font-size: 13px; opacity: 0.85;
+                   display: block; margin-top: 4px; }
+  .v5-svgcol { width: 84px; }
+  .v5-svgcol svg { display: block; }
+  .v5-gates { width: 280px; display: flex; flex-direction: column; gap: 16px; }
+  .v5-gate { height: 84px; box-sizing: border-box; background: var(--surface-card);
+             border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+             padding: 10px 16px; display: flex; flex-direction: column; justify-content: center; }
+  .v5-gate b { font-family: var(--font-display); font-weight: 800; font-size: 17px;
+               color: var(--text-primary); }
+  .v5-gate code { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary);
+                  margin-top: 3px; }
+  .v5-images { width: 316px; border: 3px solid var(--stbr-yellow-600);
+               border-radius: var(--radius-lg); overflow: hidden; }
+  .v5-imghead { background: var(--stbr-yellow); color: var(--text-on-accent);
+                font-family: var(--font-display); font-weight: 800; font-size: 18px;
+                padding: 9px 16px; }
+  .v5-step { padding: 10px 16px; border-bottom: 1.5px solid var(--border-subtle);
+             font-family: var(--font-body); font-size: 15px; color: var(--text-primary); }
+  .v5-step:last-child { border-bottom: none; }
+  .v5-step code { font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); }
+  .v5-arr { width: 84px; padding: 0 8px; }
+  .v5-line { position: relative; height: 3.5px; background: var(--stbr-dark); border-radius: 2px; }
+  .v5-line::after { content: ""; position: absolute; right: -2px; top: -7px;
+                    border-left: 13px solid var(--stbr-dark);
+                    border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+  .v5-reg { width: 276px; background: var(--surface-inverse); color: var(--text-on-dark);
+            border-radius: var(--radius-lg); padding: 14px 16px 16px; }
+  .v5-reg b { font-family: var(--font-display); font-weight: 900; font-size: 24px; display: block;
+              margin-bottom: 8px; }
+  .v5-tag { display: inline-block; font-family: var(--font-mono); font-size: 11.5px;
+            color: var(--stbr-cream); border: 1px solid var(--stbr-ink-500);
+            border-radius: var(--radius-pill); padding: 3px 8px; margin: 2px 2px 0 0; }
+  .v5-cron { display: flex; align-items: center; margin-top: 28px; }
+  .v5-sched { width: 180px; background: var(--surface-paper); border: 2px solid var(--border-strong);
+              border-radius: var(--radius-lg); padding: 12px 14px; text-align: center;
+              font-family: var(--font-display); font-weight: 800; font-size: 17px;
+              color: var(--text-primary); }
+  .v5-sched small { display: block; font-family: var(--font-body); font-weight: 400;
+                    font-size: 12.5px; color: var(--text-muted); margin-top: 3px; }
+  .v5-bypass { flex: 1; padding: 0 24px; }
+  .v5-chiprow { text-align: center; margin-bottom: 8px; }
+  .v5-gatechip { display: inline-block; font-family: var(--font-mono); font-size: 12.5px;
+                 color: var(--text-primary); background: var(--surface-paper);
+                 border: 1.5px solid var(--border-subtle); border-radius: var(--radius-pill);
+                 padding: 4px 12px; white-space: nowrap; }
+  .v5-dash { position: relative; height: 0; border-top: 3.5px dashed var(--stbr-ink-500); }
+  .v5-dash::after { content: ""; position: absolute; right: -1px; top: -9px;
+                    border-left: 13px solid var(--stbr-ink-500);
+                    border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+  .v5-note { font-family: var(--font-body); font-size: 13px; color: var(--text-muted);
+             margin-top: 8px; text-align: center; }
+  .v5-probe { width: 400px; background: var(--surface-card); border: 2px solid var(--stbr-emerald);
+              border-radius: var(--radius-lg); padding: 12px 18px; }
+  .v5-probe b { font-family: var(--font-display); font-weight: 800; font-size: 17px;
+                color: var(--stbr-emerald); display: block; }
+  .v5-probe span { font-family: var(--font-body); font-size: 14px; color: var(--text-secondary); }
+</style>
+<div class="v5-card">
+  <div class="stbr-eyebrow">SHIP #3 · THE GROWN WORKFLOW</div>
+  <h2 class="viz-title">the pipeline after SHIP number three</h2>
+  <div class="v5-row">
+    <div class="v5-push"><b>push to main</b><small>triggers the workflow</small></div>
+    <div class="v5-svgcol">
+      <svg width="84" height="284" viewBox="0 0 84 284">
+        <path d="M2 142 L64 42"  stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M2 142 L64 142" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M2 142 L64 242" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <polygon points="78,42 62,34 62,50"    fill="#1B231D"/>
+        <polygon points="78,142 62,134 62,150" fill="#1B231D"/>
+        <polygon points="78,242 62,234 62,250" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="v5-gates">
+      <div class="v5-gate"><b>typecheck</b><code>npx tsc --noEmit</code></div>
+      <div class="v5-gate"><b>test</b><code>npx vitest run</code></div>
+      <div class="v5-gate"><b>rust</b><code>cargo test · clippy · fmt --check</code></div>
+    </div>
+    <div class="v5-svgcol">
+      <svg width="84" height="284" viewBox="0 0 84 284">
+        <path d="M2 42 L64 142"  stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M2 142 L64 142" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M2 242 L64 142" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <polygon points="78,142 62,134 62,150" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="v5-images">
+      <div class="v5-imghead">images job: after all three pass</div>
+      <div class="v5-step"><b>1 ·</b> ghcr login with <code>GITHUB_TOKEN</code></div>
+      <div class="v5-step"><b>2 ·</b> build both multi-stage images → push</div>
+    </div>
+    <div class="v5-arr"><div class="v5-line"></div></div>
+    <div class="v5-reg"><b>ghcr.io</b>
+      <span class="v5-tag">pulse-pollerd:latest</span>
+      <span class="v5-tag">pulse-pollerd:&lt;sha&gt;</span>
+      <span class="v5-tag">pulse-fleet-runner:latest</span>
+      <span class="v5-tag">pulse-fleet-runner:&lt;sha&gt;</span>
+    </div>
+  </div>
+  <div class="v5-cron">
+    <div class="v5-sched">schedule tick<small>cron</small></div>
+    <div class="v5-bypass">
+      <div class="v5-chiprow"><span class="v5-gatechip">if: github.event_name == 'push' &amp;&amp; github.ref == 'refs/heads/main'</span></div>
+      <div class="v5-dash"></div>
+      <div class="v5-note">the if-gate keeps images out of cron runs; the bypass never reaches the images job</div>
+    </div>
+    <div class="v5-probe"><b>probe job only</b><span>keeps committing status.json, as since m01-l3</span></div>
+  </div>
+</div>
+</div>
+</body></html>

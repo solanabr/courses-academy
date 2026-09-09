@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What the v0 shape can say vs what reality can do
+     purpose: show that the stringly shape encodes far more states than actually exist, and the extras are all lies
+     data: Reality has exactly 3 probe outcomes: ok (always has a latency) | timeout (never has one) | http-error (has an HTTP status) { status: string; latencyMs?: number } encodes: every possible string x (latency present | latency absent) including: 'ok' with no latency, 'okay' with latency, 'timeout' with latency, '' with nothing, any typo, any casing Overlap between the two sets: 3 states. Everything else the type permits is unrepresentable in reality but representable in code.
+     prompt: Two-panel comparison. Left panel: a small tidy set of 3 labeled outcome cards (ok + latency, timeout, http-error + status). Right panel: a large cloud of record cards, the same 3 valid ones highlighted, surrounded by many faded invalid combinations ('okay' + 200ms, 'ok' with empty latency, 'timeout' + 143ms, empty string). Caption arrow from right to left labeled "the type should only be able to say this".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:494px;bottom:-286px;right:-286px;border-radius:42% 61% 49% 57% / 50% 60% 55% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:507px;height:473px;left:-307px;top:275px;border-radius:50% 63% 42% 43% / 44% 39% 51% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 36px;}
+    .v01-plabel{font-family:var(--font-display);font-weight:800;font-size:21px;color:var(--text-secondary);margin-bottom:14px;}
+    .v01-rec{font-family:var(--font-mono);font-size:18px;line-height:1.35;border-radius:12px;padding:12px 16px;}
+    .v01-valid{border:2.5px solid var(--stbr-emerald);background:var(--surface-card);color:var(--text-primary);}
+    .v01-lie{border:2px dashed var(--stbr-ink-300);background:var(--surface-paper);color:var(--text-muted);opacity:.75;}
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">TYPES VS REALITY</div>
+    <h2 class="viz-title">the v0 shape can say far more than reality can do</h2>
+    <div style="display:flex;gap:40px;align-items:stretch;">
+      <div style="width:420px;">
+        <div class="v01-plabel">reality: exactly 3 probe outcomes</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="v01-rec v01-valid"><strong>ok</strong> &nbsp;·&nbsp; latencyMs: 212 <span style="color:var(--text-muted);">(always present)</span></div>
+          <div class="v01-rec v01-valid"><strong>timeout</strong> <span style="color:var(--text-muted);">(never has a latency)</span></div>
+          <div class="v01-rec v01-valid"><strong>http-error</strong> &nbsp;·&nbsp; status: "503"</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div class="v01-plabel">what <span style="font-family:var(--font-mono);font-weight:600;">{ status: string; latencyMs?: number }</span> permits</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div class="v01-rec v01-valid">'ok' + 212ms</div>
+          <div class="v01-rec v01-lie">'okay' + 200ms</div>
+          <div class="v01-rec v01-lie">'ok', no latency</div>
+          <div class="v01-rec v01-valid">'timeout'</div>
+          <div class="v01-rec v01-lie">'timeout' + 143ms</div>
+          <div class="v01-rec v01-lie">'' (empty), nothing</div>
+          <div class="v01-rec v01-valid">'http-error' + "503"</div>
+          <div class="v01-rec v01-lie">'tiemout' (typo)</div>
+          <div class="v01-rec v01-lie">'OK' (casing) + …</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;margin-top:26px;">
+      <svg width="360" height="26" style="display:block;">
+        <line x1="360" y1="13" x2="26" y2="13" stroke="#1b231d" stroke-width="2.5"/>
+        <polygon points="26,13 44,5 44,21" fill="#1b231d"/>
+      </svg>
+      <div style="background:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-body);font-weight:700;font-size:21px;padding:12px 22px;border-radius:var(--radius-pill);">the type should only be able to say this; every extra state it encodes is a lie</div>
+    </div>
+  </div>
+</div>
+</body></html>

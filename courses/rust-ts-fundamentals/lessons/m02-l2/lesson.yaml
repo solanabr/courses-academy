@@ -1,0 +1,101 @@
+id: lesson-rtf-m02-l2
+slug: m02-l2
+title: "Parse, don't validate: zod at the boundary"
+skills:
+  - solana-kit
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "zod": "4.5.4"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m02l2-q1
+        prompt: "After this lesson, where does the FleetConfig TypeScript type come from, and why there?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "A hand-written interface kept next to the schema, reviewed together in PRs so the two definitions cannot quietly diverge"
+            correct: false
+            feedback: "Two sources of truth drift no matter how good the reviews are, the drift drill in the lab shows exactly how. One source must derive from the other."
+          - id: c
+            label: "z.infer<typeof configSchema>, the schema is the single source and the type derives from it, so the two cannot drift"
+            correct: true
+            feedback: "One definition, read two ways: the schema checks the bytes at runtime and z.infer reads the static type out of that same object. Rename a field and every consumer redlines on the next build."
+          - id: d
+            label: "You declare the FleetConfig interface first and zod derives the schema from it, so the two can never diverge"
+            correct: false
+            feedback: "That direction does not exist, and cannot: types are erased before anything runs, so there is nothing left for zod to read. The schema is the value that survives to runtime, which is why it is the source."
+          - id: b
+            label: "tsc generates it from a sample pulse.config.json at build time, so the type always mirrors a real config file"
+            correct: false
+            feedback: "tsc generates no types from data, and a sample file encodes one example, not the rules (ranges, refinements, cross-field constraints)."
+        explanation: "The schema is the type's source: z.infer derives the static type from the runtime parser, so a field renamed in one place redlines every consumer immediately. Validation that cannot drift from the type is the whole point of the pattern."
+      - id: m02l2-q2
+        prompt: "The typo'd config that sailed through v0 now hits configSchema.safeParse at startup. What happens, and why is that the win?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "safeParse returns { success: false } and the fleet falls back to defaultConfig, so the cron stays green"
+            correct: false
+            feedback: "A silent fallback is the polite lie wearing a schema: the cron goes green while probing something nobody asked for. parseOrExit exits 1 precisely so the operator sees red and fixes the file."
+          - id: a
+            label: "safeParse returns { success: false } naming the field; the CLI prints it and exits nonzero, garbage never enters the fleet"
+            correct: true
+            feedback: "The failure stopped existing at runtime and became a startup refusal, with the broken field named twice: once as the unrecognized key you wrote and once as the required key you starved."
+          - id: c
+            label: "safeParse repairs the config by filling the missing field from the schema's declared default, then logs a warning and continues probing"
+            correct: false
+            feedback: "Defaults only apply where the schema explicitly declares them, an unrecognized or missing required field is a refusal, not a silent repair."
+          - id: b
+            label: "safeParse throws a ZodError from deep inside the probe loop the first time the missing field is actually read by running code"
+            correct: false
+            feedback: "Two misses: safeParse never throws (that is parse), and the check runs at the BOUNDARY at startup, nothing waits for the probe loop."
+        explanation: "A parser refuses at the door: safeParse returns a result you must inspect, the boundary prints a field-level error tree, and the process exits before a hot-loop bug can exist. Compare the hook, v0 ran green on the same file. The failure didn't move; it became LOUD and EARLY."
+      - id: m02l2-q3
+        prompt: "You type the default config literal with `satisfies FleetConfig` instead of the annotation `: FleetConfig`. What did you keep that the annotation would have cost you?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Nothing, satisfies and the annotation compile identically; satisfies is newer syntax for the same widening behavior"
+            correct: false
+            feedback: "They differ exactly on widening: the annotation makes the literal BE the broad type; satisfies checks against it while preserving what you actually wrote."
+          - id: d
+            label: "Freedom to leave fields out, satisfies checks the literal you wrote while the annotation demands every field"
+            correct: false
+            feedback: "Shape checking is identical under both: a missing or typo'd key fails either way. The only thing satisfies declines to do is overwrite your literal's own inferred type with the broader one."
+          - id: b
+            label: "Each field's narrow literal type, the object is still shape-checked, but what you wrote doesn't widen to string"
+            correct: true
+            feedback: "Check without widening: the literal is verified against FleetConfig exactly as the annotation would, and fleetName stays \"pulse-dev\" instead of collapsing to string, so downstream code can branch on the value."
+          - id: a
+            label: "Runtime validation of the literal, satisfies runs the schema's refinements against the object when the module first loads"
+            correct: false
+            feedback: "satisfies is purely compile-time; it never runs anything. Runtime checking is the schema's job at the boundary."
+        explanation: "satisfies is check-without-widening: the compiler verifies the literal conforms to FleetConfig, but the value keeps its precise inferred types. With the annotation, every field widens to the declared type and the compiler forgets what you wrote, the worst of both when you wanted precision AND the check."
+      - id: m02l2-q4
+        prompt: "Your getBalance schema surfaces the lamports value as bigint rather than number. A teammate calls it overkill for a balance check. What is the honest justification?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The RPC returns the balance as a quoted string, and comparing strings numerically fails, so bigint conversion is required for the math to work at all"
+            correct: false
+            feedback: "getBalance returns a JSON number, not a string, the code would 'work' as a number, which is what makes the precision loss so quiet."
+          - id: a
+            label: "JSON.parse already produces bigint for large integers, so the schema is just preserving what the parser gives it anyway"
+            correct: false
+            feedback: "JSON.parse produces doubles for every number, that is precisely the problem. Large u64 values arrive already at risk; the schema routes around it."
+          - id: d
+            label: "z.bigint() converts the parsed number into a bigint for you, so the balance value comes out exact as soon as the schema has run"
+            correct: false
+            feedback: "By the time a schema sees the value the damage is done: JSON.parse already turned the digits into a double. That is why the reviver rebuilds the number from ctx.source, and z.bigint() only proves it happened."
+          - id: c
+            label: "Lamport balances are u64 and can exceed Number.MAX_SAFE_INTEGER, a JS number rounds silently up there, while bigint keeps every lamport exact"
+            correct: true
+            feedback: "u64 tops out at 18446744073709551615 and a double is exact only to 9007199254740991. Past that the rounding happens with no error and no warning, which is the politest lie in the lesson."
+        explanation: "u64 goes far past 2^53, and doubles round silently beyond it, a balance that is wrong by a few lamports with no error anywhere is the politest lie in this course so far. Surface bigint at the schema and keep it bigint through the code. What a lamport IS, and everything else about accounts, is the Bitcoin-to-Solana evolution course's territory."

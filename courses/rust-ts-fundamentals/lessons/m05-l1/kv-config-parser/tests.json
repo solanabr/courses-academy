@@ -1,0 +1,50 @@
+[
+  {
+    "id": "t1",
+    "input": "\"name=api;url=https://example.com/health;timeout_ms=500\"",
+    "expectedOutput": "OK api https://example.com/health 500",
+    "description": "a well-formed target line parses into all three fields"
+  },
+  {
+    "id": "t2",
+    "input": "\"name=rpc;url=https://example.com/status?fmt=json&v=2;timeout_ms=250\"",
+    "expectedOutput": "OK rpc https://example.com/status?fmt=json&v=2 250",
+    "description": "split on the FIRST '=' only, query-string '='s belong to the URL"
+  },
+  {
+    "id": "t3",
+    "input": "\"name=api;url=https://example.com/health;timeout_ms=500;retries=3\"",
+    "expectedOutput": "ERR unknown key: retries",
+    "description": "an unknown key is an error value, never silently ignored"
+  },
+  {
+    "id": "t4",
+    "input": "\"name=api;https://example.com;timeout_ms=500\"",
+    "expectedOutput": "ERR bad pair: https://example.com",
+    "description": "a segment with no '=' is a bad pair"
+  },
+  {
+    "id": "t5",
+    "input": "\"name=api;url=ftp://example.com;timeout_ms=500\"",
+    "expectedOutput": "ERR invalid url: ftp://example.com",
+    "description": "only http:// and https:// schemes are legal probe targets"
+  },
+  {
+    "id": "t6",
+    "input": "\"name=api;url=https://example.com;timeout_ms=fast\"",
+    "expectedOutput": "ERR invalid timeout_ms: fast",
+    "description": "a non-numeric timeout is an error, not a default"
+  },
+  {
+    "id": "t7",
+    "input": "\"name=api;url=https://example.com\"",
+    "expectedOutput": "ERR missing key: timeout_ms",
+    "description": "all three keys are required; missing keys are reported in fixed order"
+  },
+  {
+    "id": "t8",
+    "input": "\"name=api;url=https://example.com;timeout_ms=75;\"",
+    "expectedOutput": "OK api https://example.com 75",
+    "description": "a trailing ';' produces an empty segment, which is ignored"
+  }
+]

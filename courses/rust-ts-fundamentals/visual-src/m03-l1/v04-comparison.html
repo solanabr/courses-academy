@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What each range form admits from a 6.9.0 base
+     purpose: make the four range operators computable at a glance, including the caret-zero exception
+     data: columns: candidate version -> exact 6.9.0 | ~6.9.0 | ^6.9.0 | >=6.9.0 6.9.0  -> yes | yes | yes | yes 6.9.4  -> no  | yes | yes | yes 6.10.0 -> no  | no  | yes | yes 7.0.0  -> no  | no  | no  | yes caret-zero footnote row: base ^0.3.9 -> 0.3.10 yes, 0.4.0 NO (minor is the breaking slot under major 0)
+     prompt: Matrix table, four candidate versions as rows and four range forms as columns, each cell a clear yes or no mark. Highlight the ^6.9.0 column boundary at 7.0.0 (the caret's hard stop). Below the matrix, one visually separated footnote row showing the caret-zero rule with base ^0.3.9. Monospace for all version literals.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:592px;height:543px;top:-306px;right:-306px;border-radius:60% 64% 54% 56% / 65% 39% 53% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:489px;height:460px;bottom:-223px;left:721px;border-radius:58% 47% 53% 54% / 54% 52% 57% 51%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 56px 32px;}
+  .mono{font-family:var(--font-mono);}
+  .mx{display:grid;grid-template-columns:200px repeat(4,1fr);border:2px solid var(--border-strong);border-radius:14px;overflow:hidden;margin-top:18px;}
+  .hd{background:var(--surface-inverse);color:var(--text-on-dark);font-family:var(--font-mono);font-weight:700;font-size:19px;padding:13px 10px;text-align:center;}
+  .hd.first{font-family:var(--font-display);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;text-align:left;padding-left:18px;display:flex;align-items:center;}
+  .rv{font-family:var(--font-mono);font-weight:700;font-size:18px;color:var(--text-primary);padding:13px 10px 13px 18px;border-top:1px solid var(--border-subtle);display:flex;align-items:center;}
+  .cell{display:flex;align-items:center;justify-content:center;gap:7px;border-top:1px solid var(--border-subtle);border-left:1px solid var(--border-subtle);padding:13px 8px;font-family:var(--font-body);font-weight:600;font-size:15px;}
+  .y{color:var(--stbr-emerald);}
+  .n{color:var(--text-muted);}
+  .hot{background:var(--surface-accent);color:var(--text-on-accent);flex-direction:column;gap:2px;font-weight:700;}
+  .hot .why{font-family:var(--font-body);font-size:11.5px;font-weight:600;}
+  .fn{margin-top:16px;border:1.5px dashed var(--border-strong);background:var(--surface-paper);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:16px;font-family:var(--font-body);font-size:15px;color:var(--text-primary);}
+  .fnchip{font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--surface-inverse);color:var(--text-on-dark);border-radius:999px;padding:5px 12px;flex:none;}
+  .band{margin-top:16px;background:var(--surface-brand);color:var(--text-on-brand);border-radius:12px;padding:12px 20px;font-family:var(--font-display);font-weight:800;font-size:19px;text-align:center;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">four range operators, one base</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 0;">what each range form admits from 6.9.0</h2>
+  <div class="mx">
+    <div class="hd first">candidate version</div>
+    <div class="hd">6.9.0</div>
+    <div class="hd">~6.9.0</div>
+    <div class="hd">^6.9.0</div>
+    <div class="hd">&gt;=6.9.0</div>
+    <div class="rv">6.9.0</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="rv">6.9.4</div>
+    <div class="cell n">&#10007; no</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="rv">6.10.0</div>
+    <div class="cell n">&#10007; no</div>
+    <div class="cell n">&#10007; no</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="cell y">&#10003; yes</div>
+    <div class="rv">7.0.0</div>
+    <div class="cell n">&#10007; no</div>
+    <div class="cell n">&#10007; no</div>
+    <div class="cell hot"><span>&#10007; no</span><span class="why">the caret's hard stop</span></div>
+    <div class="cell y">&#10003; yes</div>
+  </div>
+  <div class="fn">
+    <div class="fnchip">caret-zero</div>
+    <div>base <span class="mono" style="font-weight:700;">^0.3.9</span> &rarr; <span class="mono" style="font-weight:700;">0.3.10</span> <span style="color:var(--stbr-emerald);font-weight:700;">&#10003; yes</span> &nbsp;&middot;&nbsp; <span class="mono" style="font-weight:700;">0.4.0</span> <span style="font-weight:700;">&#10007; NO</span>: under major 0, the minor is the breaking slot</div>
+  </div>
+  <div class="band">the operator picks which digit may move; the caret always stops at the next breaking slot</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: One flagship repo, two languages, an even split
+     purpose: make the drift protocol-v2 byte split the one-glance argument for learning both languages
+     data: drift-labs/protocol-v2, language share by bytes: TypeScript: 5,746,893 Rust: 5,533,370 Source: GitHub language API, probed 2026-09-01
+     prompt: A single horizontal stacked bar split into two segments: TypeScript at 5,746,893 bytes and Rust at 5,533,370 bytes, each segment labeled with its language and byte count. Below the bar, one caption line: one production Solana repo, measured 2026-09-01. Make the near-equality of the two segments the visible point.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:569px;height:530px;top:-320px;right:-320px;border-radius:63% 40% 64% 44% / 57% 47% 41% 52%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:398px;height:491px;bottom:-249px;left:598px;border-radius:63% 53% 35% 42% / 41% 36% 41% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v03-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 48px 60px 44px; }
+    .v03-repo { font-family: var(--font-mono); font-size: 22px; color: var(--text-secondary); margin: 4px 0 40px; }
+    .v03-barwrap { position: relative; padding-top: 56px; }
+    .v03-bar { display: flex; height: 150px; border-radius: var(--radius-lg); overflow: hidden; }
+    .v03-seg { display: flex; flex-direction: column; justify-content: center; padding-left: 32px; }
+    .v03-seg-ts { width: 50.96%; background: var(--stbr-emerald); }
+    .v03-seg-rs { width: 49.04%; background: var(--stbr-green); }
+    .v03-seg-name { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 30px; color: var(--stbr-cream); margin: 0; }
+    .v03-seg-val { font-family: var(--font-body); font-size: 21px; color: var(--stbr-cream); margin: 4px 0 0; }
+    .v03-split { position: absolute; left: 50.96%; top: 46px; bottom: -14px; width: 3px; background: var(--stbr-dark); transform: translateX(-50%); }
+    .v03-split-chip { position: absolute; left: 50.96%; top: 0; transform: translateX(-50%); background: var(--stbr-yellow); color: var(--stbr-dark); font-family: var(--font-display); font-weight: 800; font-size: 19px; border-radius: var(--radius-pill); padding: 9px 18px; white-space: nowrap; }
+    .v03-caption { margin-top: 44px; font-family: var(--font-body); font-size: 20px; color: var(--text-secondary); }
+  </style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">language share by bytes</div>
+    <h2 class="viz-title">one flagship repo, two languages, an even split</h2>
+    <div class="v03-repo">drift-labs/protocol-v2</div>
+    <div class="v03-barwrap">
+      <div class="v03-bar">
+        <div class="v03-seg v03-seg-ts">
+          <p class="v03-seg-name">TypeScript</p>
+          <p class="v03-seg-val">5,746,893 bytes &#183; 51.0%</p>
+        </div>
+        <div class="v03-seg v03-seg-rs">
+          <p class="v03-seg-name">Rust</p>
+          <p class="v03-seg-val">5,533,370 bytes &#183; 49.0%</p>
+        </div>
+      </div>
+      <div class="v03-split"></div>
+      <div class="v03-split-chip">the split lands within 2% of even</div>
+    </div>
+    <div class="v03-caption">one production Solana repo, measured 2026-09-01 &#183; source: GitHub language API</div>
+  </div>
+</div>
+</body></html>

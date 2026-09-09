@@ -1,0 +1,106 @@
+id: lesson-rtf-m06-l2
+slug: m06-l2
+title: "Containers 101: put the poller in a box"
+skills:
+  - solana-fundamentals
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "docker-desktop": "4.89.0"
+    "docker-engine": "29.7.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m06-l2-q1
+        prompt: "You run `docker run hello-world` twice in a row. The first run prints pull progress; the second starts instantly. Why?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The image cached and so did its writable layer, so run two resumed the first container's filesystem"
+            correct: false
+            feedback: "Right about the image, wrong about the layer. The writable layer belongs to the container, not the image, and `docker ps -a` proves it by listing two separate exited containers."
+          - id: c
+            label: "The registry's CDN warmed up after your first request, so the second pull came down faster"
+            correct: false
+            feedback: "No second pull happened at all, the layers were already on disk. Registries serve machines that do not yet have the image; your machine now does."
+          - id: a
+            label: "The image is now in your local cache, so the second run skips the registry pull entirely"
+            correct: true
+            feedback: "Images are pulled once and cached by layer; containers are stamped out fresh every time. That split is the whole architecture showing itself on your first command."
+          - id: b
+            label: "Docker kept the first container alive in the background and reattached you to it on run two"
+            correct: false
+            feedback: "Each `docker run` creates a NEW container from the image. The first container exited when its process did, nothing was reused except the image."
+        explanation: "Images are pulled once and cached locally by layer; containers are cheap, disposable processes created from them. The pull-progress-then-instant pattern is the image/container split showing itself on your first command."
+      - id: m06-l2-q2
+        prompt: "You built one pulse-pollerd image and ran `docker run` on it three times (stopping each). What exists on your machine now?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "One image and three (stopped) containers created from it"
+            correct: true
+            feedback: "`docker ps -a` is the receipt: three exited entries with auto-generated names, one image underneath. Builds make images, runs make containers, and nothing crosses that line."
+          - id: e
+            label: "One image three layers taller, each run committing its writes back"
+            correct: false
+            feedback: "Only a build adds layers. A run's writes land in that container's own writable layer and die with it; the template underneath is never touched, which is what lets three containers share one image."
+          - id: a
+            label: "Three images and one container, each run snapshots the image again"
+            correct: false
+            feedback: "Backwards: runs never create images. Building creates images; running creates containers."
+          - id: d
+            label: "One image and nothing else, stopped containers vanish"
+            correct: false
+            feedback: "Plain `docker ps` hides them, which is where this belief comes from, but `docker ps -a` lists all three corpses. Deleting on exit is what the `--rm` flag opts into."
+          - id: c
+            label: "One container whose filesystem merged the three runs' changes"
+            correct: false
+            feedback: "Containers do not merge. Each run got its own writable layer on top of the same immutable image, and each exited independently."
+        explanation: "The image is the immutable template; every `docker run` stamps out a fresh container (process + thin writable layer) from it. This is why the mental-model diagram matters before multi-stage builds: everything later manipulates the template, never the running copies."
+      - id: m06-l2-q3
+        prompt: "At a coworking space your build fails pulling the rust base image with a 429 error. At home the same build works. What is going on?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Shared-IP pulls are capped, and a free account typically clears it, since logging in gives you unlimited pulls"
+            correct: false
+            feedback: "Right diagnosis, wrong ceiling. A free Personal account raises you to your own 200 pulls per 6 hours; only the paid Pro, Team and Business plans get an unlimited pull rate. Read the usage table before you quote a number."
+          - id: c
+            label: "Unauthenticated pulls are capped per shared IPv4 address, `docker login` moves you to your own allowance"
+            correct: true
+            feedback: "The symptom pattern is the diagnosis: location-dependent, reproducible, and 429 rather than not-found. Behind coworking NAT you are spending the building's 100 per 6 hours, not your own."
+          - id: a
+            label: "The Dockerfile is wrong, a bad base-image tag returns 429 until you correct it"
+            correct: false
+            feedback: "A bad tag returns not-found, not 429. Rate limits are about who is asking and how often, not what is asked for."
+          - id: b
+            label: "Docker Hub is having an outage that happens to coincide with your coworking sessions"
+            correct: false
+            feedback: "The tell is that it is location-dependent and reproducible. Outages do not follow your commute; shared-IP rate limits do."
+        explanation: "Unauthenticated Docker Hub pulls are capped at 100 per 6 hours per IPv4 address (or IPv6 /64), and behind coworking/campus/CI NAT, everyone shares that pool. A free account and `docker login` gives you your own 200 per 6 hours; only the paid Pro, Team, and Business plans get an unlimited pull rate (docs.docker.com/docker-hub/usage/, read 2026-09-06). That is why this lesson teaches the login before your first real pull, with GHCR waiting in m06-l4 as the escape hatch."
+      - id: m06-l2-q4
+        prompt: "Your poller binary is a few megabytes, but `docker images` shows the naive image at multiple gigabytes. Where did the weight come from?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The single stage ships everything the build needed, the Rust toolchain, sources, and the target/ cache, in the final layers"
+            correct: true
+            feedback: "`docker history` prices it row by row: the toolchain layers are the true giants, the RUN cargo build row is the heaviest one you caused, and none of it is needed to RUN the binary."
+          - id: d
+            label: "The build context dragged your host target/ directory in, so the image ships a cache it did not need"
+            correct: false
+            feedback: "That is what .dockerignore fenced off in step 1, and the transferring-context line proves it stayed out. The target/ inside the image was produced by the RUN cargo build layer, not carried in from your laptop."
+          - id: c
+            label: "Docker adds a fixed multi-gigabyte runtime layer to every image so containers can execute"
+            correct: false
+            feedback: "Docker adds nothing to your image; images can be a few megabytes. The runtime lives on the host, the weight here is entirely what your Dockerfile chose to keep."
+          - id: b
+            label: "Static linking bloated the binary itself to container scale during the release build"
+            correct: false
+            feedback: "The binary is still megabytes, check it inside the container. The gigabytes are around it: compiler, registry cache, intermediate artifacts, all frozen into shipped layers."
+        explanation: "A single-stage build's final image IS its build environment: rust base image plus dependencies plus your entire target/ directory. Nothing in it is needed to RUN the binary, which is precisely next lesson's opening problem and the whole argument for multi-stage builds."

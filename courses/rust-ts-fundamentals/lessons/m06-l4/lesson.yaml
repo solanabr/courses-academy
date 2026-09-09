@@ -1,0 +1,97 @@
+id: lesson-rtf-m06-l4
+slug: m06-l4
+title: "compose for local, GHCR from CI"
+skills:
+  - solana-fundamentals
+  - solana-programs
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m06-l4-q1
+        prompt: "A teammate asks whether your new compose.yaml is 'how the station deploys to production'. What is the honest answer?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "No, compose replaced the Dockerfiles, so production now builds directly from compose.yaml"
+            correct: false
+            feedback: "Compose consumes images that Dockerfiles (or registries) provide, it replaces your hand-typed docker run flags, never the build definitions."
+          - id: a
+            label: "Yes, compose is the production layer; you point it at a server and the station is deployed"
+            correct: false
+            feedback: "Compose schedules nothing beyond one machine and heals nothing across hosts. Calling it production is the cosplay this lesson explicitly refuses."
+          - id: d
+            label: "Not yet, but in practice the same compose file plus a restart policy on one server is the deployment story"
+            correct: false
+            feedback: "That is the production cosplay the lesson names. A restart policy revives a container; it notices nothing when the MACHINE dies, and it balances, replicates and rolls out nothing."
+          - id: b
+            label: "No, compose wires the LOCAL dev stack: one file, both services, one command up and down; deployment is the registry's job"
+            correct: true
+            feedback: "Its real payoff is that `git clone` plus `docker compose up` becomes the whole onboarding document, which is a development win, not a deployment one."
+        explanation: "The module's division of labor: Dockerfiles define images, compose orchestrates them on YOUR machine for development, and the registry is where 'runs anywhere' actually begins. This course teaches compose as local-dev tooling on purpose, orchestration across machines is the tier-gate's signposted out-of-scope."
+      - id: m06-l4-q2
+        prompt: "Your Actions job pushed pulse-pollerd to GHCR with a green run, but an anonymous `docker pull` of it comes back denied. What happened?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The lowercasing step folded your owner name, so the reference you pulled points at a package that does not exist"
+            correct: false
+            feedback: "That is the trap this symptom sets: a denied pull refuses to confirm whether the package exists, so it reads like a bad tag. The lowercasing is what makes the reference LEGAL, and both the push and your pull used the same folded name."
+          - id: b
+            label: "GHCR requires a classic PAT for public hosting, and GITHUB_TOKEN pushes are private forever"
+            correct: false
+            feedback: "GITHUB_TOKEN with packages write is a fully supported push path, and visibility is a package setting, not a token property."
+          - id: a
+            label: "The push silently failed, and a green Actions run does not verify that the registry write actually landed"
+            correct: false
+            feedback: "A failed push fails the step and the run. The image is there; the question is who is allowed to see it."
+          - id: c
+            label: "First publish defaults to PRIVATE, flip the package's visibility setting and the anonymous pull works"
+            correct: true
+            feedback: "A one-time flip per package, in the package settings rather than in code. Later pushes to the same package keep whatever visibility you set."
+        explanation: "The lab gotcha, reproduced in step 5: GHCR packages are born private. An anonymous pull comes back denied, refused without confirming the package even exists, so the symptom looks like a bad tag rather than a permission problem, and that is the whole trap. Flip visibility in the package settings and the same command succeeds. Public container images are free ('currently', per GitHub's own wording); private ones bill against the shared 500 MB pool."
+      - id: m06-l4-q3
+        prompt: "You keep the station images private 'to be safe'. What does that choice actually spend on the GitHub Free plan?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Each private pull deducts from the storage quota until the monthly reset"
+            correct: false
+            feedback: "Pulls consume transfer, not storage. The storage pool is about the bytes your image layers occupy at rest."
+          - id: d
+            label: "Nothing, private image storage in a public repo is free whatever its visibility"
+            correct: false
+            feedback: "Repo visibility and package visibility are separate settings, which is exactly why your packages were born private out of a public repo. Free storage follows the PACKAGE being public."
+          - id: b
+            label: "Nothing, private and public packages are both unmetered on the Free plan"
+            correct: false
+            feedback: "Only public packages ride free. Private storage is a metered pool, and it is smaller than one naive Docker image would have been."
+          - id: a
+            label: "Private image storage draws from a 500 MB pool that your Actions artifacts also share"
+            correct: true
+            feedback: "Run it against your own history: m06-l2's naive image would have overflowed that whole pool several times over by itself. Your multi-stage images fit, which is last lesson's work paying rent."
+        explanation: "The free-tier reality paragraph in one number: 500 MB of private storage, shared between GHCR layers and Actions artifacts, your CI's own uploads compete with your images. For this course's public-repo station, public images are the honest (and free) default."
+      - id: m06-l4-q4
+        prompt: "The container tier-gate closes this module. Which statement matches what the course actually skipped and where it lives?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Nothing was skipped, with compose and GHCR you have seen the container ecosystem end to end"
+            correct: false
+            feedback: "The gate exists precisely because that is false: everything after docker push, scheduling, healing, scaling across machines, was deliberately left out."
+          - id: b
+            label: "Orchestration (K8s), cloud runtimes (AWS/GCP), and deep image scanning, named, signposted (Scout gets a one-liner), and out of scope on purpose"
+            correct: true
+            feedback: "A map, not an apology. All three are pull-side consumers of the seam you just built, which is why the concept you now hold, images on a registry, is the one every orchestrator eats."
+          - id: c
+            label: "Multi-stage builds and registries, deferred to a later module of this same course"
+            correct: false
+            feedback: "Those were THIS module: m06-l3 built the multi-stage images and this lesson pushed them. The gate names what comes after the push, not what came before."
+          - id: d
+            label: "Orchestration and cloud runtimes, deferred to the sibling course this catalog hands container work off to"
+            correct: false
+            feedback: "There is no such sibling. The gate says so plainly: Kubernetes is out of scope with nothing to hand you to, which is why honest signposts are what this boundary offers instead of a next enrolment."
+        explanation: "The tier-gate contract that closes this module: at every ship boundary the course says out loud what it skipped and where it lives. Here that is orchestration, cloud platforms, and scanning depth, all of it outside this course's scope, with no sibling course to hand you to, so honest signposts are what you get. The registry is the deploy; everything after docker push is somebody's scheduler."

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: any vs unknown at the boundary
+     purpose: fix the day-to-day behavioral difference between the two escape hatches before the lab uses unknown in anger
+     data: any: every property access allowed unchecked | spreads to everything it touches | typo'd field access compiles and crashes at runtime | the compiler resigning unknown: no operation allowed until narrowed | forces typeof and shape checks at the boundary | typo'd access is a compile error | the compiler demanding proof Both: erased at compile time, zero runtime behavior added
+     prompt: Two-column comparison card, one column per type, four contrasting rows matching the data lines, and a shared footer row spanning both columns for the "both erased at runtime" fact. Keep row labels terse and parallel so the opposition reads at a glance.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:519px;height:488px;top:-255px;right:-255px;border-radius:57% 45% 44% 41% / 56% 50% 51% 35%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:548px;height:458px;bottom:-277px;left:-277px;border-radius:42% 44% 62% 46% / 38% 40% 58% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v06-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 36px;}
+    .v06-grid{display:grid;grid-template-columns:250px 1fr 1fr;border:2px solid var(--border-strong);
+              border-radius:var(--radius-xl);overflow:hidden;margin-top:24px;}
+    .v06-hd{font-family:var(--font-display);font-weight:900;font-size:26px;padding:16px 24px;}
+    .v06-lbl{font-family:var(--font-display);font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:.05em;
+             color:var(--text-secondary);padding:16px 24px;border-top:1.5px solid var(--border-subtle);background:var(--surface-paper);}
+    .v06-cell{font-family:var(--font-body);font-size:18.5px;line-height:1.35;color:var(--text-primary);
+              padding:16px 24px;border-top:1.5px solid var(--border-subtle);}
+    .v06-any{border-left:1.5px solid var(--border-subtle);}
+    .v06-unk{border-left:1.5px solid var(--border-subtle);background:rgba(255,210,63,0.12);}
+  </style>
+  <div class="v06-card">
+    <div class="stbr-eyebrow">TWO ESCAPE HATCHES</div>
+    <h2 class="viz-title">any vs unknown at the boundary</h2>
+    <div class="v06-grid">
+      <div style="background:var(--surface-paper);"></div>
+      <div class="v06-hd" style="background:var(--surface-inverse);color:var(--text-on-dark);font-family:var(--font-mono);">any</div>
+      <div class="v06-hd" style="background:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-mono);">unknown</div>
+      <div class="v06-lbl">property access</div>
+      <div class="v06-cell v06-any">every access allowed, unchecked</div>
+      <div class="v06-cell v06-unk">no operation allowed until narrowed</div>
+      <div class="v06-lbl">contagion</div>
+      <div class="v06-cell v06-any">spreads to everything it touches</div>
+      <div class="v06-cell v06-unk">forces <span style="font-family:var(--font-mono);">typeof</span> + shape checks at the boundary</div>
+      <div class="v06-lbl">a typo'd field</div>
+      <div class="v06-cell v06-any">compiles, but crashes at runtime</div>
+      <div class="v06-cell v06-unk">a compile error</div>
+      <div class="v06-lbl">the compiler's stance</div>
+      <div class="v06-cell v06-any" style="font-style:italic;">resigning</div>
+      <div class="v06-cell v06-unk" style="font-style:italic;font-weight:600;">demanding proof</div>
+    </div>
+    <div style="background:var(--surface-brand);color:var(--text-on-brand);border-radius:var(--radius-xl);
+                padding:18px 28px;margin-top:20px;font-family:var(--font-display);font-weight:800;font-size:23px;text-align:center;">
+      both are erased at compile time: zero runtime behavior added; only the checking differs
+    </div>
+  </div>
+</div>
+</body></html>

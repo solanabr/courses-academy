@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The Pulse Station reference diagram, hub topology
+     purpose: give the learner the answer key for the from-memory checkpoint, with every component labeled by language and platform and every real edge drawn
+     data: Hub (center): GitHub Actions pipeline, one workflow, six jobs in four stages: gate jobs (typecheck + vitest + the cargo test/clippy/fmt job) gate everything -> cron probes and commits status.json (every 30 min) -> release binary build -> GHCR image pushes. Spokes: Vercel dashboard (TS/React, pulse-board): reads status.json from the public repo raw URL; reads Solana RPC live via kit; polls the TS worker's public JSON endpoint (NEW edge, built today). Cloudflare worker pulse-edge-ts (TS): own cron, probes HTTP targets + Solana RPC getHealth, KV last-known-status, serves public JSON. Cloudflare worker pulse-edge-rs (Rust/WASM): same job, independently. Neither worker consumes anything else in the station. Local machine: GHCR-pulled pulse-pollerd container (Rust), probes HTTP + chain, answers /status on localhost:8080. NO inbound public edge. tx-check (TS script): on-demand devnet write-path drill, exit code is the contract. Non-edges, marked explicitly: nothing public reaches the poller; workers do not consume the poller; the poller does not feed the dashboard.
+     prompt: A hub-and-spoke architecture diagram. The Actions pipeline sits center as a four-segment hub. Five spokes arranged around it as labeled boxes, each tagged with language and platform. Solid arrows for the real data flows listed above, including the dashboard's three inbound arrows. Draw the three non-edges as crossed-out dashed arrows in a muted color so the absence is visible. No icons, generous whitespace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:489px;height:459px;bottom:-233px;right:-233px;border-radius:38% 64% 49% 56% / 51% 41% 56% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:445px;height:516px;left:-240px;top:152px;border-radius:49% 49% 63% 65% / 55% 35% 53% 52%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card01{background:var(--surface-card);border-radius:var(--radius-2xl);padding:26px 32px;position:relative;}
+    .map01{position:relative;width:1392px;height:570px;margin:2px auto 0;}
+    .n01{position:absolute;background:var(--surface-card);border:2px solid var(--stbr-green);border-radius:14px;padding:10px 14px;}
+    .n01 h4{margin:0 0 3px;font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-primary);}
+    .tag01{display:inline-block;font:600 11px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--stbr-emerald);margin-bottom:5px;}
+    .sub01{font:400 12.5px/1.35 var(--font-body);color:var(--text-secondary);margin:0;}
+    .hub01{position:absolute;left:0;top:245px;width:1392px;height:140px;background:var(--surface-inverse);border-radius:16px;}
+    .hub01 .hl{position:absolute;left:18px;top:12px;font:700 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--stbr-cream);opacity:.85;}
+    .seg01{position:absolute;top:40px;height:88px;width:322px;border:1.5px solid rgba(245,232,202,.4);border-radius:10px;padding:9px 11px;}
+    .seg01 b{display:block;font-family:var(--font-display);font-size:14.5px;font-weight:800;color:var(--stbr-cream);margin-bottom:3px;}
+    .seg01 span{font:400 12px/1.3 var(--font-body);color:rgba(245,232,202,.8);}
+    .sar01{position:absolute;top:72px;width:24px;text-align:center;font:800 18px/1 var(--font-body);color:rgba(245,232,202,.9);}
+    .drow01{height:42px;margin-top:4px;border:1.5px solid var(--border-subtle);border-radius:9px;padding:5px 10px;font:500 12.5px/1.25 var(--font-body);color:var(--text-secondary);}
+    .dnew01{border-color:var(--stbr-yellow);background:#FFF6D6;color:var(--text-primary);}
+    .newchip01{display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:12px;padding:2px 8px;font:800 10.5px/1 var(--font-body);letter-spacing:.06em;margin-left:6px;vertical-align:1px;}
+    .pill01{position:absolute;left:668px;top:0;width:220px;height:80px;border:2px solid var(--stbr-green);border-radius:40px;display:flex;align-items:center;justify-content:center;text-align:center;font:700 14px/1.3 var(--font-body);color:var(--text-primary);padding:0 18px;}
+    .ne01{position:absolute;left:940px;top:435px;width:452px;height:135px;border:2px dashed var(--text-muted);border-radius:14px;padding:10px 16px;}
+    .ne01 .nt{font:700 12px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;}
+    .nrow01{display:flex;align-items:center;gap:8px;font:500 13px/1 var(--font-body);color:var(--text-muted);margin-top:7px;}
+    .nx01{flex:1;border-top:2px dashed var(--text-muted);height:0;}
+    .nex01{font:800 14px/1 var(--font-body);color:var(--text-muted);}
+    .chip01{position:absolute;left:600px;top:390px;background:var(--surface-card);border:1.5px solid var(--stbr-green);border-radius:12px;padding:3px 10px;font:700 12px/1 var(--font-body);color:var(--text-primary);}
+  </style>
+  <div class="card01">
+    <div class="stbr-eyebrow">Pulse Station · answer key</div>
+    <h2 class="viz-title">one hub, five spokes, every real edge</h2>
+    <div class="map01">
+      <svg width="1392" height="570" style="position:absolute;left:0;top:0;">
+        <line x1="511" y1="245" x2="906" y2="78" stroke="#1B231D" stroke-width="2"/>
+        <polygon points="912,78 899,72 899,84" fill="#1B231D"/>
+        <polyline points="888,55 895,121 906,121" fill="none" stroke="#1B231D" stroke-width="2"/>
+        <polygon points="912,124 899,118 899,130" fill="#1B231D"/>
+        <polyline points="300,160 650,222 900,170" fill="none" stroke="#FFD23F" stroke-width="4"/>
+        <polygon points="912,170 896,161 896,179" fill="#FFD23F"/>
+        <line x1="1203" y1="385" x2="442" y2="432" stroke="#1B231D" stroke-width="2"/>
+        <polygon points="430,435 446,427 445,440" fill="#1B231D"/>
+      </svg>
+      <div class="n01" style="left:0;top:0;width:320px;height:160px;">
+        <span class="tag01">TS · Cloudflare worker</span>
+        <h4>pulse-edge-ts</h4>
+        <p class="sub01">own cron · probes HTTP targets + Solana RPC getHealth · KV last-known-status · serves a public JSON endpoint</p>
+      </div>
+      <div class="n01" style="left:344px;top:0;width:300px;height:160px;">
+        <span class="tag01">Rust/WASM · Cloudflare worker</span>
+        <h4>pulse-edge-rs</h4>
+        <p class="sub01">the same job, independently. neither worker consumes anything else in the station.</p>
+      </div>
+      <div class="pill01">Solana RPC<br>public endpoint</div>
+      <div class="n01" style="left:912px;top:0;width:480px;height:200px;">
+        <span class="tag01">TS/React · Vercel</span>
+        <h4 style="margin-bottom:2px;">pulse-board dashboard</h4>
+        <div class="drow01">status.json read from the public repo raw URL</div>
+        <div class="drow01">live Solana RPC reads via kit</div>
+        <div class="drow01 dnew01">polls the TS worker's public JSON endpoint<span class="newchip01">NEW</span></div>
+      </div>
+      <div class="hub01">
+        <div class="hl">hub: GitHub Actions pipeline · one workflow · six jobs, four stages</div>
+        <div class="seg01" style="left:4px;"><b>gate jobs</b><span>typecheck · vitest · cargo test/clippy/fmt, gate everything</span></div>
+        <div class="sar01" style="left:326px;">&#8594;</div>
+        <div class="seg01" style="left:350px;"><b>cron probes</b><span>commits status.json every 30 min</span></div>
+        <div class="sar01" style="left:672px;">&#8594;</div>
+        <div class="seg01" style="left:696px;"><b>release binary build</b><span>the shipped artifact</span></div>
+        <div class="sar01" style="left:1018px;">&#8594;</div>
+        <div class="seg01" style="left:1042px;"><b>GHCR image pushes</b><span>container images published</span></div>
+      </div>
+      <div class="chip01">GHCR pull</div>
+      <div class="n01" style="left:0;top:435px;width:500px;height:135px;">
+        <span class="tag01">Rust · local machine</span>
+        <h4>pulse-pollerd container</h4>
+        <p class="sub01">GHCR-pulled · probes HTTP + chain · answers /status on localhost:8080 · NO inbound public edge</p>
+      </div>
+      <div class="n01" style="left:540px;top:435px;width:360px;height:135px;">
+        <span class="tag01">TS · script, on-demand</span>
+        <h4>tx-check</h4>
+        <p class="sub01">devnet write-path drill; the exit code is the contract.</p>
+      </div>
+      <div class="ne01">
+        <div class="nt">non-edges: by design</div>
+        <div class="nrow01"><span>public internet</span><span class="nx01"></span><span class="nex01">&#10005;</span><span class="nx01"></span><span>poller</span></div>
+        <div class="nrow01"><span>workers</span><span class="nx01"></span><span class="nex01">&#10005;</span><span class="nx01"></span><span>poller</span></div>
+        <div class="nrow01"><span>poller</span><span class="nx01"></span><span class="nex01">&#10005;</span><span class="nx01"></span><span>dashboard</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

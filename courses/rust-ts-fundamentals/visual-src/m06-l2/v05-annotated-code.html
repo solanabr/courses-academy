@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The naive Dockerfile, line by line
+     purpose: walk each instruction's job and the layer it creates, so the build log below is readable
+     data: FROM rust:1.98 -> base layers: Debian + the full Rust toolchain (~600 MB compressed pull; tag tracks stable, checked 2026-09-02) WORKDIR /app -> sets the directory every later instruction and the CMD run from COPY . . -> one layer holding the entire workspace (minus .dockerignore entries) RUN cargo build --release --bin pulse-pollerd -> one layer holding ALL build output, dependency artifacts included EXPOSE 8080 -> metadata only; documents the port, publishes nothing CMD [...] -> metadata: the one process to start; JSON array form, no shell wrapping
+     prompt: The six-line Dockerfile on the left as monospace code, with one annotation callout per line on the right stating what it does and whether it creates a filesystem layer or only metadata. Emphasize visually that FROM and RUN create the heavy layers.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:487px;height:450px;top:-270px;right:-270px;border-radius:59% 45% 65% 40% / 45% 49% 51% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:475px;height:380px;left:-281px;top:353px;border-radius:37% 49% 48% 48% / 52% 35% 63% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px 38px;}
+    .v05-row{display:flex;align-items:stretch;}
+    .v05-code{width:640px;flex:none;background:var(--surface-inverse);font-family:var(--font-mono);
+              font-size:19px;color:var(--stbr-cream);display:flex;align-items:center;padding:0 30px;}
+    .v05-kw{color:#ffd23f;font-weight:600;}
+    .v05-note{flex:1;display:flex;align-items:center;gap:14px;padding:9px 0 9px 26px;}
+    .v05-ann{flex:1;font-family:var(--font-body);font-size:16px;line-height:1.35;color:var(--text-primary);}
+    .v05-chip{flex:none;width:170px;text-align:center;font-family:var(--font-display);font-weight:800;
+              font-size:14px;text-transform:uppercase;letter-spacing:.05em;border-radius:var(--radius-pill);
+              padding:8px 0;}
+    .v05-heavy{background:var(--surface-accent);color:var(--text-on-accent);}
+    .v05-layerc{background:var(--surface-card);border:2px solid var(--stbr-emerald);color:var(--stbr-emerald);}
+    .v05-meta{background:var(--surface-paper);border:1.5px solid var(--border-subtle);color:var(--text-muted);}
+    .v05-sep{border-top:1px solid var(--stbr-dark-700);}
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">SIX LINES, TWO HEAVY LAYERS</div>
+    <h2 class="viz-title">the naive Dockerfile, line by line</h2>
+    <div style="display:flex;margin:6px 0 8px;">
+      <div style="width:640px;flex:none;"></div>
+      <div style="flex:1;display:flex;padding-left:26px;gap:14px;">
+        <div style="flex:1;font-family:var(--font-display);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);">what it does</div>
+        <div style="width:170px;flex:none;text-align:center;font-family:var(--font-display);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-secondary);">creates…</div>
+      </div>
+    </div>
+
+    <div class="v05-row">
+      <div class="v05-code" style="border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding-top:8px;"><div><span class="v05-kw">FROM</span> rust:1.98</div></div>
+      <div class="v05-note"><div class="v05-ann">base layers: Debian + the full Rust toolchain, a <strong>~600&nbsp;MB compressed pull</strong> (tag tracks stable, checked 2026-09-02)</div><div class="v05-chip v05-heavy">heavy layers</div></div>
+    </div>
+    <div class="v05-row">
+      <div class="v05-code v05-sep"><div><span class="v05-kw">WORKDIR</span> /app</div></div>
+      <div class="v05-note"><div class="v05-ann">sets the directory every later instruction (and the CMD) run from</div><div class="v05-chip v05-meta">metadata only</div></div>
+    </div>
+    <div class="v05-row">
+      <div class="v05-code v05-sep"><div><span class="v05-kw">COPY</span> . .</div></div>
+      <div class="v05-note"><div class="v05-ann">one layer holding the entire workspace (minus <span style="font-family:var(--font-mono);font-size:14.5px;">.dockerignore</span> entries)</div><div class="v05-chip v05-layerc">layer</div></div>
+    </div>
+    <div class="v05-row">
+      <div class="v05-code v05-sep"><div><span class="v05-kw">RUN</span> cargo build --release \<br>&nbsp;&nbsp;&nbsp;&nbsp;--bin pulse-pollerd</div></div>
+      <div class="v05-note"><div class="v05-ann">one layer holding <strong>ALL build output</strong>, dependency artifacts included</div><div class="v05-chip v05-heavy">heavy layer</div></div>
+    </div>
+    <div class="v05-row">
+      <div class="v05-code v05-sep"><div><span class="v05-kw">EXPOSE</span> 8080</div></div>
+      <div class="v05-note"><div class="v05-ann">metadata only: documents the port, <strong>publishes nothing</strong></div><div class="v05-chip v05-meta">metadata only</div></div>
+    </div>
+    <div class="v05-row">
+      <div class="v05-code v05-sep" style="border-radius:0 0 var(--radius-xl) var(--radius-xl);padding-bottom:8px;"><div><span class="v05-kw">CMD</span> ["./target/release/<br>&nbsp;&nbsp;&nbsp;&nbsp;pulse-pollerd"]</div></div>
+      <div class="v05-note"><div class="v05-ann">metadata: the one process to start, JSON array form, no shell wrapping</div><div class="v05-chip v05-meta">metadata only</div></div>
+    </div>
+
+    <div style="margin-top:22px;display:flex;align-items:center;gap:14px;">
+      <div style="width:26px;height:26px;flex:none;border-radius:50%;background:var(--surface-accent);"></div>
+      <div style="font-family:var(--font-body);font-weight:700;font-size:17px;color:var(--text-primary);">FROM and RUN create the heavy filesystem layers; everything else is bookkeeping</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Hobby's published monthly and daily ceilings
+     purpose: put the free tier's actual numbers in one place so the learner reasons from figures, not vibes
+     data: monthly included: Fast Data Transfer 100 GB; Edge Requests 1,000,000; Function Invocations 1,000,000 operational: deployments/day 100; builds/hour 100; projects 200; concurrent builds 1; build cap 45 min source: vercel.com/pricing and vercel.com/docs/limits, read 2026-09-01
+     prompt: Two grouped panels of labeled figures. Panel one, monthly included allowances, three large stat tiles with the values from data. Panel two, operational ceilings, five smaller tiles. Footer line citing the two source pages and the read date. No invented bars or trends, these are published constants, render them as stat tiles.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:544px;height:537px;top:-272px;right:-272px;border-radius:55% 48% 61% 57% / 51% 37% 62% 65%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:589px;height:496px;left:-339px;top:244px;border-radius:64% 50% 42% 41% / 47% 43% 40% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panel-lbl { font-family:var(--font-body); font-weight:800; font-size:14px;
+               letter-spacing:.12em; text-transform:uppercase; color:var(--text-secondary);
+               margin:10px 0 12px; }
+  .tiles { display:flex; gap:20px; }
+  .tile { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-2xl); padding:26px 24px; text-align:center; }
+  .tile .val { font-family:var(--font-display); font-weight:900; color:var(--stbr-emerald);
+               font-size:56px; line-height:1; }
+  .tile .lbl { font-family:var(--font-body); font-weight:700; font-size:17px;
+               color:var(--text-primary); margin-top:12px; }
+  .tile.hero { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .tile.hero .val, .tile.hero .lbl { color:var(--stbr-dark); }
+  .tiles.small .tile { padding:18px 12px; border-radius:var(--radius-xl); }
+  .tiles.small .val { font-size:38px; color:var(--stbr-green); }
+  .tiles.small .lbl { font-size:14.5px; margin-top:8px; }
+  .src { margin-top:22px; font-family:var(--font-body); font-weight:600; font-size:14px;
+         color:var(--text-muted); text-align:center; }
+  .src code { font-family:var(--font-mono); font-size:13.5px; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">the free tier, in figures</div>
+  <h2 class="viz-title">Hobby&rsquo;s published monthly and daily ceilings</h2>
+  <div class="panel-lbl">monthly included allowances</div>
+  <div class="tiles">
+    <div class="tile hero"><div class="val">100 GB</div><div class="lbl">Fast Data Transfer</div></div>
+    <div class="tile"><div class="val">1,000,000</div><div class="lbl">Edge Requests</div></div>
+    <div class="tile"><div class="val">1,000,000</div><div class="lbl">Function Invocations</div></div>
+  </div>
+  <div class="panel-lbl" style="margin-top:26px;">operational ceilings</div>
+  <div class="tiles small">
+    <div class="tile"><div class="val">100</div><div class="lbl">deployments / day</div></div>
+    <div class="tile"><div class="val">100</div><div class="lbl">builds / hour</div></div>
+    <div class="tile"><div class="val">200</div><div class="lbl">projects</div></div>
+    <div class="tile"><div class="val">1</div><div class="lbl">concurrent build</div></div>
+    <div class="tile"><div class="val">45 min</div><div class="lbl">build cap</div></div>
+  </div>
+  <div class="src">published constants, not trends. source: <code>vercel.com/pricing</code> and <code>vercel.com/docs/limits</code>, read 2026-09-01</div>
+</div>
+</body></html>

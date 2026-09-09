@@ -1,0 +1,96 @@
+id: lesson-rtf-m01-l1
+slug: m01-l1
+title: "The map: what we teach, what we bookmark, and why both languages"
+skills:
+  - solana-fundamentals
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: map-check
+    type: quiz
+    questions:
+      - id: m01-l1-q1
+        prompt: "Three modules from now, a Rust compiler error mentions lifetimes, a concept this course lists as signposted, never taught. What does the 80/20 contract say you do?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Open the bookmarked chapter for that concept, read what you need, come back"
+            correct: true
+            feedback: "A signpost is an address, not a warning. You open the one chapter the map points at, take what the error needs, and go back to the lab you were in; one chapter at point of need is the whole deal."
+          - id: c
+            label: "Treat it as a gap in the course's coverage and look for a more complete course"
+            correct: false
+            feedback: "It's not a gap, it's the design. The lesson that signposted lifetimes told you exactly where the full treatment lives; a course that taught everything would be the pile, not the map."
+          - id: b
+            label: "Pause the course and work through The Rust Book front to back before continuing"
+            correct: false
+            feedback: "That's the thousand-hour trap the map exists to prevent. The bookmarks are chapter-level and pulled at point of need, nobody shipping read the whole pile first."
+          - id: d
+            label: "Keep editing the code until the error clears, since lifetimes are never taught here"
+            correct: false
+            feedback: "Making an error go away is not the same as knowing why it went away, and lifetimes are where that gap bites hardest. Never taught here means the map hands you the chapter, not that you get to skip the reading."
+        explanation: "The seam is the product: this course teaches the 80% of real-world patterns and hands you a verified, chapter-level bookmark for the 20% it deliberately leaves out. Hitting bookmarked territory mid-error is the system working, the map tells you exactly which chapter answers it."
+      - id: m01-l1-q2
+        prompt: "drift-labs/protocol-v2, one flagship Solana repo, splits almost 50/50 by bytes: TypeScript 5,746,893 vs Rust 5,533,370. What is that number evidence FOR?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Most of that TypeScript is tests and scripts, so only the Rust half is the shipped product"
+            correct: false
+            feedback: "Tests are in there, but so are the SDK and every client an integrator imports. That surface ships, gets versioned and breaks users when it regresses, which is why the split sits near half rather than drifting to the program."
+          - id: b
+            label: "Production Solana products pair a Rust program with a TypeScript client, one product needs both"
+            correct: true
+            feedback: "One product, two languages, nearly fifty-fifty by weight. The Rust is the on-chain program; the TypeScript is the SDK, the clients and the tests that every user and integrator actually touches."
+          - id: c
+            label: "The two languages are interchangeable on this stack, so a developer can pick whichever they prefer"
+            correct: false
+            feedback: "They sit at different layers, not the same one: Rust where the program runs, TS where users and tooling live. Interchangeable would mean picking one; the byte split shows shipping teams pick both."
+          - id: a
+            label: "Solana teams are mid-migration from TypeScript to Rust, so Rust alone is the safer bet"
+            correct: false
+            feedback: "There's no migration in that number, both halves are load-bearing and growing. The Rust is the on-chain program; the TS is its SDK, clients, and tests. Neither replaces the other."
+        explanation: "The single best 'why both languages' stat the research found: inside one production repo, the on-chain Rust and the client-side TypeScript are nearly equal by weight. That's the shape of the job, and the shape of this course."
+      - id: m01-l1-q3
+        prompt: "You open the MDN Core Scripting honesty check and the async unit, promises, callbacks, is genuinely new to you. What's the honest move?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Skip it, the course reteaches async from scratch in the TypeScript modules anyway"
+            correct: false
+            feedback: "It doesn't: m02-l3 opens with a five-minute promise-model recap and then builds concurrency discipline ON promise literacy. A recap is not a first course in async."
+          - id: b
+            label: "Continue, async only becomes relevant once the Rust modules introduce tokio"
+            correct: false
+            feedback: "Async arrives much earlier than tokio: the TypeScript fleet in module 2 is built on promises, await, and cancellation. Arriving without the model means stalling exactly there."
+          - id: c
+            label: "Do MDN's async unit first, it's free, m02-l3 builds on it, and the course will wait"
+            correct: true
+            feedback: "The cheapest possible insurance. m02-l3 spends five minutes recapping the promise model and then builds cancellation and concurrency discipline on top of it, so the unit is what that lesson assumes you already hold."
+          - id: d
+            label: "Start now and open the async unit later, the delay usually costs nothing"
+            correct: false
+            feedback: "Deferring doesn't remove the cost, it moves it into module 2, where a five-minute recap assumes the model you skipped. The detour is cheap before the lab and expensive in the middle of it."
+        explanation: "The prerequisite box is honesty, not gatekeeping: this course maps FROM 'can program in some language, including JS async basics.' The MDN check, explicitly including the async unit, is the cheapest possible insurance against hitting module 2 without the promise model."
+      - id: m01-l1-q4
+        prompt: "The lesson states a hard requirement: your station repo will be PUBLIC. What actually depends on that?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The free-CI math, the dashboard's raw status.json fetch, and the Vercel repo lab"
+            correct: true
+            feedback: "Three paths ride on it: Actions is free and unmetered for public repos on standard runners, the dashboard reads status.json from the public raw URL, and the Vercel lab connects a personal public repo on the free tier."
+          - id: c
+            label: "Runner speed, public repositories are scheduled onto faster GitHub-hosted machines"
+            correct: false
+            feedback: "Standard runners are the same hardware either way. What public buys is billing (free, unmetered on standard runners) and public raw file access, not speed."
+          - id: d
+            label: "Just the free-CI math; the dashboard's raw status.json fetch works on a private repo too"
+            correct: false
+            feedback: "The CI billing is one of the three, not the whole list. A private repo's raw URL answers only to a credential your dashboard's browser fetch will not be carrying, so that path breaks too, weeks later and quietly."
+          - id: b
+            label: "GitHub policy, Actions workflows are only permitted to run on public repositories"
+            correct: false
+            feedback: "Actions runs fine on private repos, but metered, against a monthly minutes quota. The course's unmetered-CI path is a public-repo property, not an Actions requirement."
+        explanation: "Three course-critical paths ride on the public repo: Actions is free and unmetered for public repos on standard runners, the dashboard will fetch status.json from the repo's public raw URL, and the Vercel Hobby lab connects a personal public repo. The cost is stated out loud, your station's code and history are public, and for a portfolio artifact, that's a feature."

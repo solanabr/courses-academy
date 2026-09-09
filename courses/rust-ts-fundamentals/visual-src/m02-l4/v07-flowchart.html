@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Gate number two on the one pipeline
+     purpose: show the needs edges that make the probe step unreachable while any gate is red
+     data: triggers: push, schedule (*/30 * * * *) jobs: typecheck (tsc --noEmit), test (npx vitest run), probe (run fleet, commit status.json) edges: typecheck -> probe (needs), test -> probe (needs) red path: test fails -> probe never starts -> status.json not updated green path: both gates pass -> probe runs -> status.json committed
+     prompt: Left to right flowchart. Trigger node feeding two parallel gate nodes, typecheck and test, both with needs arrows into a single probe node that ends at a status.json artifact node. Show the failure branch from the test node as a short stub labeled "red: probe never starts". Label the two gate arrows "needs:".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:508px;height:432px;right:-321px;top:164px;border-radius:56% 52% 38% 41% / 60% 46% 53% 54%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:501px;height:463px;bottom:-236px;left:-236px;border-radius:39% 36% 57% 54% / 40% 38% 64% 38%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 38px 43px 32px; }
+  .canvas { position: relative; width: 1370px; height: 500px; margin-top: 8px; }
+  .canvas svg.wires { position: absolute; left: 0; top: 0; z-index: 0; }
+  .fnode { position: absolute; z-index: 1; background: var(--surface-card);
+           border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg);
+           padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; }
+  .fnode h3 { margin: 0 0 5px; font-family: var(--font-display); font-weight: 900;
+              font-size: 26px; line-height: 1.05; color: var(--text-primary); }
+  .fnode .sub { font-family: var(--font-mono); font-size: 15.5px; line-height: 1.35;
+                color: var(--text-secondary); }
+  .fnode.dark { background: var(--surface-inverse); border-color: var(--surface-inverse); }
+  .fnode.dark h3 { color: var(--text-on-dark); }
+  .fnode.dark .sub { color: var(--stbr-cream); }
+  .fnode.gate2 { background: var(--stbr-yellow); border-color: var(--stbr-yellow); }
+  .fnode.gate2 .sub { color: var(--stbr-dark); }
+  .fnode.brand { background: var(--surface-brand); border-color: var(--surface-brand); }
+  .fnode.brand h3 { color: var(--text-on-brand); }
+  .fnode.brand .sub { color: var(--stbr-cream); }
+  .tag { font-family: var(--font-body); font-weight: 700; font-size: 12px;
+         letter-spacing: 0.1em; text-transform: uppercase; color: var(--stbr-dark);
+         margin-bottom: 2px; }
+  .needs { position: absolute; z-index: 1; background: var(--surface-card);
+           border: 1.5px solid var(--stbr-dark); border-radius: var(--radius-pill);
+           font-family: var(--font-mono); font-size: 15px; color: var(--text-primary);
+           padding: 4px 14px; }
+  .stub { position: absolute; z-index: 1; left: 320px; top: 452px; width: 380px;
+          text-align: center; border: 1.5px solid var(--stbr-dark);
+          border-radius: var(--radius-pill); padding: 8px 14px;
+          font-family: var(--font-body); font-weight: 700; font-size: 17px;
+          color: var(--text-primary); background: var(--surface-card); }
+  .cap { margin-top: 10px; font-family: var(--font-body); font-size: 18px;
+         color: var(--text-secondary); text-align: center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">one pipeline, two gates</div>
+  <h2 class="viz-title" style="font-size:44px;">gate number two on the one pipeline</h2>
+  <div class="canvas">
+    <svg class="wires" width="1370" height="500">
+      <line x1="258" y1="230" x2="350" y2="114" stroke="#1B231D" stroke-width="2.5"/>
+      <polygon points="360,105 353.6,118.8 345.6,109.8" fill="#1B231D"/>
+      <line x1="258" y1="230" x2="350" y2="355" stroke="#1B231D" stroke-width="2.5"/>
+      <polygon points="360,365 345.7,359.6 354.1,351.0" fill="#1B231D"/>
+      <line x1="660" y1="105" x2="788" y2="192" stroke="#1B231D" stroke-width="2.5"/>
+      <polygon points="800,200 785.1,197.1 791.8,187.1" fill="#1B231D"/>
+      <line x1="660" y1="365" x2="789" y2="268" stroke="#1B231D" stroke-width="2.5"/>
+      <polygon points="800,260 792.4,273.2 785.2,263.6" fill="#1B231D"/>
+      <line x1="1090" y1="230" x2="1176" y2="230" stroke="#1B231D" stroke-width="2.5"/>
+      <polygon points="1190,230 1176,223 1176,237" fill="#1B231D"/>
+      <line x1="510" y1="415" x2="510" y2="430" stroke="#1B231D" stroke-width="2.5"/>
+      <polygon points="510,444 503,430 517,430" fill="#1B231D"/>
+    </svg>
+    <div class="fnode dark" style="left:0; top:175px; width:258px; height:110px;">
+      <h3>triggers</h3><div class="sub">push<br>schedule */30 * * * *</div>
+    </div>
+    <div class="fnode" style="left:360px; top:55px; width:300px; height:100px;">
+      <h3>typecheck</h3><div class="sub">tsc --noEmit</div>
+    </div>
+    <div class="fnode gate2" style="left:360px; top:315px; width:300px; height:100px;">
+      <div class="tag">gate #2</div>
+      <h3>test</h3><div class="sub">npx vitest run</div>
+    </div>
+    <div class="fnode" style="left:800px; top:165px; width:290px; height:130px;">
+      <h3>probe</h3><div class="sub">run fleet,<br>commit status.json</div>
+    </div>
+    <div class="fnode brand" style="left:1190px; top:180px; width:180px; height:100px;">
+      <h3>status.json</h3><div class="sub">committed</div>
+    </div>
+    <div class="needs" style="left:697px; top:130px;">needs:</div>
+    <div class="needs" style="left:697px; top:305px;">needs:</div>
+    <div class="stub">red: test fails &#8594; probe never starts</div>
+  </div>
+  <div class="cap">green path: both gates pass &#8594; probe runs &#8594; status.json committed &#183; while any gate is red, the probe step is unreachable</div>
+</div>
+</div>
+</body></html>

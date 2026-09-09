@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One map, three kinds of handle
+     purpose: show how Arc cloning gives the loop, the router, and each request handler access to the same state without copying it
+     data: center: HashMap<String, TargetStatus> guarded by Mutex, wrapped in Arc (refcount: 2 + one per in-flight request) handle 1: poll loop (writer) - locks briefly per result, inserts, drops guard handle 2: router (held by .with_state, cloned once at build time) handle 3: status_handler (reader) - per-request clone via the State extractor; locks, clones snapshot, drops guard rule attached: no .await between lock and unlock, on either side
+     prompt: Central box labeled "Mutex<HashMap>" inside a ring labeled "Arc". Three arrows point at the ring: "poll loop (writes)", "router (holds)", "handler per request (reads)". Each arrow annotated "Arc::clone: copies the pointer, not the map". A warning ribbon under the diagram: "lock late, drop early, never hold across .await".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:440px;height:415px;right:-250px;top:100px;border-radius:53% 35% 43% 57% / 51% 40% 57% 54%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:369px;height:522px;bottom:-306px;left:523px;border-radius:36% 52% 46% 56% / 43% 59% 65% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v08-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 50px 28px; }
+    .v08-stage { display: grid; grid-template-columns: 1fr 466px 1fr; align-items: center; margin-top: 6px; }
+    .v08-center { display: flex; flex-direction: column; align-items: center; }
+    .v08-handle { background: #ffffff; border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+                  padding: 16px 20px; text-align: center; }
+    .v08-handle b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--text-primary); }
+    .v08-role { display: inline-block; margin: 7px 0 8px; border-radius: var(--radius-pill); padding: 2px 13px;
+                background: var(--surface-brand); color: var(--stbr-cream); font-family: var(--font-display);
+                font-weight: 800; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.07em; }
+    .v08-handle small { display: block; font-family: var(--font-body); font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+    .v08-hars { display: flex; flex-direction: column; align-items: center; }
+    .v08-har { width: 74px; height: 2.5px; background: var(--stbr-dark); position: relative; }
+    .v08-har-r::after { content: ""; position: absolute; right: -8px; top: -5.5px; border-left: 9px solid var(--stbr-dark);
+                        border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v08-har-l::after { content: ""; position: absolute; left: -8px; top: -5.5px; border-right: 9px solid var(--stbr-dark);
+                        border-top: 6.75px solid transparent; border-bottom: 6.75px solid transparent; }
+    .v08-clone { margin-top: 6px; width: 118px; font-family: var(--font-body); font-size: 12px; color: var(--text-muted);
+                 text-align: center; line-height: 1.35; }
+    .v08-var { display: flex; flex-direction: column; align-items: center; }
+    .v08-varline { width: 2.5px; height: 26px; background: var(--stbr-dark); }
+    .v08-varhead { border-top: 9px solid var(--stbr-dark); border-left: 6.75px solid transparent; border-right: 6.75px solid transparent; }
+    .v08-side { display: flex; align-items: center; justify-content: flex-end; gap: 0; }
+    .v08-side-r { justify-content: flex-start; }
+    .v08-ring { width: 460px; border: 4px solid var(--stbr-emerald); border-radius: 220px / 140px;
+                padding: 22px 34px 40px; display: flex; flex-direction: column; align-items: center; background: #f2faf5; }
+    .v08-ring-tag { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 24px;
+                    color: var(--stbr-emerald); letter-spacing: 0.04em; }
+    .v08-ring-sub { font-family: var(--font-body); font-size: 13px; color: var(--text-muted); margin: 2px 0 12px; }
+    .v08-mutex { background: var(--surface-inverse); color: var(--stbr-cream); border-radius: var(--radius-md);
+                 padding: 12px 16px; max-width: 330px; text-align: center; }
+    .v08-mutex code { font-family: var(--font-mono); font-size: 14.5px; }
+    .v08-mutex small { display: block; font-family: var(--font-body); font-size: 12.5px; color: rgba(245,232,202,0.75); margin-top: 5px; }
+    .v08-ribbon { margin-top: 22px; background: var(--stbr-yellow); border: 2.5px solid var(--stbr-dark);
+                  border-radius: var(--radius-lg); padding: 13px 26px; text-align: center;
+                  font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--stbr-dark); }
+    .v08-ribbon small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 15px; margin-top: 3px; }
+  </style>
+  <div class="v08-card">
+    <div class="stbr-eyebrow">shared state without copies</div>
+    <h2 class="viz-title">one map, three kinds of handle</h2>
+    <div class="v08-stage">
+      <div></div>
+      <div class="v08-center">
+        <div class="v08-handle" style="width: 340px;">
+          <b>router</b>
+          <span class="v08-role">holds</span>
+          <small>keeps a clone via <code>.with_state</code>, cloned once at build time</small>
+        </div>
+        <div class="v08-var"><div class="v08-varline"></div><div class="v08-varhead"></div></div>
+      </div>
+      <div></div>
+
+      <div class="v08-side">
+        <div class="v08-handle" style="width: 330px;">
+          <b>poll loop</b>
+          <span class="v08-role">writes</span>
+          <small>locks briefly per result: insert, drop the guard</small>
+        </div>
+        <div class="v08-hars">
+          <div class="v08-har v08-har-r"></div>
+          <div class="v08-clone">Arc::clone: copies the pointer, not the map</div>
+        </div>
+      </div>
+      <div class="v08-center">
+        <div class="v08-ring">
+          <div class="v08-ring-tag">Arc</div>
+          <div class="v08-ring-sub">refcount: 2 + one per in-flight request</div>
+          <div class="v08-mutex">
+            <code>Mutex&lt;HashMap&lt;String, TargetStatus&gt;&gt;</code>
+            <small>one map, guarded</small>
+          </div>
+        </div>
+      </div>
+      <div class="v08-side v08-side-r">
+        <div class="v08-hars">
+          <div class="v08-har v08-har-l"></div>
+          <div class="v08-clone">Arc::clone: copies the pointer, not the map</div>
+        </div>
+        <div class="v08-handle" style="width: 330px;">
+          <b>status_handler</b>
+          <span class="v08-role">reads</span>
+          <small>per-request clone via the <code>State</code> extractor: lock, clone snapshot, drop the guard</small>
+        </div>
+      </div>
+    </div>
+    <div class="v08-ribbon">lock late, drop early, never hold across .await<small>the rule applies to the writer and every reader alike</small></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The ProbeState machine, arms as edges
+     purpose: show that the match arms above ARE the transition graph, and that absent edges are unrepresentable
+     data: states: Pending, Up, Degraded, Down edges: Pending -ok-> Up; Pending -fail-> Down; Up -ok-> Up; Up -fail-> Degraded; Degraded -ok-> Up; Degraded -fail (>=3 consecutive)-> Down; Degraded -fail (<3)-> Degraded; Down -ok-> Up; Down -fail-> Down absent edge, called out: Pending -> Degraded (no arm exists, no code path exists)
+     prompt: State-machine diagram with four labeled state nodes and directed edges labeled ok or fail, the Degraded failure edge annotated with the consecutive-failures guard. Show one dashed ghost edge from Pending to Degraded crossed out, labeled "no arm, no path". Emphasize that every drawn edge corresponds to one match arm.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:520px;top:-308px;right:-308px;border-radius:45% 42% 59% 63% / 48% 50% 57% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:466px;height:506px;bottom:-309px;left:632px;border-radius:37% 45% 37% 58% / 55% 46% 49% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .sm { position:relative; width:1456px; height:620px; margin-top:4px; }
+  .sm svg.wires { position:absolute; left:0; top:0; }
+  .state { position:absolute; width:230px; height:90px; background:var(--surface-card);
+           border:2.5px solid var(--stbr-green); border-radius:var(--radius-xl);
+           display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .state .nm { font-family:var(--font-display); font-weight:900; font-size:26px;
+               color:var(--text-primary); line-height:1; }
+  .state .tg { font-family:var(--font-body); font-weight:700; font-size:11px;
+               letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin-top:5px; }
+  .chip { position:absolute; font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+          background:var(--surface-card); border:1.5px solid var(--border-strong);
+          border-radius:var(--radius-pill); padding:3px 11px; color:var(--text-primary);
+          white-space:nowrap; }
+  .chip.ok { color:var(--stbr-emerald); border-color:var(--stbr-emerald); }
+  .ghostchip { position:absolute; background:var(--stbr-yellow); color:var(--stbr-dark);
+               border-radius:var(--radius-lg); padding:9px 15px; font-family:var(--font-display);
+               font-weight:900; font-size:18px; white-space:nowrap; }
+  .note { position:absolute; left:24px; top:6px; width:300px; font-family:var(--font-body);
+          font-weight:600; font-size:15px; line-height:1.35; color:var(--text-primary);
+          background:var(--surface-paper); border:1.5px solid var(--border-strong);
+          border-radius:var(--radius-lg); padding:12px 15px; }
+  .note b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">match arms are the transition graph</div>
+  <h2 class="viz-title">the ProbeState machine, arms as edges</h2>
+  <div class="sm">
+    <svg class="wires" width="1456" height="620">
+      <!-- Pending -ok-> Up -->
+      <line x1="280" y1="283" x2="594" y2="112" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="606,105 596.6,117 590.8,106.4" fill="#008b4c"/>
+      <!-- Pending -fail-> Down -->
+      <line x1="280" y1="310" x2="1158" y2="310" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1172,310 1158,304 1158,316" fill="#1b231d"/>
+      <!-- Up -fail-> Degraded -->
+      <line x1="675" y1="134" x2="675" y2="468" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="675,482 669,468 681,468" fill="#1b231d"/>
+      <!-- Degraded -ok-> Up -->
+      <line x1="765" y1="482" x2="765" y2="148" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="765,134 759,148 771,148" fill="#008b4c"/>
+      <!-- Degraded -fail >=3 -> Down -->
+      <line x1="840" y1="505" x2="1163" y2="358" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1176,352 1165.7,363.3 1160.8,352.4" fill="#1b231d"/>
+      <!-- Down -ok-> Up -->
+      <line x1="1240" y1="265" x2="853" y2="117" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="840,112 855.2,111.4 851,122.6" fill="#008b4c"/>
+      <!-- Up -ok-> Up (self) -->
+      <path d="M 695 44 C 695 12, 755 12, 755 44" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <polygon points="755,44 749,31 761,31" fill="#008b4c"/>
+      <!-- Degraded -fail <3 -> Degraded (self) -->
+      <path d="M 695 576 C 695 608, 755 608, 755 576" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="755,576 749,589 761,589" fill="#1b231d"/>
+      <!-- Down -fail-> Down (self) -->
+      <path d="M 1406 292 C 1444 292, 1444 328, 1406 328" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="1406,328 1420,322 1420,334" fill="#1b231d"/>
+      <!-- ghost: Pending -> Degraded (no arm) -->
+      <line x1="280" y1="348" x2="593" y2="495" stroke="#8b948c" stroke-width="2.5" stroke-dasharray="8 7"/>
+      <polygon points="606,501 590.8,500.5 595.9,489.6" fill="#8b948c"/>
+      <line x1="431" y1="412" x2="455" y2="436" stroke="#1b231d" stroke-width="3.5"/>
+      <line x1="455" y1="412" x2="431" y2="436" stroke="#1b231d" stroke-width="3.5"/>
+    </svg>
+    <div class="state" style="left:50px; top:265px;">
+      <div class="nm">Pending</div>
+      <div class="tg">start state</div>
+    </div>
+    <div class="state" style="left:610px; top:44px;">
+      <div class="nm">Up</div>
+    </div>
+    <div class="state" style="left:610px; top:486px;">
+      <div class="nm">Degraded</div>
+    </div>
+    <div class="state" style="left:1176px; top:265px;">
+      <div class="nm">Down</div>
+    </div>
+    <div class="chip ok" style="left:415px; top:190px;">ok</div>
+    <div class="chip" style="left:390px; top:297px;">fail</div>
+    <div class="chip" style="left:685px; top:180px;">fail</div>
+    <div class="chip ok" style="left:773px; top:390px;">ok</div>
+    <div class="chip" style="left:920px; top:412px;">fail &ge;3 consecutive</div>
+    <div class="chip ok" style="left:1020px; top:160px;">ok</div>
+    <div class="chip ok" style="left:766px; top:12px;">ok</div>
+    <div class="chip" style="left:766px; top:585px;">fail &lt;3</div>
+    <div class="chip" style="left:1385px; top:366px;">fail</div>
+    <div class="ghostchip" style="left:265px; top:452px;">no arm, no path</div>
+    <div class="note">every edge drawn here is <b>exactly one match arm</b> in <b>next_state</b>; an absent edge is unrepresentable</div>
+  </div>
+</div>
+</body></html>

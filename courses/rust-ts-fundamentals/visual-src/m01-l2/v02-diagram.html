@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Three tools, three jobs
+     purpose: fix the tsx-runs, tsc-checks, node-executes division of labor before the lab uses all three
+     data: probe.ts (your source file) feeds two independent paths: path 1: tsx -> transpiles on the fly -> node runtime -> output line on stdout path 2: tsc --noEmit -> type rules from tsconfig.json -> errors or silence, no execution @types/node -> feeds type information into path 2 only
+     prompt: A source-file node on the left with two parallel arrows to the right: the top path through tsx into a node-runtime box ending in a terminal-output box, the bottom path through tsc into an errors-or-clean box. A small side node for types feeding only the bottom path. Label each arrow with its verb.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:504px;right:-281px;top:202px;border-radius:53% 64% 47% 64% / 64% 46% 44% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:516px;height:517px;bottom:-270px;left:-270px;border-radius:43% 54% 37% 45% / 49% 64% 38% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:28px;padding:44px 56px 40px;overflow:hidden;">
+    <div class="stbr-eyebrow">tsx runs &middot; tsc checks &middot; node executes</div>
+    <h2 class="viz-title">three tools, three jobs</h2>
+
+    <div style="display:flex;align-items:stretch;gap:0;margin-top:36px;">
+      <!-- shared source node -->
+      <div style="width:210px;display:flex;flex-direction:column;">
+        <div style="flex:1;background:var(--stbr-yellow);border-radius:18px;padding:26px 20px;text-align:center;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:var(--font-mono);font-weight:700;font-size:24px;color:var(--stbr-dark);">probe.ts</div>
+          <div style="font-family:var(--font-body);font-size:15px;color:var(--stbr-dark);margin-top:6px;">your source file: feeds two independent paths</div>
+        </div>
+      </div>
+
+      <!-- two lanes -->
+      <div style="flex:1;display:flex;flex-direction:column;gap:44px;justify-content:center;">
+
+        <!-- path 1: run -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:96px;text-align:center;">
+            <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:2px;">runs</div>
+            <svg width="96" height="16"><line x1="0" y1="8" x2="84" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="84,2 96,8 84,14" fill="#1B231D"/></svg>
+          </div>
+          <div style="width:150px;background:var(--surface-card);border:3px solid var(--stbr-emerald);border-radius:16px;padding:16px 12px;text-align:center;">
+            <div style="font-family:var(--font-mono);font-weight:700;font-size:21px;color:var(--text-primary);">tsx</div>
+          </div>
+          <div style="width:190px;text-align:center;">
+            <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:2px;">transpiles on the fly</div>
+            <svg width="190" height="16"><line x1="0" y1="8" x2="178" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="178,2 190,8 178,14" fill="#1B231D"/></svg>
+          </div>
+          <div style="width:200px;background:var(--surface-card);border:3px solid var(--stbr-emerald);border-radius:16px;padding:16px 12px;text-align:center;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-primary);">node runtime</div>
+          </div>
+          <div style="width:96px;text-align:center;">
+            <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:2px;">executes</div>
+            <svg width="96" height="16"><line x1="0" y1="8" x2="84" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="84,2 96,8 84,14" fill="#1B231D"/></svg>
+          </div>
+          <div style="flex:1;background:var(--surface-inverse);border-radius:16px;padding:18px 20px;">
+            <div style="font-family:var(--font-mono);font-size:17px;color:var(--stbr-cream);">$ output line on stdout</div>
+          </div>
+        </div>
+
+        <!-- path 2: check -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:96px;text-align:center;">
+            <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:2px;">checks</div>
+            <svg width="96" height="16"><line x1="0" y1="8" x2="84" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="84,2 96,8 84,14" fill="#1B231D"/></svg>
+          </div>
+          <div style="width:220px;background:var(--surface-card);border:3px solid var(--stbr-green);border-radius:16px;padding:16px 12px;text-align:center;">
+            <div style="font-family:var(--font-mono);font-weight:700;font-size:21px;color:var(--text-primary);">tsc --noEmit</div>
+          </div>
+          <div style="width:240px;text-align:center;">
+            <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:2px;">applies type rules from tsconfig.json</div>
+            <svg width="240" height="16"><line x1="0" y1="8" x2="228" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="228,2 240,8 228,14" fill="#1B231D"/></svg>
+          </div>
+          <div style="flex:1;background:var(--surface-paper);border:3px solid var(--stbr-green);border-radius:16px;padding:14px 20px;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-primary);">errors, or silence</div>
+            <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);margin-top:2px;">no execution, ever</div>
+          </div>
+        </div>
+
+        <!-- types feeder, anchored under tsc -->
+        <div style="display:flex;margin-top:-40px;">
+          <div style="width:106px;"></div>
+          <div style="width:220px;display:flex;flex-direction:column;align-items:center;">
+            <svg width="16" height="46"><polygon points="2,12 8,0 14,12" fill="#306C40"/><line x1="8" y1="10" x2="8" y2="46" stroke="#306C40" stroke-width="2"/></svg>
+            <div style="background:var(--surface-card);border:2px solid var(--border-strong);border-radius:12px;padding:10px 16px;text-align:center;">
+              <div style="font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--text-primary);">@types/node</div>
+              <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:2px;">type info: this path only</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The three boundaries where the poll loop speaks
+     purpose: pin each of the three event kinds to its exact emit point in the existing drain loop so the wiring is placement, not invention
+     data: poll_loop drain, annotated: match joined { Err(join_err) => ... }   <- error: the station itself hiccuped (task panic) let outcome / log_event(probe_result)   <- probe_result: one per result, after `now` is computed next != prev -> log_event(state_change) <- state_change: only on difference, after TODO(2) computes next everything else in the loop: silent on purpose (per-iteration lines are noise)
+     prompt: The drain loop's skeleton in monospace with three margin callouts, one per event kind, each callout naming the event, its extra fields, and the reason it sits at that line. A fourth, grayed callout points at the loop body's remaining lines and reads "no events here: boundaries only".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:589px;height:559px;top:-322px;right:-322px;border-radius:65% 36% 65% 38% / 44% 41% 36% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:430px;height:424px;bottom:-221px;left:-221px;border-radius:50% 51% 40% 44% / 58% 60% 62% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:34px 50px 30px;}
+  .row{display:flex;gap:22px;margin-top:16px;align-items:flex-start;}
+  .codepanel{flex:1.25;background:var(--surface-inverse);border-radius:var(--radius-xl);
+             padding:24px 26px;font-family:var(--font-mono);font-size:15px;line-height:1.72;
+             color:var(--stbr-cream);}
+  .codepanel .cm{color:#8a938c;}
+  .codepanel .kw{color:#7fd4a8;}
+  .cline{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .mark{flex:none;font-family:var(--font-body);font-weight:800;font-size:12px;line-height:1;
+        border-radius:5px;padding:4px 7px;}
+  .m-em{background:var(--stbr-emerald);color:var(--stbr-cream);}
+  .m-ye{background:var(--stbr-yellow);color:var(--stbr-dark);}
+  .m-gr{background:#8a938c;color:var(--stbr-dark);}
+  .callouts{flex:1;display:flex;flex-direction:column;gap:12px;}
+  .co{border:2px solid var(--stbr-emerald);border-radius:var(--radius-lg);padding:12px 16px 14px;
+      background:var(--surface-card);flex:none;}
+  .co.key{border:3px solid var(--stbr-yellow);background:var(--surface-card);}
+  .co.gray{border:2px solid var(--border-subtle);background:var(--surface-paper);}
+  .cohead{display:flex;align-items:center;gap:9px;margin-bottom:4px;}
+  .cohead b{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--text-primary);}
+  .cofields{font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);
+            margin-bottom:4px;}
+  .cotext{font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--text-secondary);}
+  .cotext b{color:var(--text-primary);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">wiring is placement, not invention</div>
+  <h2 class="viz-title" style="font-size:42px;">the three boundaries where the poll loop speaks</h2>
+  <div class="row">
+    <div class="codepanel">
+      <div class="cline"><span><span class="kw">while let</span> Some(joined) = set.join_next().<span class="kw">await</span> {</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;<span class="kw">let</span> now = SystemTime::now();</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;<span class="kw">match</span> joined {</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;Err(join_err) =&gt; {</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_event(<span class="kw">"error"</span>, &hellip;);</span><span class="mark m-em">1</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;Ok((target, outcome)) =&gt; {</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_event(<span class="kw">"probe_result"</span>, &hellip;);</span><span class="mark m-em">2</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">let</span> next = &hellip;; <span class="cm">// TODO(2): classify</span></span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> next != prev {</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log_event(<span class="kw">"state_change"</span>, &hellip;);</span><span class="mark m-ye">3</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;&nbsp;&nbsp;}</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;}</span></div>
+      <div class="cline"><span>&nbsp;&nbsp;<span class="cm">// counters, sleeps, bookkeeping: silent</span></span><span class="mark m-gr">4</span></div>
+      <div class="cline"><span>}</span></div>
+    </div>
+    <div class="callouts">
+      <div class="co">
+        <div class="cohead"><span class="mark m-em">1</span><b>error</b></div>
+        <div class="cofields">event &middot; detail(join_err) &middot; ts</div>
+        <div class="cotext"><b>The station itself hiccuped</b>: a task panic, not the target. Only the Err arm knows.</div>
+      </div>
+      <div class="co">
+        <div class="cohead"><span class="mark m-em">2</span><b>probe_result</b></div>
+        <div class="cofields">event &middot; target &middot; outcome &middot; latency_ms &middot; ts</div>
+        <div class="cotext"><b>One per result</b>, emitted right after <b>now</b> is computed, so ts is the probe&rsquo;s.</div>
+      </div>
+      <div class="co key">
+        <div class="cohead"><span class="mark m-ye">3</span><b>state_change</b></div>
+        <div class="cofields">event &middot; target &middot; from &middot; to &middot; ts</div>
+        <div class="cotext"><b>Only on difference</b>, after TODO(2) computes <b>next</b>. Answers &ldquo;when did it flip&rdquo;.</div>
+      </div>
+      <div class="co gray">
+        <div class="cohead"><span class="mark m-gr">4</span><b>no events here</b></div>
+        <div class="cotext">Boundaries only: per-iteration lines are noise. The rest of the loop stays silent on purpose.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

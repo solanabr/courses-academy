@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One request through the Rust worker's KV round-trip
+     purpose: trace where serde runs and where state lives so the get/put pair stops being boilerplate
+     data: POST /  (body: JSON fixtures) -> req.json() [serde: bytes -> Vec<FixtureSample>] -> classify_fixtures (engine, pure) -> per target: kv.get status:<name> [serde: KV -> StoredStatus] -> next_state(prev, ok, failures) (engine, pure) -> kv.put status:<name> [serde: StoredStatus -> KV] -> kv.put latest-samples (so GET can replay) -> Response::from_json [serde: Vec<Classified> -> bytes] GET / -> kv.get latest-samples -> same pure path, no body needed
+     prompt: A request-flow diagram with the pure engine calls visually distinguished from the KV touches. Mark each serde crossing with a small badge. Show POST and GET entering the same central pure path from different sources, one from the request body and one from the stored latest-samples key.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:559px;top:-298px;right:-298px;border-radius:45% 40% 60% 42% / 65% 58% 57% 57%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:476px;height:412px;left:-273px;top:339px;border-radius:43% 56% 35% 50% / 63% 64% 62% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 34px 52px 30px; }
+    .flow { position: relative; height: 552px; margin-top: 4px; }
+    .entry { position: absolute; width: 178px; background: var(--surface-inverse);
+             border-radius: var(--radius-lg); padding: 9px 14px; }
+    .entry h5 { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 17px;
+                color: var(--stbr-cream); }
+    .entry p { margin: 2px 0 0; font-family: var(--font-body); font-size: 12px;
+               color: var(--stbr-cream); opacity: 0.75; }
+    .node { background: var(--surface-card); border: 2.5px solid var(--stbr-dark);
+            border-radius: var(--radius-lg); padding: 10px 14px; }
+    .node h5 { margin: 0; font-family: var(--font-mono); font-weight: 700; font-size: 15.5px;
+               color: var(--stbr-dark); }
+    .kvtag { display: inline-block; font-family: var(--font-display); font-weight: 900;
+             font-size: 11px; letter-spacing: 0.08em; background: var(--stbr-dark);
+             color: var(--stbr-cream); border-radius: 4px; padding: 2px 7px;
+             vertical-align: 2px; margin-right: 7px; }
+    .pure { background: var(--surface-brand); border: none; }
+    .pure h5 { color: var(--text-on-brand); }
+    .puretag { display: inline-block; font-family: var(--font-display); font-weight: 900;
+               font-size: 11px; letter-spacing: 0.08em; background: var(--stbr-cream);
+               color: var(--stbr-green); border-radius: 4px; padding: 2px 7px;
+               vertical-align: 2px; margin-right: 7px; }
+    .serde { display: inline-block; font-family: var(--font-mono); font-size: 12px;
+             background: var(--stbr-yellow); color: var(--stbr-dark); font-weight: 700;
+             border-radius: var(--radius-pill); padding: 3px 11px; margin-top: 7px; }
+    .hline { position: absolute; height: 3px; background: var(--stbr-dark); }
+    .hhead { position: absolute; width: 0; height: 0; border-top: 7px solid transparent;
+             border-bottom: 7px solid transparent; border-left: 9px solid var(--stbr-dark); }
+    .harrow { display: flex; align-items: center; }
+    .harrow .l { width: 18px; height: 3px; background: var(--stbr-dark); }
+    .harrow .h { width: 0; height: 0; border-top: 7px solid transparent;
+                 border-bottom: 7px solid transparent; border-left: 9px solid var(--stbr-dark); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">where serde runs, where state lives</div>
+    <h2 class="viz-title" style="font-size:44px; margin-bottom:12px;">one request through the rust worker&rsquo;s KV round-trip</h2>
+
+    <div class="flow">
+      <!-- POST branch -->
+      <div class="entry" style="left:0; top:8px;">
+        <h5>POST /</h5><p>body: JSON fixtures</p>
+      </div>
+      <div class="hline" style="left:206px; top:34px; width:30px;"></div>
+      <div class="hhead" style="left:236px; top:27px;"></div>
+      <div class="node" style="position:absolute; left:248px; top:0; width:300px;">
+        <h5>req.json()</h5>
+        <span class="serde">serde &middot; bytes &rarr; Vec&lt;FixtureSample&gt;</span>
+      </div>
+      <div class="hline" style="left:580px; top:38px; width:34px;"></div>
+      <div class="hhead" style="left:614px; top:31px;"></div>
+
+      <!-- GET branch -->
+      <div class="entry" style="left:0; top:104px;">
+        <h5>GET /</h5><p>no body needed</p>
+      </div>
+      <div class="hline" style="left:206px; top:130px; width:30px;"></div>
+      <div class="hhead" style="left:236px; top:123px;"></div>
+      <div class="node" style="position:absolute; left:248px; top:96px; width:300px;">
+        <h5><span class="kvtag">KV</span>kv.get latest-samples</h5>
+        <p style="margin:5px 0 0; font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary);">
+          replays the last stored samples</p>
+      </div>
+      <div class="hline" style="left:580px; top:130px; width:34px;"></div>
+      <div class="hhead" style="left:614px; top:123px;"></div>
+
+      <!-- shared pure entry -->
+      <div class="node pure" style="position:absolute; left:626px; top:12px; width:320px; height:120px;
+                                    display:flex; flex-direction:column; justify-content:center;">
+        <h5 style="font-size:19px;"><span class="puretag">PURE</span>classify_fixtures</h5>
+        <p style="margin:5px 0 0; font-family:var(--font-body); font-size:13px; color:var(--text-on-brand); opacity:0.85;">
+          engine call: same path for POST and GET</p>
+      </div>
+
+      <!-- down into the per-target loop -->
+      <div style="position:absolute; left:784px; top:132px; width:3px; height:44px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:778px; top:176px; width:0; height:0; border-left:8px solid transparent;
+                  border-right:8px solid transparent; border-top:10px solid var(--stbr-dark);"></div>
+
+      <!-- per-target interleave -->
+      <div style="position:absolute; left:60px; top:190px; right:0; border:3px solid var(--stbr-green);
+                  border-radius:var(--radius-xl); background:var(--surface-paper); padding:12px 20px 16px;">
+        <p style="margin:0 0 9px; font-family:var(--font-display); font-weight:800; font-size:15px;
+                  letter-spacing:0.05em; color:var(--stbr-green);">PER TARGET: engine and KV interleave</p>
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="node" style="width:330px;">
+            <h5><span class="kvtag">KV</span>kv.get status:&lt;name&gt;</h5>
+            <span class="serde">serde &middot; KV &rarr; StoredStatus</span>
+          </div>
+          <div class="harrow"><div class="l"></div><div class="h"></div></div>
+          <div class="node pure" style="width:330px;">
+            <h5><span class="puretag">PURE</span>next_state(prev, ok, failures)</h5>
+            <p style="margin:6px 0 0; font-family:var(--font-body); font-size:12.5px;
+                      color:var(--text-on-brand); opacity:0.85;">engine call: no I/O inside</p>
+          </div>
+          <div class="harrow"><div class="l"></div><div class="h"></div></div>
+          <div class="node" style="width:330px;">
+            <h5><span class="kvtag">KV</span>kv.put status:&lt;name&gt;</h5>
+            <span class="serde">serde &middot; StoredStatus &rarr; KV</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- down to the response -->
+      <div style="position:absolute; left:510px; top:334px; width:3px; height:34px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:504px; top:368px; width:0; height:0; border-left:8px solid transparent;
+                  border-right:8px solid transparent; border-top:10px solid var(--stbr-dark);"></div>
+
+      <!-- final row -->
+      <div class="node" style="position:absolute; left:330px; top:378px; width:330px;">
+        <h5><span class="kvtag">KV</span>kv.put latest-samples</h5>
+        <p style="margin:5px 0 0; font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary);">
+          so GET / can replay this run</p>
+      </div>
+      <div class="hline" style="left:692px; top:412px; width:34px;"></div>
+      <div class="hhead" style="left:726px; top:405px;"></div>
+      <div class="node" style="position:absolute; left:738px; top:378px; width:340px;">
+        <h5>Response::from_json</h5>
+        <span class="serde">serde &middot; Vec&lt;Classified&gt; &rarr; bytes</span>
+      </div>
+
+      <!-- legend -->
+      <div style="position:absolute; left:0; bottom:0; display:flex; gap:30px; align-items:center;">
+        <span style="display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:14px; color:var(--stbr-dark);">
+          <span style="width:18px; height:18px; border-radius:5px; background:var(--surface-brand);"></span>
+          pure engine call: no I/O</span>
+        <span style="display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:14px; color:var(--stbr-dark);">
+          <span style="width:18px; height:18px; border-radius:5px; background:var(--surface-card); border:2.5px solid var(--stbr-dark);"></span>
+          KV touch: state lives here</span>
+        <span style="display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:14px; color:var(--stbr-dark);">
+          <span class="serde" style="margin-top:0;">serde</span>
+          every boundary crossing is a serde step</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

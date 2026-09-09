@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The container tier-gate map
+     purpose: close the module by naming what was taught, what was skipped, and where each skipped piece lives
+     data: taught in M6: images and Dockerfiles; multi-stage builds; compose for local dev; a registry publish from CI with GITHUB_TOKEN the seam: docker push to ghcr.io skipped, named, out of scope on purpose: orchestration and Kubernetes; AWS and GCP cloud runtimes; deep image scanning beyond the Docker Scout one-liner of one enabled repo on the Personal plan one edge note: Cloudflare Containers went GA 2026-04-13, paid-plan-only, full platform tour in m07-l2
+     prompt: A map-style diagram in two territories divided by a bold vertical seam labeled docker push. Left territory holds the four taught items as settled towns. Right territory holds the three skipped domains as labeled but unexplored regions, each with a short where-it-lives note from data. A small edge marker for the Cloudflare Containers date pointing toward the next module.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:555px;height:511px;bottom:-280px;right:-280px;border-radius:45% 38% 62% 41% / 57% 64% 48% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:493px;height:420px;left:-274px;top:172px;border-radius:51% 42% 53% 65% / 43% 38% 54% 43%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v7-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 38px 56px 34px; position: relative; overflow: hidden; }
+  .v7-map { display: flex; align-items: stretch; gap: 0; margin-top: 8px; }
+  .v7-left { flex: 1; background: rgba(0,139,76,0.07); border: 2.5px solid var(--stbr-emerald);
+             border-radius: var(--radius-xl) 0 0 var(--radius-xl); padding: 18px 24px 20px; }
+  .v7-right { flex: 1; background: var(--surface-paper); border: 2.5px dashed var(--stbr-ink-300);
+              border-left: none; border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+              padding: 18px 24px 20px; }
+  .v7-thead { font-family: var(--font-display); font-weight: 800; font-size: 15px;
+              letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+  .v7-left .v7-thead { color: var(--stbr-emerald); }
+  .v7-right .v7-thead { color: var(--text-secondary); }
+  .v7-towns { display: flex; flex-wrap: wrap; gap: 14px; }
+  .v7-town { width: 264px; box-sizing: border-box; background: var(--surface-card);
+             border: 2px solid var(--stbr-emerald); border-radius: var(--radius-lg);
+             padding: 12px 16px; }
+  .v7-town b { font-family: var(--font-display); font-weight: 800; font-size: 17px;
+               color: var(--text-primary); display: block; }
+  .v7-town small { font-family: var(--font-body); font-size: 13px; color: var(--text-secondary);
+                   display: block; margin-top: 3px; }
+  .v7-seam { width: 128px; background: var(--stbr-yellow); display: flex; flex-direction: column;
+             align-items: center; justify-content: center; text-align: center;
+             padding: 14px 10px; border-top: 2.5px solid var(--stbr-yellow-600);
+             border-bottom: 2.5px solid var(--stbr-yellow-600); }
+  .v7-seam b { font-family: var(--font-display); font-weight: 900; font-size: 15px;
+               letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-on-accent); }
+  .v7-seam code { font-family: var(--font-mono); font-size: 14px; color: var(--text-on-accent);
+                  margin-top: 10px; display: block; }
+  .v7-seamline { width: 4px; flex: 1; max-height: 60px; background: var(--stbr-yellow-700);
+                 border-radius: 2px; margin-top: 12px; }
+  .v7-regions { display: flex; flex-direction: column; gap: 12px; }
+  .v7-region { background: var(--surface-card); border: 2px dashed var(--stbr-ink-300);
+               border-radius: var(--radius-lg); padding: 11px 16px; }
+  .v7-region b { font-family: var(--font-display); font-weight: 800; font-size: 17px;
+                 color: var(--text-primary); display: block; }
+  .v7-region small { font-family: var(--font-body); font-size: 13px; color: var(--text-muted);
+                     display: block; margin-top: 3px; }
+  .v7-edge { margin-top: 20px; display: flex; align-items: center; gap: 14px;
+             background: var(--surface-card); border: 2px solid var(--stbr-emerald);
+             border-radius: var(--radius-lg); padding: 11px 20px; }
+  .v7-edgetag { flex: none; background: var(--stbr-emerald); color: var(--text-on-brand);
+                border-radius: var(--radius-pill); font-family: var(--font-display);
+                font-weight: 800; font-size: 12.5px; letter-spacing: 0.08em;
+                text-transform: uppercase; padding: 5px 12px; }
+  .v7-edge span { font-family: var(--font-body); font-size: 16px; color: var(--text-primary); }
+  .v7-edge b { color: var(--stbr-emerald); white-space: nowrap; }
+</style>
+<div class="v7-card">
+  <div class="stbr-eyebrow">MODULE 6 · TIER-GATE</div>
+  <h2 class="viz-title">the container tier-gate map</h2>
+  <div class="v7-map">
+    <div class="v7-left">
+      <div class="v7-thead">taught in M6: settled ground</div>
+      <div class="v7-towns">
+        <div class="v7-town"><b>images &amp; Dockerfiles</b><small>the artifact and its recipe</small></div>
+        <div class="v7-town"><b>multi-stage builds</b><small>only the last stage ships</small></div>
+        <div class="v7-town"><b>compose for local dev</b><small>one file, one command</small></div>
+        <div class="v7-town"><b>registry publish from CI</b><small>with GITHUB_TOKEN</small></div>
+      </div>
+    </div>
+    <div class="v7-seam">
+      <b>the seam</b>
+      <code>docker push<br>→ ghcr.io</code>
+      <div class="v7-seamline"></div>
+    </div>
+    <div class="v7-right">
+      <div class="v7-thead">skipped: named, out of scope on purpose</div>
+      <div class="v7-regions">
+        <div class="v7-region"><b>orchestration &amp; Kubernetes</b><small>unexplored region beyond the seam</small></div>
+        <div class="v7-region"><b>AWS &amp; GCP cloud runtimes</b><small>unexplored region beyond the seam</small></div>
+        <div class="v7-region"><b>deep image scanning</b><small>beyond the Docker Scout one-liner: one enabled repo on the Personal plan</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="v7-edge">
+    <div class="v7-edgetag">edge note</div>
+    <span>Cloudflare Containers went GA <b>2026-04-13</b>, paid-plan-only; full platform tour in <b>m07-l2 →</b></span>
+  </div>
+</div>
+</div>
+</body></html>

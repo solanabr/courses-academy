@@ -1,0 +1,101 @@
+id: lesson-rtf-m05-l3
+slug: m05-l3
+title: "clap, a real probe arm, and a binary anyone can download"
+skills:
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "clap": "4.6.6"
+    "reqwest": "0.13.4"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m05l3-q1
+        prompt: "You put #[derive(Parser)] on an Args struct with two subcommands and ran `cargo run -- --help`. Where did the formatted help screen, usage lines, and version string come from?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Generated at compile time from your struct: field names, types, and doc comments become flags, value parsers, and help text"
+            correct: true
+            feedback: "Same trick serde pulled on your config: the type is the spec and the macro writes the machinery. That is why a doc comment on a variant turns into its line in the command list."
+          - id: c
+            label: "From a clap.toml manifest the derive scaffolds next to Cargo.toml on first build, which you edit to customize the help output"
+            correct: false
+            feedback: "No side file exists, the struct IS the interface definition; customization happens through attributes and doc comments on the struct itself."
+          - id: d
+            label: "Half derived, half runtime: the flags come from the struct, but version and about are read out of Cargo.toml on startup"
+            correct: false
+            feedback: "Nothing is read at startup. #[command(version, about)] bakes those strings in at compile time, which is why the Release asset a stranger downloads still prints -V with no Cargo.toml anywhere near it."
+          - id: b
+            label: "From a help template clap ships and fills at runtime by reflecting over the binary's symbol table to discover argument names"
+            correct: false
+            feedback: "Rust has no runtime reflection to lean on, the derive macro reads your struct at COMPILE time and generates the parsing and help code right there."
+        explanation: "clap's derive is the same trick serde pulled last lesson: the type is the spec, and the macro generates the code, parser, validation, --help, --version, error messages. Your TS CLI's hand-rolled argument handling in M1 is the 'before' picture; a doc comment on a field becoming its help line is the 'after'."
+      - id: m05l3-q2
+        prompt: "You chose BLOCKING reqwest for the CLI's probe arm, knowing the poller next module will go async. Why is blocking the right engineering call here, not a shortcut?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Async reqwest can't run in a binary crate without a web framework attached, so a standalone CLI has to use the blocking client"
+            correct: false
+            feedback: "Async runs fine in any binary with a runtime attached (tokio's main macro is one line), no framework needed. The reason is fit, not possibility."
+          - id: b
+            label: "A CLI probing targets one at a time, then exiting, gains nothing from a runtime, async earns its cost when many probes are in flight at once"
+            correct: true
+            feedback: "Concurrency is what async buys, and a sequential short-lived program has none to exploit. Naming the upgrade path (fifty probes on a schedule, next module) is what makes it a choice rather than a dodge."
+          - id: a
+            label: "Blocking is reqwest's mature default surface, the async API is the newer, still-stabilizing half of the crate and riskier to teach in a fundamentals course"
+            correct: false
+            feedback: "It's the reverse, async IS reqwest's default surface, and blocking is the feature-gated add-on. The choice is about the program's shape, not API maturity."
+          - id: d
+            label: "An async client would pull a tokio runtime into pulse-engine itself, and the pure core generally has to stay runtime-free for the WASM target m07-l2 wants"
+            correct: false
+            feedback: "The HTTP arm lives in pulse-cli either way, so the engine's purity is bought by crate placement, not by which client you pick. An async fetch would put tokio in the CLI and leave the engine untouched."
+        explanation: "Concurrency is the thing async buys, and a sequential, short-lived CLI has none to exploit, a runtime would be pure overhead and a new concept spent on no benefit. The moment the poller wants fifty probes in flight on a schedule (next module's opening problem), the same crate grows the async delta. Choosing the simple tool ON PURPOSE, with the upgrade path named, is the lesson."
+      - id: m05l3-q3
+        prompt: "Your latency-stats pass ran visibly faster after cargo build --release, and a u64 overflow that panicked in the debug build now wraps silently. What changed between the profiles?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The profile flipped: optimizations on, debug assertions and overflow checks off, a different binary with a different personality"
+            correct: true
+            feedback: "opt-level, debug-assertions and overflow-checks are the three knobs behind the two personalities, which is why any performance claim made off a dev binary is off by an order of magnitude."
+          - id: b
+            label: "Release runs the same machine code with runtime assertions disabled by an environment flag, which is why the speedup varies per machine"
+            correct: false
+            feedback: "The machine code itself is different, the optimizer recompiles everything at opt-level 3; no environment flag is involved."
+          - id: d
+            label: "Debug symbols: the dev binary carries them, so it runs slower and traps overflow, and release strips them for speed"
+            correct: false
+            feedback: "Symbols explain the size gap, not the speed gap and not the arithmetic. Overflow behaviour is the overflow-checks knob; you can keep full debug info in a release profile and it still wraps."
+          - id: a
+            label: "Release strips the standard library's safety checks from your binary, trading bounds checking and overflow detection for raw speed"
+            correct: false
+            feedback: "Bounds checks survive in release, indexing out of range still panics. Only specific debug-profile defaults (like overflow-checks) flip; std stays safe."
+        explanation: "Profiles are named bundles of compiler settings: dev prioritizes compile speed and loud failures (overflow panics), release prioritizes runtime speed (opt-level 3, overflow wraps). That personality change is exactly why m04-l2 taught checked_add, YOUR arithmetic tells the truth in both profiles, and why every performance number in this course is measured on --release."
+      - id: m05l3-q4
+        prompt: "The tier-gate quotes the Rustonomicon telling you to 'turn back now.' You genuinely want to write Solana programs in Rust next. Per the gate's map, what's the honest route?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Work through the Rustonomicon first despite its warning, on-chain programs are systems code, and unsafe fluency is the real prerequisite"
+            correct: false
+            feedback: "The disclaimer means what it says: writing programs (on-chain included) does not require the dark arts, frameworks like Anchor exist precisely so program authors write safe Rust."
+          - id: d
+            label: "Enroll straight into the Mastering Anchor course, its V2 material is the on-ramp this tier hands you and the account model arrives with it"
+            correct: false
+            feedback: "That course states its own bar: you already ship Anchor programs and want the V2 delta. It is the deep end. The account and transaction concepts live in the Bitcoin-to-Solana evolution course instead."
+          - id: c
+            label: "Finish TRPL cover to cover, then Comprehensive Rust in full, program authoring needs the language's whole surface before any of the chain makes sense"
+            correct: false
+            feedback: "Breadth-first completionism is what the 80/20 seam exists to prevent, the gate's resources are drills and references to pull from as needed, not prerequisites to exhaust."
+          - id: a
+            label: "Your exit level here, structs, enums, traits, Result, serde, plus the concept course's account model, then Anchor practice; unsafe and deep lifetimes are not on that path"
+            correct: true
+            feedback: "Reading level from here, account and transaction concepts from the Bitcoin-to-Solana course, reps on your own. What remains after this tier is shipping experience, not vocabulary."
+        explanation: "The gate's map: what this tier taught IS the Rust that real program authoring builds on; lifetimes-beyond-reading and unsafe stay bookmarked behind the Rustonomicon, macro authoring behind TRPL's macros chapter and The Little Book of Rust Macros, with Rustlings and Comprehensive Rust as drills. The on-chain route runs through the Bitcoin-to-Solana evolution course's account-and-transaction concepts, with the Mastering Anchor course as the deep end once you ship. Turn back now, it is not necessary."

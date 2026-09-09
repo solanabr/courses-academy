@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Every probe exit becomes exactly one typed variant
+     purpose: map the four runtime outcomes onto the four ProbeResult arms so aggregation has no leaks
+     data: fetch(url, signal) -> res.ok -> { kind: "ok", latencyMs } fetch -> non-2xx -> { kind: "http-error", status } -> (status 429 + attempts left -> backoff -> retry loop) timer fires -> abort -> catch, signal.aborted -> { kind: "timeout", budgetMs } network failure (DNS, refused) -> catch, not aborted -> { kind: "dns-error", host } All four arrows converge on: reports[i] (one row per target, no exceptions escape)
+     prompt: Left-to-right flowchart. One entry node for the fetch call with a small clock icon for the timer. Four branches to four result nodes, each showing its variant literal from data. The 429 branch has a loop-back arrow through a node labeled jittered backoff. All four result nodes point into a single array node labeled reports. No branch may exit the diagram.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:558px;height:503px;right:-308px;top:324px;border-radius:41% 55% 60% 43% / 36% 61% 50% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:489px;height:502px;bottom:-281px;left:-281px;border-radius:47% 56% 58% 60% / 54% 56% 64% 41%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { position:relative; width:1456px; height:520px; margin-top:6px; }
+  .stage svg.wires { position:absolute; left:0; top:0; }
+  .node { position:absolute; border-radius:var(--radius-xl); }
+  .entry { left:20px; top:190px; width:230px; height:120px; background:var(--surface-brand);
+           color:var(--text-on-brand); display:flex; flex-direction:column; align-items:center;
+           justify-content:center; gap:8px; }
+  .entry .fn { font-family:var(--font-mono); font-weight:700; font-size:16.5px; text-align:center;
+               padding:0 10px; }
+  .entry .tm { display:flex; align-items:center; gap:8px; font-family:var(--font-body);
+               font-weight:700; font-size:14px; color:var(--stbr-cream); }
+  .cond { left:330px; width:300px; height:58px; background:var(--surface-paper);
+          border:1.5px solid var(--border-strong); border-radius:var(--radius-pill);
+          display:flex; align-items:center; justify-content:center; text-align:center;
+          font-family:var(--font-body); font-weight:700; font-size:14.5px; line-height:1.25;
+          color:var(--text-primary); padding:0 18px; }
+  .variant { left:700px; width:430px; height:82px; background:var(--surface-card);
+             border:2px solid var(--stbr-emerald); display:flex; align-items:center;
+             justify-content:center; font-family:var(--font-mono); font-weight:700;
+             font-size:20px; color:var(--stbr-emerald); }
+  .variant.err { border-color:var(--stbr-dark); color:var(--text-primary); }
+  .reports { left:1240px; top:40px; width:196px; height:380px; background:var(--stbr-yellow);
+             color:var(--stbr-dark); display:flex; flex-direction:column; align-items:center;
+             justify-content:center; gap:10px; text-align:center; padding:0 16px; }
+  .reports .rn { font-family:var(--font-mono); font-weight:700; font-size:26px; }
+  .reports .rs { font-family:var(--font-body); font-weight:700; font-size:15px; line-height:1.3; }
+  .backoff { left:430px; top:452px; width:220px; height:52px; background:var(--surface-card);
+             border:2px solid var(--stbr-green); border-radius:var(--radius-pill);
+             display:flex; align-items:center; justify-content:center;
+             font-family:var(--font-body); font-weight:800; font-size:16px; color:var(--stbr-green); }
+  .looplbl { position:absolute; font-family:var(--font-body); font-weight:700; font-size:13.5px;
+             color:var(--stbr-green); }
+  .cap6 { margin-top:14px; background:var(--surface-brand); color:var(--text-on-brand);
+          border-radius:var(--radius-xl); padding:13px 28px; text-align:center;
+          font-family:var(--font-body); font-weight:800; font-size:19px; }
+</style>
+  <div class="stbr-eyebrow">four exits, four arms, zero leaks</div>
+  <h2 class="viz-title">every probe exit becomes exactly one typed variant</h2>
+  <div class="stage">
+    <svg class="wires" width="1456" height="520">
+      <!-- fan: entry -> conditions -->
+      <line x1="250" y1="250" x2="318" y2="55" stroke="#306c40" stroke-width="2.5"/><polygon points="326,55 314,50 315,62" fill="#306c40"/>
+      <line x1="250" y1="250" x2="318" y2="168" stroke="#306c40" stroke-width="2.5"/><polygon points="326,168 314,162 315,174" fill="#306c40"/>
+      <line x1="250" y1="250" x2="318" y2="281" stroke="#306c40" stroke-width="2.5"/><polygon points="326,281 314,275 315,287" fill="#306c40"/>
+      <line x1="250" y1="250" x2="318" y2="394" stroke="#306c40" stroke-width="2.5"/><polygon points="326,394 314,388 315,400" fill="#306c40"/>
+      <!-- condition -> variant -->
+      <line x1="630" y1="55" x2="688" y2="55" stroke="#306c40" stroke-width="2.5"/><polygon points="696,55 685,50 685,60" fill="#306c40"/>
+      <line x1="630" y1="168" x2="688" y2="168" stroke="#306c40" stroke-width="2.5"/><polygon points="696,168 685,163 685,173" fill="#306c40"/>
+      <line x1="630" y1="281" x2="688" y2="281" stroke="#306c40" stroke-width="2.5"/><polygon points="696,281 685,276 685,286" fill="#306c40"/>
+      <line x1="630" y1="394" x2="688" y2="394" stroke="#306c40" stroke-width="2.5"/><polygon points="696,394 685,389 685,399" fill="#306c40"/>
+      <!-- variant -> reports (all four converge) -->
+      <line x1="1130" y1="55" x2="1224" y2="55" stroke="#008b4c" stroke-width="2.5"/><polygon points="1232,55 1221,50 1221,60" fill="#008b4c"/>
+      <line x1="1130" y1="168" x2="1224" y2="168" stroke="#008b4c" stroke-width="2.5"/><polygon points="1232,168 1221,163 1221,173" fill="#008b4c"/>
+      <line x1="1130" y1="281" x2="1224" y2="281" stroke="#008b4c" stroke-width="2.5"/><polygon points="1232,281 1221,276 1221,286" fill="#008b4c"/>
+      <line x1="1130" y1="394" x2="1224" y2="394" stroke="#008b4c" stroke-width="2.5"/><polygon points="1232,394 1221,389 1221,399" fill="#008b4c"/>
+      <!-- 429 loop-back: http-error -> backoff -> retry into entry -->
+      <line x1="915" y1="435" x2="915" y2="478" stroke="#306c40" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <line x1="915" y1="478" x2="666" y2="478" stroke="#306c40" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <polygon points="658,478 669,473 669,483" fill="#306c40"/>
+      <line x1="430" y1="478" x2="135" y2="478" stroke="#306c40" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <line x1="135" y1="478" x2="135" y2="326" stroke="#306c40" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <polygon points="135,318 130,329 140,329" fill="#306c40"/>
+    </svg>
+    <div class="node entry">
+      <div class="fn">fetch(url, {&nbsp;signal&nbsp;})</div>
+      <div class="tm">
+        <svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="none" stroke="#f5e8ca" stroke-width="2"/><line x1="10" y1="10" x2="10" y2="5" stroke="#f5e8ca" stroke-width="2"/><line x1="10" y1="10" x2="14" y2="12" stroke="#f5e8ca" stroke-width="2"/></svg>
+        timeout timer armed
+      </div>
+    </div>
+    <div class="node cond" style="top:26px;">res.ok</div>
+    <div class="node cond" style="top:139px;">timer fires &rarr; abort<br>catch: signal.aborted</div>
+    <div class="node cond" style="top:252px;">network failure (DNS, refused)<br>catch: not aborted</div>
+    <div class="node cond" style="top:365px;">non-2xx response</div>
+    <div class="node variant" style="top:14px;">{ kind: "ok", latencyMs }</div>
+    <div class="node variant err" style="top:127px;">{ kind: "timeout", budgetMs }</div>
+    <div class="node variant err" style="top:240px;">{ kind: "dns-error", host }</div>
+    <div class="node variant err" style="top:353px;">{ kind: "http-error", status }</div>
+    <div class="node reports">
+      <div class="rn">reports[i]</div>
+      <div class="rs">one row per target<br>no exceptions escape</div>
+    </div>
+    <div class="node backoff">jittered backoff</div>
+    <div class="looplbl" style="left:684px;top:487px;">status 429 + attempts left</div>
+    <div class="looplbl" style="left:150px;top:440px;">retry</div>
+  </div>
+  <div class="cap6">four runtime outcomes &rarr; four ProbeResult arms; aggregation has no leaks</div>
+</div>
+</body></html>

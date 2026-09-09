@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The life and silent death of a scheduled workflow
+     purpose: make the 60-day auto-disable visible as a lifecycle with a documented cliff, an undocumented reset rule, and a one-click revival
+     data: Day 0: last repository activity (final commit before a break) Days 0-60: cron keeps firing every 30 minutes, status.json keeps updating Day 60: scheduled workflow automatically disabled (documented, public repos); no notification, nothing "failed" After day 60: status.json frozen; Actions tab shows the workflow disabled Revival: one click, Enable workflow (or a new commit; commits-reset-the-clock is reported in practice, not documented policy)
+     prompt: Single horizontal timeline from day 0 to beyond day 60. Green active band from 0 to 60 with small tick marks suggesting continuous runs, a hard cliff marker at day 60 labeled with the documented auto-disable, then a grey flatline band labeled frozen. A revival arrow loops from the flatline back to a new green band, labeled with the one-click re-enable. Badge the reset rule as "reported in practice" to keep the hedge visible.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:603px;height:555px;top:-332px;right:-332px;border-radius:36% 40% 39% 60% / 63% 38% 58% 50%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:368px;height:459px;bottom:-262px;left:648px;border-radius:49% 54% 61% 52% / 39% 36% 57% 37%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 44px 52px 36px; }
+    .lc { position: relative; width: 1350px; height: 350px; margin-top: 6px; }
+    .cap { position: absolute; top: 224px; font-family: var(--font-body); font-size: 15px;
+           color: var(--text-secondary); line-height: 1.3; }
+    .tick { width: 3px; height: 22px; background: rgba(245,232,202,0.75); border-radius: 2px; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">Scheduled workflows &middot; the 60-day rule</div>
+    <h2 class="viz-title" style="margin-bottom:10px;">the life and silent death of a scheduled workflow</h2>
+
+    <div class="lc">
+      <!-- revival arrow: frozen -> live again -->
+      <div style="position:absolute; top:0; left:854px; width:340px; text-align:center;
+                  font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--stbr-emerald);">
+        revival: Enable workflow, one click</div>
+      <svg width="470" height="140" viewBox="0 0 470 140"
+           style="position:absolute; top:20px; left:840px;">
+        <path d="M 20 112 C 110 26, 300 20, 386 102" fill="none" stroke="#008B4C" stroke-width="4"/>
+        <polygon points="388,128 374,102 401,105" fill="#008B4C"/>
+      </svg>
+
+      <!-- the cliff (THE point, yellow) -->
+      <div style="position:absolute; top:26px; left:400px; width:360px; text-align:center;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--stbr-dark);">
+          day 60: auto-disabled <span style="background:var(--stbr-yellow); border-radius:var(--radius-pill); padding:2px 10px;">documented</span></div>
+        <div style="font-family:var(--font-body); font-size:15px; color:var(--text-secondary); margin-top:4px;">
+          public repos &middot; no notification &middot; nothing &ldquo;failed&rdquo;</div>
+      </div>
+      <div style="position:absolute; top:100px; left:666px; height:32px; width:0;
+                  border-left:2px dashed var(--stbr-dark);"></div>
+      <div style="position:absolute; top:132px; left:658px; width:16px; height:92px;
+                  background:var(--stbr-yellow); border-radius:var(--radius-sm);"></div>
+
+      <!-- bands -->
+      <div style="position:absolute; top:150px; left:20px; width:630px; height:56px;
+                  background:var(--stbr-emerald); border-radius:var(--radius-md) 0 0 var(--radius-md);
+                  display:flex; align-items:center; justify-content:space-between; padding:0 18px;">
+        <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+        <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+        <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+        <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+        <div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div>
+      </div>
+      <div style="position:absolute; top:150px; left:684px; width:330px; height:56px;
+                  background:var(--surface-paper); border:2px dashed var(--text-muted);
+                  border-radius:0 var(--radius-md) var(--radius-md) 0; display:flex;
+                  align-items:center; justify-content:center; font-family:var(--font-display);
+                  font-weight:800; font-size:19px; color:var(--text-muted);">frozen</div>
+      <div style="position:absolute; top:150px; left:1120px; width:210px; height:56px;
+                  background:var(--stbr-emerald); border-radius:var(--radius-md); display:flex;
+                  align-items:center; justify-content:center; font-family:var(--font-display);
+                  font-weight:800; font-size:19px; color:var(--stbr-cream);">live again</div>
+
+      <!-- captions -->
+      <div class="cap" style="left:0; width:225px;"><strong style="font-family:var(--font-display); color:var(--stbr-dark);">day 0</strong>, last repository activity: the final commit before a break</div>
+      <div class="cap" style="left:240px; width:400px; text-align:center;">cron keeps firing every 30 minutes &middot; status.json keeps updating</div>
+      <div class="cap" style="left:611px; width:110px; text-align:center; font-family:var(--font-display); font-weight:800; color:var(--stbr-dark);">day 60</div>
+      <div class="cap" style="left:730px; width:300px;">status.json frozen &middot; the Actions tab shows the workflow disabled</div>
+      <div class="cap" style="left:1085px; width:265px; text-align:center;">runs resume on the next tick</div>
+
+      <!-- the hedge badge -->
+      <div style="position:absolute; top:296px; left:600px; width:750px;
+                  border:2px solid var(--stbr-green); border-left:10px solid var(--stbr-green);
+                  border-radius:var(--radius-md); background:var(--surface-paper); padding:9px 16px;
+                  font-family:var(--font-body); font-size:15.5px; color:var(--text-primary);">
+        <strong style="font-family:var(--font-display);">or a new commit:</strong>
+        commits-reset-the-clock is <em>reported in practice</em>, not documented policy.
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

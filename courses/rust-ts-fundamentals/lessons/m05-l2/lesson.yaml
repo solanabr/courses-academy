@@ -1,0 +1,103 @@
+id: lesson-rtf-m05-l2
+slug: m05-l2
+title: "cargo mastery: editions, workspaces, features, MSRV"
+skills:
+  - solana-programs
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "serde": "1.0.229"
+    "serde_json": "1.0.151"
+    "thiserror": "2.0.20"
+    "anyhow": "1.0.104"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m05l2-q1
+        prompt: "You declare rust-version = \"1.82\" on pulse-engine and your workspace uses resolver v3. What did you actually change about dependency resolution?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Nothing about resolution, rust-version only prints a warning banner when an older toolchain runs cargo build on your crate"
+            correct: false
+            feedback: "It's stronger than a warning (cargo errors on unsupported toolchains), and under resolver v3 it actively shapes which dependency versions get picked."
+          - id: b
+            label: "Dependencies are now vendored at their 1.82-era versions in the lockfile, and cargo update refuses to move any of them past that era"
+            correct: false
+            feedback: "No vendoring or freezing happens, resolution still prefers new versions; it just falls back past releases whose own MSRV exceeds yours."
+          - id: d
+            label: "Your own builds now run under 1.82, cargo selects the declared toolchain so a newer rustc on the box cannot leak in"
+            correct: false
+            feedback: "rust-version is a floor, not a toolchain selector. It stops an older rustc from building you; it never stops YOU on a newer one from writing an idiom 1.82 cannot parse, which is why serious libraries add an MSRV CI job."
+          - id: c
+            label: "Resolution became MSRV-aware: cargo prefers dependency versions whose own rust-version fits 1.82 instead of grabbing the newest compatible"
+            correct: true
+            feedback: "v3 flips resolver.incompatible-rust-versions from allow to fallback, so a candidate release that demands a newer compiler than 1.82 gets skipped for one that fits."
+        explanation: "Resolver v3 (the edition-2024 default, needs Rust 1.84+) flips the resolver.incompatible-rust-versions key, plural, the edition guide prints a typo, from allow to fallback: version selection respects your declared MSRV. rust-version stops being documentation and becomes an input to the resolver."
+      - id: m05l2-q2
+        prompt: "Following agave's shape, you hoist serde into [workspace.dependencies] at the root. What must each member crate now do to use it?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Subscribe with workspace = true and restate features = [\"derive\"], since inheritance carries the version string but not the feature list"
+            correct: false
+            feedback: "The root entry declares version AND features together, and the subscription inherits both, which is why the engine's block is three bare workspace = true lines."
+          - id: b
+            label: "Nothing, root-declared workspace dependencies are injected into every member's build automatically, which is the whole point of centralizing"
+            correct: false
+            feedback: "Members that never mention serde don't get it, automatic injection would bloat every crate with every dep. The root declares; each member still opts in."
+          - id: c
+            label: "Re-declare it with an identical version string, which cargo then verifies against the root and rejects the build on any version mismatch between them"
+            correct: false
+            feedback: "Re-declaring versions per member is exactly the duplication the pattern deletes, members write workspace = true and carry no version digits at all."
+          - id: a
+            label: "Opt in explicitly with serde = { workspace = true } in its own [dependencies], the root declares the version once, members subscribe"
+            correct: true
+            feedback: "That subscription is the whole member-side diff: no digits, no feature list. A version bump is then one line at the root and no two crates can drift onto different serde lines."
+        explanation: "One declaration at the root (version + features + default-features), then serde = { workspace = true } per consuming member. Version bumps become a one-line diff, and no two crates in the workspace can silently drift onto different serde lines, agave runs its entire dependency surface this way."
+      - id: m05l2-q3
+        prompt: "agave declares its shared deps with default-features = false. What is that hygiene actually buying, given the deps still compile fine without it?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Semver safety, default feature sets may change in minor releases, so pinning features off is the only way to keep minor upgrades from breaking your build"
+            correct: false
+            feedback: "Removing a default feature is treated as a breaking change in ecosystem convention anyway, the hygiene is about compile surface and intent, not semver protection."
+          - id: d
+            label: "Graph-wide reach: one defaults-off line at the root turns those defaults off for each crate that pulls the same dep in"
+            correct: false
+            feedback: "Features are additive and cargo unifies them, so one other consumer asking for default turns default back on for the shared build. Defaults-off constrains what YOU request, not what the graph resolves to."
+          - id: a
+            label: "Faster resolution, with defaults off, cargo skips feature unification across the graph and resolves each crate independently"
+            correct: false
+            feedback: "Feature unification still runs regardless, defaults-off changes WHAT gets unified in (less), not whether unification happens."
+          - id: b
+            label: "Deliberate surface area: each crate compiles only the capabilities it names, instead of every default the dep author chose for the general case"
+            correct: true
+            feedback: "Smaller binaries and faster builds fall out of it, but the durable payoff is a manifest that documents what each dependency is FOR, which is why agave runs reqwest and clap defaults-off while leaving serde's defaults on."
+        explanation: "Defaults serve the average consumer; a workspace is not average. defaults-off + named features means every capability in the build was chosen on purpose, smaller binaries, faster builds, and a manifest that documents what each dep is actually FOR. The cost is the footgun you met in the lab: a missing feature surfaces as a confusing missing-item error inside the dep, and cargo tree -e features is how you find it."
+      - id: m05l2-q4
+        prompt: "The pin-reading drill: agave pins reqwest at 0.12.28 while crates.io latest is 0.13.4, and pins clap at 2.33.1, a decade-old major. You're about to open a PR against agave. What's the professional read?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The repo is under-maintained on dependencies, a good first PR is the reqwest 0.13 and clap 4 upgrades before touching anything else"
+            correct: false
+            feedback: "A pinned major in a repo this actively maintained is a decision, not neglect, drive-by major upgrades of core deps are the classic rejected first PR."
+          - id: d
+            label: "Scope the new versions to your own member crate, so your patch uses 0.13 and clap 4 idioms without moving the shared pins"
+            correct: false
+            feedback: "There is no per-member escape in this layout. agave centralizes versions in [workspace.dependencies], so one crate's clap is every crate's clap, and that coupling is exactly why the old pin holds."
+          - id: b
+            label: "Old pins mean old code: read the pinned MAJORS' docs for anything you touch, since 0.13-era or clap-4 idioms won't exist anywhere in this codebase yet"
+            correct: false
+            feedback: "Half right, you should code against the pinned versions, but the missing (and larger) read is that the pins are deliberate choices you don't relitigate inside an unrelated PR."
+          - id: c
+            label: "Deliberate pins are contracts: write your patch against 0.12 and clap 2 idioms, and treat upgrading either as its own proposal, not a rider"
+            correct: true
+            feedback: "A pin in a living repo is information: something is holding it, migration cost or behaviour risk or sheer review surface. Photon's sqlx comment linking the upstream issue is the shape to copy when you pin."
+        explanation: "A pin in a living repo is information: someone chose it, and something (migration cost, behavior differences, MSRV, sheer risk surface) is holding it. Photon's sqlx 0.6 pin is the gold standard, the comment links the upstream issue that blocks the upgrade. Match the ecosystem you're contributing to; propose upgrades as upgrades. That reading skill is exactly what m09-l1's audit lab will grade on your own tree."

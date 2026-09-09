@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The alarm drill, from deliberate break to verified green
+     purpose: lay out the drill's sequence so the learner knows what to collect at each point and where the waiting goes
+     data: t0: commit + push the exit-1 step (the break) t0 -> t1: wait for the next scheduled fire (do the secrets sweep here); measure actual start vs scheduled minute = your skew t1: red run in the Actions tab t1 + delivery: notification arrives (On GitHub / Email) -> screenshot: the gate's proof t2: revert the break, push t3: next scheduled run green -> drill complete
+     prompt: Horizontal timeline with six markers as listed. The waiting stretch between t0 and t1 is drawn wide and labeled "do step 7 here; measure your own skew". The notification marker carries a small bell icon and the label "proof for the checkpoint". The final marker is a green check labeled "trust earned".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:480px;height:468px;top:-228px;right:-228px;border-radius:41% 43% 50% 38% / 60% 64% 54% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:510px;height:541px;bottom:-295px;left:376px;border-radius:41% 40% 47% 64% / 65% 40% 40% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:34px 50px 20px;}
+  .tl{position:relative;height:462px;margin-top:8px;}
+  .rule{position:absolute;top:242px;left:2%;right:2%;height:4px;background:var(--stbr-dark);
+        border-radius:2px;}
+  .waitseg{position:absolute;top:238px;left:5%;width:40%;height:12px;
+           background:var(--stbr-emerald);border-radius:6px;}
+  .dot{position:absolute;top:233px;width:22px;height:22px;margin-left:-11px;
+       border-radius:50%;background:var(--surface-card);border:4px solid var(--stbr-dark);}
+  .dot.em{background:var(--stbr-emerald);border-color:var(--stbr-emerald);}
+  .dot.ye{background:var(--stbr-yellow);border-color:var(--stbr-dark);}
+  .dot.dk{background:var(--stbr-dark);border-color:var(--stbr-dark);}
+  .stem{position:absolute;width:3px;background:var(--border-strong);margin-left:-1px;}
+  .stem.up{top:208px;height:28px;}
+  .stem.dn{top:255px;height:14px;}
+  .lab{position:absolute;width:230px;border:2px solid var(--border-subtle);
+       border-radius:var(--radius-lg);background:var(--surface-card);padding:10px 14px;}
+  .lab.up{bottom:250px;}
+  .lab.dn{top:269px;}
+  .lab b{display:block;font-family:var(--font-display);font-weight:800;font-size:16px;
+         line-height:1.2;color:var(--text-primary);margin-bottom:3px;}
+  .lab span{font-family:var(--font-body);font-size:12.5px;line-height:1.35;
+            color:var(--text-secondary);}
+  .lab.proof{background:var(--stbr-yellow);border:2px solid var(--stbr-dark);}
+  .lab.proof b,.lab.proof span{color:var(--stbr-dark);}
+  .lab.green b{color:var(--stbr-emerald);}
+  .waitlab{position:absolute;top:269px;left:25%;width:420px;margin-left:-210px;
+           background:var(--surface-brand);border-radius:var(--radius-lg);padding:11px 18px;}
+  .waitlab b{display:block;font-family:var(--font-display);font-weight:800;font-size:15px;
+             color:var(--text-on-brand);margin-bottom:3px;}
+  .waitlab span{font-family:var(--font-body);font-size:12.5px;line-height:1.35;
+                color:var(--text-on-brand);}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">break it on purpose, watch it scream</div>
+  <h2 class="viz-title" style="font-size:42px;">the alarm drill, from deliberate break to verified green</h2>
+  <div class="tl">
+    <div class="rule"></div>
+    <div class="waitseg"></div>
+
+    <div class="stem up" style="left:5%;"></div>
+    <div class="dot dk" style="left:5%;"></div>
+    <div class="lab up" style="left:0;">
+      <b>t0: the break</b>
+      <span>commit + push the exit-1 step, on purpose.</span>
+    </div>
+
+    <div class="waitlab">
+      <b>the wait: t0 &rarr; t1</b>
+      <span>do step 7 (the secrets sweep) here &middot; measure actual start vs scheduled minute = <b style="display:inline;color:var(--text-on-brand);font-size:12.5px;">your skew</b></span>
+    </div>
+
+    <div class="stem up" style="left:45%;"></div>
+    <div class="dot dk" style="left:45%;"></div>
+    <div class="lab up" style="left:45%;margin-left:-115px;">
+      <b>t1: red run</b>
+      <span>the failing run lands in the Actions tab.</span>
+    </div>
+
+    <div class="stem dn" style="left:59%;"></div>
+    <div class="dot ye" style="left:59%;"></div>
+    <div class="lab dn proof" style="left:59%;margin-left:-115px;">
+      <b><svg width="15" height="16" style="vertical-align:-2px;"><path d="M7.5 1.5 C4.7 1.5 3.5 3.9 3.5 6.5 L3.5 9.8 L1.8 11.6 L13.2 11.6 L11.5 9.8 L11.5 6.5 C11.5 3.9 10.3 1.5 7.5 1.5 Z" fill="#1B231D"/><circle cx="7.5" cy="13.7" r="1.4" fill="#1B231D"/></svg> t1 + delivery</b>
+      <span>notification arrives (On GitHub / Email). Screenshot it: the gate&rsquo;s proof for the checkpoint.</span>
+    </div>
+
+    <div class="stem up" style="left:73%;"></div>
+    <div class="dot" style="left:73%;"></div>
+    <div class="lab up" style="left:73%;margin-left:-115px;">
+      <b>t2: revert</b>
+      <span>revert the break, push.</span>
+    </div>
+
+    <div class="stem dn" style="left:93%;"></div>
+    <div class="dot em" style="left:93%;"></div>
+    <div class="lab dn green" style="right:0;width:250px;">
+      <b>&#10003; t3: verified green</b>
+      <span>next scheduled run passes: drill complete, trust earned.</span>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What pulse v0 does on every run
+     purpose: show the probe's full path including the guard the compiler forced into existence
+     data: process.argv[2] -> guard: value present? -> no: print usage, exit 1 guard yes -> probe(url) -> performance.now() start -> await fetch(url) -> performance.now() end -> ProbeResult { url, status, latencyMs } -> one formatted line on stdout
+     prompt: Left-to-right flowchart. A decision diamond for the argument guard with the failure branch dropping to a usage-and-exit node. The success path flows through the timing pair around fetch into a result record and a final stdout node. Label the timing nodes with performance.now.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:560px;height:346px;right:-333px;top:405px;border-radius:55% 58% 52% 64% / 42% 36% 42% 55%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:417px;height:545px;bottom:-323px;left:372px;border-radius:42% 58% 56% 47% / 49% 38% 58% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:28px;padding:44px 56px 40px;overflow:hidden;">
+    <div class="stbr-eyebrow">the probe&rsquo;s full path, guard included</div>
+    <h2 class="viz-title" style="font-size:50px;">what pulse v0 does on every run</h2>
+
+    <!-- row 1: left to right -->
+    <div style="display:grid;grid-template-columns:1fr 56px 1fr 56px 1fr 56px 1fr;align-items:center;margin-top:34px;">
+      <div style="background:var(--surface-card);border:3px solid var(--stbr-emerald);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--text-primary);">process.argv[2]</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:2px;">the raw CLI argument</div>
+      </div>
+      <svg width="56" height="16"><line x1="0" y1="8" x2="44" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="44,2 56,8 44,14" fill="#1B231D"/></svg>
+      <div style="background:var(--surface-brand);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--stbr-cream);">value present?</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-cream);margin-top:2px;">the guard the compiler forced</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--stbr-emerald);margin-bottom:1px;">yes</div>
+        <svg width="56" height="16"><line x1="0" y1="8" x2="44" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="44,2 56,8 44,14" fill="#1B231D"/></svg>
+      </div>
+      <div style="background:var(--surface-card);border:3px solid var(--stbr-emerald);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--text-primary);">probe(url)</div>
+      </div>
+      <svg width="56" height="16"><line x1="0" y1="8" x2="44" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="44,2 56,8 44,14" fill="#1B231D"/></svg>
+      <div style="background:var(--surface-card);border:3px solid var(--stbr-green);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:18px;color:var(--text-primary);">performance.now()</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:2px;">clock starts</div>
+      </div>
+    </div>
+
+    <!-- middle strip: failure branch under the guard, wrap connector under the last node -->
+    <div style="display:grid;grid-template-columns:1fr 56px 1fr 56px 1fr 56px 1fr;align-items:start;">
+      <div></div><div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;padding-top:2px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="34"><line x1="8" y1="0" x2="8" y2="22" stroke="#1B231D" stroke-width="2"/><polygon points="2,22 8,34 14,22" fill="#1B231D"/></svg>
+          <div style="font-family:var(--font-body);font-weight:700;font-size:13px;color:var(--text-secondary);">no</div>
+        </div>
+        <div style="background:var(--stbr-yellow);border-radius:14px;padding:12px 18px;text-align:center;">
+          <div style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--stbr-dark);">print usage &middot; exit 1</div>
+        </div>
+      </div>
+      <div></div><div></div><div></div>
+      <div style="display:flex;justify-content:center;padding-top:2px;">
+        <svg width="16" height="118"><line x1="8" y1="0" x2="8" y2="106" stroke="#1B231D" stroke-width="2"/><polygon points="2,106 8,118 14,106" fill="#1B231D"/></svg>
+      </div>
+    </div>
+
+    <!-- row 2: right to left -->
+    <div style="display:grid;grid-template-columns:1fr 56px 1fr 56px 1fr 56px 1fr;align-items:center;margin-top:2px;">
+      <div style="background:var(--surface-inverse);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-size:17px;color:var(--stbr-cream);">$ one formatted line</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-cream);margin-top:2px;">on stdout</div>
+      </div>
+      <svg width="56" height="16"><line x1="12" y1="8" x2="56" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="12,2 0,8 12,14" fill="#1B231D"/></svg>
+      <div style="background:var(--surface-card);border:3px solid var(--stbr-emerald);border-radius:14px;padding:16px 8px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:16px;color:var(--text-primary);">ProbeResult</div>
+        <div style="font-family:var(--font-mono);font-size:14px;color:var(--text-secondary);margin-top:2px;">{ url, status, latencyMs }</div>
+      </div>
+      <svg width="56" height="16"><line x1="12" y1="8" x2="56" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="12,2 0,8 12,14" fill="#1B231D"/></svg>
+      <div style="background:var(--surface-card);border:3px solid var(--stbr-green);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:18px;color:var(--text-primary);">performance.now()</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:2px;">clock read again</div>
+      </div>
+      <svg width="56" height="16"><line x1="12" y1="8" x2="56" y2="8" stroke="#1B231D" stroke-width="2"/><polygon points="12,2 0,8 12,14" fill="#1B231D"/></svg>
+      <div style="background:var(--surface-card);border:3px solid var(--stbr-emerald);border-radius:14px;padding:16px 10px;text-align:center;height:88px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--text-primary);">await fetch(url)</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary);margin-top:2px;">the awaited round trip</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

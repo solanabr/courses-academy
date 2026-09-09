@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Green push, failed pull, one setting between them
+     purpose: teach the private-by-default first publish as a visibility flip rather than a broken pipeline
+     data: Actions run green -> both packages exist on ghcr.io -> born private by default anonymous docker pull -> refused as if the image did not exist -> the misread: the push must have failed the actual fix: package settings -> change visibility -> public -> anonymous pull succeeds note: the flip is once per package; later pushes keep the visibility
+     prompt: Vertical flowchart with a fork. Top node a green CI run feeding a registry node marked private by default. Left branch shows the anonymous pull bouncing off with a refused label and a crossed-out wrong conclusion beside it. Right branch walks three small nodes for package settings, the visibility change, and a succeeding pull. Emphasize the single setting node as the entire distance between failure and success.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:544px;height:590px;top:-333px;right:-333px;border-radius:47% 54% 38% 52% / 55% 58% 51% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:500px;height:434px;left:-258px;top:174px;border-radius:41% 41% 57% 48% / 62% 56% 51% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v6-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 34px 56px 30px; position: relative; overflow: hidden; }
+  .v6-center { display: flex; flex-direction: column; align-items: center; }
+  .v6-ci { background: var(--stbr-emerald); color: var(--text-on-brand);
+           border-radius: var(--radius-lg); padding: 12px 30px; text-align: center;
+           font-family: var(--font-display); font-weight: 800; font-size: 20px; }
+  .v6-varrow { width: 3px; height: 14px; background: var(--stbr-dark); position: relative;
+               margin: 2px 0 12px; }
+  .v6-varrow::after { content: ""; position: absolute; left: -7px; bottom: -10px;
+                      border-top: 11px solid var(--stbr-dark);
+                      border-left: 8px solid transparent; border-right: 8px solid transparent; }
+  .v6-reg { background: var(--surface-inverse); color: var(--text-on-dark);
+            border-radius: var(--radius-lg); padding: 12px 26px; display: flex;
+            align-items: center; gap: 16px; }
+  .v6-reg b { font-family: var(--font-display); font-weight: 800; font-size: 19px; }
+  .v6-priv { background: var(--stbr-dark-700); border: 1.5px solid var(--stbr-ink-500);
+             color: var(--stbr-cream); border-radius: var(--radius-pill);
+             font-family: var(--font-body); font-size: 14px; padding: 4px 12px; }
+  .v6-fork svg { display: block; }
+  .v6-cols { display: flex; gap: 64px; justify-content: center; margin-top: 2px; }
+  .v6-col { width: 600px; display: flex; flex-direction: column; align-items: center; }
+  .v6-colhead { font-family: var(--font-display); font-weight: 800; font-size: 14px;
+                letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary);
+                margin-bottom: 8px; }
+  .v6-node { width: 600px; box-sizing: border-box; background: var(--surface-card);
+             border: 2px solid var(--border-strong); border-radius: var(--radius-lg);
+             padding: 9px 18px; text-align: center; font-family: var(--font-body);
+             font-size: 16.5px; color: var(--text-primary); }
+  .v6-node code { font-family: var(--font-mono); font-size: 15px; }
+  .v6-refused { border-color: var(--stbr-dark); background: var(--surface-paper); }
+  .v6-refused b { font-family: var(--font-display); font-weight: 800; }
+  .v6-wrong { border: 2px dashed var(--stbr-ink-300); color: var(--text-muted); }
+  .v6-wrong s { text-decoration: line-through; }
+  .v6-wrong small { display: block; font-size: 12.5px; letter-spacing: 0.08em;
+                    text-transform: uppercase; margin-top: 2px; }
+  .v6-fix { border: 3px solid var(--stbr-yellow-600); background: var(--stbr-yellow);
+            color: var(--text-on-accent); font-weight: 700; font-size: 18px; }
+  .v6-fix small { display: block; font-weight: 600; font-size: 12.5px; margin-top: 2px;
+                  letter-spacing: 0.08em; text-transform: uppercase; }
+  .v6-ok { border-color: var(--stbr-emerald); color: var(--stbr-emerald); font-weight: 700; }
+  .v6-note { margin-top: 18px; background: var(--surface-paper);
+             border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+             padding: 10px 22px; text-align: center; font-family: var(--font-body);
+             font-size: 16px; color: var(--text-secondary); }
+  .v6-note b { color: var(--text-primary); }
+</style>
+<div class="v6-card">
+  <div class="stbr-eyebrow">FIRST PUBLISH TO GHCR</div>
+  <h2 class="viz-title">green push, failed pull, one setting between them</h2>
+  <div class="v6-center">
+    <div class="v6-ci">Actions run: green</div>
+    <div class="v6-varrow"></div>
+    <div class="v6-reg"><b>both packages exist on ghcr.io</b><span class="v6-priv">born private by default</span></div>
+    <div class="v6-fork">
+      <svg width="1264" height="44" viewBox="0 0 1264 44">
+        <path d="M632 2 L300 34" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M632 2 L964 34" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <polygon points="296,42 306,26 316,40" fill="#1B231D"/>
+        <polygon points="968,42 948,40 958,26" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="v6-cols">
+      <div class="v6-col">
+        <div class="v6-colhead">the misread</div>
+        <div class="v6-node">anonymous <code>docker pull</code></div>
+        <div class="v6-varrow"></div>
+        <div class="v6-node v6-refused"><b>refused</b>, as if the image did not exist</div>
+        <div class="v6-varrow"></div>
+        <div class="v6-node v6-wrong"><s>"the push must have failed"</s><small>wrong conclusion</small></div>
+      </div>
+      <div class="v6-col">
+        <div class="v6-colhead">the actual fix</div>
+        <div class="v6-node">package settings</div>
+        <div class="v6-varrow"></div>
+        <div class="v6-node v6-fix">change visibility → public<small>one setting: the entire distance</small></div>
+        <div class="v6-varrow"></div>
+        <div class="v6-node v6-ok">anonymous pull succeeds</div>
+      </div>
+    </div>
+    <div class="v6-note"><b>the flip is once per package</b>; later pushes keep the visibility.</div>
+  </div>
+</div>
+</div>
+</body></html>

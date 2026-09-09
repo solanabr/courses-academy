@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: What each line of the derive becomes at runtime
+     purpose: make the compile-time mapping concrete so the derive stops feeling like magic
+     data: /// Pulse Station's Rust probe arm.  ->  the about line in --help #[derive(Parser)]                    ->  generates the whole parser at compile time #[command(version, about)]           ->  -V / --version and -h / --help flags enum Command { Probe {..}, Report }  ->  the Commands: list, one row per variant /// Probe one URL and print ...      ->  probe's one-line summary in the list url: String                          ->  required positional <URL>, presence-checked #[arg(long, default_value_t = 10)]   ->  --timeout flag, parsed to u64, default 10
+     prompt: Two-column annotated-code card. Left column is the Rust source lines exactly as in the data block; right column is the runtime behavior each line generates, connected by an arrow per row. Emphasize that the mapping happens at compile time.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:503px;right:-256px;top:62px;border-radius:58% 59% 63% 45% / 56% 57% 60% 59%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:497px;height:413px;bottom:-222px;left:-222px;border-radius:64% 51% 58% 57% / 41% 44% 49% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 48px 34px;}
+    .v01-cols{display:grid;grid-template-columns:600px 56px 1fr;column-gap:16px;margin:4px 0 10px;}
+    .v01-cols span{font:700 14px/1 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);}
+    .v01-row{display:grid;grid-template-columns:600px 56px 1fr;column-gap:16px;align-items:stretch;margin-bottom:9px;}
+    .v01-code{background:var(--surface-inverse);color:var(--stbr-cream);font:500 18px/1.25 var(--font-mono);padding:13px 18px;border-radius:10px;white-space:nowrap;overflow:hidden;display:flex;align-items:center;}
+    .v01-code .cm{color:#8fae97;}
+    .v01-mean{background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:10px;padding:11px 16px;font:400 17px/1.3 var(--font-body);color:var(--text-primary);display:flex;align-items:center;}
+    .v01-mean code{font-family:var(--font-mono);font-size:16px;}
+    .v01-arrc{display:flex;align-items:center;justify-content:center;}
+    .v01-arr{width:38px;height:2px;background:var(--stbr-emerald);position:relative;}
+    .v01-arr::after{content:"";position:absolute;right:-2px;top:-5px;border-left:9px solid var(--stbr-emerald);border-top:6px solid transparent;border-bottom:6px solid transparent;}
+    .v01-hl .v01-code{border:3px solid var(--stbr-yellow);padding:10px 15px;}
+    .v01-hl .v01-mean{background:rgba(255,210,63,.32);border:1px solid var(--stbr-yellow);font-weight:600;}
+    .v01-note{margin-top:12px;font:400 15px/1.3 var(--font-body);color:var(--text-secondary);}
+    .v01-note strong{color:var(--stbr-emerald);}
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">clap derive · demystified</div>
+    <h2 class="viz-title">what each line of the derive becomes at runtime</h2>
+    <div class="v01-cols"><span>your Rust source</span><span></span><span>what clap generates, at compile time</span></div>
+    <div class="v01-row">
+      <div class="v01-code"><span class="cm">/// Pulse Station's Rust probe arm.</span></div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span>the about line in <code>--help</code></span></div>
+    </div>
+    <div class="v01-row v01-hl">
+      <div class="v01-code">#[derive(Parser)]</div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span>generates the whole parser at compile time</span></div>
+    </div>
+    <div class="v01-row">
+      <div class="v01-code">#[command(version, about)]</div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span><code>-V</code>&nbsp;/&nbsp;<code>--version</code>&nbsp;and&nbsp;<code>-h</code>&nbsp;/&nbsp;<code>--help</code>&nbsp;flags</span></div>
+    </div>
+    <div class="v01-row">
+      <div class="v01-code">enum Command { Probe {..}, Report }</div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span>the <code>Commands:</code> list, one row per variant</span></div>
+    </div>
+    <div class="v01-row">
+      <div class="v01-code"><span class="cm">/// Probe one URL and print ...</span></div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span>probe's one-line summary in the list</span></div>
+    </div>
+    <div class="v01-row">
+      <div class="v01-code">url: String</div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span>required positional <code>&lt;URL&gt;</code>, presence-checked</span></div>
+    </div>
+    <div class="v01-row">
+      <div class="v01-code">#[arg(long, default_value_t = 10)]</div>
+      <div class="v01-arrc"><div class="v01-arr"></div></div>
+      <div class="v01-mean"><span><code>--timeout</code> flag, parsed to <code>u64</code>, default 10</span></div>
+    </div>
+    <div class="v01-note"><strong>every arrow fires at cargo build</strong>; by the time the binary runs, the parser on the right already exists. No reflection, no runtime magic.</div>
+  </div>
+</div>
+</body></html>

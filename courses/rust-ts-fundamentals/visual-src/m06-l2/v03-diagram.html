@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Image, container, layer, registry: the one diagram to keep
+     purpose: fix the relationship between the four nouns before the reader ever writes a Dockerfile
+     data: Registry (Docker Hub): stores images, serves pulls Image: immutable stack of layers (base OS files -> toolchain -> your code -> metadata: CMD, EXPOSE, ENV) Container A, Container B: each = one running process + its own thin writable layer, both pointing at the SAME image Arrows: registry -pull-> local image cache; image -docker run-> container (one arrow per container) Tag: pulse-pollerd:naive labels one image
+     prompt: Layered architecture diagram. Left: registry cylinder holding stacked images. Center: one image drawn as a stack of read-only layers with a metadata cap. Right: two containers, each a process box with a thin writable layer, both connected by arrows back to the single image. Label the pull arrow and the two docker run arrows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:530px;top:-285px;right:-285px;border-radius:36% 40% 47% 47% / 37% 65% 62% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:562px;height:419px;left:-333px;top:222px;border-radius:39% 45% 47% 49% / 39% 60% 51% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v03-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 40px;}
+    .v03-sec{font-family:var(--font-display);font-weight:800;font-size:17px;text-transform:uppercase;
+             letter-spacing:.06em;color:var(--text-secondary);margin-bottom:10px;text-align:center;}
+    .v03-reg{background:var(--surface-inverse);border-radius:60px 60px 24px 24px;padding:22px 24px 20px;
+             width:300px;display:flex;flex-direction:column;gap:10px;}
+    .v03-regimg{background:var(--stbr-dark-700);border:1.5px solid var(--stbr-green);border-radius:var(--radius-md);
+                color:var(--stbr-cream);font-family:var(--font-mono);font-size:14.5px;padding:9px 12px;text-align:center;}
+    .v03-layer{border-radius:var(--radius-md);font-family:var(--font-body);font-size:16.5px;
+               padding:13px 18px;text-align:center;}
+    .v03-cont{background:var(--surface-card);border:2.5px solid var(--stbr-emerald);border-radius:var(--radius-xl);
+              padding:16px 20px;width:330px;}
+    .v03-ct{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-primary);margin-bottom:8px;}
+    .v03-proc{background:var(--surface-paper);border:1.5px solid var(--border-strong);border-radius:var(--radius-md);
+              font-family:var(--font-body);font-size:15px;color:var(--text-primary);padding:9px 12px;text-align:center;}
+    .v03-wr{background:var(--surface-accent);color:var(--text-on-accent);border-radius:var(--radius-md);
+            font-family:var(--font-body);font-weight:700;font-size:14.5px;padding:7px 12px;text-align:center;margin-top:8px;}
+    .v03-albl{font-family:var(--font-body);font-weight:700;font-size:15px;color:var(--stbr-emerald);
+              background:var(--surface-card);border:1.5px solid var(--stbr-emerald);border-radius:var(--radius-pill);
+              padding:3px 12px;}
+  </style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">FOUR NOUNS, ONE PICTURE</div>
+    <h2 class="viz-title">image, container, layer, registry: the one diagram to keep</h2>
+    <div style="display:flex;align-items:center;gap:0;margin-top:18px;">
+
+      <div style="flex:none;">
+        <div class="v03-sec">registry: Docker Hub</div>
+        <div class="v03-reg">
+          <div style="font-family:var(--font-body);font-size:14px;color:var(--stbr-cream-200);text-align:center;margin-bottom:2px;">stores images, serves pulls</div>
+          <div class="v03-regimg">image · image · image</div>
+          <div class="v03-regimg" style="border-color:var(--stbr-emerald);font-weight:700;">pulse-pollerd:naive</div>
+        </div>
+      </div>
+
+      <div style="flex:none;width:130px;display:flex;flex-direction:column;align-items:center;gap:6px;">
+        <div class="v03-albl">pull</div>
+        <svg width="130" height="14" style="display:block;"><line x1="0" y1="7" x2="114" y2="7" stroke="#008b4c" stroke-width="3"/><polygon points="128,7 112,0 112,14" fill="#008b4c"/></svg>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--text-muted);text-align:center;">into the local<br>image cache</div>
+      </div>
+
+      <div style="flex:none;">
+        <div class="v03-sec">image: immutable stack of layers</div>
+        <div style="width:360px;display:flex;flex-direction:column-reverse;border:2.5px solid var(--stbr-green);border-radius:var(--radius-xl);overflow:hidden;">
+          <div class="v03-layer" style="background:var(--surface-inverse);color:var(--text-on-dark);padding:17px 18px;">base OS files</div>
+          <div class="v03-layer" style="background:var(--surface-brand-deep);color:var(--text-on-brand);">toolchain</div>
+          <div class="v03-layer" style="background:var(--surface-brand);color:var(--text-on-brand);">your code</div>
+          <div class="v03-layer" style="background:var(--surface-paper);color:var(--text-primary);font-size:15px;">metadata cap · CMD, EXPOSE, ENV</div>
+        </div>
+        <div style="text-align:center;margin-top:10px;">
+          <span style="font-family:var(--font-mono);font-size:15px;background:var(--surface-inverse);color:var(--stbr-cream);border-radius:var(--radius-pill);padding:5px 16px;">tag: pulse-pollerd:naive</span>
+          <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-muted);margin-top:6px;">every layer read-only; the image never changes</div>
+        </div>
+      </div>
+
+      <div style="flex:none;width:130px;align-self:stretch;display:flex;align-items:center;">
+        <svg width="130" height="360" style="display:block;">
+          <line x1="0" y1="180" x2="106" y2="78" stroke="#1b231d" stroke-width="2.5"/>
+          <polygon points="118,68 100,72 110,86" fill="#1b231d"/>
+          <line x1="0" y1="180" x2="106" y2="282" stroke="#1b231d" stroke-width="2.5"/>
+          <polygon points="118,292 110,274 100,288" fill="#1b231d"/>
+          <rect x="18" y="52" width="94" height="24" rx="12" fill="#f5e8ca"/>
+          <text x="65" y="69" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#1b231d">docker run</text>
+          <rect x="18" y="284" width="94" height="24" rx="12" fill="#f5e8ca"/>
+          <text x="65" y="301" text-anchor="middle" font-family="Inter" font-size="14" font-weight="700" fill="#1b231d">docker run</text>
+        </svg>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:26px;">
+        <div class="v03-sec" style="margin-bottom:-10px;font-size:15px;">two containers, one shared image</div>
+        <div class="v03-cont">
+          <div class="v03-ct">container A</div>
+          <div class="v03-proc">one running process</div>
+          <div class="v03-wr">own thin writable layer</div>
+        </div>
+        <div class="v03-cont">
+          <div class="v03-ct">container B</div>
+          <div class="v03-proc">one running process</div>
+          <div class="v03-wr">own thin writable layer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

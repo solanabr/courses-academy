@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Three ways to type a config literal
+     purpose: make the widening difference visible at the exact line where developers choose wrong
+     data: Line A: const cfg = { fleetName: "pulse-dev"... }  // inferred: fleetName is "pulse-dev"; NOT checked against FleetConfig Line B: const cfg: FleetConfig = { fleetName: "pulse-dev"... }  // checked; but fleetName widens to string Line C: const cfg = { fleetName: "pulse-dev"... } satisfies FleetConfig  // checked; fleetName stays "pulse-dev" Callout on B: "the compiler forgot what you wrote" Callout on C: "checked AND narrow: both wins"
+     prompt: Three stacked code lines as listed, each with a right-side annotation chip showing the hover type of fleetName and whether shape-checking happened (cross or check mark for each of the two properties: checked, narrow). Line C visually favored.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:492px;height:432px;right:-315px;top:305px;border-radius:44% 44% 48% 59% / 60% 52% 44% 64%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:549px;height:463px;bottom:-275px;left:-275px;border-radius:59% 42% 36% 42% / 64% 64% 36% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:28px;padding:44px 56px 40px;}
+  .panel{margin-top:24px;background:var(--surface-inverse);border-radius:20px;padding:12px 34px;}
+  .crow{display:flex;align-items:center;gap:26px;padding:22px 14px;}
+  .crow + .crow{border-top:1px solid rgba(245,232,202,.14);}
+  .crow.fav{background:rgba(255,210,63,.08);border-left:4px solid var(--stbr-yellow);border-radius:10px;padding-left:24px;}
+  .badge{flex:none;width:40px;height:40px;border-radius:50%;border:2px solid rgba(245,232,202,.5);display:flex;align-items:center;justify-content:center;font:900 18px/1 var(--font-display);color:var(--stbr-cream);}
+  .fav .badge{background:var(--stbr-yellow);border-color:var(--stbr-yellow);color:var(--stbr-dark);}
+  .code{flex:1;font:500 16.5px/1.5 var(--font-mono);color:var(--stbr-cream);}
+  .code .kw{font-weight:700;text-decoration:underline;}
+  .code .win{font-weight:700;color:var(--stbr-yellow);}
+  .ann{flex:none;width:430px;display:flex;flex-direction:column;gap:8px;}
+  .hov{align-self:flex-start;font:600 13px/1.4 var(--font-mono);color:var(--stbr-cream);background:rgba(245,232,202,.1);border:1px solid rgba(245,232,202,.3);border-radius:7px;padding:4px 11px;}
+  .hov b{color:rgba(245,232,202,.6);font-weight:500;font-family:var(--font-body);font-size:11.5px;margin-right:6px;}
+  .pills{display:flex;gap:8px;}
+  .p{font:700 12px/1.2 var(--font-body);letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:5px 13px;}
+  .p.yes{background:var(--stbr-emerald);color:var(--stbr-cream);}
+  .p.no{border:1.5px dashed rgba(245,232,202,.4);color:rgba(245,232,202,.55);padding:3.5px 11.5px;}
+  .fav .p.yes{background:var(--stbr-yellow);color:var(--stbr-dark);}
+  .note{font:600 13px/1.4 var(--font-body);color:rgba(245,232,202,.65);}
+  .fav .note{color:var(--stbr-yellow);font-weight:700;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">where the widening happens</div>
+  <h2 class="viz-title">three ways to type a config literal</h2>
+  <div class="panel">
+    <div class="crow">
+      <div class="badge">A</div>
+      <div class="code">const cfg = { fleetName: "pulse-dev", … }</div>
+      <div class="ann">
+        <div class="hov"><b>hover</b>fleetName: "pulse-dev"</div>
+        <div class="pills"><span class="p no">not checked</span><span class="p yes">stays narrow</span></div>
+        <div class="note">nothing was checked against FleetConfig</div>
+      </div>
+    </div>
+    <div class="crow">
+      <div class="badge">B</div>
+      <div class="code">const cfg<span class="kw">: FleetConfig</span> = { fleetName: "pulse-dev", … }</div>
+      <div class="ann">
+        <div class="hov"><b>hover</b>fleetName: string</div>
+        <div class="pills"><span class="p yes">shape-checked</span><span class="p no">widens</span></div>
+        <div class="note">"the compiler forgot what you wrote"</div>
+      </div>
+    </div>
+    <div class="crow fav">
+      <div class="badge">C</div>
+      <div class="code">const cfg = { fleetName: "pulse-dev", … } <span class="win">satisfies FleetConfig</span></div>
+      <div class="ann">
+        <div class="hov"><b>hover</b>fleetName: "pulse-dev"</div>
+        <div class="pills"><span class="p yes">shape-checked</span><span class="p yes">stays narrow</span></div>
+        <div class="note">checked AND narrow: both wins</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Three shapes of a prober
+     purpose: name what the sleep-loop script still lacks before the lesson builds the real daemon
+     data: columns: one-shot CLI (m05-l3) | sleep-loop script (you, 90 seconds ago) | the daemon this lesson builds runs without being invoked: no | yes | yes holds its 30s schedule with 40 slow targets: n/a | no (worst case 80s sweep) | yes (probes run concurrently) answerable while running: no | no | yes (GET /status on port 8080) new dependencies: none | none | tokio + axum + async reqwest
+     prompt: Three-column comparison card with four rows as listed. Render yes/no as check and cross marks, keep the "80s sweep" and "GET /status" details as small annotations in their cells. Highlight the rightmost column header.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:451px;height:360px;right:-234px;top:403px;border-radius:52% 63% 44% 38% / 58% 39% 57% 54%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:370px;height:472px;bottom:-295px;left:765px;border-radius:57% 43% 45% 43% / 44% 49% 40% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v01-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 36px 50px 32px; }
+    .v01-grid { display: grid; grid-template-columns: 330px 1fr 1fr 1fr; margin-top: 14px;
+                border: 2px solid var(--border-strong); border-radius: var(--radius-xl); overflow: hidden; }
+    .v01-hcell { font-family: var(--font-display); font-weight: var(--weight-black); font-size: 20px;
+                 text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 18px 12px;
+                 background: var(--surface-inverse); color: var(--stbr-cream); border-left: 1px solid rgba(245,232,202,0.25); }
+    .v01-hcell small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 14px;
+                       text-transform: none; letter-spacing: 0; opacity: 0.75; margin-top: 3px; }
+    .v01-hcell.v01-hero { background: var(--stbr-yellow); color: var(--stbr-dark); }
+    .v01-hcell.v01-hero small { opacity: 0.8; }
+    .v01-hcell.v01-corner { background: var(--surface-inverse); border-left: none; }
+    .v01-label { font-family: var(--font-body); font-weight: 600; font-size: 18px; color: var(--text-primary);
+                 padding: 15px 18px; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; }
+    .v01-cell { padding: 15px 18px; border-top: 1px solid var(--border-subtle); border-left: 1px solid var(--border-subtle);
+                display: flex; align-items: center; gap: 10px; font-family: var(--font-body); font-size: 17px; color: var(--text-secondary); }
+    .v01-cell.v01-herocol { background: #fff8dd; }
+    .v01-mark { flex: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center;
+                justify-content: center; font-family: var(--font-body); font-weight: 700; font-size: 17px; }
+    .v01-yes { background: var(--stbr-emerald); color: #ffffff; }
+    .v01-no  { background: #ffffff; color: var(--stbr-dark); border: 2px solid var(--border-strong); }
+    .v01-na  { background: var(--surface-paper); color: var(--text-muted); border: 1px solid var(--border-subtle); }
+    .v01-cell b { color: var(--text-primary); font-weight: 600; }
+    .v01-cell .v01-sub { display: block; font-size: 14px; color: var(--text-muted); margin-top: 1px; }
+    .v01-mono { font-family: var(--font-mono); font-size: 15px; }
+    .v01-verdict { margin-top: 22px; background: var(--surface-brand); color: var(--stbr-cream);
+                   border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-display);
+                   font-weight: 800; font-size: 23px; text-align: center; }
+  </style>
+  <div class="v01-card">
+    <div class="stbr-eyebrow">before the daemon</div>
+    <h2 class="viz-title">three shapes of a prober</h2>
+    <div class="v01-grid">
+      <div class="v01-hcell v01-corner">&nbsp;</div>
+      <div class="v01-hcell">one-shot CLI<small>m05-l3</small></div>
+      <div class="v01-hcell">sleep-loop script<small>you, 90 seconds ago</small></div>
+      <div class="v01-hcell v01-hero">the daemon<small>this lesson builds it</small></div>
+
+      <div class="v01-label">runs without being invoked</div>
+      <div class="v01-cell"><span class="v01-mark v01-no">&#10005;</span><b>no</b></div>
+      <div class="v01-cell"><span class="v01-mark v01-yes">&#10003;</span><b>yes</b></div>
+      <div class="v01-cell v01-herocol"><span class="v01-mark v01-yes">&#10003;</span><b>yes</b></div>
+
+      <div class="v01-label">holds its 30s schedule with 40 slow targets</div>
+      <div class="v01-cell"><span class="v01-mark v01-na">&minus;</span>n/a</div>
+      <div class="v01-cell"><span class="v01-mark v01-no">&#10005;</span><span><b>no</b><span class="v01-sub">worst case: 80s sweep</span></span></div>
+      <div class="v01-cell v01-herocol"><span class="v01-mark v01-yes">&#10003;</span><span><b>yes</b><span class="v01-sub">probes run concurrently</span></span></div>
+
+      <div class="v01-label">answerable while running</div>
+      <div class="v01-cell"><span class="v01-mark v01-no">&#10005;</span><b>no</b></div>
+      <div class="v01-cell"><span class="v01-mark v01-no">&#10005;</span><b>no</b></div>
+      <div class="v01-cell v01-herocol"><span class="v01-mark v01-yes">&#10003;</span><span><b>yes</b><span class="v01-sub v01-mono">GET /status &#183; port 8080</span></span></div>
+
+      <div class="v01-label">new dependencies</div>
+      <div class="v01-cell">none</div>
+      <div class="v01-cell">none</div>
+      <div class="v01-cell v01-herocol"><span class="v01-mono"><b>tokio + axum + async reqwest</b></span></div>
+    </div>
+    <div class="v01-verdict">the loop script only schedules; the daemon keeps its schedule and answers while it runs</div>
+  </div>
+</div>
+</body></html>

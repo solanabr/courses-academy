@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two MSRV contracts, both correct
+     purpose: contrast the app stance and the library stance using two live manifests
+     data: agave (application, validator client): rust-version = "1.98.0", current stable exactly, controls its own build environment, takes new std APIs immediately, excludes older toolchains and does not care carbon (library, indexer framework): rust-version = "1.82", sixteen releases behind stable, runs on strangers' toolchains, welcomes old environments, forbids itself newer std APIs both probed from live manifests 2026-09-02
+     prompt: Two-column comparison card. Left column headed with the application stance showing the agave manifest line and three short consequence rows. Right column headed with the library stance showing the carbon manifest line and three mirrored consequence rows. A single caption row underneath stating that both are deliberate contracts and naming the probe date.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:446px;top:-229px;right:-229px;border-radius:58% 38% 45% 54% / 45% 56% 42% 51%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:521px;height:513px;bottom:-288px;left:559px;border-radius:65% 44% 37% 56% / 52% 64% 65% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-col  { flex:1; background:var(--surface-card); border:1px solid var(--border-subtle);
+                border-radius:var(--radius-2xl); padding:0; overflow:hidden; }
+    .v05-head { background:var(--surface-brand-deep); padding:16px 26px; }
+    .v05-head h3 { font-family:var(--font-display); font-weight:var(--weight-black);
+                font-size:26px; color:var(--stbr-cream); margin:0; }
+    .v05-head span { font-family:var(--font-body); font-size:14px; color:var(--stbr-cream); opacity:0.85; }
+    .v05-body { padding:20px 26px; }
+    .v05-mline { font-family:var(--font-mono); font-size:19px; font-weight:700;
+                color:var(--text-primary); background:#FFF6D6; border:2px solid var(--stbr-yellow);
+                border-radius:var(--radius-md); padding:9px 16px; display:inline-block; }
+    .v05-sub  { font-family:var(--font-body); font-size:14px; color:var(--text-muted); margin:8px 0 14px; }
+    .v05-row  { font-family:var(--font-body); font-size:16px; color:var(--text-primary);
+                border-top:1px solid var(--border-subtle); padding:11px 0; display:flex; gap:10px; }
+    .v05-tick { color:var(--stbr-emerald); font-weight:800; }
+  </style>
+
+  <div class="stbr-eyebrow">app stance vs library stance</div>
+  <h2 class="viz-title">two MSRV contracts, both correct</h2>
+
+  <div style="display:flex; gap:32px;">
+    <div class="v05-col">
+      <div class="v05-head"><h3>the application</h3><span>agave: validator client</span></div>
+      <div class="v05-body">
+        <span class="v05-mline">rust-version = "1.98.0"</span>
+        <div class="v05-sub">current stable, exactly</div>
+        <div class="v05-row"><span class="v05-tick">→</span>controls its own build environment</div>
+        <div class="v05-row"><span class="v05-tick">→</span>takes new std APIs immediately</div>
+        <div class="v05-row"><span class="v05-tick">→</span>excludes older toolchains, and does not care</div>
+      </div>
+    </div>
+
+    <div class="v05-col">
+      <div class="v05-head"><h3>the library</h3><span>carbon: indexer framework</span></div>
+      <div class="v05-body">
+        <span class="v05-mline">rust-version = "1.82"</span>
+        <div class="v05-sub">sixteen releases behind stable</div>
+        <div class="v05-row"><span class="v05-tick">→</span>runs on strangers' toolchains</div>
+        <div class="v05-row"><span class="v05-tick">→</span>welcomes old environments</div>
+        <div class="v05-row"><span class="v05-tick">→</span>forbids itself newer std APIs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- verdict band -->
+  <div style="margin-top:26px; background:var(--surface-brand); border-radius:var(--radius-xl);
+              padding:17px 28px; text-align:center;">
+    <span style="font-family:var(--font-display); font-weight:var(--weight-bold); font-size:19px; color:var(--stbr-cream);">
+      Both are deliberate contracts, not defaults.</span>
+    <span style="font-family:var(--font-body); font-size:15px; color:var(--stbr-cream); opacity:0.85;">
+      &nbsp;Probed from live manifests, 2026-09-02.</span>
+  </div>
+</div>
+</body></html>

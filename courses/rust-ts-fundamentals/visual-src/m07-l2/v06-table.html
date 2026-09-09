@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The gate fixture, verdict by verdict
+     purpose: freeze the three rows the acceptance test compares, so "identical" is a specific claim the reader can check before the edge ever runs
+     data: Columns: fixture name | latency_ms in fixture.json | verdict from native Rust via the CLI classify subcommand | verdict the edge WASM worker must return Row 1: solana-rpc | 180 | Up | Up Row 2: demo-api | 740 | Degraded | Degraded Row 3: dead-host | 4000 | Down | Down Footer: the comparison is on the serialized JSON line, not on the verdicts read aloud, so one differing byte fails the gate
+     prompt: Four-column table carrying the three fixture rows. Style the two verdict columns as a matched pair, same fill, joined per row by a thin equals motif to signal byte-for-byte agreement. Colour the verdict cells by severity: Up calm, Degraded warning, Down alarm. Render the footer as a full-width caption strip beneath the table.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:524px;height:495px;top:-255px;right:-255px;border-radius:65% 65% 38% 57% / 61% 51% 56% 58%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:443px;height:341px;left:-267px;top:319px;border-radius:44% 59% 56% 51% / 63% 63% 44% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 38px 52px 40px; }
+    .tbl { display: grid; grid-template-columns: 300px 230px 1fr 78px 1fr;
+           border: 2px solid var(--border-strong); border-radius: var(--radius-xl);
+           overflow: hidden; margin-top: 8px; }
+    .th { background: var(--surface-inverse); color: var(--stbr-cream);
+          font-family: var(--font-display); font-weight: 800; font-size: 16.5px;
+          letter-spacing: 0.04em; padding: 14px 20px; }
+    .th small { display: block; font-family: var(--font-body); font-weight: 400;
+                font-size: 12.5px; opacity: 0.75; margin-top: 2px; letter-spacing: 0; }
+    .td { padding: 16px 20px; border-bottom: 1px solid var(--border-subtle);
+          display: flex; align-items: center; font-family: var(--font-body);
+          font-size: 17px; color: var(--stbr-dark); }
+    .fx { font-family: var(--font-mono); font-weight: 700; font-size: 18px; }
+    .ms { font-family: var(--font-mono); font-size: 18px; }
+    .v { font-family: var(--font-display); font-weight: 800; font-size: 19px;
+         justify-content: center; }
+    .v-up { background: rgba(0, 139, 76, 0.14); color: var(--stbr-emerald); }
+    .v-deg { background: rgba(255, 210, 63, 0.5); color: var(--stbr-dark); }
+    .v-down { background: var(--surface-inverse); color: var(--stbr-cream); }
+    .eq { justify-content: center; padding: 0; }
+    .eq span { width: 40px; height: 40px; border-radius: 50%; background: var(--surface-card);
+               border: 2.5px solid var(--stbr-dark); color: var(--stbr-dark);
+               font-family: var(--font-display); font-weight: 900; font-size: 21px;
+               display: flex; align-items: center; justify-content: center; }
+    .last { border-bottom: none; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">the acceptance gate &middot; identical is a checkable claim</div>
+    <h2 class="viz-title" style="font-size:50px;">the gate fixture, verdict by verdict</h2>
+
+    <div class="tbl">
+      <div class="th">fixture</div>
+      <div class="th">latency_ms<small>in fixture.json</small></div>
+      <div class="th">native Rust verdict<small>via the CLI classify subcommand</small></div>
+      <div class="th" style="text-align:center;">must<small>match</small></div>
+      <div class="th">edge WASM verdict<small>what the worker must return</small></div>
+
+      <div class="td fx">solana-rpc</div>
+      <div class="td ms">180</div>
+      <div class="td v v-up">Up</div>
+      <div class="td eq"><span>=</span></div>
+      <div class="td v v-up">Up</div>
+
+      <div class="td fx">demo-api</div>
+      <div class="td ms">740</div>
+      <div class="td v v-deg">Degraded</div>
+      <div class="td eq"><span>=</span></div>
+      <div class="td v v-deg">Degraded</div>
+
+      <div class="td fx last">dead-host</div>
+      <div class="td ms last">4000</div>
+      <div class="td v v-down last">Down</div>
+      <div class="td eq last"><span>=</span></div>
+      <div class="td v v-down last">Down</div>
+    </div>
+
+    <div style="margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg);
+                padding:14px 24px;">
+      <p style="margin:0; font-family:var(--font-body); font-size:16.5px; color:var(--text-on-brand); line-height:1.4;">
+        the comparison runs on the <strong>serialized JSON line</strong>, not on the verdicts read aloud: one differing byte fails the gate.</p>
+    </div>
+  </div>
+</div>
+</body></html>

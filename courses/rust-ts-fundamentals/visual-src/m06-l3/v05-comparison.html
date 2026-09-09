@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Runtime bases for the poller, measured trade-offs only
+     purpose: let the reader defend the debian-slim default and know exactly what alpine and distroless would buy and cost
+     data: debian:trixie-slim: tens of MB heavier than alpine; glibc, no allocator penalty; apt available for ca-certificates and debugging; the cargo-chef README's own runtime choice and this course's default. alpine (musl): ~10MB base; default allocator can cost multi-threaded Rust an order of magnitude (~30x in Grove's 2020 benchmark, 2x-20x in later ones); static-vs-dynamic musl OpenSSL segfault risk unless you use rustls or vendored OpenSSL; for node, ~25% smaller than slim per the docker-node README, which also warns Debian-built glibc apps will not run under it. distroless (signpost only): no shell, no package manager; cuts attack surface AND cuts the shell you would debug with; the project's cc-flavored images are where compiled binaries would go, but its README stops short of a Rust recommendation, so this course names it and does not teach it.
+     prompt: Three-column comparison card labeled debian trixie slim, alpine musl, distroless. Rows: base size class, allocator behavior for multi-threaded Rust, TLS gotcha, debuggability, verdict. The debian column carries a small "course default" band. The distroless column rendered slightly muted with a "signposted, not taught" band. Attribute the 30x and 25% figures to their sources in-cell.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:503px;height:484px;top:-248px;right:-248px;border-radius:63% 58% 50% 64% / 62% 39% 61% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:538px;height:477px;left:-295px;top:244px;border-radius:59% 43% 63% 62% / 35% 64% 56% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v05-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 34px 52px 30px; overflow: hidden; position: relative; }
+  .v05-card .viz-title { font-size: 46px; margin: 4px 0 14px; }
+  .v05-grid { display: grid; grid-template-columns: 150px 398px 398px 398px; }
+  .v05-cell { padding: 9px 14px; border-bottom: 1px solid var(--border-subtle);
+              font-family: var(--font-body); font-size: 13.5px; line-height: 1.32;
+              color: var(--text-primary); }
+  .v05-rowlab { font-family: var(--font-display); font-weight: 800; font-size: 12px;
+                letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+                padding-top: 12px; }
+  .v05-colhead { font-family: var(--font-mono); font-size: 16px; font-weight: 700;
+                 color: var(--text-on-dark); background: var(--surface-inverse);
+                 padding: 11px 14px; border-bottom: none; }
+  .v05-colhead.v05-first { border-radius: var(--radius-md) 0 0 0; }
+  .v05-colhead.v05-last { border-radius: 0 var(--radius-md) 0 0; }
+  .v05-badge { display: inline-block; font-family: var(--font-display); font-weight: 900;
+               font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+               border-radius: var(--radius-pill); padding: 3px 10px; margin-left: 8px;
+               vertical-align: 2px; }
+  .v05-default { background: var(--stbr-yellow); color: var(--text-on-accent); }
+  .v05-signpost { background: var(--stbr-ink-500); color: var(--stbr-white); }
+  .v05-mute { color: var(--text-muted); }
+  .v05-debcol { background: var(--surface-paper); }
+  .v05-src { color: var(--text-muted); font-size: 12px; }
+  .v05-verdictcell { font-weight: 600; }
+  .v05-band { margin-top: 16px; background: var(--surface-brand); color: var(--text-on-brand);
+              border-radius: var(--radius-lg); padding: 13px 22px;
+              font-family: var(--font-body); font-size: 18px; }
+  .v05-band b { font-family: var(--font-mono); font-size: 17px; }
+</style>
+<div class="v05-card">
+  <div class="stbr-eyebrow">RUNTIME BASES · MEASURED TRADE-OFFS ONLY</div>
+  <h2 class="viz-title">defending the debian-slim default</h2>
+  <div class="v05-grid">
+    <div class="v05-cell"></div>
+    <div class="v05-cell v05-colhead v05-first">debian:trixie-slim<span class="v05-badge v05-default">course default</span></div>
+    <div class="v05-cell v05-colhead">alpine (musl)</div>
+    <div class="v05-cell v05-colhead v05-last v05-mute">distroless<span class="v05-badge v05-signpost">signposted, not taught</span></div>
+
+    <div class="v05-cell v05-rowlab">base size class</div>
+    <div class="v05-cell v05-debcol">tens of MB heavier than alpine</div>
+    <div class="v05-cell">~10 MB base · for node, ~25% smaller than slim <span class="v05-src">(docker-node README)</span></div>
+    <div class="v05-cell v05-mute">minimal: no distro userland</div>
+
+    <div class="v05-cell v05-rowlab">allocator, multi-threaded rust</div>
+    <div class="v05-cell v05-debcol">glibc: no allocator penalty</div>
+    <div class="v05-cell">default allocator can cost an order of magnitude: <b>~30x</b> <span class="v05-src">(Grove's 2020 benchmark)</span>, 2x to 20x <span class="v05-src">(later benchmarks, workload-dependent)</span></div>
+    <div class="v05-cell v05-mute">cc-flavored images are where compiled binaries would go</div>
+
+    <div class="v05-cell v05-rowlab">tls gotcha</div>
+    <div class="v05-cell v05-debcol">none flagged in this lesson</div>
+    <div class="v05-cell">static-vs-dynamic musl OpenSSL segfault risk, unless you use rustls or vendored OpenSSL</div>
+    <div class="v05-cell v05-mute">none flagged</div>
+
+    <div class="v05-cell v05-rowlab">debuggability</div>
+    <div class="v05-cell v05-debcol">apt available: ca-certificates + debugging tools</div>
+    <div class="v05-cell">shell + apk; docker-node README warns Debian-built glibc apps will not run under it</div>
+    <div class="v05-cell v05-mute">no shell, no package manager; cuts attack surface AND the shell you'd debug with</div>
+
+    <div class="v05-cell v05-rowlab">verdict</div>
+    <div class="v05-cell v05-debcol v05-verdictcell">the cargo-chef README's own runtime choice, and this course's default</div>
+    <div class="v05-cell v05-verdictcell">small, but every cost above is a measured number</div>
+    <div class="v05-cell v05-mute v05-verdictcell">its README stops short of a Rust recommendation, so this course names it and does not teach it</div>
+  </div>
+  <div class="v05-band">verdict: <b>debian:trixie-slim</b> stays the default; what alpine and distroless would buy and cost is measured above, not vibes.</div>
+</div>
+</div>
+</body></html>

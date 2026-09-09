@@ -1,0 +1,7 @@
+[
+  { "id": "t1", "input": "441936000, 300", "expectedOutput": "result === 'epoch 1023: 432000 slots / 36.0h remaining'", "description": "an exact epoch boundary at 300ms slots: a full epoch is 36 wall-clock hours" },
+  { "id": "t2", "input": "441937000, 300", "expectedOutput": "result === 'epoch 1023: 431000 slots / 35.9h remaining'", "description": "1,000 slots into the epoch, the clock ticks down" },
+  { "id": "t3", "input": "216000, 400", "expectedOutput": "result === 'epoch 0: 216000 slots / 24.0h remaining'", "description": "halfway through epoch 0 at the old 400ms cadence" },
+  { "id": "t4", "input": "864000, 400", "expectedOutput": "result === 'epoch 2: 432000 slots / 48.0h remaining'", "description": "at 400ms slots the same 432,000-slot epoch is 48 hours, not 36" },
+  { "id": "t5", "input": "432001, 300", "expectedOutput": "result === 'epoch 1: 431999 slots / 36.0h remaining'", "description": "one slot past a boundary rounds its hours display to 36.0" }
+]

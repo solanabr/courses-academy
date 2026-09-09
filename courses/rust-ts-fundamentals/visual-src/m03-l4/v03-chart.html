@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Downloads lag the truth by years
+     purpose: show that raw popularity kept flowing to tsup long after its README said stop, so absolute counts cannot be the health signal
+     data: weekly downloads, week ending 2026-08-29 (api.npmjs.org): tsup: 8,489,374 / last publish 2025-11-12 / README opens with a not-maintained warning naming tsdown tsdown: 5,654,810 / publishing actively, 0.23 release candidate tagged 2026-08-28 annotation: the abandoned incumbent still out-downloads its named successor ten months after its final release
+     prompt: Two horizontal bars comparing weekly downloads for tsup and tsdown, values labeled with the full numbers. The tsup bar carries a flag annotation quoting its README warning in shortened form: "not actively maintained, consider tsdown". Caption under the bars carries the annotation line from data. Include the week-ending date.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:502px;height:421px;right:-261px;top:247px;border-radius:45% 48% 41% 50% / 53% 62% 48% 64%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:574px;height:512px;bottom:-316px;left:-316px;border-radius:58% 39% 43% 52% / 55% 55% 56% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 48px 44px;">
+    <div class="stbr-eyebrow">weekly downloads &middot; week ending 2026-08-29</div>
+    <h2 class="viz-title">downloads lag the truth by years</h2>
+    <!-- tsup row: the highlighted bar (the point of the chart) -->
+    <div style="display:flex;align-items:flex-start;gap:24px;margin-top:10px;">
+      <div style="flex:0 0 170px;padding-top:14px;">
+        <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--text-primary);">tsup</div>
+        <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);margin-top:6px;line-height:1.4;">last publish<br>2025-11-12</div>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="width:880px;height:64px;background:var(--stbr-yellow);border-radius:var(--radius-md);display:flex;align-items:center;padding-left:20px;">
+            <span style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--text-on-accent);">8,489,374</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+          <svg width="18" height="26" viewBox="0 0 18 26"><line x1="2" y1="0" x2="2" y2="26" stroke="#1B231D" stroke-width="3"/><polygon points="4,1 17,6 4,11" fill="#1B231D"/></svg>
+          <div style="font-family:var(--font-body);font-size:15px;color:var(--text-primary);line-height:1.4;">README, top of the page: <span style="font-weight:700;">&ldquo;not actively maintained, consider tsdown&rdquo;</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- tsdown row -->
+    <div style="display:flex;align-items:flex-start;gap:24px;margin-top:30px;">
+      <div style="flex:0 0 170px;padding-top:14px;">
+        <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--text-primary);">tsdown</div>
+        <div style="font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);margin-top:6px;line-height:1.4;">publishing actively</div>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="width:586px;height:64px;background:var(--stbr-emerald);border-radius:var(--radius-md);display:flex;align-items:center;padding-left:20px;">
+            <span style="font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--text-on-brand);">5,654,810</span>
+          </div>
+        </div>
+        <div style="font-family:var(--font-body);font-size:15px;color:var(--text-primary);margin-top:10px;line-height:1.4;">0.23 release candidate tagged 2026-08-28</div>
+      </div>
+    </div>
+    <!-- caption -->
+    <div style="margin-top:34px;border-top:1px solid var(--border-subtle);padding-top:18px;display:flex;justify-content:space-between;align-items:baseline;gap:24px;">
+      <div style="font-family:var(--font-display);font-size:19px;font-weight:800;color:var(--stbr-emerald);line-height:1.4;">the abandoned incumbent still out-downloads its named successor ten months after its final release</div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);white-space:nowrap;">api.npmjs.org</div>
+    </div>
+  </div>
+</div>
+</body></html>

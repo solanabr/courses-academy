@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: What you would rebuild elsewhere, and what you would not
+     purpose: separate the portable part of the ship (static files any host serves) from the loop Vercel actually sells, so the platform choice is understood as a workflow choice
+     data: portable anywhere: dist/ static files -> any static host on earth serves them the loop you would rebuild: git push -> platform builds -> CDN deploy -> URL updates, plus env-var plumbing and preview deploys the honest boundary: Hobby edges (non-commercial, solo, personal repo) -> Pro at $20/seat/month when a real product outgrows them
+     prompt: Two-column comparison. Left column labeled as the portable part: a dist folder icon flowing to a generic server icon. Right column labeled as the loop: a four-node chain from git push to a live URL with env-var and preview-deploy chips attached. A footer band notes the Hobby-to-Pro boundary. Monospace for commands and paths.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:527px;height:519px;top:-275px;right:-275px;border-radius:44% 40% 50% 60% / 43% 39% 55% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:540px;height:485px;bottom:-260px;left:-260px;border-radius:48% 39% 62% 55% / 55% 63% 37% 43%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { display:grid; grid-template-columns:1fr 1.25fr; gap:24px; margin-top:10px;
+         align-items:stretch; }
+  .col { background:var(--surface-card); border:2px solid var(--border-subtle);
+         border-radius:var(--radius-2xl); padding:24px 28px; display:flex;
+         flex-direction:column; }
+  .col-head { border-radius:var(--radius-lg); padding:12px 18px; margin-bottom:20px;
+              font-family:var(--font-display); font-weight:900; font-size:23px; line-height:1.1; }
+  .col-head.plain { background:var(--surface-paper); border:1.5px solid var(--border-strong);
+                    color:var(--text-primary); }
+  .col-head.loop { background:var(--stbr-yellow); border:2px solid var(--stbr-dark);
+                   color:var(--stbr-dark); }
+  .cnode { border-radius:var(--radius-lg); padding:13px 18px; text-align:center;
+           font-family:var(--font-body); font-weight:700; font-size:17.5px;
+           color:var(--text-primary); background:var(--surface-paper);
+           border:1.5px solid var(--border-strong); }
+  .cnode code, .mono { font-family:var(--font-mono); font-weight:700; }
+  .varr { text-align:center; height:22px; }
+  .porta { display:flex; flex-direction:column; justify-content:center; flex:1; }
+  .porta .cnode.big { padding:22px 18px; font-size:19px; }
+  .porta .sub { font-family:var(--font-body); font-weight:600; font-size:14.5px;
+                color:var(--text-secondary); text-align:center; margin-top:14px; line-height:1.4; }
+  .loopwrap { display:flex; gap:18px; flex:1; }
+  .chain { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .extras { flex:0 0 190px; display:flex; flex-direction:column; gap:12px; justify-content:center; }
+  .extra { background:rgba(0,139,76,.08); border:1.5px solid var(--stbr-emerald);
+           border-radius:var(--radius-pill); padding:9px 14px; text-align:center;
+           font-family:var(--font-body); font-weight:700; font-size:14px;
+           color:var(--stbr-green); }
+  .verdict { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand);
+             border-radius:var(--radius-xl); padding:17px 28px;
+             font-family:var(--font-body); font-weight:700; font-size:17.5px; line-height:1.4; }
+  .verdict b { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">a platform choice is a workflow choice</div>
+  <h2 class="viz-title">what you would rebuild elsewhere, and what you would not</h2>
+  <div class="cmp">
+    <div class="col">
+      <div class="col-head plain">portable anywhere</div>
+      <div class="porta">
+        <div class="cnode big"><code>dist/</code>: static files</div>
+        <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+        <div class="cnode big">any static host on earth serves them</div>
+        <div class="sub">the artifact owes Vercel nothing; it is just files</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-head loop">the loop you would rebuild</div>
+      <div class="loopwrap">
+        <div class="chain">
+          <div class="cnode"><code>git push</code></div>
+          <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+          <div class="cnode">platform builds</div>
+          <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+          <div class="cnode">CDN deploy</div>
+          <div class="varr"><svg width="16" height="22"><line x1="8" y1="2" x2="8" y2="12" stroke="#306c40" stroke-width="2.5"/><polygon points="8,20 2,10 14,10" fill="#306c40"/></svg></div>
+          <div class="cnode">URL updates</div>
+        </div>
+        <div class="extras">
+          <div class="extra">env-var plumbing</div>
+          <div class="extra">preview deploys</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">the honest boundary: <b>Hobby</b> edges at non-commercial, solo, personal-repo use; <b>Pro at $20/seat/month</b> when a real product outgrows them.</div>
+</div>
+</body></html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Vanity check versus payload check
+     purpose: contrast the check that proves transport with the check that proves the claim, so the learner authors the second kind eight times
+     data: Vanity check: curl -f on the raw status.json URL. Passes when: the CDN has any cached copy, even 3 days old. Actually proves: DNS resolves, a cache answered. Failure it misses: the cron died last Tuesday. Payload check: fetch, parse, compare generatedAt against a 60-minute threshold. Passes when: the data itself is younger than two cron beats. Actually proves: the heartbeat committed recently. Failure it misses: almost none for this edge. Shared trait worth keeping from both: exit code carries the verdict, so a harness can compose them.
+     prompt: Two stacked cards, vanity check above payload check, each with three labeled rows for what it runs, what it actually proves, and the failure it misses. Highlight the missed failure row on the vanity card. A single footer strip notes that both correctly use exit codes. Flat styling, no icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:389px;right:-292px;top:356px;border-radius:62% 51% 53% 59% / 62% 45% 49% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:510px;bottom:-258px;left:-258px;border-radius:49% 62% 36% 65% / 57% 59% 64% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card02{background:var(--surface-card);border-radius:var(--radius-2xl);padding:32px 44px 36px;position:relative;}
+    .panel02{border:2px solid var(--stbr-green);border-radius:16px;overflow:hidden;margin-top:16px;}
+    .phead02{display:flex;justify-content:space-between;align-items:baseline;background:var(--surface-brand);color:var(--stbr-cream);padding:11px 20px;}
+    .phead02 b{font-family:var(--font-display);font-weight:800;font-size:21px;}
+    .phead02 code{font-family:var(--font-mono);font-size:14.5px;color:var(--stbr-cream);opacity:.92;}
+    .prow02{display:flex;border-top:1px solid var(--border-subtle);}
+    .plab02{flex:0 0 240px;padding:9px 20px;font:700 12.5px/1.35 var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+    .pval02{flex:1;padding:9px 20px;font:400 15.5px/1.35 var(--font-body);color:var(--text-primary);}
+    .miss02{background:#FFF3C4;}
+    .miss02 .plab02,.miss02 .pval02{color:var(--stbr-dark);font-weight:600;}
+    .verdict02{margin-top:16px;background:var(--surface-brand);color:var(--stbr-cream);border-radius:12px;padding:13px 20px;font:600 16.5px/1.35 var(--font-body);}
+  </style>
+  <div class="card02">
+    <div class="stbr-eyebrow">check design</div>
+    <h2 class="viz-title">the transport check vs the claim check</h2>
+    <div class="panel02">
+      <div class="phead02"><b>vanity check</b><code>curl -f &lt;raw status.json URL&gt;</code></div>
+      <div class="prow02"><div class="plab02">passes when</div><div class="pval02">the CDN has any cached copy, even one that is 3 days old</div></div>
+      <div class="prow02"><div class="plab02">actually proves</div><div class="pval02">DNS resolves, a cache answered</div></div>
+      <div class="prow02 miss02"><div class="plab02">the failure it misses</div><div class="pval02">the cron died last Tuesday</div></div>
+    </div>
+    <div class="panel02">
+      <div class="phead02"><b>payload check</b><code>fetch &#8594; parse &#8594; generatedAt vs 60-min threshold</code></div>
+      <div class="prow02"><div class="plab02">passes when</div><div class="pval02">the data itself is younger than two cron beats</div></div>
+      <div class="prow02"><div class="plab02">actually proves</div><div class="pval02">the heartbeat committed recently</div></div>
+      <div class="prow02"><div class="plab02">the failure it misses</div><div class="pval02">almost none, for this edge</div></div>
+    </div>
+    <div class="verdict02">worth keeping from both: the exit code carries the verdict, so a harness can compose them.</div>
+  </div>
+</div>
+</body></html>

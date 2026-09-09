@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: pulse-edge-ts vs pulse-edge-rs, same contract, different suppliers
+     purpose: make the language tradeoff legible on fixed axes instead of vibes
+     data: axis: deploy command | TS: npx wrangler deploy | Rust: npx wrangler deploy (identical) axis: build step | TS: bundle TS -> JS | Rust: worker-build (cargo + wasm-bindgen + wasm-opt) axis: SDK maturity | TS: platform-native types | Rust: worker 0.8 line, pre-1.0, pinned minor axis: I/O libraries | TS: platform fetch | Rust: platform fetch via worker crate; tokio/reqwest stay home axis: shared logic | TS: pulse-core (pure TS) | Rust: pulse-engine (pure Rust, byte-identical verdicts) axis: when it wins | TS: glue-around-fetch workers | Rust: when the shared core IS the value
+     prompt: A two-column comparison card with six labeled rows. The deploy-command row spans both columns as one merged cell to emphasize identity. Every other row shows the two cells side by side. The final row is highlighted as the decision rule.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:540px;height:503px;bottom:-318px;right:-318px;border-radius:56% 60% 46% 59% / 38% 45% 56% 35%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:507px;height:393px;left:-281px;top:258px;border-radius:65% 62% 53% 60% / 41% 58% 46% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl);
+            padding: 38px 52px 40px; }
+    .cmp { display: grid; grid-template-columns: 240px 1fr 1fr; margin-top: 8px;
+           border: 2px solid var(--border-strong); border-radius: var(--radius-xl);
+           overflow: hidden; }
+    .hd { background: var(--surface-inverse); color: var(--stbr-cream);
+          font-family: var(--font-display); font-weight: 800; font-size: 21px;
+          padding: 14px 22px; }
+    .ax { font-family: var(--font-display); font-weight: 800; font-size: 15.5px;
+          letter-spacing: 0.05em; text-transform: uppercase; color: var(--stbr-green);
+          padding: 13px 22px; border-bottom: 1px solid var(--border-subtle);
+          border-right: 1px solid var(--border-subtle); display: flex; align-items: center; }
+    .cell { font-family: var(--font-body); font-size: 16.5px; color: var(--stbr-dark);
+            padding: 13px 22px; border-bottom: 1px solid var(--border-subtle);
+            line-height: 1.35; display: flex; align-items: center; }
+    .cell.mid { border-right: 1px solid var(--border-subtle); }
+    .mono { font-family: var(--font-mono); font-weight: 700; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">same contract, different suppliers</div>
+    <h2 class="viz-title" style="font-size:50px;">pulse-edge-ts vs pulse-edge-rs</h2>
+
+    <div class="cmp">
+      <div class="hd" style="background:var(--surface-brand);"></div>
+      <div class="hd" style="border-right:1px solid var(--stbr-green);">pulse-edge-ts</div>
+      <div class="hd">pulse-edge-rs</div>
+
+      <div class="ax">deploy command</div>
+      <div class="cell" style="grid-column: 2 / 4; background: var(--surface-brand);
+                               color: var(--text-on-brand); justify-content: center;">
+        <span class="mono" style="font-size:18px;">npx wrangler deploy</span>
+        <span style="margin-left:14px; font-family:var(--font-display); font-weight:800;">identical, on purpose</span>
+      </div>
+
+      <div class="ax">build step</div>
+      <div class="cell mid">bundle TS &rarr; JS</div>
+      <div class="cell"><span class="mono" style="font-weight:600;">worker-build</span>&nbsp;(cargo + wasm-bindgen + wasm-opt)</div>
+
+      <div class="ax">SDK maturity</div>
+      <div class="cell mid">platform-native types</div>
+      <div class="cell"><span class="mono" style="font-weight:600;">worker</span>&nbsp;0.8 line: pre-1.0, pinned minor</div>
+
+      <div class="ax">I/O libraries</div>
+      <div class="cell mid">platform fetch</div>
+      <div class="cell">platform fetch via the worker crate; tokio / reqwest stay home</div>
+
+      <div class="ax">shared logic</div>
+      <div class="cell mid"><span class="mono" style="font-weight:600;">pulse-core</span>&nbsp;(pure TS)</div>
+      <div class="cell"><span class="mono" style="font-weight:600;">pulse-engine</span>&nbsp;(pure Rust, byte-identical verdicts)</div>
+
+      <div class="ax" style="background:var(--stbr-yellow); border-bottom:none; color:var(--stbr-dark);">when it wins</div>
+      <div class="cell mid" style="background:var(--stbr-yellow); border-bottom:none; font-weight:700;">glue-around-fetch workers</div>
+      <div class="cell" style="background:var(--stbr-yellow); border-bottom:none; font-weight:700;">when the shared core IS the value</div>
+    </div>
+
+    <p style="margin:16px 0 0; font-family:var(--font-body); font-size:15px; color:var(--text-secondary);">
+      the last row is the decision rule; everything above it is the cost you pay to get there.</p>
+  </div>
+</div>
+</body></html>

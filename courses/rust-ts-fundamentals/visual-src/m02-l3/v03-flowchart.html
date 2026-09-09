@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The worker pool: one queue, N loops, bounded in-flight work
+     purpose: make the pool's mechanism concrete so learners can rebuild it from memory
+     data: Shared queue: targets[0..49] with a "next" cursor. 5 worker loops, each: take index -> probe (await, suspended) -> store reports[i] -> loop. Join at the bottom: Promise.all(workers) -> reports[] (one typed result per target). Invariant callout: "at most 5 probes in flight, ever".
+     prompt: Vertical flowchart. Top: a horizontal array strip labeled targets with a cursor marker named next. Below it, five identical small loop boxes side by side, each with the three steps take, probe, store and a loop-back arrow. All five point down into one join node labeled Promise.all(workers), which points to a results array. A side callout states the invariant from data. Keep the five loops visually identical.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:446px;height:386px;right:-265px;top:190px;border-radius:51% 40% 64% 47% / 61% 53% 58% 50%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:368px;height:476px;bottom:-296px;left:705px;border-radius:54% 63% 63% 39% / 38% 40% 58% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .pool-row { display:flex; gap:24px; align-items:stretch; }
+  .flow { flex:1; }
+  .strip { background:var(--surface-card); border:2px solid var(--border-subtle);
+           border-radius:var(--radius-xl); padding:12px 18px; display:flex;
+           align-items:center; gap:14px; }
+  .strip-lbl { font-family:var(--font-mono); font-weight:700; font-size:18px; color:var(--text-primary); }
+  .cells { display:flex; gap:6px; flex:1; justify-content:flex-end; }
+  .cell { font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-secondary);
+          background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+          border-radius:8px; padding:6px 0; width:44px; text-align:center; position:relative; }
+  .cell.cur { border-color:var(--stbr-emerald); color:var(--stbr-emerald); background:rgba(0,139,76,.08); }
+  .cursor { position:absolute; left:50%; margin-left:-34px; top:-26px; width:68px;
+            font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.08em;
+            text-transform:uppercase; color:var(--text-on-brand); background:var(--stbr-emerald);
+            border-radius:var(--radius-pill); padding:2px 0; text-align:center; }
+  .dots { font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-muted);
+          align-self:center; }
+  .lanes-svg { display:block; }
+  .workers { display:flex; gap:20px; }
+  .wk { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+        border-radius:var(--radius-xl); padding:12px 12px 12px 30px; position:relative; }
+  .wk-tag { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--text-muted); text-align:center; margin-bottom:8px; }
+  .step { font-family:var(--font-body); font-weight:700; font-size:14.5px; text-align:center;
+          border-radius:var(--radius-md); padding:8px 4px; background:var(--surface-paper);
+          border:1.5px solid var(--border-strong); color:var(--text-primary); }
+  .step.await { background:rgba(0,139,76,.10); border-color:var(--stbr-emerald); color:var(--stbr-emerald); }
+  .darr { text-align:center; font-size:14px; line-height:14px; color:var(--stbr-green); font-weight:800; }
+  .loopline { position:absolute; left:9px; top:52px; bottom:24px; width:12px;
+              border-left:2.5px solid var(--stbr-green); border-top:2.5px solid var(--stbr-green);
+              border-bottom:2.5px solid var(--stbr-green); border-radius:8px 0 0 8px; }
+  .loopline::after { content:""; position:absolute; right:-9px; top:-7px; width:0; height:0;
+                     border-left:9px solid var(--stbr-green); border-top:5.5px solid transparent;
+                     border-bottom:5.5px solid transparent; }
+  .join { background:var(--surface-brand); color:var(--text-on-brand); border-radius:var(--radius-xl);
+          text-align:center; font-family:var(--font-mono); font-weight:700; font-size:22px;
+          padding:13px 0; }
+  .midarr { text-align:center; font-size:18px; line-height:20px; color:var(--stbr-green); font-weight:800; }
+  .reports { background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-xl);
+             text-align:center; font-family:var(--font-mono); font-weight:700; font-size:20px;
+             padding:12px 0; }
+  .reports span { font-family:var(--font-body); font-weight:600; font-size:15px; color:var(--stbr-cream); }
+  .callout { flex:0 0 280px; background:var(--stbr-yellow); color:var(--stbr-dark);
+             border-radius:var(--radius-2xl); padding:28px 26px; display:flex; flex-direction:column;
+             justify-content:center; }
+  .callout .tag { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.12em;
+                  text-transform:uppercase; margin-bottom:10px; }
+  .callout .big { font-family:var(--font-display); font-weight:900; font-size:29px; line-height:1.12; }
+</style>
+  <div class="stbr-eyebrow">the worker pool, mechanically</div>
+  <h2 class="viz-title">one queue, five loops, bounded in-flight work</h2>
+  <div class="pool-row">
+    <div class="flow">
+      <div class="strip" style="margin-top:26px;">
+        <div class="strip-lbl">targets[0..49]</div>
+        <div class="cells">
+          <div class="cell">0</div><div class="cell">1</div><div class="cell">2</div>
+          <div class="cell">3</div><div class="cell">4</div>
+          <div class="cell cur"><div class="cursor">next</div>5</div>
+          <div class="dots">&hellip;</div>
+          <div class="cell">47</div><div class="cell">48</div><div class="cell">49</div>
+        </div>
+      </div>
+      <svg class="lanes-svg" width="1060" height="30">
+        <line x1="106" y1="2" x2="106" y2="20" stroke="#306c40" stroke-width="2.5"/><polygon points="106,28 100,18 112,18" fill="#306c40"/>
+        <line x1="318" y1="2" x2="318" y2="20" stroke="#306c40" stroke-width="2.5"/><polygon points="318,28 312,18 324,18" fill="#306c40"/>
+        <line x1="530" y1="2" x2="530" y2="20" stroke="#306c40" stroke-width="2.5"/><polygon points="530,28 524,18 536,18" fill="#306c40"/>
+        <line x1="742" y1="2" x2="742" y2="20" stroke="#306c40" stroke-width="2.5"/><polygon points="742,28 736,18 748,18" fill="#306c40"/>
+        <line x1="954" y1="2" x2="954" y2="20" stroke="#306c40" stroke-width="2.5"/><polygon points="954,28 948,18 960,18" fill="#306c40"/>
+      </svg>
+      <div class="workers">
+        <div class="wk"><div class="loopline"></div><div class="wk-tag">worker 1</div>
+          <div class="step">take index</div><div class="darr">&darr;</div>
+          <div class="step await">probe (await)</div><div class="darr">&darr;</div>
+          <div class="step">store reports[i]</div></div>
+        <div class="wk"><div class="loopline"></div><div class="wk-tag">worker 2</div>
+          <div class="step">take index</div><div class="darr">&darr;</div>
+          <div class="step await">probe (await)</div><div class="darr">&darr;</div>
+          <div class="step">store reports[i]</div></div>
+        <div class="wk"><div class="loopline"></div><div class="wk-tag">worker 3</div>
+          <div class="step">take index</div><div class="darr">&darr;</div>
+          <div class="step await">probe (await)</div><div class="darr">&darr;</div>
+          <div class="step">store reports[i]</div></div>
+        <div class="wk"><div class="loopline"></div><div class="wk-tag">worker 4</div>
+          <div class="step">take index</div><div class="darr">&darr;</div>
+          <div class="step await">probe (await)</div><div class="darr">&darr;</div>
+          <div class="step">store reports[i]</div></div>
+        <div class="wk"><div class="loopline"></div><div class="wk-tag">worker 5</div>
+          <div class="step">take index</div><div class="darr">&darr;</div>
+          <div class="step await">probe (await)</div><div class="darr">&darr;</div>
+          <div class="step">store reports[i]</div></div>
+      </div>
+      <svg class="lanes-svg" width="1060" height="28">
+        <line x1="106" y1="2" x2="106" y2="18" stroke="#306c40" stroke-width="2.5"/><polygon points="106,26 100,16 112,16" fill="#306c40"/>
+        <line x1="318" y1="2" x2="318" y2="18" stroke="#306c40" stroke-width="2.5"/><polygon points="318,26 312,16 324,16" fill="#306c40"/>
+        <line x1="530" y1="2" x2="530" y2="18" stroke="#306c40" stroke-width="2.5"/><polygon points="530,26 524,16 536,16" fill="#306c40"/>
+        <line x1="742" y1="2" x2="742" y2="18" stroke="#306c40" stroke-width="2.5"/><polygon points="742,26 736,16 748,16" fill="#306c40"/>
+        <line x1="954" y1="2" x2="954" y2="18" stroke="#306c40" stroke-width="2.5"/><polygon points="954,26 948,16 960,16" fill="#306c40"/>
+      </svg>
+      <div class="join">Promise.all(workers)</div>
+      <div class="midarr">&darr;</div>
+      <div class="reports">reports[] &nbsp;<span>one typed result per target</span></div>
+    </div>
+    <div class="callout">
+      <div class="tag">invariant</div>
+      <div class="big">at most 5 probes in flight, ever</div>
+    </div>
+  </div>
+</div>
+</body></html>

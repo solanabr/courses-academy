@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What AUDIT.md holds when the lab is done
+     purpose: pin the deliverable's exact structure so the learner can self-check completeness before committing, and see who consumes it next
+     data: section 1: the two tool summary lines (pnpm audit at repo root, cargo audit at pulse-rs root), dated section 2: verdicts, minimum two, each in the four-line shape (signal read, exposure path, decision, action) section 3: pin-classification table, one row per direct dep of both manifests (range | exact | lockfile-only) section 4: the one-line CI answer (does CI install from the lockfile? pnpm install --frozen-lockfile in M1, --frozen-lockfile in M6) downstream consumer: the m10-l1 runbook reads this file directly
+     prompt: Document-anatomy diagram. A single file card labeled AUDIT.md split into four stacked sections, each with its name and its minimum content requirement as a short annotation. Two small source arrows enter from the left, one per audit command and its root. One exit arrow leaves the bottom of the card toward a node labeled "m10-l1 runbook", marking the file as an input to a later lesson rather than a dead-end artifact.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:531px;height:475px;right:-297px;top:82px;border-radius:48% 42% 46% 42% / 36% 38% 39% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:463px;height:496px;bottom:-271px;left:762px;border-radius:37% 55% 39% 60% / 46% 47% 40% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:32px 52px 30px;}
+  .body{display:flex;gap:0;margin-top:16px;align-items:flex-start;width:100%;}
+  .sources{width:330px;flex:none;display:flex;flex-direction:column;gap:26px;padding-top:64px;}
+  .src{display:flex;align-items:center;}
+  .src .chip{flex:1;background:var(--surface-inverse);border-radius:12px;padding:10px 16px;}
+  .src .chip .m{font-family:var(--font-mono);font-weight:700;font-size:15px;color:var(--text-on-dark);}
+  .src .chip .w{font-family:var(--font-body);font-size:12px;color:rgba(245,232,202,.8);margin-top:2px;}
+  .src .h{width:36px;height:0;border-top:2px solid var(--stbr-dark);position:relative;}
+  .src .h::after{content:"";position:absolute;right:-8px;top:-6px;border-top:5px solid transparent;
+                 border-bottom:5px solid transparent;border-left:8px solid var(--stbr-dark);}
+  .filewrap{width:calc(100% - 330px);flex:none;min-width:0;display:flex;flex-direction:column;align-items:center;}
+  .file{width:100%;border:2.5px solid var(--stbr-emerald);border-radius:16px;overflow:hidden;}
+  .file .tab{background:var(--stbr-emerald);padding:10px 26px;font-family:var(--font-mono);
+             font-weight:700;font-size:19px;color:var(--text-on-brand);}
+  .sec{padding:12px 26px;border-top:1px solid var(--border-subtle);display:flex;gap:18px;align-items:baseline;}
+  .sec:first-of-type{border-top:none;}
+  .sec .n{width:96px;font-family:var(--font-display);font-weight:900;font-size:12px;letter-spacing:.07em;
+          text-transform:uppercase;color:var(--stbr-emerald);}
+  .sec .t{flex:1;}
+  .sec .t h4{margin:0;font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--text-primary);}
+  .sec .t p{margin:2px 0 0;font-family:var(--font-body);font-size:13px;line-height:1.4;color:var(--text-secondary);}
+  .down{width:0;height:18px;border-left:2px solid var(--stbr-dark);position:relative;}
+  .down::after{content:"";position:absolute;left:-6px;bottom:-8px;border-left:6px solid transparent;
+               border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);}
+  .runbook{margin-top:0;background:var(--stbr-yellow);border-radius:999px;padding:10px 28px;
+           font-family:var(--font-display);font-weight:900;font-size:16px;color:var(--stbr-dark);}
+  .runbook span{font-weight:700;font-family:var(--font-body);font-size:13.5px;}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">the deliverable, pinned</div>
+  <h2 class="viz-title" style="font-size:38px;margin:2px 0 0;">what AUDIT.md holds when the lab is done</h2>
+  <div class="body">
+    <div class="sources">
+      <div class="src">
+        <div class="chip"><div class="m">pnpm audit</div><div class="w">run at the repo root, dated</div></div>
+        <div class="h"></div>
+      </div>
+      <div class="src">
+        <div class="chip"><div class="m">cargo audit</div><div class="w">run at the pulse-rs root, dated</div></div>
+        <div class="h"></div>
+      </div>
+    </div>
+    <div class="filewrap">
+      <div class="file">
+        <div class="tab">AUDIT.md</div>
+        <div class="sec"><div class="n">section 1</div><div class="t">
+          <h4>tool summary lines</h4>
+          <p>the two audit outputs (pnpm audit and cargo audit): one dated line each</p></div></div>
+        <div class="sec"><div class="n">section 2</div><div class="t">
+          <h4>verdicts: minimum two</h4>
+          <p>each in the four-line shape: signal read &middot; exposure path &middot; decision &middot; action</p></div></div>
+        <div class="sec"><div class="n">section 3</div><div class="t">
+          <h4>pin-classification table</h4>
+          <p>one row per direct dep of both manifests: range | exact | lockfile-only</p></div></div>
+        <div class="sec"><div class="n">section 4</div><div class="t">
+          <h4>the one-line CI answer</h4>
+          <p>does CI install from the lockfile? <span style="font-family:var(--font-mono);">pnpm install --frozen-lockfile</span> in M1, <span style="font-family:var(--font-mono);">--frozen-lockfile</span> in M6</p></div></div>
+      </div>
+      <div class="down"></div>
+      <div class="runbook">m10-l1 runbook<span>: reads this file directly; an input, not a dead-end artifact</span></div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

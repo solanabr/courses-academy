@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: dev and release are different contracts, not a speed knob
+     purpose: fix the profile settings and their consequences side by side so the learner picks profiles on purpose
+     data: dev profile: opt-level 0 | debug assertions on | overflow panics loudly | compiles fast | debugger-friendly | use: everyday development release profile: opt-level 3 | debug assertions off | overflow wraps silently | compiles slower | optimized away variables | use: measuring and shipping invariant under both: checked_add returns Err on overflow; bounds checks still panic
+     prompt: Two-column comparison card, one column per profile, rows for optimization, assertions, overflow behavior, compile speed, and intended use as in the data. A full-width footer row states the invariant that checked arithmetic and bounds checks behave identically in both.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:571px;top:-324px;right:-324px;border-radius:37% 51% 61% 53% / 40% 35% 54% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:420px;height:434px;bottom:-245px;left:519px;border-radius:43% 64% 60% 57% / 37% 52% 43% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 48px 34px;}
+    .v05-table{border:2px solid var(--stbr-green);border-radius:14px;overflow:hidden;margin-top:6px;}
+    .v05-tr{display:flex;align-items:stretch;border-top:1px solid var(--border-subtle);}
+    .v05-tr:first-child{border-top:none;}
+    .v05-c{padding:11px 20px;font:500 17px/1.3 var(--font-body);color:var(--text-primary);display:flex;align-items:center;}
+    .v05-c .mono{font-family:var(--font-mono);font-size:15px;}
+    .v05-lc{flex:none;width:250px;font:700 14px/1.2 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);background:var(--surface-paper);}
+    .v05-dc{flex:1;}
+    .v05-rc{flex:1;}
+    .v05-h{padding:13px 20px;font:800 21px/1.1 var(--font-display);}
+    .v05-hdev{background:var(--surface-brand-deep);color:var(--stbr-cream);}
+    .v05-hrel{background:var(--surface-brand);color:var(--stbr-cream);}
+    .v05-hlbl{background:var(--surface-paper);}
+    .v05-y .v05-c{background:rgba(255,210,63,.35);}
+    .v05-y .v05-lc{color:var(--stbr-dark);}
+    .v05-verdict{background:var(--surface-brand);color:var(--stbr-cream);padding:14px 20px;font:700 18px/1.35 var(--font-body);text-align:center;}
+    .v05-verdict .mono{font-family:var(--font-mono);font-size:16px;color:var(--stbr-cream);}
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">cargo profiles</div>
+    <h2 class="viz-title">dev and release are different contracts, not a speed knob</h2>
+    <div class="v05-table">
+      <div class="v05-tr">
+        <div class="v05-c v05-h v05-hlbl v05-lc"></div>
+        <div class="v05-c v05-h v05-hdev v05-dc">dev profile</div>
+        <div class="v05-c v05-h v05-hrel v05-rc">release profile</div>
+      </div>
+      <div class="v05-tr">
+        <div class="v05-c v05-lc">optimization</div>
+        <div class="v05-c v05-dc"><span class="mono">opt-level 0</span></div>
+        <div class="v05-c v05-rc"><span class="mono">opt-level 3</span></div>
+      </div>
+      <div class="v05-tr">
+        <div class="v05-c v05-lc">debug assertions</div>
+        <div class="v05-c v05-dc">on</div>
+        <div class="v05-c v05-rc">off</div>
+      </div>
+      <div class="v05-tr v05-y">
+        <div class="v05-c v05-lc">overflow behavior</div>
+        <div class="v05-c v05-dc">panics loudly</div>
+        <div class="v05-c v05-rc">wraps silently</div>
+      </div>
+      <div class="v05-tr">
+        <div class="v05-c v05-lc">compile speed</div>
+        <div class="v05-c v05-dc">compiles fast</div>
+        <div class="v05-c v05-rc">compiles slower</div>
+      </div>
+      <div class="v05-tr">
+        <div class="v05-c v05-lc">debugging</div>
+        <div class="v05-c v05-dc">debugger-friendly</div>
+        <div class="v05-c v05-rc">variables optimized away</div>
+      </div>
+      <div class="v05-tr">
+        <div class="v05-c v05-lc">intended use</div>
+        <div class="v05-c v05-dc">everyday development</div>
+        <div class="v05-c v05-rc">measuring and shipping</div>
+      </div>
+      <div class="v05-verdict">invariant under both: <span class="mono">checked_add</span> returns <span class="mono">Err</span> on overflow, and bounds checks still panic</div>
+    </div>
+  </div>
+</div>
+</body></html>

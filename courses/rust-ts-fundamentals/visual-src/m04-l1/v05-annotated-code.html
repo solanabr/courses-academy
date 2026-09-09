@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: One truth, two syntaxes: the union and the enum
+     purpose: show the m02-l1 discriminated union and the Rust enum as the same design decision
+     data: left, TypeScript: ProbeResult union of ok with latencyMs, timeout with budgetMs, http-error with status; discriminant is the kind field right, Rust: ProbeResult enum with Ok holding LatencyMs, Timeout holding LatencyMs budget, HttpError holding u16 status; discriminant is the variant name shared annotation: each variant carries exactly its own data, wrong states have no spelling difference annotation: TS discriminant is a field you maintain, Rust discriminant is the construction itself
+     prompt: Side-by-side annotated code panel, TypeScript union left, Rust enum right, with three connecting lines pairing matching variants. One shared caption underneath states the invariant both encode, and one callout marks where the discriminant lives in each.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:569px;height:550px;top:-296px;right:-296px;border-radius:53% 38% 49% 49% / 40% 58% 63% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:543px;height:518px;bottom:-338px;left:-338px;border-radius:50% 50% 42% 58% / 60% 49% 42% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v05-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 52px 34px; }
+    .v05-panels { display: grid; grid-template-columns: 1fr 90px 1fr; margin-top: 14px; position: relative; }
+    .v05-tag { height: 30px; margin: 0 0 8px; font-family: var(--font-display); font-weight: 800;
+               font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+    .v05-code { background: var(--surface-inverse); border-radius: var(--radius-xl); padding: 22px 26px;
+                height: 224px; }
+    .v05-line { font-family: var(--font-mono); font-size: 20px; line-height: 36px; height: 36px;
+                white-space: pre; color: var(--stbr-cream); }
+    .v05-dim { color: rgba(245,232,202,0.55); }
+    .v05-hot { color: var(--stbr-yellow); font-weight: 700; }
+    .v05-gut { position: relative; }
+    .v05-conn { position: absolute; left: -4px; right: -4px; height: 2px; background: var(--stbr-emerald); }
+    .v05-callout { margin-top: 12px; display: inline-block; border: 2px solid var(--stbr-emerald);
+                   border-radius: var(--radius-pill); padding: 8px 16px; font-family: var(--font-body);
+                   font-size: 16px; color: var(--text-primary); }
+    .v05-callout .mono { font-family: var(--font-mono); font-weight: 700; color: var(--stbr-green); }
+    .v05-verdict { margin-top: 22px; background: var(--surface-brand); color: var(--stbr-cream);
+                   border-radius: var(--radius-lg); padding: 14px 24px; font-family: var(--font-display);
+                   font-weight: 800; font-size: 24px; text-align: center; }
+  </style>
+  <div class="v05-card">
+    <div class="stbr-eyebrow">the same design decision</div>
+    <h2 class="viz-title">one truth, two syntaxes</h2>
+    <div class="v05-panels">
+      <div class="v05-side">
+        <p class="v05-tag">TypeScript &#183; the m02-l1 union</p>
+        <div class="v05-code">
+          <div class="v05-line">type ProbeResult <span class="v05-dim">=</span></div>
+          <div class="v05-line"><span class="v05-dim">  | {</span> <span class="v05-hot">kind: "ok"</span><span class="v05-dim">;</span>         latencyMs: number <span class="v05-dim">}</span></div>
+          <div class="v05-line"><span class="v05-dim">  | {</span> <span class="v05-hot">kind: "timeout"</span><span class="v05-dim">;</span>    budgetMs: number <span class="v05-dim">}</span></div>
+          <div class="v05-line"><span class="v05-dim">  | {</span> <span class="v05-hot">kind: "http-error"</span><span class="v05-dim">;</span> status: number <span class="v05-dim">};</span></div>
+        </div>
+        <span class="v05-callout">discriminant: a field you maintain, <span class="mono">kind</span></span>
+      </div>
+      <div class="v05-gut">
+        <div class="v05-conn" style="top:113px;"></div>
+        <div class="v05-conn" style="top:149px;"></div>
+        <div class="v05-conn" style="top:185px;"></div>
+      </div>
+      <div class="v05-side">
+        <p class="v05-tag">Rust &#183; the enum, today</p>
+        <div class="v05-code">
+          <div class="v05-line">enum ProbeResult <span class="v05-dim">{</span></div>
+          <div class="v05-line">    <span class="v05-hot">Ok</span>        <span class="v05-dim">{</span> latency_ms: u64 <span class="v05-dim">},</span></div>
+          <div class="v05-line">    <span class="v05-hot">Timeout</span>   <span class="v05-dim">{</span> budget_ms: u64 <span class="v05-dim">},</span></div>
+          <div class="v05-line">    <span class="v05-hot">HttpError</span> <span class="v05-dim">{</span> status: u16 <span class="v05-dim">},</span></div>
+          <div class="v05-line"><span class="v05-dim">}</span></div>
+        </div>
+        <span class="v05-callout">discriminant: the construction itself, <span class="mono">the variant name</span></span>
+      </div>
+    </div>
+    <div class="v05-verdict">each variant carries exactly its own data; wrong states can&#8217;t be spelled in either</div>
+  </div>
+</div>
+</body></html>

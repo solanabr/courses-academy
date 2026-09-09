@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The arrayref window, 2026-08-20
+     purpose: make the 86-minute exposure window concrete, and place who was and was not exposed on it
+     data: 2026-08-20: Rust 1.98.0 ships (same day, unrelated) T+0: attacker publishes arrayref 0.3.10 from the compromised author account T+0 to T+86min: window open; sibling crates append-only-vec (107 min) and internment (90 min) in the same incident during window: any FRESH resolution accepting ^0.3.9 selects 0.3.10 during window: every committed Cargo.lock keeps resolving its recorded version; not exposed T+86min: crates.io yanks 0.3.10; window closed context: SPL Token program manifest carries arrayref = "0.3.9", one edge from every token on Solana
+     prompt: Horizontal timeline for a single day. Left anchor labeled with the Rust 1.98.0 release, then the publish event, a shaded 86-minute exposure band, and the yank event closing it. Above the band, one lane showing fresh resolutions pulling 0.3.10; below the band, a calm lane showing committed lockfiles resolving their recorded version, visually untouched. A side note chip carries the SPL Token manifest line. Emphasize the shaded band width label: 86 minutes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:481px;height:431px;top:-239px;right:-239px;border-radius:58% 51% 38% 44% / 61% 48% 56% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:471px;height:503px;bottom:-296px;left:466px;border-radius:63% 39% 47% 40% / 50% 49% 47% 35%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:42px 52px 40px;}
+  .tl{position:relative;height:474px;margin-top:16px;}
+  .rail{position:absolute;left:2%;right:2%;top:216px;height:4px;background:var(--stbr-emerald);border-radius:2px;}
+  .band{position:absolute;left:26%;width:52%;top:199px;height:38px;background:var(--stbr-yellow);border-radius:10px;
+        display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;
+        font-size:19px;letter-spacing:.04em;color:var(--stbr-dark);}
+  .dot{position:absolute;z-index:2;width:20px;height:20px;border-radius:50%;background:var(--stbr-emerald);
+       border:4px solid var(--surface-card);top:206px;transform:translateX(-50%);}
+  .dot.dark{background:var(--stbr-dark);}
+  .mark{position:absolute;top:246px;transform:translateX(-50%);width:290px;text-align:center;
+        font-family:var(--font-body);font-size:13.5px;line-height:1.35;color:var(--text-secondary);}
+  .mark b{display:block;font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--text-primary);margin-bottom:2px;}
+  .lane-hot{position:absolute;left:23%;width:58%;top:12px;border:2px solid var(--stbr-dark);border-radius:14px;
+            background:var(--surface-card);padding:16px 22px 14px;text-align:center;}
+  .lane-hot h4{margin:0 0 4px;font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--text-primary);}
+  .lane-hot p{margin:0;font-family:var(--font-body);font-size:13.5px;line-height:1.4;color:var(--text-secondary);}
+  .drop{position:absolute;left:52%;top:132px;width:0;transform:translateX(-1px);height:66px;border-left:2px solid var(--stbr-dark);}
+  .drop::after{content:"";position:absolute;left:-6px;bottom:-9px;border-left:6px solid transparent;
+               border-right:6px solid transparent;border-top:9px solid var(--stbr-dark);}
+  .lane-calm{position:absolute;left:2%;right:2%;top:310px;background:var(--surface-brand);border-radius:14px;
+             padding:14px 26px;display:flex;align-items:center;gap:22px;}
+  .lane-calm h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--text-on-brand);white-space:nowrap;}
+  .lane-calm p{margin:0;font-family:var(--font-body);font-size:14px;line-height:1.4;color:rgba(245,232,202,.92);}
+  .spl{position:absolute;left:2%;right:2%;top:404px;display:flex;align-items:center;justify-content:center;gap:16px;}
+  .spl .cmd{font-family:var(--font-mono);font-weight:700;font-size:16px;background:var(--surface-inverse);
+       color:var(--text-on-dark);border-radius:10px;padding:9px 14px;}
+  .spl span{font-family:var(--font-body);font-size:14.5px;color:var(--text-secondary);}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">supply chain &middot; 2026-08-20</div>
+  <h2 class="viz-title" style="font-size:44px;margin:4px 0 0;">the arrayref window: 86 minutes</h2>
+  <div class="tl">
+    <div class="lane-hot">
+      <h4>fresh resolutions: exposed</h4>
+      <p>any resolve accepting <span style="font-family:var(--font-mono);font-weight:700;">^0.3.9</span> selects 0.3.10 &middot; same incident, same window: append-only-vec (107&nbsp;min) &middot; internment (90&nbsp;min)</p>
+    </div>
+    <div class="drop"></div>
+    <div class="rail"></div>
+    <div class="band">window open: 86 minutes</div>
+    <div class="dot" style="left:4%;"></div>
+    <div class="dot dark" style="left:26%;"></div>
+    <div class="dot dark" style="left:78%;"></div>
+    <div class="mark" style="left:5.5%;"><b>Rust 1.98.0 ships</b>same day, unrelated</div>
+    <div class="mark" style="left:26%;"><b>T+0: publish</b>attacker publishes arrayref 0.3.10 from the compromised author account</div>
+    <div class="mark" style="left:78%;"><b>T+86min: yank</b>crates.io yanks 0.3.10; the window closes</div>
+    <div class="lane-calm">
+      <h4>committed Cargo.lock: not exposed</h4>
+      <p>every lockfile keeps resolving its recorded version; it never re-asks the registry during the window</p>
+    </div>
+    <div class="spl">
+      <span class="cmd">arrayref = "0.3.9"</span>
+      <span>the SPL Token program manifest: one edge from every token on Solana</span>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The composed local station
+     purpose: show what one compose.yaml declares and what docker compose up materializes from it
+     data: compose.yaml declares two services: pollerd: build context ./pulse-rs -> image pulse-pollerd:local; env POLLER_PORT=8080; port 8080 published to host fleet-runner: build context . with Dockerfile.fleet -> image pulse-fleet-runner:local; env FLEET_INTERVAL=60; depends_on pollerd both services joined by one compose-created network; host curl reaches /status through the published 8080 only
+     prompt: One outer box labeled with the machine, containing a compose-managed network box holding two service boxes with their image names and env values as listed in data. A depends_on arrow from fleet-runner to pollerd labeled start order. One port arrow crossing the outer boundary from host curl to pollerd 8080. Caption under the file name: one compose file replaces two hand-typed docker run commands.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:565px;height:447px;right:-317px;top:304px;border-radius:58% 42% 58% 64% / 62% 42% 37% 55%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:506px;height:522px;bottom:-275px;left:387px;border-radius:65% 64% 36% 54% / 59% 61% 65% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v1-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+             padding: 40px 56px 34px; position: relative; overflow: hidden; }
+  .v1-row { display: flex; align-items: center; margin-top: 8px; }
+  .v1-curl { width: 218px; background: var(--surface-inverse); color: var(--text-on-dark);
+             border-radius: var(--radius-lg); padding: 16px 16px; text-align: center; }
+  .v1-curl code { font-family: var(--font-mono); font-size: 16px; }
+  .v1-curl small { display: block; font-family: var(--font-body); font-size: 13px;
+                   color: var(--stbr-ink-300); margin-top: 6px; }
+  .v1-port { width: 152px; display: flex; flex-direction: column; align-items: center; padding: 0 8px; }
+  .v1-portchip { background: var(--stbr-yellow); color: var(--text-on-accent);
+                 border-radius: var(--radius-pill); font-family: var(--font-body); font-weight: 600;
+                 font-size: 13px; padding: 4px 10px; margin-bottom: 10px; white-space: nowrap; }
+  .v1-portline { position: relative; width: 100%; height: 4px; background: var(--stbr-yellow-600);
+                 border-radius: 2px; }
+  .v1-portline::after { content: ""; position: absolute; right: -2px; top: -7px;
+                        border-left: 14px solid var(--stbr-yellow-600);
+                        border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+  .v1-machine { flex: 1; border: 3px dashed var(--stbr-ink-500); border-radius: var(--radius-xl);
+                padding: 14px 20px 18px; }
+  .v1-mlabel { font-family: var(--font-display); font-weight: 800; font-size: 13px;
+               letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary);
+               margin-bottom: 10px; }
+  .v1-net { border: 2.5px solid var(--stbr-emerald); background: rgba(0,139,76,0.06);
+            border-radius: var(--radius-lg); padding: 12px 16px 16px; }
+  .v1-nlabel { font-family: var(--font-display); font-weight: 800; font-size: 12.5px;
+               letter-spacing: 0.12em; text-transform: uppercase; color: var(--stbr-emerald);
+               margin-bottom: 10px; }
+  .v1-svcs { display: flex; align-items: stretch; }
+  .v1-svc { width: 342px; background: var(--surface-card); border: 2px solid var(--border-strong);
+            border-radius: var(--radius-lg); padding: 12px 16px 14px; }
+  .v1-svcname { font-family: var(--font-display); font-weight: 900; font-size: 21px;
+                color: var(--text-primary); }
+  .v1-img { display: inline-block; font-family: var(--font-mono); font-size: 13px;
+            color: var(--text-on-brand); background: var(--stbr-emerald);
+            border-radius: var(--radius-sm); padding: 4px 8px; margin-top: 6px; }
+  .v1-kv { font-family: var(--font-mono); font-size: 13.5px; color: var(--text-secondary);
+           margin-top: 7px; }
+  .v1-kv b { color: var(--text-primary); font-weight: 600; }
+  .v1-pub { display: inline-block; margin-top: 8px; background: var(--stbr-yellow);
+            color: var(--text-on-accent); border-radius: var(--radius-sm);
+            font-family: var(--font-mono); font-size: 13px; padding: 4px 8px; }
+  .v1-dep { width: 150px; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 0 8px; }
+  .v1-depchip { font-family: var(--font-body); font-size: 12.5px; color: var(--text-secondary);
+                background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+                border-radius: var(--radius-pill); padding: 3px 9px; margin-bottom: 9px;
+                white-space: nowrap; }
+  .v1-depline { position: relative; width: 100%; height: 3px; background: var(--stbr-dark);
+                border-radius: 2px; }
+  .v1-depline::before { content: ""; position: absolute; left: -2px; top: -7px;
+                        border-right: 14px solid var(--stbr-dark);
+                        border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+  .v1-cap { margin-top: 20px; display: flex; align-items: center; justify-content: center;
+            gap: 14px; font-family: var(--font-body); font-size: 18px; color: var(--text-secondary); }
+  .v1-file { font-family: var(--font-mono); font-size: 15px; background: var(--surface-inverse);
+             color: var(--text-on-dark); border-radius: var(--radius-sm); padding: 5px 11px; }
+</style>
+<div class="v1-card">
+  <div class="stbr-eyebrow">DOCKER COMPOSE</div>
+  <h2 class="viz-title">the composed local station</h2>
+  <div class="v1-row">
+    <div class="v1-curl"><code>host: curl /status</code><small>reaches the stack only here</small></div>
+    <div class="v1-port">
+      <div class="v1-portchip">published 8080 → 8080</div>
+      <div class="v1-portline"></div>
+    </div>
+    <div class="v1-machine">
+      <div class="v1-mlabel">your machine · docker compose up</div>
+      <div class="v1-net">
+        <div class="v1-nlabel">compose-created network</div>
+        <div class="v1-svcs">
+          <div class="v1-svc">
+            <div class="v1-svcname">pollerd</div>
+            <div class="v1-img">pulse-pollerd:local</div>
+            <div class="v1-kv"><b>build:</b> ./pulse-rs</div>
+            <div class="v1-kv"><b>env:</b> POLLER_PORT=8080</div>
+            <div class="v1-pub">ports: 8080 → host 8080</div>
+          </div>
+          <div class="v1-dep">
+            <div class="v1-depchip">depends_on · start order</div>
+            <div class="v1-depline"></div>
+          </div>
+          <div class="v1-svc">
+            <div class="v1-svcname">fleet-runner</div>
+            <div class="v1-img">pulse-fleet-runner:local</div>
+            <div class="v1-kv"><b>build:</b> . · Dockerfile.fleet</div>
+            <div class="v1-kv"><b>env:</b> FLEET_INTERVAL=60</div>
+            <div class="v1-kv"><b>depends_on:</b> pollerd</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v1-cap"><span class="v1-file">compose.yaml</span><span>one compose file replaces two hand-typed <b>docker run</b> commands</span></div>
+</div>
+</div>
+</body></html>

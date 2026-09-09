@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The re-ship: one push, zero ops changes
+     purpose: show that the M6 pipeline consumes the new module with no workflow, Dockerfile, or compose edits
+     data: git push -> Actions workflow (unchanged since m06-l4) -> cargo test, incl. new chain fixtures -> cargo-chef multi-stage build (unchanged) -> push ghcr.io/<you>/pulse-pollerd:latest -> learner: docker pull + run -> curl /status shows chain block annotation: every box except the first and last two existed before this lesson
+     prompt: Left-to-right pipeline flowchart with the seven stages listed, arrows between them. Shade the middle CI stages in a "pre-existing, unchanged" style with a legend, and accent only the push at the start and the pull-run-curl at the end as the learner's manual steps.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:450px;top:-222px;right:-222px;border-radius:38% 53% 65% 58% / 47% 43% 50% 45%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:471px;height:508px;bottom:-312px;left:395px;border-radius:40% 45% 61% 61% / 52% 57% 43% 60%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v07-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 40px 44px 40px; }
+    .v07-pipe { display: flex; align-items: stretch; margin-top: 22px; }
+    .v07-stage { width: 164px; border: 2px solid var(--stbr-green); border-radius: var(--radius-lg); background: var(--surface-card); padding: 14px 12px; display: flex; flex-direction: column; }
+    .v07-stage.pre { background: #E3EFE6; border-color: var(--stbr-green); }
+    .v07-stage.manual { background: var(--stbr-yellow); border-color: var(--stbr-yellow); }
+    .v07-st { font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--stbr-dark); line-height: 1.15; }
+    .v07-ss { font-family: var(--font-body); font-size: 13px; color: var(--text-secondary); margin-top: 6px; line-height: 1.25; }
+    .v07-stage.manual .v07-ss { color: #4A431C; }
+    .v07-arr { display: flex; align-items: center; width: 24px; padding: 0 1px; }
+    .v07-arr-line { flex: 1; height: 3px; background: var(--stbr-dark); }
+    .v07-arr-head { width: 0; height: 0; border-left: 8px solid var(--stbr-dark); border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+    .v07-legend { display: flex; align-items: center; gap: 28px; margin-top: 26px; }
+    .v07-key { display: flex; align-items: center; gap: 9px; font-family: var(--font-body); font-size: 16px; color: var(--text-primary); }
+    .v07-sw { width: 26px; height: 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); }
+    .v07-cap { font-family: var(--font-body); font-size: 15px; color: var(--text-muted); margin-left: auto; }
+    .v07-mono { font-family: var(--font-mono); }
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">the re-ship</div>
+    <h2 class="viz-title">one push, zero ops changes</h2>
+    <div class="v07-pipe">
+      <div class="v07-stage manual">
+        <div class="v07-st v07-mono">git push</div>
+        <div class="v07-ss">your manual step</div>
+      </div>
+      <div class="v07-arr"><div class="v07-arr-line"></div><div class="v07-arr-head"></div></div>
+      <div class="v07-stage pre">
+        <div class="v07-st">Actions workflow</div>
+        <div class="v07-ss">unchanged since m06-l4</div>
+      </div>
+      <div class="v07-arr"><div class="v07-arr-line"></div><div class="v07-arr-head"></div></div>
+      <div class="v07-stage pre">
+        <div class="v07-st v07-mono">cargo test</div>
+        <div class="v07-ss">incl. new chain fixtures</div>
+      </div>
+      <div class="v07-arr"><div class="v07-arr-line"></div><div class="v07-arr-head"></div></div>
+      <div class="v07-stage pre">
+        <div class="v07-st">cargo-chef multi-stage build</div>
+        <div class="v07-ss">unchanged</div>
+      </div>
+      <div class="v07-arr"><div class="v07-arr-line"></div><div class="v07-arr-head"></div></div>
+      <div class="v07-stage pre">
+        <div class="v07-st">push image</div>
+        <div class="v07-ss v07-mono">ghcr.io/&lt;you&gt;/<br>pulse-pollerd:latest</div>
+      </div>
+      <div class="v07-arr"><div class="v07-arr-line"></div><div class="v07-arr-head"></div></div>
+      <div class="v07-stage manual">
+        <div class="v07-st v07-mono">docker pull + run</div>
+        <div class="v07-ss">your manual step</div>
+      </div>
+      <div class="v07-arr"><div class="v07-arr-line"></div><div class="v07-arr-head"></div></div>
+      <div class="v07-stage manual">
+        <div class="v07-st v07-mono">curl /status</div>
+        <div class="v07-ss">now shows the chain block</div>
+      </div>
+    </div>
+    <div class="v07-legend">
+      <div class="v07-key"><div class="v07-sw" style="background:var(--stbr-yellow);"></div>your manual steps</div>
+      <div class="v07-key"><div class="v07-sw" style="background:#E3EFE6;"></div>pre-existing CI, unchanged</div>
+      <div class="v07-cap">every box except the first and last two existed before this lesson</div>
+    </div>
+  </div>
+</div>
+</body></html>

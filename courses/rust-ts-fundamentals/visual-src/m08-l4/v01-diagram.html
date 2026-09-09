@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What a read proves vs what a confirmed write proves
+     purpose: show that reads cover only the bottom two layers of the write path, so a confirmed signature is a categorically stronger signal
+     data: Layer stack, bottom to top: 1. network reachability (proven by reads AND writes) 2. RPC health (proven by reads AND writes) 3. key validity (writes only) 4. message construction (writes only) 5. signature acceptance (writes only) 6. network inclusion (writes only) 7. confirmation (writes only) Left bracket spanning layers 1-2: "getSlot, getHealth, getBalance live here" Right bracket spanning layers 1-7: "one confirmed transfer proves all of it"
+     prompt: Vertical seven-layer stack diagram, layers labeled bottom-up as in the data. A short bracket on the left spans only the bottom two layers with the reads label; a tall bracket on the right spans all seven with the confirmed-transfer label. Shade the five write-only layers slightly differently from the two shared ones.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:545px;height:472px;bottom:-274px;right:-274px;border-radius:56% 65% 46% 53% / 46% 39% 38% 65%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:446px;height:443px;left:-220px;top:87px;border-radius:61% 58% 38% 51% / 65% 35% 51% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 44px 56px 40px; }
+    .mono { font-family: var(--font-mono); }
+    .layer { height: 50px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 14px; padding: 0 20px; }
+    .layer .n { width: 30px; height: 30px; border-radius: 50%; flex: none; display: flex; align-items: center;
+                justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 15px;
+                color: var(--stbr-cream); }
+    .layer h4 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 21px; color: var(--stbr-dark); }
+    .layer .tag { margin-left: auto; font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    .w { background: #e8f3ec; border: 2px solid var(--stbr-emerald); }
+    .w .n { background: var(--stbr-emerald); }
+    .s { background: #fff; border: 2px solid var(--stbr-green); }
+    .s .n { background: var(--stbr-green); }
+    .lblt { font-family: var(--font-body); font-size: 16px; color: var(--text-secondary); line-height: 1.4; margin: 0; }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">reads vs writes &middot; proof depth</div>
+    <h2 class="viz-title">what a read proves vs what a confirmed write proves</h2>
+    <div style="display:flex; align-items:flex-end; gap:18px;">
+      <div style="width:286px; flex:none; height:392px; display:flex; flex-direction:column; justify-content:flex-end; text-align:right; padding-bottom:6px;">
+        <p class="lblt mono" style="font-weight:600; color:var(--stbr-green); font-size:15px;">getSlot &middot; getHealth &middot; getBalance</p>
+        <p class="lblt" style="margin-top:6px;">live here: reads never climb past layer&nbsp;2</p>
+      </div>
+      <div style="width:14px; flex:none; height:107px; border-left:3px solid var(--stbr-green); border-top:3px solid var(--stbr-green); border-bottom:3px solid var(--stbr-green);"></div>
+      <div style="flex:1; display:flex; flex-direction:column; gap:7px;">
+        <div class="layer w"><span class="n">7</span><h4>confirmation</h4><span class="tag">writes only</span></div>
+        <div class="layer w"><span class="n">6</span><h4>network inclusion</h4><span class="tag">writes only</span></div>
+        <div class="layer w"><span class="n">5</span><h4>signature acceptance</h4><span class="tag">writes only</span></div>
+        <div class="layer w"><span class="n">4</span><h4>message construction</h4><span class="tag">writes only</span></div>
+        <div class="layer w"><span class="n">3</span><h4>key validity</h4><span class="tag">writes only</span></div>
+        <div class="layer s"><span class="n">2</span><h4>RPC health</h4><span class="tag">reads + writes</span></div>
+        <div class="layer s"><span class="n">1</span><h4>network reachability</h4><span class="tag">reads + writes</span></div>
+      </div>
+      <div style="width:14px; flex:none; height:392px; border-right:3px solid var(--stbr-emerald); border-top:3px solid var(--stbr-emerald); border-bottom:3px solid var(--stbr-emerald);"></div>
+      <div style="width:316px; flex:none; height:392px; display:flex; flex-direction:column; justify-content:center;">
+        <span style="align-self:flex-start; background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill); padding:9px 18px; font-family:var(--font-display); font-weight:800; font-size:19px;">one confirmed transfer</span>
+        <p class="lblt" style="margin-top:12px; font-size:17px;">proves <strong style="color:var(--stbr-dark);">all seven layers at once</strong>, a categorically stronger signal than any read</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

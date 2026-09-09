@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The three timeout moves, and the one people forget
+     purpose: isolate the AbortController wiring so the completion exercise has a reference shape
+     data: const controller = new AbortController();            <- move 1: one controller per attempt const timer = setTimeout(() => controller.abort(), timeoutMs);  <- move 2: budget becomes abort await fetch(url, { signal: controller.signal });     <- move 3: hand fetch the signal finally { clearTimeout(timer); }                     <- the forgotten one: every exit disarms the timer Annotation: skip the finally and the timer fires after success, aborting a slot that already finished.
+     prompt: Annotated code panel: the four lines from data in a monospace block, each with a short callout arrow and label to the right, the first three labeled as the three moves, the fourth highlighted as the commonly forgotten cleanup with its one-line consequence below.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:529px;height:500px;top:-249px;right:-249px;border-radius:46% 56% 57% 56% / 43% 44% 61% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:518px;height:427px;left:-313px;top:273px;border-radius:65% 38% 58% 55% / 46% 38% 45% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ac-row { display:flex; align-items:flex-start; }
+  .code { flex:0 0 850px; background:var(--surface-inverse); border-radius:var(--radius-2xl);
+          padding:16px 0; }
+  .cline { height:84px; display:flex; align-items:center; padding:0 26px;
+           font-family:var(--font-mono); font-weight:500; font-size:20.5px; color:var(--stbr-cream); }
+  .cline .kw { color:#8fd6b0; }
+  .cline.hot { background:var(--stbr-yellow); color:var(--stbr-dark); font-weight:700; }
+  .cline.hot .kw { color:var(--stbr-green); }
+  .mid { flex:0 0 56px; padding:16px 0; }
+  .mrow { height:84px; display:flex; align-items:center; position:relative; }
+  .mline { width:100%; height:2.5px; background:var(--stbr-emerald); position:relative; }
+  .mline::before { content:""; position:absolute; left:-2px; top:-5px; width:0; height:0;
+                   border-right:10px solid var(--stbr-emerald);
+                   border-top:6px solid transparent; border-bottom:6px solid transparent; }
+  .mline.hot { background:var(--stbr-yellow); }
+  .mline.hot::before { border-right-color:var(--stbr-yellow); }
+  .chips { flex:1; padding:16px 0; }
+  .crow { height:84px; display:flex; align-items:center; }
+  .chip { font-family:var(--font-body); font-weight:800; font-size:17px; line-height:1.25;
+          border-radius:var(--radius-lg); padding:12px 18px; }
+  .chip.mv { background:rgba(0,139,76,.10); border:2px solid var(--stbr-emerald); color:var(--stbr-emerald); }
+  .chip.hot { background:var(--stbr-yellow); color:var(--stbr-dark); border:2px solid var(--stbr-yellow); }
+  .chip .n { display:block; font-size:12.5px; letter-spacing:.11em; text-transform:uppercase;
+             font-weight:800; margin-bottom:2px; color:var(--stbr-green); }
+  .chip.hot .n { color:var(--stbr-dark); }
+  .conseq { margin-top:20px; background:rgba(255,210,63,.30); border:2px solid var(--stbr-yellow);
+            border-radius:var(--radius-xl); padding:14px 26px; font-family:var(--font-body);
+            font-weight:800; font-size:20px; color:var(--text-primary); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">AbortController wiring</div>
+  <h2 class="viz-title">the three timeout moves, and the one people forget</h2>
+  <div class="ac-row">
+    <div class="code">
+      <div class="cline"><span class="kw">const</span>&nbsp;controller =&nbsp;<span class="kw">new</span>&nbsp;AbortController();</div>
+      <div class="cline"><span class="kw">const</span>&nbsp;timer = setTimeout(() =&gt; controller.abort(), timeoutMs);</div>
+      <div class="cline"><span class="kw">await</span>&nbsp;fetch(url, { signal: controller.signal });</div>
+      <div class="cline hot"><span class="kw">finally</span>&nbsp;{ clearTimeout(timer); }</div>
+    </div>
+    <div class="mid">
+      <div class="mrow"><div class="mline"></div></div>
+      <div class="mrow"><div class="mline"></div></div>
+      <div class="mrow"><div class="mline"></div></div>
+      <div class="mrow"><div class="mline hot"></div></div>
+    </div>
+    <div class="chips">
+      <div class="crow"><div class="chip mv"><span class="n">move 1</span>one controller per attempt</div></div>
+      <div class="crow"><div class="chip mv"><span class="n">move 2</span>the budget becomes an abort</div></div>
+      <div class="crow"><div class="chip mv"><span class="n">move 3</span>hand fetch the signal</div></div>
+      <div class="crow"><div class="chip hot"><span class="n">the forgotten one</span>every exit disarms the timer</div></div>
+    </div>
+  </div>
+  <div class="conseq">skip the <span style="font-family:var(--font-mono);">finally</span> and the timer fires after success, aborting a slot that already finished</div>
+</div>
+</body></html>

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "input": "\"Pending\", true, 0",
+    "expectedOutput": "Up",
+    "description": "a Pending target's first successful probe brings it Up"
+  },
+  {
+    "id": "t2",
+    "input": "\"Up\", false, 1",
+    "expectedOutput": "Degraded",
+    "description": "one failure degrades an Up target, it does not kill it"
+  },
+  {
+    "id": "t3",
+    "input": "\"Degraded\", false, 2",
+    "expectedOutput": "Degraded",
+    "description": "a Degraded target under 3 consecutive failures stays Degraded"
+  },
+  {
+    "id": "t4",
+    "input": "\"Degraded\", false, 3",
+    "expectedOutput": "Down",
+    "description": "the third consecutive failure takes a Degraded target Down"
+  },
+  {
+    "id": "t5",
+    "input": "\"Down\", true, 0",
+    "expectedOutput": "Up",
+    "description": "a successful probe recovers a Down target straight to Up"
+  },
+  {
+    "id": "t6",
+    "input": "\"Lost\", true, 0",
+    "expectedOutput": "Invalid",
+    "description": "an unknown state string is rejected as Invalid, never guessed"
+  }
+]

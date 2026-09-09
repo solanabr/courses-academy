@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Three data paths into one dashboard
+     purpose: show where each of the three panels gets its data and on what freshness terms, so the reader stops treating the dashboard as one thing
+     data: Path 1 (fleet panel): Actions cron (every 30 min) -> commits status.json -> raw public repo URL (CDN cache 5 min) -> dashboard poll (60s interval) -> fleet panel. Staleness by design: up to cron + cache behind reality. Path 2 (Solana panel): dashboard -> kit read against public RPC -> live values on render. Fresh, rate-capped. Path 3 (worker panel, NEW): TS worker cron -> KV last-known-status -> public JSON endpoint -> dashboard poll (60s interval) -> worker panel. Freshness bounded by the worker's own cron beat.
+     prompt: Three horizontal lanes flowing left to right into one dashboard box on the right edge. Each lane carries its named hops as small nodes with the freshness annotation from the data block under the lane. Label lane 3 as the edge built in this lesson. Keep the lanes visually parallel so the reader compares their lengths and delays at a glance.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:459px;height:491px;top:-250px;right:-250px;border-radius:42% 51% 43% 44% / 49% 56% 37% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:452px;height:455px;bottom:-261px;left:363px;border-radius:63% 58% 53% 40% / 58% 63% 58% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card03{background:var(--surface-card);border-radius:var(--radius-2xl);padding:28px 40px 32px;position:relative;}
+    .flow03{display:flex;gap:0;margin-top:6px;align-items:stretch;}
+    .lanes03{flex:1;display:flex;flex-direction:column;gap:14px;}
+    .lane03{border:2px solid var(--stbr-green);border-radius:14px;padding:12px 16px 10px;height:158px;position:relative;}
+    .lane03 .lt{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .lane03 .lt b{font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-primary);}
+    .lnum03{display:inline-block;background:var(--stbr-emerald);color:var(--stbr-cream);border-radius:10px;padding:3px 9px;font:800 12px/1 var(--font-body);letter-spacing:.06em;}
+    .hops03{display:flex;align-items:center;gap:6px;}
+    .hop03{background:var(--surface-card);border:1.5px solid var(--border-strong);border-radius:9px;padding:7px 10px;font:500 12.5px/1.3 var(--font-body);color:var(--text-primary);}
+    .har03{font:800 16px/1 var(--font-body);color:var(--stbr-emerald);}
+    .fresh03{margin-top:9px;font:600 12.5px/1.3 var(--font-body);color:var(--text-secondary);font-style:italic;}
+    .lnew03{border-color:var(--stbr-yellow);background:#FFFBEB;}
+    .newchip03{display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);border-radius:12px;padding:3px 9px;font:800 11px/1 var(--font-body);letter-spacing:.06em;}
+    .toarr03{flex:0 0 44px;display:flex;flex-direction:column;justify-content:space-around;}
+    .toarr03 span{text-align:center;font:800 24px/1 var(--font-body);color:var(--stbr-dark);}
+    .dash03{flex:0 0 236px;background:var(--surface-inverse);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;}
+    .dash03 .dt{font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--stbr-cream);margin-bottom:4px;}
+    .dash03 .ds{font:400 12px/1.35 var(--font-body);color:rgba(245,232,202,.75);margin-bottom:12px;}
+    .prow03{flex:1;border:1.5px solid rgba(245,232,202,.4);border-radius:10px;margin-top:8px;display:flex;align-items:center;padding:0 12px;font:700 14.5px/1.25 var(--font-body);color:var(--stbr-cream);}
+    .prow03.pn{border-color:var(--stbr-yellow);color:var(--stbr-yellow);}
+  </style>
+  <div class="card03">
+    <div class="stbr-eyebrow">pulse-board · data plumbing</div>
+    <h2 class="viz-title">three data paths, one dashboard</h2>
+    <div class="flow03">
+      <div class="lanes03">
+        <div class="lane03">
+          <div class="lt"><span class="lnum03">PATH 1</span><b>the fleet path</b></div>
+          <div class="hops03">
+            <div class="hop03">Actions cron<br>every 30 min</div><span class="har03">&#8594;</span>
+            <div class="hop03">commits<br>status.json</div><span class="har03">&#8594;</span>
+            <div class="hop03">raw public repo URL<br>CDN cache 5 min</div><span class="har03">&#8594;</span>
+            <div class="hop03">dashboard poll<br>60s interval</div>
+          </div>
+          <div class="fresh03">staleness by design: up to cron + cache behind reality</div>
+        </div>
+        <div class="lane03">
+          <div class="lt"><span class="lnum03">PATH 2</span><b>the Solana path</b></div>
+          <div class="hops03">
+            <div class="hop03">public Solana RPC</div><span class="har03">&#8594;</span>
+            <div class="hop03">kit read<br>dashboard-initiated</div><span class="har03">&#8594;</span>
+            <div class="hop03">live values<br>on render</div>
+          </div>
+          <div class="fresh03">fresh on every render, rate-capped</div>
+        </div>
+        <div class="lane03 lnew03">
+          <div class="lt"><span class="lnum03">PATH 3</span><b>the worker path</b><span class="newchip03">NEW: built in this lesson</span></div>
+          <div class="hops03">
+            <div class="hop03">TS worker cron</div><span class="har03">&#8594;</span>
+            <div class="hop03">KV<br>last-known-status</div><span class="har03">&#8594;</span>
+            <div class="hop03">public JSON<br>endpoint</div><span class="har03">&#8594;</span>
+            <div class="hop03">dashboard poll<br>60s interval</div>
+          </div>
+          <div class="fresh03">freshness bounded by the worker&rsquo;s own cron beat</div>
+        </div>
+      </div>
+      <div class="toarr03"><span>&#8594;</span><span>&#8594;</span><span>&#8594;</span></div>
+      <div class="dash03">
+        <div class="dt">pulse-board</div>
+        <div class="ds">one dashboard, three panels, three freshness contracts</div>
+        <div class="prow03">fleet panel</div>
+        <div class="prow03">Solana panel</div>
+        <div class="prow03 pn">worker panel</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

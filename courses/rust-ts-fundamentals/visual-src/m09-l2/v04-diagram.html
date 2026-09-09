@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Persist the signal, tail the noise
+     purpose: place all four log surfaces and the two persistence stores in one picture so the reader knows where any given question gets answered
+     data: log surfaces (ephemeral or local): docker compose logs (until container removal) | wrangler tail + Workers Logs (200k events/day) | Vercel runtime logs (~1 hour on Hobby) | Actions run logs (per run, in the tab) persisted signal: status.json (committed by the cron, timestamped) | Workers KV (status:<target> keys) rule: statuses, flips, history -> persisted stores; live forensics -> the log surface of the platform in question
+     prompt: Two-tier diagram. Top tier: four log-surface boxes, each labeled with its platform, its read command, and its memory span. Bottom tier: two persistent stores drawn as cylinders, status.json and KV, with arrows from the station's writers. A dividing ribbon between tiers reads "persist the signal, tail the noise". No arrows from the top tier to the bottom: logs are not the archive.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:558px;height:531px;top:-303px;right:-303px;border-radius:39% 45% 43% 43% / 56% 37% 53% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:511px;bottom:-331px;left:699px;border-radius:51% 50% 53% 59% / 47% 49% 56% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:34px 50px 30px;}
+  .tierlab{font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--text-muted);margin:14px 0 8px;}
+  .toptier{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;}
+  .surf{border:2px solid var(--border-strong);border-radius:var(--radius-lg);
+        padding:13px 16px;background:var(--surface-card);display:flex;flex-direction:column;gap:6px;}
+  .surf b{font-family:var(--font-display);font-weight:800;font-size:17px;line-height:1.15;
+          color:var(--text-primary);}
+  .surf code{font-family:var(--font-mono);font-size:12px;color:var(--stbr-cream);
+             background:var(--surface-inverse);border-radius:5px;padding:3px 8px;
+             align-self:flex-start;}
+  .surf span{font-family:var(--font-body);font-size:12.5px;line-height:1.3;color:var(--text-secondary);}
+  .ribbon{margin:18px 0;background:var(--stbr-yellow);border-radius:var(--radius-pill);
+          padding:13px 30px;display:flex;align-items:baseline;justify-content:center;gap:18px;}
+  .ribbon b{font-family:var(--font-display);font-weight:900;font-size:24px;color:var(--stbr-dark);}
+  .ribbon span{font-family:var(--font-body);font-size:13.5px;color:var(--stbr-dark);}
+  .bottier{display:flex;gap:40px;justify-content:center;align-items:flex-start;}
+  .store{display:flex;flex-direction:column;align-items:center;width:420px;}
+  .writer{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--text-primary);
+          border:2px solid var(--border-subtle);border-radius:var(--radius-pill);
+          padding:5px 16px;background:var(--surface-paper);}
+  .cyl{width:100%;background:var(--surface-brand);border-radius:60px/22px;padding:0 0 18px;overflow:hidden;}
+  .cyl .lid{height:22px;border-radius:50%;background:var(--stbr-green);margin:0 0 10px;}
+  .cyl b{display:block;font-family:var(--font-display);font-weight:800;font-size:21px;
+         color:var(--text-on-brand);text-align:center;}
+  .cyl span{display:block;font-family:var(--font-body);font-size:13.5px;line-height:1.35;
+            color:var(--text-on-brand);text-align:center;padding:4px 30px 0;}
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">where does the answer live?</div>
+  <h2 class="viz-title" style="font-size:44px;">persist the signal, tail the noise</h2>
+  <div class="tierlab">log surfaces: ephemeral or local &middot; live forensics happen here</div>
+  <div class="toptier">
+    <div class="surf"><b>docker compose logs</b><code>docker compose logs</code><span>kept until container removal</span></div>
+    <div class="surf"><b>Workers Logs</b><code>wrangler tail</code><span>200k events/day allowance</span></div>
+    <div class="surf"><b>Vercel runtime logs</b><code>vercel logs</code><span>~1 hour of memory on Hobby</span></div>
+    <div class="surf"><b>Actions run logs</b><code>gh run view --log</code><span>per run, in the run&rsquo;s tab</span></div>
+  </div>
+  <div class="ribbon">
+    <b>persist the signal, tail the noise</b>
+    <span>statuses, flips, history &rarr; the stores below &middot; live forensics &rarr; the platform&rsquo;s surface above</span>
+  </div>
+  <div class="tierlab" style="text-align:center;margin-top:0;">persisted signal: statuses, flips, history land here</div>
+  <div class="bottier">
+    <div class="store">
+      <div class="writer">the Actions cron commits</div>
+      <svg width="24" height="34"><line x1="12" y1="0" x2="12" y2="22" stroke="#1B231D" stroke-width="3"/><polygon points="12,32 5,20 19,20" fill="#1B231D"/></svg>
+      <div class="cyl"><div class="lid"></div><b>status.json</b><span>committed by the cron, timestamped; history you can diff</span></div>
+    </div>
+    <div class="store">
+      <div class="writer">the edge worker writes</div>
+      <svg width="24" height="34"><line x1="12" y1="0" x2="12" y2="22" stroke="#1B231D" stroke-width="3"/><polygon points="12,32 5,20 19,20" fill="#1B231D"/></svg>
+      <div class="cyl"><div class="lid"></div><b>Workers KV</b><span>status:&lt;target&gt; keys: the latest state, addressable</span></div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

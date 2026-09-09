@@ -1,0 +1,145 @@
+id: lesson-rtf-m03-l3
+slug: m03-l3
+title: "Vercel: the URL"
+skills:
+  - solana-kit
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "vercel": "59.11.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check-ship
+    type: quiz
+    questions:
+      - id: m03l3-q1
+        prompt: "Your deployed board works from the home page, but sharing the direct link to /history returns a 404, while the same path works fine under npm run dev. What fixes production?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Enable Vite's history fallback in vite.config.ts, the same setting the dev server uses, so the built site answers unknown paths too"
+            correct: false
+            feedback: "Dev-server options stop at the dev server; nothing in vite.config.ts travels onto the CDN. The build emits a directory of real files, and the host needs its own instruction about paths that are not files."
+          - id: b
+            label: "Add the one-block vercel.json rewrite sending every path to /index.html, the SPA routes client-side, and the host must hand it every request"
+            correct: true
+            feedback: "The dev server rewrites unknown paths to index.html as a favor; a production static host does no favors. The rewrite is you asking the CDN for that same favor, in writing and in the repo."
+          - id: a
+            label: "Switch the board to hash-based routing, static hosts can only serve real files, so path-style routes can never work on a CDN deployment"
+            correct: false
+            feedback: "Hash routing would dodge the problem, but path-style routes work fine on static hosts, that's exactly what the rewrite exists for."
+          - id: c
+            label: "Rebuild with the route pre-rendered, Vite must emit a physical history/index.html for each route the app defines before a static host can serve it"
+            correct: false
+            feedback: "Pre-rendering is a real technique but not the requirement here, one rewrite line makes the CDN serve index.html for any path, and the client router takes it from there."
+        explanation: "The dev server silently rewrites unknown paths to index.html; a production static host doesn't, until you tell it to. The vercel.json block, source /(.*), destination /index.html, is the whole fix. Dev-prod asymmetries like this are why the lesson pokes the PRODUCTION URL, not localhost."
+      - id: m03l3-q2
+        prompt: "You set STATION_REPO in the Vercel dashboard, redeployed, and import.meta.env.STATION_REPO is still undefined in the browser. Why?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Env vars are read at runtime, so a static deployment can never see them, the board would need a serverless function to forward the value"
+            correct: false
+            feedback: "Vite inlines env values at BUILD time, which works fine for static output, no function needed. The gate is the prefix rule, not the architecture."
+          - id: c
+            label: "Only VITE_-prefixed variables reach client code, rename it VITE_STATION_REPO; the prefix is the 'this will be public' marker"
+            correct: true
+            feedback: "The prefix is a consent form. Everything in client JavaScript is world-readable forever, so exposure is opt-in, and reading the rule backwards gives you the security lesson: nothing secret may wear it."
+          - id: d
+            label: "Custom values arrive on process.env in the bundle; import.meta.env carries only Vite's own built-in variables"
+            correct: false
+            feedback: "There is no process object in a browser bundle, which is why Vite exposes import.meta.env at all. It carries your own variables happily; what gates them is the prefix, not the namespace."
+          - id: a
+            label: "Dashboard-set vars only reach preview deployments, production builds require the values to be committed in a .env.production file in the repo"
+            correct: false
+            feedback: "Dashboard vars target any environment you assign them to, and committing env files to a public repo is the anti-pattern, the issue is the missing prefix, not the source."
+        explanation: "Vite's prefix rule is a safety design: everything in client JS is world-readable, so exposure must be opt-in, and the ugly prefix IS the consent form. The same rule read backwards is the security lesson, anything secret must never wear VITE_, a thread the m09-l2 four-platform secrets sweep pulls tight."
+      - id: m03l3-q3
+        prompt: "You typed vercel in a repo with no config file and got a working deployment. What did 'zero-config' actually consist of?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The CLI found your local dist/ folder from the last npm run build and uploaded those files directly, skipping any remote build step"
+            correct: false
+            feedback: "The build runs on Vercel's machines from your source, that's why a failing build surfaces in THEIR logs, and why git pushes can redeploy without your laptop."
+          - id: a
+            label: "Vercel detected Vite, ran your build on its machines, and put the emitted dist/ on its CDN, configuration inferred from the repo"
+            correct: true
+            feedback: "You configured plenty, just in package.json and vite.config.ts, and the platform read those files as the config. Deployment became a build artifact of the repo."
+          - id: d
+            label: "Vercel cloned your repo on its side and built the default branch, so the deployment reflects main rather than your working copy"
+            correct: false
+            feedback: "Not on this first run: the CLI bundled your local source and sent it up, so an uncommitted edit would have shipped. Builds that start from a git clone begin once you connect the repo in the dashboard."
+          - id: c
+            label: "Vercel wrapped the app in a Node serverless function that renders each page on request, since a CDN alone cannot execute a Vite project"
+            correct: false
+            feedback: "A built Vite SPA is static files, no server runs per request. Functions exist on the platform, but this deployment used none."
+        explanation: "The mechanism, described without quoting anyone's marketing: your repo already declares its framework, build command, and output dir; the platform reads those declarations and provisions accordingly. Deployment became a build artifact, which also means the repo is now the single source of truth for what production looks like."
+  - key: check-hobby
+    type: quiz
+    questions:
+      - id: m03l3-q4
+        prompt: "Your station gets popular and blows past Hobby's 100 GB Fast Data Transfer mid-month. Per the published overage model, what happens?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The account gets a 7-day grace period and is then suspended, with existing deployments taken offline until you upgrade to a paid plan"
+            correct: false
+            feedback: "No suspension ladder, the documented behavior is a pause of the exceeded feature for the window, then normal service resumes."
+          - id: b
+            label: "The feature pauses until the 30-day window passes (in most cases), Hobby has no billing cycle, so no surprise invoice can exist"
+            correct: true
+            feedback: "With no billing cycle there is nothing for an invoice to arrive on, so the worst case of going viral here is downtime rather than debt. Web Analytics is the documented exception, resuming after 7 days."
+          - id: d
+            label: "Requests past the cap typically start returning an error page until the counter resets on the first of the month"
+            correct: false
+            feedback: "Two details off. The window is a rolling 30 days, not the calendar month, and what stops is the exceeded feature itself, which pauses; nothing turns your traffic into a wall of error pages."
+          - id: a
+            label: "Overage bills automatically at Pro's per-GB rates, the free tier's numbers are a threshold where metered billing starts, not a ceiling"
+            correct: false
+            feedback: "Hobby has no billing cycle at all, there's nothing to meter against. That's exactly what makes it safe to teach on."
+        explanation: "Pauses-not-bills is the property that makes Hobby a teaching platform: the worst case of success is downtime, never debt. Read against the station's actual traffic (a JSON file and a small bundle), 100 GB is enormous headroom, but knowing the failure mode BEFORE it fires is the operating habit this course keeps drilling."
+      - id: m03l3-q5
+        prompt: "Back in M1 the course insisted the station repo live on your PERSONAL GitHub account. This lesson is where that decision pays off. Why was it required?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The Vercel app needs org-owner approval to connect an org repo, and a solo Hobby account cannot request that approval"
+            correct: false
+            feedback: "Approval is not the mechanism, the plan is: Hobby teams cannot connect org-owned repositories at all, so no amount of goodwill from an org admin opens that door."
+          - id: b
+            label: "Org repos default to private visibility, which would break the raw status.json fetch, personal accounts are the only place public repos exist"
+            correct: false
+            feedback: "Orgs host public repos happily, the public-repo requirement and the personal-repo requirement are two separate constraints that happen to compose."
+          - id: a
+            label: "Vercel's build machines can only clone repos that share an owner name with the Vercel account, so personal-to-personal is the only link that authenticates"
+            correct: false
+            feedback: "The Git integration handles auth across owners fine on paid plans, the constraint is a Hobby plan rule, not an authentication mechanic."
+          - id: c
+            label: "Hobby teams cannot connect org-owned repositories, and Hobby is solo and non-commercial; the personal repo is the free path's shape"
+            correct: true
+            feedback: "Three documented constraints compose: non-commercial, solo, no org-owned repositories. M1 insisting on a personal public repo was this lesson reaching backwards so today's ship needs zero workarounds."
+        explanation: "Three documented Hobby constraints compose here: no org-owned repos, no team collaboration (the compare table's dash), and non-commercial personal use. The course designed the station's shape around them in M1 so lesson ten's ship needs zero workarounds, that's what a free-tier-honest core path means."
+      - id: m03l3-q6
+        prompt: "The board is one of three sibling projects in the station repo, alongside the fleet and the shared engine. How does Vercel deploy just the dashboard?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Move the dashboard to its own standalone repository first, monorepos aren't supported on the Git integration, only single-package repos deploy cleanly"
+            correct: false
+            feedback: "This was the course's contingency plan until the docs probe resolved it, Root Directory is the supported, documented monorepo path, and the fallback was never needed."
+          - id: c
+            label: "Add a vercel.json at the repo root enumerating every workspace package, so the platform builds all three and serves whichever emits an index.html"
+            correct: false
+            feedback: "No root manifest enumerates packages, the model is one project pointed at one directory via a dashboard setting, not a build-everything sweep."
+          - id: d
+            label: "Vercel reads pnpm-workspace.yaml and picks the package that can deploy, the board being the sole one with an index.html"
+            correct: false
+            feedback: "Nothing introspects that file to choose a target; a human aims the project at one directory when importing it. What the workspace declarations buy is the build skip for untouched siblings."
+          - id: a
+            label: "Set Root Directory to packages/pulse-board at import, one Vercel project per deployable directory; unaffected siblings get skipped"
+            correct: true
+            feedback: "One project per deployable directory is the whole model. The workspace hygiene from m03-l1, real package names and declared inter-package deps, is what additionally earns the skipped builds."
+        explanation: "One project per deployable directory, selected via Root Directory at import and editable later in settings. The supporting requirements, a real workspace definition, unique package names, declared inter-package deps, are exactly the package.json hygiene m03-l1 taught, which is why the import Just Works."

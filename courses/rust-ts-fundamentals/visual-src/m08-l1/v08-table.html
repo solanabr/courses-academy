@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The two-run proof, quantity by quantity
+     purpose: turn step 7's checkpoint into a filled-in worksheet, so the reader knows which number to write down and which arithmetic decides pass or fail
+     data: Columns: quantity | where it comes from | write-time example, 2026-09-02 Row 1: slot, first run | one getSlot read, the gauge's first output line | 443,692,920 Row 2: wall clock between the two runs | your own clock, whatever you actually waited | 5 minutes, so 300,000ms Row 3: slot time | the 20-sample measurement, NOT the 300ms target | 313.6ms Row 4: predicted advance | row 2 divided by row 3 | about 950 slots Row 5: slot, second run | one getSlot read, minutes later | row 1 plus roughly row 4 Row 6: verdict | does row 5 minus row 1 land near row 4 | if it does, the script measured the clock's rate; it did not just print a counter
+     prompt: Three-column worksheet table, six rows as listed in data. Tint rows 2 through 4 as the arithmetic band. Render row 6 as a full-width verdict strip below the table rather than as a normal row. Numbers in monospace, the source column in plain sentence case. Put a small caution dot beside the NOT clause in row 3.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:472px;bottom:-288px;right:-288px;border-radius:65% 54% 47% 56% / 45% 59% 63% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:519px;height:397px;left:-318px;top:249px;border-radius:57% 47% 47% 58% / 46% 59% 50% 37%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v08-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 36px 56px 30px; overflow: hidden; position: relative; }
+  .v08-table { margin-top: 10px; border: 1.5px solid var(--border-subtle);
+               border-radius: var(--radius-lg); overflow: hidden; }
+  .v08-tr { display: flex; align-items: stretch; border-bottom: 1.5px solid var(--border-subtle);
+            background: var(--surface-card); }
+  .v08-tr:last-child { border-bottom: none; }
+  .v08-tr-head { background: var(--surface-inverse); border-bottom: none; }
+  .v08-tr-band { background: rgba(0, 139, 76, 0.07); }
+  .v08-c { padding: 15px 22px; display: flex; align-items: center; }
+  .v08-c1 { width: 312px; font-family: var(--font-display); font-weight: 800;
+            font-size: 17px; color: var(--text-primary); }
+  .v08-c2 { width: 660px; font-family: var(--font-body); font-size: 15.5px;
+            line-height: 1.4; color: var(--text-secondary);
+            border-left: 1.5px solid var(--border-subtle);
+            border-right: 1.5px solid var(--border-subtle); }
+  .v08-c3 { flex: 1; font-family: var(--font-mono); font-size: 16px;
+            color: var(--text-primary); }
+  .v08-tr-head .v08-c { font-family: var(--font-display); font-weight: 800;
+                        font-size: 13.5px; letter-spacing: 0.12em; text-transform: uppercase;
+                        color: var(--stbr-cream); }
+  .v08-tr-head .v08-c2, .v08-tr-head .v08-c3 { border-color: rgba(245, 232, 202, 0.2); }
+  .v08-cell-caution { background: rgba(255, 210, 63, 0.28); }
+  .v08-dot { display: inline-block; width: 13px; height: 13px; border-radius: 50%;
+             background: var(--stbr-yellow); border: 2px solid var(--stbr-dark);
+             margin-right: 10px; flex: none; }
+  .v08-bandtag { display: inline-block; font-family: var(--font-display); font-weight: 800;
+                 font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
+                 color: var(--stbr-green); border: 1px solid var(--stbr-green);
+                 border-radius: var(--radius-pill); padding: 1px 8px; margin-left: 10px; }
+  .v08-verdict { display: flex; align-items: center; gap: 20px; margin-top: 16px;
+                 background: var(--surface-brand); border-radius: var(--radius-lg);
+                 padding: 17px 26px; }
+  .v08-vtag { font-family: var(--font-display); font-weight: 900; font-size: 14px;
+              letter-spacing: 0.14em; background: var(--stbr-cream);
+              color: var(--stbr-green); border-radius: var(--radius-pill);
+              padding: 5px 16px; flex: none; }
+  .v08-vtxt { font-family: var(--font-body); font-size: 16px; line-height: 1.45;
+              color: var(--text-on-brand); }
+  .v08-vtxt strong { font-weight: 700; }
+</style>
+<div class="v08-card">
+  <div class="stbr-eyebrow">STEP 7 CHECKPOINT · A FILLED-IN WORKSHEET</div>
+  <h2 class="viz-title">the two-run proof, quantity by quantity</h2>
+  <div class="v08-table">
+    <div class="v08-tr v08-tr-head">
+      <div class="v08-c v08-c1">quantity</div>
+      <div class="v08-c v08-c2">where it comes from</div>
+      <div class="v08-c v08-c3">write-time example · 2026-09-02</div>
+    </div>
+    <div class="v08-tr">
+      <div class="v08-c v08-c1">slot, first run</div>
+      <div class="v08-c v08-c2">one getSlot read: the gauge's first output line</div>
+      <div class="v08-c v08-c3">443,692,920</div>
+    </div>
+    <div class="v08-tr v08-tr-band">
+      <div class="v08-c v08-c1">wall clock between the two runs<span class="v08-bandtag">arithmetic</span></div>
+      <div class="v08-c v08-c2">your own clock: whatever you actually waited</div>
+      <div class="v08-c v08-c3">5 min = 300,000 ms</div>
+    </div>
+    <div class="v08-tr v08-tr-band">
+      <div class="v08-c v08-c1">slot time</div>
+      <div class="v08-c v08-c2 v08-cell-caution"><span class="v08-dot"></span>the 20-sample measurement,&nbsp;<strong>NOT</strong>&nbsp;the 300 ms target</div>
+      <div class="v08-c v08-c3">313.6 ms</div>
+    </div>
+    <div class="v08-tr v08-tr-band">
+      <div class="v08-c v08-c1">predicted advance</div>
+      <div class="v08-c v08-c2">row 2 divided by row 3</div>
+      <div class="v08-c v08-c3">≈ 950 slots</div>
+    </div>
+    <div class="v08-tr">
+      <div class="v08-c v08-c1">slot, second run</div>
+      <div class="v08-c v08-c2">one getSlot read, minutes later</div>
+      <div class="v08-c v08-c3">row 1 + ≈ row 4</div>
+    </div>
+  </div>
+  <div class="v08-verdict">
+    <div class="v08-vtag">VERDICT</div>
+    <div class="v08-vtxt">does <strong>row 5 − row 1</strong> land near <strong>row 4</strong>? if it does, the script measured the clock's rate; <strong>it did not just print a counter</strong>.</div>
+  </div>
+</div>
+</div>
+</body></html>

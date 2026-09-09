@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: tx-check in the station's probe hierarchy
+     purpose: place the new artifact as the deepest probe the station owns, and show who calls it
+     data: Probe ladder, shallow to deep: - HTTP probes (pulse fleet, M2): "is the service up?" - chain reads (solana-probes-v0, m08-l1): "is the chain answering?" - production reads (solana-panel, m08-l2): "are our deployed surfaces seeing it?" - tx-check (m08-l4, NEW): "can this stack sign and land a state change?" Arrow into tx-check labeled: "m10-l1 demo script calls it: npx tsx tx-check.ts, trusts exit code"
+     prompt: Vertical ladder diagram, four rungs from shallow HTTP probes at the top down to tx-check at the bottom, each rung carrying its artifact name and the question it answers. Emphasize the bottom rung as new, with an incoming arrow labeled with the m10-l1 invocation and exit-code trust from the data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:531px;height:453px;right:-282px;top:272px;border-radius:44% 44% 49% 37% / 43% 65% 51% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:476px;height:443px;bottom:-257px;left:-257px;border-radius:65% 36% 50% 35% / 38% 37% 52% 54%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:42px 56px 38px; }
+    .mono { font-family:var(--font-mono); }
+    .rung { height:92px; border-radius:var(--radius-lg); display:flex; align-items:center; gap:18px; padding:0 26px; }
+    .rung h4 { margin:0; font-family:var(--font-mono); font-weight:700; font-size:22px; color:var(--stbr-dark); white-space:nowrap; }
+    .rung .tag { font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--text-muted); white-space:nowrap; }
+    .rung .q { margin-left:auto; font-family:var(--font-body); font-style:italic; font-size:16.5px; color:var(--text-secondary); text-align:right; }
+    .raillbl { font-family:var(--font-body); font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">the station&rsquo;s probe ladder, shallow to deep</div>
+    <h2 class="viz-title">tx-check in the station&rsquo;s probe hierarchy</h2>
+    <div style="display:flex; align-items:flex-start; gap:22px;">
+      <div style="width:76px; flex:none; height:410px; display:flex; flex-direction:column; align-items:center;">
+        <span class="raillbl">shallow</span>
+        <div style="width:3px; flex:1; background:var(--stbr-green); margin:8px 0 2px;"></div>
+        <div style="width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-top:10px solid var(--stbr-green); margin-bottom:8px;"></div>
+        <span class="raillbl">deep</span>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
+        <div class="rung" style="background:#fff; border:2px solid var(--stbr-green);">
+          <h4>HTTP probes</h4><span class="tag">pulse fleet &middot; M2</span>
+          <span class="q">&ldquo;is the service up?&rdquo;</span>
+        </div>
+        <div class="rung" style="background:#eef5f0; border:2px solid var(--stbr-green);">
+          <h4>chain reads</h4><span class="tag">solana-probes-v0 &middot; m08-l1</span>
+          <span class="q">&ldquo;is the chain answering?&rdquo;</span>
+        </div>
+        <div class="rung" style="background:#dcecdf; border:2px solid var(--stbr-emerald);">
+          <h4>production reads</h4><span class="tag">solana-panel &middot; m08-l2</span>
+          <span class="q">&ldquo;are our deployed surfaces seeing it?&rdquo;</span>
+        </div>
+        <div class="rung" style="background:var(--stbr-emerald); border:2px solid var(--stbr-emerald);">
+          <span style="flex:none; background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill); padding:6px 14px; font-family:var(--font-display); font-weight:800; font-size:14px;">NEW</span>
+          <h4 style="color:var(--stbr-cream);">tx-check</h4><span class="tag" style="color:var(--stbr-cream); opacity:.8;">m08-l4</span>
+          <span class="q" style="color:var(--stbr-cream); opacity:.92;">&ldquo;can this stack sign and land a state change?&rdquo;</span>
+        </div>
+      </div>
+      <div style="width:400px; flex:none; display:flex; flex-direction:column;">
+        <div style="height:318px;"></div>
+        <div style="height:92px; display:flex; align-items:center;">
+          <div style="width:0; height:0; border-top:7px solid transparent; border-bottom:7px solid transparent; border-right:10px solid var(--stbr-emerald); flex:none;"></div>
+          <div style="height:3px; width:34px; background:var(--stbr-emerald); flex:none;"></div>
+          <div style="flex:1; border:2px solid var(--border-strong); border-radius:var(--radius-lg); background:var(--surface-paper); padding:13px 18px;">
+            <p style="margin:0; font-family:var(--font-body); font-size:14.5px; color:var(--text-primary); line-height:1.4;"><strong>m10-l1 demo script calls it:</strong><br><span class="mono">npx tsx tx-check.ts</span>, and trusts the exit code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

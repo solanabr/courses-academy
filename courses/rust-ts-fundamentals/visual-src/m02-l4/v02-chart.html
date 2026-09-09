@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: The five-attempt backoff schedule the test must pin
+     purpose: show the exact delays the m02-l3 formula promises, which the fake-timer test asserts value by value
+     data: x axis: retry number (1 through 5) y axis: delay in ms before that retry values: 500, 1000, 2000, 4000, 8000 (base 500ms, doubling, cap 8000ms) annotation: total wall time if slept for real = 15500 ms per test run
+     prompt: Simple bar chart, five bars, x axis labeled "retry", y axis labeled "delay (ms)". Bars at 500, 1000, 2000, 4000, 8000 with the value printed above each bar. One annotation line at the top: "15.5s of real sleeping per run, or 0s with fake timers".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:475px;top:-246px;right:-246px;border-radius:35% 48% 48% 56% / 52% 38% 45% 36%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:499px;height:401px;left:-249px;top:304px;border-radius:54% 55% 59% 52% / 50% 65% 43% 40%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 38px 56px 30px; }
+  .anno { display: inline-block; background: var(--surface-inverse); color: var(--text-on-dark);
+          border-radius: var(--radius-pill); padding: 11px 26px; margin-top: 6px;
+          font-family: var(--font-body); font-weight: 600; font-size: 20px; }
+  .anno .zero { color: var(--stbr-yellow); font-weight: 700; }
+  .chartwrap { margin-top: 16px; }
+  .ylab { font-family: var(--font-body); font-size: 15px; color: var(--text-muted);
+          margin-bottom: 6px; }
+  .chart { position: relative; height: 352px;
+           border-bottom: 2.5px solid var(--stbr-dark); }
+  .bar { position: absolute; bottom: 0; width: 170px;
+         background: var(--surface-brand); border-radius: 8px 8px 0 0; }
+  .val { position: absolute; width: 269px; text-align: center;
+         font-family: var(--font-body); font-weight: 700; font-size: 20px;
+         color: var(--text-primary); }
+  .val .cap-note { font-size: 14px; font-weight: 600; color: var(--text-muted); }
+  .xrow { display: flex; margin-top: 8px; }
+  .xrow div { flex: 1; text-align: center; font-family: var(--font-body); font-size: 17px;
+              color: var(--text-secondary); }
+  .xlab { text-align: center; font-family: var(--font-body); font-size: 15px;
+          color: var(--text-muted); margin-top: 6px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">base 500 ms, doubling, cap 8000 ms</div>
+  <h2 class="viz-title" style="font-size:42px;">the five-attempt backoff schedule the test must pin</h2>
+  <div class="anno">15.5 s of real sleeping per run, <span class="zero">or 0 s with fake timers</span></div>
+  <div class="chartwrap">
+    <div class="ylab">delay (ms) before that retry</div>
+    <div class="chart">
+      <div class="val" style="left:0;    bottom:28px;">500</div>
+      <div class="val" style="left:269px; bottom:48px;">1000</div>
+      <div class="val" style="left:538px; bottom:87px;">2000</div>
+      <div class="val" style="left:807px; bottom:166px;">4000</div>
+      <div class="val" style="left:1075px; bottom:325px;">8000 <span class="cap-note">(reaches cap)</span></div>
+      <div class="bar" style="left:49px;   height:20px;"></div>
+      <div class="bar" style="left:318px;  height:40px;"></div>
+      <div class="bar" style="left:587px;  height:79px;"></div>
+      <div class="bar" style="left:856px;  height:158px;"></div>
+      <div class="bar" style="left:1125px; height:317px;"></div>
+    </div>
+    <div class="xrow">
+      <div>retry 1</div><div>retry 2</div><div>retry 3</div><div>retry 4</div><div>retry 5</div>
+    </div>
+    <div class="xlab">retry</div>
+  </div>
+</div>
+</div>
+</body></html>

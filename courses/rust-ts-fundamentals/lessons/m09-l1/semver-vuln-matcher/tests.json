@@ -1,0 +1,44 @@
+[
+  {
+    "id": "t1",
+    "description": "the exercise range borrows the incident's digits: the malicious 0.3.10 sits inside >=0.3.0 <0.3.11",
+    "input": "'0.3.10', '>=0.3.0 <0.3.11'",
+    "expectedOutput": "result === true"
+  },
+  {
+    "id": "t2",
+    "description": "double-digit patch vs single-digit, where string comparison lies: 0.3.9 is inside >=0.3.0 <0.3.11",
+    "input": "'0.3.9', '>=0.3.0 <0.3.11'",
+    "expectedOutput": "result === true"
+  },
+  {
+    "id": "t3",
+    "description": "0.3.11 is OUTSIDE the range (exercise framing; the real incident yanked 0.3.10 rather than shipping a fix)",
+    "input": "'0.3.11', '>=0.3.0 <0.3.11'",
+    "expectedOutput": "result === false"
+  },
+  {
+    "id": "t4",
+    "description": "numeric beats lexicographic: 0.3.2 IS below 0.3.10 (string compare says it isn't)",
+    "input": "'0.3.2', '<0.3.10'",
+    "expectedOutput": "result === true"
+  },
+  {
+    "id": "t5",
+    "description": "double-digit minor component: 1.10.0 satisfies >=1.9.0",
+    "input": "'1.10.0', '>=1.9.0'",
+    "expectedOutput": "result === true"
+  },
+  {
+    "id": "t6",
+    "description": "exact-match comparator: =2.0.20 matches 2.0.20",
+    "input": "'2.0.20', '=2.0.20'",
+    "expectedOutput": "result === true"
+  },
+  {
+    "id": "t7",
+    "description": "exact-match comparator rejects a near miss",
+    "input": "'2.0.19', '=2.0.20'",
+    "expectedOutput": "result === false"
+  }
+]

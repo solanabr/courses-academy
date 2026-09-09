@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where the chain gauge sits in the station
+     purpose: place the new bench script relative to the deployed surfaces so v0 versus production is structural, not a vibe
+     data: Deployed row: Vercel dashboard (m03), edge worker at workers.dev (m07-l1), Rust WASM worker (m07-l2) Annotation on deployed row: all three are chain-blind today; they probe getHealth as just another URL Bench row: chain-probe.ts, new, runs via npx tsx on your machine only Arrow from bench row to deployed row labeled: m08-l2 promotes chain reads to the deployed surfaces (slot vitals plus the balances it introduces; the 20-sample gauge and epoch clock stay bench instruments)
+     prompt: Two horizontal rows of boxes, deployed surfaces on top and the single new bench script below, using the labels in the data block. One upward arrow carries the promotion label. Mute the deployed row slightly; the bench box is the focal element. Flat and clean.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:540px;height:510px;top:-269px;right:-269px;border-radius:53% 47% 38% 36% / 45% 45% 36% 57%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:478px;height:501px;left:-253px;top:136px;border-radius:55% 54% 43% 57% / 55% 49% 46% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v06-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 38px 56px 34px; overflow: hidden; position: relative; }
+  .v06-band { border-radius: var(--radius-xl); padding: 18px 26px 22px; }
+  .v06-band-deployed { background: var(--surface-paper); border: 1.5px solid var(--border-subtle);
+                       margin-top: 10px; }
+  .v06-bandlab { font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                 letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+                 margin-bottom: 12px; }
+  .v06-drow { display: flex; gap: 20px; }
+  .v06-dbox { flex: 1; background: var(--surface-card); border: 1.5px solid var(--border-subtle);
+              border-radius: var(--radius-lg); padding: 16px 20px; }
+  .v06-dname { font-family: var(--font-body); font-weight: 600; font-size: 17px;
+               color: var(--text-secondary); margin-bottom: 6px; }
+  .v06-mchip { display: inline-block; font-family: var(--font-mono); font-size: 12.5px;
+               color: var(--text-muted); border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-pill); padding: 2px 10px; }
+  .v06-dnote { margin-top: 14px; font-family: var(--font-body); font-size: 14.5px;
+               font-style: italic; color: var(--text-muted); }
+  .v06-dnote code { font-family: var(--font-mono); font-style: normal; font-size: 13.5px; }
+  .v06-midzone { display: flex; align-items: center; gap: 26px; padding: 0 60px;
+                 height: 118px; }
+  .v06-arrowcol { width: 40px; height: 118px; display: flex; flex-direction: column;
+                  align-items: center; justify-content: flex-start; }
+  .v06-arrowhead { width: 0; height: 0; border-bottom: 15px solid var(--stbr-emerald);
+                   border-left: 10px solid transparent; border-right: 10px solid transparent; }
+  .v06-arrowline { width: 4px; height: 103px; background: var(--stbr-emerald); }
+  .v06-promolab { flex: 1; background: rgba(0, 139, 76, 0.08);
+                  border: 1.5px solid rgba(0, 139, 76, 0.3); border-radius: var(--radius-lg);
+                  padding: 14px 22px; font-family: var(--font-body); font-size: 15px;
+                  line-height: 1.5; color: var(--text-secondary); }
+  .v06-promolab strong { color: var(--stbr-green); font-weight: 700; }
+  .v06-band-bench { border: 2px solid var(--stbr-dark); display: flex; align-items: center;
+                    gap: 26px; padding: 22px 30px; }
+  .v06-newchip { font-family: var(--font-display); font-weight: 900; font-size: 15px;
+                 letter-spacing: 0.14em; background: var(--stbr-yellow);
+                 color: var(--text-on-accent); border: 2px solid var(--stbr-dark);
+                 border-radius: var(--radius-pill); padding: 6px 20px; flex: none; }
+  .v06-bname { font-family: var(--font-mono); font-weight: 700; font-size: 27px;
+               color: var(--text-primary); flex: none; }
+  .v06-bsub { font-family: var(--font-body); font-size: 15.5px; color: var(--text-secondary); }
+  .v06-bsub code { font-family: var(--font-mono); font-size: 14px; }
+</style>
+<div class="v06-card">
+  <div class="stbr-eyebrow">BENCH VERSUS DEPLOYED · STRUCTURAL, NOT A VIBE</div>
+  <h2 class="viz-title">where the chain gauge sits in the station</h2>
+  <div class="v06-band v06-band-deployed">
+    <div class="v06-bandlab">deployed surfaces: production</div>
+    <div class="v06-drow">
+      <div class="v06-dbox">
+        <div class="v06-dname">Vercel dashboard</div>
+        <div class="v06-mchip">m03</div>
+      </div>
+      <div class="v06-dbox">
+        <div class="v06-dname">edge worker · workers.dev</div>
+        <div class="v06-mchip">m07-l1</div>
+      </div>
+      <div class="v06-dbox">
+        <div class="v06-dname">Rust WASM worker</div>
+        <div class="v06-mchip">m07-l2</div>
+      </div>
+    </div>
+    <div class="v06-dnote">all three are chain-blind today; they probe <code>getHealth</code> as just another URL</div>
+  </div>
+  <div class="v06-midzone">
+    <div class="v06-arrowcol">
+      <div class="v06-arrowhead"></div>
+      <div class="v06-arrowline"></div>
+    </div>
+    <div class="v06-promolab"><strong>m08-l2 promotes chain reads to the deployed surfaces</strong>: slot vitals plus the balances it introduces; the 20-sample gauge and epoch clock stay bench instruments</div>
+  </div>
+  <div class="v06-band v06-band-bench">
+    <div class="v06-newchip">NEW · BENCH</div>
+    <div class="v06-bname">chain-probe.ts</div>
+    <div class="v06-bsub">runs via <code>npx tsx</code>, on your machine only</div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Manifest intent, lockfile record, install behavior
+     purpose: show which install commands read the lockfile and where the attack window actually opens
+     data: layer 1, manifest: range ^1.4.0 expresses intent; accepts 1.4.3 in principle layer 2, lockfile: records the resolution 1.4.2, byte for byte layer 3a, honoring installs: npm ci, pnpm install --frozen-lockfile, cargo build --locked; install exactly 1.4.2 layer 3b, forward-resolving events: bare install without a lockfile, npm update, pnpm update, cargo update, lockfile regeneration; resolve the range fresh and take 1.4.3 if it is live conclusion: the exposure moment is lockfile regeneration during a live attack window, not the publish itself
+     prompt: Three-layer stack diagram. Top layer is the manifest with its caret range, middle layer is the lockfile with the recorded version, bottom layer splits into two paths: honoring install commands shown flowing only through the lockfile, and forward-resolving commands shown bypassing it straight to the registry. Mark the bypass path as the open window. List the three honoring commands as code chips on the safe path.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:467px;height:473px;bottom:-240px;right:-240px;border-radius:55% 41% 44% 36% / 45% 56% 55% 47%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:510px;height:478px;left:-264px;top:308px;border-radius:62% 55% 35% 44% / 52% 63% 62% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .c{background:var(--surface-card);border-radius:var(--radius-2xl);padding:32px 52px 30px;}
+  .manifest{margin-top:14px;background:var(--surface-inverse);border-radius:14px;padding:12px 28px;
+            display:flex;align-items:center;justify-content:center;gap:20px;}
+  .manifest h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:19px;color:var(--text-on-dark);}
+  .manifest .mono{font-family:var(--font-mono);font-weight:700;font-size:17px;background:rgba(245,232,202,.14);
+                  color:var(--text-on-dark);border-radius:8px;padding:5px 12px;}
+  .manifest p{margin:0;font-family:var(--font-body);font-size:13.5px;color:rgba(245,232,202,.85);}
+  .paths{display:flex;gap:28px;margin-top:0;}
+  .path{flex:1;display:flex;flex-direction:column;align-items:center;}
+  .arr{width:0;height:18px;border-left:2px solid var(--stbr-dark);position:relative;}
+  .arr::after{content:"";position:absolute;left:-6px;bottom:-8px;border-left:6px solid transparent;
+              border-right:6px solid transparent;border-top:8px solid var(--stbr-dark);}
+  .arr .lbl{position:absolute;left:12px;top:-1px;font-family:var(--font-display);font-weight:800;font-size:11.5px;
+            letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);white-space:nowrap;}
+  .lock{width:100%;background:var(--surface-brand);border-radius:14px;padding:11px 24px;text-align:center;}
+  .lock h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--text-on-brand);}
+  .lock p{margin:2px 0 0;font-family:var(--font-body);font-size:13px;color:rgba(245,232,202,.9);}
+  .reg{width:100%;background:var(--surface-paper);border:1.5px solid var(--border-strong);border-radius:14px;
+       padding:11px 24px;text-align:center;}
+  .reg h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:18px;color:var(--text-primary);}
+  .reg p{margin:2px 0 0;font-family:var(--font-body);font-size:13px;color:var(--text-secondary);}
+  .res{width:100%;border-radius:14px;padding:12px 22px;text-align:center;}
+  .safe{background:var(--surface-paper);border:2px solid var(--stbr-emerald);}
+  .safe h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:17px;color:var(--stbr-emerald);}
+  .safe p{margin:3px 0 0;font-family:var(--font-body);font-size:12.5px;color:var(--text-secondary);}
+  .cmds{display:flex;gap:8px;justify-content:center;margin-top:7px;flex-wrap:wrap;}
+  .cmd{font-family:var(--font-mono);font-weight:700;font-size:12.5px;background:var(--surface-inverse);
+       color:var(--text-on-dark);border-radius:7px;padding:4px 10px;}
+  .hot{background:var(--stbr-yellow);}
+  .hot h4{margin:0;font-family:var(--font-display);font-weight:900;font-size:17px;color:var(--stbr-dark);}
+  .hot p{margin:3px 0 0;font-family:var(--font-body);font-size:12.5px;line-height:1.4;color:var(--stbr-dark);}
+  .hot .tag{display:inline-block;margin-top:6px;background:var(--stbr-dark);color:var(--stbr-yellow);
+            border-radius:999px;padding:4px 14px;font-family:var(--font-display);font-weight:900;
+            font-size:12px;letter-spacing:.08em;text-transform:uppercase;}
+  .concl{margin-top:16px;background:var(--surface-brand-deep);border-radius:14px;padding:13px 28px;text-align:center;
+         font-family:var(--font-display);font-weight:800;font-size:17px;line-height:1.35;color:var(--text-on-brand);}
+</style>
+<div class="c">
+  <div class="stbr-eyebrow">where the attack window actually opens</div>
+  <h2 class="viz-title" style="font-size:38px;margin:2px 0 0;">manifest intent, lockfile record, install behavior</h2>
+  <div class="manifest">
+    <h4>manifest</h4>
+    <span class="mono">^1.4.0</span>
+    <p>expresses intent: accepts 1.4.3 in principle</p>
+  </div>
+  <div class="paths">
+    <div class="path">
+      <div class="arr"><span class="lbl">honoring installs</span></div>
+      <div class="lock">
+        <h4>lockfile: records the resolution 1.4.2</h4>
+        <p>byte for byte, exactly what was resolved last time</p>
+      </div>
+      <div class="arr"></div>
+      <div class="res safe">
+        <h4>installs exactly 1.4.2</h4>
+        <div class="cmds"><span class="cmd">npm ci</span><span class="cmd">pnpm install --frozen-lockfile</span><span class="cmd">cargo build --locked</span></div>
+      </div>
+    </div>
+    <div class="path">
+      <div class="arr"><span class="lbl">bypasses the lockfile</span></div>
+      <div class="reg">
+        <h4>registry</h4>
+        <p>whatever is live right now, including a hostile release</p>
+      </div>
+      <div class="arr"></div>
+      <div class="res hot">
+        <h4>resolves the range fresh &rarr; takes 1.4.3 if it is live</h4>
+        <p>bare install without a lockfile &middot; npm update &middot; pnpm update &middot; cargo update &middot; lockfile regeneration</p>
+        <span class="tag">the open window</span>
+      </div>
+    </div>
+  </div>
+  <div class="concl">the exposure moment is lockfile regeneration during a live attack window, not the publish itself</div>
+</div>
+</div>
+</body></html>

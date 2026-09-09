@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Where the compiler's jurisdiction stops
+     purpose: draw the erasure boundary as a place, so "types are erased at runtime" stops being a slogan and becomes a line the reader can point at in their own file
+     data: Left region, compile time only: the ProbeResult union, the discriminant, the exhaustive switch, assertNever. Label: theorems about values YOUR code constructs. Footnote: all of it erased before the program runs. The boundary itself: parseProbe, the only thing that exists at runtime. It returns ProbeResult or null, never an assertion. Right region, runtime bytes: JSON.parse output, a file read, a fetch response. Label: no type has ever been checked here. Marked as a costume, not a proof: const data: ProbeResult = JSON.parse(raw), drawn crossing the boundary with the check skipped Annotation on the boundary: everything the type system promises starts on the left side of parseProbe, and only after it has returned
+     prompt: Two facing regions split by one heavy vertical boundary line. Left region cool and solid, holding the four compile-time items as a small stack. Right region rendered as loose, unlabeled byte shapes to signal untyped input. Draw parseProbe as a gate straddling the boundary with two exits, one typed and one null. Draw the costume declaration as a dashed arrow tunnelling under the gate, struck through. Set the boundary annotation as a caption.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:483px;top:-289px;right:-289px;border-radius:57% 46% 51% 44% / 61% 42% 41% 65%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:557px;height:502px;bottom:-273px;left:-273px;border-radius:48% 54% 62% 63% / 52% 37% 61% 65%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v07-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px 32px;}
+    .v07-region{border-radius:var(--radius-xl);padding:20px 24px;height:352px;}
+    .v07-rlbl{font-family:var(--font-display);font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;}
+    .v07-item{font-family:var(--font-mono);font-size:17px;padding:9px 14px;border-radius:10px;margin-bottom:10px;
+              background:var(--surface-card);border:2px solid var(--stbr-emerald);color:var(--text-primary);}
+    .v07-byte{font-family:var(--font-mono);font-size:16px;padding:9px 14px;border-radius:10px;
+              background:var(--surface-card);border:2px dashed var(--border-subtle);color:var(--text-muted);}
+  </style>
+  <div class="v07-card">
+    <div class="stbr-eyebrow">TYPES ARE ERASED AT RUNTIME</div>
+    <h2 class="viz-title">where the compiler's jurisdiction stops</h2>
+    <div style="display:flex;gap:14px;margin-top:20px;align-items:stretch;">
+      <div class="v07-region" style="flex:1;background:rgba(0,139,76,0.08);border:2px solid var(--stbr-emerald);">
+        <div class="v07-rlbl" style="color:var(--stbr-emerald);">compile time: theorems about values YOUR code constructs</div>
+        <div class="v07-item">the ProbeResult union</div>
+        <div class="v07-item">the discriminant (kind)</div>
+        <div class="v07-item">the exhaustive switch</div>
+        <div class="v07-item">assertNever</div>
+        <div style="font-family:var(--font-body);font-size:16px;color:var(--text-secondary);margin-top:12px;font-style:italic;">all of it erased before the program runs</div>
+      </div>
+      <div style="width:250px;flex:none;position:relative;">
+        <div style="position:absolute;left:121px;top:0;bottom:0;width:8px;background:var(--stbr-dark);border-radius:4px;"></div>
+        <svg width="70" height="16" style="position:absolute;right:0;top:60px;display:block;"><line x1="70" y1="8" x2="14" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,8 16,3 16,13" fill="#1b231d"/></svg>
+        <div style="position:absolute;left:5px;right:5px;top:92px;background:var(--surface-accent);color:var(--text-on-accent);
+                    border-radius:var(--radius-lg);padding:14px 16px;text-align:center;">
+          <div style="font-family:var(--font-mono);font-weight:700;font-size:21px;">parseProbe</div>
+          <div style="font-family:var(--font-body);font-size:14.5px;line-height:1.3;margin-top:6px;">the only thing that exists at runtime</div>
+        </div>
+        <svg width="70" height="16" style="position:absolute;left:0;top:200px;display:block;"><line x1="70" y1="8" x2="14" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="0,8 16,3 16,13" fill="#008b4c"/></svg>
+        <div style="position:absolute;left:0;top:218px;font-family:var(--font-mono);font-size:15px;color:var(--stbr-emerald);font-weight:600;">ProbeResult</div>
+        <svg width="16" height="46" style="position:absolute;left:117px;top:196px;display:block;"><line x1="8" y1="0" x2="8" y2="34" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,46 3,33 13,33" fill="#1b231d"/></svg>
+        <div style="position:absolute;left:60px;right:20px;top:250px;background:var(--surface-inverse);color:var(--text-on-dark);
+                    border-radius:10px;padding:8px 12px;text-align:center;font-family:var(--font-mono);font-size:15px;">null: never an assertion</div>
+      </div>
+      <div class="v07-region" style="flex:1;background:var(--surface-paper);border:2px dashed var(--border-strong);">
+        <div class="v07-rlbl" style="color:var(--text-secondary);">runtime bytes: no type has ever been checked here</div>
+        <div style="position:relative;height:250px;">
+          <div class="v07-byte" style="position:absolute;left:8px;top:14px;transform:rotate(-2deg);">JSON.parse output</div>
+          <div class="v07-byte" style="position:absolute;left:150px;top:88px;transform:rotate(1.5deg);">a file read</div>
+          <div class="v07-byte" style="position:absolute;left:30px;top:165px;transform:rotate(-1deg);">a fetch response</div>
+          <div class="v07-byte" style="position:absolute;left:230px;top:200px;transform:rotate(2deg);">?? ¶ 0x1F …</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;margin-top:16px;border:2px dashed var(--border-strong);border-radius:var(--radius-lg);padding:10px 22px;">
+      <span style="font-family:var(--font-mono);font-size:18px;color:var(--text-muted);text-decoration:line-through;">const data: ProbeResult = JSON.parse(raw)</span><span style="font-family:var(--font-body);font-size:17px;color:var(--text-secondary);">, a costume, not a proof: it tunnels under the gate with the check skipped</span>
+    </div>
+    <div style="background:var(--surface-brand);color:var(--text-on-brand);border-radius:var(--radius-lg);padding:13px 24px;margin-top:14px;
+                font-family:var(--font-display);font-weight:800;font-size:20.5px;text-align:center;">
+      everything the type system promises starts on the left side of parseProbe, and only after it has returned
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: What docker run hello-world actually did
+     purpose: show the pull-then-run pipeline and why the second run skips half of it
+     data: docker CLI -> Docker engine -> local image cache (miss) -> registry (Docker Hub) -> pull layers -> store locally -> create container from image -> run process -> process exits -> container exits second run: docker CLI -> engine -> local cache (hit) -> create NEW container -> run -> exit key: the image is downloaded once; every run creates a fresh container
+     prompt: Left-to-right flowchart in two lanes. Lane 1 (first run): CLI, engine, cache miss, Docker Hub pull, store image, create container, run, exit. Lane 2 (second run): CLI, engine, cache HIT, create new container, run, exit, with the registry hop visibly skipped. Annotate: "image pulled once" on lane 1, "fresh container every time" on both.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:540px;height:460px;right:-336px;top:351px;border-radius:42% 56% 52% 40% / 52% 46% 41% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:589px;height:527px;bottom:-308px;left:-308px;border-radius:59% 36% 61% 49% / 46% 65% 46% 48%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v02-card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 48px 36px;}
+    .v02-lanelab{font-family:var(--font-display);font-weight:800;font-size:18px;text-transform:uppercase;
+                 letter-spacing:.06em;color:var(--text-secondary);margin:0 0 10px;}
+    .v02-lane{display:flex;align-items:stretch;}
+    .v02-n{flex:1;background:var(--surface-card);border:2px solid var(--stbr-green);border-radius:var(--radius-lg);
+           padding:10px 8px;display:flex;flex-direction:column;justify-content:center;text-align:center;min-height:84px;}
+    .v02-nt{font-family:var(--font-display);font-weight:800;font-size:16.5px;color:var(--text-primary);line-height:1.15;}
+    .v02-ns{font-family:var(--font-body);font-size:13px;color:var(--text-muted);margin-top:4px;line-height:1.2;}
+    .v02-arr{width:30px;flex:none;display:flex;align-items:center;justify-content:center;}
+    .v02-skip{flex:2.28;border:2px dashed var(--stbr-ink-300);border-radius:var(--radius-lg);
+              background:var(--surface-paper);display:flex;flex-direction:column;justify-content:center;
+              text-align:center;padding:10px 8px;min-height:84px;}
+    .v02-chip{display:inline-block;font-family:var(--font-body);font-weight:700;font-size:16px;
+              border-radius:var(--radius-pill);padding:8px 18px;}
+  </style>
+  <div class="v02-card">
+    <div class="stbr-eyebrow">PULL ONCE, RUN FRESH</div>
+    <h2 class="viz-title">what docker run hello-world actually did</h2>
+
+    <div class="v02-lanelab" style="margin-top:6px;">first run: image not on disk yet</div>
+    <div class="v02-lane">
+      <div class="v02-n"><div class="v02-nt">docker CLI</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">Docker engine</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">local cache</div><div class="v02-ns">MISS</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#008b4c"/></svg></div>
+      <div class="v02-n" style="border-color:var(--stbr-emerald);background:var(--surface-brand);"><div class="v02-nt" style="color:var(--text-on-brand);">Docker Hub</div><div class="v02-ns" style="color:var(--stbr-cream-200);">pull layers</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#008b4c"/></svg></div>
+      <div class="v02-n" style="border-color:var(--stbr-emerald);"><div class="v02-nt">store image locally</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div><div class="v02-nt">create container</div><div class="v02-ns">from image</div></div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">run process</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">process exits</div><div class="v02-ns">container exits</div></div>
+    </div>
+    <div style="margin:12px 0 26px;"><span class="v02-chip" style="background:var(--surface-brand);color:var(--text-on-brand);">image pulled once; it now lives in the local cache</span></div>
+
+    <div class="v02-lanelab">second run: same command, half the pipeline</div>
+    <div class="v02-lane">
+      <div class="v02-n"><div class="v02-nt">docker CLI</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">Docker engine</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n" style="border-color:var(--stbr-yellow);background:var(--surface-accent);"><div class="v02-nt" style="color:var(--text-on-accent);">local cache</div><div class="v02-ns" style="color:var(--text-on-accent);font-weight:700;">HIT</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="30" y2="7" stroke="#1b231d" stroke-width="2.5" stroke-dasharray="2 4"/></svg></div>
+      <div class="v02-skip"><div class="v02-nt" style="color:var(--text-muted);">registry hop skipped</div><div class="v02-ns">no Docker Hub, no download, no store</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div><div class="v02-nt">create NEW container</div><div class="v02-ns">from cached image</div></div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">run process</div></div>
+      <div class="v02-arr"><svg width="30" height="14" style="display:block;"><line x1="0" y1="7" x2="18" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="28,7 14,1 14,13" fill="#1b231d"/></svg></div>
+      <div class="v02-n"><div class="v02-nt">process exits</div><div class="v02-ns">container exits</div></div>
+    </div>
+    <div style="margin-top:12px;"><span class="v02-chip" style="background:var(--surface-paper);border:2px solid var(--stbr-green);color:var(--text-primary);">both runs: the image is reused, but every run creates a fresh container</span></div>
+  </div>
+</div>
+</body></html>

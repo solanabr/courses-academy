@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The before-and-after ledger this lab exists to produce
+     purpose: give the reader the exact evidence shape the checkpoint asks them to paste, without inventing their numbers for them
+     data: Row per image, columns: image, tag, size class, source of the number. pulse-pollerd naive: your recorded m06-l2 baseline, gigabytes class, from docker images last lesson. pulse-pollerd slim: your step 2 measurement, double-digit megabytes class expected, an order of magnitude or more below baseline. pulse-fleet-runner slim: your step 6 measurement, node:24-slim base plus dist plus production deps; the fleet never got a naive build, so this row has no before and stands on its own terms rather than against the poller's baseline. Rule of the table: sizes are the reader's own measurements; the lesson predicts only the order of magnitude.
+     prompt: A three-row measurement table styled like terminal output, columns for image name, tag, and size, with the size cells left as bracketless blanks labeled "your number". A vertical brace spanning naive versus slim rows annotated "order of magnitude, measured by you". Monospace, no invented digits.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:513px;height:496px;bottom:-246px;right:-246px;border-radius:35% 52% 40% 49% / 51% 49% 46% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:435px;height:511px;left:-239px;top:298px;border-radius:64% 58% 45% 59% / 58% 54% 48% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v07-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+              padding: 40px 56px 34px; overflow: hidden; position: relative; }
+  .v07-row { display: flex; gap: 26px; align-items: flex-start; }
+  .v07-term { flex: 1; background: var(--surface-inverse); border-radius: var(--radius-xl);
+              padding: 20px 28px 24px; font-family: var(--font-mono); }
+  .v07-prompt { color: var(--stbr-ink-300); font-size: 16px; margin-bottom: 12px; }
+  .v07-prompt b { color: var(--text-on-dark); font-weight: 600; }
+  .v07-thead, .v07-trow { display: grid; grid-template-columns: 300px 120px 250px 1fr;
+                          column-gap: 18px; align-items: center; }
+  .v07-thead { color: var(--stbr-ink-300); font-size: 13.5px; letter-spacing: 0.08em;
+               padding-bottom: 8px; border-bottom: 1px solid var(--border-on-dark); }
+  .v07-trow { height: 92px; border-bottom: 1px solid var(--border-on-dark); }
+  .v07-trow:last-child { border-bottom: none; }
+  .v07-img { color: var(--text-on-dark); font-size: 17px; }
+  .v07-tag { color: var(--stbr-ink-300); font-size: 16px; }
+  .v07-blank { border: 2px dashed var(--stbr-yellow); border-radius: var(--radius-md);
+               color: var(--stbr-yellow); font-size: 14px; text-align: center;
+               padding: 8px 6px; }
+  .v07-blank small { display: block; font-family: var(--font-body); font-size: 11.5px;
+                     color: var(--stbr-ink-300); margin-top: 3px; }
+  .v07-srccell { font-family: var(--font-body); font-size: 13px; line-height: 1.35;
+                 color: var(--stbr-ink-300); }
+  .v07-srccell code { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-on-dark); }
+  .v07-bracecol { width: 264px; }
+  .v07-brace { margin-top: 118px; display: flex; align-items: center; gap: 14px; }
+  .v07-braceline { width: 16px; height: 168px; border: 3px solid var(--stbr-emerald);
+                   border-left: none; border-radius: 0 12px 12px 0; }
+  .v07-bracetext { flex: 1; font-family: var(--font-body); font-size: 15px; font-weight: 600;
+                   line-height: 1.35; color: var(--stbr-emerald); }
+  .v07-bracetext small { display: block; font-weight: 400; font-size: 12.5px;
+                         color: var(--text-muted); margin-top: 4px; }
+  .v07-rule { margin-top: 20px; background: var(--surface-paper);
+              border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+              padding: 11px 20px; font-family: var(--font-body); font-size: 16px;
+              color: var(--text-secondary); }
+</style>
+<div class="v07-card">
+  <div class="stbr-eyebrow">LAB CHECKPOINT · THE EVIDENCE SHAPE</div>
+  <h2 class="viz-title">the before-and-after ledger</h2>
+  <div class="v07-row">
+    <div class="v07-term">
+      <div class="v07-prompt">$ <b>docker images</b></div>
+      <div class="v07-thead"><div>REPOSITORY</div><div>TAG</div><div>SIZE</div><div>SOURCE OF THE NUMBER</div></div>
+      <div class="v07-trow">
+        <div class="v07-img">pulse-pollerd</div>
+        <div class="v07-tag">naive</div>
+        <div class="v07-blank">[ your number ]<small>gigabytes class</small></div>
+        <div class="v07-srccell">your recorded m06-l2 baseline, from <code>docker images</code> last lesson</div>
+      </div>
+      <div class="v07-trow">
+        <div class="v07-img">pulse-pollerd</div>
+        <div class="v07-tag">slim</div>
+        <div class="v07-blank">[ your number ]<small>double-digit MB expected</small></div>
+        <div class="v07-srccell">your step 2 measurement, an order of magnitude or more below baseline</div>
+      </div>
+      <div class="v07-trow">
+        <div class="v07-img">pulse-fleet-runner</div>
+        <div class="v07-tag">slim</div>
+        <div class="v07-blank">[ your number ]</div>
+        <div class="v07-srccell">your step 6 measurement: <code>node:24-slim</code> + dist + production deps. the fleet never got a naive build: no before, it stands on its own terms</div>
+      </div>
+    </div>
+    <div class="v07-bracecol">
+      <div class="v07-brace">
+        <div class="v07-braceline"></div>
+        <div class="v07-bracetext">order of magnitude,<br>measured by you<small>naive vs slim, same poller</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="v07-rule"><b>rule of the table:</b> the sizes are your own measurements; the lesson predicts only the order of magnitude.</div>
+</div>
+</div>
+</body></html>

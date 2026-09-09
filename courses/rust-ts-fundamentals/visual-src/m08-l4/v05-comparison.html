@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Two fee-payer setters, one rule: pick a form and stay in it
+     purpose: inoculate against the copy-paste failure of mixing address-form and Signer-form pipelines from different tutorials
+     data: setTransactionMessageFeePayer(address, m): takes a bare address; used in the kit repo's transfer-lamports example; you attach signing knowledge separately. setTransactionMessageFeePayerSigner(signer, m): takes the signer object; documented at solanakit.com; signTransactionMessageWithSigners can then find every required signer itself; the form this course teaches, on solanakit.com's authority. Both forms are real. Failure mode: copying the message build from one tutorial and the signing step from another, so the signing step cannot find the signer it expects.
+     prompt: Side-by-side comparison of the two setter signatures as code-styled cards, each with its source attribution beneath (kit repo example vs solanakit.com docs) and a badge on the Signer form reading "taught here". A warning strip below both describes the mixed-tutorial failure mode from the data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:552px;top:-294px;right:-294px;border-radius:56% 38% 45% 48% / 48% 49% 51% 63%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:537px;height:455px;left:-334px;top:239px;border-radius:51% 59% 36% 62% / 59% 43% 50% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:42px 56px 38px; }
+    .mono { font-family:var(--font-mono); }
+    .form { flex:1; position:relative; border:2px solid var(--border-subtle); border-radius:var(--radius-xl); padding:22px 24px 18px; }
+    .code { background:var(--surface-inverse); border-radius:var(--radius-lg); height:158px; padding:20px 24px;
+            display:flex; flex-direction:column; justify-content:center; }
+    .code .sig { margin:0; font-family:var(--font-mono); font-size:20px; color:var(--stbr-cream); line-height:1.4; }
+    .code .sub { margin:12px 0 0; font-family:var(--font-body); font-size:14.5px; color:var(--stbr-cream); opacity:.78; line-height:1.4; }
+    .attr { margin:14px 0 0; font-family:var(--font-body); font-size:14px; color:var(--text-muted); line-height:1.4; }
+    .attr strong { color:var(--text-secondary); }
+  </style>
+  <div class="card">
+    <div class="stbr-eyebrow">kit fee payers &middot; address form vs signer form</div>
+    <h2 class="viz-title">two fee-payer setters, one rule: pick a form and stay in it</h2>
+    <div style="display:flex; gap:26px;">
+      <div class="form">
+        <div class="code">
+          <p class="sig">setTransactionMessageFeePayer(<br>&nbsp;&nbsp;address, message)</p>
+          <p class="sub">takes a bare address; you attach signing knowledge separately</p>
+        </div>
+        <p class="attr"><strong>source:</strong> the kit repo&rsquo;s transfer-lamports example</p>
+      </div>
+      <div class="form" style="border:3px solid var(--stbr-emerald);">
+        <span style="position:absolute; top:-17px; right:22px; background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill); padding:7px 17px; font-family:var(--font-display); font-weight:800; font-size:15px;">taught here</span>
+        <div class="code">
+          <p class="sig">setTransactionMessageFeePayerSigner(<br>&nbsp;&nbsp;signer, message)</p>
+          <p class="sub">takes the signer object; signTransactionMessageWithSigners then finds every required signer itself</p>
+        </div>
+        <p class="attr"><strong>source:</strong> solanakit.com docs &middot; the form this course teaches</p>
+      </div>
+    </div>
+    <div style="margin-top:24px; background:var(--stbr-emerald); border-radius:var(--radius-lg); padding:17px 26px; display:flex; align-items:center; gap:18px;">
+      <span style="flex:none; background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill); padding:6px 15px; font-family:var(--font-display); font-weight:800; font-size:14px; letter-spacing:.06em; text-transform:uppercase;">failure mode</span>
+      <p style="margin:0; font-family:var(--font-body); font-size:16.5px; color:var(--stbr-cream); line-height:1.4;">copy the message build from one tutorial and the signing step from another, and the signing step cannot find the signer it expects.</p>
+    </div>
+  </div>
+</div>
+</body></html>

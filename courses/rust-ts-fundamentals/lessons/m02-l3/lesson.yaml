@@ -1,0 +1,111 @@
+id: lesson-rtf-m02-l3
+slug: m02-l3
+title: "Async that survives contact: limits, backoff, cancellation"
+skills:
+  - solana-kit
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-09-02"
+  packages:
+    "typescript": "7.0.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: backoff-schedule
+    type: code
+    language: typescript
+    starter: backoff-schedule/starter.ts
+    solution: backoff-schedule/solution.ts
+    tests: backoff-schedule/tests.json
+    hints:
+      - "Attempt 0 must wait exactly baseMs, the exponent is the attempt number itself, not attempt + 1."
+      - "Apply the cap per delay: Math.min(capMs, baseMs * 2 ** attempt)."
+      - "Edge cases the tests check: retries = 0 returns the empty string, and a cap BELOW base clamps every delay to the cap."
+  - key: check
+    type: quiz
+    questions:
+      - id: m02l3-q1
+        prompt: "The hook's naive `Promise.all(targets.map(probe))` produced a wall of 429s from the rate-limited endpoint. What actually caused it?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Promise.all runs the probes strictly one after another, so the total run took longer than the endpoint's request window allowed"
+            correct: false
+            feedback: "Backwards, Promise.all is concurrent, not sequential. The probes did not queue; they stampeded, which is precisely the problem."
+          - id: c
+            label: "Node's fetch reuses one connection per host, and the endpoint counts each request on a shared connection against a stricter per-socket cap"
+            correct: false
+            feedback: "Connection reuse is not the mechanism, the limit was requests per window per IP, and fifty requests in one instant exhausts it regardless of sockets."
+          - id: a
+            label: "Every fetch started in the same instant, all fifty requests hit the target as one burst, spending the whole rate budget at once"
+            correct: true
+            feedback: "The stampede happened at .map: fifty fetches were already in flight before Promise.all ever saw the array. The join only waited. Concurrency is a budget you spend, and that spent all of it in one tick."
+          - id: d
+            label: "Fifty targets simply exceed a cap of 25 requests per second, so a fleet of that size collects 429s at whatever pace you set it to"
+            correct: false
+            feedback: "The pooled run disproves it: same fifty targets, same server, same cap, zero 429s once five workers bound the in-flight count. Fleet size never touched the wall; the burst shape did."
+        explanation: "Promise.all is a join, not a scheduler: by the time you call it, every promise you mapped has already started. Fifty probes in one tick is a burst the target experiences as an attack. Concurrency is a budget you spend, the pool is how you meter it out."
+      - id: m02l3-q2
+        prompt: "You replace the burst with a hand-rolled pool of 5 workers over a shared queue. What changed, precisely?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The probes now run in true parallel on five separate threads, so the fleet finishes faster while sending the same requests"
+            correct: false
+            feedback: "No threads involved, it is still one event loop with concurrent I/O. The pool bounds in-flight count; it neither parallelizes CPU nor speeds anything up."
+          - id: d
+            label: "Each of the five workers owns a fixed tenth of the queue up front, so one slow target stalls that whole share"
+            correct: false
+            feedback: "Nothing is sliced up front. There is one shared index and each worker grabs whatever is next, so a slow target costs one worker one turn while the other four keep draining the same queue."
+          - id: a
+            label: "Failed probes are now retried automatically by the pool, since each worker re-queues its target whenever a request errors"
+            correct: false
+            feedback: "Retry is a separate discipline (backoff, next section), the pool only bounds how many probes run at once; it has no opinion on failures."
+          - id: b
+            label: "At most five probes are in flight at once; the rest wait in the queue, same total work, but the burst rate is bounded"
+            correct: true
+            feedback: "The pool is a meter, not an engine. Nothing got faster and nothing got skipped; the only change is that the number of simultaneous requests is now one you chose against the target's published budget."
+        explanation: "A pool is a meter, not an engine: N workers pull from one queue, so in-flight work never exceeds N. Same fifty probes, same event loop, but the target now sees a steady trickle it can serve instead of a spike it must reject. N is tuned against the TARGET'S budget, not your machine."
+      - id: m02l3-q3
+        prompt: "Your backoff doubles the delay per attempt and caps it, and then you add random jitter on top. What failure mode does the jitter specifically prevent?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Rate-limited endpoints reject retries that arrive at predictable intervals, so randomized delays are required for the requests to be accepted"
+            correct: false
+            feedback: "Servers don't inspect your schedule's predictability, they count requests per window. The problem jitter solves is on YOUR side: synchronized clients."
+          - id: d
+            label: "Workers waking together would push more than five probes in flight at once, and the jitter is what holds the pool to its size"
+            correct: false
+            feedback: "The pool holds itself: a worker cannot start a second probe until its own returns, whatever time it wakes. Jitter changes when retries land, never how many run at once."
+          - id: c
+            label: "Probes that got 429'd together retry together, each wave re-triggers the same limit, and the stampede never drains without jitter"
+            correct: true
+            feedback: "Synchronized failures retry synchronized: the same cap refuses five probes at once, all five compute the same delay, all five wake in the same instant, and the herd re-triggers the limit that made it."
+          - id: a
+            label: "Jitter lowers the average wait across attempts, recovering most of the latency that the exponential doubling schedule costs you"
+            correct: false
+            feedback: "Jitter does not exist to make retries faster, spread around the base delay, the average wait is roughly unchanged. Its job is desynchronization."
+        explanation: "The limit hit all fifty probes in the same window, so pure exponential backoff has them ALL return at the same future instant, a stampede that re-triggers the limit, forever. Jitter smears the retries across the window so the herd thins out. It is a coordination fix, not a speed fix."
+      - id: m02l3-q4
+        prompt: "A probe's AbortController fires at the 3-second timeout. What does the abort actually accomplish?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The fetch resolves with a status 0 response at the timeout, which the probe checks for instead of catching a rejection"
+            correct: false
+            feedback: "An abort rejects the promise, it does not hand back a response to inspect. That is why probeOnce wraps the await in try/catch and asks controller.signal.aborted which kind of failure it just caught."
+          - id: c
+            label: "It marks the target as permanently down in the fleet's state, so future rounds skip probing it until the config is edited"
+            correct: false
+            feedback: "One timeout is one data point, not a verdict, the probe returns a timeout variant and the target stays in rotation. Trend decisions belong to the classifier."
+          - id: a
+            label: "It rejects the in-flight fetch on your side, freeing the pool slot, the outcome lands as a typed timeout variant"
+            correct: true
+            feedback: "The catch sees signal.aborted, returns the timeout variant carrying the budget it blew, and the worker takes the next target. Reclaiming the slot, and getting a row you can report, is the whole win."
+          - id: b
+            label: "It instructs the remote server to stop processing the request, so no further work happens on either side of the connection"
+            correct: false
+            feedback: "Cancellation is local and cooperative, the request you already sent may still complete server-side. What you reclaim is your own slot and your own certainty."
+        explanation: "AbortController is how a timeout becomes a first-class outcome: the signal rejects the fetch, the pool slot frees for the next target, and the failure lands in the same typed union every other result uses, aggregated, not thrown. The remote side may finish anyway; what you bought is bounded waiting and a clean report."

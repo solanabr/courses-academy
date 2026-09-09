@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The same table, sorted two ways
+     purpose: show the shift from the opener's promise view to the graduate's urgency view of identical bookmarks
+     data: Lesson one view (sorted by syllabus): every bookmark listed by module, all equal weight, a promise of honesty This lesson's view (sorted by urgency, per route): Urgent soon: TRPL ch16 concurrency (next real Rust service), lifetimes on-ramps (Anchor route), type-challenges (daily TS) At need-time: serde.rs reference, Cargo book deep sections, Comprehensive Rust Explicitly not yet: the Rustonomicon, by its own opening warning
+     prompt: Two-panel comparison. Left panel titled "Module one: a promise" shows the bookmark list as uniform rows, all the same visual weight. Right panel titled "Module ten: a reading order" shows the same items re-stacked into three tiers labeled urgent soon, at need-time, and not yet, with the urgent tier visually raised. An arrow between panels labeled "your route decides the sort".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:489px;height:463px;top:-261px;right:-261px;border-radius:57% 65% 54% 55% / 49% 54% 64% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:443px;height:523px;bottom:-306px;left:578px;border-radius:47% 47% 52% 35% / 54% 44% 62% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v03-card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 52px 28px; }
+    .v03-title { font-size: 46px; margin: 6px 0 18px; }
+    .v03-cols { display: flex; align-items: stretch; gap: 0; }
+    .v03-panel { width: 596px; border: 1.5px solid var(--border-strong); border-radius: var(--radius-xl);
+                 background: var(--surface-paper); padding: 18px 22px 18px; }
+    .v03-panel h3 { font-family: var(--font-display); font-weight: 800; font-size: 22px;
+                    color: var(--text-primary); margin: 0 0 4px; }
+    .v03-panel .sub { font-family: var(--font-body); font-size: 14px; color: var(--text-muted);
+                      margin: 0 0 12px; }
+    .v03-row { display: flex; align-items: center; gap: 10px; height: 40px; margin-bottom: 7px;
+               background: var(--surface-card); border: 1px solid var(--border-subtle);
+               border-radius: var(--radius-md); padding: 0 14px;
+               font-family: var(--font-body); font-size: 15px; color: var(--text-primary); }
+    .v03-row .m { flex: 0 0 auto; font-family: var(--font-display); font-weight: 700; font-size: 12px;
+                  letter-spacing: 0.06em; color: var(--text-muted); }
+    .v03-mid { width: 160px; display: flex; flex-direction: column; align-items: center;
+               justify-content: center; gap: 10px; }
+    .v03-arrow { display: flex; align-items: center; }
+    .v03-arrow .shaft { width: 96px; height: 3px; background: var(--stbr-emerald); }
+    .v03-arrow .head { width: 0; height: 0; border-top: 8px solid transparent;
+                       border-bottom: 8px solid transparent; border-left: 12px solid var(--stbr-emerald); }
+    .v03-mid .lbl { font-family: var(--font-display); font-weight: 800; font-size: 14px;
+                    line-height: 1.25; text-align: center; color: var(--stbr-green);
+                    letter-spacing: 0.04em; text-transform: uppercase; }
+    .v03-tier { border-radius: var(--radius-md); padding: 8px 10px 3px; margin-bottom: 9px; }
+    .v03-tier .th { font-family: var(--font-display); font-weight: 800; font-size: 13px;
+                    letter-spacing: 0.09em; text-transform: uppercase; margin: 0 4px 6px;
+                    color: var(--stbr-green); }
+    .v03-tier .v03-row { height: 34px; margin-bottom: 5px; font-size: 14px; }
+    .v03-urgent { background: var(--surface-accent); border: 1.5px solid var(--stbr-dark); }
+    .v03-urgent .th { color: var(--text-on-accent); }
+    .v03-later { background: var(--surface-card); border: 1px solid var(--border-subtle); }
+    .v03-notyet { background: var(--surface-inverse); }
+    .v03-notyet .th { color: var(--text-on-dark); opacity: 0.85; }
+    .v03-notyet .v03-row { background: transparent; border-color: transparent; color: var(--text-on-dark); }
+  </style>
+  <div class="v03-card">
+    <div class="stbr-eyebrow">same bookmarks, new order</div>
+    <h2 class="viz-title v03-title">the same table, sorted two ways</h2>
+    <div class="v03-cols">
+      <div class="v03-panel">
+        <h3>module one: a promise</h3>
+        <p class="sub">sorted by syllabus: every bookmark equal weight, a promise of honesty</p>
+        <div class="v03-row"><span class="m">M4</span> TRPL ch16: concurrency</div>
+        <div class="v03-row"><span class="m">M4</span> lifetimes on-ramps</div>
+        <div class="v03-row"><span class="m">M2</span> type-challenges</div>
+        <div class="v03-row"><span class="m">M5</span> serde.rs reference</div>
+        <div class="v03-row"><span class="m">M5</span> Cargo book, deep sections</div>
+        <div class="v03-row"><span class="m">M4</span> Comprehensive Rust</div>
+        <div class="v03-row"><span class="m">M4</span> the Rustonomicon</div>
+      </div>
+      <div class="v03-mid">
+        <div class="v03-arrow"><div class="shaft"></div><div class="head"></div></div>
+        <div class="lbl">your route<br>decides<br>the sort</div>
+      </div>
+      <div class="v03-panel">
+        <h3>module ten: a reading order</h3>
+        <p class="sub">sorted by urgency, per route: identical items, three tiers</p>
+        <div class="v03-tier v03-urgent">
+          <div class="th">urgent soon</div>
+          <div class="v03-row">TRPL ch16 concurrency: next real Rust service</div>
+          <div class="v03-row">lifetimes on-ramps: Anchor route</div>
+          <div class="v03-row">type-challenges: daily TS</div>
+        </div>
+        <div class="v03-tier v03-later">
+          <div class="th">at need-time</div>
+          <div class="v03-row">serde.rs reference</div>
+          <div class="v03-row">Cargo book deep sections &middot; Comprehensive Rust</div>
+        </div>
+        <div class="v03-tier v03-notyet">
+          <div class="th">explicitly not yet</div>
+          <div class="v03-row">the Rustonomicon, by its own opening warning</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>
