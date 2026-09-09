@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The corridor record inside the artifact ladder
+     purpose: place corridor-decision relative to ramp-embed behind it and the capstone ahead, making the informs-but-not-imported relationship visible
+     data: ramp-embed (lesson 1, built) -> informs -> corridor-decision (this lesson: DECISION.md + corridors.config.ts) corridor-decision -> informs (humans read it; nothing imports it) -> capstone configuration inside corridor-decision: three rows US/EU/BR, each carrying rail, settlement asset, merchant-of-record, per-tx limit, rationale, verifiedOn date decay arrow: every dated cell requires re-verification before capstone use
+     prompt: Three-stage horizontal ladder: ramp-embed node on the left, corridor-decision node in the center expanded to show its three corridor rows and their fields, capstone node on the right. Arrows between stages are labeled informs, with the second arrow annotated read by humans, imported by nothing. A small clock icon on the center node notes dated facts decay. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:541px;height:537px;top:-293px;right:-293px;border-radius:42% 45% 47% 57% / 44% 46% 60% 55%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:492px;height:389px;left:-253px;top:388px;border-radius:55% 41% 54% 53% / 64% 44% 55% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ladder { display:flex; align-items:center; margin-top:14px; }
+  .stage { background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+           border-radius:var(--radius-xl); }
+  .side { flex:0 0 224px; padding:22px 18px; text-align:center; }
+  .side .nm { font-family:var(--font-display); font-weight:900; font-size:21px;
+              color:var(--text-primary); line-height:1.15; }
+  .side .st { margin-top:10px; display:inline-block; background:rgba(0,139,76,.12);
+              color:var(--stbr-green); font-family:var(--font-body); font-weight:800;
+              font-size:12px; padding:4px 12px; border-radius:var(--radius-pill); }
+  .link { flex:0 0 168px; display:flex; flex-direction:column; align-items:center; gap:8px;
+          padding:0 6px; }
+  .link .lab { font-family:var(--font-body); font-weight:800; font-size:12px; text-align:center;
+               color:var(--stbr-green); line-height:1.35; width:150px; }
+  .link .lab.hot { background:var(--stbr-yellow); color:var(--stbr-dark); padding:6px 10px;
+                   border-radius:var(--radius-md); width:150px; box-sizing:border-box;
+                   font-size:11.5px; }
+  .center { flex:1 1 auto; overflow:hidden; }
+  .ch { background:var(--surface-brand); padding:11px 20px; display:flex; align-items:center; gap:14px; }
+  .ch .nm { font-family:var(--font-display); font-weight:900; font-size:21px; color:var(--text-on-brand); }
+  .ch .files { font-family:var(--font-mono); font-size:12.5px; color:var(--stbr-cream); margin-left:auto; }
+  .cb { padding:13px 18px; display:flex; flex-direction:column; gap:8px; }
+  .crow { display:flex; align-items:center; gap:10px; }
+  .cc { flex:0 0 46px; text-align:center; background:var(--surface-inverse); color:var(--text-on-dark);
+        font-family:var(--font-display); font-weight:900; font-size:14px; padding:5px 0;
+        border-radius:var(--radius-md); }
+  .fields { display:flex; gap:6px; flex-wrap:wrap; }
+  .fp { background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+        border-radius:var(--radius-pill); font-family:var(--font-body); font-weight:700;
+        font-size:11.5px; color:var(--text-secondary); padding:3px 10px; }
+  .fp.date { border-color:var(--stbr-emerald); color:var(--stbr-green); }
+  .cfoot { border-top:1.5px solid var(--border-subtle); padding:9px 18px; display:flex;
+           align-items:center; gap:10px; font-family:var(--font-body); font-weight:700;
+           font-size:13px; color:var(--text-primary); background:var(--surface-paper); }
+</style>
+  <div class="stbr-eyebrow">informs, but is never imported</div>
+  <h2 class="viz-title" style="font-size:46px;">the corridor record inside the artifact ladder</h2>
+  <div class="ladder">
+    <div class="stage side">
+      <div class="nm">ramp-embed</div>
+      <div class="st">lesson 1 &middot; built</div>
+    </div>
+    <div class="link">
+      <svg width="120" height="26" viewBox="0 0 120 26"><line x1="0" y1="13" x2="106" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="106,5 120,13 106,21" fill="#1B231D"/></svg>
+      <div class="lab">informs</div>
+    </div>
+    <div class="stage center">
+      <div class="ch">
+        <span class="nm">corridor-decision</span>
+        <span class="files">DECISION.md + corridors.config.ts</span>
+      </div>
+      <div class="cb">
+        <div class="crow">
+          <span class="cc">US</span>
+          <span class="fields"><span class="fp">rail</span><span class="fp">settlement asset</span><span class="fp">merchant-of-record</span><span class="fp">per-tx limit</span><span class="fp">rationale</span><span class="fp date">verifiedOn</span></span>
+        </div>
+        <div class="crow">
+          <span class="cc">EU</span>
+          <span class="fields"><span class="fp">rail</span><span class="fp">settlement asset</span><span class="fp">merchant-of-record</span><span class="fp">per-tx limit</span><span class="fp">rationale</span><span class="fp date">verifiedOn</span></span>
+        </div>
+        <div class="crow">
+          <span class="cc">BR</span>
+          <span class="fields"><span class="fp">rail</span><span class="fp">settlement asset</span><span class="fp">merchant-of-record</span><span class="fp">per-tx limit</span><span class="fp">rationale</span><span class="fp date">verifiedOn</span></span>
+        </div>
+      </div>
+      <div class="cfoot">
+        <svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="8" fill="#008B4C" stroke="#1B231D" stroke-width="1.5"/><line x1="9" y1="9" x2="9" y2="4.5" stroke="#F5E8CA" stroke-width="1.5"/><line x1="9" y1="9" x2="12.5" y2="10.5" stroke="#F5E8CA" stroke-width="1.5"/></svg>
+        <span>dated facts decay &mdash; every dated cell requires re-verification before capstone use</span>
+      </div>
+    </div>
+    <div class="link">
+      <svg width="120" height="26" viewBox="0 0 120 26"><line x1="0" y1="13" x2="106" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="106,5 120,13 106,21" fill="#1B231D"/></svg>
+      <div class="lab hot">informs &mdash; read by humans, imported by nothing</div>
+    </div>
+    <div class="stage side">
+      <div class="nm">capstone configuration</div>
+      <div class="st">ahead</div>
+    </div>
+  </div>
+</div>
+</body></html>

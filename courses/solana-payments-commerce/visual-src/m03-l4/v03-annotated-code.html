@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The three shapes of an ActionPostResponse
+     purpose: fix the optionality rules, message and links.next are present when provided and absent otherwise, never null-padded
+     data: minimal: { "type": "transaction", "transaction": "<base64>" } with message: adds "message": "Order placed: 1x WVL-045..." (shown to the user after signing) with chaining: adds "links": { "next": { "type": "post", "href": "/api/actions/drop/thanks" } } rule: a response with no message input has NO message key at all; same for links; type and transaction are always present
+     prompt: Annotated code panel showing the three JSON response shapes stacked vertically, minimal form first. Callout on the minimal form: exactly two keys. Callouts on the other two marking the added block as appearing whole or not at all, never null-padded. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:475px;height:500px;bottom:-266px;right:-266px;border-radius:43% 65% 43% 40% / 40% 61% 36% 46%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; margin-bottom:12px; }
+  .shape { display:flex; gap:22px; align-items:stretch; margin-bottom:14px; }
+  .codebox { flex:1.7; background:var(--surface-inverse); border-radius:var(--radius-md);
+             padding:12px 20px; }
+  .codebox .lbl { font-family:var(--font-body); font-weight:800; font-size:11px;
+                  letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-ink-300);
+                  margin-bottom:6px; }
+  .codebox pre { margin:0; font-family:var(--font-mono); font-size:14px; line-height:1.38;
+                 color:var(--stbr-cream); white-space:pre; }
+  .codebox .add { color:var(--stbr-yellow); font-weight:700; }
+  .callout { flex:1; display:flex; align-items:center; }
+  .callout .card { width:100%; background:var(--surface-card); border-left:5px solid var(--stbr-emerald);
+                   border-top:1.5px solid var(--border-subtle); border-right:1.5px solid var(--border-subtle);
+                   border-bottom:1.5px solid var(--border-subtle);
+                   border-radius:var(--radius-md); padding:14px 18px;
+                   font-family:var(--font-body); font-size:15px; line-height:1.4;
+                   color:var(--text-secondary); }
+  .callout .card b { color:var(--text-primary); }
+  .rule { background:var(--surface-brand); border-radius:var(--radius-lg); padding:16px 26px;
+          font-family:var(--font-body); font-weight:600; font-size:16.5px; line-height:1.45;
+          color:var(--stbr-cream); }
+  .rule b { font-weight:800; color:var(--stbr-white); }
+</style>
+  <div class="stbr-eyebrow">optionality, fixed</div>
+  <h2 class="viz-title">the three shapes of an ActionPostResponse</h2>
+  <div class="shape">
+    <div class="codebox">
+      <div class="lbl">minimal</div>
+      <pre>{
+  "type": "transaction",
+  "transaction": "&lt;base64&gt;"
+}</pre>
+    </div>
+    <div class="callout"><div class="card"><b>exactly two keys.</b> this alone is a complete, valid response.</div></div>
+  </div>
+  <div class="shape">
+    <div class="codebox">
+      <div class="lbl">with message</div>
+      <pre>{
+  "type": "transaction",
+  "transaction": "&lt;base64&gt;",
+<span class="add">  "message": "Order placed: 1x WVL-045..."</span>
+}</pre>
+    </div>
+    <div class="callout"><div class="card"><b>added whole.</b> shown to the user after signing &mdash; present only when you have one.</div></div>
+  </div>
+  <div class="shape">
+    <div class="codebox">
+      <div class="lbl">with chaining</div>
+      <pre>{
+  "type": "transaction",
+  "transaction": "&lt;base64&gt;",
+  "message": "Order placed: 1x WVL-045...",
+<span class="add">  "links": {
+    "next": { "type": "post", "href": "/api/actions/drop/thanks" }
+  }</span>
+}</pre>
+    </div>
+    <div class="callout"><div class="card"><b>whole or not at all.</b> the <b>links</b> block appears complete, or the key is absent &mdash; never null-padded.</div></div>
+  </div>
+  <div class="rule">no message input &rarr; <b>no <span style="font-family:var(--font-mono)">message</span> key at all</b>; same for <span style="font-family:var(--font-mono)">links</span>. only <b><span style="font-family:var(--font-mono)">type</span></b> and <b><span style="font-family:var(--font-mono)">transaction</span></b> are always present.</div>
+</div>
+</body></html>

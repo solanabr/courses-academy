@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The agent's decision path for one 402
+     purpose: place the spendControls gate at its true position, inside payment creation and before any signature
+     data: fetch url -> status? -> not 402: return response (free or already paid) 402 -> parse PaymentRequired body -> createPaymentPayload: spendControls filter: asset on default pegged table? amount within $1-per-payment cap (or override)? -> pass: build transfer + memo tx -> partially sign owner slot -> encode PAYMENT-SIGNATURE -> retry same URL -> 200 + PAYMENT-RESPONSE receipt -> fail: THROW before signing -> agent must catch and log the reason, else silent no-op frozen default: recognized pegged assets only, $1 USD cap per payment unless overridden
+     prompt: Decision flowchart, top to bottom. One diamond for the 402 check, one gate box for spendControls inside a larger createPaymentPayload container to show containment, then the pass branch through partial signing to the retried request, and the fail branch to a thrown-error node with a log-it warning tag. Footer band states the frozen default cap. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:578px;height:561px;bottom:-300px;left:-300px;border-radius:56% 53% 43% 45% / 60% 49% 45% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 30px 44px 26px; }
+  .viz-title { font-size: 40px; margin: 4px 0 14px; }
+  .fnode { border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg);
+           background: var(--surface-card); padding: 8px 16px;
+           font: 600 14px var(--font-body); color: var(--text-primary); line-height: 1.25; }
+  .fnode .sub { display: block; font: 400 11.5px var(--font-body); color: var(--text-secondary); }
+  .hrow { display: flex; align-items: center; gap: 0; }
+  .harr { flex: none; display: flex; align-items: center; padding: 0 4px; position: relative; }
+  .harr i { display: block; width: 26px; height: 2px; background: var(--stbr-dark); position: relative; }
+  .harr i::after { content: ''; position: absolute; right: -7px; top: -4px;
+                   border-left: 7px solid var(--stbr-dark);
+                   border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .harr .lbl { position: absolute; top: -18px; left: 50%; margin-left: -34px; width: 68px; text-align: center;
+               font: 700 10.5px var(--font-body); color: var(--text-secondary); letter-spacing: .04em;
+               text-transform: uppercase; }
+  .decision { border: 2.5px solid var(--stbr-emerald); border-radius: 22px;
+              background: var(--surface-paper); padding: 8px 20px;
+              font: 800 15px var(--font-display); color: var(--stbr-emerald); }
+  .varr { display: flex; height: 24px; align-items: center; position: relative; }
+  .varr i { display: block; width: 2px; height: 14px; background: var(--stbr-dark); position: relative; }
+  .varr i::after { content: ''; position: absolute; left: -5px; bottom: -7px;
+                   border-top: 7px solid var(--stbr-dark);
+                   border-left: 6px solid transparent; border-right: 6px solid transparent; }
+  .varr .lbl { position: absolute; left: 12px; top: 1px; font: 700 10.5px var(--font-body);
+               color: var(--text-secondary); letter-spacing: .04em; text-transform: uppercase; }
+  .container { border: 2px dashed var(--stbr-green); border-radius: var(--radius-xl);
+               background: var(--surface-card); padding: 26px 18px 14px; position: relative; width: 470px; }
+  .container .ctag { position: absolute; top: -12px; left: 16px; background: var(--surface-card);
+                     padding: 0 8px; font: 700 13px var(--font-mono); color: var(--stbr-green); }
+  .gate { background: var(--surface-brand); color: var(--text-on-brand); border-radius: var(--radius-lg);
+          padding: 10px 16px; }
+  .gate h4 { font: 800 15px var(--font-display); margin: 0 0 5px; color: var(--text-on-brand); }
+  .gate div { font: 500 12.5px var(--font-body); line-height: 1.45; }
+  .throw { background: var(--stbr-yellow); border-radius: var(--radius-lg); padding: 9px 16px;
+           font: 800 14px var(--font-display); color: var(--stbr-dark); }
+  .throw .sub { display: block; font: 500 11.5px var(--font-body); }
+  .warntag { display: inline-block; font: 700 10px var(--font-body); letter-spacing: .05em;
+             text-transform: uppercase; border: 1.5px solid var(--stbr-dark);
+             border-radius: var(--radius-pill); padding: 1px 8px; margin-top: 4px; }
+  .footband { margin-top: 14px; background: var(--surface-inverse); color: var(--text-on-dark);
+              border-radius: var(--radius-lg); padding: 11px 18px;
+              font: 500 14px var(--font-body); }
+  .footband strong { font-weight: 800; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">spend controls</div>
+  <h2 class="viz-title">the agent's decision path for one 402</h2>
+
+  <div class="hrow">
+    <div class="fnode">fetch url</div>
+    <div class="harr"><i></i></div>
+    <div class="decision">status 402?</div>
+    <div class="harr" style="padding:0 6px;"><i style="width:60px;"></i><span class="lbl">not 402</span></div>
+    <div class="fnode">return the response<span class="sub">free &mdash; or already paid</span></div>
+  </div>
+  <div class="varr" style="margin-left:150px;"><i></i><span class="lbl">402</span></div>
+  <div class="hrow">
+    <div class="fnode" style="margin-left:96px;">parse the PaymentRequired body</div>
+  </div>
+  <div class="varr" style="margin-left:150px;"><i></i></div>
+
+  <div class="hrow" style="align-items:flex-start;">
+    <div class="container">
+      <span class="ctag">createPaymentPayload</span>
+      <div class="gate">
+        <h4>spendControls gate</h4>
+        <div>asset on the default pegged table?<br>
+             amount within the $1-per-payment cap (or override)?</div>
+      </div>
+    </div>
+    <div class="harr" style="margin-top:56px;"><i></i><span class="lbl">pass</span></div>
+    <div class="fnode" style="margin-top:44px;">build transfer<br>+ memo tx</div>
+    <div class="harr" style="margin-top:56px;"><i></i></div>
+    <div class="fnode" style="margin-top:44px;">partially sign<span class="sub">owner slot only</span></div>
+    <div class="harr" style="margin-top:56px;"><i></i></div>
+    <div class="fnode" style="margin-top:44px;">encode<br>PAYMENT-SIGNATURE</div>
+  </div>
+
+  <div style="display:flex; align-items:flex-start;">
+    <div style="width:470px; flex:none;">
+      <div class="varr" style="margin-left:150px;"><i></i><span class="lbl">fail</span></div>
+      <div class="throw">THROW &mdash; before any signature
+        <span class="sub">agent must catch and log the reason &mdash; else silent no-op</span>
+        <span class="warntag">log it</span></div>
+    </div>
+    <div style="flex:1;"></div>
+    <div>
+      <div class="varr" style="margin-left:81px; margin-top:-28px; height:56px;"><i style="height:44px;"></i></div>
+      <div class="hrow">
+        <div class="fnode">retry same URL<span class="sub">with PAYMENT-SIGNATURE header</span></div>
+        <div class="harr"><i></i></div>
+        <div class="fnode">200 + PAYMENT-RESPONSE receipt</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footband"><strong>frozen default</strong> &mdash; recognized pegged assets only,
+    $1 USD cap per payment, unless explicitly overridden.</div>
+</div>
+</div>
+</body></html>

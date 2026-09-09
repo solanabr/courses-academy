@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The frozen shelf vs the moving shelf
+     purpose: split the course's version table by rate of change, so the reader knows which pins to trust and which to re-verify before trusting
+     data: Frozen (stable, safe, re-check rarely): Solana Pay v1 transfer-request spec (2023-vintage page, format unchanged for years); @dialectlabs/blinks 0.22.5 (Apr 2025); @solana/actions 1.6.6 (Nov 2024); actions-spec 2.4.2 Moving (re-verify before every reuse): @solana/subscriptions 0.5.0 + the Delegation program's v0.5.0 deploy (both 2026-08-10, days old at course write); @x402/core 2.23.0 (2026-08-18); pay CLI pay-v0.27.0 (2026-08-02, rapid tags); MPP solana/charge method spec draft-solana-charge-00 (tracked in git, no IETF clock; its base draft-httpauth-payment-00 expires 2026-12-21); @solana/kit (npm latest 8.0.0 while course workspaces hold exact pins on the 6.10 and 7.1 lines) rule: frozen means stable, not dead; moving means re-pull the number, never cite it from memory
+     prompt: Two-column comparison card. Left column titled "Frozen: stable, safe" listing the frozen items with their last-ship dates; right column titled "Moving: re-verify first" listing the moving items with their publish dates. A horizontal footer band spanning both columns with the rule from the data field. Make the dates visually prominent; they are the point. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:497px;bottom:-313px;right:-313px;border-radius:55% 62% 38% 61% / 58% 44% 35% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cp-wrap { background:var(--surface-card); border-radius:var(--radius-2xl);
+             padding:38px 52px 34px; }
+  .cp-wrap .viz-title { font-size:46px; margin-bottom:22px; }
+  .cp-cols { display:flex; gap:28px; }
+  .cp-col { flex:1 1 0; border:2px solid var(--border-subtle);
+            border-radius:var(--radius-xl); overflow:hidden; display:flex;
+            flex-direction:column; }
+  .cp-col.mov { border-color:var(--stbr-yellow); }
+  .cp-head { padding:14px 22px; font-family:var(--font-display); font-weight:900;
+             font-size:22px; }
+  .cp-col.fro .cp-head { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .cp-col.mov .cp-head { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .cp-head .sub { display:block; font-family:var(--font-body); font-weight:700;
+                  font-size:12.5px; letter-spacing:0.08em; text-transform:uppercase;
+                  margin-top:2px; opacity:0.85; }
+  .cp-body { flex:1 1 auto; display:flex; flex-direction:column; }
+  .item { display:flex; align-items:center; gap:16px; padding:11px 22px;
+          border-top:1.5px solid var(--border-subtle); }
+  .item:first-child { border-top:none; }
+  .iname { flex:1 1 auto; font-family:var(--font-body); font-size:14.5px;
+           line-height:1.3; color:var(--text-primary); }
+  .iname b { font-weight:700; }
+  .iname .why { display:block; font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .idate { flex:0 0 auto; font-family:var(--font-display); font-weight:900;
+           font-size:16px; padding:5px 12px; border-radius:var(--radius-md);
+           white-space:nowrap; }
+  .fro .idate { background:rgba(0,139,76,0.10); color:var(--stbr-green);
+                border:1.5px solid rgba(0,139,76,0.28); }
+  .mov .idate { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .verdict { margin-top:22px; background:var(--stbr-emerald);
+             color:var(--stbr-cream); border-radius:var(--radius-lg);
+             padding:15px 26px; font-family:var(--font-body); font-size:16.5px;
+             font-weight:600; text-align:center; }
+</style>
+  <div class="cp-wrap">
+    <div class="stbr-eyebrow">the course&rsquo;s version table &middot; split by rate of change</div>
+    <h2 class="viz-title">the frozen shelf vs the moving shelf</h2>
+    <div class="cp-cols">
+      <div class="cp-col fro">
+        <div class="cp-head">frozen: stable, safe<span class="sub">re-check rarely</span></div>
+        <div class="cp-body">
+          <div class="item"><div class="iname"><b>Solana Pay v1</b> transfer-request spec<span class="why">format unchanged for years</span></div><div class="idate">2023-vintage</div></div>
+          <div class="item"><div class="iname"><b>@dialectlabs/blinks</b> 0.22.5</div><div class="idate">Apr 2025</div></div>
+          <div class="item"><div class="iname"><b>@solana/actions</b> 1.6.6</div><div class="idate">Nov 2024</div></div>
+          <div class="item"><div class="iname"><b>actions-spec</b> 2.4.2</div><div class="idate">stable</div></div>
+        </div>
+      </div>
+      <div class="cp-col mov">
+        <div class="cp-head">moving: re-verify first<span class="sub">before every reuse</span></div>
+        <div class="cp-body">
+          <div class="item"><div class="iname"><b>@solana/subscriptions</b> 0.5.0 + Delegation program v0.5.0 deploy<span class="why">days old at course write</span></div><div class="idate">2026-08-10</div></div>
+          <div class="item"><div class="iname"><b>@x402/core</b> 2.23.0</div><div class="idate">2026-08-18</div></div>
+          <div class="item"><div class="iname"><b>pay CLI</b> pay-v0.27.0<span class="why">rapid tags</span></div><div class="idate">2026-08-02</div></div>
+          <div class="item"><div class="iname"><b>MPP</b> draft-solana-charge-00 method spec<span class="why">base draft expires 2026-12-21</span></div><div class="idate">git, no IETF clock</div></div>
+          <div class="item"><div class="iname"><b>@solana/kit</b> &mdash; workspaces hold exact pins on the 6.10 and 7.1 lines</div><div class="idate">npm latest 8.0.0</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="verdict">frozen means stable, not dead &middot; moving means re-pull the number &mdash; never cite it from memory</div>
+  </div>
+</div>
+</body></html>

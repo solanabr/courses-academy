@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The four assembly footguns, their symptoms, and the fix
+     purpose: let the reader match a failing journey run to its cause before debugging blind
+     data: footgun: kit cross-contamination (a kit-6 workspace imports a kit-7-only subscriptions helper) | symptom: type errors or duplicate-kit runtime weirdness in the server process | fix: keep crank.ts inside the subscriptions folder — an entry file resolves bare imports by walking up from its own location, never from cwd, so the separate process buys lifecycle isolation and the file's address buys import isolation; nothing outside that folder imports from it footgun: loops started without the idempotency guard | symptom: one purchase, two fulfillments on a retried event | fix: worker and crank both claim the signature before acting; the webhook leg triple-delivers on purpose footgun: asserting before the fair queue drained | symptom: webhook leg FAILs with not-found on the queued sale | fix: drain at boot and wait for the queue-empty line before starting the journey footgun: devnet RPC rate limit mid-journey | symptom: a leg FAILs on a read timeout though the transaction landed | fix: wrap verifier reads in bounded retries; a timeout is a retry, a verifier rejection is a failure
+     prompt: Four-row comparison table with columns footgun, symptom, and fix, populated verbatim from data. Give each row a small icon-free severity accent and keep the fix column visually strongest. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:474px;bottom:-266px;right:-266px;border-radius:37% 35% 39% 56% / 56% 53% 35% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .ftable { border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+            overflow:hidden; background:var(--surface-card); margin-top:4px; }
+  .frow { display:grid; grid-template-columns:1fr 1fr 1.25fr; }
+  .fhead { background:var(--surface-inverse); }
+  .fhead .cell { font-family:var(--font-body); font-weight:800; font-size:14px;
+                 letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-dark);
+                 padding:13px 22px; }
+  .fhead .cell.fx { color:var(--stbr-yellow); }
+  .frow + .frow { border-top:1.5px solid var(--border-subtle); }
+  .cell { padding:15px 22px; font-family:var(--font-body); font-size:15px; line-height:1.42;
+          color:var(--text-primary); }
+  .cell.fg { border-left:7px solid var(--status-danger); font-weight:700; }
+  .cell.sy { font-weight:500; color:var(--text-secondary); }
+  .cell.fx { background:rgba(255,210,63,0.20); font-weight:600; border-left:1.5px solid var(--border-subtle); }
+  .fhead .cell.fg { border-left:none; font-weight:800; }
+  .fhead .cell.fx { background:none; border-left:none; }
+</style>
+  <div class="stbr-eyebrow">match the failing run to its cause before debugging blind</div>
+  <h2 class="viz-title">the four assembly footguns, symptom, and fix</h2>
+  <div class="ftable">
+    <div class="frow fhead">
+      <div class="cell fg">footgun</div><div class="cell sy" style="color:var(--text-on-dark);">symptom</div><div class="cell fx">the fix</div>
+    </div>
+    <div class="frow">
+      <div class="cell fg">kit cross-contamination &mdash; a kit-6 workspace imports a kit-7-only subscriptions helper</div>
+      <div class="cell sy">type errors or duplicate-kit runtime weirdness in the server process</div>
+      <div class="cell fx">keep <span style="font-family:var(--font-mono);font-size:0.92em;">crank.ts</span> inside the subscriptions folder &mdash; an entry file resolves imports from its own location, not from cwd; nothing outside that folder imports from it</div>
+    </div>
+    <div class="frow">
+      <div class="cell fg">loops started without the idempotency guard</div>
+      <div class="cell sy">one purchase, two fulfillments on a retried event</div>
+      <div class="cell fx">worker and crank both claim the signature before acting; the webhook leg triple-delivers on purpose</div>
+    </div>
+    <div class="frow">
+      <div class="cell fg">asserting before the fair queue drained</div>
+      <div class="cell sy">webhook leg FAILs with not-found on the queued sale</div>
+      <div class="cell fx">drain at boot and wait for the queue-empty line before starting the journey</div>
+    </div>
+    <div class="frow">
+      <div class="cell fg">devnet RPC rate limit mid-journey</div>
+      <div class="cell sy">a leg FAILs on a read timeout though the transaction landed</div>
+      <div class="cell fx">wrap verifier reads in bounded retries; a timeout is a retry, a verifier rejection is a failure</div>
+    </div>
+  </div>
+</div>
+</body></html>

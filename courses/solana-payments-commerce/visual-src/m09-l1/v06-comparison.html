@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Tonight's stack versus a production deployment
+     purpose: make the capstone's deliberate simplifications explicit so nobody ships the demo topology
+     data: axis: processes | tonight: one boot script, three children on one machine | production: worker, crank, and paywalled API as separate deployed services axis: signers | tonight: one merchant signer shared across services | production: one key per service, scoped, rotatable axis: monitoring | tonight: prefixed stdout logs | production: per-service alerting on failure rates and queue depth axis: network | tonight: devnet, public RPC, bounded retries | production: paid RPC with SLAs; landing strategy per the Client-Side Mastery course axis: what carries over unchanged | tonight and production: verify server-side, idempotent fulfillment, one reconciled ledger, per-workspace pins
+     prompt: Two-column comparison, tonight versus production, five rows from data. Render the final row as a full-width banner beneath the table since it is the invariant that survives both. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:508px;bottom:-281px;right:-281px;border-radius:40% 53% 55% 37% / 50% 55% 55% 52%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ctable { border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+            overflow:hidden; background:var(--surface-card); margin-top:4px; }
+  .crow { display:grid; grid-template-columns:200px 1fr 1fr; }
+  .crow + .crow { border-top:1.5px solid var(--border-subtle); }
+  .chead .cc { font-family:var(--font-body); font-weight:800; font-size:15px; letter-spacing:.1em;
+               text-transform:uppercase; padding:13px 22px; }
+  .chead .axl { background:var(--surface-card); }
+  .chead .ton { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .chead .prd { background:var(--surface-brand); color:var(--text-on-brand); }
+  .cc { padding:14px 22px; font-family:var(--font-body); font-size:15px; line-height:1.42; }
+  .axl { font-weight:800; font-size:14px; letter-spacing:.06em; text-transform:uppercase;
+         color:var(--stbr-green); background:var(--surface-paper); }
+  .ton { font-weight:600; color:var(--text-primary); border-left:1.5px solid var(--border-subtle); }
+  .prd { font-weight:500; color:var(--text-secondary); border-left:1.5px solid var(--border-subtle);
+         background:rgba(0,139,76,0.05); }
+  .band { margin-top:16px; background:var(--surface-brand); border-radius:var(--radius-xl);
+          padding:16px 26px; display:flex; align-items:center; gap:20px; }
+  .band .blab { flex:0 0 auto; background:var(--stbr-yellow); color:var(--stbr-dark);
+                font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.06em;
+                text-transform:uppercase; padding:7px 15px; border-radius:var(--radius-pill); }
+  .band .btxt { font-family:var(--font-body); font-weight:700; font-size:17px; line-height:1.35;
+                color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">deliberate simplifications &mdash; do not ship the demo topology</div>
+  <h2 class="viz-title">tonight&rsquo;s stack versus a production deployment</h2>
+  <div class="ctable">
+    <div class="crow chead"><div class="cc axl"></div><div class="cc ton">tonight</div><div class="cc prd">production</div></div>
+    <div class="crow">
+      <div class="cc axl">processes</div>
+      <div class="cc ton">one boot script, three children on one machine</div>
+      <div class="cc prd">worker, crank, and paywalled API as separate deployed services</div>
+    </div>
+    <div class="crow">
+      <div class="cc axl">signers</div>
+      <div class="cc ton">one merchant signer shared across services</div>
+      <div class="cc prd">one key per service &mdash; scoped, rotatable</div>
+    </div>
+    <div class="crow">
+      <div class="cc axl">monitoring</div>
+      <div class="cc ton">prefixed stdout logs</div>
+      <div class="cc prd">per-service alerting on failure rates and queue depth</div>
+    </div>
+    <div class="crow">
+      <div class="cc axl">network</div>
+      <div class="cc ton">devnet, public RPC, bounded retries</div>
+      <div class="cc prd">paid RPC with SLAs; landing strategy per the Client-Side Mastery course</div>
+    </div>
+  </div>
+  <div class="band">
+    <span class="blab">carries over unchanged</span>
+    <span class="btxt">verify server-side &middot; idempotent fulfillment &middot; one reconciled ledger &middot; per-workspace pins</span>
+  </div>
+</div>
+</body></html>

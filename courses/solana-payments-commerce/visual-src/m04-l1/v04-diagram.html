@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of the look-alike attack
+     purpose: show concretely how a Token-2022 counterfeit produces a credit that passes an amount-and-owner check
+     data: attacker: creates FAKE mint under Token-2022 program (cost: dust) -> mints 1,000,000,000 units to self -> creates token account owned by MERCHANT for FAKE mint -> transfers 30.000000 FAKE what the naive/partial check sees: postTokenBalances entry { owner: MERCHANT, amount: "30000000" } -> looks exactly like a $30 USDC payment what the hardened check sees: programId = Token-2022, expected classic Token -> reject wrong-token-program before the mint string is ever compared
+     prompt: Three-band diagram. Top band: the attacker's four-step pipeline from data as a left-to-right flow with a cost tag "dust" on the first step. Middle band labeled "what a partial check sees": the postTokenBalances entry rendered as JSON with owner and amount highlighted, captioned "indistinguishable from a $30 payment". Bottom band labeled "what the hardened check sees": the same entry with programId highlighted and a reject stamp reading wrong-token-program. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:588px;height:569px;bottom:-338px;right:-338px;border-radius:37% 53% 39% 36% / 54% 56% 55% 55%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .bands { display:flex; flex-direction:column; gap:16px; margin-top:6px; }
+  .band { border-radius:var(--radius-xl); padding:16px 22px; }
+  .band-lab { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+              letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px; }
+  .b-atk { background:var(--surface-inverse); }
+  .b-atk .band-lab { color:var(--stbr-yellow); }
+  .steps { display:flex; align-items:stretch; gap:0; }
+  .step { flex:1 1 0; background:rgba(245,232,202,0.08); border:1.5px solid rgba(245,232,202,0.3);
+          border-radius:var(--radius-lg); padding:12px 14px; font-family:var(--font-body);
+          font-size:14.5px; line-height:1.35; color:var(--text-on-dark); position:relative; }
+  .step b { display:block; font-weight:800; margin-bottom:2px; }
+  .step code { font-family:var(--font-mono); font-size:13.5px; }
+  .cost { position:absolute; top:-11px; right:10px; background:var(--stbr-yellow);
+          color:var(--stbr-dark); font-weight:900; font-size:11px; letter-spacing:.08em;
+          text-transform:uppercase; padding:3px 10px; border-radius:var(--radius-pill); }
+  .sarr { flex:0 0 34px; display:flex; align-items:center; justify-content:center; }
+  .sarr span { width:0; height:0; border-left:12px solid var(--stbr-cream);
+               border-top:7px solid transparent; border-bottom:7px solid transparent; display:block; }
+  .b-check { background:var(--surface-card); border:2px solid var(--border-strong);
+             display:flex; align-items:center; gap:22px; }
+  .b-check .band-lab { margin-bottom:0; flex:0 0 190px; color:var(--text-muted); line-height:1.4; }
+  .b-hard { border-color:var(--stbr-dark); }
+  .b-hard .band-lab { color:var(--stbr-dark); }
+  .json { font-family:var(--font-mono); font-size:16px; color:var(--text-primary);
+          background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:12px 16px; line-height:1.5; flex:1 1 auto; }
+  .fld { border-radius:5px; padding:1px 5px; margin:0 -2px; }
+  .fld-g { background:rgba(0,139,76,0.16); outline:1.5px solid var(--stbr-emerald); }
+  .fld-y { background:rgba(255,210,63,0.55); outline:2px solid var(--stbr-dark); font-weight:700; }
+  .cap { flex:0 0 240px; font-family:var(--font-body); font-size:14.5px; line-height:1.4;
+         color:var(--text-secondary); font-style:italic; }
+  .stamp { flex:0 0 300px; display:block; }
+  .stamp .rej { display:inline-block; max-width:270px; white-space:normal; line-height:1.25;
+                font-family:var(--font-display); font-weight:900; font-size:16px;
+                text-transform:uppercase; letter-spacing:.04em; color:var(--stbr-dark);
+                background:var(--stbr-yellow); border:3px solid var(--stbr-dark);
+                border-radius:var(--radius-md); padding:7px 14px; transform:rotate(-2deg); }
+  .stamp small { display:block; max-width:290px; margin-top:9px; font-family:var(--font-body);
+                 font-size:12.5px; line-height:1.35; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">how a token-2022 counterfeit passes an amount-and-owner check</div>
+  <h2 class="viz-title">anatomy of the look-alike attack</h2>
+  <div class="bands">
+    <div class="band b-atk">
+      <div class="band-lab">the attacker's pipeline</div>
+      <div class="steps">
+        <div class="step"><span class="cost">cost: dust</span><b>create FAKE mint</b>under the Token-2022 program</div>
+        <div class="sarr"><span></span></div>
+        <div class="step"><b>mint to self</b><code>1,000,000,000</code> units</div>
+        <div class="sarr"><span></span></div>
+        <div class="step"><b>create token account</b>owned by MERCHANT, for the FAKE mint</div>
+        <div class="sarr"><span></span></div>
+        <div class="step"><b>transfer</b><code>30.000000</code> FAKE</div>
+      </div>
+    </div>
+    <div class="band b-check">
+      <div class="band-lab">what a partial check sees</div>
+      <div class="json">{ <span class="fld fld-g">"owner": "MERCHANT"</span>, <span class="fld fld-g">"amount": "30000000"</span>, &hellip; }</div>
+      <div class="cap">indistinguishable from a $30 USDC payment</div>
+    </div>
+    <div class="band b-check b-hard">
+      <div class="band-lab">what the hardened check sees</div>
+      <div class="json">{ "owner": "MERCHANT", "amount": "30000000", <span class="fld fld-y">"programId": "Token-2022"</span> }</div>
+      <div class="stamp">
+        <span class="rej">reject: wrong-token-program</span>
+        <small>expected classic Token &mdash; rejected before the mint string is ever compared</small>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

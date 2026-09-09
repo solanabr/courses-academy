@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Works in curl, dead in a wallet
+     purpose: make the four silent hosting failures diagnosable by symptom
+     data: failure: actions.json missing or not at domain root | curl: GET endpoint works fine | wallet/client: link never unfurls, no request even reaches your API failure: CORS missing on action routes | curl: full JSON response | wallet/client: browser blocks the GET, blank card or generic error failure: CORS missing on actions.json itself | curl: file fetches fine | wallet/client: discovery fails before metadata is ever requested failure: icon is a relative path | curl: JSON looks complete | wallet/client: card renders with a broken image
+     prompt: Three-column comparison table: Failure, What curl shows, What the wallet/client shows. Four rows as listed in data. Render the curl column as passing and the wallet column as failing so the works-in-curl-dead-in-a-wallet asymmetry is visible at a glance. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:597px;height:582px;bottom:-340px;right:-340px;border-radius:46% 48% 64% 56% / 42% 61% 58% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:50px; }
+  .cmp { width:100%; border-collapse:separate; border-spacing:0; margin-top:16px;
+         background:var(--surface-card); border-radius:var(--radius-lg); overflow:hidden;
+         border:2px solid var(--border-subtle); }
+  .cmp th { font-family:var(--font-body); font-weight:800; font-size:15px; letter-spacing:.06em;
+            text-transform:uppercase; text-align:left; padding:16px 22px; }
+  .cmp th.hfail, .cmp th.hcurl { background:var(--surface-inverse); color:var(--stbr-cream); }
+  .cmp th.hfail { border-top-left-radius:16px; }
+  .cmp th.hwallet { background:var(--stbr-yellow); color:var(--stbr-dark);
+                    border-top-right-radius:16px; }
+  .cmp th.hwallet .sub { display:block; font-size:11px; letter-spacing:.08em; font-weight:700;
+                         margin-top:2px; text-transform:none; }
+  .cmp td { padding:15px 22px; border-top:1.5px solid var(--border-subtle); vertical-align:top;
+            font-family:var(--font-body); font-size:15.5px; line-height:1.4; }
+  .cmp td.fail { font-weight:700; color:var(--text-primary); width:30%; }
+  .cmp td.fail code { font-family:var(--font-mono); font-size:13.5px; }
+  .cmp td.curl { background:rgba(0,139,76,0.06); color:var(--text-secondary); width:30%; }
+  .cmp td.wallet { background:rgba(192,57,43,0.05); color:var(--text-secondary); }
+  .chip { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:11px;
+          letter-spacing:.08em; padding:3px 10px; border-radius:var(--radius-pill); margin-bottom:6px; }
+  .chip.ok { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .chip.bad { background:#c0392b; color:#fff; }
+  .cmp td .d { display:block; }
+</style>
+  <div class="stbr-eyebrow">four silent hosting failures</div>
+  <h2 class="viz-title">works in curl, dead in a wallet</h2>
+  <table class="cmp">
+    <tr>
+      <th class="hfail">failure</th>
+      <th class="hcurl">what curl shows</th>
+      <th class="hwallet">what the wallet / client shows<span class="sub">the only test that counts</span></th>
+    </tr>
+    <tr>
+      <td class="fail"><code>actions.json</code> missing or not at the domain root</td>
+      <td class="curl"><span class="chip ok">PASS</span><span class="d">GET on the endpoint works fine</span></td>
+      <td class="wallet"><span class="chip bad">FAIL</span><span class="d">link never unfurls &mdash; no request even reaches your API</span></td>
+    </tr>
+    <tr>
+      <td class="fail">CORS missing on the action routes</td>
+      <td class="curl"><span class="chip ok">PASS</span><span class="d">full JSON response</span></td>
+      <td class="wallet"><span class="chip bad">FAIL</span><span class="d">browser blocks the GET &mdash; blank card or generic error</span></td>
+    </tr>
+    <tr>
+      <td class="fail">CORS missing on <code>actions.json</code> itself</td>
+      <td class="curl"><span class="chip ok">PASS</span><span class="d">the file fetches fine</span></td>
+      <td class="wallet"><span class="chip bad">FAIL</span><span class="d">discovery fails before metadata is ever requested</span></td>
+    </tr>
+    <tr>
+      <td class="fail">icon is a relative path</td>
+      <td class="curl"><span class="chip ok">PASS</span><span class="d">JSON looks complete</span></td>
+      <td class="wallet"><span class="chip bad">FAIL</span><span class="d">card renders with a broken image</span></td>
+    </tr>
+  </table>
+</div>
+</body></html>

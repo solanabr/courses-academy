@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The QR round trip, from your script to the wallet preview
+     purpose: show the full path the lab just walked and mark the payment preview, not a payment, as the finish line
+     data: qr.ts encodeURL -> solana: URL (recipient, amount=24, spl-token=USDC mint, memo=WAV-0001) -> ASCII QR in the terminal -> phone wallet scans -> wallet parses the URL -> payment preview: 24 USDC, recipient, memo WAV-0001 -> wallet declines to proceed: zero balance, no SOL for the fee finish line: the preview itself; nothing is paid today
+     prompt: Left-to-right flowchart with the seven stages listed in data, one node per stage, arrows in order. Emphasize the payment preview node as the destination and render the final refusal as a terminal annotation rather than an error state. Caption under the flow: "the preview is the finish line; nothing is paid".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:545px;height:417px;right:-319px;top:128px;border-radius:52% 43% 37% 59% / 40% 52% 36% 37%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:371px;height:446px;bottom:-260px;left:832px;border-radius:40% 44% 48% 47% / 41% 42% 38% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .fl { margin-top:8px; }
+  .row { display:flex; align-items:stretch; }
+  .st { flex:1 1 0; background:var(--surface-card); border:2px solid var(--border-strong);
+        border-radius:var(--radius-lg); padding:16px 18px; min-height:132px; }
+  .st .t { font-family:var(--font-display); font-weight:900; font-size:19.5px;
+           line-height:1.1; color:var(--text-primary); }
+  .st .s { font-family:var(--font-body); font-weight:600; font-size:13px; line-height:1.4;
+           color:var(--text-secondary); margin-top:8px; }
+  .st .s code { font-family:var(--font-mono); font-size:12.5px; color:var(--stbr-green); }
+  .st.finish { background:var(--stbr-yellow); border:3px solid var(--stbr-dark); }
+  .st.finish .t, .st.finish .s { color:var(--stbr-dark); }
+  .st.finish .pill { display:inline-block; font-family:var(--font-body); font-weight:800;
+                     font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+                     background:var(--stbr-dark); color:var(--stbr-yellow);
+                     padding:4px 12px; border-radius:var(--radius-pill); margin-bottom:8px; }
+  .st.note { background:transparent; border:2.5px dashed rgba(27,35,29,0.4); }
+  .st.note .t { color:var(--text-secondary); }
+  .st.note .pill { display:inline-block; font-family:var(--font-body); font-weight:800;
+                   font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+                   background:rgba(27,35,29,0.1); color:var(--text-secondary);
+                   padding:4px 12px; border-radius:var(--radius-pill); margin-bottom:8px; }
+  .ar { flex:0 0 34px; display:flex; align-items:center; justify-content:center; }
+  .ar .l { position:relative; width:24px; height:3px; background:var(--stbr-emerald); }
+  .ar .l.rt::after { content:""; position:absolute; right:-3px; top:-6px;
+                     border:7px solid transparent; border-left:10px solid var(--stbr-emerald); }
+  .ar .l.lt::after { content:""; position:absolute; left:-3px; top:-6px;
+                     border:7px solid transparent; border-right:10px solid var(--stbr-emerald); }
+  .down { display:flex; justify-content:flex-end; height:52px; padding-right:170px; }
+  .down .v { position:relative; width:3px; height:100%; background:var(--stbr-emerald); }
+  .down .v::after { content:""; position:absolute; bottom:-3px; left:-6px;
+                    border:7px solid transparent; border-top:10px solid var(--stbr-emerald); }
+  .cap { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+         padding:15px 26px; text-align:center; font-family:var(--font-body); font-weight:800;
+         font-size:18px; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">the lab you just walked</div>
+  <h2 class="viz-title">the QR round trip, from your script to the wallet preview</h2>
+  <div class="fl">
+    <div class="row">
+      <div class="st"><div class="t">qr.ts &middot; encodeURL</div>
+        <div class="s">your script builds the request</div></div>
+      <div class="ar"><div class="l rt"></div></div>
+      <div class="st"><div class="t">solana: URL</div>
+        <div class="s"><code>recipient &middot; amount=24 &middot; spl-token=USDC mint &middot; memo=WAV-0001</code></div></div>
+      <div class="ar"><div class="l rt"></div></div>
+      <div class="st"><div class="t">ASCII QR</div>
+        <div class="s">rendered in the terminal</div></div>
+      <div class="ar"><div class="l rt"></div></div>
+      <div class="st"><div class="t">phone wallet scans</div>
+        <div class="s">camera reads the QR</div></div>
+    </div>
+    <div class="down"><div class="v"></div></div>
+    <div class="row">
+      <div class="st note"><div class="pill">terminal annotation</div>
+        <div class="t">wallet declines to proceed</div>
+        <div class="s">zero balance, no SOL for the fee &mdash; by design</div></div>
+      <div class="ar"><div class="l lt"></div></div>
+      <div class="st finish"><div class="pill">finish line</div>
+        <div class="t">payment preview</div>
+        <div class="s">24 USDC &middot; recipient &middot; memo WAV-0001</div></div>
+      <div class="ar"><div class="l lt"></div></div>
+      <div class="st"><div class="t">wallet parses the URL</div>
+        <div class="s">recipient, amount, mint, memo decoded</div></div>
+    </div>
+    <div class="cap">the preview is the finish line; nothing is paid today</div>
+  </div>
+</div>
+</body></html>

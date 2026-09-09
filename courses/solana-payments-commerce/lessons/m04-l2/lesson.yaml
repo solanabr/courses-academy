@@ -1,0 +1,101 @@
+id: lesson-spc-m04-l2
+slug: m04-l2
+title: "Webhooks that lie: ingestion and idempotency"
+skills:
+  - confirmation
+  - error-handling
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "express": "5.1.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q5
+        prompt: "Helius redelivers your TRANSFER webhook three times for one real payment. Why, and what keeps you from shipping three records?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "It's a bug in helius-sdk 3.1.0's delivery retry loop; pin an older SDK version and the duplicate deliveries stop."
+            correct: false
+            feedback: "Redelivery on non-2xx is documented behavior, not a bug; the fix is idempotency, not a downgrade."
+          - id: a
+            label: "Three separate payments landed, so fulfill each: one delivery is emitted per settled transfer, and three deliveries mean three settled transfers."
+            correct: false
+            feedback: "One payment produces one signature no matter how many times the webhook is delivered; deliveries are not transfers, and treating them as payments over-fulfills."
+          - id: b
+            label: "Helius retries any event your server didn't answer with a 2xx, so de-dupe on the transaction signature."
+            correct: true
+            feedback: "At-least-once delivery means the key has to come from the payment rather than the delivery; a per-delivery id changes on every retry and lets all three through."
+          - id: d
+            label: "Helius retries on any non-2xx answer, so de-dupe on a per-delivery event id off the request rather than on anything in the payment."
+            correct: false
+            feedback: "The diagnosis is right and the key is wrong, and it fails before you even get to the key: the enhanced payload has no delivery or attempt id in it. Its fields are `signature`, `type`, `slot`, `timestamp`, `feePayer`, `tokenTransfers` and the rest of the parsed transaction, and the one header you control, `authHeader`, is a constant you chose. There is nothing per-delivery to key on — and anything that did vary per attempt would differ across all three retries and let all three through. Only something derived from the payment stays constant."
+        explanation: "Retries on unsuccessful (roughly non-2xx) responses mean duplicate events are normal. The transaction signature is deterministic and unique per payment, so keying idempotency on it makes fulfillment exactly-once. And this one you do not have to infer: Helius's own webhook best practices say to use the `signature` field to deduplicate."
+      - id: q6
+        prompt: "A webhook arrives with a valid-looking TRANSFER payload and a signature you've never seen. Before writing an order, what must happen?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Check the shared secret on the request header; once the payload proves it came from Helius, its parsed amount and mint are trustworthy."
+            correct: false
+            feedback: "The auth header is a bouncer, not proof. A shared secret leaks, sits in a config dump, or gets guessed, and even a genuine delivery only tells you Helius saw something, never that the something paid this order."
+          - id: c
+            label: "Verify the signature on-chain with the server-side verifier (program, mint, delta, memo) before the ledger records any fulfillment."
+            correct: true
+            feedback: "The only field a webhook can be trusted for is the pointer. The rest is decoration until chain state confirms it, and that goes for any push source, your own frontend included."
+          - id: b
+            label: "Answer 2xx immediately and fulfill, then verify asynchronously later if you have time."
+            correct: false
+            feedback: "Fulfilling before verification is the spoof's whole attack; verification gates fulfillment, not the other way round."
+          - id: a
+            label: "Trust the enhanced payload's amount and mint, since Helius already parsed them and re-checking is wasted work."
+            correct: false
+            feedback: "The payload can be spoofed or simply wrong; the m04-l1 verifier exists precisely so you never fulfill from a webhook's numbers."
+        explanation: "A webhook is a notification, not proof. Every event runs through the m04-l1 verifier against on-chain state before fulfillment; a spoofed payload fails verification and never reaches the ledger."
+      - id: q7
+        prompt: "Your endpoint starts timing out under load and Helius auto-disables the webhook. What is the real lesson for scaling ingestion?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Raise the retry count and poll `getSignaturesForAddress` in a tight loop as the backup path, so no event is lost while the endpoint recovers under load."
+            correct: false
+            feedback: "RPC polling is exactly what the official guidance calls insufficient at scale; a tight loop worsens the load that disabled you rather than fixing it."
+          - id: c
+            label: "Switch from Enhanced to Raw webhooks: Raw payloads are smaller, so your endpoint answers in time and never trips the auto-disable policy."
+            correct: false
+            feedback: "Raw lowers latency but leaves the auto-disable-on-failure policy untouched; the failure is your endpoint, not the event type."
+          - id: d
+            label: "Shard the watch list across several webhooks pointing at the same endpoint, so no single one sustains enough failures to trip the guardrail."
+            correct: false
+            feedback: "Splitting the deliveries does not split the load: the same endpoint still receives every event and still times out, and now several webhooks accumulate failures instead of one. The bottleneck is handler capacity."
+          - id: a
+            label: "Webhooks disable at sustained failure by design; ingestion at volume belongs on Yellowstone gRPC indexing."
+            correct: true
+            feedback: "Auto-disable is backpressure protecting the sender, and the fix is capacity, not a setting. A stream lifts the delivery ceiling but not the dedup requirement, since reconnects replay."
+        explanation: "Auto-disable at sustained failure is a guardrail, not a bug. Webhooks fit merchant-ops volume; at indexing scale you move to Yellowstone gRPC, and this course hands that depth to Client-Side Mastery rather than teaching it here."
+      - id: q8
+        prompt: "You've integrated Stripe before. Which mapping is the honest one for this webhook work?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "It's Stripe webhook hygiene with different keys: the transaction signature plays the idempotency key's role."
+            correct: true
+            feedback: "The delivery semantics are identical, and the hygiene ports over intact; Stripe signs its payloads, though, and here you re-read the chain instead."
+          - id: a
+            label: "There's no analogy; chain webhooks are a brand-new discipline with nothing in a PSP integration to reuse."
+            correct: false
+            feedback: "It is largely the same discipline; pretending it's novel hides the reuse of hard-won PSP hygiene."
+          - id: d
+            label: "It's Stripe webhook hygiene with different keys, but re-reading the chain has no Stripe counterpart at all."
+            correct: false
+            feedback: "That half ports over too. Retrieving the PaymentIntent before fulfilling is the Stripe habit the chain read replaces, and an integrator who already refuses to fulfil from a return URL is doing the same thing against a different source of truth."
+          - id: c
+            label: "It maps to Stripe's settlement report rather than its webhooks, since the shared discipline is end-of-day matching of payouts against orders, not event delivery."
+            correct: false
+            feedback: "End-of-day matching is a later lesson's reconciliation work; the direct map here is Stripe's webhook idempotency, not its settlement report."
+        explanation: "The map-from-known: a Stripe integrator already de-dupes on idempotency keys and handles retries. Swap the idempotency key for the on-chain signature and the pattern transfers almost verbatim."

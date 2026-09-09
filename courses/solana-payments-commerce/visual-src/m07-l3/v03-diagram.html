@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: How the incumbents move money, AP2 mandates vs ACP's Shared Payment Token
+     purpose: make the two cards-first trust chains concrete before the merchant-of-record comparison asks the reader to place them
+     data: AP2 lane (v0.2, Google, standardized via FIDO Alliance working groups): human signs a Checkout Mandate (what the agent may buy) and a Payment Mandate (how it may pay) -> agent presents verifiable digital credentials at checkout -> settlement rides existing card rails; the protocol's product is the authorization paper trail ACP lane (Stripe + OpenAI, Apache-2.0): buyer checks out inside the platform (ChatGPT first) -> platform passes a Shared Payment Token, a scoped credential for the buyer's payment method, to the merchant -> merchant charges through its own processor and stays merchant-of-record
+     prompt: Two horizontal lanes, one per protocol. AP2 lane: human node, a pair of signed-document icons labeled Checkout Mandate and Payment Mandate, agent node, card-rails node. ACP lane: buyer-inside-platform node, a Shared Payment Token chip, merchant node badged "stays merchant-of-record", processor node. Left-to-right arrows as in data. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:497px;height:473px;bottom:-255px;left:744px;border-radius:56% 59% 44% 53% / 50% 59% 42% 62%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-2xl); padding:40px 48px;">
+    <div class="stbr-eyebrow">how the incumbents move money</div>
+    <h2 class="viz-title" style="font-size:42px; margin-bottom:20px;">AP2 mandates vs ACP&rsquo;s Shared Payment Token</h2>
+
+    <!-- AP2 lane -->
+    <div style="border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:18px 22px; background:var(--surface-paper);">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+        <div style="background:var(--stbr-emerald); color:var(--text-on-brand); border-radius:var(--radius-pill); padding:5px 16px; font-family:var(--font-display); font-weight:800; font-size:16px;">AP2</div>
+        <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary);">v0.2 &middot; Google &middot; standardized via FIDO Alliance working groups</div>
+      </div>
+      <div style="display:flex; align-items:stretch; height:172px;">
+        <div style="flex:1; background:var(--surface-card); border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary);">human</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">signs the two mandates up front</div>
+        </div>
+        <div style="width:40px; position:relative;"><div style="position:absolute; left:2px; right:12px; top:84px; height:2px; background:var(--stbr-dark);"></div><div style="position:absolute; right:3px; top:78px; width:0; height:0; border-left:10px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div></div>
+        <div style="flex:1.25; background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--stbr-dark);">Checkout Mandate</div>
+          <div style="font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--stbr-dark);">+ Payment Mandate</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--stbr-dark); margin-top:4px;">what the agent may buy &middot; how it may pay</div>
+        </div>
+        <div style="width:40px; position:relative;"><div style="position:absolute; left:2px; right:12px; top:84px; height:2px; background:var(--stbr-dark);"></div><div style="position:absolute; right:3px; top:78px; width:0; height:0; border-left:10px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div></div>
+        <div style="flex:1; background:var(--surface-card); border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary);">agent</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">presents verifiable digital credentials at checkout</div>
+        </div>
+        <div style="width:40px; position:relative;"><div style="position:absolute; left:2px; right:12px; top:84px; height:2px; background:var(--stbr-dark);"></div><div style="position:absolute; right:3px; top:78px; width:0; height:0; border-left:10px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div></div>
+        <div style="flex:1.1; background:var(--surface-inverse); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-on-dark);">existing card rails</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--stbr-cream); margin-top:4px;">settlement rides them; the protocol&rsquo;s product is the authorization paper trail</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACP lane -->
+    <div style="border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:18px 22px; background:var(--surface-paper); margin-top:18px;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+        <div style="background:var(--stbr-green); color:var(--text-on-brand); border-radius:var(--radius-pill); padding:5px 16px; font-family:var(--font-display); font-weight:800; font-size:16px;">ACP</div>
+        <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary);">Stripe + OpenAI &middot; Apache-2.0</div>
+      </div>
+      <div style="display:flex; align-items:stretch; height:172px;">
+        <div style="flex:1; background:var(--surface-card); border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary);">buyer, inside the platform</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">checks out in the platform &mdash; ChatGPT first</div>
+        </div>
+        <div style="width:40px; position:relative;"><div style="position:absolute; left:2px; right:12px; top:84px; height:2px; background:var(--stbr-dark);"></div><div style="position:absolute; right:3px; top:78px; width:0; height:0; border-left:10px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div></div>
+        <div style="flex:1.25; background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--stbr-dark);">Shared Payment Token</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--stbr-dark); margin-top:4px;">a scoped credential for the buyer&rsquo;s payment method, passed to the merchant</div>
+        </div>
+        <div style="width:40px; position:relative;"><div style="position:absolute; left:2px; right:12px; top:84px; height:2px; background:var(--stbr-dark);"></div><div style="position:absolute; right:3px; top:78px; width:0; height:0; border-left:10px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div></div>
+        <div style="flex:1; background:var(--surface-card); border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary);">merchant</div>
+          <div style="display:inline-block; background:var(--stbr-emerald); color:var(--text-on-brand); border-radius:var(--radius-pill); padding:3px 10px; font-family:var(--font-body); font-size:12px; font-weight:700; margin-top:6px; align-self:flex-start;">stays merchant-of-record</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:6px;">charges through its own processor</div>
+        </div>
+        <div style="width:40px; position:relative;"><div style="position:absolute; left:2px; right:12px; top:84px; height:2px; background:var(--stbr-dark);"></div><div style="position:absolute; right:3px; top:78px; width:0; height:0; border-left:10px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div></div>
+        <div style="flex:1.1; background:var(--surface-inverse); border-radius:var(--radius-lg); padding:14px 16px; display:flex; flex-direction:column; justify-content:center;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-on-dark);">its own processor</div>
+          <div style="font-family:var(--font-body); font-size:14px; color:var(--stbr-cream); margin-top:4px;">cards-first settlement on existing rails</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

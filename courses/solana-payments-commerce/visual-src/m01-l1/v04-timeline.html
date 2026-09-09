@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The repo that changed sides
+     purpose: show the shift of the official payments repo from QR checkout to agentic payments, with classic Solana Pay surviving as a subpackage
+     data: earlier era: canonical repo at solana-labs/solana-pay, flagship = QR-code checkout for humans now: that URL redirects to the Solana Foundation "pay" repo; headline product = agentic-payments CLI (release tag pay-v0.27.0, 2026-08-02, verified 2026-08-23) continuity: classic Solana Pay library lives on as a subpackage in the same monorepo (npm @solana/pay 1.0.26); this course builds a checkout on it in module 3, payment surfaces
+     prompt: Simple two-stage timeline, left stage labeled with the old repo and "QR checkout for humans", right stage labeled with the Foundation pay repo and "agentic-payments CLI, tag pay-v0.27.0 (2026-08-02)". A continuous band running under both stages labeled "classic Solana Pay library: still shipped as a subpackage". Arrow between stages labeled "URL redirect".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:458px;height:469px;right:-262px;top:282px;border-radius:43% 47% 64% 36% / 49% 44% 50% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:426px;height:442px;bottom:-240px;left:764px;border-radius:55% 44% 38% 48% / 49% 65% 54% 40%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { margin-top:14px; }
+  .stages { display:flex; align-items:stretch; gap:0; }
+  .stage { flex:1 1 0; background:var(--surface-card); border-radius:var(--radius-xl);
+           padding:28px 32px; }
+  .stage.then { border:2px solid var(--border-strong); }
+  .stage.now { border:3px solid var(--stbr-emerald); }
+  .era { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:12.5px;
+         letter-spacing:.12em; text-transform:uppercase; padding:6px 14px;
+         border-radius:var(--radius-pill); margin-bottom:14px; }
+  .era.a { background:rgba(27,35,29,0.08); color:var(--text-secondary); }
+  .era.b { background:var(--stbr-emerald); color:#fff; }
+  .repo { font-family:var(--font-mono); font-weight:800; font-size:25px;
+          color:var(--text-primary); margin-bottom:10px; }
+  .flag { font-family:var(--font-body); font-weight:700; font-size:17px;
+          color:var(--text-secondary); line-height:1.45; }
+  .meta { margin-top:12px; font-family:var(--font-mono); font-size:14px;
+          color:var(--stbr-green); }
+  .redir { flex:0 0 170px; display:flex; flex-direction:column; align-items:center;
+           justify-content:center; gap:8px; padding:0 10px; }
+  .redir .line { position:relative; width:126px; height:3px; background:var(--stbr-dark); }
+  .redir .line::after { content:""; position:absolute; right:-2px; top:-7px;
+                        border:8px solid transparent; border-left:12px solid var(--stbr-dark); }
+  .redir .lab { font-family:var(--font-body); font-weight:800; font-size:14px;
+                color:var(--text-primary); }
+  .band { margin-top:22px; background:var(--stbr-yellow); border-radius:var(--radius-lg);
+          padding:20px 30px; display:flex; align-items:center; gap:24px; }
+  .band .bt { font-family:var(--font-body); font-weight:800; font-size:19px;
+              color:var(--stbr-dark); }
+  .band .bs { margin-left:auto; font-family:var(--font-body); font-weight:700; font-size:15px;
+              color:var(--stbr-dark); text-align:right; line-height:1.35; }
+</style>
+  <div class="stbr-eyebrow">same URL, new headline product</div>
+  <h2 class="viz-title">the repo that changed sides</h2>
+  <div class="tl">
+    <div class="stages">
+      <div class="stage then">
+        <span class="era a">earlier era</span>
+        <div class="repo">solana-labs/solana-pay</div>
+        <div class="flag">flagship: QR-code checkout for humans</div>
+      </div>
+      <div class="redir">
+        <div class="lab">URL redirect</div>
+        <div class="line"></div>
+      </div>
+      <div class="stage now">
+        <span class="era b">now</span>
+        <div class="repo">Solana Foundation &ldquo;pay&rdquo; repo</div>
+        <div class="flag">headline product: agentic-payments CLI</div>
+        <div class="meta">release tag pay-v0.27.0 &middot; 2026-08-02 &middot; verified 2026-08-23</div>
+      </div>
+    </div>
+    <div class="band">
+      <span class="bt">classic Solana Pay library &mdash; still shipped as a subpackage of the same monorepo (npm @solana/pay 1.0.26)</span>
+      <span class="bs">this course builds a checkout on it<br>in module 3, payment surfaces</span>
+    </div>
+  </div>
+</div>
+</body></html>

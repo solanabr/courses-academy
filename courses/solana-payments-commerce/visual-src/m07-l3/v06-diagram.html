@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One gate, two protocols, zero changes to the API
+     purpose: fix the topology in the reader's head: the gate owns payment while the upstream stays payment-free
+     data: callers: x402 paying agent (last lesson) speaks PAYMENT-SIGNATURE headers; pay curl speaks MPP via WWW-Authenticate: Payment; any unpaid curl gets 402 with BOTH challenges gate: pay gate api paywall.yml --bind 127.0.0.1:4021 --rpc-url devnet; paywall.yml carries routing.url -> upstream and one metered endpoint at price_usd 0.10 per request upstream: bare pressing-price API on :3000, no payment code arrows: all callers -> gate; gate -> upstream only after a settled payment
+     prompt: Left-to-right topology diagram: three caller nodes on the left (x402 agent, pay curl MPP client, unpaid curl), one gate node center labeled with the command and port, one upstream API node right labeled "no payment code". Solid arrows from the two paying callers through the gate to the upstream; the unpaid curl arrow stops at the gate with a 402 badge listing both challenge surfaces. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:530px;top:-291px;right:-291px;border-radius:36% 40% 47% 38% / 61% 59% 57% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-2xl); padding:36px 48px 30px;">
+    <div class="stbr-eyebrow">gate topology</div>
+    <h2 class="viz-title" style="font-size:42px; margin-bottom:12px;">one gate, two protocols, zero changes to the API</h2>
+
+    <div style="position:relative; height:480px;">
+      <!-- caller 1: x402 agent -->
+      <div style="position:absolute; left:0; top:20px; width:370px; height:104px; background:var(--surface-card); border:1.5px solid var(--border-strong); border-radius:var(--radius-lg); padding:16px 20px;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-primary);">x402 paying agent</div>
+        <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">last lesson &mdash; speaks <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-primary);">PAYMENT-SIGNATURE</span> headers</div>
+      </div>
+      <!-- caller 2: pay curl -->
+      <div style="position:absolute; left:0; top:172px; width:370px; height:104px; background:var(--surface-card); border:1.5px solid var(--border-strong); border-radius:var(--radius-lg); padding:16px 20px;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-primary);"><span style="font-family:var(--font-mono); font-size:19px;">pay curl</span> &mdash; MPP client</div>
+        <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">speaks MPP via <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-primary);">WWW-Authenticate: Payment</span></div>
+      </div>
+      <!-- caller 3: unpaid curl -->
+      <div style="position:absolute; left:0; top:324px; width:370px; height:104px; background:var(--surface-paper); border:1.5px dashed var(--border-strong); border-radius:var(--radius-lg); padding:16px 20px;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-primary);">unpaid <span style="font-family:var(--font-mono); font-size:19px;">curl</span></div>
+        <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">no credential attached</div>
+      </div>
+
+      <!-- arrows: paying callers -> gate -->
+      <div style="position:absolute; left:370px; top:71px; width:206px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:576px; top:65px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+      <div style="position:absolute; left:370px; top:223px; width:206px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:576px; top:217px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+
+      <!-- arrow: unpaid curl stops at the gate -->
+      <div style="position:absolute; left:370px; top:375px; width:180px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:550px; top:369px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+      <div style="position:absolute; left:566px; top:360px; width:4px; height:32px; background:var(--stbr-dark); border-radius:2px;"></div>
+      <div style="position:absolute; left:352px; top:396px; width:198px; background:var(--stbr-yellow); border-radius:var(--radius-md); padding:8px 12px;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:14px; color:var(--stbr-dark);">402 &mdash; with BOTH challenges</div>
+        <div style="font-family:var(--font-mono); font-size:11px; color:var(--stbr-dark); margin-top:2px;">x402 PAYMENT-SIGNATURE<br>WWW-Authenticate: Payment</div>
+      </div>
+
+      <!-- gate node -->
+      <div style="position:absolute; left:590px; top:20px; width:340px; height:408px; background:var(--stbr-emerald); border-radius:var(--radius-xl); padding:22px 24px;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:15px; letter-spacing:0.12em; text-transform:uppercase; color:var(--stbr-cream);">the gate</div>
+        <div style="font-family:var(--font-mono); font-size:15px; color:var(--text-on-brand); margin-top:10px; line-height:1.6;">pay gate api paywall.yml<br>&nbsp;&nbsp;--bind 127.0.0.1:4021<br>&nbsp;&nbsp;--rpc-url devnet</div>
+        <div style="height:1px; background:var(--stbr-cream); opacity:0.4; margin:16px 0;"></div>
+        <div style="font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--text-on-brand); line-height:1.5;"><span style="font-family:var(--font-mono); font-size:13px;">paywall.yml</span> carries <span style="font-family:var(--font-mono); font-size:13px;">routing.url</span> &rarr; upstream</div>
+        <div style="font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--text-on-brand); margin-top:10px; line-height:1.5;">one metered endpoint at <span style="font-family:var(--font-mono); font-size:13px;">price_usd 0.10</span> per request</div>
+        <div style="margin-top:18px; background:var(--stbr-green); border-radius:var(--radius-md); padding:10px 14px; font-family:var(--font-body); font-size:13px; font-weight:600; color:var(--stbr-cream);">answers x402 and MPP at one door &mdash; the upstream never sees either</div>
+      </div>
+
+      <!-- arrow: gate -> upstream, after settlement -->
+      <div style="position:absolute; left:930px; top:223px; width:136px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:1066px; top:217px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+      <div style="position:absolute; left:934px; top:172px; width:130px; text-align:center; font-family:var(--font-body); font-size:12px; font-weight:700; color:var(--text-primary); line-height:1.3;">only after a<br>settled payment</div>
+
+      <!-- upstream node -->
+      <div style="position:absolute; left:1080px; top:150px; width:278px; height:148px; background:var(--surface-card); border:1.5px solid var(--border-strong); border-radius:var(--radius-lg); padding:18px 20px;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-primary);">pressing-price API</div>
+        <div style="font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:4px;">bare upstream on <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-primary);">:3000</span></div>
+        <div style="margin-top:12px;"><span style="background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-pill); padding:5px 14px; font-family:var(--font-display); font-weight:800; font-size:13px; letter-spacing:0.06em; text-transform:uppercase;">no payment code</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

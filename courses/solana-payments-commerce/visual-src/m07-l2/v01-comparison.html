@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: From price sheet to wire terms, field by field
+     purpose: map each route-config field the merchant writes to the PaymentRequirements field the agent receives in the PAYMENT-REQUIRED header, including the two the merchant never writes
+     data: the whole right column arrives base64'd in the PAYMENT-REQUIRED response header, not in the 402's body scheme 'exact' -> wire scheme: per-call settlement, the metered-API scheme network CAIP-2 devnet id -> wire network: solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1 (mainnet: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp) payTo merchant OWNER address -> wire payTo: scheme derives the ATA, same owner-vs-ATA rule as module 4 price '$0.05' money form -> wire asset + amount: resolved to devnet USDC 4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU, 6 decimals, '50000' base units extra.memo invoice id -> wire extra.memo: max 256 UTF-8 bytes, embedded as a memo instruction, verified byte-for-byte (not written by you) -> wire maxTimeoutSeconds: @x402/core fills in 300 when the route leaves it out (not written by you) -> wire extra.feePayer: supplied by the facilitator during the boot-time sync version boundary: v1 calls the amount field maxAmountRequired, v2 calls it amount; both schemas ship in @x402/core 2.23.0, so the field name tells you which dialect you are reading
+     prompt: Two-column mapping card, merchant-side field on the left, wire-side field on the right, one connecting arrow per row as in data. Give the two never-written rows a distinct filled-in treatment (facilitator for feePayer, SDK default for maxTimeoutSeconds) and the memo row a byte-ceiling badge. Footer band carries the version-boundary line. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:515px;bottom:-256px;right:-256px;border-radius:63% 50% 63% 36% / 36% 39% 60% 52%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 44px; }
+  .viz-title { font-size: 42px; margin: 4px 0 14px; }
+  .lanehead { display: grid; grid-template-columns: 430px 70px 1fr; margin-bottom: 8px; }
+  .lanehead div { font: 700 13px var(--font-body); letter-spacing: .1em; text-transform: uppercase;
+                  color: var(--text-muted); }
+  .maprow { display: grid; grid-template-columns: 430px 70px 1fr; align-items: stretch; margin-bottom: 8px; }
+  .mfield { border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg);
+            padding: 9px 16px; background: var(--surface-card); }
+  .wfield { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-lg);
+            padding: 9px 16px; background: var(--surface-paper); }
+  .fname { font: 700 15px var(--font-mono); color: var(--text-primary); }
+  .fsub  { font: 400 12.5px var(--font-body); color: var(--text-secondary); margin-top: 1px; }
+  .fsub .mono { font-family: var(--font-mono); font-size: 11.5px; }
+  .arr { display: flex; align-items: center; justify-content: center; }
+  .arr i { display: block; width: 34px; height: 2px; background: var(--stbr-dark); position: relative; }
+  .arr i::after { content: ''; position: absolute; right: -8px; top: -4px;
+                  border-left: 8px solid var(--stbr-dark);
+                  border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .badge { display: inline-block; font: 700 10.5px var(--font-body); letter-spacing: .06em;
+           text-transform: uppercase; border-radius: var(--radius-pill); padding: 2px 9px;
+           margin-left: 8px; vertical-align: 1px; }
+  .badge-bytes { background: var(--stbr-emerald); color: var(--stbr-cream); }
+  .badge-fac { background: var(--stbr-yellow); color: var(--stbr-dark); }
+  .badge-sdk { background: var(--stbr-dark); color: var(--stbr-cream); }
+  .rowfee .mfield { border-style: dashed; border-color: var(--border-subtle);
+                    color: var(--text-muted); background: var(--surface-card); }
+  .rowfee .wfield { background: #FFF6D6; border-color: var(--stbr-yellow); }
+  .hdrchip { font: 700 11.5px var(--font-mono); text-transform: none; letter-spacing: 0;
+             color: var(--stbr-dark); background: var(--stbr-yellow);
+             border-radius: var(--radius-sm); padding: 1px 7px; }
+  .footband { margin-top: 12px; background: var(--surface-brand); color: var(--text-on-brand);
+              border-radius: var(--radius-lg); padding: 12px 18px;
+              font: 500 14px var(--font-body); }
+  .footband strong { font-weight: 800; }
+  .footband .mono { font-family: var(--font-mono); font-size: 13px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">route config &rarr; wire</div>
+  <h2 class="viz-title">from price sheet to wire terms, field by field</h2>
+  <div class="lanehead">
+    <div>you write &mdash; route config</div><div></div>
+    <div>the agent receives &mdash; PaymentRequirements, base64&rsquo;d in the
+      <span class="hdrchip">PAYMENT-REQUIRED</span> header</div>
+  </div>
+
+  <div class="maprow">
+    <div class="mfield"><div class="fname">scheme: 'exact'</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">scheme</div>
+      <div class="fsub">per-call settlement &mdash; the metered-API scheme</div></div>
+  </div>
+
+  <div class="maprow">
+    <div class="mfield"><div class="fname">network</div><div class="fsub">CAIP-2 devnet id</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">network</div>
+      <div class="fsub"><span class="mono">solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1</span>
+      &nbsp;&middot;&nbsp; mainnet: <span class="mono">solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp</span></div></div>
+  </div>
+
+  <div class="maprow">
+    <div class="mfield"><div class="fname">payTo</div><div class="fsub">merchant OWNER address</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">payTo</div>
+      <div class="fsub">the scheme derives the ATA &mdash; same owner-vs-ATA rule as module&nbsp;4</div></div>
+  </div>
+
+  <div class="maprow">
+    <div class="mfield"><div class="fname">price: '$0.05'</div><div class="fsub">money form</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">asset + amount</div>
+      <div class="fsub">devnet USDC <span class="mono">4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU</span>
+      &middot; 6 decimals &middot; amount <span class="mono">'50000'</span> base units</div></div>
+  </div>
+
+  <div class="maprow">
+    <div class="mfield"><div class="fname">extra.memo</div><div class="fsub">invoice id</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">extra.memo<span class="badge badge-bytes">max 256 UTF-8 bytes</span></div>
+      <div class="fsub">embedded as a memo instruction &middot; verified byte-for-byte</div></div>
+  </div>
+
+  <div class="maprow rowfee">
+    <div class="mfield"><div class="fname" style="font-family:var(--font-body);font-weight:600;">&mdash; not written by you &mdash;</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">maxTimeoutSeconds<span class="badge badge-sdk">filled in by @x402/core</span></div>
+      <div class="fsub">how long the terms stay payable &mdash; defaults to
+        <span class="mono">300</span> when the route leaves it out</div></div>
+  </div>
+
+  <div class="maprow rowfee">
+    <div class="mfield"><div class="fname" style="font-family:var(--font-body);font-weight:600;">&mdash; not written by you &mdash;</div></div>
+    <div class="arr"><i></i></div>
+    <div class="wfield"><div class="fname">extra.feePayer<span class="badge badge-fac">filled in by the facilitator</span></div>
+      <div class="fsub">supplied during the boot-time sync</div></div>
+  </div>
+
+  <div class="footband"><strong>version boundary, not drift</strong> &mdash; v1 calls this field
+    <span class="mono">maxAmountRequired</span>, v2 calls it <span class="mono">amount</span>.
+    Both schemas ship in <span class="mono">@x402/core</span> 2.23.0, so the name you are looking
+    at tells you which dialect you are reading.</div>
+</div>
+</div>
+</body></html>

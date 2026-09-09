@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The one edit that rewires the stall
+     purpose: show exactly which lines in App.tsx flip the POS from transfer requests to your transaction-request endpoint
+     data: file: src/client/components/pages/App.tsx (examples/point-of-sale) line 1: const connectWallet = false;   -> set true to test with a browser wallet on your laptop line 2: const link = undefined;        -> comment this out line 3: // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]); -> uncomment, replace `${baseURL}/api/` with your checkout-txreq URL, e.g. https://localhost:3443/txreq effect: link === undefined -> QR encodes solana:<recipient> (wallet builds tx) link === URL       -> QR encodes solana:<https-link> (YOUR server builds tx)
+     prompt: An annotated code card. Show the three lines of App.tsx as monospace code with two callout arrows: one on `connectWallet` labeled "browser-wallet dev loop", one on the `link` pair labeled "transfer requests vs transaction requests". Below the code, a two-row effect table mapping link=undefined to "wallet builds" and link=URL to "your server builds". Keep the code text verbatim.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:553px;height:526px;bottom:-330px;left:-330px;border-radius:46% 59% 41% 59% / 58% 56% 65% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .code-panel { background:var(--surface-inverse); border-radius:var(--radius-2xl); overflow:hidden; }
+  .code-bar { display:flex; align-items:center; gap:10px; padding:16px 26px; border-bottom:1px solid var(--border-on-dark); }
+  .code-bar i { width:13px; height:13px; border-radius:50%; display:block; }
+  .code-bar .path { margin-left:12px; font-family:var(--font-mono); font-size:15px; color:var(--stbr-ink-300); }
+  .cline { display:flex; align-items:center; gap:22px; padding:17px 34px; border-bottom:1px solid var(--border-on-dark); }
+  .cline:last-child { border-bottom:0; }
+  .lno { flex:0 0 30px; font-family:var(--font-mono); font-size:16px; color:var(--stbr-ink-500); text-align:right; }
+  .src { font-family:var(--font-mono); font-size:21px; color:var(--text-on-dark); white-space:nowrap; }
+  .src .kw { color:var(--stbr-ink-300); }
+  .src .cm { color:var(--stbr-ink-500); }
+  .src .lit { color:var(--stbr-yellow); }
+  .edit-chip { margin-left:auto; flex:0 0 auto; font-family:var(--font-body); font-weight:800; font-size:15px;
+               padding:8px 16px; border-radius:var(--radius-pill); white-space:nowrap; }
+  .edit-chip.green { background:var(--stbr-emerald); color:var(--text-on-brand); }
+  .edit-chip.yellow { background:var(--stbr-yellow); color:var(--text-on-accent); }
+  .link-brace { border-left:5px solid var(--stbr-yellow); }
+  .fx { margin-top:22px; border:1px solid var(--border-subtle); border-radius:var(--radius-xl); overflow:hidden; }
+  .fx-head { display:flex; background:var(--surface-brand); }
+  .fx-head div { flex:1; padding:12px 24px; font-family:var(--font-display); font-weight:800; font-size:16px;
+                 letter-spacing:0.08em; text-transform:uppercase; color:var(--text-on-brand); }
+  .fx-row { display:flex; background:var(--surface-card); border-top:1px solid var(--border-subtle); }
+  .fx-row div { flex:1; padding:14px 24px; font-family:var(--font-body); font-size:18px; color:var(--text-primary); }
+  .fx-row div:first-child { font-family:var(--font-mono); font-size:18px; }
+  .fx-row.hot { background:#fff7dd; }
+  .fx-row .who { font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">POINT-OF-SALE &middot; APP.TSX</div>
+  <h2 class="viz-title">the one edit that rewires the stall</h2>
+  <div class="code-panel">
+    <div class="code-bar"><i style="background:#e2554a;"></i><i style="background:var(--stbr-yellow);"></i><i style="background:var(--stbr-emerald);"></i><span class="path">src/client/components/pages/App.tsx &mdash; examples/point-of-sale</span></div>
+    <div class="cline">
+      <div class="lno">1</div>
+      <div class="src"><span class="kw">const</span> connectWallet = <span class="lit">false</span>;</div>
+      <div class="edit-chip green">set true &mdash; browser-wallet dev loop</div>
+    </div>
+    <div class="cline link-brace">
+      <div class="lno">2</div>
+      <div class="src"><span class="kw">const</span> link = <span class="lit">undefined</span>;</div>
+      <div class="edit-chip yellow">comment this out</div>
+    </div>
+    <div class="cline link-brace">
+      <div class="lno">3</div>
+      <div class="src"><span class="cm">// const link = useMemo(() =&gt; new URL(`${baseURL}/api/`), [baseURL]);</span></div>
+      <div class="edit-chip yellow">uncomment &middot; point at https://localhost:3443/txreq</div>
+    </div>
+  </div>
+  <div class="fx">
+    <div class="fx-head"><div>value of link</div><div>QR encodes</div><div>who builds the transaction</div></div>
+    <div class="fx-row"><div>link === undefined</div><div>solana:&lt;recipient&gt;</div><div><span class="who">the wallet</span> builds it &mdash; transfer request</div></div>
+    <div class="fx-row hot"><div>link === URL</div><div>solana:&lt;https-link&gt;</div><div><span class="who">YOUR server</span> builds it &mdash; transaction request</div></div>
+  </div>
+</div>
+</body></html>

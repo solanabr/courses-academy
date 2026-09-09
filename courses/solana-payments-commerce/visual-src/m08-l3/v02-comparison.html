@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Commitment policy per payment value
+     purpose: fix the three-commitment settlement policy as a lookup the reader can transcribe into their gate row
+     data: processed: meaning = leader processed the tx, no cluster confirmation; latency = fastest; fork risk = can be dropped during forks; sanctioned use = UI feedback only, never settlement confirmed: meaning = cluster-confirmed, optimistic; latency = sub-second in practice; fork risk = reversion essentially never observed in practice; sanctioned use = settlement gate for most payments (the $12 record) finalized: meaning = rooted, beyond rollback; latency = adds several seconds; fork risk = none; sanctioned use = high-value or compliance-sensitive settlement (the $9,000 wholesale order)
+     prompt: Three-column comparison, one column per commitment level (processed, confirmed, finalized), four rows (what it means, latency, fork risk, sanctioned use). Badge the processed column with a "never a settlement gate" warning chip and the finalized column with a "high-value" chip. Cell text tightened from data. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:392px;right:-301px;top:273px;border-radius:63% 37% 57% 60% / 64% 65% 60% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { margin-top:8px; }
+  .crow { display:flex; gap:14px; margin-bottom:10px; }
+  .rl { flex:0 0 auto; width:216px; display:flex; align-items:center; font-family:var(--font-body);
+        font-weight:800; font-size:14px; letter-spacing:.06em; text-transform:uppercase;
+        color:var(--stbr-green); line-height:1.3; }
+  .colh { flex:0 0 auto; width:390px; border-radius:var(--radius-lg); padding:13px 18px;
+          display:flex; align-items:center; justify-content:center; gap:12px; }
+  .colh .t { font-family:var(--font-mono); font-weight:700; font-size:21px; }
+  .colh.proc, .colh.fin { background:var(--surface-inverse); }
+  .colh.proc .t, .colh.fin .t { color:var(--text-on-dark); }
+  .colh.conf { background:var(--surface-brand); }
+  .colh.conf .t { color:var(--text-on-brand); }
+  .chip { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.03em;
+          border-radius:var(--radius-pill); padding:4px 10px; white-space:nowrap; }
+  .chip.warn { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .chip.line { border:1.5px solid rgba(245,232,202,0.6); color:var(--text-on-dark); }
+  .cell { flex:0 0 auto; width:390px; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:11px 16px; font-family:var(--font-body);
+          font-size:15.5px; line-height:1.35; color:var(--text-primary);
+          display:flex; align-items:center; }
+  .cell b { font-weight:800; }
+  .cell.key { background:rgba(255,210,63,0.28); border-color:var(--stbr-yellow); }
+  .verdict { margin-top:6px; background:var(--surface-brand); border-radius:var(--radius-lg);
+             padding:14px 24px; font-family:var(--font-body); font-weight:800; font-size:17px;
+             color:var(--text-on-brand); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">the lookup for your gate row</div>
+  <h2 class="viz-title">commitment policy per payment value</h2>
+  <div class="cmp">
+    <div class="crow">
+      <div class="rl"></div>
+      <div class="colh proc"><span class="t">processed</span><span class="chip warn">never a settlement gate</span></div>
+      <div class="colh conf"><span class="t">confirmed</span></div>
+      <div class="colh fin"><span class="t">finalized</span><span class="chip line">high-value</span></div>
+    </div>
+    <div class="crow">
+      <div class="rl">What it means</div>
+      <div class="cell"><span>Leader processed the tx &mdash; <b>no cluster confirmation</b></span></div>
+      <div class="cell"><span><b>Cluster-confirmed</b>, optimistic</span></div>
+      <div class="cell"><span><b>Rooted</b> &mdash; beyond rollback</span></div>
+    </div>
+    <div class="crow">
+      <div class="rl">Latency</div>
+      <div class="cell"><span>Fastest</span></div>
+      <div class="cell"><span>Sub-second in practice</span></div>
+      <div class="cell"><span>Adds several seconds</span></div>
+    </div>
+    <div class="crow">
+      <div class="rl">Fork risk</div>
+      <div class="cell"><span>Can be dropped during forks</span></div>
+      <div class="cell"><span>Reversion essentially never observed in practice</span></div>
+      <div class="cell"><span>None</span></div>
+    </div>
+    <div class="crow">
+      <div class="rl">Sanctioned use</div>
+      <div class="cell"><span>UI feedback only &mdash; never settlement</span></div>
+      <div class="cell key"><span><b>Settlement gate for most payments</b> &mdash; the $12 record</span></div>
+      <div class="cell"><span>High-value or compliance-sensitive &mdash; the $9,000 wholesale order</span></div>
+    </div>
+    <div class="verdict">show processed, settle on confirmed, hold high-value for finalized</div>
+  </div>
+</div>
+</body></html>

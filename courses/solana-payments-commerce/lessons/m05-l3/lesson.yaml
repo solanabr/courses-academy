@@ -1,0 +1,98 @@
+id: lesson-spc-m05-l3
+slug: m05-l3
+title: "Dunning, lifecycle, and who else does this"
+skills:
+  - subscriptions-program
+  - recurring-delegation
+  - error-handling
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m05-l3-q1
+        prompt: "A subscriber's ATA is empty when the monthly pull fires. Following the dunning policy Helius runs on its own bills, what happens to that renewal?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The renewal is not retried against the wallet; it becomes an ordinary open invoice the subscriber can settle later."
+            correct: true
+            feedback: "An empty account cannot be pulled harder, and retrying just burns fees against a balance you do not control; it isn't no-dunning either, since reminders and grace move into your backoffice."
+          - id: c
+            label: "The subscription is cancelled immediately and its delegation PDA is closed on the spot, refunding the rent to the subscriber who paid it."
+            correct: false
+            feedback: "A failure moves to an open-invoice/grace state, not immediate cancel-and-close; cancellation is a separate, explicit transition."
+          - id: b
+            label: "The crank retries the pull against the wallet on a backoff ladder, minutes apart and then daily, until it clears or the retry limit drops the plan."
+            correct: false
+            feedback: "There is nothing to auto-retry against a wallet you don't control, and the documented policy is explicitly NOT to retry against the wallet."
+          - id: d
+            label: "The renewal is dropped, and the crank simply bills the subscriber again on the next scheduled cycle."
+            correct: false
+            feedback: "Dropping it loses the receivable. The missed period stays owed, and the state machine refuses a pull against an open invoice outright, so the next cycle is not where that money comes back."
+        explanation: "Retry-never: with no custody there is nothing to dun. The failed pull becomes an open invoice the subscriber settles when they top up, the exact opposite of card-rail auto-retry."
+      - id: m05-l3-q2
+        prompt: "A subscriber cancels for good and you want to stop paying rent on their now-dead subscription accounts. Which action recovers it?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Nothing to do: the subscriber's cancel already closed both accounts and returned every lamport of rent."
+            correct: false
+            feedback: "Unsubscribing does close the delegation account and refund it. Revoking the authority only vacates the delegate slot, so the subscription PDA is still sitting there on your rent until a RevokeAbandoned call closes it."
+          - id: a
+            label: "Nothing; PDA rent is burned at account creation and is permanently unrecoverable."
+            correct: false
+            feedback: "The program exposes an explicit revoke-and-reclaim path; the rent is not burned."
+          - id: c
+            label: "The subscriber must closeAccount on their ATA, which also frees the subscription PDAs."
+            correct: false
+            feedback: "Closing the user's ATA is a different account entirely and does not reclaim the program's subscription or delegation PDAs."
+          - id: b
+            label: "A RevokeAbandoned instruction closes the abandoned subscription/delegation accounts and returns the rent lamports."
+            correct: true
+            feedback: "Rent is a deposit that comes back only on an explicit close, and cancelling does not call one."
+        explanation: "RevokeAbandoned* is the lifecycle exit that recovers rent from dead subscription/delegation PDAs, so you stop paying to keep cancelled arrangements on-chain."
+      - id: m05-l3-q3
+        prompt: "You're advising Wavelength on outsourcing recurring billing to a provider. Based on the 2026 landscape, which statement is accurate?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Sphere ships a drop-in recurring-billing product tuned for the Brazil/PIX corridor, so a subscription settles to BRL on the same rails as its one-off payments."
+            correct: false
+            feedback: "Sphere does payments, ramps, OTC, and PIX settlement, but it ships NO recurring product."
+          - id: d
+            label: "All three ship recurring billing, so the choice comes down to corridor coverage, payout speed and per-charge price rather than capability."
+            correct: false
+            feedback: "Assuming every payments vendor also bills recurring is how the wrong one gets picked. Sphere is strong on payments, ramps and PIX settlement and ships no recurring product at all, so capability is the first filter, not the last."
+          - id: c
+            label: "MoonPay Commerce pay links and Stripe Billing both support subscriptions, including stablecoin ones, while Sphere has none at all."
+            correct: true
+            feedback: "Recurring is a separate product line from payments, and a strong payments vendor can simply not ship it; support is not coverage either, and the corridor is where that gap shows."
+          - id: b
+            label: "Stripe cannot bill stablecoin subscriptions; its crypto support stops at one-off checkout payments, so recurring stablecoin billing has to run on MoonPay Commerce."
+            correct: false
+            feedback: "Stripe Billing does support stablecoin subscriptions; that is exactly its recurring product."
+        explanation: "The useful intelligence is the negatives: MoonPay Commerce and Stripe Billing both do recurring, Sphere does not. Assuming every payments provider bills recurring is how you pick the wrong vendor."
+      - id: m05-l3-q4
+        prompt: "You model dunning as a state machine in the backoffice rather than as retries against the chain. Why is that the right shape for non-custodial recurring revenue?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Because the ledger is where a retry loop belongs: it holds the failures and re-attempts the pull on a backoff until the balance covers it."
+            correct: false
+            feedback: "Moving the loop into the ledger keeps the loop. A pull against an open invoice is refused as an invariant, precisely so nobody reinvents backoff against a wallet that only its owner can refill."
+          - id: a
+            label: "Because a pull succeeds only when allowance and balance both cover it, so unrecoverable failures belong in your ledger, not in a retry loop you can't force."
+            correct: true
+            feedback: "Both preconditions sit in the subscriber's control, and repeating the call changes nothing. An RPC timeout is a different animal, worth the retry an empty balance never earns."
+          - id: c
+            label: "Because the Subscriptions program escrows one billing period of funds when a subscriber accepts a plan, so a retried pull draws on that escrow and eventually clears."
+            correct: false
+            feedback: "Nothing escrows the subscriber's funds; an empty ATA simply cannot be pulled, no matter how many times you retry."
+          - id: b
+            label: "Because the Subscriptions program falls back to billing the customer's card on file after three ledger failures."
+            correct: false
+            feedback: "There is no card on file. The primitive is a token-account delegate pull, not card billing."
+        explanation: "Non-custodial means you can't reach into the wallet. The only place you control state is your own ledger, so failure and lifecycle live there as an explicit state machine, which is exactly why retry-never is the honest policy."

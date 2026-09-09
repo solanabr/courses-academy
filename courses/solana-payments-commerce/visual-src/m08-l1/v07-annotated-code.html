@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: kora.toml validation, walked control by control
+     purpose: connect each validation key to the specific attack it blocks before the reader meets the full file in the lab
+     data: allowed_programs = [Token, Memo, ComputeBudget]  -> refuses any tx invoking other programs; the checkout's exact instruction set and nothing else allowed_tokens = [devnet USDC]                   -> bounds fee-quoting to mints you trust max_signatures = 2                                -> sponsor + buyer; a 3rd signer is not your checkout max_allowed_lamports = 1000000                    -> caps the SOL value a sponsored tx may move allow_durable_transactions = false                -> no durable-nonce lifetimes sponsored (remember this switch next lesson) [validation.price] type = "free"                  -> merchant eats the fee; buyers are never charged fee_payer_policy: BLOCK OMITTED                   -> every fee-payer power (System transfer source, token transfer owner, nonce authority...) defaults to DENY in current source
+     prompt: The seven config lines rendered as code rows, each with a callout arrow to its one-line defense annotation per the data. Give the omitted fee_payer_policy row a distinct treatment (dashed border) since its power is the absence of the block.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:455px;bottom:-245px;right:-245px;border-radius:51% 54% 41% 39% / 53% 40% 58% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-inverse); border-radius:var(--radius-2xl);
+          padding:40px 52px 36px; }
+  .card .stbr-eyebrow { color:var(--stbr-yellow); }
+  .card .viz-title { color:var(--stbr-cream); font-size:48px; }
+  .rows { margin-top:24px; }
+  .row { display:flex; align-items:center; height:62px; margin-bottom:11px; }
+  .row.hot { height:76px; }
+  .code { flex:0 0 528px; height:44px; line-height:44px;
+          font-family:var(--font-mono); font-size:15.5px; color:var(--stbr-cream);
+          background:rgba(245,232,202,0.08); border:1.5px solid rgba(245,232,202,0.22);
+          border-radius:var(--radius-md); padding:0 16px; }
+  .code .k { color:#7FD4A8; white-space:pre; }
+  .conn { flex:0 0 40px; height:0; border-top:2px solid rgba(245,232,202,0.45);
+          position:relative; margin-right:16px; }
+  .conn::after { content:""; position:absolute; right:-2px; top:-7px; width:0; height:0;
+                 border-top:6px solid transparent; border-bottom:6px solid transparent;
+                 border-left:9px solid rgba(245,232,202,0.65); }
+  .note { flex:1 1 auto; font-family:var(--font-body); font-size:14.5px;
+          line-height:1.35; color:rgba(245,232,202,0.88); padding-right:6px; }
+  .note b { color:#FFFFFF; }
+  .row.hot .code { border:2px dashed var(--stbr-yellow); background:rgba(255,210,63,0.10);
+                   color:var(--stbr-yellow); }
+  .row.hot .conn { border-top-color:var(--stbr-yellow); }
+  .row.hot .conn::after { border-left-color:var(--stbr-yellow); }
+  .row.hot .note b { color:var(--stbr-yellow); }
+  .foot { margin-top:18px; font-family:var(--font-body); font-size:13px;
+          color:rgba(245,232,202,0.6); }
+</style>
+  <div class="card">
+    <div class="stbr-eyebrow">kora.toml &middot; every key blocks an attack</div>
+    <h2 class="viz-title">the validation config, walked control by control</h2>
+    <div class="rows">
+      <div class="row">
+        <div class="code">allowed_programs = [<span class="k">Token, Memo, ComputeBudget</span>]</div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">refuses any tx invoking other programs &mdash; <b>the checkout&rsquo;s exact instruction set and nothing else</b></div>
+      </div>
+      <div class="row">
+        <div class="code">allowed_tokens = [<span class="k">devnet USDC</span>]</div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">bounds fee-quoting to <b>mints you trust</b></div>
+      </div>
+      <div class="row">
+        <div class="code">max_signatures = <span class="k">2</span></div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">sponsor + buyer &mdash; <b>a 3rd signer is not your checkout</b></div>
+      </div>
+      <div class="row">
+        <div class="code">max_allowed_lamports = <span class="k">1000000</span></div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">caps the <b>SOL value</b> a sponsored tx may move</div>
+      </div>
+      <div class="row">
+        <div class="code">allow_durable_transactions = <span class="k">false</span></div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">no durable-nonce lifetimes sponsored &mdash; <b>remember this switch next lesson</b></div>
+      </div>
+      <div class="row">
+        <div class="code">[validation.price]  type = <span class="k">"free"</span></div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">merchant eats the fee &mdash; <b>buyers are never charged</b></div>
+      </div>
+      <div class="row hot">
+        <div class="code">fee_payer_policy &mdash; block omitted</div>
+        <div class="conn"><span class="l"></span><span class="h"></span></div>
+        <div class="note">every fee-payer power (System transfer source, token transfer owner, nonce authority&hellip;) <b>defaults to DENY</b> in current source &mdash; its power is the absence of the block</div>
+      </div>
+    </div>
+    <div class="foot">seven controls; each one is a refusal the attacker meets before your SOL moves.</div>
+  </div>
+</div>
+</body></html>

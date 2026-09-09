@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two channels, one source of truth
+     purpose: fix the trust boundary: everything from the browser is a claim, only the ledger read is a fact
+     data: buyer's browser -> your server: "paid: true", signature string, order id (all spoofable claims) your server -> RPC getTransaction(signature, jsonParsed) -> the ledger: token program, mint, balance delta, memo (facts) rule: fulfillment decisions read ONLY from the fact channel; the claim channel may at most tell you which signature to go check
+     prompt: Two horizontal channels flowing into a server node. Top channel from a browser icon, labeled "claims", carrying three tagged items (paid: true, signature, order id) each marked spoofable. Bottom channel from a ledger icon through a getTransaction node, labeled "facts", carrying token program, mint, balance delta, memo. Only the facts channel connects onward to a "fulfill" node; the claims channel dead-ends at a note reading "at most: which signature to check". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:556px;height:519px;top:-301px;right:-301px;border-radius:53% 61% 62% 40% / 58% 55% 62% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lanes { display:flex; align-items:stretch; gap:0; margin-top:6px; }
+  .src-col { flex:0 0 210px; display:flex; flex-direction:column; gap:26px; }
+  .src { background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+         border-radius:var(--radius-xl); padding:16px 18px; height:212px;
+         display:flex; flex-direction:column; justify-content:center; gap:6px; }
+  .src .who { font-family:var(--font-display); font-weight:800; font-size:21px;
+              color:var(--text-primary); line-height:1.15; }
+  .src .sub { font-family:var(--font-body); font-size:13.5px; color:var(--text-muted); }
+  .chan-col { flex:1 1 auto; display:flex; flex-direction:column; gap:26px; padding:0 14px; }
+  .chan { height:212px; border-radius:var(--radius-xl); padding:14px 18px;
+          display:flex; flex-direction:column; justify-content:center; gap:10px; }
+  .chan-claims { background:rgba(27,35,29,0.06); border:2px dashed var(--border-strong); }
+  .chan-facts  { background:rgba(0,139,76,0.08); border:2px solid var(--stbr-emerald); }
+  .chan-tag { display:flex; align-items:center; gap:10px; }
+  .chan-tag .name { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                    letter-spacing:.12em; text-transform:uppercase; padding:4px 12px;
+                    border-radius:var(--radius-pill); }
+  .chan-claims .name { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .chan-facts  .name { background:var(--stbr-emerald); color:#fff; }
+  .chan-tag .arr { flex:1 1 auto; height:0; border-top:2.5px solid var(--stbr-dark); position:relative; }
+  .chan-facts .arr { border-top-color:var(--stbr-emerald); }
+  .chan-tag .arr::after { content:""; position:absolute; right:-2px; top:-6.5px; width:0; height:0;
+      border-left:11px solid var(--stbr-dark); border-top:5.5px solid transparent;
+      border-bottom:5.5px solid transparent; }
+  .chan-facts .arr::after { border-left-color:var(--stbr-emerald); }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { display:inline-block; background:var(--surface-card); border:1.5px solid var(--border-strong);
+          border-radius:var(--radius-md); padding:7px 12px; font-family:var(--font-mono);
+          font-size:14.5px; color:var(--text-primary); }
+  .chip small { display:block; font-family:var(--font-body); font-weight:800; font-size:10px;
+                letter-spacing:.09em; text-transform:uppercase; margin-top:2px; }
+  .chip-claim small { color:#8a5a00; }
+  .chip-fact  { border-color:rgba(0,139,76,0.5); }
+  .chip-fact small { color:var(--stbr-green); }
+  .rpc { align-self:flex-start; background:var(--surface-inverse); color:var(--text-on-dark);
+         font-family:var(--font-mono); font-size:13.5px; padding:6px 12px;
+         border-radius:var(--radius-md); }
+  .srv-col { flex:0 0 218px; display:flex; align-items:stretch; }
+  .srv { flex:1 1 auto; background:var(--surface-inverse); border-radius:var(--radius-xl);
+         display:flex; flex-direction:column; justify-content:center; gap:8px;
+         padding:20px 20px; }
+  .srv .who { font-family:var(--font-display); font-weight:800; font-size:22px;
+              color:var(--text-on-dark); }
+  .srv .sub { font-family:var(--font-body); font-size:13px; color:rgba(245,232,202,0.75); }
+  .out-col { flex:0 0 274px; display:flex; flex-direction:column; gap:26px; padding-left:14px; }
+  .out { height:212px; display:flex; align-items:center; gap:0; }
+  .stub { flex:0 0 26px; height:0; border-top:2.5px dashed var(--border-strong); }
+  .stub-solid { border-top:2.5px solid var(--stbr-emerald); position:relative; }
+  .stub-solid::after { content:""; position:absolute; right:-2px; top:-6.5px; width:0; height:0;
+      border-left:11px solid var(--stbr-emerald); border-top:5.5px solid transparent;
+      border-bottom:5.5px solid transparent; }
+  .dead { flex:1 1 auto; border:2px dashed var(--border-strong); background:var(--surface-card);
+          border-radius:var(--radius-lg); padding:14px 16px; font-family:var(--font-body);
+          font-size:14.5px; line-height:1.4; color:var(--text-secondary); }
+  .dead b { display:block; font-weight:800; font-size:11.5px; letter-spacing:.1em;
+            text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+  .fulfill { flex:1 1 auto; background:var(--stbr-yellow); border-radius:var(--radius-lg);
+             padding:16px 18px; }
+  .fulfill .who { font-family:var(--font-display); font-weight:900; font-size:24px;
+                  color:var(--stbr-dark); }
+  .fulfill .sub { font-family:var(--font-body); font-weight:700; font-size:13.5px;
+                  color:var(--stbr-dark); margin-top:4px; }
+  .rule { margin-top:22px; background:var(--surface-brand); color:var(--text-on-brand);
+          border-radius:var(--radius-lg); padding:14px 24px; font-family:var(--font-body);
+          font-weight:700; font-size:17px; text-align:center; }
+  .rule code { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">fix the trust boundary</div>
+  <h2 class="viz-title">two channels, one source of truth</h2>
+  <div class="lanes">
+    <div class="src-col">
+      <div class="src">
+        <span class="who">buyer's browser</span>
+        <span class="sub">anything it sends is a claim</span>
+      </div>
+      <div class="src">
+        <span class="who">the ledger</span>
+        <span class="sub">read via RPC &mdash; facts</span>
+      </div>
+    </div>
+    <div class="chan-col">
+      <div class="chan chan-claims">
+        <div class="chan-tag"><span class="name">claims</span><span class="arr"></span></div>
+        <div class="chips">
+          <span class="chip chip-claim">"paid": true<small>spoofable</small></span>
+          <span class="chip chip-claim">signature string<small>spoofable</small></span>
+          <span class="chip chip-claim">order id<small>spoofable</small></span>
+        </div>
+      </div>
+      <div class="chan chan-facts">
+        <span class="rpc">getTransaction(signature, jsonParsed)</span>
+        <div class="chan-tag"><span class="name">facts</span><span class="arr"></span></div>
+        <div class="chips">
+          <span class="chip chip-fact">token program<small>fact</small></span>
+          <span class="chip chip-fact">mint<small>fact</small></span>
+          <span class="chip chip-fact">balance delta<small>fact</small></span>
+          <span class="chip chip-fact">memo<small>fact</small></span>
+        </div>
+      </div>
+    </div>
+    <div class="srv-col">
+      <div class="srv">
+        <span class="who">your server</span>
+        <span class="sub">both channels arrive here &mdash; only one is trusted</span>
+      </div>
+    </div>
+    <div class="out-col">
+      <div class="out">
+        <span class="stub"></span>
+        <div class="dead"><b>claims dead-end</b>at most: which signature to go check</div>
+      </div>
+      <div class="out">
+        <span class="stub stub-solid"></span>
+        <div class="fulfill">
+          <div class="who">fulfill</div>
+          <div class="sub">reached only from the fact channel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rule">fulfillment decisions read <strong>ONLY</strong> from the fact channel &mdash; the claim channel may at most tell you which signature to go check</div>
+</div>
+</body></html>

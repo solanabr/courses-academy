@@ -1,0 +1,105 @@
+id: lesson-spc-m08-l1
+slug: m08-l1
+title: "Gasless with Kora: nobody brings SOL to a record fair"
+skills:
+  - signers
+  - transaction-fees
+versionStamp:
+  checkedAt: "2026-08-31"
+  packages:
+    "@solana/kit": "6.10.0"
+    "@solana-program/token": "0.14.0"
+    "@solana/kora": "0.2.1"
+    "@solana-program/compute-budget": "0.16.0"
+    "kora-cli": "2.0.5"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m08-l1-q1
+        prompt: "You sponsored buyers' first purchases with Kora so they needed no SOL. A week later your sponsor wallet's SOL is lower than your fee math predicted. What most likely happened?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Kora attached a priority fee to every sponsored transaction on top of the 5000-lamport base, and congestion multiplied that surcharge."
+            correct: false
+            feedback: "Priority fees are optional and small; they cannot explain a rent-sized shortfall."
+          - id: d
+            label: "You paid ATA-creation rent, but it is a deposit: those lamports come back to the sponsor when buyers close the accounts."
+            correct: false
+            feedback: "Rent is refundable to whoever closes the account, and that is its owner, the buyer. No mechanism routes it back to the wallet that funded it, which is why the lesson insists you book sponsored rent as spend rather than as a loan you expect to be repaid."
+          - id: c
+            label: "The base fee rose above 5000 lamports during the sale because the network was congested."
+            correct: false
+            feedback: "The 5000-lamport base fee is fixed; congestion changes optional priority fees, not the base fee."
+          - id: b
+            label: "You paid the 165-byte ATA-creation rent for buyers who later closed those accounts and kept the reclaim."
+            correct: true
+            feedback: "A rent deposit returns to whoever closes the account, not whoever funded it; that makes sponsorship an acquisition cost rather than a recoverable loan."
+        explanation: "Sponsored ATA rent is reclaimable: when Kora funds a new token account for a buyer, that deposit is real spend, and the buyer can later close the account and keep the reclaimed rent. Size it from a live getMinimumBalanceForRentExemption(165) read rather than a remembered constant, since SIMD-0437 keeps stepping the rate down, and budget sponsorship as a cost, never as a recoverable loan."
+      - id: m08-l1-q2
+        prompt: "A teammate suggests using Octane instead of Kora for fee sponsorship. What's the accurate state of things as of your build?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Octane was archived 2026-04-20 and points to Kora, which carries a Runtime Verification audit."
+            correct: true
+            feedback: "An archived repo pointing at a successor is the maintainers' own handoff, which beats guessing from commit dates. An audit covers one commit, though, and yours may not be that one."
+          - id: d
+            label: "Octane is archived and Kora succeeded it, and the Runtime Verification audit covers your config too."
+            correct: false
+            feedback: "The handoff half is right. The audit covers Kora's code, and nothing audits your kora.toml but you: the allowlists, the caps and the fee-payer policy are yours, which is why an omitted policy block defaulting to deny is a security decision rather than a formality."
+          - id: b
+            label: "Octane and Kora are both maintained; use Octane for SPL-token fees and Kora for SOL sponsorship."
+            correct: false
+            feedback: "Octane is archived, not maintained, and Kora covers SPL-token fee payment itself."
+          - id: a
+            label: "Octane is the current paymaster; Kora is an experimental fork that has not been audited yet."
+            correct: false
+            feedback: "Reversed: Octane is archived, and Kora is the audited successor."
+        explanation: "Octane's archival (2026-04-20, README pointing at Kora) is the signal that the paymaster torch passed. Kora's Runtime Verification audit is what makes it safe to place in the fee-payer seat."
+      - id: m08-l1-q3
+        prompt: "You copy the official facilitator-on-Kora guide and its imports read `x402` / `x402-express`, but your project uses `@x402/svm`. What's happening and what do you do?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Both lines are live: bare x402 on the facilitator side, scoped @x402/* on the client."
+            correct: false
+            feedback: "Splitting the difference keeps you on the stale half. The scoped @x402/* v2 line is the live SDK on both sides of the exchange, and it is the one you already built the paywall and the paying agent against; the bare names in the guide are lag, not a division of labor."
+          - id: c
+            label: "Kora only works with the v1 packages, so you must downgrade to keep sponsorship working."
+            correct: false
+            feedback: "Kora is a package-agnostic paymaster; the drift is naming, not a Kora requirement."
+          - id: a
+            label: "The guide lags on v1 package names; the live SDK is the scoped @x402/* v2 line, so build v2."
+            correct: true
+            feedback: "Docs and registries ship on separate clocks; npm is the fresher truth, and the drift usually runs deeper than package names, so the package's own docs outrank the guide's."
+          - id: b
+            label: "The guide is canonical and the scoped @x402/* packages are an unofficial fork, so switch your imports back to x402 and x402-express."
+            correct: false
+            feedback: "The scoped @x402/* line is the current SDK; the guide's bare names are the lagging ones."
+        explanation: "This is the documented v1/v2 naming drift: solana.com's facilitator guide still uses the bare x402 packages while the ecosystem moved to scoped @x402/* v2. Teach and build v2; recognize the guide's names as lag, not a constraint."
+      - id: m08-l1-q4
+        prompt: "A buyer asks Kora to sponsor an arbitrary transaction they assembled themselves. What is the right posture for your paymaster?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Move the sponsor key into the browser bundle so the buyer's wallet co-signs locally and there is no paymaster left in the path to trust."
+            correct: false
+            feedback: "Exposing the sponsor key client-side is strictly worse; validation, not key exposure, is the control."
+          - id: d
+            label: "Allowlist the programs your checkout calls and stop there, since a program allowlist already bounds which instructions get sponsored."
+            correct: false
+            feedback: "A program allowlist is the outer wall, not the whole building. One allowed program carries many instructions, which is why the config also caps signatures and lamports and why fee_payer_policy exists: it is what stops a transaction whose inner instruction moves lamports out of the sponsor account signing it."
+          - id: a
+            label: "Sponsor it: the paymaster only pays fees, so the worst case is a single wasted base fee."
+            correct: false
+            feedback: "An unvalidated transaction can drain the sponsor via rent and abusive instructions; fees are not the only exposure."
+          - id: b
+            label: "Configure Kora's validation rules and allowlists so it only sponsors the instructions and programs your checkout actually uses."
+            correct: true
+            feedback: "A fee payer signs and a signature is authorization, which leaves an allowlist as the only thing bounding what you fund; program-level scoping stays coarse, since one program carries many instructions."
+        explanation: "A paymaster with no validation is an open drain. Kora's allowlists and validation rules are the whole safety story: restrict sponsorship to the exact instructions and programs your checkout emits."

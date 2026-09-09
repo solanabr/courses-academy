@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The trust boundary of a transaction request
+     purpose: show who is trusted with what, and where the wallet-safety rule sits, so the rule reads as architecture rather than trivia
+     data: zone 1, merchant server: trusted to price the cart, stamp memo + reference, build the tx; NOT trusted with signatures zone 2, wallet: decodes the returned tx BEFORE signing; enforces the rule the rule: required signers must be a subset of { the account the wallet submitted } union { signers the server already signed for } reject case: any unsigned required signer that is not the submitted account -> malicious, refuse to sign zone 3, customer: sees label + icon from GET, then the wallet's decoded summary; never sees raw bytes
+     prompt: Three nested or adjacent trust zones drawn left to right: merchant server, wallet, customer, each captioned with its trusted-to line from the data. Place the subset rule as a highlighted formula inside the wallet zone, with the reject case beneath it as a crossed-out branch. Draw the transaction as an arrow crossing from server into wallet, with the decode-before-sign step marked on the boundary line itself.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:461px;right:-241px;top:118px;border-radius:64% 59% 42% 57% / 53% 55% 56% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .tb-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+               padding: 30px 44px 34px; }
+    .tb-zones { display: flex; align-items: stretch; gap: 0; }
+    .tb-zone { border: 2px solid var(--stbr-green); border-radius: var(--radius-lg);
+               padding: 16px 20px; }
+    .tb-zonename { font-family: var(--font-display); font-weight: 900; font-size: 22px;
+                   color: var(--stbr-dark); margin-bottom: 4px; }
+    .tb-zonetag { font-family: var(--font-body); font-size: 12.5px; letter-spacing: 0.08em;
+                  text-transform: uppercase; color: var(--stbr-emerald); font-weight: 700;
+                  margin-bottom: 10px; }
+    .tb-text { font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+               color: var(--text-primary); }
+    .tb-not { margin-top: 10px; font-family: var(--font-body); font-size: 14px;
+              font-weight: 700; color: var(--stbr-dark); border-top: 1px solid var(--border-subtle);
+              padding-top: 8px; }
+    .tb-gap { width: 130px; flex: none; display: flex; flex-direction: column;
+              justify-content: center; align-items: center; gap: 6px; padding: 0 4px; }
+    .tb-arrow { display: flex; align-items: center; width: 100%; }
+    .tb-shaft { flex: 1; height: 3px; background: var(--stbr-dark); }
+    .tb-head { width: 0; height: 0; border-top: 7px solid transparent;
+               border-bottom: 7px solid transparent; border-left: 10px solid var(--stbr-dark); }
+    .tb-arrlabel { font-family: var(--font-mono); font-size: 12px; color: var(--text-primary);
+                   background: var(--surface-paper); border: 1px solid var(--border-subtle);
+                   border-radius: var(--radius-sm); padding: 2px 8px; text-align: center; }
+    .tb-boundary { font-family: var(--font-display); font-weight: 800; font-size: 12.5px;
+                   background: var(--surface-inverse); color: var(--stbr-cream);
+                   border-radius: var(--radius-pill); padding: 4px 10px; text-align: center; }
+    .tb-rule { margin-top: 12px; background: var(--stbr-yellow); color: var(--stbr-dark);
+               border-radius: var(--radius-md); padding: 12px 16px 14px;
+               font-family: var(--font-mono); font-size: 13px; line-height: 1.6; }
+    .tb-rule b { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.06em;
+                 text-transform: uppercase; }
+    .tb-reject { margin-top: 12px; border: 2px solid var(--stbr-dark); border-radius: var(--radius-md);
+                 padding: 10px 14px 12px; font-family: var(--font-body); font-size: 13.5px;
+                 line-height: 1.5; color: var(--text-primary); }
+    .tb-reject .x { font-weight: 900; color: var(--stbr-dark); margin-right: 6px; }
+  </style>
+  <div class="tb-card">
+    <div class="stbr-eyebrow">who is trusted with what</div>
+    <h2 class="viz-title" style="font-size:40px; margin-bottom:16px;">The trust boundary of a transaction request</h2>
+    <div class="tb-zones">
+      <div class="tb-zone" style="width:350px; flex:none;">
+        <div class="tb-zonename">merchant server</div>
+        <div class="tb-zonetag">zone 1</div>
+        <div class="tb-text">trusted to price the cart, stamp memo + reference, and build the transaction</div>
+        <div class="tb-not">NOT trusted with signatures</div>
+      </div>
+      <div class="tb-gap">
+        <div class="tb-arrlabel">tx (base64)</div>
+        <div class="tb-arrow"><div class="tb-shaft"></div><div class="tb-head"></div></div>
+        <div class="tb-boundary">decode BEFORE signing</div>
+      </div>
+      <div class="tb-zone" style="flex:1; border-color:var(--stbr-emerald); border-width:3px;">
+        <div class="tb-zonename">wallet</div>
+        <div class="tb-zonetag">zone 2: enforces the rule</div>
+        <div class="tb-text">decodes the returned transaction BEFORE signing anything</div>
+        <div class="tb-rule">
+          <b>the rule</b><br>
+          required signers &sube;<br>
+          &nbsp;&nbsp;{ the account the wallet submitted }<br>
+          &nbsp;&nbsp;&cup; { signers the server already signed for }
+        </div>
+        <div class="tb-reject"><span class="x">&#10005;</span><span style="text-decoration:line-through;">any unsigned required signer that is not the submitted account</span><br>&rarr; malicious: refuse to sign</div>
+      </div>
+      <div class="tb-gap" style="width:120px;">
+        <div class="tb-arrlabel">decoded summary</div>
+        <div class="tb-arrow"><div class="tb-shaft"></div><div class="tb-head"></div></div>
+      </div>
+      <div class="tb-zone" style="width:310px; flex:none;">
+        <div class="tb-zonename">customer</div>
+        <div class="tb-zonetag">zone 3</div>
+        <div class="tb-text">sees label + icon from the GET, then the wallet's decoded summary</div>
+        <div class="tb-not">never sees raw bytes</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

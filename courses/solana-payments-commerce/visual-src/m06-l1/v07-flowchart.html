@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The hosted offramp walk, end to end
+     purpose: give the royalty cash-out a concrete step sequence before the lab walks it live, marking where your product stops and Coinbase begins
+     data: 1. artist taps "cash out" in your product 2. your server mints a session token binding the artist's context (POST /onramp/v1/token, same endpoint as the onramp) 3. redirect to pay.coinbase.com/v3/sell/input?sessionToken=...&partnerUserRef=...&redirectUrl=... 4. inside Coinbase's hosted flow: artist signs in, KYC is artist<->Coinbase, artist sends USDC 5. payout over ACH or PayPal to the artist's bank 6. artist returns to your redirectUrl boundary annotation: steps 1-3 and 6 are your product; steps 4-5 are entirely Coinbase's pages
+     prompt: Six-step left-to-right flowchart per the data, with a shaded boundary region around steps 4 and 5 labeled "Coinbase-hosted, no partner UI". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:520px;height:531px;bottom:-312px;left:579px;border-radius:42% 37% 54% 39% / 57% 38% 61% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v7-st{background:var(--surface-card);border:2px solid var(--stbr-ink-300);border-radius:14px;padding:13px 13px;width:184px;height:238px;}
+    .v7-num{width:28px;height:28px;border-radius:50%;background:var(--stbr-emerald);color:var(--stbr-cream);font-family:var(--font-display);font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;}
+    .v7-st b{font-family:var(--font-display);font-weight:800;font-size:15px;line-height:1.2;color:var(--text-primary);display:block;}
+    .v7-st span{font-family:var(--font-body);font-size:12px;color:var(--text-muted);margin-top:7px;line-height:1.35;display:block;}
+    .v7-st code{font-family:var(--font-mono);font-size:11px;color:var(--stbr-emerald-800);margin-top:7px;display:block;line-height:1.35;}
+    .v7-arr{flex:0 0 26px;display:flex;align-items:center;justify-content:center;}
+    .v7-ln{width:14px;height:2.5px;background:var(--stbr-green);}
+    .v7-hd{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid var(--stbr-green);}
+  </style>
+  <div style="background:var(--surface-card);border-radius:var(--radius-2xl);padding:42px 44px;">
+    <div class="stbr-eyebrow">royalty cash-out</div>
+    <h2 class="viz-title">the hosted offramp walk, end to end</h2>
+    <div style="display:flex;align-items:center;margin-top:16px;">
+      <div class="v7-st">
+        <div class="v7-num">1</div>
+        <b>artist taps &ldquo;cash out&rdquo;</b>
+        <span>in your product</span>
+      </div>
+      <div class="v7-arr"><div class="v7-ln"></div><div class="v7-hd"></div></div>
+      <div class="v7-st">
+        <div class="v7-num">2</div>
+        <b>your server mints a session token</b>
+        <code>POST /onramp/v1/token</code>
+        <span>binds the artist's context &mdash; same endpoint as the onramp</span>
+      </div>
+      <div class="v7-arr"><div class="v7-ln"></div><div class="v7-hd"></div></div>
+      <div class="v7-st">
+        <div class="v7-num">3</div>
+        <b>redirect to the hosted sell page</b>
+        <code>pay.coinbase.com<br>/v3/sell/input<br>?sessionToken<br>&amp;partnerUserRef<br>&amp;redirectUrl</code>
+      </div>
+      <div class="v7-arr"><div class="v7-ln"></div><div class="v7-hd"></div></div>
+      <div style="background:var(--surface-inverse);border-radius:18px;padding:14px 14px 16px;width:452px;">
+        <div style="text-align:center;margin-bottom:10px;"><span style="display:inline-block;background:var(--stbr-yellow);color:var(--stbr-dark);font-family:var(--font-body);font-weight:700;font-size:12px;border-radius:999px;padding:4px 14px;">Coinbase-hosted &mdash; no partner UI</span></div>
+        <div style="display:flex;align-items:center;">
+          <div class="v7-st" style="border-color:var(--surface-card);">
+            <div class="v7-num" style="background:var(--stbr-yellow);color:var(--stbr-dark);">4</div>
+            <b>inside Coinbase's flow</b>
+            <span>artist signs in &middot; KYC is artist&nbsp;&harr;&nbsp;Coinbase &middot; artist sends USDC</span>
+          </div>
+          <div class="v7-arr"><div class="v7-ln" style="background:var(--stbr-cream);"></div><div class="v7-hd" style="border-left-color:var(--stbr-cream);"></div></div>
+          <div class="v7-st" style="border-color:var(--surface-card);">
+            <div class="v7-num" style="background:var(--stbr-yellow);color:var(--stbr-dark);">5</div>
+            <b>payout to the artist's bank</b>
+            <span>over ACH or PayPal</span>
+          </div>
+        </div>
+      </div>
+      <div class="v7-arr"><div class="v7-ln"></div><div class="v7-hd"></div></div>
+      <div class="v7-st">
+        <div class="v7-num">6</div>
+        <b>artist returns</b>
+        <span>to your redirectUrl</span>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:22px;">
+      <span style="display:inline-block;background:rgba(0,139,76,0.10);border:1.5px solid var(--stbr-emerald);color:var(--stbr-emerald-800);font-family:var(--font-body);font-weight:600;font-size:13.5px;border-radius:999px;padding:6px 16px;">steps 1&ndash;3 and 6 &mdash; your product</span>
+      <span style="display:inline-block;background:var(--surface-inverse);color:var(--stbr-cream);font-family:var(--font-body);font-weight:600;font-size:13.5px;border-radius:999px;padding:6px 16px;">steps 4&ndash;5 &mdash; entirely Coinbase's pages</span>
+    </div>
+  </div>
+</div>
+</body></html>

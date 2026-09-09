@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: findReference polls, watchReference is pushed
+     purpose: contrast the legacy polling loop with the 1.x subscription so the reader knows when each detection tool applies
+     data: findReference (HTTP poll): transport: repeated getSignaturesForAddress calls over HTTP latency: your polling interval, at best cost: one RPC request per poll, paid or not era: the only path in legacy 0.2.x; still right for catch-up sweeps failure mode: none silent; every poll re-asks the full question watchReference (WebSocket push): transport: one logsNotifications subscription, mentions = [reference] latency: resolves as the transaction lands at your commitment level cost: one held connection per open checkout era: the 1.x path; arm at checkout-open, cancel via AbortSignal failure mode: a dropped socket misses the event; pair with a findReference sweep
+     prompt: Two-panel comparison. Left panel "findReference" drawn as a clock-driven loop of repeated question arrows from server to RPC, each returning "nothing yet" until the last returns a signature. Right panel "watchReference" drawn as a single held connection from server to RPC with one pushed event arrow returning the signature. A footer row under both: "production runs both: subscribe for speed, sweep for truth."
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:557px;top:-304px;right:-304px;border-radius:35% 42% 64% 44% / 49% 47% 44% 45%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow">two ways to hear about a payment</div>
+  <h2 class="viz-title">findReference polls, watchReference is pushed</h2>
+
+  <div style="display:flex;gap:26px;margin-bottom:20px;">
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:22px;padding:24px 28px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--text-primary);">findReference</div>
+        <div style="font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--text-on-brand);background:var(--surface-brand-deep);border-radius:999px;padding:4px 12px;">HTTP poll</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);white-space:nowrap;">getSignaturesForAddress &rarr;</span><span style="font-family:var(--font-body);font-size:13px;color:var(--text-muted);border:1px solid var(--border-subtle);border-radius:999px;padding:2px 10px;">nothing yet</span></div>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);white-space:nowrap;">getSignaturesForAddress &rarr;</span><span style="font-family:var(--font-body);font-size:13px;color:var(--text-muted);border:1px solid var(--border-subtle);border-radius:999px;padding:2px 10px;">nothing yet</span></div>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);white-space:nowrap;">getSignaturesForAddress &rarr;</span><span style="font-family:var(--font-body);font-size:13px;color:var(--text-muted);border:1px solid var(--border-subtle);border-radius:999px;padding:2px 10px;">nothing yet</span></div>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--text-primary);white-space:nowrap;">getSignaturesForAddress &rarr;</span><span style="font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--text-on-brand);background:var(--surface-brand);border-radius:999px;padding:2px 10px;">signature &#10003;</span></div>
+      </div>
+      <div style="border-top:1px solid var(--border-subtle);padding-top:12px;display:flex;flex-direction:column;gap:7px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);line-height:1.4;">
+        <div><strong style="color:var(--text-primary);">transport</strong> &mdash; repeated getSignaturesForAddress calls over HTTP</div>
+        <div><strong style="color:var(--text-primary);">latency</strong> &mdash; your polling interval, at best</div>
+        <div><strong style="color:var(--text-primary);">cost</strong> &mdash; one RPC request per poll, paid or not</div>
+        <div><strong style="color:var(--text-primary);">era</strong> &mdash; the only path in legacy 0.2.x; still right for catch-up sweeps</div>
+        <div><strong style="color:var(--text-primary);">failure mode</strong> &mdash; none silent; every poll re-asks the full question</div>
+      </div>
+    </div>
+
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:22px;padding:24px 28px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--text-primary);">watchReference</div>
+        <div style="font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--text-on-accent);background:var(--surface-accent);border-radius:999px;padding:4px 12px;">WebSocket push</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);white-space:nowrap;">logsNotifications, mentions=[reference]</span><span style="font-family:var(--font-body);font-size:13px;color:var(--text-secondary);border:1px solid var(--border-subtle);border-radius:999px;padding:2px 10px;">one held connection</span></div>
+        <div style="height:26px;border-left:2px dotted var(--stbr-ink-300);margin-left:12px;"></div>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--text-primary);white-space:nowrap;">&larr; pushed event</span><span style="font-family:var(--font-body);font-size:13px;font-weight:700;color:var(--text-on-accent);background:var(--surface-accent);border-radius:999px;padding:2px 10px;">signature &mdash; as the tx lands &#10003;</span></div>
+      </div>
+      <div style="border-top:1px solid var(--border-subtle);padding-top:12px;display:flex;flex-direction:column;gap:7px;font-family:var(--font-body);font-size:14px;color:var(--text-secondary);line-height:1.4;">
+        <div><strong style="color:var(--text-primary);">transport</strong> &mdash; one logsNotifications subscription, mentions = [reference]</div>
+        <div><strong style="color:var(--text-primary);">latency</strong> &mdash; resolves as the transaction lands at your commitment level</div>
+        <div><strong style="color:var(--text-primary);">cost</strong> &mdash; one held connection per open checkout</div>
+        <div><strong style="color:var(--text-primary);">era</strong> &mdash; the 1.x path; arm at checkout-open, cancel via AbortSignal</div>
+        <div><strong style="color:var(--text-primary);">failure mode</strong> &mdash; a dropped socket misses the event; pair with a findReference sweep</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface-brand);border-radius:16px;padding:16px 32px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-on-brand);">production runs both: subscribe for speed, sweep for truth.</div>
+</div>
+</body></html>

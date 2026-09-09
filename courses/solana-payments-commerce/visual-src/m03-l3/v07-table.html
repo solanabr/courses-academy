@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Stall-day dependency check
+     purpose: turn the connectivity reality into a pre-fair checklist the reader can literally run
+     data: [ ] laptop reachable from customer phones: POS + endpoint bound to LAN address, not localhost [ ] laptop -> devnet RPC reachable: confirmation poll depends on it (findReference) [ ] customer phone has data: their wallet submits the transaction, not your laptop [ ] own hotspot for the laptop: venue wifi is the first thing to die [ ] https certs accepted on the phone you demo with, before the first customer [ ] fallback: printed fixed-price QR for the flagship item failure map: endpoint unreachable -> QR scans, wallet errors on fetch | RPC down -> sale settles, POS stays pending | phone offline -> wallet cannot submit
+     prompt: A checklist card with six checkbox rows from the data, monospace labels. Below it a compact three-column failure map titled "which failure looks like which", mapping the three failure modes to their visible symptoms. Utility aesthetic, like a printed pre-flight card taped to a laptop lid.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:510px;top:-249px;right:-249px;border-radius:62% 57% 49% 40% / 63% 63% 53% 38%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-2xl); overflow:hidden; }
+  .card-head { background:var(--surface-inverse); color:var(--text-on-dark); padding:12px 28px;
+               font-family:var(--font-display); font-weight:800; font-size:17px; letter-spacing:0.1em; text-transform:uppercase; }
+  .ckrow { display:flex; align-items:center; gap:18px; padding:13px 28px; border-bottom:1px solid var(--border-subtle); }
+  .ckrow:last-child { border-bottom:0; }
+  .box { flex:0 0 24px; height:24px; border:3px solid var(--stbr-dark); border-radius:6px; background:var(--surface-card); }
+  .ck { flex:0 0 460px; font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--text-primary); }
+  .why { flex:1; font-family:var(--font-body); font-size:15px; color:var(--text-secondary); }
+  .ckrow.fallback { background:#fff7dd; }
+  .ckrow.fallback .box { border-color:var(--stbr-yellow-700); }
+  .fmap { margin-top:22px; border-radius:var(--radius-xl); overflow:hidden; border:1px solid var(--border-subtle); }
+  .fmap-head { background:var(--surface-brand); color:var(--text-on-brand); padding:11px 28px;
+               font-family:var(--font-display); font-weight:800; font-size:17px; letter-spacing:0.1em; text-transform:uppercase; }
+  .fmap-cols { display:flex; background:var(--surface-card); }
+  .fcol { flex:1; padding:15px 24px; border-right:1px solid var(--border-subtle); }
+  .fcol:last-child { border-right:0; }
+  .fcol .fk { font-family:var(--font-body); font-weight:800; font-size:16.5px; color:var(--text-primary); }
+  .fcol .fv { font-family:var(--font-body); font-size:15px; color:var(--text-secondary); margin-top:4px; }
+  .fcol .arrow { color:var(--stbr-emerald); font-weight:800; margin-right:6px; }
+</style>
+  <div class="stbr-eyebrow">TAPE THIS TO THE LAPTOP LID</div>
+  <h2 class="viz-title">stall-day dependency check</h2>
+  <div class="card">
+    <div class="card-head">pre-fair checklist &mdash; run it before the first customer</div>
+    <div class="ckrow"><span class="box"></span><span class="ck">laptop reachable from customer phones</span><span class="why">POS + endpoint bound to the LAN address, not localhost</span></div>
+    <div class="ckrow"><span class="box"></span><span class="ck">laptop &rarr; devnet RPC reachable</span><span class="why">the confirmation poll depends on it (findReference)</span></div>
+    <div class="ckrow"><span class="box"></span><span class="ck">customer phone has data</span><span class="why">their wallet submits the transaction, not your laptop</span></div>
+    <div class="ckrow"><span class="box"></span><span class="ck">own hotspot for the laptop</span><span class="why">venue wifi is the first thing to die</span></div>
+    <div class="ckrow"><span class="box"></span><span class="ck">https certs accepted on the demo phone</span><span class="why">before the first customer, not during</span></div>
+    <div class="ckrow fallback"><span class="box"></span><span class="ck">fallback: printed fixed-price QR</span><span class="why">for the flagship item &mdash; the sale that survives everything above failing</span></div>
+  </div>
+  <div class="fmap">
+    <div class="fmap-head">which failure looks like which</div>
+    <div class="fmap-cols">
+      <div class="fcol"><div class="fk">endpoint unreachable</div><div class="fv"><span class="arrow">&rarr;</span>QR scans, wallet errors on fetch</div></div>
+      <div class="fcol"><div class="fk">RPC down</div><div class="fv"><span class="arrow">&rarr;</span>sale settles, POS stays pending</div></div>
+      <div class="fcol"><div class="fk">phone offline</div><div class="fv"><span class="arrow">&rarr;</span>wallet cannot submit</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

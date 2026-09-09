@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Transfer vs TransferChecked
+     purpose: make the case that the checked variant is a payments requirement, not an optional nicety
+     data: Row: inputs | Transfer: source, destination, amount | TransferChecked: source, destination, amount, mint, decimals Row: wrong mint configured | Transfer: sends anyway | TransferChecked: rejected on-chain Row: decimals mismatch | Transfer: amount silently means the wrong thing | TransferChecked: rejected on-chain Row: status in current tooling | Transfer: deprecated | TransferChecked: the standard Row: verdict | Transfer: trusts your config | TransferChecked: verifies your config against the chain Caption: applies to classic SPL Token mints like USDC and USDT; both instructions move the same tokens when the config is right
+     prompt: Two-column comparison table, Transfer on the left and TransferChecked on the right, five rows as given. Visually favor the right column with a subtle highlight. Render the caption line under the table.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:485px;right:-332px;top:232px;border-radius:48% 55% 62% 49% / 40% 52% 36% 40%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:484px;height:519px;bottom:-337px;left:774px;border-radius:60% 63% 42% 56% / 50% 49% 59% 35%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { margin-top:18px; border-radius:var(--radius-xl); overflow:hidden; border:2px solid var(--border-subtle); }
+  .cmp .grid { display:grid; grid-template-columns:300px 1fr 1fr; }
+  .cmp .hd { background:var(--surface-inverse); padding:18px 26px; font-family:var(--font-mono);
+    font-weight:700; font-size:21px; }
+  .cmp .hd.axis { font-family:var(--font-display); font-size:13px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--stbr-ink-300); display:flex; align-items:center; }
+  .cmp .hd.left { color:var(--stbr-ink-300); }
+  .cmp .hd.right { color:var(--stbr-yellow); border-left:1.5px solid var(--border-on-dark); }
+  .cmp .ax { padding:16px 26px; font-family:var(--font-body); font-weight:800; font-size:16px;
+    color:var(--text-primary); background:var(--surface-paper); border-top:1.5px solid var(--border-subtle);
+    display:flex; align-items:center; }
+  .cmp .cell { padding:16px 26px; font-family:var(--font-body); font-size:16px; line-height:1.45;
+    color:var(--text-secondary); background:var(--surface-card); border-top:1.5px solid var(--border-subtle);
+    display:flex; align-items:center; }
+  .cmp .cell b { color:var(--text-primary); }
+  .cmp .cell.right { background:#fff8e2; border-left:1.5px solid var(--border-subtle);
+    color:var(--text-primary); }
+  .cmp .cell.mono, .cmp .ax.mono { font-family:var(--font-mono); font-size:14.5px; }
+  .cmp .vx { background:var(--surface-brand); color:var(--text-on-brand); font-weight:800; }
+  .cmp .cell.verdict { background:var(--surface-brand); color:var(--text-on-brand); font-weight:600; }
+  .cmp .cell.verdict.right { background:var(--stbr-emerald-800); color:var(--stbr-yellow);
+    font-weight:800; border-left:1.5px solid var(--border-on-dark); }
+  .cap { margin-top:16px; font-family:var(--font-body); font-size:15.5px; color:var(--text-muted);
+    font-style:italic; }
+</style>
+  <div class="stbr-eyebrow">a payments requirement, not a nicety</div>
+  <h2 class="viz-title">Transfer vs TransferChecked</h2>
+  <div class="cmp">
+    <div class="grid">
+      <div class="hd axis">instruction</div>
+      <div class="hd left">Transfer</div>
+      <div class="hd right">TransferChecked</div>
+
+      <div class="ax">inputs</div>
+      <div class="cell mono">source, destination, amount</div>
+      <div class="cell mono right">source, destination, amount,&nbsp;<b>mint, decimals</b></div>
+
+      <div class="ax">wrong mint configured</div>
+      <div class="cell">sends anyway</div>
+      <div class="cell right"><b>rejected on-chain</b></div>
+
+      <div class="ax">decimals mismatch</div>
+      <div class="cell">amount silently means the wrong thing</div>
+      <div class="cell right"><b>rejected on-chain</b></div>
+
+      <div class="ax">status in current tooling</div>
+      <div class="cell">deprecated</div>
+      <div class="cell right"><b>the standard</b></div>
+
+      <div class="ax vx">verdict</div>
+      <div class="cell verdict">trusts your config</div>
+      <div class="cell verdict right">verifies your config against the chain</div>
+    </div>
+  </div>
+  <div class="cap">Applies to classic SPL Token mints like USDC and USDT &mdash; both instructions move the same tokens when the config is right.</div>
+</div>
+</body></html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One cart, one transaction request, end to end
+     purpose: trace every hop from cart to settled sale so each piece of code in the lab has an obvious place
+     data: storefront creates order (lines + total inputs) -> server stores it under an order id -> page shows QR encoding solana:<https-link>/txreq?order=o-1234 -> wallet scans -> wallet GET /txreq -> { label, icon } -> wallet shows merchant identity -> wallet POST /txreq?order=o-1234 {account} -> server prices cart, builds tx, stamps memo + reference -> { transaction: <base64> } -> wallet decodes, inspects signers, signs, submits to devnet -> last lesson's reference watcher matches the reference -> sale confirmed server-side trust note: pricing happens inside the server box; the URL only ever carried an opaque order id
+     prompt: Left-to-right flowchart of the seven hops from the data, one node per actor step, with the storefront, server, wallet, and chain as four horizontal lanes. Draw the GET and POST as two separate arrows between wallet and server, labeled with their payloads. Box the server lane and caption it with the trust note: pricing never leaves this box.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:511px;bottom:-295px;right:-295px;border-radius:42% 58% 53% 61% / 49% 48% 60% 54%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .fl-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+               padding: 26px 40px 30px; }
+    .fl-lane { display: flex; align-items: stretch; margin-top: 10px; }
+    .fl-lanelabel { width: 118px; flex: none; display: flex; align-items: center;
+                    font-family: var(--font-display); font-weight: 900; font-size: 17px;
+                    color: var(--text-secondary); text-transform: lowercase; }
+    .fl-track { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+                align-items: start; }
+    .fl-node { border: 2px solid var(--stbr-green); border-radius: var(--radius-md);
+               background: var(--surface-card); padding: 8px 10px;
+               font-family: var(--font-body); font-size: 12.5px; line-height: 1.3;
+               color: var(--text-primary); }
+    .fl-num { display: inline-block; background: var(--stbr-emerald); color: #fff;
+              border-radius: var(--radius-pill); font-family: var(--font-display);
+              font-weight: 800; font-size: 11px; padding: 1px 7px; margin-bottom: 4px; }
+    .fl-mono { font-family: var(--font-mono); font-size: 11px; }
+    .fl-band { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .fl-http { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+    .fl-httprow { display: flex; align-items: center; gap: 6px; }
+    .fl-arrcol { display: flex; flex-direction: column; align-items: center; }
+    .fl-line { width: 2px; height: 12px; background: var(--stbr-dark); }
+    .fl-tridn { width: 0; height: 0; border-left: 5px solid transparent;
+                border-right: 5px solid transparent; border-top: 7px solid var(--stbr-dark); }
+    .fl-triup { width: 0; height: 0; border-left: 5px solid transparent;
+                border-right: 5px solid transparent; border-bottom: 7px solid var(--stbr-dark); }
+    .fl-httplabel { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-primary);
+                    background: var(--surface-paper); border: 1px solid var(--border-subtle);
+                    border-radius: var(--radius-sm); padding: 2px 6px; white-space: nowrap; }
+    .fl-serverlane { border: 2px solid var(--stbr-emerald); border-radius: var(--radius-lg);
+                     background: #F0F7F2; padding: 8px 10px 10px; position: relative; }
+    .fl-trust { display: inline-block; margin-top: 8px; background: var(--stbr-yellow);
+                color: var(--stbr-dark); border-radius: var(--radius-pill);
+                font-family: var(--font-display); font-weight: 800; font-size: 14px;
+                padding: 4px 14px; }
+  </style>
+  <div class="fl-card">
+    <div class="stbr-eyebrow">cart to settled sale</div>
+    <h2 class="viz-title" style="font-size:38px; margin-bottom:10px;">One cart, one transaction request, end to end</h2>
+
+    <!-- storefront lane -->
+    <div class="fl-lane">
+      <div class="fl-lanelabel">storefront</div>
+      <div class="fl-track">
+        <div class="fl-node" style="grid-column:1;"><span class="fl-num">1</span><br>creates the order: lines + total inputs</div>
+        <div class="fl-node" style="grid-column:3;"><span class="fl-num">3</span><br>page shows QR encoding <span class="fl-mono">solana:&lt;https-link&gt;/txreq?order=o-1234</span></div>
+      </div>
+    </div>
+
+    <!-- wallet lane -->
+    <div class="fl-lane">
+      <div class="fl-lanelabel">wallet</div>
+      <div class="fl-track">
+        <div class="fl-node" style="grid-column:4;"><span class="fl-num">4</span><br>scans the QR; shows merchant identity from <span class="fl-mono">{ label, icon }</span></div>
+        <div class="fl-node" style="grid-column:5;"><span class="fl-num">5</span><br>sends its <span class="fl-mono">{ account }</span> to the server</div>
+        <div class="fl-node" style="grid-column:6;"><span class="fl-num">6</span><br>decodes, inspects signers, signs, submits to devnet</div>
+      </div>
+    </div>
+
+    <!-- GET / POST arrows between wallet and server -->
+    <div class="fl-lane" style="margin-top:6px;">
+      <div class="fl-lanelabel"></div>
+      <div class="fl-band">
+        <div class="fl-http" style="grid-column:4;">
+          <div class="fl-httprow">
+            <div class="fl-arrcol"><div class="fl-line"></div><div class="fl-tridn"></div></div>
+            <div class="fl-httplabel">GET /txreq</div>
+          </div>
+          <div class="fl-httprow">
+            <div class="fl-arrcol"><div class="fl-triup"></div><div class="fl-line"></div></div>
+            <div class="fl-httplabel">{ label, icon }</div>
+          </div>
+        </div>
+        <div class="fl-http" style="grid-column:5 / 8;">
+          <div class="fl-httprow">
+            <div class="fl-arrcol"><div class="fl-line"></div><div class="fl-tridn"></div></div>
+            <div class="fl-httplabel">POST /txreq?order=o-1234 { account }</div>
+          </div>
+          <div class="fl-httprow">
+            <div class="fl-arrcol"><div class="fl-triup"></div><div class="fl-line"></div></div>
+            <div class="fl-httplabel">{ transaction: &lt;base64&gt; }</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- server lane (boxed: pricing never leaves) -->
+    <div class="fl-lane" style="margin-top:6px;">
+      <div class="fl-lanelabel">server</div>
+      <div class="fl-serverlane" style="flex:1;">
+        <div class="fl-track">
+          <div class="fl-node" style="grid-column:2;"><span class="fl-num">2</span><br>stores the order under an order id</div>
+          <div class="fl-node" style="grid-column:5;"><span class="fl-num">5</span><br>prices the cart, builds the tx, stamps memo + reference</div>
+          <div class="fl-node" style="grid-column:7; border-color:var(--stbr-emerald); background:var(--surface-brand); color:#fff;"><span class="fl-num" style="background:#fff; color:var(--stbr-emerald);">7</span><br>reference watcher matches: sale confirmed server-side</div>
+        </div>
+        <div class="fl-trust">pricing never leaves this box: the URL only carried an opaque order id</div>
+      </div>
+    </div>
+
+    <!-- chain lane -->
+    <div class="fl-lane">
+      <div class="fl-lanelabel">chain</div>
+      <div class="fl-track">
+        <div class="fl-node" style="grid-column:6;"><span class="fl-num">6</span><br>signed tx lands on devnet; last lesson's watcher sees the reference</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

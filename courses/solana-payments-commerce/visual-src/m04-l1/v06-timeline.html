@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The life and eviction of a stored signature
+     purpose: justify the eviction horizon by showing when each replay threat expires
+     data: t=0s: payment lands, verify() returns verified, signature stored t=0s to ~45s: blockhash validity window (150 blocks at the 300ms target slot time): the signed tx could still theoretically conflict; on-chain replay risk ends here t=0s to minutes: webhook redelivery window: your provider may redeliver the same event; duplicate check must keep answering t=10min (lab default): eviction sweep drops the signature; both threat windows are long closed, state stays bounded
+     prompt: Horizontal timeline from t=0 to t=10min, non-linear scale with a visible axis break after the first minute. Two shaded threat bands above the axis: on-chain replay (ending at ~45s, annotated "150 blocks at 300ms target slot time") and webhook redelivery (fading out over minutes). Event markers at t=0 (verified + stored) and t=10min (evicted). Make the point that eviction happens well after both bands end. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:536px;height:448px;bottom:-248px;left:-248px;border-radius:52% 35% 55% 59% / 40% 54% 38% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { position:relative; height:500px; margin-top:8px; }
+  .axis { position:absolute; top:318px; height:0; border-top:3px solid var(--stbr-dark); }
+  .brk { position:absolute; top:308px; width:3px; height:24px; background:var(--stbr-dark);
+         transform:rotate(20deg); }
+  .band { position:absolute; border-radius:var(--radius-md); padding:10px 16px;
+          font-family:var(--font-body); font-weight:800; font-size:14px; }
+  .band-replay { top:150px; left:80px; width:380px; height:82px;
+                 background:var(--stbr-emerald); color:#fff; }
+  .band-webhook { top:244px; left:80px; width:820px; height:56px; color:var(--stbr-green);
+                  background:linear-gradient(to right, rgba(48,108,64,0.4), rgba(48,108,64,0.03));
+                  border:1.5px solid rgba(48,108,64,0.35); border-right:none; }
+  .band small { display:block; font-weight:500; font-size:12.5px; margin-top:1px; opacity:.9; }
+  .bend { position:absolute; font-family:var(--font-body); font-size:12.5px;
+          color:var(--text-muted); }
+  .dot { position:absolute; top:309px; width:20px; height:20px; border-radius:50%;
+         border:3.5px solid var(--stbr-dark); background:var(--surface-card); }
+  .dot-y { background:var(--stbr-yellow); }
+  .tick { position:absolute; top:340px; transform:translateX(-50%);
+          font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-primary); }
+  .ev { position:absolute; width:280px; border-radius:var(--radius-lg); padding:12px 16px;
+        font-family:var(--font-body); font-size:14px; line-height:1.4; }
+  .ev b { display:block; font-family:var(--font-display); font-weight:800; font-size:17px;
+          margin-bottom:2px; }
+  .ev-stored { top:388px; left:60px; background:var(--surface-card);
+               border:2px solid var(--stbr-emerald); color:var(--text-secondary); }
+  .ev-stored b { color:var(--stbr-green); }
+  .ev-evict { top:388px; left:1130px; background:var(--stbr-yellow); color:var(--stbr-dark);
+              border:2px solid var(--stbr-dark); }
+  .stem { position:absolute; top:332px; width:0; height:56px; border-left:2px dashed var(--border-strong); }
+  .takeaway { position:absolute; top:160px; left:1000px; width:400px;
+              font-family:var(--font-body); font-size:15px; line-height:1.45;
+              color:var(--text-secondary); border-left:4px solid var(--stbr-yellow);
+              padding-left:14px; }
+  .takeaway b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">why the eviction horizon is safe</div>
+  <h2 class="viz-title">the life and eviction of a stored signature</h2>
+  <div class="tl">
+    <div class="axis" style="left:40px; width:940px;"></div>
+    <div class="axis" style="left:1020px; width:396px;"></div>
+    <div class="brk" style="left:988px;"></div>
+    <div class="brk" style="left:1002px;"></div>
+    <div class="band band-replay">on-chain replay risk<small>blockhash validity: 150 blocks &times; 300ms target slot time = ~45s &mdash; derive from live slot time, never memorize</small></div>
+    <div class="band band-webhook">webhook redelivery window<small>your provider may redeliver the same event for minutes &mdash; the duplicate check must keep answering</small></div>
+    <div class="takeaway"><b>eviction lands well after both threat windows close.</b> both bands are long over by t=10min &mdash; dropping the signature is safe, and state stays bounded.</div>
+    <div class="dot" style="left:70px;"></div>
+    <div class="dot dot-y" style="left:1240px;"></div>
+    <div class="stem" style="left:79px;"></div>
+    <div class="stem" style="left:1249px;"></div>
+    <div class="tick" style="left:122px;">t=0</div>
+    <div class="tick" style="left:460px;">~45s</div>
+    <div class="tick" style="left:900px;">minutes</div>
+    <div class="tick" style="left:995px; font-family:var(--font-body); font-weight:500; color:var(--text-muted); font-size:12px;">(scale break)</div>
+    <div class="tick" style="left:1322px;">t=10min</div>
+    <div class="ev ev-stored"><b>verified + stored</b>payment lands, verify() returns verified, signature enters the store</div>
+    <div class="ev ev-evict"><b>evicted (lab default)</b>the sweep drops the signature; both threat windows are long closed</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: What you know, and when, during a $2,000 sale on each rail
+     purpose: put the two rails' confidence timelines side by side so the commitment-level decision in the challenge has a picture behind it
+     data: Solana track (confirmed timing is an ecosystem estimate; finalized is derived from the ~30-slot gap at the 300ms target slot time, a floor): ~0.3s payment in a block (`processed`, can still be dropped in a fork) -> ~1-2s stake supermajority voted (`confirmed`) -> ~9s rooted (`finalized`, irreversible by anyone) Card track (qualitative): seconds: authorization approved -> end of day: batch capture -> days later: settlement, funds actually move -> weeks after: chargeback window still open, settlement can be clawed back
+     prompt: Two horizontal parallel timelines sharing a start point labeled "customer pays". Top track Solana with three milestone markers at ~0.3s, ~1-2s, ~9s, each labeled with its commitment level; tag the confirmed timing "ecosystem estimate" and the finalized timing "derived at 300ms target, a floor". Bottom track card rails with milestones at seconds, end of day, days, and weeks, the weeks marker labeled "chargeback window still open". Use a non-linear time axis and mark it as such; the point is ordering and contrast, not scale.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:528px;top:-268px;right:-268px;border-radius:61% 50% 48% 46% / 52% 46% 52% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:553px;height:486px;left:-331px;top:207px;border-radius:41% 50% 45% 43% / 43% 36% 39% 35%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .notice { display:inline-block; font-family:var(--font-body); font-weight:700; font-size:14px;
+            color:var(--text-secondary); border:2px solid var(--border-subtle); border-radius:var(--radius-pill);
+            padding:6px 16px; margin:-4px 0 8px; }
+  .tcard { background:var(--surface-card); border-radius:var(--radius-2xl); padding:24px 36px; margin-top:12px; }
+  .tstage { position:relative; height:470px; }
+  .rail { position:absolute; left:100px; right:30px; top:0; bottom:0; }
+  .tline { position:absolute; left:0; right:0; height:5px; background:var(--surface-brand-deep); border-radius:3px; }
+  .cbwin { position:absolute; left:86%; right:0; top:-2px; height:9px; background:var(--stbr-yellow); border-radius:5px; }
+  .startline { position:absolute; left:0; top:122px; width:3px; height:238px; background:var(--stbr-dark); }
+  .startpill { position:absolute; left:0; top:241px; transform:translate(-50%,-50%); background:var(--surface-inverse);
+               color:var(--text-on-dark); font-family:var(--font-display); font-weight:800; font-size:17px;
+               border-radius:var(--radius-pill); padding:9px 20px; white-space:nowrap; }
+  .dot { position:absolute; width:18px; height:18px; margin-left:-9px; border-radius:50%;
+         background:var(--stbr-dark); }
+  .dot.hero { width:24px; height:24px; margin-left:-12px; background:var(--stbr-emerald); }
+  .dot.warn { background:var(--stbr-yellow); border:3px solid var(--stbr-dark); }
+  .mk { position:absolute; width:250px; margin-left:-125px; text-align:center; }
+  .mk .nm { font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary); }
+  .mk .nm code { font-family:var(--font-mono); font-size:17.5px; font-weight:700; }
+  .mk .ds { font-family:var(--font-body); font-size:13.5px; line-height:1.3; color:var(--text-secondary); margin-top:3px; }
+  .tchip { position:absolute; width:220px; margin-left:-110px; text-align:center;
+           font-family:var(--font-body); font-weight:800; font-size:15px; color:var(--text-primary); }
+  .tchip small { display:block; font-weight:400; font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .trackname { position:absolute; left:0; font-family:var(--font-body); font-weight:800; font-size:13px;
+               letter-spacing:.1em; text-transform:uppercase; border-radius:var(--radius-pill); padding:5px 14px; }
+  .trackname.sol { background:var(--surface-brand); color:var(--text-on-brand); }
+  .trackname.crd { background:var(--surface-inverse); color:var(--text-on-dark); }
+</style>
+  <div class="stbr-eyebrow">a $2,000 sale on each rail</div>
+  <h2 class="viz-title" style="font-size:46px;">what you know &mdash; and when</h2>
+  <div class="notice">time axis not to scale &mdash; the point is ordering, not distance</div>
+  <div class="tcard">
+    <div class="tstage">
+      <div class="rail">
+        <div class="startline"></div>
+
+        <!-- solana track, line at y=120 -->
+        <div class="trackname sol" style="top:56px;">solana rails</div>
+        <div class="tline" style="top:120px;"></div>
+        <div class="dot" style="top:113px; left:0; background:var(--stbr-dark);"></div>
+        <div class="dot" style="top:113px; left:24%;"></div>
+        <div class="mk" style="left:24%; top:36px;"><div class="nm"><code>processed</code></div><div class="ds">in a block &mdash; can still be dropped in a fork</div></div>
+        <div class="tchip" style="left:24%; top:140px;">~0.3s</div>
+        <div class="dot" style="top:113px; left:48%;"></div>
+        <div class="mk" style="left:48%; top:36px;"><div class="nm"><code>confirmed</code></div><div class="ds">stake supermajority voted</div></div>
+        <div class="tchip" style="left:48%; top:140px;">~1&ndash;2s<small>ecosystem estimate</small></div>
+        <div class="dot hero" style="top:110px; left:76%;"></div>
+        <div class="mk" style="left:76%; top:36px;"><div class="nm"><code>finalized</code></div><div class="ds">rooted &mdash; irreversible by anyone</div></div>
+        <div class="tchip" style="left:76%; top:140px;">~9s<small>~30 slots &times; 300ms target &mdash; a floor</small></div>
+
+        <!-- card track, line at y=360 -->
+        <div class="tline" style="top:360px;"><div class="cbwin"></div></div>
+        <div class="trackname crd" style="top:398px;">card rails</div>
+        <div class="dot" style="top:353px; left:0; background:var(--stbr-dark);"></div>
+        <div class="dot" style="top:353px; left:20%;"></div>
+        <div class="tchip" style="left:20%; top:308px;">seconds</div>
+        <div class="mk" style="left:20%; top:382px;"><div class="nm">authorization approved</div></div>
+        <div class="dot" style="top:353px; left:42%;"></div>
+        <div class="tchip" style="left:42%; top:308px;">end of day</div>
+        <div class="mk" style="left:42%; top:382px;"><div class="nm">batch capture</div></div>
+        <div class="dot" style="top:353px; left:64%;"></div>
+        <div class="tchip" style="left:64%; top:308px;">days later</div>
+        <div class="mk" style="left:64%; top:382px;"><div class="nm">settlement</div><div class="ds">funds actually move</div></div>
+        <div class="dot warn" style="top:351px; left:86%;"></div>
+        <div class="tchip" style="left:86%; top:308px;">weeks after</div>
+        <div class="mk" style="left:86%; top:382px;"><div class="nm">chargeback window still open</div><div class="ds">settlement can still be clawed back</div></div>
+
+        <div class="startpill">customer pays</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

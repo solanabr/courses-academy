@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two revenue streams, one orders ledger
+     purpose: demonstrate the accretion edge, club-billing writing into the backoffice artifact, rather than asserting it
+     data: source 1: checkout / POS / blink (module 3) -> Helius webhook -> verifier -> backoffice receiver -> orders.jsonl row {orderId, signature, amountMinor, mint, fulfilledAt} source 2: club-billing crank (THIS lesson) -> decidePull guard -> TransferSubscription pull -> recordInvoice -> orders.jsonl row {kind: subscription-pull, signature, invoiceId...} shared guarantees: signature-keyed dedup, exactly-once rows, one file feeding reconciliation
+     prompt: Diagram with two horizontal pipelines converging on a single ledger cylinder labeled orders.jsonl. Top pipeline: storefront surfaces through webhook, verifier, and receiver. Bottom pipeline: billing crank through guard, pull instruction, and recordInvoice, marked "this lesson". Under the cylinder, list the shared guarantees from data. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:508px;height:351px;right:-291px;top:384px;border-radius:59% 39% 64% 55% / 62% 51% 46% 41%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:464px;height:511px;bottom:-274px;left:531px;border-radius:44% 52% 43% 47% / 47% 42% 44% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .board { display:flex; align-items:flex-start; gap:0; margin-top:12px; height:240px; }
+  .pipes { flex:1 1 auto; display:flex; flex-direction:column;
+           justify-content:space-between; height:240px; }
+  .pipe { display:flex; align-items:center; height:104px; }
+  .plab { flex:0 0 128px; }
+  .plab .l1 { font-family:var(--font-body); font-weight:900; font-size:12px;
+              letter-spacing:.08em; text-transform:uppercase;
+              border-radius:var(--radius-pill); padding:5px 12px;
+              display:inline-block; }
+  .plab.top .l1 { background:var(--stbr-emerald); color:var(--text-on-brand); }
+  .plab.bot .l1 { background:var(--stbr-yellow); color:var(--stbr-dark);
+                  border:2px solid var(--stbr-dark); }
+  .pn { flex:1 1 0; background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+        border-radius:var(--radius-lg); padding:10px 14px; text-align:center; }
+  .pn .nm { font-family:var(--font-display); font-weight:900; font-size:17px;
+            color:var(--text-primary); line-height:1.15; }
+  .pn .sb { font-family:var(--font-body); font-weight:700; font-size:11.5px;
+            color:var(--text-muted); margin-top:3px; }
+  .ha { flex:0 0 38px; display:flex; align-items:center; }
+  .ha .hl { flex:1 1 auto; border-top:3px solid var(--stbr-dark); }
+  .ha .hh { width:0; height:0; border-top:7px solid transparent;
+            border-bottom:7px solid transparent; border-left:11px solid var(--stbr-dark); }
+  .merge { flex:0 0 64px; position:relative; height:240px; }
+  .merge svg { position:absolute; top:0; left:0; }
+  .ledger { flex:0 0 330px; display:flex; flex-direction:column;
+            justify-content:center; height:240px; }
+  .cyl { border:3px solid var(--stbr-dark); border-radius:28px/56px;
+         background:var(--surface-inverse); overflow:hidden; }
+  .cyl-top { border-bottom:3px solid var(--stbr-dark);
+             background:var(--stbr-emerald); padding:12px 24px 10px;
+             text-align:center; }
+  .cyl-top .nm { font-family:var(--font-mono); font-weight:800; font-size:22px;
+                 color:var(--text-on-brand); }
+  .cyl-body { padding:14px 22px 18px; }
+  .rowline { font-family:var(--font-mono); font-weight:600; font-size:12px;
+             color:var(--stbr-cream); line-height:1.6; }
+  .rowline b { color:var(--stbr-yellow); font-weight:800; }
+  .guar { margin-top:24px; background:var(--stbr-emerald); border-radius:var(--radius-xl);
+          padding:13px 28px; display:flex; align-items:center; gap:26px;
+          justify-content:center; }
+  .guar .gcap { font-family:var(--font-body); font-weight:900; font-size:13px;
+                letter-spacing:.09em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .guar .g { font-family:var(--font-body); font-weight:700; font-size:16.5px;
+             color:var(--text-on-brand); }
+  .guar .sep { width:6px; height:6px; border-radius:50%; background:var(--stbr-cream);
+               opacity:.6; }
+</style>
+  <div class="stbr-eyebrow">the accretion edge &mdash; club-billing writes into the backoffice artifact</div>
+  <h2 class="viz-title">two revenue streams, one orders ledger</h2>
+  <div class="board">
+    <div class="pipes">
+      <div class="pipe">
+        <div class="plab top"><span class="l1">module 3</span></div>
+        <div class="pn"><div class="nm">checkout / POS / blink</div><div class="sb">storefront surfaces</div></div>
+        <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+        <div class="pn"><div class="nm">Helius webhook</div></div>
+        <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+        <div class="pn"><div class="nm">verifier</div></div>
+        <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+        <div class="pn"><div class="nm">backoffice receiver</div></div>
+      </div>
+      <div class="pipe">
+        <div class="plab bot"><span class="l1">this lesson</span></div>
+        <div class="pn"><div class="nm">club-billing crank</div></div>
+        <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+        <div class="pn"><div class="nm">decidePull guard</div></div>
+        <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+        <div class="pn"><div class="nm">TransferSubscription pull</div></div>
+        <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+        <div class="pn"><div class="nm">recordInvoice</div></div>
+      </div>
+    </div>
+    <div class="merge">
+      <svg width="64" height="240" viewBox="0 0 64 240">
+        <path d="M2 52 C 40 52, 40 120, 52 120" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <path d="M2 188 C 40 188, 40 120, 52 120" stroke="#1B231D" stroke-width="3" fill="none"/>
+        <polygon points="50,113 62,120 50,127" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="ledger">
+      <div class="cyl">
+        <div class="cyl-top"><span class="nm">orders.jsonl</span></div>
+        <div class="cyl-body">
+          <div class="rowline">{ orderId, signature, amountMinor,<br>&nbsp;&nbsp;mint, fulfilledAt }</div>
+          <div class="rowline" style="margin-top:8px;">{ <b>kind: subscription-pull</b>, signature,<br>&nbsp;&nbsp;invoiceId&hellip; }</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="guar">
+    <span class="gcap">shared guarantees</span>
+    <span class="g">signature-keyed dedup</span><span class="sep"></span>
+    <span class="g">exactly-once rows</span><span class="sep"></span>
+    <span class="g">one file feeding reconciliation</span>
+  </div>
+</div>
+</body></html>

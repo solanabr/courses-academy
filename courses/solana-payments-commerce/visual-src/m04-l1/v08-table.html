@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The seeded fixtures and the verdict each must produce
+     purpose: make the lab's acceptance matrix explicit so a wrong reason is diagnosable at a glance
+     data: fixture: correct payment (right program, mint, amount, memo) | expected reason: verified | proves: the happy path fulfills and stores the signature fixture: Token-2022 look-alike credit for the exact amount | expected reason: wrong-token-program | proves: programId is checked before the mint string means anything fixture: 30 USDT into your USDT account | expected reason: wrong-mint | proves: a real token under the right program is still the wrong asset fixture: right token, 1.50 short | expected reason: underpaid | proves: the amount comes from the on-chain delta, never a client field fixture: genuine payment for order ord-0999 replayed against ord-1024 | expected reason: wrong-reference | proves: the memo binds a payment to one order
+     prompt: Designed table with columns Fixture, Expected reason, What it proves. Five rows from data. Render the expected-reason column as code-styled chips, the verified chip visually distinct from the four reject chips. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:602px;height:558px;top:-332px;right:-332px;border-radius:49% 61% 60% 37% / 46% 52% 55% 37%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ftable { width:100%; border-collapse:separate; border-spacing:0; margin-top:10px;
+            background:var(--surface-card); border:2px solid var(--stbr-dark);
+            border-radius:var(--radius-2xl); overflow:hidden; }
+  .ftable th { background:var(--surface-inverse); color:var(--text-on-dark);
+               font-family:var(--font-body); font-weight:800; font-size:14px;
+               letter-spacing:.11em; text-transform:uppercase; text-align:left;
+               padding:15px 24px; }
+  .ftable tr:first-child th:first-child { border-top-left-radius:38px; }
+  .ftable tr:first-child th:last-child { border-top-right-radius:38px; }
+  .ftable td { padding:15px 24px; border-top:1.5px solid var(--border-subtle);
+               font-family:var(--font-body); font-size:15.5px; line-height:1.4;
+               color:var(--text-primary); vertical-align:middle; }
+  .ftable tr:nth-child(odd) td { background:var(--surface-paper); }
+  .fx b { font-weight:800; }
+  .fx small { display:block; font-size:13px; color:var(--text-muted); margin-top:2px; }
+  .rchip { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:15px;
+           padding:6px 15px; border-radius:var(--radius-pill); white-space:nowrap;
+           background:rgba(27,35,29,0.05); border:1.5px solid var(--border-strong);
+           color:var(--text-primary); }
+  .rchip-ok { background:var(--stbr-yellow); border:2px solid var(--stbr-dark);
+              color:var(--stbr-dark); font-weight:800; }
+  .pv { color:var(--text-secondary); font-size:14.5px; max-width:520px; }
+</style>
+  <div class="stbr-eyebrow">the lab's acceptance matrix</div>
+  <h2 class="viz-title">five fixtures, five verdicts</h2>
+  <table class="ftable">
+    <tr><th>Fixture</th><th>Expected reason</th><th>What it proves</th></tr>
+    <tr>
+      <td class="fx"><b>correct payment</b><small>right program, mint, amount, memo</small></td>
+      <td><span class="rchip rchip-ok">verified</span></td>
+      <td class="pv">the happy path fulfills and stores the signature</td>
+    </tr>
+    <tr>
+      <td class="fx"><b>Token-2022 look-alike credit</b><small>for the exact amount</small></td>
+      <td><span class="rchip">wrong-token-program</span></td>
+      <td class="pv">programId is checked before the mint string means anything</td>
+    </tr>
+    <tr>
+      <td class="fx"><b>30 USDT into your USDT account</b></td>
+      <td><span class="rchip">wrong-mint</span></td>
+      <td class="pv">a real token under the right program is still the wrong asset</td>
+    </tr>
+    <tr>
+      <td class="fx"><b>right token, 1.50 short</b></td>
+      <td><span class="rchip">underpaid</span></td>
+      <td class="pv">the amount comes from the on-chain delta, never a client field</td>
+    </tr>
+    <tr>
+      <td class="fx"><b>genuine payment for ord-0999</b><small>replayed against ord-1024</small></td>
+      <td><span class="rchip">wrong-reference</span></td>
+      <td class="pv">the memo binds a payment to one order</td>
+    </tr>
+  </table>
+</div>
+</body></html>

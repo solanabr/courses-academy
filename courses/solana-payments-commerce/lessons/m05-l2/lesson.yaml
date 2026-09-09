@@ -1,0 +1,121 @@
+id: lesson-spc-m05-l2
+slug: m05-l2
+title: "The official Subscriptions program: plans, PDAs, and the kit-7 seam"
+skills:
+  - subscriptions-program
+  - recurring-delegation
+  - pdas
+  - token-2022
+  - program-security
+  - checked-arithmetic
+  - version-pinning
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@solana/subscriptions": "0.5.0"
+    "@solana/kit": "7.1.1"
+    "@solana-program/token": "0.15.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: period-window-check
+    type: code
+    language: typescript
+    starter: period-window-check/starter.ts
+    solution: period-window-check/solution.ts
+    tests: period-window-check/tests.json
+    hints:
+      - "At the exact instant now equals expiresAtTs, the subscription is already lapsed; the last chargeable second is expiresAtTs - 1, not expiresAtTs itself."
+      - "expiresAtTs of 0 means 'no expiry'; do not treat it as 'expired at epoch 0'."
+      - "Order matters: canceled first, then expiry, then the period window."
+  - key: check-overview
+    type: quiz
+    questions:
+      - id: m05-l2-q1
+        prompt: "A subscriber needs several independent billing arrangements, but their token account has exactly one delegate slot. How does the Subscriptions program reconcile that?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "It creates a fresh token account per subscription and asks the subscriber to fund each one, so every merchant ends up with its own account and its own delegate slot."
+            correct: false
+            feedback: "It does not multiply the user's token accounts; the ATA and its single slot stay put, and the program works within that one slot."
+          - id: c
+            label: "A Subscription Authority PDA per (user, mint) takes the single slot with a u64::MAX approval; delegation PDAs carry the real limits."
+            correct: true
+            feedback: "Indirection turns one scarce slot into many arrangements. The holder is unlimited and the real limits live in program state, which moves the bound off the Token program onto that logic."
+          - id: d
+            label: "A Subscription Authority PDA takes the slot with an approval sized to the sum of the plans, re-approved on each new subscription."
+            correct: false
+            feedback: "Re-approving on every join puts the slot back in play and drags the subscriber into a signature per merchant. The authority takes the slot once, at u64::MAX, and is never touched again; the sums that matter live in the delegation accounts."
+          - id: a
+            label: "It stores each allowance in the merchant's own database and signs every pull with the merchant's key, so the single on-chain delegate slot never has to be shared."
+            correct: false
+            feedback: "Pulls are on-chain delegate transfers, and the enforced limits live in program accounts rather than off-chain; that is what keeps it non-custodial."
+        explanation: "The SA PDA occupies the one slot with an unlimited approval; the actual, bounded limits live in delegation PDAs (fixed / recurring / plan). That is how one token account backs many subscriptions non-custodially."
+      - id: m05-l2-q2
+        prompt: "That delegate slot is held by a PDA rather than a keypair the merchant controls. Cashing in the ATA seed from module 2, why does a PDA holding the slot keep the arrangement non-custodial?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The PDA is derived from and owned by the subscriber's wallet, so the subscriber's key must co-sign every individual pull before the crank can move funds."
+            correct: false
+            feedback: "A PDA is not owned by the user's wallet, and the subscriber does not co-sign each pull; cadenced pulls without per-charge signatures are the point of delegation."
+          - id: c
+            label: "The merchant holds the PDA's private key in a hardware escrow and signs each pull with it, contractually agreeing to stay inside the plan's declared limits."
+            correct: false
+            feedback: "PDAs have no private key to hold, and custody-by-promise is exactly what this design removes."
+          - id: d
+            label: "The program's upgrade authority holds the PDA's key and signs on its behalf, so custody sits with the Foundation rather than you."
+            correct: false
+            feedback: "An upgrade authority replaces code; it cannot sign as a PDA, because no signature over a PDA exists to produce. That authority is a real residual trust worth naming in a security review, and it is not custody of anybody's funds."
+          - id: a
+            label: "A PDA is deterministic and program-owned with no private key, so only program logic, never a merchant key, can authorize a pull."
+            correct: true
+            feedback: "With no key to hold there is no merchant secret to leak; the trust moves rather than vanishing, and the upgrade authority is where it lands."
+        explanation: "No private key exists for a PDA, so there is no merchant secret to leak or abuse; the program's code is the only thing that can move funds, and only inside the delegation's declared limits."
+  - key: check-lab
+    type: quiz
+    questions:
+      - id: m05-l2-q3
+        prompt: "Your crank dispatched a second pull for the same subscriber an hour after the first, and the program refused it. The plan's cadence is periodHours: 24. Reading your billing-window check, what is the most likely bug?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "You forgot to store processed signatures, so a webhook retry re-triggered the pull."
+            correct: false
+            feedback: "A delegate pull is initiated by your crank, not by a webhook retry; signature dedup guards fulfillment, not pull cadence."
+          - id: d
+            label: "Your window check reads the delegation's periodLengthS, which the program stores in hours like a plan does."
+            correct: false
+            feedback: "The two fields disagree on purpose: a plan publishes periodHours, a recurring delegation stores periodLengthS in seconds. Assuming they share a unit is the same trap read from the other end."
+          - id: a
+            label: "You compared expiresAtTs against the current block height instead of Unix time."
+            correct: false
+            feedback: "An expiry-vs-height mix-up would misfire on expiry, not collapse a 24-hour window down to minutes."
+          - id: b
+            label: "You used the plan's periodHours value directly as seconds instead of multiplying by 3600, so the window is ~3600x too short."
+            correct: true
+            feedback: "Chain time is Unix seconds while the plan field counts hours, and the comparison silently shrinks the window; blanket-multiplying overshoots, since a delegation's period is already seconds."
+        explanation: "periodHours (plans) and periodLengthS (delegations) are the documented unit trap. Compare seconds against Unix chain time; 24 hours is 86,400 seconds, not 24."
+      - id: m05-l2-q4
+        prompt: "A subscriber's plan lapsed last week, yet your crank still dispatched a pull for them today — refused on-chain, one base fee gone — because the delegation account is still there. Which guard check is missing, and why does the account persist?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The expiresAtTs-vs-chain-time check: these accounts persist until revoked, so existence proves nothing, and a guard that skips the expiry mirror pays for an on-chain refusal every tick."
+            correct: true
+            feedback: "Nothing on-chain reaps an account on a schedule. The program refuses the lapsed pull before a token moves; your guard's job is to refuse it before a fee is spent. And 0 is the sentinel for never expires, which a naive now-greater-than test rejects outright."
+          - id: d
+            label: "The expiresAtTs-vs-chain-time check, and a plain now-greater-than-expiresAtTs comparison covers it, since these accounts persist until revoked and a zero expiry marks one already lapsed."
+            correct: false
+            feedback: "Right field, inverted sentinel. Zero means never expires, so that comparison treats every open-ended subscriber as expired at the epoch and quietly bills nobody at all."
+          - id: a
+            label: "The active-flag check: the program clears a delegation's active flag and closes its account the moment a plan's term ends, so only a stale flag lets a pull get dispatched."
+            correct: false
+            feedback: "Ending a term does not delete the account, and an active flag alone does not encode a time-based lapse."
+          - id: b
+            label: "A balance check: the Token program zeroes the approval once the allowance is exhausted, and the delegation account it belongs to is reaped in that very same instruction."
+            correct: false
+            feedback: "A zero allowance does not close the account, and it would not represent elapsed time either."
+        explanation: "These accounts stay on-chain until a revoke instruction closes them, and the program — not account existence — enforces the expiry bound, refusing a lapsed pull before any token moves. Your crank mirrors that check (expiresAtTs vs chain time, 0 meaning 'never expires') so the refusal costs nothing instead of a base fee per tick."

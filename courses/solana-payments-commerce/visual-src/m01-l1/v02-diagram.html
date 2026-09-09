@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: What your curl command actually touched
+     purpose: show that the demo is a read-only round trip to a shared public ledger, with no account, no auth, and no write path
+     data: your terminal -> HTTPS POST -> public RPC endpoint (api.mainnet-beta.solana.com) -> shared ledger (settled transactions) -> JSON record back to your terminal properties: no API key, no account, no signup; read-only (getTransaction cannot modify state); the same record is visible to anyone who asks
+     prompt: Left-to-right diagram, four nodes: "your terminal", "public RPC endpoint", "shared ledger", and a return arrow carrying "JSON record". Annotate the forward arrows with "no auth, anyone can ask" and the ledger node with "settled transactions, public by default". A small lock-with-slash icon or label on the return path noting "read-only: cannot move or reverse funds".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:528px;height:465px;top:-251px;right:-251px;border-radius:62% 37% 43% 40% / 42% 65% 64% 54%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:549px;height:494px;bottom:-296px;left:-296px;border-radius:37% 56% 39% 60% / 63% 57% 61% 65%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .rt { position:relative; margin-top:10px; }
+  .rt-row { position:relative; height:126px; }
+  .node { position:absolute; top:0; width:380px; height:118px; border-radius:var(--radius-xl);
+          padding:24px 26px; }
+  .node.n1 { left:0; } .node.n2 { left:538px; } .node.n3 { left:1076px; }
+  .node.card { background:var(--surface-card); border:2px solid var(--border-strong); }
+  .node.ledger { background:var(--surface-brand); border:2px solid var(--surface-brand); }
+  .node .nt { font-family:var(--font-display); font-weight:800; font-size:23px;
+              color:var(--text-primary); margin-bottom:8px; }
+  .node.ledger .nt { color:var(--text-on-brand); }
+  .node .ns { font-family:var(--font-mono); font-size:15px; color:var(--text-secondary); }
+  .node.ledger .ns { font-family:var(--font-body); font-weight:700; font-size:15px;
+                     color:rgba(255,255,255,0.85); }
+  .fwd { position:absolute; top:14px; width:150px; display:flex; flex-direction:column;
+         align-items:center; gap:8px; }
+  .fwd.f1 { left:384px; } .fwd.f2 { left:922px; }
+  .fwd .line { position:relative; width:110px; height:3px; background:var(--stbr-emerald); }
+  .fwd .line::after { content:""; position:absolute; right:-2px; top:-7px;
+                      border:8px solid transparent; border-left:12px solid var(--stbr-emerald); }
+  .fwd .flab { font-family:var(--font-body); font-weight:700; font-size:13.5px;
+               color:var(--stbr-green); text-align:center; line-height:1.3; }
+  .ret { position:relative; height:170px; }
+  .ret svg { position:absolute; left:0; top:0; }
+  .ret .chip { position:absolute; font-family:var(--font-body); font-weight:800;
+               border-radius:var(--radius-pill); padding:9px 18px; font-size:15px; }
+  .ret .json { left:240px; top:66px; background:var(--surface-card);
+               border:2px solid var(--stbr-dark); color:var(--text-primary); }
+  .ret .ro { left:660px; top:66px; background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .cap { text-align:center; font-family:var(--font-body); font-weight:700; font-size:17px;
+         color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">no account &middot; no auth &middot; no write path</div>
+  <h2 class="viz-title">what your curl command actually touched</h2>
+  <div class="rt">
+    <div class="rt-row">
+      <div class="node card n1">
+        <div class="nt">your terminal</div>
+        <div class="ns">$ curl &hellip; getTransaction</div>
+      </div>
+      <div class="fwd f1">
+        <div class="flab">HTTPS POST</div>
+        <div class="line"></div>
+        <div class="flab">no auth, anyone can ask</div>
+      </div>
+      <div class="node card n2">
+        <div class="nt">public RPC endpoint</div>
+        <div class="ns">api.mainnet-beta.solana.com</div>
+      </div>
+      <div class="fwd f2">
+        <div class="flab">no API key, no signup</div>
+        <div class="line"></div>
+      </div>
+      <div class="node ledger n3">
+        <div class="nt">shared ledger</div>
+        <div class="ns">settled transactions &middot; public by default</div>
+      </div>
+    </div>
+    <div class="ret">
+      <svg width="1456" height="170" viewBox="0 0 1456 170">
+        <path d="M 1266 0 L 1266 88 L 190 88 L 190 34" fill="none"
+              stroke="#1b231d" stroke-width="3"/>
+        <polygon points="190,12 181,34 199,34" fill="#1b231d"/>
+      </svg>
+      <span class="chip json">JSON record back to your terminal</span>
+      <span class="chip ro">read-only &mdash; getTransaction cannot move or reverse funds</span>
+    </div>
+    <div class="cap">the same record is visible to anyone who asks</div>
+  </div>
+</div>
+</body></html>

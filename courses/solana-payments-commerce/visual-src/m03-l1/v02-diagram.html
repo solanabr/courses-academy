@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The reference key joins your order ledger to the chain
+     purpose: show how one pre-chosen key connects the order record, the wallet's transfer, and the settled transaction through the RPC's account index
+     data: server: mints reference CD9G...rvDh at checkout -> writes it to the order ledger -> embeds it in the QR URL customer wallet: appends the reference to the transfer's account list as a non-signer, non-writable key; no account created, no rent chain: the transfer settles, mentioning the reference in its account list RPC index: getSignaturesForAddress(CD9G...rvDh) -> exactly one signature in the history of the chain, your sale join: order ledger row <-> reference <-> settled transaction
+     prompt: Left-to-right dataflow diagram with four nodes: server (mints reference, writes ledger row, embeds in QR), customer wallet (attaches the reference to the transfer's account list), chain (settled transaction mentioning it), and RPC index (getSignaturesForAddress returning one signature). Draw one highlighted join line running from the ledger row through the reference key to the settled transaction. Annotate the wallet node "non-signer, non-writable, no account ever created".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:484px;bottom:-283px;right:-283px;border-radius:58% 49% 58% 48% / 58% 45% 54% 59%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow">one key, three appearances</div>
+  <h2 class="viz-title">The reference key joins your order ledger to the chain</h2>
+
+  <div style="display:flex;align-items:stretch;gap:0;margin-bottom:26px;">
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:20px;padding:24px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--text-primary);margin-bottom:10px;">server</div>
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-secondary);line-height:1.45;">mints the reference at checkout</div>
+      <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--text-on-accent);background:var(--surface-accent);border-radius:8px;padding:6px 10px;display:inline-block;margin:10px 0;">CD9G...rvDh</div>
+      <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);line-height:1.5;">&rarr; writes it to the order ledger<br>&rarr; embeds it in the QR URL</div>
+    </div>
+    <div style="width:52px;display:flex;align-items:center;justify-content:center;"><svg width="44" height="18" viewBox="0 0 44 18"><line x1="0" y1="9" x2="32" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="32,3 44,9 32,15" fill="#1b231d"/></svg></div>
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:20px;padding:24px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--text-primary);margin-bottom:10px;">customer wallet</div>
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-secondary);line-height:1.45;">appends the reference to the transfer&rsquo;s account list</div>
+      <div style="font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--stbr-green);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:999px;padding:6px 12px;display:inline-block;margin-top:12px;">non-signer &middot; non-writable &middot; no account ever created, no rent</div>
+    </div>
+    <div style="width:52px;display:flex;align-items:center;justify-content:center;"><svg width="44" height="18" viewBox="0 0 44 18"><line x1="0" y1="9" x2="32" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="32,3 44,9 32,15" fill="#1b231d"/></svg></div>
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:20px;padding:24px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--text-primary);margin-bottom:10px;">chain</div>
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-secondary);line-height:1.45;">the transfer settles, mentioning the reference in its account list</div>
+    </div>
+    <div style="width:52px;display:flex;align-items:center;justify-content:center;"><svg width="44" height="18" viewBox="0 0 44 18"><line x1="0" y1="9" x2="32" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="32,3 44,9 32,15" fill="#1b231d"/></svg></div>
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:20px;padding:24px 24px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--text-primary);margin-bottom:10px;">RPC index</div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--stbr-emerald);line-height:1.5;margin-bottom:10px;">getSignaturesForAddress(<br>&nbsp;&nbsp;CD9G...rvDh)</div>
+      <div style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);line-height:1.45;">exactly one signature in the history of the chain &mdash; your sale</div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface-accent);border-radius:18px;padding:20px 32px;display:flex;align-items:center;justify-content:center;gap:18px;">
+    <div style="font-family:var(--font-display);font-weight:900;font-size:17px;letter-spacing:0.08em;color:var(--text-on-accent);">THE JOIN</div>
+    <div style="font-family:var(--font-body);font-weight:600;font-size:17px;color:var(--text-on-accent);">order ledger row</div>
+    <div style="font-family:var(--font-mono);font-size:17px;color:var(--text-on-accent);">&harr;</div>
+    <div style="font-family:var(--font-mono);font-weight:700;font-size:17px;color:var(--stbr-cream);background:var(--stbr-dark);border-radius:8px;padding:6px 14px;">CD9G...rvDh</div>
+    <div style="font-family:var(--font-mono);font-size:17px;color:var(--text-on-accent);">&harr;</div>
+    <div style="font-family:var(--font-body);font-weight:600;font-size:17px;color:var(--text-on-accent);">settled transaction</div>
+  </div>
+</div>
+</body></html>

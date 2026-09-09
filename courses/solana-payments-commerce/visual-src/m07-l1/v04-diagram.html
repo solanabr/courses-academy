@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Who signs what, and where
+     purpose: isolate the signature responsibilities so the reader can state the who-signs-where answer the gate asks for
+     data: versioned transaction signature slots: [owner slot: the paying agent] [fee-payer slot: named by extra.feePayer] paying agent: signs owner slot at build time -> transaction is partially signed, inert facilitator /verify: fills the fee-payer slot on a scratch copy and simulates, never submits facilitator /settle: adds the fee-payer signature for broadcast -> transaction fully signed -> submits to network merchant: signs nothing, ever; it only relays and fulfills
+     prompt: A transaction card with two labeled signature slots. Three actor annotations point at it in order: the agent stamps the owner slot (step badge 1), verify is shown signing a scratch copy to simulate, submitting nothing (step badge 2), settle stamps the fee-payer slot and fires an arrow to a network node (step badge 3). A side note states the merchant never signs. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:529px;height:560px;bottom:-306px;left:-306px;border-radius:58% 60% 35% 40% / 51% 65% 56% 47%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .sig { background:var(--surface-card); border-radius:var(--radius-2xl);
+         padding:32px 48px 28px; }
+  .stage { position:relative; height:470px; margin-top:10px; }
+  .actor { position:absolute; background:var(--surface-card);
+           border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+           padding:14px 18px; }
+  .actor .ah { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .num { flex:0 0 auto; width:28px; height:28px; border-radius:50%;
+         background:var(--stbr-dark); color:var(--stbr-cream);
+         font-family:var(--font-display); font-weight:800; font-size:15px;
+         display:flex; align-items:center; justify-content:center; }
+  .an { font-family:var(--font-display); font-weight:900; font-size:18px;
+        color:var(--text-primary); }
+  .ab { font-family:var(--font-body); font-size:13.5px; line-height:1.35;
+        color:var(--text-secondary); }
+  .txcard { position:absolute; left:452px; top:0; width:520px; height:436px;
+            border:3px solid var(--stbr-dark); border-radius:var(--radius-xl);
+            background:var(--surface-card); overflow:hidden; }
+  .txhead { background:var(--surface-inverse); padding:12px 22px; }
+  .txhead .a { font-family:var(--font-display); font-weight:900; font-size:20px;
+               color:var(--text-on-dark); }
+  .txhead .b { font-family:var(--font-body); font-size:12.5px;
+               color:rgba(245,232,202,0.7); }
+  .slot { margin:16px 22px 0; border:2px dashed var(--border-strong);
+          border-radius:var(--radius-lg); padding:12px 16px; height:140px; }
+  .slot .sn { font-family:var(--font-mono); font-weight:700; font-size:16px;
+              color:var(--text-primary); }
+  .slot .sd { font-family:var(--font-body); font-size:12.5px;
+              color:var(--text-secondary); margin-top:2px; }
+  .stamp { margin-top:9px; border-radius:var(--radius-md); padding:7px 12px;
+           font-family:var(--font-body); font-weight:700; font-size:13px; }
+  .stamp.own { background:var(--surface-brand); color:var(--text-on-brand); }
+  .stamp.fee { background:var(--stbr-yellow); color:var(--stbr-dark);
+               border:2px solid var(--stbr-dark); }
+  .harr { position:absolute; display:flex; align-items:center; }
+  .harr .l { flex:1 1 auto; border-top:3px solid var(--stbr-dark); }
+  .harr .hr { width:0; height:0; border-top:8px solid transparent;
+              border-bottom:8px solid transparent; border-left:12px solid var(--stbr-dark); }
+  .harr .hl { width:0; height:0; border-top:8px solid transparent;
+              border-bottom:8px solid transparent; border-right:12px solid var(--stbr-dark); }
+  .eye { position:absolute; display:flex; align-items:center; gap:8px; }
+  .eye .dash { flex:1 1 auto; border-top:3px dashed rgba(27,35,29,0.4); }
+  .eye .stop { flex:0 0 auto; width:14px; height:14px; border-radius:50%;
+               border:3px solid rgba(27,35,29,0.4); background:var(--surface-card); }
+  .eyelab { font-family:var(--font-body); font-weight:700; font-size:11.5px;
+            color:var(--text-secondary); }
+  .netchip { position:absolute; background:var(--surface-inverse);
+             color:var(--text-on-dark); font-family:var(--font-display);
+             font-weight:800; font-size:16px; border-radius:var(--radius-pill);
+             padding:9px 24px; }
+  .varr { position:absolute; display:flex; flex-direction:column; align-items:center; }
+  .varr .vl { width:0; flex:1 1 auto; border-left:3px solid var(--stbr-dark); }
+  .varr .vh { width:0; height:0; border-left:8px solid transparent;
+              border-right:8px solid transparent; border-top:12px solid var(--stbr-dark); }
+  .merch { margin-top:14px; background:var(--surface-inverse);
+           border-radius:var(--radius-lg); padding:13px 24px;
+           font-family:var(--font-body); font-weight:600; font-size:15.5px;
+           color:var(--text-on-dark); }
+  .merch b { color:var(--stbr-cream); }
+</style>
+  <div class="sig">
+    <div class="stbr-eyebrow">signature responsibilities &middot; exact-svm</div>
+    <h2 class="viz-title" style="font-size:44px;">who signs what, and where</h2>
+    <div class="stage">
+      <div class="txcard" style="left:432px; width:480px;">
+        <div class="txhead"><span class="a">versioned transaction</span>&nbsp;&nbsp;<span class="b">partially signed = inert until settle</span></div>
+        <div class="slot">
+          <div class="sn">owner slot</div>
+          <div class="sd">the paying agent</div>
+          <div class="stamp own">SIGNED &middot; by the agent, at build time &rarr; tx partially signed, inert</div>
+        </div>
+        <div class="slot">
+          <div class="sn">fee-payer slot</div>
+          <div class="sd">named by <b>extra.feePayer</b></div>
+          <div class="stamp fee">SIGNED for broadcast at /settle &middot; /verify signs a scratch copy first, purely to simulate</div>
+        </div>
+      </div>
+
+      <div class="actor" style="left:0; top:96px; width:352px;">
+        <div class="ah"><span class="num">1</span><span class="an">paying agent</span></div>
+        <div class="ab">signs the <b>owner slot</b> at build time &mdash; the transaction leaves its hands partially signed and inert</div>
+      </div>
+      <div class="harr" style="left:356px; top:158px; width:72px;"><div class="l"></div><div class="hr"></div></div>
+
+      <div class="actor" style="left:990px; top:20px; width:360px; border-style:dashed;">
+        <div class="ah"><span class="num">2</span><span class="an">facilitator /verify</span></div>
+        <div class="ab">fills the fee-payer slot on a <b>scratch copy</b> and simulates the result &mdash; <b>never submits</b></div>
+        <div class="ab" style="margin-top:4px; font-style:italic;">a simulation cannot move money</div>
+      </div>
+      <div class="eye" style="left:918px; top:78px; width:72px;"><div class="stop"></div><div class="dash"></div></div>
+
+      <div class="actor" style="left:990px; top:206px; width:360px;">
+        <div class="ah"><span class="num">3</span><span class="an">facilitator /settle</span></div>
+        <div class="ab">adds the <b>fee-payer signature</b> &rarr; fully signed &rarr; submits to the network</div>
+      </div>
+      <div class="harr" style="left:916px; top:268px; width:70px;"><div class="hl"></div><div class="l"></div></div>
+
+      <div class="varr" style="left:1170px; top:322px; height:66px;"><div class="vl"></div><div class="vh"></div></div>
+      <div class="netchip" style="left:1108px; top:392px;">network</div>
+    </div>
+    <div class="merch"><b>the merchant signs nothing, ever</b> &mdash; it only relays the transaction and fulfills the request</div>
+  </div>
+</div>
+</body></html>

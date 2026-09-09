@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The two fee-burning bugs, side by side
+     purpose: make both failure modes concrete before the reader meets them in the challenge starter
+     data: bug: hours-as-seconds | wrong: nowTs < lastChargedTs + periodHours | consequence: 24h window becomes 24 seconds, ~3600x pulls the program refuses, a base fee each | fix: periodSeconds = periodHours * 3600, compare seconds to seconds bug: missing expiry check | wrong: pull whenever the delegation account exists | consequence: lapsed subscribers keep getting pulls dispatched; the program refuses each, accounts persist until revoked | fix: refuse when expiresAtTs != 0 AND nowTs >= expiresAtTs; 0 means never
+     prompt: Two-column comparison card, one column per bug. Each column: the buggy expression in monospace, the real-world consequence, and the one-line fix. Emphasize the 3600x refused-pull factor in the first column and the "0 means never" clause in the second. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:446px;bottom:-229px;left:-229px;border-radius:58% 38% 45% 54% / 45% 56% 42% 51%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:36px; margin-top:10px; }
+  .col { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-2xl); overflow:hidden; display:flex;
+         flex-direction:column; }
+  .col-head { background:var(--surface-inverse); padding:14px 26px; }
+  .col-head .bug { font-family:var(--font-body); font-weight:800; font-size:12px;
+                   letter-spacing:.11em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .col-head .nm { font-family:var(--font-display); font-weight:900; font-size:27px;
+                  color:var(--text-on-dark); margin-top:2px; }
+  .sec { padding:13px 26px; border-top:1.5px solid var(--border-subtle); }
+  .sec .cap { font-family:var(--font-body); font-weight:800; font-size:12px;
+              letter-spacing:.09em; text-transform:uppercase; color:var(--text-muted);
+              margin-bottom:7px; }
+  .code { background:var(--surface-inverse); border-radius:var(--radius-md);
+          font-family:var(--font-mono); font-weight:700; font-size:16.5px;
+          color:var(--stbr-cream); padding:12px 18px; line-height:1.5; }
+  .cons { font-family:var(--font-body); font-weight:600; font-size:16px;
+          color:var(--text-secondary); line-height:1.5; }
+  .mark { display:inline-block; font-family:var(--font-display); font-weight:900;
+          font-size:17px; background:var(--stbr-yellow); color:var(--stbr-dark);
+          border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+          padding:1px 10px; }
+  .fix { background:rgba(0,139,76,0.08); border-top:1.5px solid var(--border-subtle);
+         padding:13px 26px; margin-top:auto; }
+  .fix .cap { color:var(--stbr-green); }
+  .fix .fx { font-family:var(--font-mono); font-weight:700; font-size:15.5px;
+             color:var(--stbr-green); line-height:1.5; }
+  .verdict { margin-top:24px; background:var(--stbr-emerald);
+             border-radius:var(--radius-xl); padding:15px 30px; text-align:center;
+             font-family:var(--font-display); font-weight:800; font-size:22px;
+             color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">meet both failure modes before the challenge starter ships them to you</div>
+  <h2 class="viz-title">the two fee-burning bugs, side by side</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="col-head">
+        <div class="bug">bug 1</div>
+        <div class="nm">hours-as-seconds</div>
+      </div>
+      <div class="sec">
+        <div class="cap">the buggy line</div>
+        <div class="code">nowTs &lt; lastChargedTs + periodHours</div>
+      </div>
+      <div class="sec">
+        <div class="cap">consequence</div>
+        <div class="cons">a 24-hour window becomes 24 <b>seconds</b> &mdash; <span class="mark">~3600&times; refused pulls</span>, a base fee each</div>
+      </div>
+      <div class="fix">
+        <div class="cap">the one-line fix</div>
+        <div class="fx">periodSeconds = periodHours * 3600<br>&mdash; compare seconds to seconds</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-head">
+        <div class="bug">bug 2</div>
+        <div class="nm">missing expiry check</div>
+      </div>
+      <div class="sec">
+        <div class="cap">the buggy logic</div>
+        <div class="code">// pull whenever the delegation<br>// account exists</div>
+      </div>
+      <div class="sec">
+        <div class="cap">consequence</div>
+        <div class="cons">lapsed pulls keep getting dispatched &mdash; each refused on-chain, one base fee gone; accounts persist until revoked</div>
+      </div>
+      <div class="fix">
+        <div class="cap">the one-line fix</div>
+        <div class="fx">refuse when expiresAtTs != 0 &amp;&amp; nowTs &gt;= expiresAtTs<br>&mdash; <span class="mark">0 means never</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="verdict">two ways to burn fees on refused pulls: wrong units and no expiry &mdash; the starter ships both, your guard removes both</div>
+</div>
+</body></html>

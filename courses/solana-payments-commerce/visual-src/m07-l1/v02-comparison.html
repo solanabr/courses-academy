@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The x402 v2 surface in one card
+     purpose: fix the three v2 headers, the header-not-body rule, and the scheme/transport grid before the reader traces a flow through one cell of it
+     data: headers (3, v1 -> v2): PAYMENT-REQUIRED (server->client, the challenge; NEW IN V2 - v1 sent this in the 402 response body) ; X-PAYMENT -> PAYMENT-SIGNATURE (client->server, payment proof) ; X-PAYMENT-RESPONSE -> PAYMENT-RESPONSE (server->client, settlement receipt) rule: read the header, never the body - a v2 402's body is {} with Content-Length: 2, on the challenge, on a rejected payment and on a failed settlement alike network ids: CAIP-2 form namespace:reference; Solana clusters under the solana: namespace, reference derived from the genesis hash schemes (4): exact (precise amount per call) | upto (ceiling, settle usage) | auth-capture (authorize now, capture later) | batch-settlement (accumulate, settle together) transports (3): http | mcp (Model Context Protocol tool calls) | a2a (agent-to-agent) this lesson's cell: exact scheme x http transport on SVM = exact-SVM version caution: v2 surface stable, mainnet ship date unpublished as of 2026-08-22; v1 still live in the wild
+     prompt: A single reference card in four stacked bands: a headers band of three columns, one per v2 header, each naming its direction, its job and what it was in v1, with a rule strip under them stating read the header never the body; a CAIP-2 band showing the namespace:reference shape; a 4x3 grid band of schemes (rows) by transports (columns) with the exact x http cell highlighted and labeled exact-SVM; a footer band with the version caution. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:571px;height:515px;bottom:-335px;left:-335px;border-radius:56% 62% 46% 57% / 48% 49% 61% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ref { background:var(--surface-card); border-radius:var(--radius-2xl);
+         padding:30px 48px 26px; }
+  .ref .viz-title { font-size:42px; margin:4px 0 16px; }
+  .band { border:1.5px solid var(--border-subtle); border-radius:var(--radius-lg);
+          padding:12px 22px; margin-top:12px; }
+  .band-tag { font-family:var(--font-display); font-weight:800; font-size:13px;
+              letter-spacing:0.12em; text-transform:uppercase; color:var(--stbr-green);
+              margin-bottom:8px; }
+  .hdrs { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+  .hcard { border:1.5px solid var(--border-subtle); border-radius:var(--radius-lg);
+           background:var(--surface-page); padding:9px 14px 10px; }
+  .hname { font-family:var(--font-mono); font-size:16px; font-weight:700;
+           color:var(--text-on-brand); background:var(--surface-brand);
+           border-radius:var(--radius-md); padding:4px 11px; display:inline-block; }
+  .hdir { font-family:var(--font-body); font-weight:700; font-size:11px;
+          letter-spacing:0.07em; text-transform:uppercase; color:var(--stbr-green);
+          margin-top:6px; }
+  .hrole { font-family:var(--font-body); font-size:12.5px; color:var(--text-primary);
+           margin-top:1px; }
+  .hwas { font-family:var(--font-body); font-size:11.5px; color:var(--text-secondary);
+          margin-top:4px; }
+  .hwas .old { font-family:var(--font-mono); font-size:11.5px; font-weight:600;
+               color:var(--text-muted); text-decoration:line-through; }
+  .hwas .tagnew { font-family:var(--font-display); font-weight:800; font-size:10.5px;
+                  letter-spacing:0.07em; text-transform:uppercase; color:var(--stbr-dark);
+                  background:var(--stbr-yellow); border-radius:var(--radius-pill);
+                  padding:1px 8px; }
+  .rule { margin-top:12px; border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+          background:var(--stbr-yellow); padding:8px 16px; display:flex;
+          align-items:baseline; gap:12px; }
+  .rule .lead { font-family:var(--font-display); font-weight:900; font-size:15px;
+                color:var(--stbr-dark); white-space:nowrap; }
+  .rule .body { font-family:var(--font-body); font-size:12.5px; color:var(--stbr-dark); }
+  .rule .mono { font-family:var(--font-mono); font-weight:700; font-size:12px; }
+  .caip { display:flex; align-items:center; gap:20px; }
+  .caip .shape { font-family:var(--font-mono); font-size:19px; font-weight:700;
+                 color:var(--text-primary); background:var(--surface-page);
+                 border-radius:var(--radius-md); padding:6px 14px; }
+  .caip .note { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+  .grid { display:grid; grid-template-columns:330px 1fr 1fr 1fr; gap:6px; margin-top:2px; }
+  .gh { font-family:var(--font-display); font-weight:800; font-size:15.5px;
+        color:var(--text-on-dark); background:var(--surface-inverse);
+        border-radius:var(--radius-md); padding:8px 14px; text-align:center; }
+  .gh.corner { background:transparent; }
+  .rh { background:var(--surface-page); border-radius:var(--radius-md); padding:7px 14px; }
+  .rh .nm { font-family:var(--font-mono); font-weight:700; font-size:15.5px;
+            color:var(--text-primary); }
+  .rh .ds { font-family:var(--font-body); font-size:11.5px; color:var(--text-secondary); }
+  .cell { border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+          background:var(--surface-card); }
+  .cell.hot { background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+              display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .cell.hot .a { font-family:var(--font-display); font-weight:900; font-size:16px;
+                 color:var(--stbr-dark); }
+  .cell.hot .b { font-family:var(--font-body); font-weight:600; font-size:11px;
+                 color:var(--stbr-dark); }
+  .foot { background:var(--surface-inverse); border-radius:var(--radius-lg);
+          padding:11px 22px; margin-top:12px; font-family:var(--font-body);
+          font-weight:600; font-size:14.5px; color:var(--text-on-dark); }
+</style>
+  <div class="ref">
+    <div class="stbr-eyebrow">x402 v2 &middot; one reference card</div>
+    <h2 class="viz-title">the x402 v2 surface in one card</h2>
+    <div class="band" style="margin-top:0;">
+      <div class="band-tag">headers &mdash; the whole exchange rides three</div>
+      <div class="hdrs">
+        <div class="hcard">
+          <span class="hname">PAYMENT-REQUIRED</span>
+          <div class="hdir">server &rarr; client</div>
+          <div class="hrole">the challenge &mdash; terms of payment, base64 JSON</div>
+          <div class="hwas"><span class="tagnew">new in v2</span> &nbsp;v1 sent this in the
+            <span class="old">402 response body</span></div>
+        </div>
+        <div class="hcard">
+          <span class="hname">PAYMENT-SIGNATURE</span>
+          <div class="hdir">client &rarr; server</div>
+          <div class="hrole">the payment proof &mdash; partially signed transaction</div>
+          <div class="hwas">renamed &mdash; v1 called it <span class="old">X-PAYMENT</span></div>
+        </div>
+        <div class="hcard">
+          <span class="hname">PAYMENT-RESPONSE</span>
+          <div class="hdir">server &rarr; client</div>
+          <div class="hrole">the settlement receipt &mdash; signature or failure reason</div>
+          <div class="hwas">renamed &mdash; v1 called it <span class="old">X-PAYMENT-RESPONSE</span></div>
+        </div>
+      </div>
+      <div class="rule">
+        <span class="lead">read the header, never the body</span>
+        <span class="body">a v2 402&rsquo;s body is <span class="mono">{}</span> under
+          <span class="mono">Content-Length: 2</span> &mdash; on the challenge, on a rejected
+          payment, and on a failed settlement alike</span>
+      </div>
+    </div>
+    <div class="band">
+      <div class="band-tag">network ids &mdash; CAIP-2</div>
+      <div class="caip">
+        <span class="shape">namespace:reference</span>
+        <span class="note">Solana clusters live under the <b>solana:</b> namespace &mdash; the reference is derived from the cluster&rsquo;s genesis hash</span>
+      </div>
+    </div>
+    <div class="band">
+      <div class="band-tag">4 schemes &times; 3 transports</div>
+      <div class="grid">
+        <div class="gh corner"></div>
+        <div class="gh">http</div>
+        <div class="gh">mcp &middot; tool calls</div>
+        <div class="gh">a2a &middot; agent-to-agent</div>
+        <div class="rh"><span class="nm">exact</span> <span class="ds">precise amount per call</span></div>
+        <div class="cell hot"><span class="a">exact-SVM</span><span class="b">this lesson&rsquo;s cell</span></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="rh"><span class="nm">upto</span> <span class="ds">ceiling, settle usage</span></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="rh"><span class="nm">auth-capture</span> <span class="ds">authorize now, capture later</span></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="rh"><span class="nm">batch-settlement</span> <span class="ds">accumulate, settle together</span></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+      </div>
+    </div>
+    <div class="foot">&#9888;&nbsp; v2 surface stable, mainnet ship date unpublished as of 2026-08-22 &mdash; v1 is still live in the wild</div>
+  </div>
+</div>
+</body></html>

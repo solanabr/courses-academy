@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Card-rail dunning vs retry-never on non-custodial rails
+     purpose: show why the retry ladder is rational on cards and irrational against a wallet, so retry-never reads as design rather than resignation
+     data: axis: failure meaning | card rail: often transient on the instrument (limit reset, new card) | wallet rail: balance is the only fact; empty stays empty until the owner acts axis: retry mechanism | card rail: processor re-presents the charge on a schedule | wallet rail: none; each retry is a fee spent to re-learn the same balance axis: who resolves it | card rail: the network, usually silently | wallet rail: the subscriber, by topping up and settling axis: failed renewal becomes | card rail: a dunning sequence | wallet rail: an ordinary open invoice (the Helius policy: not retried automatically against the wallet)
+     prompt: Two-column comparison labeled card rail and wallet rail, four rows from the data axes. Emphasize the final row: dunning sequence on one side, open invoice on the other. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:552px;height:511px;bottom:-294px;left:-294px;border-radius:49% 63% 60% 44% / 38% 59% 58% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 52px 36px; }
+  .cmp { display:grid; grid-template-columns:250px 1fr 1fr; margin-top:16px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; }
+  .hc { background:var(--surface-inverse); padding:13px 20px; font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--text-on-dark); }
+  .hc.axis { font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:rgba(245,232,202,.7); display:flex; align-items:center; }
+  .cell { padding:14px 20px; border-top:1.5px solid var(--border-subtle); font-family:var(--font-body); font-size:15px; line-height:1.35; color:var(--text-secondary); background:var(--surface-card); }
+  .cell.axis { font-family:var(--font-display); font-weight:800; font-size:15px; color:var(--text-primary); }
+  .cell.mid { border-left:1.5px solid var(--border-subtle); border-right:1.5px solid var(--border-subtle); }
+  .hc.mid { border-left:1.5px solid rgba(245,232,202,.25); border-right:1.5px solid rgba(245,232,202,.25); }
+  .cell.hot { background:rgba(255,210,63,.24); color:var(--text-primary); font-weight:600; }
+  .cell b { font-weight:800; color:var(--text-primary); }
+  .verdict { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg); padding:15px 26px; display:flex; align-items:center; gap:16px; }
+  .verdict .lab { flex:0 0 auto; font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-dark); background:var(--stbr-yellow); border-radius:var(--radius-pill); padding:5px 13px; }
+  .verdict .txt { font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--text-on-brand); line-height:1.25; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the failed-renewal playbook, per rail</div>
+  <h2 class="viz-title">card-rail dunning vs retry-never</h2>
+  <div class="cmp">
+    <div class="hc axis">axis</div><div class="hc mid">card rail</div><div class="hc">wallet rail</div>
+    <div class="cell axis">failure meaning</div><div class="cell mid">often transient on the instrument &mdash; a limit resets, a new card arrives</div><div class="cell">the balance is the only fact; <b>empty stays empty</b> until the owner acts</div>
+    <div class="cell axis">retry mechanism</div><div class="cell mid">the processor re-presents the charge on a schedule</div><div class="cell"><b>none</b> &mdash; each retry is a fee spent to re-learn the same balance</div>
+    <div class="cell axis">who resolves it</div><div class="cell mid">the network, usually silently</div><div class="cell">the subscriber, by topping up and settling</div>
+    <div class="cell axis">failed renewal becomes</div><div class="cell mid">a dunning sequence</div><div class="cell hot"><b>an ordinary open invoice</b> &mdash; the Helius policy: not retried automatically against the wallet</div>
+  </div>
+  <div class="verdict">
+    <span class="lab">verdict</span>
+    <span class="txt">retrying a wallet only re-buys the same fact &mdash; so a failed pull becomes an invoice the subscriber settles, not a schedule the processor runs. retry-never is design, not resignation</span>
+  </div>
+</div>
+</div>
+</body></html>

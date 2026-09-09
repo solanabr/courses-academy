@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One fee-payer seat, three tenants across the course
+     purpose: make the spiral explicit: the same protocol role, occupied by a different party in m01, m07, and m08
+     data: The seat: "fee payer" = first account in the message; signature doubles as tx id; debited 5000 lamports per signature m01 (checkout): tenant = the buyer's own wallet; buyer needs SOL; the sale dies without it m07 (x402): tenant = the facilitator; pays for an AGENT's settlement; agent holds only USDC m08 (this lesson): tenant = the merchant's Kora paymaster; pays for a HUMAN buyer; buyer holds only USDC invariant: the seat never moved; the occupant did
+     prompt: A single chair icon center-left labeled "fee payer seat" with its three properties listed beneath it. Three arrows from the right, stacked vertically and labeled m01, m07, m08, each arrow carrying its tenant (buyer wallet / x402 facilitator / Kora paymaster) and who benefits (the buyer / an agent / a SOL-less human buyer). A footer band with the invariant line. Emphasize the m08 arrow as the current lesson.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:600px;height:509px;top:-328px;right:-328px;border-radius:60% 52% 57% 63% / 35% 60% 61% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl);
+          padding:44px 56px 40px; }
+  .lay { display:flex; align-items:stretch; margin-top:26px; }
+  .seat { flex:0 0 400px; background:var(--surface-inverse); border-radius:var(--radius-xl);
+          padding:28px 30px; display:flex; flex-direction:column; justify-content:center; }
+  .seat .hd { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+  .seat .tt { font-family:var(--font-display); font-weight:900; font-size:30px;
+              color:var(--text-on-dark); line-height:1.05; }
+  .prop { font-family:var(--font-body); font-size:15px; line-height:1.4;
+          color:rgba(245,232,202,0.88); border-top:1px solid rgba(245,232,202,0.22);
+          padding:10px 0; }
+  .prop:last-child { padding-bottom:0; }
+  .mid { flex:0 0 130px; display:flex; flex-direction:column; gap:16px; }
+  .arr { flex:1 1 0; display:flex; align-items:center; }
+  .arr svg { flex:0 0 auto; }
+  .arr .l { flex:1 1 auto; border-top:2.5px solid var(--stbr-dark); }
+  .arr.hot .l { border-top-width:4px; border-top-color:var(--stbr-green); }
+  .tenants { flex:1 1 auto; display:flex; flex-direction:column; gap:16px; }
+  .ten { flex:1 1 0; border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+         padding:14px 22px; display:flex; flex-direction:column; justify-content:center; }
+  .ten .row1 { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .mtag { font-family:var(--font-display); font-weight:800; font-size:14px;
+          background:var(--surface-brand); color:var(--text-on-brand);
+          border-radius:var(--radius-pill); padding:3px 12px; }
+  .who { font-family:var(--font-display); font-weight:900; font-size:21px;
+         color:var(--text-primary); }
+  .ben { font-family:var(--font-body); font-size:14.5px; line-height:1.35;
+         color:var(--text-secondary); }
+  .ten.hot { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .ten.hot .who { color:var(--stbr-dark); }
+  .ten.hot .ben { color:rgba(27,35,29,0.78); }
+  .ten.hot .mtag { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .now { font-family:var(--font-body); font-weight:700; font-size:12px;
+         letter-spacing:0.08em; text-transform:uppercase; color:var(--stbr-dark);
+         border:1.5px solid var(--stbr-dark); border-radius:var(--radius-pill);
+         padding:2px 10px; margin-left:auto; }
+  .band { margin-top:24px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:14px 24px; font-family:var(--font-display); font-weight:800;
+          font-size:20px; color:var(--text-on-brand); text-align:center; }
+  .band b { color:var(--stbr-yellow); }
+</style>
+  <div class="card">
+    <div class="stbr-eyebrow">m01 &rarr; m07 &rarr; m08 &middot; the spiral</div>
+    <h2 class="viz-title">one fee-payer seat, three tenants across the course</h2>
+    <div class="lay">
+      <div class="seat">
+        <div class="hd">
+          <svg width="46" height="46" viewBox="0 0 24 24"><path d="M6.5 3v8.5h10M6.5 11.5V19M16.5 11.5V19M6.5 15h10" stroke="#F5E8CA" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="tt">the fee&#8209;payer seat</div>
+        </div>
+        <div class="prop">first account in the message</div>
+        <div class="prop">its signature doubles as the transaction id</div>
+        <div class="prop">debited 5000 lamports per signature</div>
+      </div>
+      <div class="mid">
+        <div class="arr"><svg width="13" height="16" viewBox="0 0 13 16"><polygon points="13,0 0,8 13,16" fill="#1b231d"/></svg><div class="l"></div></div>
+        <div class="arr"><svg width="13" height="16" viewBox="0 0 13 16"><polygon points="13,0 0,8 13,16" fill="#1b231d"/></svg><div class="l"></div></div>
+        <div class="arr hot"><svg width="13" height="16" viewBox="0 0 13 16"><polygon points="13,0 0,8 13,16" fill="#306c40"/></svg><div class="l"></div></div>
+      </div>
+      <div class="tenants">
+        <div class="ten">
+          <div class="row1"><span class="mtag">m01 &middot; checkout</span><span class="who">the buyer&rsquo;s own wallet</span></div>
+          <div class="ben">pays for: <b>the buyer</b> &mdash; buyer needs SOL; the sale dies without it</div>
+        </div>
+        <div class="ten">
+          <div class="row1"><span class="mtag">m07 &middot; x402</span><span class="who">the facilitator</span></div>
+          <div class="ben">pays for: <b>an agent&rsquo;s settlement</b> &mdash; the agent holds only USDC</div>
+        </div>
+        <div class="ten hot">
+          <div class="row1"><span class="mtag">m08 &middot; gasless</span><span class="who">the merchant&rsquo;s Kora paymaster</span><span class="now">this lesson</span></div>
+          <div class="ben">pays for: <b>a human buyer</b> &mdash; the buyer holds only USDC</div>
+        </div>
+      </div>
+    </div>
+    <div class="band">invariant &mdash; <b>the seat never moved; the occupant did.</b></div>
+  </div>
+</div>
+</body></html>

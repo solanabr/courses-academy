@@ -1,0 +1,101 @@
+id: lesson-spc-m03-l3
+slug: m03-l3
+title: "The record fair: POS, and the mobile-hardware reality"
+skills:
+  - solana-pay
+  - confirmation
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "@solana/pay": "1.0.26"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "At the record fair a vendor asks if buyers can tap their phone to pay, like a contactless card terminal. What is the honest answer for Solana Pay today?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Yes; the spec itself says a Solana Pay URL may be encoded in QR codes or NFC tags, so a tap flow is defined."
+            correct: false
+            feedback: "That sentence is about transport, not a tap flow. A tag holding the same solana: string is a QR code you cannot see; the spec defines no reader protocol, no handshake and no secure element."
+          - id: b
+            label: "No; there is no NFC or tap-to-pay primitive on Solana, and QR remains the standard checkout surface."
+            correct: true
+            feedback: "Nothing in the spec or the mobile stack exposes an NFC path; what you can offer the vendor is the ergonomics rather than the gesture, since scanning is also one motion."
+          - id: c
+            label: "Only for Token-2022 mints, whose transfer-hook can carry the tap-to-pay handshake between the phone and the reader."
+            correct: false
+            feedback: "Transfer hooks have nothing to do with NFC; there is no tap-to-pay path on any mint type."
+          - id: a
+            label: "Yes, through the Seed Vault NFC extension available on Seeker devices, which brings tap-to-pay to any stall using one."
+            correct: false
+            feedback: "There is no Seed Vault NFC payments feature; Seed Vault is hardware key custody, and no tap-to-pay primitive exists."
+        explanation: "The research is blunt here: no primary spec or docs support NFC anywhere in Solana Pay or Solana Mobile. QR is the checkout surface. Promising tap-to-pay to a vendor would be selling a capability that does not exist, so the honest build is a QR POS."
+      - id: q2
+        prompt: "You look for a plug-and-play Solana POS terminal vendor and land on Decaf, which used to run festival POS. What do you find now, and what is the takeaway?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Decaf now sells a Solana-native card terminal with a merchant dashboard, so the fastest path is buying their hardware and skipping the QR checkout entirely."
+            correct: false
+            feedback: "Decaf sells no Solana POS hardware; assuming a terminal vendor exists is exactly the premise the pivot kills."
+          - id: b
+            label: "Decaf was acquired by Solana Mobile and folded into Seeker, so POS now ships built into the device."
+            correct: false
+            feedback: "No such acquisition; Decaf pivoted its own product, and Seeker does not ship a POS terminal."
+          - id: c
+            label: "Decaf pivoted to global payment links and remittances, so you build QR checkout on the pay repo's own examples/point-of-sale instead of buying a terminal."
+            correct: true
+            feedback: "With no terminal vendor in the market, a first-party example is the only maintained base; an example is not a product, and the upkeep is yours."
+          - id: d
+            label: "Decaf left the Solana POS market for payment links, and the honest read is that in-store crypto checkout does not work, so tell the vendor to skip the stall."
+            correct: false
+            feedback: "The pivot says in-store demand was thinner than payout demand, which is a market fact about vendors rather than a verdict on your table. What it costs you is the vendor catalog, not the sale."
+        explanation: "Decaf's site now sells payment links, invoicing, and remittances across 180+ countries, with the Solana POS past gone. The honest read is that in-store crypto POS demand was thinner than payout and remittance demand. With no vendor catalog to lean on, you build the stall on the pay repo's first-party POS example."
+      - id: q3
+        prompt: "You need the stall's checkout screen working by Saturday. Which foundation do you build on, and what should it talk to?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The Commerce Kit PaymentButton component, which ships a hosted merchant dashboard and is the production-supported POS surface for stalls."
+            correct: false
+            feedback: "Commerce Kit is beta ('APIs may change') and ships no hosted dashboard; it is a mention, not the base for a stall you depend on."
+          - id: a
+            label: "The pay repo's first-party examples/point-of-sale, configured to point at the transaction-request endpoint you built in m03-l2."
+            correct: true
+            feedback: "The first-party example is the sanctioned base, and it does more than display: it finds the payment by reference and validates the transfer before flipping to confirmed. It still only vouches for the payment it was watching — the server-side verification discipline arrives in module 4."
+          - id: d
+            label: "The pay repo's examples/point-of-sale, left aimed at its own bundled API route, which already prices the cart and stamps the order id."
+            correct: false
+            feedback: "Right base, wrong target. The bundled route is the example's own demo endpoint: it holds no catalog, stamps no order id, and knows nothing about the cart, so aiming the link there throws away three lessons of pricing you already own."
+          - id: c
+            label: "A freshly authored blink, since blinks are the POS-native surface on mobile at a fair."
+            correct: false
+            feedback: "Blinks are a social/link surface, not a POS terminal; that is the next lesson, and it does not replace the stall."
+        explanation: "The pay repo ships examples/point-of-sale (a Next.js POS) as a first-party base. Configuring it to hit your transaction-request endpoint reuses the server-built pricing you already have. Commerce Kit is beta and blinks are a different surface, so neither is the stall's foundation."
+      - id: q4
+        prompt: "A slide for the fair cites 'Seeker has 150,000+ users' and '0% dApp Store fees.' How should you treat these when advising the vendor?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Cite them as verified adoption metrics, since they appear directly on Solana Mobile's official site."
+            correct: false
+            feedback: "Appearing on a homepage is not verification; the referent of '150,000+ users' is ambiguous and unit numbers are undisclosed."
+          - id: d
+            label: "Present the 0% fee line as verified, since a homepage pricing claim is a commitment, and drop the user numbers."
+            correct: false
+            feedback: "A fee line on a homepage is a pricing claim, which is a thing the vendor can revise, not an audited disclosure. Both lines travel with the same attribution, and neither one becomes a fact by being easier to check."
+          - id: b
+            label: "Treat them as homepage claims with an ambiguous referent and present no unit numbers as verified fact."
+            correct: true
+            feedback: "A vendor homepage is marketing, not an audited disclosure, and 'users' there has no defined unit; unverified is not false, though, and the figure travels with its attribution."
+          - id: c
+            label: "Ignore mobile entirely, since Seeker has no bearing on a QR checkout at a stall."
+            correct: false
+            feedback: "The mobile reality beat does matter for context; the fix is honest framing, not omission."
+        explanation: "Seeker's homepage makes claims (a '150,000+ users' figure with an unclear referent, a dApp Store '0% platform fees' line) but shipped-unit numbers are undisclosed. The honest move is homepage-claims phrasing without presenting the numbers as verified, while still giving the vendor the mobile context."

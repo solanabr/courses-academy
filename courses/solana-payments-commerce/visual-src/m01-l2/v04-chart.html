@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: What D+1 really costs: the Brazilian card float, priced in the open
+     purpose: turn the antecipacao spread into a picture: the same sale costs sharply more the sooner the merchant wants their own money, and both spreads resolve to the same implicit monthly rate
+     data: InfinitePay published table, top volume tier (merchants above R$80,000/mo), fetched 2026-09-01, page undated. Credit a vista: 1.62% waiting for the settlement schedule vs 2.69% at D+1. Credit in 12x: 2.25% per installment waiting for each due date, i.e. 2.25% of the sale across the twelve, vs 8.99% for the whole sale at D+1; D+1 advances installments that would land 6.5 months out on average. Both spreads resolve to about 1.05% a month, the implicit interest rate on the merchant's own revenue. Contrast: Solana base fee is a flat 5000 lamports per signature, sub-cent, settled in seconds, no float to buy back.
+     prompt: Grouped bar chart, two groups ("credito a vista" and "credito em 12x"), each with a pair of bars: waiting for the schedule (emerald) vs money at D+1 (yellow). Print the percentage above every bar, with a per-installment note on the 12x waiting bar. Legend above the chart names the two series. Close with a takeaway band stating that both spreads price the same loan at about 1.05% a month, and a caption carrying the source, its fetch date, and the flat Solana base fee contrast.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:510px;height:513px;right:-311px;top:99px;border-radius:65% 65% 55% 37% / 49% 50% 36% 47%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:429px;height:496px;bottom:-289px;left:694px;border-radius:47% 35% 40% 37% / 61% 46% 65% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .sub { font-family:var(--font-body); font-size:20px; color:var(--text-secondary); margin:-6px 0 8px; }
+  .legend { display:flex; gap:28px; align-items:center; margin:2px 0 0; }
+  .legend .li { display:flex; gap:10px; align-items:center; font-family:var(--font-body); font-size:16px; color:var(--text-secondary); white-space:nowrap; }
+  .legend .sw { width:18px; height:18px; border-radius:5px; flex:0 0 18px; }
+  .stage { background:var(--surface-card); border-radius:var(--radius-2xl); padding:26px 60px 20px; margin-top:12px; }
+  .bars { display:flex; justify-content:center; align-items:flex-end; gap:190px;
+          border-bottom:2.5px solid var(--border-strong); }
+  .grp { display:flex; align-items:flex-end; gap:30px; }
+  .bcol { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+  .bcol .val { font-family:var(--font-display); font-weight:900; font-size:32px; color:var(--text-primary); margin-bottom:8px; white-space:nowrap; }
+  .bcol .val small { display:block; font-family:var(--font-body); font-weight:400; font-size:14px; color:var(--text-muted); text-align:center; margin-top:2px; }
+  .bcol .bar { width:150px; border-radius:8px 8px 0 0; }
+  .glabels { display:flex; justify-content:center; gap:190px; padding-top:12px; }
+  .glabels .lb { width:330px; text-align:center; font-family:var(--font-body); line-height:1.3; }
+  .glabels .lb b { display:block; font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-primary); margin-bottom:3px; }
+  .glabels .lb span { font-size:14.5px; color:var(--text-secondary); }
+  .band { margin-top:14px; background:var(--surface-brand-deep); color:var(--text-on-brand);
+          border-radius:var(--radius-lg); padding:14px 26px; display:flex; align-items:center; gap:20px; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.12em;
+              text-transform:uppercase; opacity:.85; white-space:nowrap; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:21px; line-height:1.15; }
+  .cap { margin-top:10px; font-family:var(--font-body); font-size:13.5px; color:var(--text-muted); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">the brazilian card float</div>
+  <h2 class="viz-title" style="font-size:46px;">what D+1 really costs</h2>
+  <div class="sub">same sale, same acquirer, same tier &mdash; the only variable is when you get <b>your own money</b></div>
+  <div class="legend">
+    <span class="li"><span class="sw" style="background:var(--stbr-emerald);"></span>wait for the settlement schedule</span>
+    <span class="li"><span class="sw" style="background:var(--stbr-yellow);"></span>money at D+1</span>
+  </div>
+  <div class="stage">
+    <div class="bars">
+      <div class="grp">
+        <div class="bcol">
+          <div class="val">1.62%</div>
+          <div class="bar" style="height:54px; background:var(--stbr-emerald);"></div>
+        </div>
+        <div class="bcol">
+          <div class="val">2.69%</div>
+          <div class="bar" style="height:90px; background:var(--stbr-yellow);"></div>
+        </div>
+      </div>
+      <div class="grp">
+        <div class="bcol">
+          <div class="val">2.25%<small>of the sale, charged per installment</small></div>
+          <div class="bar" style="height:75px; background:var(--stbr-emerald);"></div>
+        </div>
+        <div class="bcol">
+          <div class="val">8.99%<small>whole sale at once</small></div>
+          <div class="bar" style="height:300px; background:var(--stbr-yellow);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="glabels">
+      <div class="lb"><b>cr&eacute;dito &agrave; vista</b><span>standard schedule pays the merchant at D+30</span></div>
+      <div class="lb"><b>cr&eacute;dito em 12x</b><span>standard schedule pays across twelve monthly installments &mdash; D+1 advances them 6.5 months on average</span></div>
+    </div>
+    <div class="cap">rates: InfinitePay published table, top tier (above R$80,000/mo), fetched 2026-09-01, page undated &middot; on Solana rails the same sale settles in seconds for a flat 5000-lamport base fee &mdash; there is no float to buy back</div>
+  </div>
+  <div class="band">
+    <span class="bk">read the spread</span>
+    <span class="bt">both gaps price the same loan: roughly 1.05% a month to receive your own revenue early</span>
+  </div>
+</div>
+</body></html>

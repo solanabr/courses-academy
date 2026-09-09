@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two rails, one reconciler
+     purpose: show that Solana Pay reference keys and x402 memo invoice ids are the same order-id-in-a-searchable-field pattern feeding a single reconciler
+     data: rail 1: Solana Pay checkout (module 3) -> reference key: 32-byte base58 non-signer account on the transfer tx rail 2: x402 API payment (module 7, seeded here) -> extra.memo: invoice id inside the payment payload both -> the searchable field carries the order id -> reconcileOrder() -> orders ledger row explicitly absent: unique deposit address per customer (the exchange pattern this replaces)
+     prompt: Two horizontal lanes converging on a single node. Lane one labeled Solana Pay checkout with its reference-key field, lane two labeled x402 API payment (module 7) with its extra.memo invoice id. Both lanes point into one reconcileOrder() node, which points to an orders-ledger node. A crossed-out side node labels the replaced alternative: one deposit address per customer. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:438px;right:-288px;top:221px;border-radius:47% 51% 40% 59% / 41% 63% 60% 53%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:522px;height:516px;bottom:-315px;left:426px;border-radius:44% 53% 45% 38% / 65% 63% 49% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:44px 52px 38px; }
+  .rails { display:flex; align-items:center; margin-top:24px; }
+  .lanes { display:flex; flex-direction:column; gap:24px; flex:0 0 430px; }
+  .lane { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px 20px; background:var(--surface-card); }
+  .lane .name { font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary); }
+  .lane .mod { font-family:var(--font-body); font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-top:2px; }
+  .lane .field { display:inline-block; margin-top:9px; font-family:var(--font-mono); font-size:13px; font-weight:700; background:rgba(0,139,76,.10); color:var(--stbr-green); border-radius:var(--radius-sm); padding:5px 10px; }
+  .lane .sub { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:7px; line-height:1.35; }
+  .conv { flex:0 0 96px; }
+  .conv svg { display:block; }
+  .keynode { flex:0 0 226px; background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:20px 18px; text-align:center; }
+  .keynode .k1 { font-family:var(--font-display); font-weight:900; font-size:19px; color:var(--stbr-dark); line-height:1.15; }
+  .keynode .k2 { font-family:var(--font-body); font-weight:700; font-size:12px; color:var(--stbr-dark); margin-top:7px; line-height:1.3; }
+  .arrcell { flex:0 0 40px; display:flex; align-items:center; justify-content:center; }
+  .recnode { flex:0 0 250px; background:var(--surface-brand); border-radius:var(--radius-lg); padding:22px 18px; text-align:center; }
+  .recnode .fn { font-family:var(--font-mono); font-weight:800; font-size:20px; color:var(--text-on-brand); }
+  .recnode .fd { font-family:var(--font-body); font-weight:600; font-size:12px; color:rgba(245,232,202,.85); margin-top:6px; line-height:1.3; }
+  .ledger { flex:0 0 216px; background:var(--surface-inverse); border-radius:var(--radius-lg); padding:22px 18px; text-align:center; }
+  .ledger .l1 { font-family:var(--font-display); font-weight:800; font-size:18px; color:var(--text-on-dark); line-height:1.2; }
+  .ledger .l2 { font-family:var(--font-mono); font-size:12px; color:rgba(245,232,202,.75); margin-top:6px; }
+  .absent { margin-top:30px; display:flex; align-items:center; gap:14px; }
+  .absent .no { flex:0 0 auto; width:34px; height:34px; border-radius:50%; border:2.5px solid #a5342a; display:flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:900; font-size:17px; color:#a5342a; }
+  .absent .box { border:2px dashed var(--border-strong); border-radius:var(--radius-lg); padding:11px 18px; }
+  .absent .box .t { font-family:var(--font-body); font-weight:800; font-size:14.5px; color:var(--text-secondary); text-decoration:line-through; }
+  .absent .why { font-family:var(--font-body); font-size:13px; color:var(--text-muted); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">one pattern, two rails</div>
+  <h2 class="viz-title">two rails, one reconciler</h2>
+  <div class="rails">
+    <div class="lanes">
+      <div class="lane">
+        <div class="name">Solana Pay checkout</div>
+        <div class="mod">module 3</div>
+        <span class="field">reference key</span>
+        <div class="sub">32-byte base58 non-signer account on the transfer tx</div>
+      </div>
+      <div class="lane">
+        <div class="name">x402 API payment</div>
+        <div class="mod">module 7 &mdash; seeded here</div>
+        <span class="field">extra.memo</span>
+        <div class="sub">invoice id inside the payment payload</div>
+      </div>
+    </div>
+    <div class="conv"><svg width="96" height="268">
+      <line x1="4" y1="62" x2="84" y2="134" stroke="#306c40" stroke-width="2.5"/>
+      <line x1="4" y1="206" x2="84" y2="134" stroke="#306c40" stroke-width="2.5"/>
+      <polygon points="94,134 80,127 80,141" fill="#306c40"/>
+    </svg></div>
+    <div class="keynode">
+      <div class="k1">the searchable field carries the order id</div>
+      <div class="k2">same pattern on both rails</div>
+    </div>
+    <div class="arrcell"><svg width="30" height="16"><line x1="0" y1="8" x2="21" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="30,8 19,3 19,13" fill="#1b231d"/></svg></div>
+    <div class="recnode">
+      <div class="fn">reconcileOrder()</div>
+      <div class="fd">one reconciler for every rail</div>
+    </div>
+    <div class="arrcell"><svg width="30" height="16"><line x1="0" y1="8" x2="21" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="30,8 19,3 19,13" fill="#1b231d"/></svg></div>
+    <div class="ledger">
+      <div class="l1">orders ledger row</div>
+      <div class="l2">one row per order</div>
+    </div>
+  </div>
+  <div class="absent">
+    <div class="no">&#10005;</div>
+    <div class="box"><span class="t">unique deposit address per customer</span></div>
+    <div class="why">the exchange pattern this replaces &mdash; explicitly absent</div>
+  </div>
+</div>
+</div>
+</body></html>

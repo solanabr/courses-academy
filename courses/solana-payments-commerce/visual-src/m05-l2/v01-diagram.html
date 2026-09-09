@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Why a PDA holding the delegate slot is non-custodial
+     purpose: land the no-private-key => non-custodial click for a web2 reader
+     data: left panel (lesson 1, raw crank): subscriber ATA -> delegate slot -> merchant KEYPAIR (has a private key; ops team, servers, backups can all sign; trust required) right panel (this lesson): subscriber ATA -> delegate slot -> Subscription Authority PDA (no private key exists; only the Subscriptions program's code can act, and only within delegation limits the subscriber signed) caption: same slot, different holder; the private key is the custody
+     prompt: Two-panel side-by-side diagram. Left panel labeled "raw delegate (last lesson)": a token account box with its delegate slot pointing to a keypair icon, annotated with the trust surface (ops, servers, backups). Right panel labeled "Subscription Authority PDA (this lesson)": the same token account box, delegate slot pointing to a PDA box marked "no private key", with an arrow from the program's code as the only actor. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:543px;height:540px;bottom:-286px;left:-286px;border-radius:57% 38% 50% 62% / 60% 43% 49% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panels { display:flex; gap:44px; align-items:stretch; margin-top:8px; }
+  .panel { flex:1 1 0; display:flex; flex-direction:column; }
+  .plabel { align-self:flex-start; font-family:var(--font-body); font-weight:800;
+            font-size:14px; letter-spacing:.1em; text-transform:uppercase;
+            border-radius:var(--radius-pill); padding:7px 18px; margin-bottom:14px; }
+  .plabel.old { color:var(--text-secondary); background:var(--surface-card);
+                border:2px solid var(--border-strong); }
+  .plabel.new { color:var(--text-on-brand); background:var(--stbr-emerald); }
+  .ata { background:var(--surface-card); border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-xl); overflow:hidden; }
+  .ata-head { background:var(--surface-inverse); color:var(--text-on-dark);
+              font-family:var(--font-body); font-weight:800; font-size:14px;
+              letter-spacing:.08em; text-transform:uppercase; padding:10px 22px; }
+  .ata-row { display:flex; align-items:center; gap:14px; padding:11px 22px;
+             border-top:1.5px solid var(--border-subtle); }
+  .ata-row .k { font-family:var(--font-mono); font-weight:700; font-size:17px;
+                color:var(--text-primary); flex:0 0 150px; }
+  .ata-row .v { font-family:var(--font-mono); font-size:15px; color:var(--text-secondary); }
+  .varr { display:flex; flex-direction:column; align-items:center; padding:2px 0; }
+  .varr .vline { width:0; height:26px; border-left:3px solid var(--stbr-dark); }
+  .varr .vhead { width:0; height:0; border-left:9px solid transparent;
+                 border-right:9px solid transparent; border-top:13px solid var(--stbr-dark); }
+  .varr .vlab { font-family:var(--font-body); font-weight:700; font-size:13px;
+                color:var(--text-secondary); margin:3px 0; }
+  .holder { border-radius:var(--radius-xl); padding:16px 22px; flex:1 1 auto; }
+  .holder.keypair { background:var(--surface-card); border:3px solid var(--stbr-dark); }
+  .holder.pda { background:var(--stbr-yellow); border:3px solid var(--stbr-dark); }
+  .holder .hname { font-family:var(--font-display); font-weight:900; font-size:25px;
+                   color:var(--stbr-dark); }
+  .holder .htag { display:inline-block; font-family:var(--font-body); font-weight:800;
+                  font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+                  border-radius:var(--radius-pill); padding:4px 12px; margin-top:8px; }
+  .keypair .htag { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .pda .htag { background:var(--surface-inverse); color:var(--stbr-yellow); }
+  .holder .hnote { font-family:var(--font-body); font-size:14.5px; font-weight:600;
+                   color:var(--stbr-dark); line-height:1.4; margin-top:9px; }
+  .actor { display:flex; align-items:center; gap:10px; margin-top:12px; }
+  .actor .achip { font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+                  color:var(--stbr-green); background:rgba(255,255,255,0.85);
+                  border:1.5px solid rgba(0,139,76,0.5); border-radius:var(--radius-pill);
+                  padding:4px 12px; white-space:nowrap; }
+  .actor .aline { flex:1 1 auto; border-top:2.5px solid var(--stbr-dark); }
+  .actor .ahead { width:0; height:0; border-top:7px solid transparent;
+                  border-bottom:7px solid transparent; border-left:11px solid var(--stbr-dark); }
+  .actor .atxt { font-family:var(--font-body); font-weight:700; font-size:13px;
+                 color:var(--stbr-dark); white-space:nowrap; }
+  .caption { margin-top:22px; background:var(--stbr-emerald); border-radius:var(--radius-xl);
+             padding:14px 28px; text-align:center; font-family:var(--font-display);
+             font-weight:800; font-size:22px; color:var(--text-on-brand); }
+  .caption em { font-style:normal; color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">no private key &rarr; nothing to steal, no one to trust</div>
+  <h2 class="viz-title">why a PDA holding the delegate slot is non-custodial</h2>
+  <div class="panels">
+    <div class="panel">
+      <div class="plabel old">raw delegate &mdash; last lesson</div>
+      <div class="ata">
+        <div class="ata-head">subscriber ATA</div>
+        <div class="ata-row"><span class="k">delegate</span><span class="v">&rarr; merchant keypair</span></div>
+      </div>
+      <div class="varr"><div class="vline"></div><div class="vlab">delegate slot points to</div><div class="vline"></div><div class="vhead"></div></div>
+      <div class="holder keypair">
+        <div class="hname">merchant KEYPAIR</div>
+        <div class="htag">has a private key</div>
+        <div class="hnote">ops team, servers, and backups can all sign &mdash; every copy of the key is a way to pull. <b>Trust required.</b></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="plabel new">Subscription Authority PDA &mdash; this lesson</div>
+      <div class="ata">
+        <div class="ata-head">subscriber ATA</div>
+        <div class="ata-row"><span class="k">delegate</span><span class="v">&rarr; Subscription Authority PDA</span></div>
+      </div>
+      <div class="varr"><div class="vline"></div><div class="vlab">same slot points to</div><div class="vline"></div><div class="vhead"></div></div>
+      <div class="holder pda">
+        <div class="hname">Subscription Authority PDA</div>
+        <div class="htag">no private key exists</div>
+        <div class="actor">
+          <span class="achip">Subscriptions program code</span>
+          <div class="aline"></div><div class="ahead"></div>
+          <span class="atxt">the only actor</span>
+        </div>
+        <div class="hnote">acts only within the delegation limits the subscriber signed.</div>
+      </div>
+    </div>
+  </div>
+  <div class="caption">same slot, different holder &mdash; <em>the private key is the custody</em></div>
+</div>
+</body></html>

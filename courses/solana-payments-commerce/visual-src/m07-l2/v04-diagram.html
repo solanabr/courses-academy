@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two customers, one ledger row shape
+     purpose: show reconciliation as accretion, the module 4 ledger absorbing a second sales channel without a schema change
+     data: human lane: module 3 checkout -> Solana Pay reference key stamped in tx -> Helius webhook -> module 4 verifier -> ledger.record(order, signature) machine lane: x402 402 challenge -> extra.memo invoice id stamped in tx -> facilitator /verify + /settle -> onAfterSettle hook -> ledger.record(order, signature) shared row shape: orderId | signature | amountBaseUnits | mint | fulfilledAt shared idea: Solana Pay reference key and x402 extra.memo are the same reconciliation pattern, a per-payment marker riding the transaction
+     prompt: Two lanes converging on one ledger-row card. Left lane is the human checkout path, right lane is the machine x402 path, each with its marker labeled (reference key, extra.memo) at the stamping step. The shared row card lists the five fields once. A caption band carries the shared-idea line. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:519px;height:515px;top:-290px;right:-290px;border-radius:55% 42% 45% 56% / 46% 40% 63% 52%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 30px 44px 26px; }
+  .viz-title { font-size: 40px; margin: 4px 0 14px; }
+  .twolane { display: grid; grid-template-columns: 1fr 1fr; column-gap: 48px; }
+  .lanehd { text-align: center; font: 800 15px var(--font-display); border-radius: var(--radius-pill);
+            padding: 8px 0; margin-bottom: 10px; }
+  .hd-human { background: var(--surface-brand); color: var(--text-on-brand); }
+  .hd-machine { background: var(--surface-brand-deep); color: var(--text-on-brand); }
+  .step { border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg);
+          background: var(--surface-card); padding: 7px 14px; text-align: center;
+          font: 600 14px var(--font-body); color: var(--text-primary); line-height: 1.25; }
+  .step .sub { display: block; font: 400 11.5px var(--font-body); color: var(--text-secondary); }
+  .step-marker { background: #FFF6D6; border-color: var(--stbr-yellow); }
+  .mchip { display: inline-block; font: 700 10.5px var(--font-body); letter-spacing: .05em;
+           text-transform: uppercase; background: var(--stbr-yellow); color: var(--stbr-dark);
+           border-radius: var(--radius-pill); padding: 1.5px 9px; margin-left: 6px; vertical-align: 1px; }
+  .darr { display: flex; justify-content: center; height: 16px; }
+  .darr i { display: block; width: 2px; height: 8px; background: var(--stbr-dark); position: relative; }
+  .darr i::after { content: ''; position: absolute; left: -5px; bottom: -7px;
+                   border-top: 7px solid var(--stbr-dark);
+                   border-left: 6px solid transparent; border-right: 6px solid transparent; }
+  .ledger { margin-top: 14px; border: 2px solid var(--stbr-emerald); border-radius: var(--radius-xl);
+            background: var(--surface-paper); padding: 12px 18px 14px; }
+  .ledger h3 { font: 800 17px var(--font-display); color: var(--text-primary); margin: 0 0 8px;
+               text-align: center; }
+  .ledger h3 .mono { font-family: var(--font-mono); font-weight: 700; }
+  .rowfields { display: flex; gap: 8px; justify-content: center; }
+  .rowfields span { flex: 1; text-align: center; font: 600 13px var(--font-mono);
+                    background: var(--surface-card); border: 1.5px solid var(--border-subtle);
+                    border-radius: var(--radius-md); padding: 8px 4px; color: var(--text-primary); }
+  .capband { margin-top: 12px; background: var(--surface-brand); color: var(--text-on-brand);
+             border-radius: var(--radius-lg); padding: 11px 18px; text-align: center;
+             font: 500 14.5px var(--font-body); }
+  .capband strong { font-weight: 800; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">reconciliation</div>
+  <h2 class="viz-title">two customers, one ledger row shape</h2>
+  <div class="twolane">
+    <div>
+      <div class="lanehd hd-human">human &mdash; module 3 checkout</div>
+      <div class="step">module 3 checkout</div>
+      <div class="darr"><i></i></div>
+      <div class="step step-marker">Solana Pay <strong>reference key</strong> stamped in tx<span class="mchip">marker</span></div>
+      <div class="darr"><i></i></div>
+      <div class="step">Helius webhook</div>
+      <div class="darr"><i></i></div>
+      <div class="step">module 4 verifier</div>
+      <div class="darr"><i></i></div>
+    </div>
+    <div>
+      <div class="lanehd hd-machine">machine &mdash; x402</div>
+      <div class="step">x402 &mdash; 402 challenge</div>
+      <div class="darr"><i></i></div>
+      <div class="step step-marker"><strong>extra.memo</strong> invoice id stamped in tx<span class="mchip">marker</span></div>
+      <div class="darr"><i></i></div>
+      <div class="step">facilitator /verify + /settle</div>
+      <div class="darr"><i></i></div>
+      <div class="step">onAfterSettle hook</div>
+      <div class="darr"><i></i></div>
+    </div>
+  </div>
+  <div class="ledger">
+    <h3><span class="mono">ledger.record(order, signature)</span> &mdash; the shared row shape, no schema change</h3>
+    <div class="rowfields">
+      <span>orderId</span><span>signature</span><span>amountBaseUnits</span><span>mint</span><span>fulfilledAt</span>
+    </div>
+  </div>
+  <div class="capband"><strong>same pattern, two names</strong> &mdash; Solana Pay's reference key and x402's
+    extra.memo are the same reconciliation idea: a per-payment marker riding the transaction.</div>
+</div>
+</div>
+</body></html>

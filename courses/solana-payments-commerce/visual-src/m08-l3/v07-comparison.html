@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Reading a prod-gate report: what each verdict obligates
+     purpose: turn the report from output into contract by pairing each possible state with the action it forces before m09
+     data: row PASS: meaning = evidence artifact produced and attached; obligation = none, but the evidence stays in the report for the capstone row FAIL: meaning = evidence missing or contradicting; obligation = a named fix-task, closed and re-audited before m09 missing verdict: meaning = row skipped; obligation = the runner throws, the report does not render, no partial gates GATE GREEN: meaning = zero failing rows with all evidence attached; obligation = proceed to capstone, carry report.md forward GATE RED: meaning = one or more failing rows; obligation = fix-task list is the to-do list, re-run until green
+     prompt: Five-row two-column comparison: left column the verdict state (row PASS, row FAIL, missing verdict, GATE GREEN, GATE RED), right column split into meaning and the obligation it triggers. Render the missing-verdict row with an error styling chip (runner throws) and GATE GREEN with a proceed chip. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:523px;height:491px;bottom:-309px;left:-309px;border-radius:61% 59% 60% 48% / 35% 43% 45% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { margin-top:8px; }
+  .trow { display:flex; gap:14px; margin-bottom:10px; }
+  .hcell { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.08em;
+           text-transform:uppercase; color:var(--stbr-green); padding:0 4px; }
+  .c1 { flex:0 0 auto; width:280px; display:flex; align-items:center; }
+  .c2 { flex:0 0 auto; width:540px; display:flex; align-items:center; }
+  .c3 { flex:0 0 auto; width:580px; display:flex; align-items:center; }
+  .badge { width:100%; border-radius:var(--radius-md); padding:12px 16px; text-align:center;
+           font-family:var(--font-mono); font-weight:700; font-size:17px; }
+  .badge.pass  { background:var(--surface-card); border:2px solid var(--stbr-emerald); color:var(--stbr-emerald); }
+  .badge.fail  { background:var(--surface-card); border:2px solid var(--stbr-dark); color:var(--stbr-dark); }
+  .badge.miss  { background:var(--surface-card); border:2px dashed var(--stbr-dark); color:var(--stbr-dark); }
+  .badge.green { background:var(--surface-brand); color:var(--text-on-brand); }
+  .badge.red   { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .cell { width:100%; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:11px 16px; font-family:var(--font-body);
+          font-size:15px; line-height:1.35; color:var(--text-primary);
+          display:flex; align-items:center; gap:10px; }
+  .cell b { font-weight:800; }
+  .cell.obgreen { background:rgba(255,210,63,0.28); border-color:var(--stbr-yellow); }
+  .chip { flex:0 0 auto; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+          letter-spacing:.04em; border-radius:var(--radius-pill); padding:4px 10px; white-space:nowrap; }
+  .chip.err { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .chip.go  { background:var(--stbr-yellow); color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">the report is a contract, not output</div>
+  <h2 class="viz-title">reading a prod-gate report: what each verdict obligates</h2>
+  <div class="tbl">
+    <div class="trow">
+      <div class="c1 hcell">verdict</div>
+      <div class="c2 hcell">what it means</div>
+      <div class="c3 hcell">what it obligates before m09</div>
+    </div>
+    <div class="trow">
+      <div class="c1"><div class="badge pass">row PASS</div></div>
+      <div class="c2"><div class="cell"><span>Evidence artifact <b>produced and attached</b></span></div></div>
+      <div class="c3"><div class="cell"><span>None &mdash; the evidence stays in the report for the capstone</span></div></div>
+    </div>
+    <div class="trow">
+      <div class="c1"><div class="badge fail">row FAIL</div></div>
+      <div class="c2"><div class="cell"><span>Evidence <b>missing or contradicting</b></span></div></div>
+      <div class="c3"><div class="cell"><span>A <b>named fix-task</b>, closed and re-audited before m09</span></div></div>
+    </div>
+    <div class="trow">
+      <div class="c1"><div class="badge miss">missing verdict</div></div>
+      <div class="c2"><div class="cell"><span class="chip err">runner throws</span><span>The row was skipped</span></div></div>
+      <div class="c3"><div class="cell"><span>The report does not render &mdash; <b>no partial gates</b></span></div></div>
+    </div>
+    <div class="trow">
+      <div class="c1"><div class="badge green">GATE GREEN</div></div>
+      <div class="c2"><div class="cell"><span><b>Zero failing rows</b>, all evidence attached</span></div></div>
+      <div class="c3"><div class="cell obgreen"><span class="chip go">proceed</span><span><b>Enter the capstone</b> &mdash; carry report.md forward</span></div></div>
+    </div>
+    <div class="trow">
+      <div class="c1"><div class="badge red">GATE RED</div></div>
+      <div class="c2"><div class="cell"><span><b>One or more failing rows</b></span></div></div>
+      <div class="c3"><div class="cell"><span>The fix-task list <b>is</b> the to-do list &mdash; re-run until green</span></div></div>
+    </div>
+  </div>
+</div>
+</body></html>

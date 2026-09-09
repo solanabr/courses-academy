@@ -1,0 +1,84 @@
+id: lesson-spc-m09-l1
+slug: m09-l1
+title: "Assembly: one store, every rail"
+skills:
+  - solana-pay
+  - x402-protocol
+  - subscriptions-program
+  - solana-kit
+  - version-pinning
+versionStamp:
+  checkedAt: "2026-08-23"
+  packages:
+    "express": "5.1.0"
+    "@solana/kit": "6.10.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m09l1-q1-kit-pins
+        prompt: "Assembling the stack, one workspace is held to the kit-6 line by its checkout dependency and another to the kit-7 line by its billing client. A teammate proposes collapsing both into one workspace on a single kit version to simplify the monorepo. What is the right call?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Keep both pins and register both workspaces; the workspace boundary is what holds the two kit majors apart."
+            correct: false
+            feedback: "Registered workspaces are not isolation: npm hoists them into one shared root resolution, which is why registering subscriptions is what finally produces the ERESOLVE. What holds at runtime is that npm parks one major under subscriptions/node_modules and the crank's entry file lives there, so Node resolves its imports from inside the island. The address of the file does the work, not the boundary."
+          - id: b
+            label: "Force everything onto the npm-latest kit, since the newest release is the safest choice for a fresh capstone build."
+            correct: false
+            feedback: "@solana/pay peers the kit-6 line; jumping the wavelength-checkout workspace to the newest kit re-breaks its peer pair, and you pin exact per workspace, never to latest."
+          - id: c
+            label: "Keep the two workspace pins; @solana/pay and @solana/subscriptions sit on different kit peer ranges, which is the seam m05-l2 taught."
+            correct: true
+            feedback: "Peer ranges are constraints the packages publish, and keeping both means keeping two resolutions, which registration alone will not give you, since npm hoists registered workspaces into one shared root tree. Two trees do cost you, since values crossing between them are not the same types."
+          - id: a
+            label: "Force the whole repo onto the kit-6 line and add an npm override so the subscriptions client accepts it, since one lockfile is easier to reason about than two resolution trees."
+            correct: false
+            feedback: "@solana/subscriptions 0.5.0 peers kit ^7, so the kit-6 line breaks its peer range, and an override only silences the warning while the client runs on a kit it was never built against. That is the seam m05-l2 already solved."
+        explanation: "The kit v6/v7 fragmentation is real and load-bearing: @solana/pay peers the kit-6 line while @solana/subscriptions 0.5.0 peers kit ^7. The course monorepo keeps per-workspace pins precisely so each package gets a compatible kit. Collapsing the workspaces re-introduces the peer conflict you already resolved."
+      - id: m09l1-q2-verify-leg
+        prompt: "Your journey script runs the Kora-sponsored purchase leg for a SOL-less buyer. The buyer's wallet returns a success toast. How should the demo assert that this leg PASSED?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Trust the wallet's success callback, since the Kora fee-payer already co-signed and submitted the transaction on the buyer's behalf and the RPC accepted it before the toast ever rendered."
+            correct: false
+            feedback: "Kora co-signing does not make a frontend confirmation trustworthy, and an accepted submission is not a verified transfer; the verifier still re-checks server-side. A success toast proves nothing about what actually landed on chain."
+          - id: a
+            label: "Re-fetch the transaction server-side with getTransaction and check the mint, the token program, and the balance delta on the merchant-owned token account."
+            correct: true
+            feedback: "Only a ledger read your own server performs is unforgeable; sponsorship changes nothing about proof, and every leg asserts the same way."
+          - id: d
+            label: "Check the landed transaction for the two sponsored facts, the fee payer being the Kora signer and the buyer's lamport delta being zero, since a co-signed purchase proves itself that way."
+            correct: false
+            feedback: "Those two reads are additions to the verifier verdict, not a replacement for it. They prove the sponsorship worked; they say nothing about which mint moved, which token program moved it, or whether the merchant-owned account was credited the record's price. A sponsored transaction earns the same treatment as a plain one."
+          - id: c
+            label: "Poll the buyer's wallet balance from the client until it drops by the record's price, then mark the leg complete in the ledger."
+            correct: false
+            feedback: "Client-side balance polling is spoofable and unreliable; the course-wide gate is the m04 server-side verifier, not any client-read shortcut."
+        explanation: "The m04 verifier is the whole course's acceptance harness for exactly this reason: frontend confirmations are spoofable. Every journey leg, sponsored or not, is asserted by re-fetching the transaction server-side and checking mint, token program, and balance deltas."
+      - id: m09l1-q3-dunning-leg
+        prompt: "The subscription leg of your journey deliberately forces a renewal to fail against an empty ATA. For the leg to assert PASS the way the course taught dunning, what must the assembled stack do?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Immediately retry the pull against the buyer's wallet up to three times and then cancel the subscription if all retries fail."
+            correct: false
+            feedback: "That is card-rail dunning, not the taught policy. The Helius model does NOT retry the failed renewal against the wallet."
+          - id: c
+            label: "Revoke the subscription authority PDA and reclaim its rent the moment the renewal fails, closing the account cleanly."
+            correct: false
+            feedback: "Rent recovery via RevokeAbandoned is the cancel path, not the failure path; a single failed renewal becomes an open invoice, it does not tear down the subscription."
+          - id: b
+            label: "Record the failed renewal as an open invoice in the ledger, without retrying it against the wallet."
+            correct: true
+            feedback: "With no way to force a pull, a ledger entry is the only durable outcome that failure produces; a state with no exit, though, is how open invoices accumulate forever."
+          - id: d
+            label: "Have the crank log the failed renewal and let the journey assert on that log line, since a failure produces no transaction to verify and no ledger row to read."
+            correct: false
+            feedback: "The first half of the reasoning is right: there is no transaction, which is exactly why this leg's assertion is a ledger read rather than a verifier call. The second half is not, because the failure's whole output is a row: an open invoice in the backoffice ledger, plus the absence of any retry against the wallet. A log line is not an outcome anyone can reconcile."
+        explanation: "The dunning case study (Helius dogfooding the official Subscriptions program) is explicit: a failed renewal is not retried against the wallet, it becomes an ordinary open invoice. The journey's forced failure asserts PASS when the backoffice ledger shows exactly that."

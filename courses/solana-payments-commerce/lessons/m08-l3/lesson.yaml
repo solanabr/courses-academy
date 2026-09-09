@@ -1,0 +1,102 @@
+id: lesson-spc-m08-l3
+slug: m08-l3
+title: "The production gate: a go-live checklist that means it"
+skills:
+  - confirmation
+  - compute-budget
+  - transaction-fees
+versionStamp:
+  checkedAt: "2026-08-31"
+  packages:
+    "@solana-program/compute-budget": "0.16.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m08-l3-q1
+        prompt: "Your fair-queue drain runs at closing time, settling transactions buyers signed hours ago at the stall, one of them a bulk order big enough to matter. What does your commitment policy owe that drained sale?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "`confirmed` covers the whole drain, because the buyer already authorized the payment when they signed it back at the fair."
+            correct: false
+            feedback: "Signing is authorization, not settlement. Commitment prices the chance that the block carrying the transfer gets dropped, and that chance does not shrink because the signature is hours old."
+          - id: c
+            label: "`processed`, since the drain is a batch job and its own retry loop will pick up anything the network happens to drop."
+            correct: false
+            feedback: "`processed` can vanish in a fork, so it is never the gate that releases goods; and a retry loop still has to pick some commitment before it can believe the answer it re-reads."
+          - id: d
+            label: "Escalate every drained sale to `finalized` regardless of size, since the documented 500 USDC line applies once settlement is deferred."
+            correct: false
+            feedback: "No document names that figure. The 500 USDC in this lesson's sample verdicts is one reference build's choice, flagged as such. The line stays yours to derive, and it keys off what a reversal would cost you, not off whether the sale sat in a queue."
+          - id: a
+            label: "The same escalation the live path gets: hold it to `finalized` before marking it fulfilled if it crosses your threshold, because no buyer is standing there to re-run."
+            correct: true
+            feedback: "A drain is a settlement path like any other, so the rule has to reach it too. Write the row so it forces you to grep every commitment argument in the codebase, not just the ones you remember writing."
+        explanation: "Commitment binds to the moment you decide money arrived, not to how the checkout felt, so a deferred drain enforces the same value-scaled rule the live path does, and with the buyer long gone, a payment reversed there has nobody to re-charge. `processed` is never that gate, and the 500 USDC figure in the sample verdicts is one build's choice rather than a documented threshold."
+      - id: m08-l3-q2
+        prompt: "The gate asks how you set priority fees on the transactions your store sends. How deep should this lesson go?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Skip priority fees: payments are small and low-value, so the base 5000-lamport fee is enough to land them even in a congested slot."
+            correct: false
+            feedback: "Under congestion a bare base-fee tx can be dropped; a practical priority-fee floor still matters."
+          - id: a
+            label: "Build a full fee-estimation service that samples recent prioritization fees per writable account and retunes the micro-lamport bid every slot."
+            correct: false
+            feedback: "That's landing science this course hands off; the gate wants a practical recipe, not a tuning engine."
+          - id: d
+            label: "Ship the one-box recipe and then the landing depth too, retry curves and Jito bundles included, since payments is where landing belongs."
+            correct: false
+            feedback: "Landing is a discipline of its own: per-account fee estimation, retry curves, Jito bundles, compute-budget science, and Client-Side Mastery owns it end to end the way this course owns commerce. A quarter-taught version of it is the quarter that loses money, which is why the box overpays slightly and stops."
+          - id: b
+            label: "State a one-box practical recipe for payment txs and hand transaction-landing depth to the Client-Side Mastery course."
+            correct: true
+            feedback: "A payment needs a fee floor that lands rather than an optimiser, and depth here is scope you could not maintain. Naming a handoff is not skipping it, and the box holds a default that works."
+        explanation: "This is a boundary the course keeps honest: a one-box priority-fee recipe lands payment transactions reliably, and the deep landing strategy belongs to Client-Side Mastery. The gate names the handoff rather than faking depth."
+      - id: m08-l3-q3
+        prompt: "Your webhook worker has been quietly failing for days and orders aren't being fulfilled. Which gate row is designed to catch this?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The webhook-failure-monitoring row: Helius auto-disables a webhook after sustained failure, so alert on failure rate."
+            correct: true
+            feedback: "The failure mode is silence; nothing on your side errors, and only a monitor watching the sender catches it before orders stop."
+          - id: d
+            label: "The reconciliation-export row, since its dated CSV is where a fulfillment gap gets caught before buyers notice."
+            correct: false
+            feedback: "The export is an accounting artifact you run on a cadence, so it finds the gap long after the buyer did; in the story that opens this family the first signal was a customer DM two days in. Catching it early takes something watching the sender, plus the polling fallback that degrades a dead webhook into slow fulfillment."
+          - id: a
+            label: "The commitment-policy row, because the worker releases orders only at `confirmed` and these payments never reached that level."
+            correct: false
+            feedback: "The transactions confirmed fine; the failure is in ingestion, not commitment."
+          - id: b
+            label: "The idempotency row, because duplicate events are piling up unprocessed on the queue."
+            correct: false
+            feedback: "Idempotency guards against double-fulfillment, not silent non-delivery."
+        explanation: "Silent webhook failure stops fulfillment without an obvious error, and a Helius webhook can auto-disable itself after sustained failure. The monitoring row exists precisely to alert on the failure rate before orders quietly stop."
+      - id: m08-l3-q4
+        prompt: "You go looking for a Solana-native merchant accounting/reporting SaaS to close the books and find nothing purpose-built. What's the honest gate posture?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "State it as a market gap and ship the export, but leave off the date, since gaps like this typically hold for years."
+            correct: false
+            feedback: "The date is the part that makes it a finding rather than an opinion about the world forever. Young markets move, and an undated gap is the claim that ages into next year's emergency; write down when you looked, and what you would replace the export with once somebody builds the thing."
+          - id: b
+            label: "Block go-live until a vendor exists, since you can't operate a store without accounting software."
+            correct: false
+            feedback: "You already have reference/memo reconciliation; the missing SaaS is a note, not a blocker."
+          - id: a
+            label: "State it as an observed market gap as of your build date and ship your own reconciliation export as the interim answer."
+            correct: true
+            feedback: "Dating an observation makes it falsifiable rather than a claim about the world forever, and the export keeps you unblocked; a format accountants read is what keeps it replaceable."
+          - id: c
+            label: "Assume Stripe's dashboard covers it, since Stripe settles some of the crypto payments."
+            correct: false
+            feedback: "Stripe's dashboard covers its own rails, not your on-chain Solana Pay and x402 ledger."
+        explanation: "Honest gaps are teaching content in a young market: with no purpose-built Solana merchant-accounting SaaS at build time, you state the gap with its date and lean on your own reference/memo reconciliation export until one exists."

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "t1-canonical",
+    "description": "The everyday case: 12.5 USDC is 12,500,000 base units.",
+    "input": "'12.5', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 12500000n"
+  },
+  {
+    "id": "t2-no-decimal-point",
+    "description": "A whole amount with no decimal point at all still scales by the mint's decimals.",
+    "input": "'1000', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 1000000000n"
+  },
+  {
+    "id": "t3-smallest-unit",
+    "description": "One micro-USDC is the smallest representable amount and must survive the parse.",
+    "input": "'0.000001', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 1n"
+  },
+  {
+    "id": "t4-leading-and-trailing-zeros",
+    "description": "Leading zeros and a trailing zero inside the mint's precision are ugly, not wrong.",
+    "input": "'0012.50', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 12500000n"
+  },
+  {
+    "id": "t5-surrounding-whitespace",
+    "description": "Whitespace around a pasted amount is an artifact of the paste, not an error.",
+    "input": "' 12.5 ', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 12500000n"
+  },
+  {
+    "id": "t6-two-decimal-mint",
+    "description": "7.07 on a 2-decimal mint is 707 base units: the scale comes from the mint, never from USDC's 6.",
+    "input": "'7.07', 2",
+    "expectedOutput": "result.ok === true && result.baseUnits === 707n"
+  },
+  {
+    "id": "t7-past-the-float-ceiling",
+    "description": "A base-unit value above 2**53 stays exact to the last digit; any float step rounds it.",
+    "input": "'9999999999.999999', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 9999999999999999n"
+  },
+  {
+    "id": "t8-trailing-zeros-past-decimals-are-not-precision",
+    "description": "Seven fraction digits, but the seventh is a zero: 1.5000000 is exactly 1500000 base units and parses. Counting the fraction's LENGTH rejects a representable amount.",
+    "input": "'1.5000000', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 1500000n"
+  },
+  {
+    "id": "t9-zero-parses",
+    "description": "Zero is a successful parse, not a failure: 0n is falsy, and a truthiness test on the amount turns a valid parse into a refusal.",
+    "input": "'0', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 0n"
+  },
+  {
+    "id": "t10-u64-ceiling-is-payable",
+    "description": "18446744073709.551615 at 6 decimals is exactly u64::MAX base units: the largest amount a transfer can carry, and it must parse.",
+    "input": "'18446744073709.551615', 6",
+    "expectedOutput": "result.ok === true && result.baseUnits === 18446744073709551615n"
+  },
+  {
+    "id": "t11-over-precision-rejected",
+    "description": "A non-zero seventh digit on a 6-decimal mint is unrepresentable. Truncating or rounding it invents sub-cent money and reconciles wrong forever.",
+    "input": "'12.5000001', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'too-precise'"
+  },
+  {
+    "id": "t12-over-precision-is-per-mint",
+    "description": "Three fraction digits on a 2-decimal mint is over-precise, even though the same string is fine on USDC.",
+    "input": "'7.071', 2",
+    "expectedOutput": "result.ok === false && result.reason === 'too-precise'"
+  },
+  {
+    "id": "t13-one-unit-past-u64",
+    "description": "One base unit above u64::MAX cannot be carried by an SPL transfer, so the parse refuses it rather than handing the chain an amount that overflows.",
+    "input": "'18446744073709.551616', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'too-large'"
+  },
+  {
+    "id": "t14-negative",
+    "description": "A well-formed amount with a leading minus is refused as negative: a checkout never charges below zero.",
+    "input": "'-5', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'negative'"
+  },
+  {
+    "id": "t15-currency-symbol",
+    "description": "A pasted currency symbol is malformed input, not an amount to be salvaged.",
+    "input": "'$12.50', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'malformed'"
+  },
+  {
+    "id": "t16-digits-then-garbage",
+    "description": "A string that merely STARTS with digits is malformed; a parse that reads the leading number and ignores the rest charges 12 for '12abc'.",
+    "input": "'12abc', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'malformed'"
+  },
+  {
+    "id": "t17-empty-field",
+    "description": "An untouched field is empty, a distinct reason from malformed, so the form can say 'enter an amount'.",
+    "input": "'', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'empty'"
+  },
+  {
+    "id": "t18-whitespace-only-field",
+    "description": "A field holding only spaces is also empty: trim first, then decide.",
+    "input": "'   ', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'empty'"
+  },
+  {
+    "id": "t19-bare-decimal-point",
+    "description": "A lone decimal point has no digits on either side: malformed, never zero.",
+    "input": "'.', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'malformed'"
+  },
+  {
+    "id": "t20-negative-precedence",
+    "description": "A leading minus followed by non-digit garbage is malformed, not negative: an implementation that decides negative from a startsWith('-') check before confirming the rest is a well-formed decimal misreads it.",
+    "input": "'-abc', 6",
+    "expectedOutput": "result.ok === false && result.reason === 'malformed'"
+  }
+]

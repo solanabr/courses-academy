@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Blast radius of a fully compromised crank key
+     purpose: bound the worst case visually so the non-custodial claim reads as an on-chain fact, not a marketing promise
+     data: Inside the blast radius (reachable by a leaked crank key): the subscriber's USDC token account, up to the REMAINING allowance only (after three 15-USDC pulls on a 60-USDC approval: at most 15 USDC) Outside the blast radius (unreachable, enforced by the Token program): the subscriber's SOL balance every other token account the subscriber owns the subscriber's NFTs a bigger allowance (ApproveChecked needs the OWNER's signature) the ability to block Revoke (Revoke needs only the owner) Owner's escape hatch: one Revoke instruction zeroes the radius immediately
+     prompt: A small circle labeled "reachable: remaining allowance on the one approved USDC account (at most 15 USDC in the worked example)" centered inside a much larger region labeled "unreachable" listing SOL balance, other token accounts, NFTs, self-approving more, and blocking Revoke as struck-through items. An arrow from an "owner" node cuts the small circle with the label "Revoke: one instruction, owner only". Instruction names in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:554px;height:493px;bottom:-283px;right:-283px;border-radius:46% 62% 37% 41% / 56% 54% 61% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .main { position:relative; display:flex; gap:96px; margin-top:10px; }
+  .field { position:relative; flex:0 0 1020px; min-height:520px;
+           background:var(--surface-inverse); border-radius:var(--radius-2xl);
+           padding:30px 36px; overflow:hidden; }
+  .field-head { font-family:var(--font-display); font-weight:900; font-size:26px;
+                color:var(--text-on-dark); }
+  .field-sub { font-family:var(--font-body); font-weight:600; font-size:14.5px;
+               color:rgba(245,232,202,0.65); margin-top:4px; margin-bottom:22px; }
+  .no-list { width:560px; display:flex; flex-direction:column; gap:14px; }
+  .no { font-family:var(--font-body); font-weight:600; font-size:17px; line-height:1.35;
+        color:rgba(245,232,202,0.85); text-decoration:line-through;
+        border:1.5px solid var(--border-on-dark); border-radius:var(--radius-lg);
+        padding:12px 18px; }
+  .no code { font-family:var(--font-mono); font-size:16px; }
+  .radius { position:absolute; right:44px; top:130px; width:310px; height:310px;
+            border-radius:50%; background:var(--stbr-yellow);
+            display:flex; flex-direction:column; justify-content:center; align-items:center;
+            text-align:center; padding:34px; }
+  .radius .tag { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                 letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-dark); }
+  .radius .big { font-family:var(--font-display); font-weight:900; font-size:34px;
+                 color:var(--stbr-dark); margin:6px 0 4px; }
+  .radius .det { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+                 line-height:1.35; color:var(--stbr-dark); }
+  .owner { flex:1 1 auto; margin-top:190px; background:var(--surface-card);
+           border:3px solid var(--stbr-dark); border-radius:var(--radius-xl);
+           padding:18px 22px; height:104px; }
+  .owner .who { font-family:var(--font-display); font-weight:900; font-size:23px;
+                color:var(--text-primary); }
+  .owner .sub { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+                color:var(--text-secondary); margin-top:3px; }
+  .arrow { position:absolute; left:1043px; top:236px; width:148px; height:18px; display:flex;
+           align-items:center; z-index:2; }
+  .arrow .head { width:0; height:0; border-top:9px solid transparent;
+                 border-bottom:9px solid transparent; border-right:14px solid var(--stbr-green); }
+  .arrow .line { flex:1 1 auto; border-top:3px solid var(--stbr-green); }
+  .arrow-lab { position:absolute; left:610px; top:458px; z-index:2;
+               font-family:var(--font-mono); font-weight:700; font-size:14.5px;
+               color:var(--stbr-dark); background:var(--stbr-cream);
+               border-radius:var(--radius-pill); padding:5px 14px; }
+  .cap { margin-top:16px; font-family:var(--font-body); font-weight:600; font-size:15.5px;
+         color:var(--text-secondary); }
+  .cap code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">worst case, bounded on-chain</div>
+  <h2 class="viz-title">blast radius of a fully compromised crank key</h2>
+  <div class="main">
+    <div class="field">
+      <div class="field-head">unreachable</div>
+      <div class="field-sub">enforced by the Token program &mdash; no matter what the leaked key signs</div>
+      <div class="no-list">
+        <div class="no">the subscriber's SOL balance</div>
+        <div class="no">every other token account the subscriber owns</div>
+        <div class="no">the subscriber's NFTs</div>
+        <div class="no">a bigger allowance &mdash; <code>ApproveChecked</code> needs the OWNER's signature</div>
+        <div class="no">blocking <code>Revoke</code> &mdash; it needs only the owner</div>
+      </div>
+      <div class="radius">
+        <div class="tag">reachable</div>
+        <div class="big">at most 15 USDC</div>
+        <div class="det">the remaining allowance on the one approved USDC account &mdash; after three 15-USDC pulls on a 60-USDC approval</div>
+      </div>
+    </div>
+    <div class="owner">
+      <div class="who">owner</div>
+      <div class="sub">subscriber wallet &mdash; the escape hatch</div>
+    </div>
+    <div class="arrow"><div class="head"></div><div class="line"></div></div>
+    <div class="arrow-lab">Revoke &mdash; one instruction, owner only</div>
+  </div>
+  <div class="cap">one <code>Revoke</code> zeroes the radius immediately &mdash; non-custodial as an on-chain fact, not a marketing promise</div>
+
+</div>
+</body></html>

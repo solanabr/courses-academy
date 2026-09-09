@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Two spoof classes, one wall
+     purpose: show where each attack dies so the auth header's limited role and the verifier's decisive one are unmistakable
+     data: attacker path A (fiction): forged payload, nonexistent or unrelated signature -> maybe passes auth header (if secret leaked) -> claim: fresh -> resolveOrder: on-chain memo lookup finds no open order, or verify fails program/mint/delta/memo -> rejected, no ledger row attacker path B (misdescription): real 0.01 USDC transfer to merchant ATA, payload claims 28 USDC -> passes auth -> claim: fresh -> resolveOrder finds order ord-0088 via real memo -> verify computes REAL on-chain delta 0.01 vs expected 28.00 -> rejected: underpaid, no ledger row honest path: real 28 USDC payment -> auth -> claim -> resolve -> verify ok -> ledger row caption: the auth header filters noise; only on-chain verification decides
+     prompt: Three horizontal lanes, attacker path A, attacker path B, honest path, each moving left to right through the same gate columns (auth, claim, resolve, verify, ledger). Paths A and B terminate with an X at the gate named in data; only the honest lane reaches the ledger column. Caption from data along the bottom. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:566px;height:579px;top:-334px;right:-334px;border-radius:35% 60% 51% 47% / 61% 50% 65% 58%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .lanes { margin-top:10px; }
+  .hrow, .lane { display:flex; gap:10px; }
+  .hcell { flex:1; text-align:center; font-family:var(--font-body); font-weight:800;
+           font-size:14px; letter-spacing:.09em; text-transform:uppercase;
+           color:var(--stbr-cream); background:var(--stbr-green);
+           border-radius:var(--radius-md); padding:9px 6px; }
+  .hcell.wall { background:var(--stbr-yellow); color:var(--stbr-dark);
+                border:2px solid var(--stbr-dark); padding:7px 6px; }
+  .hlab { flex:0 0 218px; }
+  .lane { margin-top:10px; align-items:stretch; }
+  .llab { flex:0 0 218px; border-radius:var(--radius-md); padding:12px 14px;
+          display:flex; flex-direction:column; justify-content:center; gap:3px; }
+  .llab .nm { font-family:var(--font-body); font-weight:800; font-size:16px; line-height:1.15; }
+  .llab .sub { font-family:var(--font-body); font-size:11.5px; line-height:1.25; }
+  .lane.atk .llab { background:var(--surface-inverse); }
+  .lane.atk .llab .nm { color:var(--stbr-cream); }
+  .lane.atk .llab .sub { color:rgba(245,232,202,0.8); }
+  .lane.hon .llab { background:var(--stbr-emerald); }
+  .lane.hon .llab .nm { color:var(--stbr-cream); }
+  .lane.hon .llab .sub { color:rgba(245,232,202,0.9); }
+  .cell { flex:1; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:12px 12px 14px; display:flex;
+          flex-direction:column; justify-content:center; gap:3px; }
+  .cell .st { font-family:var(--font-body); font-weight:800; font-size:13px; }
+  .cell .dt { font-family:var(--font-body); font-size:11.5px; line-height:1.3;
+              color:var(--text-secondary); }
+  .cell.pass { border-color:rgba(0,139,76,0.45); background:rgba(0,139,76,0.05); }
+  .cell.pass .st { color:var(--stbr-green); }
+  .cell.dead { background:var(--surface-inverse); border-color:var(--stbr-dark); }
+  .cell.dead .st { color:var(--stbr-yellow); font-size:15px; }
+  .cell.dead .dt { color:rgba(245,232,202,0.85); }
+  .cell.off { background:transparent; border-style:dashed; }
+  .cell.off .st { color:var(--text-muted); font-weight:700; }
+  .cell.off .dt { color:var(--text-muted); }
+  .cell.win { background:var(--stbr-emerald); border-color:var(--stbr-dark); }
+  .cell.win .st { color:var(--stbr-cream); }
+  .cell.win .dt { color:rgba(245,232,202,0.9); }
+  .cap { margin-top:18px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+         padding:13px 26px; font-family:var(--font-body); font-weight:700; font-size:17px;
+         color:var(--stbr-cream); }
+  .cap b { color:var(--stbr-yellow); }
+</style>
+  <div class="stbr-eyebrow">where each attack dies</div>
+  <h2 class="viz-title">two spoof classes, one wall</h2>
+  <div class="lanes">
+    <div class="hrow">
+      <div class="hlab"></div>
+      <div class="hcell">auth</div>
+      <div class="hcell">claim</div>
+      <div class="hcell">resolve</div>
+      <div class="hcell wall">verify &mdash; the wall</div>
+      <div class="hcell">ledger</div>
+    </div>
+    <div class="lane atk">
+      <div class="llab"><span class="nm">attacker A &middot; fiction</span>
+        <span class="sub">forged payload; nonexistent or unrelated signature</span></div>
+      <div class="cell pass"><span class="st">maybe passes</span><span class="dt">only if the secret leaked</span></div>
+      <div class="cell pass"><span class="st">fresh</span><span class="dt">never seen before</span></div>
+      <div class="cell dead"><span class="st">&#10005; rejected</span><span class="dt">memo lookup finds no open order</span></div>
+      <div class="cell off"><span class="st">&mdash; or dies here</span><span class="dt">program / mint / delta / memo all fail</span></div>
+      <div class="cell off"><span class="st">no row</span></div>
+    </div>
+    <div class="lane atk">
+      <div class="llab"><span class="nm">attacker B &middot; misdescription</span>
+        <span class="sub">real 0.01 USDC transfer; payload claims 28 USDC</span></div>
+      <div class="cell pass"><span class="st">passes</span></div>
+      <div class="cell pass"><span class="st">fresh</span></div>
+      <div class="cell pass"><span class="st">ord-0088</span><span class="dt">found via the real memo</span></div>
+      <div class="cell dead"><span class="st">&#10005; underpaid</span><span class="dt">real delta 0.01 vs expected 28.00</span></div>
+      <div class="cell off"><span class="st">no row</span></div>
+    </div>
+    <div class="lane hon">
+      <div class="llab"><span class="nm">honest path</span>
+        <span class="sub">real 28 USDC payment</span></div>
+      <div class="cell pass"><span class="st">passes</span></div>
+      <div class="cell pass"><span class="st">fresh</span></div>
+      <div class="cell pass"><span class="st">ord-0088</span></div>
+      <div class="cell pass"><span class="st">verify ok</span></div>
+      <div class="cell win"><span class="st">ledger row</span><span class="dt">one row, one real payment</span></div>
+    </div>
+  </div>
+  <div class="cap">the auth header filters noise; <b>only on-chain verification decides</b></div>
+</div>
+</body></html>

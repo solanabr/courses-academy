@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: Overpay, underpay, partial fill: the policy menu and what each choice costs
+     purpose: lay the defensible policies beside the two traps so the solo challenge has a decision surface, not a right answer
+     data: state: underpaid | trap: silent fulfillment (sells a 30 USDC record for 12; invites abuse) | policy A: hold for top-up window (gentle; costs held stock + expiry logic) | policy B: refund minus published fee (clean close; costs goodwill, needs guard) state: overpaid | trap: instant ungated auto-refund (griefing loop: attacker churns your fees) | policy A: record surplus as store credit (simple; you hold a liability) | policy B: refund surplus after finality via guarded path (clean; slower) state: partial fill | trap: fulfilling covered items silently (underpay per line item) | policy A: hold entire order for top-up | policy B: fulfill covered lines, refund remainder minus fee, both stated up front footer: every policy routes through the ledger with a stated reason; the refund path is always guarded and always waits for finality
+     prompt: Designed table with four columns: state, the trap (silent default), policy A, policy B. Three rows for underpaid, overpaid, partial fill, using the data verbatim. Render the trap column visually distinct from the two policy columns. Footer row spans all columns with the always-guarded, always-finalized rule. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:502px;height:501px;top:-243px;right:-243px;border-radius:65% 44% 58% 47% / 52% 42% 53% 52%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:38px 52px 34px; }
+  .tbl { margin-top:16px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; }
+  .r { display:flex; align-items:stretch; }
+  .r > div { box-sizing:border-box; }
+  .colS { flex:0 0 160px; }
+  .colT { flex:0 0 404px; }
+  .colP { flex:1 1 0; }
+  .h { background:var(--surface-inverse); padding:12px 18px; font-family:var(--font-display); font-weight:900; font-size:17px; color:var(--text-on-dark); }
+  .h .sub { display:block; font-family:var(--font-body); font-weight:700; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(245,232,202,.6); margin-top:2px; }
+  .c { padding:12px 18px; border-top:1.5px solid var(--border-subtle); font-family:var(--font-body); font-size:13.5px; line-height:1.35; color:var(--text-secondary); background:var(--surface-card); }
+  .c.state { font-family:var(--font-display); font-weight:900; font-size:17px; color:var(--text-primary); display:flex; align-items:center; }
+  .c.trap { background:rgba(255,210,63,.24); color:var(--text-primary); border-left:1.5px solid var(--border-subtle); border-right:1.5px solid var(--border-subtle); }
+  .c.trap b, .c b { font-weight:800; color:var(--text-primary); }
+  .c.polB { border-left:1.5px solid var(--border-subtle); }
+  .cost { display:block; margin-top:4px; font-size:12px; color:var(--text-muted); }
+  .trapchip { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:10px; letter-spacing:.1em; text-transform:uppercase; background:var(--stbr-dark); color:var(--stbr-yellow); border-radius:var(--radius-pill); padding:2px 9px; margin-bottom:5px; }
+  .foot { background:var(--surface-brand); padding:13px 22px; font-family:var(--font-display); font-weight:800; font-size:16.5px; color:var(--text-on-brand); line-height:1.3; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">a decision surface, not a right answer</div>
+  <h2 class="viz-title">the policy menu &mdash; and what each choice costs</h2>
+  <div class="tbl">
+    <div class="r">
+      <div class="h colS">state</div>
+      <div class="h colT">the trap<span class="sub">the silent default</span></div>
+      <div class="h colP">policy A</div>
+      <div class="h colP">policy B</div>
+    </div>
+    <div class="r">
+      <div class="c state colS">underpaid</div>
+      <div class="c trap colT"><span class="trapchip">trap</span><br><b>silent fulfillment</b> &mdash; sells a 30 USDC record for 12; invites abuse</div>
+      <div class="c colP">hold for top-up window<span class="cost">gentle &middot; costs held stock + expiry logic</span></div>
+      <div class="c polB colP">refund minus published fee<span class="cost">clean close &middot; costs goodwill, needs guard</span></div>
+    </div>
+    <div class="r">
+      <div class="c state colS">overpaid</div>
+      <div class="c trap colT"><span class="trapchip">trap</span><br><b>instant ungated auto-refund</b> &mdash; griefing loop: attacker churns your fees</div>
+      <div class="c colP">record surplus as store credit<span class="cost">simple &middot; you hold a liability</span></div>
+      <div class="c polB colP">refund surplus after finality via guarded path<span class="cost">clean &middot; slower</span></div>
+    </div>
+    <div class="r">
+      <div class="c state colS">partial fill</div>
+      <div class="c trap colT"><span class="trapchip">trap</span><br><b>fulfilling covered items silently</b> &mdash; underpay per line item</div>
+      <div class="c colP">hold entire order for top-up</div>
+      <div class="c polB colP">fulfill covered lines, refund remainder minus fee &mdash; both stated up front</div>
+    </div>
+    <div class="foot">every policy routes through the ledger with a stated reason &middot; the refund path is always guarded and always waits for finality</div>
+  </div>
+</div>
+</div>
+</body></html>

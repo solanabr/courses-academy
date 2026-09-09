@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: CCTP burn-and-mint versus the lock-and-wrap bridge model
+     purpose: contrast the mechanism so the reader understands why CCTP delivers native USDC with no pool risk, and that Fast Transfer timing is keyed to the SOURCE chain (the widely-quoted ~8 seconds is Solana-as-source, not arrivals into Solana)
+     data: Top path (CCTP): USDC on source chain -> burned on source domain -> Circle attestation -> native USDC minted on Solana (domain 5) -> lands in the buyer's ATA; both paths wait on the SOURCE chain's finality: Fast Transfer is about 8 seconds when Solana is the source, longer from a slower-finality source such as Ethereum; standard transfer waits full source-chain finality, minutes on Ethereum Bottom path (lock-and-wrap, for contrast): USDC locked in bridge pool -> wrapped IOU minted on destination -> IOU value depends on pool staying solvent; pool is an exploit target Verdict strip: CCTP output is the same native USDC mint the kit already sends
+     prompt: Two horizontal paths stacked with a dividing label between them. Top path in four nodes for burn, attest, mint, arrive, annotated with domain 5 on the Solana node and a timing badge reading "Fast Transfer: source-chain finality, ~8s from Solana". Bottom path in three nodes for lock, wrap, depend-on-pool, with a risk marker on the pool node. Full-width strip below stating that the CCTP result is native USDC, not a wrapped token.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:468px;height:489px;bottom:-236px;left:-236px;border-radius:38% 62% 52% 62% / 65% 57% 65% 56%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:38px 48px 34px; }
+  .viz-title { margin-bottom:18px; }
+  .pathlab { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
+  .pathlab .pl { font-family:var(--font-body); font-weight:800; font-size:14px; letter-spacing:.08em; text-transform:uppercase; border-radius:var(--radius-pill); padding:6px 16px; }
+  .pathlab .pl.cctp { background:var(--surface-brand); color:var(--text-on-brand); }
+  .pathlab .pl.bridge { border:2px solid var(--border-strong); color:var(--text-secondary); }
+  .pathlab .timing { font-family:var(--font-body); font-weight:800; font-size:14px; background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill); padding:6px 16px; }
+  .pathlab .timing2 { font-family:var(--font-body); font-weight:600; font-size:13px; color:var(--text-muted); }
+  .flow { display:flex; align-items:stretch; gap:8px; }
+  .start { flex:0 0 170px; display:flex; }
+  .node { flex:1 1 0; display:flex; }
+  .box { width:100%; box-sizing:border-box; border-radius:var(--radius-lg); padding:16px 14px; display:block; text-align:center; min-height:60px; }
+  .box.dark { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .box.white { background:var(--surface-card); border:2px solid var(--stbr-emerald); }
+  .box.plain { background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .box .t, .box .s { width:100%; box-sizing:border-box; display:block; }
+  .box .t { font-family:var(--font-display); font-weight:800; font-size:17px; line-height:1.2; }
+  .box.white .t, .box.plain .t { color:var(--text-primary); }
+  .box .s { font-family:var(--font-body); font-weight:600; font-size:12px; line-height:1.3; margin-top:5px; color:var(--text-secondary); }
+  .box.dark .s { color:var(--text-on-dark); opacity:.75; }
+  .badge, .risk { display:inline-block; }
+  .badge { font-family:var(--font-mono); font-weight:800; font-size:12px; background:var(--stbr-emerald); color:var(--stbr-cream); border-radius:var(--radius-pill); padding:3px 12px; margin-top:7px; }
+  .risk { font-family:var(--font-body); font-weight:800; font-size:12px; background:rgba(192,57,43,.14); color:#a5342a; border-radius:var(--radius-pill); padding:3px 12px; margin-top:7px; }
+  .arrcell { flex:0 0 28px; display:flex; align-items:center; justify-content:center; }
+  .divider { display:flex; align-items:center; gap:18px; margin:20px 0 14px; }
+  .divider .ln { flex:1 1 auto; border-top:2px solid var(--border-subtle); }
+  .divider .dl { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+  .verdict { margin-top:24px; background:var(--surface-brand); color:var(--text-on-brand); border-radius:var(--radius-lg); padding:15px 26px; font-family:var(--font-body); font-weight:700; font-size:18px; line-height:1.35; text-align:center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">cross-chain USDC checkout</div>
+  <h2 class="viz-title">burn-and-mint versus lock-and-wrap</h2>
+  <div class="pathlab"><span class="pl cctp">CCTP &mdash; burn-and-mint</span><span class="timing">Fast Transfer: waits on the SOURCE chain &mdash; &asymp;8s from Solana</span><span class="timing2">standard transfer: waits for source-chain finality &mdash; minutes on Ethereum</span></div>
+  <div class="flow">
+    <div class="start"><div class="box dark"><span class="t">USDC on source chain</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#008b4c"/></svg></div>
+    <div class="node"><div class="box white"><span class="t">burned on the source domain</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#008b4c"/></svg></div>
+    <div class="node"><div class="box white"><span class="t">Circle attestation</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#008b4c"/></svg></div>
+    <div class="node"><div class="box white"><span class="t">native USDC minted on Solana</span><span class="badge">domain 5</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#008b4c"/></svg></div>
+    <div class="node"><div class="box white"><span class="t">lands in the buyer's ATA</span></div></div>
+  </div>
+  <div class="divider"><span class="ln"></span><span class="dl">versus the bridge model</span><span class="ln"></span></div>
+  <div class="pathlab"><span class="pl bridge">lock-and-wrap bridge &mdash; for contrast</span></div>
+  <div class="flow">
+    <div class="start"><div class="box dark"><span class="t">USDC on source chain</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#1b231d"/></svg></div>
+    <div class="node"><div class="box plain"><span class="t">USDC locked in a bridge pool</span><span class="risk">pool is an exploit target</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#1b231d"/></svg></div>
+    <div class="node"><div class="box plain"><span class="t">wrapped IOU minted on destination</span></div></div>
+    <div class="arrcell"><svg width="22" height="16"><line x1="0" y1="8" x2="14" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="22,8 12,3 12,13" fill="#1b231d"/></svg></div>
+    <div class="node"><div class="box plain"><span class="t">IOU's value depends on the pool staying solvent</span></div></div>
+  </div>
+  <div class="verdict">the CCTP result is <b>native USDC</b> &mdash; the same mint the kit already sends, not a wrapped token</div>
+</div>
+</div>
+</body></html>

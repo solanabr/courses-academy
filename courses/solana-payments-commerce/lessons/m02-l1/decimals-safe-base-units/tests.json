@@ -1,0 +1,8 @@
+[
+  { "id": "t1", "input": "'12.5', 6", "expectedOutput": "result === 12500000n", "description": "12.5 USDC becomes 12,500,000 base units" },
+  { "id": "t2", "input": "'0.000001', 6", "expectedOutput": "result === 1n", "description": "one micro-USDC is the smallest representable unit" },
+  { "id": "t3", "input": "'1000', 6", "expectedOutput": "result === 1000000000n", "description": "a whole amount with no decimal point" },
+  { "id": "t4", "input": "'9999999999.999999', 6", "expectedOutput": "result === 9999999999999999n", "description": "a large amount stays exact past the float safe-integer ceiling" },
+  { "id": "t5", "input": "'7.07', 2", "expectedOutput": "result === 707n", "description": "a 2-decimal mint scales by 100: the exponent comes from the decimals argument, never from USDC's 6" },
+  { "id": "t6", "input": "'42', 0", "expectedOutput": "result === 42n", "description": "a 0-decimal mint has no fractional part at all and base units equal the whole amount" }
+]

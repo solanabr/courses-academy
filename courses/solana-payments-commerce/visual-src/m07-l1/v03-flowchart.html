@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The exact-SVM round-trip, all four beats
+     purpose: make the full challenge-pay-settle-receipt loop traceable, with all three headers and the facilitator endpoints in their exact positions
+     data: 1. bot -> merchant API: GET /price (no payment header) 2. merchant API -> bot: 402, body {}, PAYMENT-REQUIRED header carries the challenge (x402Version, error, resource, accepts[]: scheme, network CAIP-2 id, amount, asset, payTo, maxTimeoutSeconds, extra.feePayer, extra.memo) 3. bot: builds versioned tx, transfers amount of asset to the payTo owner with memo, fee-payer slot = extra.feePayer, PARTIALLY signs (owner slot only) 4. bot -> merchant API: GET /price + PAYMENT-SIGNATURE header (base64 partially signed tx) 5. merchant API -> facilitator /verify: would this satisfy the terms? fills the fee-payer slot on its own scratch copy and SIMULATES the completed tx against current chain state; never submits, so no money moves 6. merchant API -> facilitator /settle: facilitator ADDS fee-payer signature, submits to network 7. merchant API -> bot: 200 + response body + PAYMENT-RESPONSE header (settlement receipt) legend: every protocol field rides a header; only the 200 carries a real body
+     prompt: Vertical sequence flowchart with three lanes: bot, merchant API, facilitator. Seven numbered arrows as listed in data. Show arrow 2's PAYMENT-REQUIRED, arrow 4's PAYMENT-SIGNATURE and arrow 7's PAYMENT-RESPONSE headers as the same highlighted tag treatment, and mark arrow 2's body as empty. Mark the /verify step as signing a scratch copy to simulate (never submitting) and the /settle step with a signature-added badge. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:369px;height:453px;bottom:-267px;left:791px;border-radius:59% 48% 56% 46% / 47% 41% 60% 38%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .fc { background:var(--surface-card); border-radius:var(--radius-2xl);
+        padding:20px 0 12px; }
+  .fc-head { padding:0 48px; }
+  .fc .viz-title { font-size:38px; margin:4px 0 10px; }
+  .seq { position:relative; height:612px; }
+  .lane-h { position:absolute; top:0; width:236px; text-align:center;
+            background:var(--surface-inverse); color:var(--text-on-dark);
+            font-family:var(--font-display); font-weight:800; font-size:19px;
+            border-radius:var(--radius-md); padding:9px 0; }
+  .spine { position:absolute; width:0; border-left:2px dashed rgba(27,35,29,0.28); }
+  .step { position:absolute; }
+  .srow { display:flex; align-items:center; width:100%; }
+  .srow .l { flex:1 1 auto; border-top:2.5px solid var(--stbr-dark); }
+  .srow .hr { width:0; height:0; border-top:7px solid transparent;
+              border-bottom:7px solid transparent; border-left:11px solid var(--stbr-dark); }
+  .srow .hl { width:0; height:0; border-top:7px solid transparent;
+              border-bottom:7px solid transparent; border-right:11px solid var(--stbr-dark); }
+  .slab { display:flex; align-items:center; justify-content:center; gap:8px;
+          margin-bottom:5px; }
+  .n { flex:0 0 auto; width:24px; height:24px; border-radius:50%;
+       background:var(--stbr-dark); color:var(--stbr-cream);
+       font-family:var(--font-display); font-weight:800; font-size:13.5px;
+       display:flex; align-items:center; justify-content:center; }
+  .t { font-family:var(--font-mono); font-weight:700; font-size:14px;
+       color:var(--text-primary); background:var(--surface-page);
+       border-radius:var(--radius-md); padding:3px 10px; }
+  .sub { font-family:var(--font-body); font-size:11.5px; color:var(--text-secondary);
+         text-align:center; margin-top:4px; line-height:1.3; }
+  .hdr { font-family:var(--font-mono); font-weight:700; font-size:13.5px;
+         color:var(--stbr-dark); background:var(--stbr-yellow);
+         border-radius:var(--radius-md); padding:3px 10px; }
+  .empty { font-family:var(--font-mono); font-size:12.5px; color:var(--text-muted);
+           border:1.5px dashed var(--border-subtle); border-radius:var(--radius-md);
+           padding:2px 8px; }
+  .empty b { font-weight:700; color:var(--text-secondary); }
+  .legend { font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary);
+            margin:0 0 6px; }
+  .legend b { color:var(--text-primary); font-weight:700; }
+  .bdg { font-family:var(--font-body); font-weight:700; font-size:11px;
+         color:var(--stbr-green); background:rgba(0,139,76,0.10);
+         border:1.5px solid rgba(0,139,76,0.4); border-radius:var(--radius-pill);
+         padding:2px 10px; }
+  .selfnote { border:2px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+              background:rgba(0,139,76,0.06); padding:9px 16px; }
+  .selfnote .st { display:flex; align-items:center; gap:8px; margin-bottom:3px; }
+  .selfnote .tt { font-family:var(--font-display); font-weight:800; font-size:14.5px;
+                  color:var(--text-primary); }
+  .selfnote .bd { font-family:var(--font-body); font-size:12.5px; line-height:1.35;
+                  color:var(--text-secondary); }
+</style>
+  <div class="fc">
+    <div class="fc-head">
+      <div class="stbr-eyebrow">exact-svm &middot; challenge &rarr; pay &rarr; settle &rarr; receipt</div>
+      <h2 class="viz-title">the exact-SVM round-trip, all four beats</h2>
+      <div class="legend">Every protocol field rides one of the three
+        <b>yellow header chips</b> &mdash; the 402&rsquo;s body is empty, and only the 200 carries a real one.</div>
+    </div>
+    <div class="seq">
+      <div class="spine" style="left:209px; top:46px; height:560px;"></div>
+      <div class="spine" style="left:727px; top:46px; height:560px;"></div>
+      <div class="spine" style="left:1245px; top:46px; height:560px;"></div>
+      <div class="lane-h" style="left:92px;">bot</div>
+      <div class="lane-h" style="left:610px;">merchant API</div>
+      <div class="lane-h" style="left:1128px;">facilitator</div>
+
+      <div class="step" style="left:210px; width:518px; top:60px;">
+        <div class="slab"><span class="n">1</span><span class="t">GET /price</span>
+          <span class="sub" style="margin-top:0;">no payment header</span></div>
+        <div class="srow"><div class="l"></div><div class="hr"></div></div>
+      </div>
+
+      <div class="step" style="left:210px; width:518px; top:116px;">
+        <div class="slab"><span class="n">2</span><span class="t">402</span>
+          <span class="empty">body <b>{}</b></span> + <span class="hdr">PAYMENT-REQUIRED</span></div>
+        <div class="srow"><div class="hl"></div><div class="l"></div></div>
+        <div class="sub" style="margin-left:-72px; margin-right:-72px;">challenge:
+          x402Version &middot; error &middot; resource &middot; accepts[]<br>
+          terms: scheme &middot; network &middot; <b>amount</b> &middot; asset &middot; payTo &middot;
+          maxTimeoutSeconds &middot; extra.feePayer &middot; extra.memo</div>
+      </div>
+
+      <div class="step" style="left:26px; width:560px; top:226px;">
+        <div class="selfnote">
+          <div class="st"><span class="n">3</span><span class="tt">bot builds &amp; PARTIALLY signs</span></div>
+          <div class="bd">versioned tx: transfers <b>amount</b> of the <b>asset</b> to the <b>payTo</b> owner with the memo; fee-payer slot = <b>extra.feePayer</b>; signs the <b>owner slot only</b> &mdash; tx stays inert</div>
+        </div>
+      </div>
+
+      <div class="step" style="left:210px; width:518px; top:322px;">
+        <div class="slab"><span class="n">4</span><span class="t">GET /price</span> + <span class="hdr">PAYMENT-SIGNATURE</span></div>
+        <div class="srow"><div class="l"></div><div class="hr"></div></div>
+        <div class="sub">base64 partially signed transaction</div>
+      </div>
+
+      <div class="step" style="left:728px; width:518px; top:402px;">
+        <div class="slab"><span class="n">5</span><span class="t">/verify</span><span class="bdg">signs a scratch copy &middot; simulates, never submits</span></div>
+        <div class="srow"><div class="l"></div><div class="hr"></div></div>
+        <div class="sub">would this satisfy the terms? answered by simulation, so no money moves</div>
+      </div>
+
+      <div class="step" style="left:728px; width:518px; top:478px;">
+        <div class="slab"><span class="n">6</span><span class="t">/settle</span><span class="bdg">+ fee-payer signature</span></div>
+        <div class="srow"><div class="l"></div><div class="hr"></div></div>
+        <div class="sub">facilitator ADDS the fee-payer signature, submits to the network</div>
+      </div>
+
+      <div class="step" style="left:210px; width:518px; top:550px;">
+        <div class="slab"><span class="n">7</span><span class="t">200 + response body</span> + <span class="hdr">PAYMENT-RESPONSE</span></div>
+        <div class="srow"><div class="hl"></div><div class="l"></div></div>
+        <div class="sub">settlement receipt</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

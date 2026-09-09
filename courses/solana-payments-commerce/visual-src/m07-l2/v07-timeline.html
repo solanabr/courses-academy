@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: A payment's replay window, and who forgets it when
+     purpose: line up the blockhash lifetime, the settlement-cache eviction, and the module 4 store's horizon as one shared piece of arithmetic
+     data: t=0: agent partially signs tx carrying a recent blockhash t=0 to ~blockhash expiry: tx can land; duplicate /settle calls for it are rejected by the settlement cache (duplicate_settlement) ~60-90s (package's stated lifetime range; ~45s derived at 300ms slots x 150 blocks): blockhash expires, tx can no longer land anywhere t=120s: settlement-cache entry evicted, roughly twice the lifetime, remembering it is now pointless module 4 echo: processed-signatures store uses the same horizon logic for webhook replay, forget a signature once its tx cannot be mistaken for fresh
+     prompt: Horizontal timeline with four markers as in data. Shade the landable window from t equals zero to blockhash expiry, show the expiry as a range band labeled with both the package's 60 to 90 second phrasing and the derived 45 second figure at 300 millisecond slots, and place the eviction marker at 120 seconds beyond it. A parallel thin track underneath mirrors the module 4 store's horizon. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:441px;height:488px;top:-233px;right:-233px;border-radius:39% 50% 48% 39% / 65% 59% 64% 64%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 44px 26px; }
+  .viz-title { font-size: 40px; margin: 4px 0 10px; }
+  .tl { position: relative; width: 1368px; height: 470px; }
+  .track { position: absolute; left: 40px; right: 40px; top: 208px; height: 12px;
+           background: var(--surface-paper); border-radius: var(--radius-pill);
+           border: 1px solid var(--border-subtle); }
+  .seg { position: absolute; top: 208px; height: 12px; border-radius: var(--radius-pill); }
+  .tick { position: absolute; top: 190px; width: 2.5px; height: 48px; background: var(--stbr-dark); }
+  .dot { position: absolute; top: 205px; width: 18px; height: 18px; border-radius: 50%;
+         background: var(--stbr-dark); border: 3px solid var(--surface-card); }
+  .lbl { position: absolute; font: 500 13px var(--font-body); color: var(--text-primary);
+         line-height: 1.3; }
+  .lbl strong { font-weight: 800; }
+  .lbl .sub { color: var(--text-secondary); font-size: 12px; }
+  .conn { position: absolute; width: 2px; background: var(--border-strong); }
+  .subtrack { position: absolute; left: 40px; right: 40px; top: 368px; height: 8px;
+              background: var(--surface-inverse); border-radius: var(--radius-pill); opacity: .85; }
+  .subseg { position: absolute; top: 368px; height: 8px; background: var(--stbr-emerald);
+            border-radius: var(--radius-pill); }
+  .sublbl { position: absolute; top: 388px; left: 40px; right: 40px;
+            font: 500 13px var(--font-body); color: var(--text-secondary); }
+  .sublbl strong { color: var(--text-primary); font-weight: 800; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">replay horizon</div>
+  <h2 class="viz-title">a payment's replay window &mdash; and who forgets it when</h2>
+  <div class="tl">
+    <div class="track"></div>
+    <!-- landable window t=0 .. expiry start -->
+    <div class="seg" style="left:70px; width:590px; background:var(--stbr-emerald); opacity:.35;"></div>
+    <!-- expiry range band 60-90s (the shared arithmetic: the accent) -->
+    <div class="seg" style="left:660px; width:260px; background:var(--stbr-yellow);"></div>
+
+    <div class="dot" style="left:62px;"></div>
+    <div class="tick" style="left:540px;"></div>
+    <div class="tick" style="left:660px;"></div>
+    <div class="tick" style="left:918px;"></div>
+    <div class="dot" style="left:1222px;"></div>
+
+    <!-- above-track labels -->
+    <div class="conn" style="left:70px; top:120px; height:85px;"></div>
+    <div class="lbl" style="left:40px; top:64px; width:330px;">
+      <strong>t = 0</strong> &mdash; agent partially signs<br>
+      <span class="sub">the tx carries a recent blockhash</span></div>
+
+    <div class="conn" style="left:789px; top:130px; height:78px;"></div>
+    <div class="lbl" style="left:640px; top:74px; width:330px; text-align:center;">
+      <strong>blockhash expires</strong> &mdash; range band<br>
+      <span class="sub">package's stated lifetime: 60&ndash;90s, a pre-SIMD-0525 assumption &middot; after it, the tx can no longer land anywhere</span></div>
+
+    <div class="conn" style="left:1231px; top:130px; height:75px;"></div>
+    <div class="lbl" style="left:1080px; top:74px; width:288px; text-align:center;">
+      <strong>+120s</strong> &mdash; cache entry evicted<br>
+      <span class="sub">~2&times; the lifetime; remembering it is now pointless</span></div>
+
+    <!-- below-track labels -->
+    <div class="lbl" style="left:70px; top:246px; width:440px;">
+      <strong>landable window</strong> &mdash; the tx can land;
+      duplicate /settle calls are rejected by the settlement cache<br>
+      <span class="sub" style="font-family:var(--font-mono);">duplicate_settlement</span></div>
+
+    <div class="conn" style="left:540px; top:238px; height:16px;"></div>
+    <div class="lbl" style="left:552px; top:246px; width:330px;">
+      <span class="sub"><strong>~45s derived</strong> &mdash; 150 blocks &times; 300ms target slots; the package's 60&ndash;90s figure assumes slower slots, which is why its eviction margin is generous</span></div>
+
+    <!-- module 4 parallel track -->
+    <div class="subseg" style="left:70px; width:850px; opacity:.55;"></div>
+    <div class="subtrack" style="opacity:.15;"></div>
+    <div class="sublbl"><strong>module 4 echo</strong> &mdash; the processed-signatures store runs the same
+      horizon logic for webhook replay: forget a signature once its tx can no longer be mistaken for fresh.</div>
+  </div>
+</div>
+</div>
+</body></html>

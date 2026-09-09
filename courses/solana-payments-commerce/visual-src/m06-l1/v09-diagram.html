@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: ramp-embed, three files and one property
+     purpose: fix the lab's architecture in the reader's head at the moment they have all three files on disk, emphasizing which file enforces which half of bind-server-side-never-leak
+     data: session.ts (pure): buildSessionRequest -> the binding body; buildOnrampUrl -> the token-only URL server.ts (I/O): CDP JWT auth -> POST /onramp/v1/token -> { token } -> answers client with finished URL; consumes RECORD.priceUsdc from checkout smoke.ts (verify): asserts binding includes solana, sessionToken present, defaultNetwork=solana, preset amount carried, address ABSENT from URL property strip: bind server-side (session.ts request half) / never leak (session.ts URL half), proven by smoke.ts
+     prompt: Three file cards per the data with arrows session.ts -> server.ts and session.ts -> smoke.ts, plus a horizontal property strip underneath split into "bind server-side" and "never leak" halves. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:555px;height:556px;top:-338px;right:-338px;border-radius:48% 43% 35% 49% / 64% 52% 43% 62%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v9-file{border-radius:16px;padding:16px 22px;background:var(--surface-card);border:2px solid var(--stbr-ink-300);}
+    .v9-name{display:flex;align-items:center;gap:10px;}
+    .v9-name code{font-family:var(--font-mono);font-weight:700;font-size:19px;color:var(--text-primary);}
+    .v9-tag{font-family:var(--font-body);font-weight:700;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;border-radius:999px;padding:3px 12px;background:rgba(0,139,76,0.12);color:var(--stbr-emerald-800);}
+    .v9-li{font-family:var(--font-body);font-size:13.5px;color:var(--text-secondary);line-height:1.45;margin-top:8px;}
+    .v9-li code{font-family:var(--font-mono);font-size:12.5px;color:var(--stbr-emerald-800);}
+  </style>
+  <div style="background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px;">
+    <div class="stbr-eyebrow">the ramp-embed lab</div>
+    <h2 class="viz-title">three files and one property</h2>
+    <div style="display:flex;justify-content:center;margin-top:8px;">
+      <div class="v9-file" style="width:1000px;border-color:var(--stbr-emerald);border-width:3px;">
+        <div class="v9-name"><code>session.ts</code><span class="v9-tag">pure</span></div>
+        <div style="display:flex;gap:0;margin-top:8px;">
+          <div style="flex:1;padding-right:20px;" class="v9-li"><code>buildSessionRequest</code> &rarr; the binding body</div>
+          <div style="flex:1;border-left:1.5px solid var(--border-subtle);padding-left:20px;" class="v9-li"><code>buildOnrampUrl</code> &rarr; the token-only URL</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div style="width:3px;height:26px;background:var(--stbr-green);"></div>
+        <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--stbr-green);"></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div style="width:3px;height:26px;background:var(--stbr-green);"></div>
+        <div style="width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--stbr-green);"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:24px;">
+      <div class="v9-file" style="flex:1;height:196px;">
+        <div class="v9-name"><code>server.ts</code><span class="v9-tag">I/O</span></div>
+        <div class="v9-li">CDP JWT auth &rarr; <code>POST /onramp/v1/token</code> &rarr; <code>{ token }</code> &rarr; answers the client with the finished URL</div>
+        <div class="v9-li">consumes <code>RECORD.priceUsdc</code> from checkout</div>
+      </div>
+      <div class="v9-file" style="flex:1;height:196px;">
+        <div class="v9-name"><code>smoke.ts</code><span class="v9-tag">verify</span></div>
+        <div class="v9-li">asserts: binding includes <code>solana</code> &middot; <code>sessionToken</code> present &middot; <code>defaultNetwork=solana</code> &middot; preset amount carried &middot; address <b>ABSENT</b> from the URL</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px;"><span style="display:inline-block;background:var(--surface-inverse);color:var(--stbr-cream);font-family:var(--font-body);font-weight:600;font-size:12.5px;border-radius:999px;padding:5px 16px;">the property, proven by smoke.ts</span></div>
+    <div style="display:flex;border-radius:16px;overflow:hidden;margin-top:10px;">
+      <div style="flex:1;background:var(--surface-brand);padding:14px 24px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--text-on-brand);">bind server-side</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:rgba(245,232,202,0.8);margin-top:3px;">session.ts &mdash; the request half: address, solana, USDC bound in the body</div>
+      </div>
+      <div style="flex:1;background:var(--stbr-yellow);padding:14px 24px;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:19px;color:var(--stbr-dark);">never leak</div>
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--stbr-dark);opacity:0.8;margin-top:3px;">session.ts &mdash; the URL half: token only, address absent</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

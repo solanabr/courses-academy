@@ -1,0 +1,112 @@
+id: lesson-spc-m03-l4
+slug: m03-l4
+title: "A blink for the drop: actions that execute anywhere (that renders them)"
+skills:
+  - solana-pay
+  - transactions
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "express": "5.2.1"
+    "@solana/kit": "6.10.0"
+    "@solana/actions-spec": "2.4.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: action-post-response
+    type: code
+    language: typescript
+    starter: action-post-response/starter.ts
+    solution: action-post-response/solution.ts
+    tests: action-post-response/tests.json
+    hints:
+      - "Setting a property to `undefined` still creates that key: a check like `'message' in result` reports true either way. To match the omitted-key tests, never assign the key at all when its input wasn't provided."
+      - "message and nextActionHref are independent: one can be null while the other is a real value (or the reverse), and each key's presence must reflect only its own argument, never the other's."
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "You ship the drop blink and tweet the link, expecting it to unfurl into a buy button in the X feed. What is the honest 2026 reality you should design around?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Native wallet rendering was confirmed as of the 2024 launch wave, so the link renders for anyone holding a Solana wallet, whether or not they run the extension."
+            correct: false
+            feedback: "The ecosystem pages naming specific wallets do date from that launch wave, which is exactly why they cannot carry a 2026 claim. Current behavior in any given wallet is untested until you test it, that week."
+          - id: b
+            label: "It renders only inside Phantom's in-app browser, so the working pattern is to post the link with an 'open in Phantom' instruction and accept that everyone else cannot buy."
+            correct: false
+            feedback: "That is an overly specific, unverified claim; the actual render-surface list for 2026 is uncertain and must be checked at write time."
+          - id: a
+            label: "It unfurls natively in X for every viewer, because X shipped first-class blink rendering into the timeline, so the card draws without any extension installed."
+            correct: false
+            feedback: "Native X rendering is not established; the 'unfurl in the feed' claim is frozen at 2024 launch language and is not how it works now."
+          - id: c
+            label: "X rendering is Chrome-extension-mediated, not native, and the 2026 surface list is uncertain, so verify at write time and never promise 'renders everywhere.'"
+            correct: true
+            feedback: "Rendering lives in a client you do not control, and an extension-mediated unfurl reaches only the viewers who installed it. Everyone else needs the link to still open a page."
+        explanation: "The research confirms X rendering is Chrome-extension-mediated, and the 2026 native-wallet render list is unverified. The safe design is spec conformance plus a local blinks client for the lab, with any surface claim living in a verified-at-write box. Promising a feed render you cannot guarantee is the trap."
+      - id: q2
+        prompt: "Your blink's action endpoint works when you hit it directly, but wallets will not load it from your domain. Which two hosting rules did you most likely miss?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "actions.json has to sit at the domain root, but Access-Control-Allow-Origin belongs on the action routes alone, since the discovery file is plain static JSON a browser reads without a preflight."
+            correct: false
+            feedback: "The discovery fetch is cross-origin like every other one, and preflight is beside the point: a browser will not hand the response to the client without the header, whatever the method was. This is the half of the rule everyone misses."
+          - id: c
+            label: "You must register the domain with your RPC provider and have the wallet attach your API key header to every GET it makes, or the provider refuses the fetch."
+            correct: false
+            feedback: "Wallets do not send your RPC API key; discovery is via actions.json plus CORS, not RPC registration."
+          - id: a
+            label: "actions.json must sit at the domain root mapping the path, and actions must send CORS Access-Control-Allow-Origin: * including on actions.json itself."
+            correct: true
+            feedback: "Wallets fetch from a browser context, and a missing header makes the browser discard a reply your server sent fine; curl enforces none of that, which is why the terminal says it works."
+          - id: b
+            label: "The endpoint must be served over HTTP/2 with a preflight-exempt POST route, and it has to hand back the transaction as raw bytes rather than base64 for the wallet to parse it."
+            correct: false
+            feedback: "There is no HTTP/2, preflight-exemption, or raw-bytes requirement; the transaction is base64, and the loading failure is about discovery and CORS."
+        explanation: "Blinks are discovered through actions.json at the domain root and loaded cross-origin, so both the actions endpoints and actions.json must send Access-Control-Allow-Origin: *. Missing either one is the classic 'works in curl, dead in a wallet' failure."
+      - id: q3
+        prompt: "This lesson builds against the wire contract and installs neither Dialect SDK. Suppose a later project does want them and you reach for the latest @dialectlabs/blinks. What do you actually find, and how should you pin?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The package is deprecated on npm and Dialect points you at its hosted Standard Blinks Library, so there is no version left to pin."
+            correct: false
+            feedback: "Dialect's attention did move to the hosted library, but 0.22.5 is still published and installable. Frozen and deprecated are different states, and the frozen one is pinnable, which is what makes the staleness note worth writing."
+          - id: c
+            label: "The package was renamed to @solana-commerce/blinks, so you migrate to that supported successor before building."
+            correct: false
+            feedback: "There is no such rename; @dialectlabs/blinks 0.22.5 and @solana/actions 1.6.6 remain the pins, frozen as they are."
+          - id: b
+            label: "The tooling is frozen since 2025, so IF you adopt them you pin @dialectlabs/blinks 0.22.5 and @solana/actions 1.6.6 and add a staleness note."
+            correct: true
+            feedback: "Frozen is not broken, just yours to carry; an explicit pin is what makes that inheritance visible to whoever reads the manifest next."
+          - id: a
+            label: "A fresh monthly release cadence, so you pin to the newest minor and turn on automatic updates to stay current."
+            correct: false
+            feedback: "There is no fresh cadence; the blinks tooling has been effectively frozen since 2025, so 'stay on latest' is a false comfort."
+        explanation: "@dialectlabs/blinks 0.22.5 (published 2025-04-04) and @solana/actions 1.6.6 (published 2024-11-05) are the newest versions that exist; no fresher ones have shipped. This course installs neither — it builds against @solana/actions-spec 2.4.2 and the wire contract — but if a project of yours does adopt them, pin those exact versions with a staleness note, because Dialect's investment moved to its hosted Standard Blinks Library rather than the core SDK."
+      - id: q4
+        prompt: "Building the featured-record blink, where does the transaction inside your ActionPostResponse come from, and what can you honestly claim about registry admission?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "You reuse the m03-l2 transaction-request builder, but the action-identity memo has to ride each transaction, and the registry will not list an action whose transactions leave that memo out."
+            correct: false
+            feedback: "Action identity exists so indexers can attribute a transaction back to the action that produced it, not as an admission ticket. Registration is an emailed submission into a manual queue, memo or no memo."
+          - id: b
+            label: "You reuse the m03-l2 builder, and blinks are admitted the instant you set an API key, since the enforcement date is public and fixed."
+            correct: false
+            feedback: "Reuse is right, but the enforcement date is unsourced and must never be cited; admission is not instant on setting a key."
+          - id: c
+            label: "You reuse the m03-l2 transaction-request builder (accretion), and registry admission is a manual Dialect review entered by an emailed submission, so you cannot gate your lesson on it."
+            correct: true
+            feedback: "An Action returns an ordinary transaction, which is why one builder serves both surfaces. Anything gated on human review has no schedule, and an unsourced enforcement date is a guess."
+          - id: a
+            label: "You author a brand-new blink-specific transaction builder because Actions need a different instruction shape, and admission is automatic the moment you POST your action to the registry endpoint."
+            correct: false
+            feedback: "Actions need no special instruction shape, so reuse the m03-l2 builder rather than rewriting it; registry admission is a manual review, not an automatic POST."
+        explanation: "The blink's transaction is the same code path as the checkout: you reuse the m03-l2 builder, which is the accretion the ladder is showing. Registry admission is a manual Dialect review entered by an emailed submission; the API key gates only the per-URL lookup endpoint, and the enforcement date is unsourced, so your lab gates on spec conformance plus a local client, not on registry status."

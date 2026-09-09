@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The three fates of $2.01 at six decimals
+     purpose: show the float path failing, the patched path deferring the failure, and the string path staying exact, so the reader stops trusting the patch
+     data: Path 1, naive float: 2.01 * 10 ** 6 -> 2009999.9999999998 -> Math.trunc -> 2009999 (WRONG, short one base unit) Path 2, patched float: Math.round(2.01 * 10 ** 6) -> 2010000 (right today; silently wrong once base units pass 2 ** 53 = 9,007,199,254,740,992, about nine billion USDC at 6 decimals) Path 3, exact string parse: "2.01" -> split on "." -> whole "2", fraction "01" padded to "010000" -> BigInt(2) * 10n ** 6n + BigInt("010000") -> 2010000n (exact at every scale)
+     prompt: Three horizontal code paths stacked vertically, each showing input, intermediate value, and result. Mark path 1 with a failure tag "short one base unit", path 2 with a warning tag "correct until 2^53 base units, then silently wrong", and path 3 with a success tag "exact at every scale". Use monospace for values and keep the 2^53 constant fully written out once.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:551px;height:512px;bottom:-321px;right:-321px;border-radius:65% 46% 37% 35% / 37% 52% 45% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .path { display:flex; gap:20px; align-items:stretch; margin-bottom:16px; }
+  .plabel { width:210px; display:flex; flex-direction:column; justify-content:center; }
+  .plabel .n { font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-primary); }
+  .plabel .s { font-family:var(--font-body); font-size:13.5px; color:var(--text-muted); margin-top:3px; }
+  .panel { flex:1; background:var(--surface-inverse); border-radius:var(--radius-lg);
+    padding:18px 26px; display:flex; flex-direction:column; justify-content:center; }
+  .code { font-family:var(--font-mono); font-size:16.5px; line-height:1.6; color:var(--text-on-dark); }
+  .code .op { color:var(--stbr-ink-300); }
+  .code .bad { color:#ff8a75; font-weight:700; }
+  .code .ok { color:#ffffff; font-weight:700; }
+  .code .cm { color:var(--stbr-ink-300); font-size:14px; }
+  .tag { width:300px; display:flex; align-items:center; }
+  .tag .chip { width:100%; border-radius:var(--radius-md); padding:14px 18px;
+    font-family:var(--font-body); font-weight:700; font-size:14.5px; line-height:1.4; }
+  .chip.fail { background:rgba(192,57,43,0.10); border:2px solid #c0392b; color:#a5281c; }
+  .chip.warn { background:var(--surface-accent); border:2px solid var(--stbr-yellow-700); color:var(--text-on-accent); }
+  .chip.pass { background:var(--surface-brand); border:2px solid var(--stbr-emerald-800); color:var(--text-on-brand); }
+  .chip .t { display:block; font-family:var(--font-display); font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; margin-bottom:4px; }
+</style>
+  <div class="stbr-eyebrow">amount math &mdash; six decimals</div>
+  <h2 class="viz-title">the three fates of $2.01</h2>
+  <div class="path">
+    <div class="plabel"><div class="n">1 &middot; naive float</div><div class="s">multiply, then truncate</div></div>
+    <div class="panel"><div class="code">2.01 * 10 ** 6 <span class="op">&rarr;</span> 2009999.9999999998 <span class="op">&rarr;</span> Math.trunc(&hellip;) <span class="op">&rarr;</span> <span class="bad">2009999</span></div></div>
+    <div class="tag"><div class="chip fail"><span class="t">wrong</span>short one base unit</div></div>
+  </div>
+  <div class="path">
+    <div class="plabel"><div class="n">2 &middot; patched float</div><div class="s">round instead of truncate</div></div>
+    <div class="panel"><div class="code">Math.round(2.01 * 10 ** 6) <span class="op">&rarr;</span> <span class="ok">2010000</span><br>
+      <span class="cm">// safe only below 2 ** 53 = 9,007,199,254,740,992 base units (&asymp; nine billion USDC at 6 decimals)</span></div></div>
+    <div class="tag"><div class="chip warn"><span class="t">the trap</span>correct until 2^53 base units &mdash; then silently wrong</div></div>
+  </div>
+  <div class="path" style="margin-bottom:0;">
+    <div class="plabel"><div class="n">3 &middot; exact string parse</div><div class="s">never a float at all</div></div>
+    <div class="panel"><div class="code">"2.01" <span class="op">&rarr;</span> whole "2" &middot; fraction "01" <span class="op">&rarr;</span> pad "010000"<br>
+      BigInt(2) * 10n ** 6n + BigInt("010000") <span class="op">&rarr;</span> <span class="ok">2010000n</span></div></div>
+    <div class="tag"><div class="chip pass"><span class="t">exact</span>exact at every scale</div></div>
+  </div>
+</div>
+</body></html>

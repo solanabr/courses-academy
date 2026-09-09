@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Where each decoded field lives in the raw transaction JSON
+     purpose: map the decoder's five printed fields to their exact paths in the getTransaction response so the script reads as a walk, not magic
+     data: result.blockTime -> settledAt (unix seconds, multiplied to ms and ISO-formatted) result.transaction.message.instructions[] -> the instruction list the script filters instruction with program == "spl-token" and parsed.type == "transferChecked" and parsed.info.mint == EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v -> the USDC transfer itself that instruction's parsed.info.authority -> sender that instruction's parsed.info.tokenAmount.uiAmountString -> amountUSDC (already scaled by the 6 decimals) instruction with program == "spl-memo" -> memo (parsed field is the memo string)
+     prompt: Annotated code-style panel showing an abbreviated getTransaction JSON tree on the left (blockTime, transaction.message.instructions with two instruction stubs: spl-token transferChecked and spl-memo) and, on the right, five labeled callout arrows mapping each path to the decoder's printed fields: settledAt, sender, amountUSDC, mint, memo. Monospace, keep the JSON abbreviated with ellipses so the five arrows dominate.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:459px;height:436px;bottom:-229px;right:-229px;border-radius:55% 38% 35% 41% / 53% 42% 65% 46%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .map { position:relative; height:606px; margin-top:6px; }
+  .code { position:absolute; left:0; top:0; width:820px; background:var(--surface-inverse);
+          border-radius:var(--radius-xl); padding:26px 30px; font-family:var(--font-mono);
+          font-size:17px; line-height:30px; color:var(--text-on-dark); white-space:pre; }
+  .code .hl { color:var(--stbr-yellow); font-weight:700; }
+  .code .dim { color:rgba(245,232,202,0.5); }
+  .lay { position:absolute; left:0; top:0; }
+  .chip { position:absolute; left:892px; width:544px; background:var(--surface-card);
+          border:2px solid rgba(0,139,76,0.5); border-radius:var(--radius-lg);
+          padding:12px 18px; }
+  .chip .f { font-family:var(--font-mono); font-weight:800; font-size:19px;
+             color:var(--stbr-emerald); }
+  .chip .n { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+             color:var(--text-secondary); margin-top:3px; line-height:1.35; }
+  .chip.money { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .chip.money .f { color:var(--stbr-dark); }
+  .chip.money .n { color:var(--stbr-dark); }
+  .filt { position:absolute; left:0; top:548px; width:820px; font-family:var(--font-body);
+          font-weight:700; font-size:14.5px; color:var(--text-secondary); }
+  .filt code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">a walk, not magic</div>
+  <h2 class="viz-title">where each decoded field lives in the raw JSON</h2>
+  <div class="map">
+<div class="code">{
+  "result": {
+    <span class="hl">"blockTime"</span>: 1755892800,
+    "transaction": { "message": {
+      "instructions": [
+        { "program": "spl-token",
+          "parsed": { "type": "transferChecked",
+            "info": {
+              <span class="hl">"authority"</span>: "3qE5&hellip;",
+              <span class="hl">"mint"</span>: "EPjFWdd5&hellip;yTDt1v",
+              "tokenAmount": {
+                <span class="hl">"uiAmountString"</span>: "0.036115"
+              <span class="dim">} } } },</span>
+        { "program": "spl-memo",
+          <span class="hl">"parsed"</span>: "079cea64&hellip;a425f90" <span class="dim">}</span>
+      <span class="dim">] } } } }</span></div>
+    <svg class="lay" width="1456" height="560" viewBox="0 0 1456 560">
+      <path d="M 826 101 L 906 56"  fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <path d="M 826 281 L 906 162" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <path d="M 826 311 L 906 268" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <path d="M 826 371 L 906 374" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+      <path d="M 826 461 L 906 480" fill="none" stroke="#008b4c" stroke-width="2.5"/>
+      <circle cx="826" cy="101" r="5" fill="#008b4c"/>
+      <circle cx="826" cy="281" r="5" fill="#008b4c"/>
+      <circle cx="826" cy="311" r="5" fill="#008b4c"/>
+      <circle cx="826" cy="371" r="5" fill="#1b231d"/>
+      <circle cx="826" cy="461" r="5" fill="#008b4c"/>
+    </svg>
+    <div class="chip" style="top:20px;">
+      <div class="f">settledAt</div>
+      <div class="n">result.blockTime &mdash; unix seconds, &times;1000 to ms, ISO-formatted</div>
+    </div>
+    <div class="chip" style="top:126px;">
+      <div class="f">sender</div>
+      <div class="n">that instruction's parsed.info.authority</div>
+    </div>
+    <div class="chip" style="top:232px;">
+      <div class="f">mint</div>
+      <div class="n">parsed.info.mint == EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (the USDC filter)</div>
+    </div>
+    <div class="chip money" style="top:338px;">
+      <div class="f">amountUSDC</div>
+      <div class="n">parsed.info.tokenAmount.uiAmountString &mdash; already scaled by the 6 decimals</div>
+    </div>
+    <div class="chip" style="top:444px;">
+      <div class="f">memo</div>
+      <div class="n">the spl-memo instruction &mdash; its parsed field is the memo string</div>
+    </div>
+    <div class="filt">the script filters <code>transaction.message.instructions[]</code> for <code>program == "spl-token" &amp;&amp; parsed.type == "transferChecked"</code></div>
+  </div>
+</div>
+</body></html>

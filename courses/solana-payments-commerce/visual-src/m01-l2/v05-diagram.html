@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Pull with an undo vs push without one
+     purpose: show structurally why chargebacks exist on card rails and cannot exist here, and where refund logic moves as a result
+     data: Left panel, card rails (pull): customer credentials -> merchant/PSP pulls funds -> settlement; a reversal path runs backward through issuer -> card network -> acquirer -> merchant, available for weeks (chargeback) Right panel, Solana rails (push): customer signs -> funds pushed to merchant -> finalized; no backward path exists; a refund is a brand-new push, merchant -> customer, built and initiated by the merchant (this course builds it in module 4)
+     prompt: Two side-by-side panels. Left panel shows the card pull flow forward, with a prominent dashed backward arrow labeled "chargeback: institutional reversal path, weeks". Right panel shows the push flow forward with an X where the backward arrow would be, labeled "no reversal path exists", and a separate second forward arrow from merchant to customer labeled "refund = a new push payment you build". Keep the two panels visually parallel so the missing arrow is the focal point.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:570px;height:502px;bottom:-289px;right:-289px;border-radius:51% 36% 55% 37% / 37% 39% 64% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:521px;height:487px;left:-284px;top:215px;border-radius:44% 39% 49% 50% / 45% 48% 47% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .panels { display:flex; gap:28px; margin-top:24px; align-items:stretch; }
+  .panel { flex:1; background:var(--surface-card); border-radius:var(--radius-2xl); padding:24px 28px 28px; }
+  .phead { border-radius:var(--radius-md); padding:12px 20px; text-align:center; font-family:var(--font-display);
+           font-weight:800; font-size:22px; margin-bottom:22px; }
+  .phead.pull { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .phead.push { background:var(--surface-brand); color:var(--text-on-brand); }
+  .pbody { display:flex; gap:22px; }
+  .fcol { width:52%; flex:none; display:flex; flex-direction:column; align-items:center; }
+  .fnode { width:100%; height:60px; border:2.5px solid var(--border-strong); border-radius:var(--radius-lg);
+           background:var(--surface-card); display:flex; align-items:center; justify-content:center;
+           font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary);
+           text-align:center; padding:0 10px; }
+  .fnode.end { background:var(--surface-brand-deep); border-color:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .down { height:30px; display:flex; align-items:center; }
+  .lane { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .lane .row { display:flex; align-items:center; gap:14px; }
+  .chip { border-radius:var(--radius-md); padding:12px 16px; font-family:var(--font-body); font-size:15px;
+          line-height:1.35; color:var(--text-primary); border:2px solid var(--border-subtle); }
+  .chip b { display:block; font-weight:800; margin-bottom:3px; }
+  .chip .path { display:block; margin-top:6px; font-size:13.5px; color:var(--text-secondary); }
+  .xbadge { width:56px; height:56px; flex:none; border-radius:50%; background:var(--stbr-yellow);
+            display:flex; align-items:center; justify-content:center; font-family:var(--font-display);
+            font-weight:900; font-size:30px; color:var(--stbr-dark); }
+  .chip.nopath { background:rgba(255,210,63,0.22); border-color:var(--stbr-yellow); }
+  .minilb { font-family:var(--font-body); font-weight:700; font-size:14px; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">why chargebacks exist there &mdash; and can't exist here</div>
+  <h2 class="viz-title" style="font-size:48px;">pull with an undo vs push without one</h2>
+  <div class="panels">
+    <div class="panel">
+      <div class="phead pull">card rails &mdash; pull</div>
+      <div class="pbody">
+        <div class="fcol">
+          <div class="fnode">customer credentials</div>
+          <div class="down"><svg width="24" height="26"><line x1="12" y1="0" x2="12" y2="16" stroke="#1B231D" stroke-width="3"/><polygon points="4,15 12,26 20,15" fill="#1B231D"/></svg></div>
+          <div class="fnode">merchant / PSP pulls funds</div>
+          <div class="down"><svg width="24" height="26"><line x1="12" y1="0" x2="12" y2="16" stroke="#1B231D" stroke-width="3"/><polygon points="4,15 12,26 20,15" fill="#1B231D"/></svg></div>
+          <div class="fnode end">settlement</div>
+        </div>
+        <div class="lane">
+          <div class="row">
+            <svg width="26" height="220"><polygon points="5,14 13,2 21,14" fill="#306C40"/><line x1="13" y1="12" x2="13" y2="218" stroke="#306C40" stroke-width="3" stroke-dasharray="8 7"/></svg>
+            <div class="chip"><b>chargeback: institutional reversal path &mdash; open for weeks</b>
+              runs backward through the stack
+              <span class="path">issuer &rarr; card network &rarr; acquirer &rarr; merchant</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="phead push">Solana rails &mdash; push</div>
+      <div class="pbody">
+        <div class="fcol">
+          <div class="fnode">customer signs</div>
+          <div class="down"><svg width="24" height="26"><line x1="12" y1="0" x2="12" y2="16" stroke="#1B231D" stroke-width="3"/><polygon points="4,15 12,26 20,15" fill="#1B231D"/></svg></div>
+          <div class="fnode">funds pushed to merchant</div>
+          <div class="down"><svg width="24" height="26"><line x1="12" y1="0" x2="12" y2="16" stroke="#1B231D" stroke-width="3"/><polygon points="4,15 12,26 20,15" fill="#1B231D"/></svg></div>
+          <div class="fnode end">finalized</div>
+        </div>
+        <div class="lane" style="gap:16px;">
+          <div class="row">
+            <div class="xbadge">&#10005;</div>
+            <div class="chip nopath"><b>no reversal path exists</b>no backward arrow to draw</div>
+          </div>
+          <div class="row">
+            <svg width="26" height="64"><line x1="13" y1="0" x2="13" y2="52" stroke="#008B4C" stroke-width="3"/><polygon points="5,50 13,62 21,50" fill="#008B4C"/></svg>
+            <div class="chip"><b>refund = a brand-new push</b><span class="minilb">merchant &rarr; customer</span> &mdash; built and initiated by the merchant (you build it in module 4)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

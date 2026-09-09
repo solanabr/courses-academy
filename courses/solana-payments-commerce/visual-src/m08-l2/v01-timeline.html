@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: Two lifetimes: the 45-second check and the undated one
+     purpose: make the blockhash wall-clock deadline visible against the durable-nonce alternative before the mechanism is explained
+     data: Track A (blockhash tx): signed at t=0 -> valid -> expires at ~45s (150 blocks x 300ms) -> any later submit rejected Track B (durable-nonce tx): signed at t=0 -> valid at 45s -> valid at 90s -> valid at 6 hours -> lands when submitted -> invalid only after its nonce advances Annotation: window was ~60s at 400ms slots and ~53s at 350ms; it shrinks whenever slot time drops
+     prompt: Two stacked horizontal timelines sharing one time axis from t=0 to 6 hours (non-linear break after 90s is fine). Track A ends abruptly at ~45s with an "expires" marker and a rejected-submit annotation beyond it. Track B runs the full width with checkpoints at 45s, 90s, and 6h all labeled "valid", ending with "lands when submitted"; a separate terminator notes "invalid only after nonce advances". Footnote annotation under the axis: "window was ~60s at 400ms slots, ~53s at 350ms; shrinks as slot time drops".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:409px;height:481px;right:-225px;top:251px;border-radius:62% 37% 62% 36% / 43% 57% 42% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:455px;height:514px;bottom:-305px;left:722px;border-radius:61% 60% 57% 38% / 60% 42% 55% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { margin-top:10px; }
+  .track { display:flex; align-items:center; margin-bottom:26px; }
+  .tlab { flex:0 0 200px; padding-right:20px; }
+  .tlab .tn { font-family:var(--font-display); font-weight:900; font-size:21px;
+              color:var(--text-primary); line-height:1.15; }
+  .tlab .ts { font-family:var(--font-body); font-weight:600; font-size:14px;
+              color:var(--text-muted); margin-top:4px; }
+  .lane { flex:1 1 0; position:relative; height:92px; }
+  .bar { position:absolute; top:18px; height:44px; border-radius:var(--radius-md); }
+  .bar-a { left:0; width:26%; background:var(--stbr-dark); }
+  .bar-a .bt { font-family:var(--font-body); font-weight:700; font-size:14.5px;
+               color:var(--stbr-cream); line-height:44px; padding-left:16px; }
+  .expire { position:absolute; left:26%; top:6px; width:8px; height:68px;
+            background:var(--stbr-yellow); border-radius:3px; margin-left:-4px; }
+  .expchip { position:absolute; left:27.5%; top:0; background:var(--stbr-yellow);
+             color:var(--stbr-dark); font-family:var(--font-body); font-weight:800;
+             font-size:14px; padding:5px 12px; border-radius:var(--radius-pill); }
+  .dead { position:absolute; left:29%; top:34px; right:0; height:32px;
+          border:2px dashed var(--border-strong); border-radius:var(--radius-md);
+          background:rgba(27,35,29,0.05); }
+  .dead .dt { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+              color:var(--text-secondary); line-height:28px; padding-left:14px; }
+  .bar-b { left:0; width:96%; background:var(--stbr-emerald); }
+  .bar-b .bt { font-family:var(--font-body); font-weight:700; font-size:14.5px;
+               color:#fff; line-height:44px; padding-left:16px; }
+  .ck { position:absolute; top:32px; width:16px; height:16px; margin-left:-8px;
+        border-radius:50%; background:#fff; border:4px solid var(--stbr-green); }
+  .cklab { position:absolute; top:66px; margin-left:-52px; width:104px; text-align:center;
+           font-family:var(--font-body); font-weight:700; font-size:13px;
+           color:var(--stbr-green); }
+  .lands { position:absolute; right:4%; top:-6px; white-space:nowrap;
+           font-family:var(--font-body); font-weight:800; font-size:14px;
+           color:var(--text-primary); }
+  .termnote { font-family:var(--font-body); font-weight:600; font-size:14px;
+              color:var(--text-secondary); margin:-6px 0 18px 200px; }
+  .axis { display:flex; margin-left:200px; }
+  .axline { position:relative; flex:1 1 0; height:34px;
+            border-top:3px solid var(--stbr-dark); }
+  .tick { position:absolute; top:-8px; width:3px; height:13px; background:var(--stbr-dark); }
+  .ticklab { position:absolute; top:8px; margin-left:-30px; width:60px; text-align:center;
+             font-family:var(--font-mono); font-weight:700; font-size:14px;
+             color:var(--text-primary); }
+  .brk { position:absolute; top:-12px; margin-left:-14px; width:28px; height:22px;
+         background:var(--surface-page); text-align:center;
+         font-family:var(--font-mono); font-weight:800; font-size:17px;
+         color:var(--text-primary); }
+  .foot { margin:16px 0 0 200px; font-family:var(--font-body); font-weight:600;
+          font-size:14.5px; color:var(--text-muted); }
+</style>
+  <div class="stbr-eyebrow">before the mechanism: the deadline</div>
+  <h2 class="viz-title">two lifetimes: the 45-second check and the undated one</h2>
+  <div class="wrap">
+    <div class="track">
+      <div class="tlab">
+        <div class="tn">track A</div>
+        <div class="ts">blockhash tx, signed at t=0</div>
+      </div>
+      <div class="lane">
+        <div class="bar bar-a"><div class="bt">valid</div></div>
+        <div class="expire"></div>
+        <div class="expchip">expires ~45s &middot; 150 blocks &times; 300ms</div>
+        <div class="dead"><div class="dt">any later submit &rarr; rejected</div></div>
+      </div>
+    </div>
+    <div class="track">
+      <div class="tlab">
+        <div class="tn">track B</div>
+        <div class="ts">durable-nonce tx, signed at t=0</div>
+      </div>
+      <div class="lane">
+        <div class="bar bar-b"><div class="bt">valid</div></div>
+        <div class="ck" style="left:26%;"></div><div class="cklab" style="left:26%;">valid at 45s</div>
+        <div class="ck" style="left:52%;"></div><div class="cklab" style="left:52%;">valid at 90s</div>
+        <div class="ck" style="left:78%;"></div><div class="cklab" style="left:78%;">valid at 6h</div>
+        <div class="lands">lands when submitted</div>
+      </div>
+    </div>
+    <div class="termnote">&#8627; invalid only after its nonce advances &mdash; not after any clock</div>
+    <div class="axis">
+      <div class="axline">
+        <div class="tick" style="left:0;"></div><div class="ticklab" style="left:0;">t=0</div>
+        <div class="tick" style="left:26%;"></div><div class="ticklab" style="left:26%;">45s</div>
+        <div class="tick" style="left:52%;"></div><div class="ticklab" style="left:52%;">90s</div>
+        <div class="brk" style="left:65%;">&#8779;</div>
+        <div class="tick" style="left:78%;"></div><div class="ticklab" style="left:78%;">6h</div>
+      </div>
+    </div>
+    <div class="foot">window was ~60s at 400ms slots and ~53s at 350ms &mdash; it shrinks whenever slot time drops</div>
+  </div>
+</div>
+</body></html>

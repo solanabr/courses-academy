@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of a nonce account (80 bytes, System-owned, rent-exempt)
+     purpose: give the reader a concrete picture of the account their pool will create before the lab creates four of them
+     data: Nonce account (owner: System Program 11111111111111111111111111111111, size 80 bytes, rent-exempt: read from getMinimumBalanceForRentExemption(80), ~0.00106 SOL on devnet 2026-09-07 and falling): version (4 bytes) | state: Initialized (4 bytes) | authority pubkey (32 bytes) | nonce value / stored blockhash (32 bytes) | lamportsPerSignature (8 bytes) Arrow from "authority pubkey" -> "merchant key: only this signer can advance" Arrow from "nonce value" -> "copied into the transaction's recentBlockhash field"
+     prompt: A single horizontal byte-layout bar divided into five labeled segments with byte widths (version 4, state 4, authority 32, nonce value 32, lamportsPerSignature 8). Header above the bar: "Nonce account, owner System Program, 80 bytes, rent-exempt: ask the RPC for 80 bytes". Two callout arrows below: from the authority segment to "merchant key: only this signer can advance", and from the nonce-value segment to "copied into the transaction's recentBlockhash field".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:509px;height:475px;right:-295px;top:279px;border-radius:53% 44% 36% 55% / 48% 65% 52% 61%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:44px 56px 34px; }
+  .meta { display:flex; gap:12px; margin:16px 0 28px; }
+  .chip { font-family:var(--font-mono); font-weight:700; font-size:14px; color:var(--text-primary);
+          background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-pill); padding:7px 16px; white-space:nowrap; }
+  .bar { display:flex; height:112px; border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-lg); overflow:hidden; box-sizing:border-box; }
+  .bar .seg { box-sizing:border-box; }
+  .seg { display:flex; flex-direction:column; justify-content:center; padding:0 16px;
+         border-right:3px solid var(--stbr-dark); min-width:0; overflow:hidden; }
+  .seg:last-child { border-right:none; }
+  .sn { font-family:var(--font-display); font-weight:900; font-size:19px; line-height:1.15; }
+  .sb { font-family:var(--font-mono); font-weight:700; font-size:13.5px; margin-top:6px; }
+  .seg-plain { background:var(--surface-paper); }
+  .seg-plain .sn, .seg-plain .sb { color:var(--text-primary); }
+  .seg-auth { background:var(--stbr-emerald); }
+  .seg-auth .sn, .seg-auth .sb { color:#fff; }
+  .seg-nonce { background:var(--stbr-yellow); }
+  .seg-nonce .sn, .seg-nonce .sb { color:var(--stbr-dark); }
+  .callouts { position:relative; height:168px; }
+  .cline { position:absolute; top:0; width:3px; height:30px; }
+  .cline-a { left:25%; background:var(--stbr-emerald); }
+  .cline-b { left:59%; background:var(--stbr-dark); }
+  .co { position:absolute; top:30px; border-radius:var(--radius-lg); padding:16px 20px; }
+  .co-a { left:6%; width:38%; background:var(--surface-card); border:2.5px solid var(--stbr-emerald); }
+  .co-b { left:50%; width:42%; background:rgba(255,210,63,0.22); border:2.5px solid var(--stbr-yellow); }
+  .co .ct { font-family:var(--font-body); font-weight:800; font-size:14px;
+            color:var(--stbr-green); text-transform:uppercase; letter-spacing:0.06em; }
+  .co-b .ct { color:var(--text-primary); }
+  .co .cb { font-family:var(--font-body); font-weight:600; font-size:16.5px;
+            color:var(--text-primary); margin-top:6px; line-height:1.35; }
+  .foot { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+          color:var(--text-muted); }
+</style>
+  <div class="card">
+    <div class="stbr-eyebrow">the account your pool will create &mdash; four of them in the lab</div>
+    <h2 class="viz-title">anatomy of a nonce account</h2>
+    <div class="meta">
+      <div class="chip">owner: System Program 1111&hellip;1111</div>
+      <div class="chip">size: 80 bytes</div>
+      <div class="chip">rent-exempt: ask the RPC for 80 bytes</div>
+    </div>
+    <div class="bar">
+      <div class="seg seg-plain" style="width:9%;flex:none;"><div class="sn">version</div><div class="sb">4 B</div></div>
+      <div class="seg seg-plain" style="width:12%;flex:none;"><div class="sn">state</div><div class="sb">4 B &middot; Initialized</div></div>
+      <div class="seg seg-auth" style="width:30%;flex:none;"><div class="sn">authority pubkey</div><div class="sb">32 B</div></div>
+      <div class="seg seg-nonce" style="width:32%;flex:none;"><div class="sn">nonce value</div><div class="sb">32 B &middot; stored blockhash</div></div>
+      <div class="seg seg-plain" style="width:17%;flex:none;"><div class="sn" style="font-size:16px;">lamports<br>PerSignature</div><div class="sb">8 B</div></div>
+    </div>
+    <div class="callouts">
+      <div class="cline cline-a"></div>
+      <div class="cline cline-b"></div>
+      <div class="co co-a">
+        <div class="ct">authority pubkey</div>
+        <div class="cb">merchant key: only this signer can advance the nonce</div>
+      </div>
+      <div class="co co-b">
+        <div class="ct">nonce value</div>
+        <div class="cb">copied into the transaction&rsquo;s <span style="font-family:var(--font-mono);font-weight:700;">recentBlockhash</span> field</div>
+      </div>
+    </div>
+    <div class="foot">byte layout: version (4) &middot; state (4) &middot; authority (32) &middot; nonce value (32) &middot; lamportsPerSignature (8) = 80 bytes &mdash; the two 4-byte fields are widened for legibility</div>
+  </div>
+</div>
+</body></html>

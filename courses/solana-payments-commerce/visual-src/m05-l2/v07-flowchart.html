@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One billing tick, from crank to ledger
+     purpose: place every lab file in a single causal chain before the reader wires the last link
+     data: crank tick -> fetch SubscriptionDelegation (currentPeriodStartTs, expiresAtTs, terms) -> decidePull guard guard exits: canceled -> skip; expired -> skip; too-early -> skip guard "due" -> getTransferSubscriptionInstructionAsync -> program checks (period elapsed, destination declared, caller authorized, terms match) -> TransferChecked CPI moves 15 USDC -> signature signature -> recordInvoice -> backoffice orders ledger row (exactly-once on signature)
+     prompt: Vertical flowchart of one billing tick. Nodes in order: crank tick, fetch subscription state, decidePull guard as a diamond with three refusal exits to a "skip, no fee spent" terminal, then the pull instruction, the program's own checks listed in one node, the token transfer, and the ledger write as the final node. Mark the guard as "your code" and the program checks as "enforced on-chain". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:537px;height:479px;bottom:-289px;right:-289px;border-radius:52% 37% 42% 45% / 46% 52% 59% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title.sm { font-size:44px; margin-bottom:10px; }
+  .chain { display:flex; flex-direction:column; }
+  .row { display:flex; align-items:center; width:100%; }
+  .col780 { width:820px; flex:none; display:flex; flex-direction:column; align-items:center; }
+  .n { width:820px; background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+       border-radius:var(--radius-lg); padding:8px 22px; display:flex;
+       align-items:center; gap:16px; }
+  .n .nm { font-family:var(--font-display); font-weight:900; font-size:20px;
+           color:var(--text-primary); white-space:nowrap; }
+  .n .sub { font-family:var(--font-mono); font-weight:600; font-size:13px;
+            color:var(--text-secondary); line-height:1.35; }
+  .n .tag { margin-left:auto; font-family:var(--font-body); font-weight:900;
+            font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+            border-radius:var(--radius-pill); padding:4px 12px; white-space:nowrap; }
+  .n.guard { background:var(--stbr-yellow); border-width:3px; }
+  .n.guard .nm, .n.guard .sub { color:var(--stbr-dark); }
+  .n.guard .tag { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .n.onchain { border-color:var(--stbr-emerald); }
+  .n.onchain .tag { background:var(--stbr-emerald); color:var(--text-on-brand); }
+  .n.final { background:var(--surface-inverse); }
+  .n.final .nm { color:var(--text-on-dark); }
+  .n.final .sub { color:var(--stbr-cream); opacity:.85; }
+  .varr { display:flex; align-items:center; gap:8px; height:26px; }
+  .varr .stack { display:flex; flex-direction:column; align-items:center; }
+  .varr .st { width:0; height:14px; border-left:3px solid var(--stbr-dark); }
+  .varr .hd { width:0; height:0; border-left:8px solid transparent;
+              border-right:8px solid transparent; border-top:11px solid var(--stbr-dark); }
+  .varr .albl { font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+                color:var(--stbr-green); }
+  .ha { display:flex; align-items:center; width:96px; flex:none; }
+  .ha .hl { width:84px; border-top:3px solid var(--stbr-dark); }
+  .ha .hh { width:0; height:0; border-top:8px solid transparent;
+            border-bottom:8px solid transparent; border-left:12px solid var(--stbr-dark); }
+  .skip { width:500px; flex:none; background:var(--surface-card);
+          border:2.5px dashed var(--border-strong); border-radius:var(--radius-lg);
+          padding:10px 18px; }
+  .skip .nm { font-family:var(--font-display); font-weight:900; font-size:18px;
+              color:var(--text-primary); }
+  .rchip { font-family:var(--font-mono); font-weight:700; font-size:12px;
+           color:var(--text-primary); background:var(--surface-paper);
+           border:1.5px solid var(--border-strong); border-radius:var(--radius-pill);
+           padding:2px 9px; margin:5px 4px 0 0; display:inline-block; }
+</style>
+  <div class="stbr-eyebrow">every lab file in one causal chain</div>
+  <h2 class="viz-title sm">one billing tick, from crank to ledger</h2>
+  <div class="chain">
+    <div class="row"><div class="col780">
+      <div class="n"><span class="nm">crank tick</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="n"><span class="nm">fetch SubscriptionDelegation</span>
+        <span class="sub">currentPeriodStartTs &middot; expiresAtTs &middot; terms</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span></div>
+    </div></div>
+    <div class="row">
+      <div class="col780">
+        <div class="n guard"><span class="nm">decidePull guard</span>
+          <span class="sub">refuse or continue &mdash; decided off-chain, for free</span>
+          <span class="tag">your code</span></div>
+      </div>
+      <div class="ha"><div class="hl"></div><div class="hh"></div></div>
+      <div class="skip">
+        <span class="nm">skip &mdash; no fee spent</span>
+        <span class="rchip">canceled &rarr; skip</span><span class="rchip">expired &rarr; skip</span><span class="rchip">too-early &rarr; skip</span>
+      </div>
+    </div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span><span class="albl">&ldquo;due&rdquo;</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="n"><span class="nm" style="font-family:var(--font-mono);font-size:16.5px;font-weight:800;">getTransferSubscriptionInstructionAsync</span>
+        <span class="sub">builds the pull instruction</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="n onchain"><span class="nm">program checks</span>
+        <span class="sub">period elapsed &middot; destination declared &middot; caller authorized &middot; terms match</span>
+        <span class="tag">enforced on-chain</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="n"><span class="nm">TransferChecked CPI</span>
+        <span class="sub">moves 15 USDC</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span><span class="albl">signature</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="n"><span class="nm">recordInvoice</span>
+        <span class="sub">keyed on the signature</span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span></div>
+    </div></div>
+    <div class="row"><div class="col780">
+      <div class="n final"><span class="nm">backoffice orders ledger row</span>
+        <span class="sub">exactly-once on signature</span></div>
+    </div></div>
+  </div>
+</div>
+</body></html>

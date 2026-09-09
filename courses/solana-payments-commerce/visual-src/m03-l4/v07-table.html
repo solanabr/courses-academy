@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The registry-ready checklist, four claims and their evidence
+     purpose: turn the solo deliverable into a concrete evidence table the reader can copy into their repo
+     data: claim: spec conformance | evidence: SMOKE PASS output from npx tsx drop-blink/smoke.ts | kind: gate claim: CORS on every action route and on actions.json | evidence: curl header dumps showing Access-Control-Allow-Origin: * | kind: gate claim: actions.json reachable at the deployment domain root | evidence: fetch of https://<domain>/actions.json, proxy rule verified | kind: gate claim: submission readiness for Dialect's manual review | evidence: public action URL plus contact; named env var for a lookup API key, never committed | kind: prep footer: deliberately absent, any external render-surface claim and any registry timeline
+     prompt: Designed table, columns Claim, Evidence, Kind. Four rows from data; render the two kind values (gate vs prep) as distinct badges. A footer row spanning all columns states what the checklist deliberately does not claim. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:513px;bottom:-309px;left:-309px;border-radius:61% 54% 55% 42% / 55% 63% 53% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:50px; }
+  .chk { width:100%; border-collapse:separate; border-spacing:0; margin-top:16px;
+         background:var(--surface-card); border-radius:var(--radius-lg); overflow:hidden;
+         border:2px solid var(--border-subtle); }
+  .chk th { background:var(--surface-inverse); color:var(--stbr-cream);
+            font-family:var(--font-body); font-weight:800; font-size:15px; letter-spacing:.06em;
+            text-transform:uppercase; text-align:left; padding:15px 22px; }
+  .chk td { padding:16px 22px; border-top:1.5px solid var(--border-subtle); vertical-align:top;
+            font-family:var(--font-body); font-size:15.5px; line-height:1.45; }
+  .chk td.claim { font-weight:700; color:var(--text-primary); width:33%; }
+  .chk td.ev { color:var(--text-secondary); }
+  .chk td.ev code { font-family:var(--font-mono); font-size:13.5px; color:var(--text-primary);
+                    background:var(--surface-paper); border:1px solid var(--border-subtle);
+                    border-radius:var(--radius-xs); padding:1px 6px; }
+  .chk td.kind { width:12%; }
+  .badge { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:12px;
+           letter-spacing:.08em; text-transform:uppercase; padding:4px 14px;
+           border-radius:var(--radius-pill); }
+  .badge.gate { background:var(--stbr-emerald); color:var(--stbr-cream); }
+  .badge.prep { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .chk tr.prep-row td { background:rgba(255,210,63,0.12); }
+  .chk td.foot { background:var(--surface-paper); color:var(--text-muted);
+                 font-size:14.5px; font-style:italic; }
+  .chk td.foot b { color:var(--text-secondary); font-style:normal; }
+</style>
+  <div class="stbr-eyebrow">the solo deliverable, as evidence</div>
+  <h2 class="viz-title">the registry-ready checklist</h2>
+  <table class="chk">
+    <tr><th>claim</th><th>evidence</th><th>kind</th></tr>
+    <tr>
+      <td class="claim">spec conformance</td>
+      <td class="ev"><code>SMOKE PASS</code> output from <code>npx tsx drop-blink/smoke.ts</code></td>
+      <td class="kind"><span class="badge gate">gate</span></td>
+    </tr>
+    <tr>
+      <td class="claim">CORS on every action route and on <code style="font-family:var(--font-mono);font-size:13.5px;">actions.json</code></td>
+      <td class="ev">curl header dumps showing <code>Access-Control-Allow-Origin: *</code></td>
+      <td class="kind"><span class="badge gate">gate</span></td>
+    </tr>
+    <tr>
+      <td class="claim">actions.json reachable at the deployment domain root</td>
+      <td class="ev">fetch of <code>https://&lt;domain&gt;/actions.json</code>, proxy rule verified</td>
+      <td class="kind"><span class="badge gate">gate</span></td>
+    </tr>
+    <tr class="prep-row">
+      <td class="claim">submission readiness for Dialect's manual review</td>
+      <td class="ev">public action URL plus contact; named env var for a lookup API key &mdash; never committed</td>
+      <td class="kind"><span class="badge prep">prep</span></td>
+    </tr>
+    <tr>
+      <td class="foot" colspan="3"><b>deliberately absent:</b> any external render-surface claim, and any registry timeline.</td>
+    </tr>
+  </table>
+</div>
+</body></html>

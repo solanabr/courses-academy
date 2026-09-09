@@ -1,0 +1,118 @@
+id: lesson-spc-m06-l2
+slug: m06-l2
+title: "Acceptance and corridors: Stripe, MoonPay Commerce, and PIX"
+skills:
+  - payment-model-selection
+  - brazil-compliance
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q5
+        prompt: "A US buyer pays Wavelength for a record with USDC on Solana through Stripe's pay-with-crypto. You check the Stripe dashboard the next morning. What did you receive, and what is the refund path?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "USDC in a Stripe-custodied wallet you withdraw on-chain, with refunds issued as on-chain reversals of the original transfer."
+            correct: false
+            feedback: "Settlement is to a fiat balance, and on-chain transfers are not reversible; refunds are push payments as stablecoins."
+          - id: c
+            label: "Nothing until a 24-hour finalization clears, after which the buyer must re-initiate any refund from their wallet."
+            correct: false
+            feedback: "Settlement is to your fiat balance, and refunds are merchant-initiated push payments, not a buyer re-initiation."
+          - id: d
+            label: "A fiat balance, with refunds pushed as stablecoins to whichever wallet the buyer nominates at refund time rather than the originating one."
+            correct: false
+            feedback: "The settlement half is right and the return address is not: the stablecoin goes back to the wallet the payment came from. Letting a payer nominate a fresh destination for a refund is how refund flows get farmed, which is why the originating-wallet rule shows up on every push rail in this course."
+          - id: a
+            label: "A fiat balance: Stripe settles the sale in fiat, and refunds go back as stablecoins to the originating wallet."
+            correct: true
+            feedback: "The legs are not symmetric; you receive a currency you never converted, while the return leg has to be a stablecoin push because the chain issues no reversal. Two units, one order."
+        explanation: "Stripe pay-with-crypto accepts USDC on Solana but settles to your fiat Stripe balance, so you are not holding crypto. Refunds are push payments of stablecoins back to the originating wallet, the same reverse-transfer shape you built in the reconciliation lesson. There is no chargeback and no on-chain reversal."
+      - id: q6
+        prompt: "A wave of Brazilian buyers expects to pay Wavelength with PIX. Which corridor choice matches the research, and what is the settlement expectation?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Sphere, whose public page confirms BRL settlement for PIX buyers, same business day."
+            correct: false
+            feedback: "Sphere is the right row for the wrong reason. Its public page quotes settlement timing, under 30 minutes, and never states the settlement asset, so BRL is your assumption and not its claim. That cell stays marked confirm-with-vendor."
+          - id: c
+            label: "MoonPay Commerce, the only processor in the roster offering a PIX payout."
+            correct: false
+            feedback: "Sphere is the PIX anchor in the research; MoonPay Commerce is not the PIX choice here."
+          - id: a
+            label: "Stripe pay-with-crypto, which lists PIX among its supported settlement rails for Brazil."
+            correct: false
+            feedback: "Stripe's crypto acceptance is stablecoin-network-based; PIX is Sphere's rail, not Stripe's."
+          - id: b
+            label: "Sphere, whose rails include PIX alongside SEPA and ACH, with settlement quoted under 30 minutes."
+            correct: true
+            feedback: "A corridor turns on which local rail a provider touches, not on size."
+        explanation: "Sphere is the Brazil corridor anchor: its rails include PIX alongside SEPA and ACH, with settlement quoted under 30 minutes. That is exactly why a corridor decision is a per-geography table rather than one processor: Sphere wins Brazil and would do nothing for your US card buyer."
+      - id: q7
+        prompt: "Wavelength puts a $30 sticker on the August pressing and takes payment in a USD-pegged stablecoin. A buyer asks why the figure they are charged is not rounded off a live market rate. How should the storefront set that number, and where does price-feed depth belong?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "USD-priced records are charged in exact USDC 1:1; oracle pricing belongs to volatile assets and stays out of this course's scope."
+            correct: true
+            feedback: "A USD-pegged unit needs no conversion, leaving no rate to fetch and no spread to carry. The peg is an assumption, though, and on a Token-2022 mint (not classic USDC) a transfer fee can still change what lands, which is why the roster check stays."
+          - id: b
+            label: "You must run your own price feed for every record, since oracle integration is a core payments-course skill."
+            correct: false
+            feedback: "For a USD-pegged stablecoin the display price is 1:1; oracle depth is handed off, not a core skill here."
+          - id: a
+            label: "USDC floats against USD like any other token, so you quote a mid-price off an oracle, eat the spread, and wire that feed here in full."
+            correct: false
+            feedback: "USDC is a USD peg charged 1:1, so there is no spread to eat, and deep oracle pricing is not taught in this course."
+          - id: d
+            label: "Charge 1:1 now, and treat oracle pricing for volatile assets, with its staleness and spread rules, as work this course still owes you."
+            correct: false
+            feedback: "The 1:1 half is right; the promissory note is not one this course wrote. Staleness windows, confidence intervals and spread policy are handed off to DeFi and RWA Engineering by name, and the corridor record notes the handoff rather than teaching a quarter of it."
+        explanation: "Because USDC is a USD peg, a USD-priced record is charged as the same number of USDC, 1:1, with no oracle needed. Display pricing only gets interesting for volatile assets, and that oracle-based pricing depth is deliberately out of scope here — DeFi and RWA Engineering territory, not a payments-course skill. Building a price feed for a pegged stablecoin is wasted work."
+      - id: q8
+        prompt: "Writing Wavelength's corridor decision record, you cite MoonPay Commerce. What is the accurate framing of what it is and how you cite its volume?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "It is ex-Helio, and the $40M figure comes via Solana's ecosystem roundup, so it is third-party verified."
+            correct: false
+            feedback: "The roundup reports MoonPay reporting itself, so the chain has two links and the number is still the vendor's chosen one. Publication elsewhere changes who repeated a figure, not who measured it, and a flow figure for a young product decays whoever prints it."
+          - id: c
+            label: "It is the Solana Foundation's official acceptance processor, and its volume comes from verifiable on-chain reads."
+            correct: false
+            feedback: "It is a MoonPay product, not a Foundation processor, and the figure is a marketed dated number, not an on-chain read."
+          - id: b
+            label: "It is a Stripe competitor built from scratch in 2026, and its $40M single-payment volume is an audited constant you can quote flat in the record."
+            correct: false
+            feedback: "It is ex-Helio rather than a from-scratch build, and marketed volume is a moving figure, not an audited constant."
+          - id: a
+            label: "It is ex-Helio (hel.io redirects into MoonPay), and volume figures carry a source and date because the number moves."
+            correct: true
+            feedback: "A redirect is the evidence of who owns the product now; a marketed figure is live."
+        explanation: "MoonPay Commerce is the former Helio: hel.io redirects into MoonPay's commerce arm. Its marketed volume, over $40M in single-payment volume since the October 2025 launch with 88% on Solana, is a moving figure, so the decision record cites it with source and date. Treating any marketed volume number as a fixed constant is the footgun the whole numbers-discipline rule guards against."
+      - id: q9
+        prompt: "Wavelength's BR corridor is live. A São Paulo buyer pays in USDC out of a wallet whose keys they hold, routed through the corridor's Brazilian intermediary, and Wavelength sits in Brazil too. Run the boundary section's five questions: where does this movement land as of mid-2026, and what do you ask next?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "Inside the FX perimeter: art. 76-A III reaches self-custody transfers with a PSAV leg and no border, so check the provider's licence."
+            correct: true
+            feedback: "The perimeter test is 76-A, whose third bucket pulls purely domestic self-custody flows in whenever a PSAV is a leg. In force since 2026-02-02, and dated: re-pull the text first."
+          - id: d
+            label: "Outside the perimeter for now: the rules reaching a self-custody leg through a PSAV are Res. 561's eFX articles, which take force on 2026-10-01."
+            correct: false
+            feedback: "Two texts, two clocks. Res. 561 governs the settlement leg between an eFX provider and a foreign counterparty and commences 2026-10-01; the perimeter test that catches this domestic flow is art. 76-A of Res. 277, in force since 2026-02-02. Citing the wrong normativo is its own failure mode."
+          - id: b
+            label: "Outside it: art. 76-B defines an international payment as resident to non-resident, and two Brazilian residents never satisfy that test."
+            correct: false
+            feedback: "76-B only defines the international bucket, one of four, and is itself broader than that; a domestic flow still enters the perimeter through the self-custody reach of 76-A III."
+          - id: c
+            label: "Outside it until PL 4.308 passes, since only that bill's reclassification of stablecoins as foreign currency triggers the FX rules."
+            correct: false
+            feedback: "PL 4.308 is still a bill, and neither version reclassifies stablecoins: both keep them virtual assets and touch issuance and distribution. Res. 277's perimeter already applies."
+        explanation: "The perimeter test is art. 76-A of Resolução BCB 277, inserted by Res. 521 and in force for that article since 2026-02-02, and its third bucket is expressly the non-international one: transfers to or from a self-custodied wallet that involve no international payment. This flow crosses no border anywhere and sits inside anyway; put a border in it and it moves to the first bucket rather than out of the perimeter. 76-B only defines the international bucket, and is itself broader than resident-to-non-resident; PL 4.308 is a bill about issuance, not classification. The next check is the provider's authorization, which is question 2 of the method."

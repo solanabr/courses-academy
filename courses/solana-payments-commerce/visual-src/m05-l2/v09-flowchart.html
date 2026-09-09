@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: decidePull, the correct gauntlet
+     purpose: fix the check order and both bug fixes visually before the reader writes the solution
+     data: input (active, expiresAtTs, lastChargedTs, periodHours, now) -> active? --no-> refuse "canceled" active --yes-> expiresAtTs != 0 AND now >= expiresAtTs? --yes-> refuse "expired" --no-> now >= lastChargedTs + periodHours * 3600? --no-> refuse "too-early" --yes-> pull "due" annotations: the *3600 conversion fixes bug 1; the expiry diamond (with its zero-guard) fixes bug 2; boundary is inclusive at exactly one period
+     prompt: Vertical decision flowchart with three diamond checks in order: canceled, expired with the zero-means-never guard written inside the diamond, and the seconds-based period window with the times-3600 conversion visible in the expression. Three refusal exits on the left, one "due" exit at the bottom. Badge the two diamonds that correspond to the shipped bugs. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:443px;height:478px;bottom:-237px;right:-237px;border-radius:53% 49% 42% 39% / 65% 53% 59% 64%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:581px;height:519px;left:-336px;top:154px;border-radius:40% 62% 59% 35% / 51% 37% 49% 42%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title.sm { font-size:46px; margin-bottom:12px; }
+  .g { display:flex; flex-direction:column; }
+  .row { display:flex; align-items:center; width:100%; }
+  .left { width:396px; flex:none; display:flex; align-items:center; }
+  .main { width:920px; flex:none; display:flex; flex-direction:column; align-items:center; }
+  .refuse { width:300px; flex:none; background:var(--surface-inverse);
+            border-radius:var(--radius-lg); padding:9px 18px; }
+  .refuse .r1 { font-family:var(--font-body); font-weight:900; font-size:11px;
+                letter-spacing:.09em; text-transform:uppercase; color:var(--stbr-cream);
+                opacity:.75; }
+  .refuse .r2 { font-family:var(--font-display); font-weight:900; font-size:19px;
+                color:var(--text-on-dark); }
+  .ha { width:96px; flex:none; display:flex; align-items:center; }
+  .ha .hh { width:0; height:0; border-top:7px solid transparent;
+            border-bottom:7px solid transparent; border-right:11px solid var(--stbr-dark); }
+  .ha .hl { width:52px; border-top:3px solid var(--stbr-dark); }
+  .ha .no { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+            color:var(--text-secondary); padding:0 6px; }
+  .node { width:920px; display:flex; align-items:center; gap:14px;
+          background:var(--surface-card); border:3px solid var(--stbr-emerald);
+          border-radius:var(--radius-lg); padding:9px 20px; }
+  .node .dmark { flex:0 0 16px; width:16px; height:16px; background:var(--stbr-emerald);
+                 transform:rotate(45deg); }
+  .node .q { font-family:var(--font-mono); font-weight:800; font-size:18px;
+             color:var(--text-primary); }
+  .node .q em { font-style:normal; background:var(--stbr-yellow); color:var(--stbr-dark);
+                padding:0 6px; border-radius:6px; }
+  .node .why { font-family:var(--font-body); font-weight:700; font-size:12px;
+               color:var(--text-muted); }
+  .node .badge { margin-left:auto; font-family:var(--font-body); font-weight:900;
+                 font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+                 background:var(--stbr-yellow); color:var(--stbr-dark);
+                 border:2px solid var(--stbr-dark); border-radius:var(--radius-pill);
+                 padding:4px 12px; white-space:nowrap; }
+  .io { width:920px; background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+        border-radius:var(--radius-lg); padding:9px 20px; display:flex;
+        align-items:center; gap:14px; }
+  .io .cap { font-family:var(--font-body); font-weight:900; font-size:11px;
+             letter-spacing:.09em; text-transform:uppercase; color:var(--text-muted); }
+  .io .flds { font-family:var(--font-mono); font-weight:700; font-size:15.5px;
+              color:var(--text-primary); }
+  .due { width:920px; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+         padding:11px 20px; display:flex; align-items:center; gap:16px; }
+  .due .d1 { font-family:var(--font-display); font-weight:900; font-size:22px;
+             color:var(--text-on-brand); }
+  .due .d2 { font-family:var(--font-body); font-weight:700; font-size:13.5px;
+             color:var(--stbr-cream); margin-left:auto; text-align:right; }
+  .varr { display:flex; align-items:center; gap:8px; height:26px; }
+  .varr .stack { display:flex; flex-direction:column; align-items:center; }
+  .varr .st { width:0; height:14px; border-left:3px solid var(--stbr-dark); }
+  .varr .hd { width:0; height:0; border-left:8px solid transparent;
+              border-right:8px solid transparent; border-top:11px solid var(--stbr-dark); }
+  .varr .yes { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+               color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">check order + both bug fixes, before you write the solution</div>
+  <h2 class="viz-title sm">decidePull &mdash; the correct gauntlet</h2>
+  <div class="g">
+    <div class="row"><div class="left"></div><div class="main">
+      <div class="io"><span class="cap">input</span>
+        <span class="flds">active &middot; expiresAtTs &middot; lastChargedTs &middot; periodHours &middot; now</span></div>
+    </div></div>
+    <div class="row"><div class="left"></div><div class="main">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span></div>
+    </div></div>
+    <div class="row">
+      <div class="left">
+        <div class="refuse"><div class="r1">refuse</div><div class="r2">canceled</div></div>
+        <div class="ha"><div class="hh"></div><div class="hl"></div><span class="no">no</span></div>
+      </div>
+      <div class="main">
+        <div class="node"><span class="dmark"></span><span class="q">active?</span></div>
+      </div>
+    </div>
+    <div class="row"><div class="left"></div><div class="main">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span><span class="yes">yes</span></div>
+    </div></div>
+    <div class="row">
+      <div class="left">
+        <div class="refuse"><div class="r1">refuse</div><div class="r2">expired</div></div>
+        <div class="ha"><div class="hh"></div><div class="hl"></div><span class="no">yes</span></div>
+      </div>
+      <div class="main">
+        <div class="node"><span class="dmark"></span>
+          <span class="q">expiresAtTs != 0 &amp;&amp; now &gt;= expiresAtTs?</span>
+          <span class="why">0 means never</span>
+          <span class="badge">fixes bug 2</span></div>
+      </div>
+    </div>
+    <div class="row"><div class="left"></div><div class="main">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span><span class="yes">no</span></div>
+    </div></div>
+    <div class="row">
+      <div class="left">
+        <div class="refuse"><div class="r1">refuse</div><div class="r2">too-early</div></div>
+        <div class="ha"><div class="hh"></div><div class="hl"></div><span class="no">no</span></div>
+      </div>
+      <div class="main">
+        <div class="node"><span class="dmark"></span>
+          <span class="q">now &gt;= lastChargedTs + periodHours <em>* 3600</em>?</span>
+          <span class="badge">fixes bug 1</span></div>
+      </div>
+    </div>
+    <div class="row"><div class="left"></div><div class="main">
+      <div class="varr"><span class="stack"><span class="st"></span><span class="hd"></span></span><span class="yes">yes</span></div>
+    </div></div>
+    <div class="row"><div class="left"></div><div class="main">
+      <div class="due">
+        <span class="d1">pull &mdash; &ldquo;due&rdquo;</span>
+        <span class="d2">boundary is inclusive: due at exactly one period</span>
+      </div>
+    </div></div>
+  </div>
+</div>
+</body></html>

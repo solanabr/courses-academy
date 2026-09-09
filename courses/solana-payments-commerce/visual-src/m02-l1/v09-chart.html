@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Cost anatomy of a payment: first-time vs repeat customer
+     purpose: make the one-time ATA rent visibly separate from the recurring flat fee so the cost model lands as a shape, not a number
+     data: First-time customer: base fee 5000 lamports (flat, a small fraction of one cent: $0.00075 at $150/SOL, $0.0015 at $300 -- quote the band) + ATA rent, the rent-exempt minimum for 165 bytes, read from getMinimumBalanceForRentExemption rather than hardcoded (1,488,440 lamports on devnet 2026-09-07; SIMD-0437 is stepping the rate down, so re-read it) (one-time, refundable-in-kind infrastructure deposit paid by the fee payer) Repeat customer: base fee 5000 lamports only; the idempotent create is a no-op Annotation: rent is per (customer, mint) pair, paid once ever; the base fee recurs per transaction and does not scale with amount
+     prompt: Two stacked bars, one per customer type. The first-time bar has two segments, a thin base-fee segment and a larger ATA-rent segment, each labeled with its value; the repeat bar has only the thin base-fee segment. Annotate that the rent segment is one-time per customer-mint pair and the base fee recurs per transaction. Do not use a log scale; the visual disproportion between segments is the point.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:436px;top:-226px;right:-226px;border-radius:37% 56% 63% 46% / 36% 54% 62% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .plot { position:relative; height:430px; border-bottom:3px solid var(--stbr-dark);
+    display:flex; justify-content:flex-start; align-items:flex-end; gap:330px; padding:0 0 0 120px;
+    margin-top:14px; }
+  .bar { position:relative; width:290px; }
+  .rent { height:400px; background:var(--surface-accent); border:2px solid var(--stbr-yellow-700);
+    border-bottom:none; border-radius:var(--radius-md) var(--radius-md) 0 0;
+    padding:26px 24px; }
+  .rent h3 { font-size:24px; font-weight:var(--weight-black); color:var(--text-on-accent); margin:0 0 8px; }
+  .rent .d { font-family:var(--font-body); font-size:14px; color:var(--text-on-accent); line-height:1.5; }
+  .rent .once { display:inline-block; margin-top:12px; background:var(--stbr-dark);
+    color:var(--text-on-dark); font-family:var(--font-display); font-weight:800; font-size:11.5px;
+    letter-spacing:0.1em; text-transform:uppercase; padding:5px 12px; border-radius:var(--radius-pill); }
+  .basefee { height:4px; background:var(--stbr-emerald); }
+  .sidechip { position:absolute; left:calc(100% + 22px); bottom:44px; white-space:nowrap;
+    font-family:var(--font-body); font-weight:700; font-size:14px; color:var(--text-primary);
+    background:var(--surface-card); border:1.5px solid var(--stbr-emerald); padding:5px 13px;
+    border-radius:var(--radius-pill); }
+  .sideline { position:absolute; left:100%; bottom:1px; width:44px; height:2px; background:var(--stbr-emerald); }
+  .sidevert { position:absolute; left:calc(100% + 42px); bottom:3px; width:2px; height:41px; background:var(--stbr-emerald); }
+  .overchip { position:absolute; bottom:56px; left:0; width:290px; text-align:center; }
+  .overchip .c { display:inline-block; font-family:var(--font-body); font-weight:700; font-size:14px;
+    color:var(--text-primary); background:var(--surface-card); border:1.5px solid var(--stbr-emerald);
+    padding:5px 13px; border-radius:var(--radius-pill); }
+  .overchip .s { display:block; font-size:12px; color:var(--text-muted); margin-top:4px; }
+  .overline { position:absolute; bottom:8px; left:50%; width:2px; height:44px; background:var(--stbr-emerald); }
+  .names { display:flex; gap:330px; padding-left:120px; margin-top:10px; }
+  .names .n { width:290px; text-align:center; font-family:var(--font-display); font-weight:800;
+    font-size:17px; color:var(--text-primary); }
+  .anno { margin-top:16px; background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:13px 20px; font-family:var(--font-body); font-size:14px;
+    color:var(--text-secondary); line-height:1.5; }
+  .anno b { color:var(--stbr-emerald); }
+</style>
+  <div class="stbr-eyebrow">cost anatomy of a payment</div>
+  <h2 class="viz-title">first-time vs repeat customer</h2>
+  <div class="plot">
+    <div class="bar">
+      <div class="rent">
+        <h3>ATA rent &mdash; 165-byte rent-exempt minimum</h3>
+        <div class="d">2,040,000 lamports &mdash; a one-time, refundable-in-kind infrastructure deposit, paid by the fee payer</div>
+        <div class="once">one-time &middot; per (customer, mint) pair</div>
+      </div>
+      <div class="basefee"></div>
+      <div class="sideline"></div>
+      <div class="sidevert"></div>
+      <div class="sidechip">base fee 5,000 lamports</div>
+    </div>
+    <div class="bar">
+      <div class="basefee"></div>
+      <div class="overline"></div>
+      <div class="overchip"><span class="c">base fee only &mdash; 5,000 lamports</span>
+        <span class="s">the idempotent create is a no-op</span></div>
+    </div>
+  </div>
+  <div class="names"><div class="n">first-time customer</div><div class="n">repeat customer</div></div>
+  <div class="anno"><b>rent</b> is paid once, ever, per (customer, mint) pair &middot; <b>the base fee</b> (flat, a small fraction of one cent at any SOL price) recurs per transaction and does not scale with amount &middot; drawn to scale &mdash; the 5,000-lamport fee is a hairline next to the rent deposit</div>
+</div>
+</body></html>

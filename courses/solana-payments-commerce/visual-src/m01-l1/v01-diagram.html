@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One transaction, two programs, one settled payment
+     purpose: assemble the definitions into the actual shape of the fetched record before the summary names its fields
+     data: transaction (signature 3qE5...88kXA, blockTime -> settled 2026-08-22) contains two instructions instruction 1: program spl-token, type transferChecked -> authority (the sender's wallet) moves raw amount 36115 of mint EPjF...Dt1v; 6 decimals scale it to 0.036115 USDC instruction 2: program spl-memo -> attaches note 079cea64791142a59e12a3491a425f90 both instructions settle together or not at all
+     prompt: One outer box labeled "transaction" carrying the truncated signature and the settlement date. Inside, two stacked instruction boxes: the spl-token transferChecked box listing authority, raw amount 36115, and mint, with a side note "6 decimals: 36115 -> 0.036115 USDC"; the spl-memo box listing the memo string. A single bracket spanning both boxes labeled "settles together or not at all".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:564px;height:520px;bottom:-302px;right:-302px;border-radius:56% 39% 55% 45% / 50% 62% 49% 56%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:410px;height:468px;left:-220px;top:172px;border-radius:43% 45% 65% 52% / 63% 59% 59% 38%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tx-wrap { display:flex; align-items:stretch; gap:0; margin-top:8px; }
+  .tx { flex:1 1 auto; background:var(--surface-card); border:3px solid var(--stbr-dark);
+        border-radius:var(--radius-2xl); overflow:hidden; }
+  .tx-head { background:var(--surface-inverse); padding:18px 30px; display:flex;
+             align-items:center; gap:20px; }
+  .tx-head .lbl { font-family:var(--font-body); font-weight:800; font-size:14px;
+                  letter-spacing:.14em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .tx-head .sig { font-family:var(--font-mono); font-size:19px; font-weight:700;
+                  color:var(--text-on-dark); }
+  .tx-head .settled { margin-left:auto; font-family:var(--font-body); font-weight:700;
+                      font-size:15px; color:var(--text-on-dark); background:rgba(255,255,255,0.12);
+                      padding:6px 16px; border-radius:var(--radius-pill); }
+  .tx-body { padding:26px 30px; display:flex; flex-direction:column; gap:20px; }
+  .ix { border:2px solid rgba(0,139,76,0.35); background:rgba(0,139,76,0.05);
+        border-radius:var(--radius-lg); padding:18px 24px; }
+  .ix-head { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+  .ix-chip { font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.1em; text-transform:uppercase; color:#fff;
+             background:var(--stbr-emerald); padding:5px 13px; border-radius:var(--radius-pill); }
+  .ix-prog { font-family:var(--font-mono); font-weight:800; font-size:19px; color:var(--text-primary); }
+  .ix-type { font-family:var(--font-mono); font-size:16px; color:var(--text-secondary); }
+  .ix-rows { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .kv { display:block; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+        border-radius:var(--radius-md); padding:9px 14px; font-family:var(--font-mono);
+        font-size:15px; color:var(--text-primary); }
+  .kv b { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.08em;
+          text-transform:uppercase; color:var(--stbr-green); display:block; margin-bottom:2px; }
+  .dec-note { background:rgba(0,139,76,0.12); border:1.5px solid rgba(0,139,76,0.4);
+              border-radius:var(--radius-md); padding:9px 14px; font-family:var(--font-body);
+              font-weight:700; font-size:14px; color:var(--stbr-green); }
+  .bracket { flex:0 0 300px; display:flex; align-items:center; padding-left:0; }
+  .brk-line { flex:0 0 26px; align-self:stretch; margin:96px 0 44px 10px;
+              border:3.5px solid var(--stbr-dark); border-left:none;
+              border-radius:0 var(--radius-md) var(--radius-md) 0; }
+  .brk-lab { margin-left:18px; background:var(--stbr-yellow); color:var(--stbr-dark);
+             font-family:var(--font-body); font-weight:800; font-size:17px; line-height:1.3;
+             padding:14px 20px; border-radius:var(--radius-lg); max-width:230px; }
+</style>
+  <div class="stbr-eyebrow">the shape of the fetched record</div>
+  <h2 class="viz-title">one transaction, two programs, one settled payment</h2>
+  <div class="tx-wrap">
+    <div class="tx">
+      <div class="tx-head">
+        <span class="lbl">transaction</span>
+        <span class="sig">3qE5&hellip;88kXA</span>
+        <span class="settled">blockTime &rarr; settled 2026-08-22</span>
+      </div>
+      <div class="tx-body">
+        <div class="ix">
+          <div class="ix-head">
+            <span class="ix-chip">instruction 1</span>
+            <span class="ix-prog">spl-token</span>
+            <span class="ix-type">transferChecked</span>
+          </div>
+          <div class="ix-rows">
+            <span class="kv"><b>authority</b>the sender's wallet</span>
+            <span class="kv"><b>raw amount</b>36115</span>
+            <span class="kv"><b>mint</b>EPjF&hellip;Dt1v</span>
+            <span class="dec-note">6 decimals: 36115 &rarr; 0.036115 USDC</span>
+          </div>
+        </div>
+        <div class="ix">
+          <div class="ix-head">
+            <span class="ix-chip">instruction 2</span>
+            <span class="ix-prog">spl-memo</span>
+          </div>
+          <div class="ix-rows">
+            <span class="kv"><b>memo</b>079cea64791142a59e12a3491a425f90</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bracket">
+      <div class="brk-line"></div>
+      <div class="brk-lab">both instructions settle together &mdash; or not at all</div>
+    </div>
+  </div>
+</div>
+</body></html>

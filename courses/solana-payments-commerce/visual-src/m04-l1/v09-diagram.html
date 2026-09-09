@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: verifier as the course-wide acceptance harness
+     purpose: show that every later rung feeds signatures into the same verify() built today
+     data: today: verify(signature, expectedOrder) + processed-signatures store, gated by npm run verify:verifier next lesson: Helius webhook delivers signatures -> calls verify() before touching the orders ledger later rungs: subscriptions, gasless checkout, the offline fair queue -> every settled payment funnels its signature through the same verify() capstone: the acceptance harness re-runs verify() against every surface's payments as the ship gate
+     prompt: Funnel diagram. Four source nodes stacked on the left (next lesson's webhook, then subscriptions, gasless checkout, offline fair queue, then the capstone harness) each with an arrow carrying "signature" into one central verify(signature, expectedOrder) node built today, which feeds a single orders-ledger/fulfill node. Tag the central node "frozen interface, built this lesson". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:422px;height:361px;right:-238px;top:332px;border-radius:59% 59% 37% 55% / 63% 60% 41% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:517px;height:463px;bottom:-224px;left:530px;border-radius:60% 53% 43% 48% / 37% 44% 44% 45%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .funnel { display:flex; align-items:center; gap:0; margin-top:8px; }
+  .srcs { flex:0 0 470px; display:flex; flex-direction:column; gap:20px; }
+  .snode { height:80px; background:var(--surface-card); border:2px solid var(--stbr-emerald);
+           border-radius:var(--radius-lg); padding:10px 16px; display:flex;
+           align-items:center; justify-content:space-between; gap:12px; }
+  .snode .nm { font-family:var(--font-display); font-weight:800; font-size:18.5px;
+               color:var(--text-primary); line-height:1.15; }
+  .snode .nm small { display:block; font-family:var(--font-body); font-weight:700;
+                     font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+                     color:var(--stbr-green); margin-bottom:2px; }
+  .sig { flex:0 0 auto; font-family:var(--font-mono); font-size:12.5px; font-weight:700;
+         color:var(--stbr-green); background:rgba(0,139,76,0.09);
+         border:1.5px solid rgba(0,139,76,0.4); border-radius:var(--radius-pill);
+         padding:4px 11px; }
+  .lines { flex:0 0 140px; align-self:stretch; display:flex; align-items:center; }
+  .verify { flex:0 0 400px; background:var(--surface-inverse); border-radius:var(--radius-2xl);
+            padding:24px 28px; display:block; }
+  .verify .fn { display:block; font-family:var(--font-mono); font-weight:700; font-size:19px;
+                color:var(--text-on-dark); line-height:1.4; margin:12px 0 0; }
+  .verify .st { display:block; font-family:var(--font-body); font-size:14px;
+                color:rgba(245,232,202,0.8); margin:8px 0 0; }
+  .verify .gate { display:inline-block; font-family:var(--font-mono); font-size:13px;
+                  color:var(--stbr-cream); background:rgba(245,232,202,0.12);
+                  border-radius:var(--radius-md); padding:5px 11px; margin:12px 0 0; }
+  .frozen { display:inline-block; font-family:var(--font-body); font-weight:900;
+            font-size:12.5px; letter-spacing:.09em; text-transform:uppercase;
+            background:var(--stbr-yellow); color:var(--stbr-dark);
+            border-radius:var(--radius-pill); padding:6px 14px; }
+  .outx { flex:0 0 72px; height:0; border-top:2.5px solid var(--stbr-emerald); position:relative; }
+  .outx::after { content:""; position:absolute; right:-1px; top:-6px; width:0; height:0;
+      border-left:10px solid var(--stbr-emerald); border-top:6px solid transparent;
+      border-bottom:6px solid transparent; }
+  .ledger { flex:1 1 auto; background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+            border-radius:var(--radius-xl); padding:20px 20px; }
+  .ledger .nm { font-family:var(--font-display); font-weight:800; font-size:21px;
+                color:var(--text-primary); }
+  .ledger .sub { font-family:var(--font-body); font-size:13.5px; color:var(--text-muted);
+                 margin-top:4px; }
+</style>
+  <div class="stbr-eyebrow">every later rung feeds the verifier built today</div>
+  <h2 class="viz-title">verify() as the course-wide acceptance harness</h2>
+  <div class="funnel">
+    <div class="srcs">
+      <div class="snode"><span class="nm"><small>next lesson</small>Helius webhook</span><span class="sig">signature &rarr;</span></div>
+      <div class="snode"><span class="nm"><small>later rung</small>subscriptions</span><span class="sig">signature &rarr;</span></div>
+      <div class="snode"><span class="nm"><small>later rung</small>gasless checkout</span><span class="sig">signature &rarr;</span></div>
+      <div class="snode"><span class="nm"><small>later rung</small>offline fair queue</span><span class="sig">signature &rarr;</span></div>
+      <div class="snode"><span class="nm"><small>capstone</small>acceptance harness re-run</span><span class="sig">signature &rarr;</span></div>
+    </div>
+    <div class="lines">
+      <svg width="140" height="480" viewBox="0 0 140 480">
+        <line x1="0" y1="40"  x2="128" y2="240" stroke="#008B4C" stroke-width="2.5"/>
+        <line x1="0" y1="140" x2="128" y2="240" stroke="#008B4C" stroke-width="2.5"/>
+        <line x1="0" y1="240" x2="128" y2="240" stroke="#008B4C" stroke-width="2.5"/>
+        <line x1="0" y1="340" x2="128" y2="240" stroke="#008B4C" stroke-width="2.5"/>
+        <line x1="0" y1="440" x2="128" y2="240" stroke="#008B4C" stroke-width="2.5"/>
+        <polygon points="126,232 126,248 140,240" fill="#008B4C"/>
+      </svg>
+    </div>
+    <div class="verify">
+      <span class="frozen">frozen interface &mdash; built this lesson</span>
+      <span class="fn">verify(signature, expectedOrder)</span>
+      <span class="st">+ processed-signatures store</span>
+      <span class="gate">gated by: npm run verify:verifier</span>
+    </div>
+    <div class="outx"></div>
+    <div class="ledger">
+      <div class="nm">orders ledger / fulfill</div>
+      <div class="sub">touched only after verify() says verified</div>
+    </div>
+  </div>
+</div>
+</body></html>

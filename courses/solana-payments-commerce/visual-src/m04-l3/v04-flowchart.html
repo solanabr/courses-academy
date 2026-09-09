@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The refund pipeline, with its one non-negotiable gate
+     purpose: show the refund as a guarded reverse push payment whose finality check protects the merchant, not the buyer
+     data: refund request (origin signature + reason) -> ledger lookup: row exists? already refunded? amount <= paid? -> getSignatureStatuses(origin): confirmationStatus === finalized? -> NO: refuse, wait (a fork-dropped payment refunded is money gone) -> YES: sendStablecoin via transfer-kit: to originating wallet, memo refund:<origin-sig>:<reason> -> recordRefund in ledger, linked to origin signature
+     prompt: Vertical flowchart. Entry node refund request, then two stacked guard diamonds: ledger checks (exists, not already refunded, amount within paid) and the finality check on the origin signature. The finality diamond's refuse branch is visually emphasized as the merchant-protecting gate. Success path flows to a transfer-kit push node and then a ledger record node linked back to the origin signature. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:487px;height:490px;bottom:-280px;left:443px;border-radius:57% 44% 60% 44% / 56% 39% 60% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 52px 36px; }
+  .flow { display:flex; flex-direction:column; align-items:flex-start; margin-top:12px; padding-left:120px; }
+  .n { width:680px; box-sizing:border-box; border-radius:var(--radius-lg); padding:11px 24px; text-align:center; }
+  .n .t { font-family:var(--font-display); font-weight:800; font-size:17.5px; color:var(--text-primary); }
+  .n .d { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:3px; line-height:1.3; }
+  .n code { font-family:var(--font-mono); font-size:.92em; }
+  .n.plain { background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .n.guard { background:var(--surface-card); border:2.5px solid var(--stbr-green); }
+  .n.guard .gtag { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; background:rgba(48,108,64,.12); color:var(--stbr-green); border-radius:var(--radius-pill); padding:2px 10px; margin-bottom:4px; }
+  .n.push { background:var(--surface-brand); }
+  .n.push .t { color:var(--text-on-brand); } .n.push .d { color:rgba(245,232,202,.85); }
+  .n.rec { background:var(--surface-inverse); }
+  .n.rec .t { color:var(--text-on-dark); } .n.rec .d { color:rgba(245,232,202,.75); }
+  .varr { height:26px; width:680px; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .varr .lbl { font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--stbr-green); }
+  .gaterow { display:flex; align-items:center; }
+  .gaterow .n { flex:0 0 680px; }
+  .harr { flex:0 0 74px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+  .harr .lbl { font-family:var(--font-body); font-weight:900; font-size:12px; letter-spacing:.08em; color:#a5342a; }
+  .refuse { flex:0 0 400px; background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:14px 20px; }
+  .refuse .t { font-family:var(--font-display); font-weight:900; font-size:17.5px; color:var(--stbr-dark); }
+  .refuse .d { font-family:var(--font-body); font-weight:700; font-size:12.5px; color:var(--stbr-dark); margin-top:4px; line-height:1.35; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">a guarded reverse push payment</div>
+  <h2 class="viz-title">the refund pipeline &mdash; and its one non-negotiable gate</h2>
+  <div class="flow">
+    <div class="n plain"><div class="t">refund request</div><div class="d">origin signature + reason</div></div>
+    <div class="varr"><svg width="16" height="22"><line x1="8" y1="0" x2="8" y2="15" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,22 3,13 13,13" fill="#1b231d"/></svg></div>
+    <div class="n guard"><span class="gtag">guard 1 &mdash; ledger checks</span><div class="t">row exists? &middot; already refunded? &middot; amount &le; paid?</div></div>
+    <div class="varr"><svg width="16" height="22"><line x1="8" y1="0" x2="8" y2="15" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,22 3,13 13,13" fill="#1b231d"/></svg></div>
+    <div class="gaterow">
+      <div class="n guard"><span class="gtag">guard 2 &mdash; the finality gate</span><div class="t"><code>getSignatureStatuses(origin)</code></div><div class="d"><code>confirmationStatus === 'finalized'</code>?</div></div>
+      <div class="harr"><span class="lbl">no</span><svg width="70" height="16"><line x1="0" y1="8" x2="58" y2="8" stroke="#a5342a" stroke-width="2.5"/><polygon points="70,8 56,2 56,14" fill="#a5342a"/></svg></div>
+      <div class="refuse"><div class="t">refuse &amp; wait</div><div class="d">a fork-dropped payment refunded is money gone &mdash; this gate protects the merchant, not the buyer</div></div>
+    </div>
+    <div class="varr"><span class="lbl">yes</span><svg width="16" height="22"><line x1="8" y1="0" x2="8" y2="15" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,22 3,13 13,13" fill="#008b4c"/></svg></div>
+    <div class="n push"><div class="t"><code>sendStablecoin</code> via transfer-kit</div><div class="d">to the originating wallet &middot; memo <code>refund:&lt;origin-sig&gt;:&lt;reason&gt;</code></div></div>
+    <div class="varr"><svg width="16" height="22"><line x1="8" y1="0" x2="8" y2="15" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,22 3,13 13,13" fill="#1b231d"/></svg></div>
+    <div class="n rec"><div class="t"><code>recordRefund</code> in the ledger</div><div class="d">linked to the origin signature</div></div>
+  </div>
+</div>
+</div>
+</body></html>

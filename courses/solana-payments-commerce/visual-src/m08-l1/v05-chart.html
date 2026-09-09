@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Cost anatomy of one sponsored checkout, in lamports
+     purpose: make the fee-versus-rent asymmetry visible so the reader budgets the right line
+     data: bar 1: base fee, 2 signatures at 5000 lamports each = 10,000 lamports (paid every checkout, gone forever) bar 2: ATA creation rent = the 165-byte rent-exempt minimum, 1,488,440 lamports on devnet as of 2026-09-07 (~0.0015 SOL; paid only when a token account is created; reclaimable by the BUYER closing the account, never by the sponsor; SIMD-0437 is stepping the rate down, so the figure is dated on the chart) ratio annotation: the rent event costs ~150x the dual-signature fee scale note: log scale, values in lamports
+     prompt: A two-bar log-scale chart per the data: a small bar for the 10,000-lamport dual-signature fee and a dominant bar for the ~1,488,440-lamport ATA rent. Annotate the ~150x ratio between the bars, and tag the rent bar "reclaimable by the buyer, not by you".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:402px;height:440px;right:-226px;top:107px;border-radius:52% 52% 45% 56% / 55% 38% 44% 41%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:440px;height:584px;bottom:-340px;left:498px;border-radius:63% 56% 45% 43% / 57% 64% 59% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl);
+          padding:40px 56px 34px; }
+  .plot { position:relative; height:440px; margin-top:56px; margin-left:96px; }
+  .grid { position:absolute; left:0; right:0; border-top:1.5px dashed var(--border-subtle); }
+  .gl { position:absolute; left:-96px; width:84px; text-align:right;
+        font-family:var(--font-body); font-size:13px; color:var(--text-muted);
+        margin-top:-8px; }
+  .base { position:absolute; left:0; right:0; bottom:0;
+          border-top:2.5px solid var(--stbr-dark); }
+  .bar { position:absolute; bottom:0; width:210px; border-radius:10px 10px 0 0; }
+  .b1 { left:250px; height:126px; background:var(--surface-brand); }
+  .b2 { left:700px; height:417px; background:var(--stbr-yellow);
+        border:2px solid var(--stbr-dark); }
+  .val { position:absolute; width:260px; font-family:var(--font-display);
+         font-weight:900; font-size:24px; color:var(--text-primary); line-height:1.05; }
+  .v1 { left:250px; bottom:136px; width:210px; text-align:center; }
+  .v2 { left:675px; bottom:429px; width:260px; text-align:center; }
+  .tag { position:absolute; left:716px; bottom:355px; width:178px; text-align:center;
+         font-family:var(--font-body); font-weight:700; font-size:13.5px; line-height:1.3;
+         color:var(--stbr-dark); background:rgba(255,255,255,0.55);
+         border:1.5px solid var(--stbr-dark); border-radius:var(--radius-md);
+         padding:8px 8px; }
+  .rline { position:absolute; left:592px; bottom:132px; width:0; height:279px;
+           border-left:2.5px solid var(--stbr-dark); }
+  .rh { position:absolute; left:586px; width:0; height:0;
+        border-left:7px solid transparent; border-right:7px solid transparent; }
+  .rh.up { bottom:411px; border-bottom:10px solid var(--stbr-dark); }
+  .rh.dnn { bottom:122px; border-top:10px solid var(--stbr-dark); }
+  .rchip { position:absolute; left:518px; bottom:258px; width:160px; text-align:center;
+           font-family:var(--font-display); font-weight:800; font-size:17px;
+           background:var(--surface-inverse); color:var(--stbr-cream);
+           border-radius:var(--radius-pill); padding:6px 0; }
+  .names { display:flex; margin-left:96px; margin-top:14px; }
+  .nm { font-family:var(--font-body); font-size:14px; line-height:1.35;
+        color:var(--text-secondary); }
+  .nm b { display:block; font-weight:700; font-size:15.5px; color:var(--text-primary); }
+  .n1 { width:210px; margin-left:250px; text-align:center; }
+  .n2 { width:300px; margin-left:195px; text-align:center; }
+  .foot { margin-top:16px; font-family:var(--font-body); font-size:13px;
+          color:var(--text-muted); }
+</style>
+  <div class="card">
+    <div class="stbr-eyebrow">sponsor economics &middot; budget the right line</div>
+    <h2 class="viz-title">cost anatomy of one sponsored checkout, in lamports</h2>
+    <div class="plot">
+      <div class="grid" style="bottom:126px;"><span class="gl">10&#8308;</span></div>
+      <div class="grid" style="bottom:252px;"><span class="gl">10&#8309;</span></div>
+      <div class="grid" style="bottom:378px;"><span class="gl">10&#8310;</span></div>
+      <div class="base"><span class="gl" style="margin-top:-9px;">10&#179;</span></div>
+
+      <div class="bar b1"></div>
+      <div class="val v1">10,000</div>
+
+      <div class="bar b2"></div>
+      <div class="val v2">1,488,440</div>
+      <div class="tag">reclaimable by the buyer, not by you</div>
+
+      <div class="rline"></div>
+      <div class="rh up"></div>
+      <div class="rh dnn"></div>
+      <div class="rchip">~150&times;</div>
+    </div>
+    <div class="names">
+      <div class="nm n1"><b>base fee</b>2 signatures &times; 5,000 &mdash; paid every checkout, gone forever</div>
+      <div class="nm n2"><b>ATA creation rent (devnet, 2026-09-07)</b>only when sponsorship creates the buyer&rsquo;s token account &mdash; re-read it, the rate is falling</div>
+    </div>
+    <div class="foot">log scale, values in lamports &mdash; the rent event costs ~150&times; the dual-signature fee.</div>
+  </div>
+</div>
+</body></html>

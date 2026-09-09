@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One payment core, three surfaces
+     purpose: show that the blink is the third consumer of the same transaction-request builder, not new payment code
+     data: center node: buildOrderTransaction (checkout-txreq, the transaction-request lesson) -> prices cart server-side, stamps memo + reference, returns base64 tx consumer 1: checkout page (transaction-request lesson) -> wallet scans solana:<https-link>, POSTs {account} consumer 2: pos-stall (last lesson) -> QR at a market table, same endpoint consumer 3: drop-blink (THIS lesson) -> GET metadata + POST ActionPostResponse, rendered by a blink client
+     prompt: Hub-and-spoke diagram. Center node labeled buildOrderTransaction (checkout-txreq) with its three responsibilities listed beneath it. Three spokes to consumer nodes: checkout page, pos-stall, drop-blink; mark the drop-blink spoke as "this lesson". One arrow per spoke pointing inward to the hub to show all three call the same builder. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:551px;height:424px;right:-331px;top:355px;border-radius:36% 47% 63% 38% / 51% 63% 38% 42%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:474px;height:431px;bottom:-222px;left:-222px;border-radius:50% 63% 63% 65% / 54% 64% 61% 37%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .consumers { display:grid; grid-template-columns:1fr 1fr 1fr; gap:28px; margin-top:20px; }
+  .consumer { background:var(--surface-card); border:2px solid var(--border-subtle);
+              border-radius:var(--radius-lg); padding:22px 26px; min-height:170px; }
+  .consumer .tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+                   letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+  .consumer .name { font-family:var(--font-mono); font-weight:800; font-size:22px;
+                    color:var(--text-primary); margin-bottom:10px; }
+  .consumer .how { font-family:var(--font-body); font-size:15px; line-height:1.45;
+                   color:var(--text-secondary); }
+  .consumer .how code { font-family:var(--font-mono); font-size:13.5px; color:var(--text-primary); }
+  .consumer.hot { background:#f7e4b1; border:3px solid var(--stbr-yellow-600); }
+  .consumer.hot .tag { color:var(--stbr-dark); }
+  .consumer.hot .pill { display:inline-block; background:var(--stbr-yellow); color:var(--stbr-dark);
+                        font-family:var(--font-body); font-weight:800; font-size:12px;
+                        letter-spacing:.08em; text-transform:uppercase; padding:4px 12px;
+                        border-radius:var(--radius-pill); margin-bottom:8px; }
+  .spokes { display:grid; grid-template-columns:1fr 1fr 1fr; gap:28px; height:52px; }
+  .spoke { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .spoke .stem { width:3px; height:30px; background:var(--stbr-green); }
+  .spoke .head { width:0; height:0; border-left:9px solid transparent;
+                 border-right:9px solid transparent; border-top:12px solid var(--stbr-green); }
+  .spoke.hot .stem { background:var(--stbr-yellow-600); }
+  .spoke.hot .head { border-top-color:var(--stbr-yellow-600); }
+  .hub { background:var(--surface-brand); border-radius:var(--radius-xl); padding:28px 36px; }
+  .hub .hrow { display:flex; align-items:baseline; gap:18px; flex-wrap:wrap; }
+  .hub .fn { font-family:var(--font-mono); font-weight:800; font-size:30px; color:var(--stbr-cream); }
+  .hub .src { font-family:var(--font-body); font-size:15px; color:rgba(245,232,202,0.75); }
+  .hub .duties { display:flex; gap:16px; margin-top:16px; }
+  .hub .duty { flex:1; background:rgba(245,232,202,0.12); border:1.5px solid rgba(245,232,202,0.28);
+               border-radius:var(--radius-md); padding:12px 16px; font-family:var(--font-body);
+               font-weight:600; font-size:15px; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">reuse, not rewrite</div>
+  <h2 class="viz-title">one payment core, three surfaces</h2>
+  <div class="consumers">
+    <div class="consumer">
+      <div class="tag">transaction-request lesson</div>
+      <div class="name">checkout page</div>
+      <div class="how">wallet scans <code>solana:&lt;https-link&gt;</code>, POSTs <code>{account}</code></div>
+    </div>
+    <div class="consumer">
+      <div class="tag">last lesson</div>
+      <div class="name">pos-stall</div>
+      <div class="how">QR at a market table &mdash; same endpoint</div>
+    </div>
+    <div class="consumer hot">
+      <div class="pill">this lesson</div>
+      <div class="name">drop-blink</div>
+      <div class="how">GET metadata + POST <code>ActionPostResponse</code>, rendered by a blink client</div>
+    </div>
+  </div>
+  <div class="spokes">
+    <div class="spoke"><div class="stem"></div><div class="head"></div></div>
+    <div class="spoke"><div class="stem"></div><div class="head"></div></div>
+    <div class="spoke hot"><div class="stem"></div><div class="head"></div></div>
+  </div>
+  <div class="hub">
+    <div class="hrow">
+      <span class="fn">buildOrderTransaction</span>
+      <span class="src">checkout-txreq &middot; the transaction-request lesson</span>
+    </div>
+    <div class="duties">
+      <div class="duty">prices the cart server-side</div>
+      <div class="duty">stamps memo + reference</div>
+      <div class="duty">returns the base64 tx</div>
+    </div>
+  </div>
+</div>
+</body></html>

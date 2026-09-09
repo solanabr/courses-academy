@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: One app, two wirings: the smoke's stubs against the live deps
+     purpose: show that createApp's dependency seam is what lets the same receiver run offline in the smoke and against devnet in step 7
+     data: dep: verify | smoke wiring: stub that passes REAL_SIG and rejects everything else | live wiring: createVerifier over the lesson-1 package, getTransaction against devnet dep: resolveOrder | smoke wiring: stub returning the one hardcoded order | live wiring: on-chain memo lookup over OPEN_ORDERS, throwing while the tx is not visible yet dep: ledger | smoke wiring: JSONL file in a temp directory, discarded after the run | live wiring: orders.jsonl beside the server, read by later modules dep: registry | smoke wiring: the real SignatureRegistry, unstubbed | live wiring: the same real SignatureRegistry, unstubbed dep: authSecret | smoke wiring: the literal wavelength-webhook-secret | live wiring: WEBHOOK_SECRET from the environment caption: the pipeline logic never changes between runs; only the edges of the world get swapped
+     prompt: Two-column comparison card, smoke wiring left, live wiring right, five labeled dep rows from data. Highlight the registry row as identical on both sides, since the idempotency logic is what the smoke actually judges. Caption from data as a full-width band under the rows. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:537px;height:532px;bottom:-297px;right:-297px;border-radius:48% 50% 35% 54% / 56% 41% 39% 48%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+         border-radius:var(--radius-xl); overflow:hidden; margin-top:10px; }
+  .cmp-head { display:flex; }
+  .cmp-head .axcol { flex:0 0 226px; }
+  .cmp-head .col { flex:1; padding:13px 24px; display:flex; align-items:baseline; gap:12px; }
+  .cmp-head .col.smoke { background:var(--surface-inverse); }
+  .cmp-head .col.live { background:var(--stbr-emerald); }
+  .cmp-head .cname { font-family:var(--font-display); font-weight:900; font-size:23px;
+                     color:var(--stbr-cream); }
+  .cmp-head .csub { font-family:var(--font-body); font-weight:700; font-size:13px;
+                    color:rgba(245,232,202,0.8); }
+  .cmp-row { display:flex; border-top:1.5px solid var(--border-subtle); }
+  .cmp-row .ax { flex:0 0 190px; padding:12px 18px; font-family:var(--font-mono);
+                 font-weight:700; font-size:15.5px; color:var(--stbr-green);
+                 background:rgba(0,139,76,0.06); display:flex; align-items:center; }
+  .cmp-row .cell { flex:1; padding:12px 24px; font-family:var(--font-body); font-size:15.5px;
+                   line-height:1.35; color:var(--text-primary); display:flex; align-items:center; }
+  .cmp-row .cell.smoke { border-right:1.5px solid var(--border-subtle);
+                         border-left:1.5px solid var(--border-subtle); }
+  .cmp-row code { font-family:var(--font-mono); font-size:14px; background:rgba(0,139,76,0.08);
+                  padding:1px 6px; border-radius:var(--radius-xs); }
+  .cmp-row.hot { background:rgba(255,210,63,0.28); }
+  .cmp-row.hot .ax { background:rgba(255,210,63,0.35); color:var(--stbr-dark); }
+  .cmp-row.hot .cell { font-weight:700; }
+  .cmp-row.hot .same { display:inline-block; margin-left:10px; font-family:var(--font-body);
+        font-weight:800; font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+        background:var(--stbr-dark); color:var(--stbr-yellow);
+        padding:3px 10px; border-radius:var(--radius-pill); }
+  .cmp-foot { display:flex; align-items:center; gap:16px; background:var(--stbr-emerald);
+              padding:15px 26px; border-top:2.5px solid var(--stbr-dark); }
+  .cmp-foot .tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+                   letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .cmp-foot .txt { font-family:var(--font-body); font-weight:700; font-size:17px;
+                   color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">createApp's dependency seam</div>
+  <h2 class="viz-title">one app, two wirings: the smoke's stubs against the live deps</h2>
+  <div class="cmp">
+    <div class="cmp-head">
+      <div class="axcol"></div>
+      <div class="col smoke"><span class="cname">smoke wiring</span><span class="csub">offline, in the lab</span></div>
+      <div class="col live"><span class="cname">live wiring</span><span class="csub">devnet, step 7</span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">verify</div>
+      <div class="cell smoke"><span>stub that passes <code>REAL_SIG</code> and rejects everything else</span></div>
+      <div class="cell"><span><code>createVerifier</code> over the lesson-1 package, <code>getTransaction</code> against devnet</span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">resolveOrder</div>
+      <div class="cell smoke">stub returning the one hardcoded order</div>
+      <div class="cell">on-chain memo lookup over <code>OPEN_ORDERS</code> &mdash; throws while the tx is not visible yet</div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">ledger</div>
+      <div class="cell smoke">JSONL file in a temp directory, discarded after the run</div>
+      <div class="cell"><code>orders.jsonl</code> beside the server, read by later modules</div>
+    </div>
+    <div class="cmp-row hot">
+      <div class="ax">registry</div>
+      <div class="cell smoke"><span>the real <code>SignatureRegistry</code>, unstubbed</span></div>
+      <div class="cell"><span>the same real <code>SignatureRegistry</code>, unstubbed<span class="same">identical &mdash; what the smoke actually judges</span></span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">authSecret</div>
+      <div class="cell smoke">the literal <code>wavelength-webhook-secret</code></div>
+      <div class="cell"><code>WEBHOOK_SECRET</code> from the environment</div>
+    </div>
+    <div class="cmp-foot">
+      <span class="tag">the seam</span>
+      <span class="txt">the pipeline logic never changes between runs &mdash; only the edges of the world get swapped</span>
+    </div>
+  </div>
+</div>
+</body></html>

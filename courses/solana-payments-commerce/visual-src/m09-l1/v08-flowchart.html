@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Leg 4, the taught dunning policy under a forced failure
+     purpose: pin the exact assertion for the journey's subscription leg so card-rail instincts do not creep in
+     data: crank pulls renewal -> buyer ATA deliberately emptied -> pull fails taught path (PASS): failure recorded as open invoice in backoffice ledger, no wallet retry, subscription stays alive wrong path A (FAIL): retry pull against the wallet up to N times, then cancel (card-rail dunning, not ours) wrong path B (FAIL): revoke the subscription authority and reclaim rent on first failure (RevokeAbandoned is the cancel path, not the failure path) policy source: the module-5 state machine; Helius states the same policy for its own billing
+     prompt: Flowchart with the forced failure at top branching into three paths from data, the taught open-invoice path rendered as the single PASS lane and the two wrong paths grayed with FAIL badges. Caption the policy source line beneath. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:462px;height:552px;bottom:-306px;left:708px;border-radius:35% 37% 45% 60% / 57% 37% 59% 51%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .chain { display:flex; align-items:center; justify-content:center; gap:0; margin-top:6px; }
+  .cnode { background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+           border-radius:var(--radius-lg); padding:10px 20px; font-family:var(--font-body);
+           font-weight:700; font-size:16px; color:var(--text-primary); }
+  .cnode.fail { background:var(--surface-inverse); color:var(--text-on-dark); border-color:var(--stbr-dark); }
+  .harr { width:52px; height:0; border-top:3px solid var(--stbr-dark); position:relative; }
+  .harr i { position:absolute; right:-1px; top:-7px; width:0; height:0; display:block;
+            border-top:6px solid transparent; border-bottom:6px solid transparent;
+            border-left:10px solid var(--stbr-dark); }
+  .splits { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; height:30px; margin-top:8px; }
+  .split { display:flex; align-items:center; justify-content:center; }
+  .split i { width:0; height:0; display:block; border-left:8px solid transparent;
+             border-right:8px solid transparent; border-top:13px solid var(--stbr-dark); }
+  .lanes { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; align-items:stretch; }
+  .lanepath { border-radius:var(--radius-xl); padding:16px 18px; }
+  .pass { background:var(--surface-card); border:3px solid var(--stbr-emerald); }
+  .wrong { background:var(--surface-paper); border:2px solid var(--stbr-ink-300); }
+  .badge { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:13px;
+           letter-spacing:.1em; text-transform:uppercase; padding:5px 15px;
+           border-radius:var(--radius-pill); margin-bottom:10px; }
+  .pass .badge { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .wrong .badge { background:var(--status-danger); color:#fff; }
+  .lanepath h3 { margin:0 0 8px; font-family:var(--font-display); font-weight:800; font-size:19px;
+                 line-height:1.2; color:var(--text-primary); }
+  .wrong h3 { color:var(--text-secondary); }
+  .lanepath p { margin:0; font-family:var(--font-body); font-weight:500; font-size:14.5px;
+                line-height:1.45; color:var(--text-secondary); }
+  .pass p { color:var(--text-primary); font-weight:600; }
+  .lanepath p em { font-style:normal; font-weight:700; color:var(--stbr-green); }
+  .wrong p em { color:var(--status-danger); }
+  .src { margin-top:16px; font-family:var(--font-body); font-size:13.5px; font-weight:500;
+         color:var(--text-muted); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">leg 4 &mdash; no card-rail instincts</div>
+  <h2 class="viz-title">the taught dunning policy under a forced failure</h2>
+  <div class="chain">
+    <div class="cnode">crank pulls the renewal</div>
+    <div class="harr"><i></i></div>
+    <div class="cnode">buyer ATA deliberately emptied</div>
+    <div class="harr"><i></i></div>
+    <div class="cnode fail">the pull fails</div>
+  </div>
+  <div class="splits"><div class="split"><i></i></div><div class="split"><i></i></div><div class="split"><i></i></div></div>
+  <div class="lanes">
+    <div class="lanepath pass">
+      <span class="badge">pass &mdash; the taught path</span>
+      <h3>record and carry on</h3>
+      <p>failure recorded as an <em>open invoice</em> in the backoffice ledger &middot; <em>no wallet retry</em> &middot; the subscription <em>stays alive</em></p>
+    </div>
+    <div class="lanepath wrong">
+      <span class="badge">fail &mdash; wrong path A</span>
+      <h3>retry, then cancel</h3>
+      <p>retry the pull against the wallet up to N times, then cancel &mdash; <em>card-rail dunning, not ours</em></p>
+    </div>
+    <div class="lanepath wrong">
+      <span class="badge">fail &mdash; wrong path B</span>
+      <h3>revoke on first failure</h3>
+      <p>revoke the subscription authority and reclaim rent &mdash; <em>RevokeAbandoned is the cancel path, not the failure path</em></p>
+    </div>
+  </div>
+  <div class="src">policy source: the module-5 state machine &mdash; Helius states the same policy for its own billing</div>
+</div>
+</body></html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of the stall QR's payload
+     purpose: decompose the encoded URL so the reader can debug a malformed QR by reading its parts
+     data: solana:https://localhost:3443/txreq?recipient=<merchant>&amount=0.15&reference=<base58 32-byte key>&label=Wavelength%20Records part 1: "solana:" scheme -> tells the wallet this is a payment URL part 2: https link -> transaction request (server builds); contrast: solana:<recipient> = transfer request part 3: /txreq path -> your endpoint from last lesson, unchanged interface (GET label/icon, POST {account}) part 4: recipient -> passed along by the POS; your endpoint IGNORES it (payee is server config) part 5: amount -> merchant-keyed total, appended by the POS part 6: reference -> fresh per-sale key, appended by the POS, later polled via findReference part 7: label -> stall name, display only
+     prompt: A single long monospace URL across the top, color-segmented into seven parts. Below it, seven labeled callout boxes, one per segment, each with the one-line role from the data. Mark the recipient box with a small "ignored by server" badge. Include the contrast note that solana:<recipient> would be a transfer request instead. No decorative icons; the URL text is the artifact.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:516px;height:553px;bottom:-304px;right:-304px;border-radius:49% 43% 59% 44% / 44% 63% 64% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .urlbar { background:var(--surface-inverse); border-radius:var(--radius-xl); padding:26px 34px;
+            font-family:var(--font-mono); font-size:24px; line-height:1.65; color:var(--text-on-dark);
+            word-break:break-all; }
+  .seg { padding:2px 1px; border-bottom:5px solid; }
+  .s1 { border-color:var(--stbr-emerald); }
+  .s2 { border-color:var(--stbr-yellow); color:var(--stbr-yellow); font-weight:700; }
+  .s3 { border-color:var(--stbr-emerald-700); }
+  .s4 { border-color:var(--stbr-ink-500); color:var(--stbr-ink-300); }
+  .s5 { border-color:var(--stbr-green); }
+  .s6 { border-color:var(--stbr-yellow-700); }
+  .s7 { border-color:var(--stbr-ink-300); }
+  .parts { display:grid; grid-template-columns:repeat(7,1fr); gap:12px; margin-top:20px; }
+  .part { background:var(--surface-card); border:1px solid var(--border-subtle); border-top:6px solid;
+          border-radius:var(--radius-lg); padding:12px 13px; display:flex; flex-direction:column; gap:6px; }
+  .part .pn { font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--text-primary); }
+  .part .pr { font-family:var(--font-body); font-size:13px; line-height:1.35; color:var(--text-secondary); }
+  .part.hot { background:#fff7dd; }
+  .badge { align-self:flex-start; font-family:var(--font-body); font-size:11px; font-weight:800; letter-spacing:0.06em;
+           text-transform:uppercase; padding:3px 8px; border-radius:var(--radius-pill);
+           background:var(--stbr-dark); color:var(--text-on-dark); }
+  .contrast { margin-top:20px; background:var(--surface-brand); border-radius:var(--radius-lg);
+              padding:14px 26px; font-family:var(--font-body); font-size:17px; color:var(--text-on-brand); }
+  .contrast code { font-family:var(--font-mono); font-weight:700; }
+</style>
+  <div class="stbr-eyebrow">DEBUG A MALFORMED QR BY READING ITS PARTS</div>
+  <h2 class="viz-title">anatomy of the stall QR&rsquo;s payload</h2>
+  <div class="urlbar"><span class="seg s1">solana:</span><span class="seg s2">https://localhost:3443</span><span class="seg s3">/txreq</span>?<span class="seg s4">recipient=&lt;merchant&gt;</span>&amp;<span class="seg s5">amount=0.15</span>&amp;<span class="seg s6">reference=&lt;base58 32-byte key&gt;</span>&amp;<span class="seg s7">label=Wavelength%20Records</span></div>
+  <div class="parts">
+    <div class="part" style="border-top-color:var(--stbr-emerald);"><span class="pn">1 &middot; solana:</span><span class="pr">scheme &mdash; tells the wallet this is a payment URL</span></div>
+    <div class="part hot" style="border-top-color:var(--stbr-yellow);"><span class="pn">2 &middot; https link</span><span class="pr">transaction request &mdash; the server builds the tx</span></div>
+    <div class="part" style="border-top-color:var(--stbr-emerald-700);"><span class="pn">3 &middot; /txreq</span><span class="pr">your endpoint from last lesson &mdash; unchanged interface (GET label/icon, POST {account})</span></div>
+    <div class="part" style="border-top-color:var(--stbr-ink-500);"><span class="pn">4 &middot; recipient</span><span class="badge">ignored by server</span><span class="pr">passed along by the POS; payee is server config</span></div>
+    <div class="part" style="border-top-color:var(--stbr-green);"><span class="pn">5 &middot; amount</span><span class="pr">merchant-keyed total, appended by the POS</span></div>
+    <div class="part" style="border-top-color:var(--stbr-yellow-700);"><span class="pn">6 &middot; reference</span><span class="pr">fresh per-sale key, appended by the POS; later polled via findReference</span></div>
+    <div class="part" style="border-top-color:var(--stbr-ink-300);"><span class="pn">7 &middot; label</span><span class="pr">stall name &mdash; display only</span></div>
+  </div>
+  <div class="contrast">contrast: <code>solana:&lt;recipient&gt;</code> alone would be a <strong>transfer request</strong> &mdash; the wallet builds the transaction instead of your server.</div>
+</div>
+</body></html>

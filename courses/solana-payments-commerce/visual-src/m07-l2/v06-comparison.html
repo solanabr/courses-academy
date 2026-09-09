@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Rebuild-and-compare versus verify-what-was-signed
+     purpose: contrast the two verification postures using the Lighthouse incident as the concrete case
+     data: naive posture: rebuild expected tx, require byte-for-byte equality | Phantom/Solflare inject Lighthouse guard instructions | legitimate payments fail | every wallet safety feature becomes an enemy x402 verifier posture: walk the SIGNED tx, check properties (transfer amount, asset, recipient, memo, fee-payer isolation) | tolerate ONLY allowlisted guard program L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95 | reject any other added instruction provenance: mechanisms/svm/src/constants.ts, added after issue #828 module 4 echo: your verifier already checks properties on the on-chain tx, not byte equality with a template
+     prompt: Two-column comparison card. Left column shows the naive rebuild posture ending in a failed-legitimate-payment badge. Right column shows the property-check posture with the single allowlisted guard program called out by address and a rejected-unknown-addition badge. Footer band carries the provenance line. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:500px;height:431px;bottom:-256px;left:559px;border-radius:41% 48% 53% 64% / 62% 45% 46% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 44px 28px; }
+  .viz-title { font-size: 40px; margin: 4px 0 16px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .col { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-xl); overflow: hidden; }
+  .colhd { padding: 11px 18px; font: 800 17px var(--font-display); }
+  .hd-naive { background: var(--surface-inverse); color: var(--text-on-dark); }
+  .hd-x402 { background: var(--surface-brand); color: var(--text-on-brand); }
+  .colhd .sub { display: block; font: 500 12px var(--font-body); opacity: .8; }
+  .row { padding: 10px 18px; border-top: 1px solid var(--border-subtle);
+         font: 500 14px var(--font-body); color: var(--text-primary); line-height: 1.35; }
+  .row:first-of-type { border-top: none; }
+  .row strong { font-weight: 800; }
+  .badge { display: inline-block; font: 700 10.5px var(--font-body); letter-spacing: .05em;
+           text-transform: uppercase; border-radius: var(--radius-pill); padding: 2px 10px; margin-top: 4px; }
+  .badge-fail { background: var(--surface-inverse); color: var(--text-on-dark); }
+  .badge-reject { border: 1.5px solid var(--stbr-green); color: var(--stbr-green); }
+  .addr { display: inline-block; font: 700 12.5px var(--font-mono); background: var(--stbr-yellow);
+          color: var(--stbr-dark); border-radius: var(--radius-md); padding: 3px 10px; margin-top: 4px; }
+  .props { font: 500 12.5px var(--font-body); color: var(--text-secondary); }
+  .echo { background: var(--surface-paper); }
+  .verdict { margin-top: 16px; background: var(--surface-brand); color: var(--text-on-brand);
+             border-radius: var(--radius-lg); padding: 12px 18px; font: 500 14.5px var(--font-body); }
+  .verdict strong { font-weight: 800; }
+  .verdict .mono { font-family: var(--font-mono); font-size: 13px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">verification posture</div>
+  <h2 class="viz-title">rebuild-and-compare vs verify-what-was-signed</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="colhd hd-naive">rebuild-and-compare<span class="sub">the naive posture</span></div>
+      <div class="row">rebuild the expected tx, require <strong>byte-for-byte equality</strong></div>
+      <div class="row">Phantom &amp; Solflare inject <strong>Lighthouse guard instructions</strong> into the signed tx</div>
+      <div class="row">legitimate payments fail<br><span class="badge badge-fail">✕ legitimate payment rejected</span></div>
+      <div class="row">every wallet safety feature becomes an enemy</div>
+    </div>
+    <div class="col">
+      <div class="colhd hd-x402">verify-what-was-signed<span class="sub">the x402 verifier posture</span></div>
+      <div class="row">walk the <strong>SIGNED</strong> tx and check properties<br>
+        <span class="props">transfer amount &middot; asset &middot; recipient &middot; memo &middot; fee-payer isolation</span></div>
+      <div class="row">tolerate <strong>ONLY</strong> the allowlisted guard program<br>
+        <span class="addr">L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95</span></div>
+      <div class="row">any other added instruction<br><span class="badge badge-reject">unknown addition &rarr; reject</span></div>
+      <div class="row echo"><strong>module 4 echo</strong> &mdash; your verifier already checks properties
+        on the on-chain tx, not byte equality with a template</div>
+    </div>
+  </div>
+  <div class="verdict"><strong>provenance</strong> &mdash; the guard-program allowlist lives in
+    <span class="mono">mechanisms/svm/src/constants.ts</span>, added after issue
+    <span class="mono">#828</span> (the Lighthouse incident).</div>
+</div>
+</div>
+</body></html>

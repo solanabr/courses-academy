@@ -1,0 +1,114 @@
+id: lesson-spc-m04-l1
+slug: m04-l1
+title: "Trust no frontend: confirmation policy and server-side verification"
+skills:
+  - confirmation
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "@solana/kit": "6.10.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: harden-verify
+    type: code
+    language: typescript
+    starter: harden-verify/starter.ts
+    solution: harden-verify/solution.ts
+    tests: harden-verify/tests.json
+    hints:
+      - "Check the token program BEFORE trusting any transfer in the tx."
+      - "Compute the amount from postAmount - preAmount on your own ATA, never from a client field."
+      - "Order matters: return the first failing reason so tests see exactly one."
+  - key: check-policy
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Wavelength waits for the strongest commitment level on a $6 single-record checkout and settles for the middle one on a $6,000 wholesale invoice. Your lead says that is backwards. Which pairing matches the risk?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Gate both on `finalized`: waiting 31+ confirmations on every order gives ops one uniform rule instead of a judgement call."
+            correct: false
+            feedback: "A uniform rule is not free. Finalizing a $6 record adds about 10s of ecosystem-estimated latency for risk that rounds to zero, and commitment is a per-value decision, not a constant."
+          - id: a
+            label: "Gate the $6 record on `confirmed` and the $6,000 invoice on `finalized`."
+            correct: true
+            feedback: "Commitment trades latency for fork risk, and expected loss scales with the ticket; value is the input, not the product category."
+          - id: d
+            label: "Gate both on `confirmed`; the wholesale invoice is a known account under contract, so that risk is covered."
+            correct: false
+            feedback: "Commitment prices fork risk, and a fork does not care who the buyer is. Knowing the counterparty helps with collections and with fraud; it does nothing about a block being dropped after you shipped."
+          - id: b
+            label: "Keep both on `processed`, since it returns fastest and the wallet already showed the buyer a success screen."
+            correct: false
+            feedback: "`processed` is UI-only and can be dropped in a fork; it is never a fulfillment source of truth for either amount."
+        explanation: "Commitment is a policy knob tied to the cost of a reversed payment. `confirmed` (about 1-2s, ecosystem estimate) fits low-value goods; `finalized` (roughly 31+ confirmations) earns its latency only when a fork-dropped payment would actually hurt. `processed` is UI-only."
+      - id: q2
+        prompt: "Compared to your card-rail integration, what does the no-chargeback asymmetry actually change?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Refunds become automatic since disputes can't happen, so no refund code is needed."
+            correct: false
+            feedback: "Disputes-as-chargebacks vanish, but refunds are a separate thing you must build by hand; they are absent from every official doc."
+          - id: a
+            label: "Nothing operationally: you still rely on the network to reverse a bad payment, the way an issuer claws back a card charge."
+            correct: false
+            feedback: "There is no dispute window and no reversal path; the network will not claw anything back for you the way an issuer does."
+          - id: b
+            label: "Fulfillment mistakes are final, so server-side verification is your only backstop."
+            correct: true
+            feedback: "With no reversal path, the only control point sits before you ship. What it backstops is a fake payment, not a buyer who's changed their mind."
+          - id: d
+            label: "Fraud drops to zero: payments are final once they settle, so fulfillment needs no verifying beyond the wallet's own screen."
+            correct: false
+            feedback: "One direction of fraud closes and another opens wider. Nobody can claw a payment out of your account, but a buyer who gets you to ship against a payment that was never yours keeps the goods, and no rail exists to undo that."
+        explanation: "Cards give you a costly reversal path; these rails do not. That asymmetry is exactly why the server, not the wallet's green check, must be the source of truth, and why the refund flow two lessons later is original construction."
+  - key: check-verify
+    type: quiz
+    questions:
+      - id: q3
+        prompt: "Your verifier confirms a transaction exists with the right signature and the right USDC amount into your ATA, and fulfills. A buyer drains inventory for free. What did the check miss?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "It never checked the token program, so a Token-2022 look-alike mint passed as classic-Token USDC."
+            correct: true
+            feedback: "An asset's identity is the owning program and the mint together, and a decoded amount names neither; even both are not the last check, since the delta on your own account decides."
+          - id: d
+            label: "It fulfilled at `confirmed`, so a fork dropped that block minutes after the record shipped."
+            correct: false
+            feedback: "A dropped block leaves nothing behind: getTransaction stops answering for that signature, so the check would fail rather than pass. Repeatable free inventory means a payment that keeps passing your checks, not one that disappears."
+          - id: a
+            label: "The blockhash expired, so the amount it read was stale: getTransaction returned a pre-expiry snapshot of the ATA instead of the settled balance."
+            correct: false
+            feedback: "An expired blockhash means the transaction never lands at all, and getTransaction reports the balances the runtime actually recorded; a landed transfer with a real delta is not stale."
+          - id: b
+            label: "It should have trusted the wallet's `paid: true` flag as a corroborating second signal."
+            correct: false
+            feedback: "The frontend flag is the thing you must NOT trust; it is spoofable, and it is the whole reason server-side verification exists."
+        explanation: "Validating the mint is not enough; you must validate the token PROGRAM too (Token vs Token-2022). The verifier checks program, then mint, then the on-chain balance delta on your own account, never a client-supplied number."
+      - id: q4
+        prompt: "Why does the verifier store every processed signature, and where does that bite?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "To prevent double-fulfillment on webhook redelivery; the set grows unbounded, so it needs an eviction horizon."
+            correct: true
+            feedback: "A redelivered event carries the same deterministic signature, which is what makes fulfillment exactly-once; a horizon shorter than blockhash lifetime plus retries reopens the hole."
+          - id: d
+            label: "To prevent double-fulfillment on webhook redelivery; entries get evicted once the blockhash window closes about 45 seconds later."
+            correct: false
+            feedback: "Right reason, horizon too short. Blockhash expiry closes on-chain replay, but your webhook provider will happily redeliver long after that, so the entry has to outlive the retry window as well as the chain's."
+          - id: c
+            label: "To satisfy Alpenglow's finality requirement: a payment counts as trusted only once its signature has been retained across the finality window."
+            correct: false
+            feedback: "Alpenglow is a labeled roadmap flag here, not a live gate; today's dedup is about webhook retries, not finality mechanics."
+          - id: b
+            label: "To speed up getTransaction: a cached signature skips the RPC round-trip, so a redelivered event costs one local lookup instead of a fetch."
+            correct: false
+            feedback: "The stored set is a dedup guard, not an RPC cache; verification still fetches the transaction to check it."
+        explanation: "Signatures are deterministic, so a redelivered webhook produces the same signature, and storing processed ones makes fulfillment exactly-once. The cost is unbounded state, so you evict past a horizon (for example, beyond the blockhash lifetime plus a margin)."

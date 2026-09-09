@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The three delegation models in program v0.5.0
+     purpose: give the reader the full menu once, with the on-chain fields that enforce each model
+     data: model: fixed | account: FixedDelegation | enforced terms: total amount cap, expiryTs (0 = never) | fits: one-off authorization with a ceiling, e.g. "pull up to 50 USDC before Friday" model: recurring | account: RecurringDelegation | enforced terms: amountPerPeriod, periodLengthS (SECONDS), amountPulledInPeriod resets per period, expiryTs | fits: a cap that renews, e.g. "up to 20 USDC per week, indefinitely" model: subscription plan | account: Plan + SubscriptionDelegation | enforced terms: merchant publishes PlanTerms (amount, periodHours in HOURS, createdAt); subscriber accepts; owner or whitelisted pullers pull once per billing period into declared destinations | fits: classic merchant subscriptions, this lesson's lab
+     prompt: Designed three-row table, columns Model, On-chain account, Enforced terms, Fits. Rows from data. Highlight the unit cells: periodLengthS marked SECONDS and periodHours marked HOURS with distinct badges, since their mismatch is this lesson's central footgun. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:533px;height:521px;bottom:-280px;left:472px;border-radius:65% 35% 36% 46% / 40% 39% 40% 42%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { width:100%; border-collapse:collapse; background:var(--surface-card);
+         border:3px solid var(--stbr-dark); border-radius:var(--radius-2xl);
+         overflow:hidden; margin-top:10px; }
+  .tbl-head { display:flex; background:var(--surface-inverse); }
+  .tbl-row { display:flex; border-top:1.5px solid var(--border-subtle);
+             background:var(--surface-card); align-items:stretch; }
+  .tbl-row.alt { background:var(--surface-paper); }
+  .c { padding:16px 22px; }
+  .c1 { flex:0 0 210px; } .c2 { flex:0 0 300px; } .c3 { flex:1 1 auto; } .c4 { flex:0 0 330px; }
+  .tbl-head .c { font-family:var(--font-body); font-weight:800; font-size:14px;
+                 letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-dark);
+                 padding-top:13px; padding-bottom:13px; }
+  .model { font-family:var(--font-display); font-weight:900; font-size:23px;
+           color:var(--text-primary); }
+  .acct { font-family:var(--font-mono); font-weight:700; font-size:16.5px;
+          color:var(--stbr-green); line-height:1.45; }
+  .terms { font-family:var(--font-body); font-size:15.5px; font-weight:600;
+           color:var(--text-secondary); line-height:1.55; }
+  .terms code { font-family:var(--font-mono); font-weight:700; font-size:14.5px;
+                color:var(--text-primary); }
+  .fits { font-family:var(--font-body); font-size:15px; font-weight:600;
+          color:var(--text-secondary); line-height:1.5; }
+  .fits em { font-style:normal; font-weight:700; color:var(--text-primary); }
+  .unit { display:inline-block; font-family:var(--font-body); font-weight:900;
+          font-size:12px; letter-spacing:.09em; background:var(--stbr-yellow);
+          color:var(--stbr-dark); border:2px solid var(--stbr-dark);
+          border-radius:var(--radius-pill); padding:2px 10px; margin-left:4px;
+          vertical-align:middle; }
+  .lab { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:11.5px;
+         letter-spacing:.08em; text-transform:uppercase; background:var(--stbr-emerald);
+         color:var(--text-on-brand); border-radius:var(--radius-pill); padding:3px 11px; }
+  .foot { margin-top:16px; font-family:var(--font-body); font-weight:700; font-size:15.5px;
+          color:var(--text-secondary); }
+  .foot b { color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">the full menu, once &mdash; and the fields that enforce it</div>
+  <h2 class="viz-title">the three delegation models in program v0.5.0</h2>
+  <div class="tbl">
+    <div class="tbl-head">
+      <div class="c c1">model</div><div class="c c2">on-chain account</div>
+      <div class="c c3">enforced terms</div><div class="c c4">fits</div>
+    </div>
+    <div class="tbl-row">
+      <div class="c c1"><div class="model">fixed</div></div>
+      <div class="c c2"><div class="acct">FixedDelegation</div></div>
+      <div class="c c3"><div class="terms">total <code>amount</code> cap &middot; <code>expiryTs</code> (0&nbsp;=&nbsp;never)</div></div>
+      <div class="c c4"><div class="fits">one-off authorization with a ceiling &mdash; <em>&ldquo;pull up to 50 USDC before Friday&rdquo;</em></div></div>
+    </div>
+    <div class="tbl-row alt">
+      <div class="c c1"><div class="model">recurring</div></div>
+      <div class="c c2"><div class="acct">RecurringDelegation</div></div>
+      <div class="c c3"><div class="terms"><code>amountPerPeriod</code> &middot; <code>periodLengthS</code><span class="unit">SECONDS</span> &middot; <code>amountPulledInPeriod</code> resets per period &middot; <code>expiryTs</code></div></div>
+      <div class="c c4"><div class="fits">a cap that renews &mdash; <em>&ldquo;up to 20 USDC per week, indefinitely&rdquo;</em></div></div>
+    </div>
+    <div class="tbl-row">
+      <div class="c c1"><div class="model">subscription plan</div></div>
+      <div class="c c2"><div class="acct">Plan +<br>SubscriptionDelegation</div></div>
+      <div class="c c3"><div class="terms">merchant publishes <code>PlanTerms</code> (<code>amount</code>, <code>periodHours</code><span class="unit">HOURS</span>, <code>createdAt</code>); subscriber accepts; owner or whitelisted pullers pull once per billing period into declared destinations</div></div>
+      <div class="c c4"><div class="fits">classic merchant subscriptions &mdash; <em>this lesson's lab</em> <span class="lab">lab</span></div></div>
+    </div>
+  </div>
+  <div class="foot"><b>Mind the unit badges:</b> <code style="font-family:var(--font-mono);">periodLengthS</code> counts seconds, <code style="font-family:var(--font-mono);">periodHours</code> counts hours &mdash; mixing them is this lesson's central footgun.</div>
+</div>
+</body></html>

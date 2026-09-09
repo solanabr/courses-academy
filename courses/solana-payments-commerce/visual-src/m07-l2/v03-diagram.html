@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Why the invoice id rides the query string
+     purpose: make the determinism constraint visible: the 402 and the retry are separate requests that must derive identical payment terms
+     data: request A (no payment): GET /price?invoice=WVL-INV-77 -> middleware builds terms from URL -> memo WVL-INV-77 in 402 request B (retry): GET /price?invoice=WVL-INV-77 + PAYMENT-SIGNATURE -> middleware rebuilds terms from URL -> memo WVL-INV-77 -> terms MATCH -> verify proceeds broken alternative: server mints random memo at challenge time -> retry rebuilds different memo -> terms mismatch -> 402 again, forever collapse alternative: static routes, one memo for every call -> three sales reconcile as one order
+     prompt: Three horizontal lanes. Lane one and two show the working pattern: two separate requests sharing one URL, each deriving the same memo, with a match check between them. Lane three shows the random-server-memo path ending in a loop icon at a repeated 402. Lane four shows the static-memo path with three payment arrows converging wrongly onto one order card. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:457px;height:460px;bottom:-220px;left:-220px;border-radius:39% 57% 45% 62% / 45% 44% 49% 55%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 32px 44px 28px; }
+  .viz-title { font-size: 42px; margin: 4px 0 16px; }
+  .lanes { display: flex; flex-direction: column; gap: 12px; }
+  .lanerow { display: flex; align-items: center; gap: 14px; }
+  .lanetag { width: 208px; flex: none; font: 800 13.5px var(--font-display); line-height: 1.25;
+             border-radius: var(--radius-lg); padding: 10px 14px; }
+  .tag-ok   { background: var(--surface-brand); color: var(--text-on-brand); }
+  .tag-bad  { background: var(--surface-inverse); color: var(--text-on-dark); }
+  .flow { display: flex; align-items: center; gap: 0; flex: 1; }
+  .node { border: 1.5px solid var(--border-strong); border-radius: var(--radius-lg);
+          background: var(--surface-card); padding: 8px 14px;
+          font: 600 13.5px var(--font-body); color: var(--text-primary); line-height: 1.25; }
+  .node .sub { display: block; font: 400 11.5px var(--font-body); color: var(--text-secondary); }
+  .node .mono { font-family: var(--font-mono); font-size: 12px; }
+  .node-match { background: var(--stbr-yellow); border-color: var(--stbr-yellow); color: var(--stbr-dark); }
+  .node-match .sub { color: var(--stbr-dark); }
+  .node-dead { background: var(--surface-inverse); border-color: var(--surface-inverse); color: var(--text-on-dark); }
+  .node-dead .sub { color: var(--text-on-dark); opacity: .75; }
+  .arr { flex: none; display: flex; align-items: center; padding: 0 3px; }
+  .arr i { display: block; width: 20px; height: 2px; background: var(--stbr-dark); position: relative; }
+  .arr i::after { content: ''; position: absolute; right: -7px; top: -4px;
+                  border-left: 7px solid var(--stbr-dark);
+                  border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .sect { font: 700 12px var(--font-body); letter-spacing: .12em; text-transform: uppercase;
+          color: var(--text-muted); margin: 2px 0 -4px; }
+  .sect-div { border-top: 2px solid var(--border-subtle); margin: 8px 0 2px; }
+  .paystack { display: flex; flex-direction: column; gap: 4px; }
+  .paystack span { font: 600 11.5px var(--font-mono); border: 1.5px solid var(--stbr-green);
+                   color: var(--stbr-green); border-radius: var(--radius-pill); padding: 1px 10px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">determinism</div>
+  <h2 class="viz-title">why the invoice id rides the query string</h2>
+  <div class="lanes">
+    <div class="sect">deterministic &mdash; both requests derive the same terms</div>
+    <div class="lanerow">
+      <div class="lanetag tag-ok">request A<br><span style="font:400 11.5px var(--font-body);">no payment</span></div>
+      <div class="flow">
+        <div class="node"><span class="mono">GET /price?invoice=WVL-INV-77</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node">middleware builds terms<span class="sub">from the URL</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node">memo <span class="mono">WVL-INV-77</span><span class="sub">in the 402</span></div>
+      </div>
+    </div>
+    <div class="lanerow">
+      <div class="lanetag tag-ok">request B<br><span style="font:400 11.5px var(--font-body);">retry + PAYMENT-SIGNATURE</span></div>
+      <div class="flow">
+        <div class="node"><span class="mono">GET /price?invoice=WVL-INV-77</span><span class="sub">same URL</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node">middleware rebuilds terms<span class="sub">from the URL</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node">memo <span class="mono">WVL-INV-77</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node node-match">terms MATCH ✓<span class="sub">verify proceeds</span></div>
+      </div>
+    </div>
+    <div class="sect-div"></div>
+    <div class="sect">the two ways to get it wrong</div>
+    <div class="lanerow">
+      <div class="lanetag tag-bad">broken<br><span style="font:400 11.5px var(--font-body);">random server memo</span></div>
+      <div class="flow">
+        <div class="node">server mints a random memo<span class="sub">at challenge time</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node">retry rebuilds a different memo</div>
+        <div class="arr"><i></i></div>
+        <div class="node">terms mismatch</div>
+        <div class="arr"><i></i></div>
+        <div class="node node-dead">402 again &nbsp;&#8635;<span class="sub">forever</span></div>
+      </div>
+    </div>
+    <div class="lanerow">
+      <div class="lanetag tag-bad">collapse<br><span style="font:400 11.5px var(--font-body);">static routes</span></div>
+      <div class="flow">
+        <div class="node">one memo for every call</div>
+        <div class="arr"><i></i></div>
+        <div class="paystack"><span>payment 1</span><span>payment 2</span><span>payment 3</span></div>
+        <div class="arr"><i></i></div>
+        <div class="node node-dead">one order<span class="sub">three sales reconcile as one</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

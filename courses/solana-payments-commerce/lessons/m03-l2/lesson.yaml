@@ -1,0 +1,106 @@
+id: lesson-spc-m03-l2
+slug: m03-l2
+title: "Transaction requests: the server builds the transaction"
+skills:
+  - solana-pay
+  - transactions
+  - signers
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "@solana/kit": "6.10.0"
+    "@solana-program/token": "0.14.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check-overview
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Your transaction-request server returns a base64 transaction to the wallet. In review, a teammate builds a hostile server that returns a transaction requiring a signature from an account the customer never submitted. What should a correct wallet do?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Sign for the extra account when the customer's wallet holds its key; the spec calls a request malicious when nobody controls it."
+            correct: false
+            feedback: "An account the customer controls is exactly what a hostile server hopes to get rubber-stamped: a treasury key, a multisig seat. The wallet knows one account was volunteered, and every other demanded signer is one nobody agreed to."
+          - id: a
+            label: "Treat it as malicious and refuse; the spec says a request demanding a signature from a non-submitted account must be rejected outright."
+            correct: true
+            feedback: "The wallet is the only party inspecting the transaction before a key touches it, which is why refusal belongs there. Your server is still unauditable by the customer."
+          - id: c
+            label: "Sign it but surface a warning afterward and log the extra signer so the merchant can review the anomaly later."
+            correct: false
+            feedback: "Signing first and warning later has already exposed the account; the spec rule is to refuse before signing, not to audit after."
+          - id: b
+            label: "Sign it as long as the fee is low, since the customer already trusted the domain by opening the payment link in the first place."
+            correct: false
+            feedback: "Opening a link is not consent to sign for arbitrary accounts; a low fee does not make an unexpected signer safe. The wallet must reject it."
+        explanation: "Because the server hands the wallet a fully built transaction, the wallet is the only thing standing between the user and an unexpected signature. The Solana Pay spec makes this explicit: a request that demands a signature from an account the user did not submit is malicious and must be rejected. That trust boundary is the price of server-side control."
+      - id: q2
+        prompt: "You are moving from the QR transfer-request checkout to transaction requests. What actually changes about who builds the transaction, and how is the URL different?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The customer's wallet builds a smart-contract call instead of a plain transfer, and your server's HTTPS endpoint only co-signs the result after the wallet has assembled and signed it."
+            correct: false
+            feedback: "The wallet does not author the transaction here; your server does. There is no separate client-built contract call for the server to co-sign."
+          - id: b
+            label: "The server now builds the transaction: the URL is solana:<https-link>, and the wallet GETs a label and icon, then POSTs {account} to receive a base64 transaction to sign."
+            correct: true
+            feedback: "Inverting who assembles the transaction puts pricing and memos out of the customer's reach; the cost is the offline property, since a live HTTPS endpoint is now a checkout dependency."
+          - id: a
+            label: "Nothing changes about who builds it: the wallet still assembles the transfer from parameters, and the only real difference is that solana:<https-link> encodes into a denser QR than solana:<recipient> does."
+            correct: false
+            feedback: "Who builds the transaction is precisely what changes; QR density is a rendering detail with no bearing on it."
+          - id: d
+            label: "The wallet POSTs the cart contents alongside the account, and your server prices whatever line items the wallet sends it, then returns a transaction for the customer to sign."
+            correct: false
+            feedback: "The spec's POST body is {account} and nothing else, which is the constraint doing the work. Anything else the build needs rides the URL you minted, so the cart stays state your server already holds."
+        explanation: "A transfer request (solana:<recipient>?...) has the wallet assemble a transfer from URL parameters. A transaction request (solana:<https-link>) inverts that: the wallet GETs display metadata, POSTs the paying account, and your server returns a complete base64 transaction. Moving construction server-side is what unlocks cart logic, memos, and references you control."
+  - key: check-lab
+    type: quiz
+    questions:
+      - id: q3
+        prompt: "Marketing wants a coupon that takes 10% off a multi-item cart, plus an order id stamped on-chain. Why does the transaction-request path make this possible where the plain QR transfer request did not?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "The wallet computes the discount locally from extra URL fields such as coupon and subtotal, so any pricing rule can be expressed client-side as long as you document the parameters you added."
+            correct: false
+            feedback: "There are no coupon or subtotal fields in the spec, and client-computed pricing is exactly the tamper risk you are escaping; the wallet never runs your discount logic."
+          - id: c
+            label: "Because your server builds the transaction, it computes the discounted total and injects the memo and reference itself, so pricing never lives in a customer-edited URL."
+            correct: true
+            feedback: "Backend-computed values are out of the payer's reach, which stops tampering but does nothing about replay; a single-use coupon still needs state on your side."
+          - id: d
+            label: "Because the transaction request runs your discount inside an on-chain program, so the total is computed by the chain and no query string a customer edits can change it."
+            correct: false
+            feedback: "Nothing custom runs on-chain here. What comes back is a plain v0 transaction holding a memo and a TransferChecked, and the discount was arithmetic your server did before it built either one."
+          - id: a
+            label: "Transaction requests add a dedicated coupon query parameter to the solana: URL, which transfer requests do not expose, so the discount travels inside the link the customer scans."
+            correct: false
+            feedback: "There is no coupon parameter; discount logic is code you run, not a URL field. This misses why server construction matters."
+        explanation: "The whole reason to move to transaction requests is that construction happens on your backend. The server applies the coupon, computes the final total, and stamps the order id into a memo plus a reference before returning the built transaction. None of it is exposed in a URL the customer could edit."
+      - id: q4
+        prompt: "A wallet hits your transaction-request endpoint with a GET before any purchase happens. What are you expected to return, and why does it come before the POST?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "The customer's current token balance, so the wallet can decide locally whether to enable the pay button."
+            correct: false
+            feedback: "The endpoint returns merchant display metadata, not the customer's balance; the wallet already knows its own balances."
+          - id: b
+            label: "The fully built base64 transaction immediately, so the wallet can preview and prepare the signature without a second round trip."
+            correct: false
+            feedback: "The built transaction is the POST response; you cannot build it on GET because you do not yet know the paying account."
+          - id: a
+            label: "A label and icon, so the wallet can show the customer who they are about to pay before it POSTs {account} to fetch the actual transaction."
+            correct: true
+            feedback: "The GET arrives before any payer is known; only payer-independent data exists yet, and it is self-asserted besides, a wallet rendering whatever the endpoint claims. Context, not proof."
+          - id: d
+            label: "A label, an icon, and the order total in USDC, so the wallet can render the price on its screen before it POSTs {account} for the transaction."
+            correct: false
+            feedback: "Three quarters right and one field too many. The GET response the spec defines is label and icon; a total you bolt on is a field no wallet reads, and the price the customer actually sees comes back with the POST."
+        explanation: "The GET is the display step: it returns a label and icon so the wallet can tell the user who they are paying. Only on the POST, once the wallet sends {account}, can the server build the transaction for that specific payer. Splitting the two is what lets the wallet show trustworthy context before anything is signed."

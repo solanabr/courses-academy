@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Anatomy of a fixture, and what the harness does with each field
+     purpose: fix the fixture shape once so the five JSON files read as instances of one pattern
+     data: signature: keys the fixture-backed fetchTransaction map; unique per file, because the harness runs every fixture through one shared store expectedReason: the single verdict the harness asserts verify() must return for this file order: the ExpectedOrder from step 2, with amountBaseUnits as a STRING because JSON has no bigint; the harness lifts it with BigInt() before calling verify transaction: the getTransaction-shaped witness: meta.err, the pre/post token balance arrays, and the parsed instructions the memo check reads
+     prompt: Annotated code panel showing one abridged fixture JSON with its four top-level fields highlighted and the annotations from data attached as callouts: signature pointing at the fetch map, expectedReason at the harness assertion, order at the BigInt lift, transaction at the verifier's three read regions. Elide nested detail with ellipses so the four fields dominate. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:560px;height:572px;top:-333px;right:-333px;border-radius:51% 57% 55% 54% / 51% 65% 55% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:542px;height:494px;bottom:-261px;left:-261px;border-radius:43% 46% 64% 61% / 47% 39% 42% 39%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:531px;height:553px;bottom:-322px;left:639px;border-radius:46% 40% 45% 42% / 53% 36% 40% 61%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:flex; gap:26px; margin-top:8px; align-items:stretch; }
+  .code { flex:0 0 790px; background:var(--surface-inverse); border-radius:var(--radius-2xl);
+          padding:26px 28px; font-family:var(--font-mono); font-size:16.5px; line-height:1.62;
+          color:var(--stbr-cream); }
+  .code .dim { color:rgba(245,232,202,0.45); }
+  .code .k { color:rgba(245,232,202,0.85); }
+  .ln { display:block; white-space:pre; }
+  .hl { display:inline-block; border-radius:6px; padding:0 6px; margin:0 -6px; }
+  .hl-y { background:rgba(255,210,63,0.22); outline:1.5px solid var(--stbr-yellow); color:var(--stbr-yellow); }
+  .hl-g { background:rgba(0,139,76,0.3); outline:1.5px solid var(--stbr-emerald); color:#fff; }
+  .mark { display:inline-block; width:26px; height:26px; border-radius:50%;
+          font-family:var(--font-body); font-weight:900; font-size:15px; line-height:26px;
+          text-align:center; vertical-align:middle; margin-left:10px; }
+  .mark-y { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .mark-g { background:var(--stbr-emerald); color:#fff; }
+  .notes { flex:1 1 auto; display:flex; flex-direction:column; gap:16px; }
+  .note { flex:1 1 auto; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-left:6px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+          padding:14px 18px; font-family:var(--font-body); font-size:14.5px; line-height:1.45;
+          color:var(--text-secondary); display:flex; gap:12px; align-items:flex-start; }
+  .note .mark { margin:2px 0 0; flex:0 0 26px; }
+  .note b { color:var(--text-primary); }
+  .note code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-green); }
+  .note-y { border-left-color:var(--stbr-yellow); background:rgba(255,210,63,0.14); }
+  .note-y b { color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">one fixture shape, five witness files</div>
+  <h2 class="viz-title">anatomy of a fixture</h2>
+  <div class="wrap">
+    <div class="code">
+<span class="ln">{</span>
+<span class="ln">  <span class="dim">"name": "correct payment",</span></span>
+<span class="ln">  <span class="hl hl-g">"signature": "FixSigCorrectPayment111&hellip;"</span>,<span class="mark mark-g">1</span></span>
+<span class="ln">  <span class="hl hl-g">"expectedReason": "verified"</span>,<span class="mark mark-g">2</span></span>
+<span class="ln">  <span class="hl hl-y">"order"</span>: {<span class="mark mark-y">3</span></span>
+<span class="ln">    <span class="dim">"orderId": "ord-1024", &hellip; recipientAta, mint &hellip;</span></span>
+<span class="ln">    <span class="hl hl-y">"amountBaseUnits": "30000000"</span></span>
+<span class="ln">  },</span>
+<span class="ln">  <span class="hl hl-g">"transaction"</span>: {<span class="mark mark-g">4</span></span>
+<span class="ln">    <span class="k">"meta"</span>: {</span>
+<span class="ln">      <span class="k">"err"</span>: null,</span>
+<span class="ln">      <span class="k">"preTokenBalances"</span>:  [ <span class="dim">&hellip; before &hellip;</span> ],</span>
+<span class="ln">      <span class="k">"postTokenBalances"</span>: [ <span class="dim">&hellip; after &hellip;</span> ] },</span>
+<span class="ln">    <span class="k">"instructions"</span>: [ <span class="dim">&hellip;</span>,</span>
+<span class="ln">      { <span class="k">"program"</span>: "spl-memo", <span class="dim">&hellip;</span> } ]</span>
+<span class="ln">  }</span>
+<span class="ln">}</span>
+    </div>
+    <div class="notes">
+      <div class="note"><span class="mark mark-g">1</span><span><b>signature keys the fixture-backed <code>fetchTransaction</code> map.</b> Unique per file, because the harness runs every fixture through one shared store.</span></div>
+      <div class="note"><span class="mark mark-g">2</span><span><b>expectedReason is the single verdict</b> the harness asserts <code>verify()</code> must return for this file.</span></div>
+      <div class="note note-y"><span class="mark mark-y">3</span><span><b>order is the ExpectedOrder from step 2.</b> <code>amountBaseUnits</code> rides as a STRING because JSON has no bigint; the harness lifts it with <code>BigInt()</code> before calling verify.</span></div>
+      <div class="note"><span class="mark mark-g">4</span><span><b>transaction is the getTransaction-shaped witness:</b> <code>meta.err</code>, the pre/post token balance arrays, and the parsed instructions the memo check reads.</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

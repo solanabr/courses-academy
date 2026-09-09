@@ -1,0 +1,98 @@
+id: lesson-spc-m01-l2
+slug: m01-l2
+title: "Finality vs the card stack: the payments mental model"
+skills:
+  - confirmation
+  - transaction-fees
+  - payment-model-selection
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m01-l2-q1
+        prompt: "You are porting your card mental model. A $2,000 electronics order arrives and you must decide when to release the goods, knowing there is no chargeback path to undo the shipment. Which commitment level is the right default for a sale of that value?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Release once six blocks sit on top of the payment, the confirmation depth other chains taught you."
+            correct: false
+            feedback: "Solana exposes stake-weighted vote levels, not a block-depth counter, and six blocks is under two seconds at a 300ms slot. Your own ladder probe put finality some 25 to 40 slots back, so a depth heuristic borrowed from elsewhere lands well short of it."
+          - id: b
+            label: "Release on `processed`, treating it as the authorization hold: the RPC hands back a signature in well under a second, which is enough to print the packing slip."
+            correct: false
+            feedback: "The fast signature is real, but `processed` is UI-only and can be dropped during a fork; releasing $2,000 of goods on it is like shipping on an unconfirmed auth. Ecosystem guidance reserves it for optimistic display."
+          - id: c
+            label: "Release on `confirmed` (the captured-charge equivalent), and claw the funds back later if the buyer disputes."
+            correct: false
+            feedback: "`confirmed` is the sensible default for MOST payments, but the guidance reserves `finalized` for high-value and compliance-sensitive orders, and $2,000 of electronics is squarely the first. The clawback half is the card metaphor leaking: there is no later reversal on this rail, which is exactly why the decision has to be made before the goods leave."
+          - id: a
+            label: "Wait for `finalized`: the settled-funds equivalent, since a finalized block cannot be dropped by a fork."
+            correct: true
+            feedback: "Right, and be precise about what those seconds buy: fork risk is the only thing a commitment level controls. It does not protect you from a dishonest buyer — nothing on this rail does — but at $2,000 the residual chance of a dropped block is worth ten seconds you would not spend on a small ticket."
+        explanation: "Official guidance is qualitative: `confirmed` for most payments, `finalized` for high-value or compliance-sensitive ones, `processed` for UI only. The card analogy helps (finalized is like settled funds) but breaks in one direction: there is no chargeback path at any commitment level, so the only thing you are pricing with this choice is fork risk. That is why value, not disputability, is the axis — a bigger ticket makes a rare dropped block more expensive, and the extra seconds cheap by comparison."
+      - id: m01-l2-q2
+        prompt: "A customer buys a $12 record. On card rails you would budget roughly 2.9% plus 30 cents in processor fees. What does the base network fee look like on these rails?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "A flat fee, but netted out of the USDC itself, so the customer's $12 arrives as a little less than $12."
+            correct: false
+            feedback: "The card habit of netting the cut out of the sale does not port. Fees are paid in SOL by whoever signs, and the USDC leg moves the exact amount the transfer names, so your $12 arrives as $12."
+          - id: b
+            label: "A flat 5000-lamport base fee, so a typical payment costs a small fraction of a cent whatever the size."
+            correct: true
+            feedback: "Fees price signatures, not value; ticket size drops out of the math."
+          - id: c
+            label: "Nothing at all: Solana transfers are free, and the SOL you hold pays for account creation rather than for sends."
+            correct: false
+            feedback: "Not free: every transaction pays a base fee of 5000 lamports plus any priority fee. It is tiny, but budgeting it as literally zero will bite you at scale and on account creation."
+          - id: a
+            label: "A percentage of the sale skimmed by validators, in the low tenths of a percent, so a $1,200 order costs a hundred times what a $12 one does to move on-chain."
+            correct: false
+            feedback: "Network fees here are not a percentage of value, and validators take no cut of the amount transferred. The base fee is flat per signature and independent of the sum moved."
+        explanation: "The base fee is a flat 5000 lamports per signature, so a typical payment costs a small fraction of one cent ($0.00075 at $150 per SOL, $0.0015 at $300 — quote the band, not a baked-in dollar figure), orders of magnitude below card interchange and, more to the point, flat rather than percentage-based. That flips the economics for small-ticket sales, and it deletes the float: nothing is held back on a schedule, so there is nothing to anticipate. Account creation has its own one-time rent cost, which you meet next module where token accounts appear."
+      - id: m01-l2-q3
+        prompt: "Your finance lead loves that 'chargebacks don't exist' on these rails. What is the honest other half of that trade you should tell them?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "Reversibility is now yours: refunds are push payments you build, and a mis-send has no institutional undo."
+            correct: true
+            feedback: "Settlement finality moves the reversal function out of the network and into your application code; a refund you can rebuild, a mis-send you cannot."
+          - id: b
+            label: "The network auto-reverses fraudulent transfers, so you still get card-style protection at no cost."
+            correct: false
+            feedback: "The network never reverses a settled transfer. There is no automatic clawback; anyone promising card-style protection 'for free' is misreading the rails."
+          - id: a
+            label: "Nothing much; no chargebacks just means lower risk, with no offsetting downside for the merchant."
+            correct: false
+            feedback: "There is a downside: the same finality that removes chargeback fraud also removes the institutional safety net customers may expect, and shifts all refund logic onto you."
+          - id: d
+            label: "Your customers lose their safety net, but that is between them and their wallet, not a merchant concern."
+            correct: false
+            feedback: "The lost safety net lands on your support queue, not theirs. Buyers will still demand refunds, and since the rails hand you no reversal path, satisfying them is work you schedule and fund."
+        explanation: "No chargebacks is a genuine merchant win, but it is an asymmetry, not a free lunch. Because settled transfers are irreversible, refunds become push payments you construct yourself (there is no refunds page in the official docs; you build that logic in module 4), and an erroneous payment has no bank to call. Naming both halves is the entire point of a payments mental model."
+      - id: m01-l2-q4
+        prompt: "Given everything in this lesson, which sale is the WEAKEST fit for stablecoin rails today?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "A B2B invoice where both sides sign a contract that carries the dispute rather than the network."
+            correct: false
+            feedback: "Ticket size is not what makes a sale a poor fit. When a signed contract already carries the dispute process, nothing is depending on the bank-backed undo that finality removes."
+          - id: b
+            label: "A small-ticket sale where percentage-based card interchange eats most of the ticket and the acquirer sits on the money for a month."
+            correct: false
+            feedback: "This is a strong fit, not a weak one; flat sub-cent fees are exactly where these rails beat percentage-based interchange, and settling in seconds deletes both the D+30 wait and the fee for escaping it."
+          - id: a
+            label: "A high-fraud consumer buy where the shopper expects bank-backed dispute rights and reversal on demand."
+            correct: true
+            feedback: "The poor fit is the shopper's expectation of an institutional undo, which finality removes by design. High value alone is not the problem, since a contract can carry the dispute."
+          - id: c
+            label: "A merchant who wants instant, low-fee settlement with no multi-day holding periods on funds."
+            correct: false
+            feedback: "Also a strong fit: instant settlement with no holding times is a headline advantage of these rails, not a reason to avoid them."
+        explanation: "The rails shine for low-fee, instant-settlement flows, which is why 2025 saw over $1 trillion in stablecoin volume on Solana. They fit worst where the buyer's core expectation is bank-backed reversibility and dispute rights, because no-chargeback finality removes exactly that. 'When not to use it' is a feature of an honest mental model, not a hedge."

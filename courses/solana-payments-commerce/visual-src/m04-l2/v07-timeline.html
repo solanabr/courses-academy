@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The week a dying endpoint earns its auto-disable
+     purpose: make the 95-percent-over-7-days guardrail concrete as a sequence you can recognize and interrupt
+     data: day 0: deploy ships a handler that verifies on-chain BEFORE acking; p95 response climbs past the delivery window day 0-1: slow answers count as failed deliveries; Helius begins retrying; duplicate events multiply (your registry absorbs them) day 1-6: failure rate sits near 100 percent; dashboard delivery stats show it the whole time; every day is a chance to notice day 7: sustained failure at or above 95 percent over the 7-day window -> webhook automatically disabled (paid plan; free plan reaches this on a 24-hour window) after: payments still land on-chain but nothing notifies backoffice; the gap surfaces in next lesson's reconciliation fix at any point: ack-then-work + thin handler drops failure rate; window recovers
+     prompt: Horizontal timeline, day 0 through day 7 plus an "after" zone, one event per marker from data. Shade the day-1-to-6 stretch as the intervention window with the fix note attached to it. The day-7 marker renders as the terminal auto-disable event. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:453px;height:433px;bottom:-235px;left:689px;border-radius:57% 60% 54% 46% / 35% 51% 61% 38%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { display:table; width:100%; table-layout:fixed; border-spacing:14px 0;
+        margin:8px -14px 0; }
+  .trow { display:table-row; }
+  .tc { display:table-cell; }
+  .trow.top .tc { vertical-align:bottom; }
+  .trow.bot .tc { vertical-align:top; }
+  .w1 { width:18.5%; } .w2 { width:18.5%; } .w3 { width:26%; } .w4 { width:18.5%; } .w5 { width:18.5%; }
+  .tcard { background:var(--surface-card); border:2px solid var(--stbr-dark);
+           border-radius:var(--radius-md); padding:11px 14px; }
+  .tcard .day { display:inline-block; font-family:var(--font-body); font-weight:800;
+                font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+                color:#fff; background:var(--stbr-emerald); padding:3px 10px;
+                border-radius:var(--radius-pill); margin-bottom:6px; }
+  .tcard .txt { font-family:var(--font-body); font-size:13px; line-height:1.35;
+                color:var(--text-primary); }
+  .tcard.win { background:rgba(255,210,63,0.25); }
+  .tcard.win .day { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .tcard.fix { background:var(--stbr-yellow); border-color:var(--stbr-dark); }
+  .tcard.fix .day { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .tcard.fix .txt { font-weight:700; }
+  .tcard.term { background:var(--surface-inverse); }
+  .tcard.term .day { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .tcard.term .txt { color:var(--stbr-cream); }
+  .tcard.aft { border-style:dashed; }
+  .stub { width:2.5px; height:14px; background:var(--stbr-dark); margin:0 auto; }
+  .rail { height:38px;
+          background:linear-gradient(to bottom, rgba(0,0,0,0) 17px, #008B4C 17px,
+                     #008B4C 21px, rgba(0,0,0,0) 21px); }
+  .rail .dot { width:20px; height:20px; border-radius:50%; background:var(--surface-card);
+               border:4px solid var(--stbr-emerald); margin:9px auto 0; }
+  .rail.term { background:none; }
+  .rail.term .rline { height:0; border-top:4px solid var(--stbr-emerald); margin-top:17px; }
+  .rail.term .dot { width:24px; height:24px; background:var(--stbr-dark);
+                    border-color:var(--stbr-dark); margin:-14px auto 0; }
+  .rail.win { background:none; }
+  .rail.win .bar { height:12px; margin-top:13px; background:var(--stbr-yellow);
+                   border:2px solid var(--stbr-dark); border-radius:var(--radius-pill); }
+  .rail.aft { background:none; }
+  .rail.aft .dash { height:0; border-top:3.5px dashed var(--stbr-green); margin-top:17px; }
+</style>
+  <div class="stbr-eyebrow">the 95%-over-7-days guardrail, made concrete</div>
+  <h2 class="viz-title">the week a dying endpoint earns its auto-disable</h2>
+  <div class="tl">
+    <div class="trow top">
+      <div class="tc w1">
+        <div class="tcard"><span class="day">day 0</span>
+          <div class="txt">deploy ships a handler that verifies on-chain BEFORE acking; p95 response climbs past the delivery window</div></div>
+        <div class="stub"></div>
+      </div>
+      <div class="tc w2"></div>
+      <div class="tc w3">
+        <div class="tcard win"><span class="day">day 1&ndash;6 &middot; intervention window</span>
+          <div class="txt">failure rate sits near 100% &mdash; dashboard delivery stats show it the whole time; every day is a chance to notice</div></div>
+        <div class="stub"></div>
+      </div>
+      <div class="tc w4"></div>
+      <div class="tc w5">
+        <div class="tcard aft"><span class="day">after</span>
+          <div class="txt">payments still land on-chain but nothing notifies backoffice &mdash; the gap surfaces in next lesson's reconciliation</div></div>
+        <div class="stub"></div>
+      </div>
+    </div>
+    <div class="trow">
+      <div class="tc"><div class="rail"><div class="dot"></div></div></div>
+      <div class="tc"><div class="rail"><div class="dot"></div></div></div>
+      <div class="tc"><div class="rail win"><div class="bar"></div></div></div>
+      <div class="tc"><div class="rail term"><div class="rline"></div><div class="dot"></div></div></div>
+      <div class="tc"><div class="rail aft"><div class="dash"></div></div></div>
+    </div>
+    <div class="trow bot">
+      <div class="tc"></div>
+      <div class="tc">
+        <div class="stub"></div>
+        <div class="tcard"><span class="day">day 0&ndash;1</span>
+          <div class="txt">slow answers count as failed deliveries; Helius begins retrying; duplicate events multiply &mdash; your registry absorbs them</div></div>
+      </div>
+      <div class="tc">
+        <div class="stub"></div>
+        <div class="tcard fix"><span class="day">fix at any point</span>
+          <div class="txt">ack-then-work + a thin handler drops the failure rate; the window recovers</div></div>
+      </div>
+      <div class="tc">
+        <div class="stub"></div>
+        <div class="tcard term"><span class="day">day 7 &middot; terminal</span>
+          <div class="txt">sustained failure &ge;95% over the 7-day window &rarr; webhook automatically disabled (paid plan; free hits this on a 24h window)</div></div>
+      </div>
+      <div class="tc"></div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: The safe retry and the double-pay trap, on the ~150-block clock
+     purpose: anchor the resend-same-bytes rule to the blockhash window so the reader sees why rebuilding early is the dangerous move
+     data: Shared clock: blockhash valid ~150 blocks; at the current 300ms target slot time roughly 45 seconds, derive from current slot time Safe track: t=0 sign + send (signature S1) -> t+5s timeout, no confirmation -> resubmit SAME bytes (still S1, lands at most once) -> confirmed OR window expires -> only now rebuild with fresh blockhash Trap track: t=0 sign + send (S1) -> t+5s timeout -> rebuild with fresh blockhash (new signature S2) -> S1 AND S2 can both land -> customer charged twice
+     prompt: Two horizontal timelines over a shared axis labeled "~150 blocks, about 45s at 300ms slots". Top track shows the safe path with the same signature label S1 repeated at each resubmit and a rebuild only after the window closes. Bottom track shows the trap path forking to a second signature S2 with both S1 and S2 marked as landable, ending in a "paid twice" failure tag. Mark the window edge clearly on both tracks.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:487px;height:510px;top:-270px;right:-270px;border-radius:41% 40% 56% 62% / 40% 58% 42% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:525px;height:418px;bottom:-235px;left:-235px;border-radius:45% 62% 36% 40% / 53% 58% 46% 49%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .track { display:flex; align-items:stretch; height:196px; }
+  .tlab { width:158px; display:flex; align-items:center; }
+  .tlab .pill { font-family:var(--font-display); font-weight:900; font-size:15px; line-height:1.25;
+    padding:10px 14px; border-radius:var(--radius-md); }
+  .pill.safe { background:var(--surface-brand); color:var(--text-on-brand); }
+  .pill.trap { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .lane { flex:1; position:relative; }
+  .lane .line { position:absolute; left:0; right:0; top:50%; height:3px; margin-top:-1.5px; }
+  .lane.safe .line { background:var(--stbr-emerald); }
+  .lane.trap .line { background:var(--stbr-ink-500); }
+  .dot { position:absolute; top:50%; width:14px; height:14px; margin:-7px 0 0 -7px;
+    border-radius:50%; background:var(--stbr-dark); border:2.5px solid var(--surface-page); }
+  .ev { position:absolute; width:196px; margin-left:-98px; text-align:center;
+    font-family:var(--font-body); font-size:12.5px; line-height:1.3; color:var(--text-primary); }
+  .ev.up { bottom:50%; margin-bottom:16px; }
+  .ev.dn { top:50%; margin-top:16px; }
+  .ev b { font-weight:800; }
+  .sig { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:12px;
+    padding:2px 9px; border-radius:var(--radius-pill); margin-top:3px; }
+  .sig.s1 { background:var(--surface-brand); color:var(--text-on-brand); }
+  .sig.s2 { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .fail { display:inline-block; background:var(--surface-accent); color:var(--text-on-accent);
+    border:2px solid var(--stbr-yellow-700); font-family:var(--font-display); font-weight:900;
+    font-size:15px; padding:7px 14px; border-radius:var(--radius-md); }
+  .edge { position:absolute; left:74%; top:4px; bottom:4px; border-left:3px dashed var(--stbr-dark); opacity:0.55; }
+  .axis { display:flex; height:66px; }
+  .axis .sp { width:158px; }
+  .axis .alane { flex:1; position:relative; }
+  .axis .aline { position:absolute; left:0; right:14px; top:10px; height:2px; background:var(--stbr-ink-500); }
+  .axis .ahead { position:absolute; right:0; top:4px; }
+  .atick { position:absolute; top:18px; margin-left:-60px; width:120px; text-align:center;
+    font-family:var(--font-mono); font-size:12px; color:var(--text-muted); }
+  .aname { position:absolute; left:30%; top:40px; margin-left:-230px; width:460px; text-align:center;
+    font-family:var(--font-body); font-weight:700; font-size:13px; color:var(--text-secondary); }
+  .edgelab { position:absolute; left:74%; top:34px; margin-left:-110px; width:220px; text-align:center;
+    font-family:var(--font-display); font-weight:800; font-size:12.5px; color:var(--stbr-dark);
+    text-transform:uppercase; letter-spacing:0.08em; }
+</style>
+  <div class="stbr-eyebrow">retry semantics on the blockhash clock</div>
+  <h2 class="viz-title">the safe retry and the double-pay trap</h2>
+  <div class="track">
+    <div class="tlab"><div class="pill safe">SAFE<br>resend the same bytes</div></div>
+    <div class="lane safe">
+      <div class="line"></div><div class="edge"></div>
+      <div class="dot" style="left:4%"></div><div class="dot" style="left:22%"></div>
+      <div class="dot" style="left:42%"></div><div class="dot" style="left:60%"></div>
+      <div class="dot" style="left:88%"></div>
+      <div class="ev up" style="left:4%"><b>t=0</b> sign + send<br><span class="sig s1">S1</span></div>
+      <div class="ev dn" style="left:22%"><b>t+5s</b> timeout,<br>no confirmation</div>
+      <div class="ev up" style="left:42%">resubmit <b>SAME bytes</b><br><span class="sig s1">still S1</span><br>lands at most once</div>
+      <div class="ev dn" style="left:60%"><b>confirmed</b> &mdash; or wait<br>out the window</div>
+      <div class="ev up" style="left:88%"><b>only now:</b> rebuild with<br>a fresh blockhash</div>
+    </div>
+  </div>
+  <div class="track">
+    <div class="tlab"><div class="pill trap">TRAP<br>rebuild too early</div></div>
+    <div class="lane trap">
+      <div class="line"></div><div class="edge"></div>
+      <div class="dot" style="left:4%"></div><div class="dot" style="left:22%"></div>
+      <div class="dot" style="left:42%"></div><div class="dot" style="left:60%"></div>
+      <div class="ev up" style="left:4%"><b>t=0</b> sign + send<br><span class="sig s1">S1</span></div>
+      <div class="ev dn" style="left:22%"><b>t+5s</b> timeout &rarr; rebuild<br>with fresh blockhash<br><span class="sig s2">new S2</span></div>
+      <div class="ev up" style="left:42%"><b>S1 AND S2</b><br>can both land</div>
+      <div class="ev dn" style="left:60%"><span class="fail">paid twice</span><br>customer charged twice</div>
+    </div>
+  </div>
+  <div class="axis">
+    <div class="sp"></div>
+    <div class="alane">
+      <div class="aline"></div>
+      <div class="ahead"><svg width="16" height="14"><polygon points="16,7 2,1 2,13" fill="#767f73"/></svg></div>
+      <div class="atick" style="left:4%">t=0</div>
+      <div class="atick" style="left:22%">t+5s</div>
+      <div class="aname">blockhash valid ~150 blocks &asymp; 45 s at 300 ms slots</div>
+      <div class="edgelab">window edge</div>
+    </div>
+  </div>
+</div>
+</body></html>

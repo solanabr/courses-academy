@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The guard: three questions before every pull
+     purpose: give the reader the exact decision table they are about to implement as the completion exercise
+     data: Question 1: is a delegate set on the account at all? no  -> refuse, reason delegate-revoked (owner ran Revoke, or an earlier pull emptied the allowance and the Token program cleared the slot) Question 2: is the delegate OUR crank address? no  -> refuse, reason delegate-revoked (a competing approval evicted us) Question 3: does delegatedAmount cover this cycle's pull? no  -> refuse, reason insufficient-allowance (something is left, just not enough: ask for re-approval) All yes -> pull, and expect on-chain allowance to equal delegatedAmount minus pull
+     prompt: A three-row decision table. Each row: a question in plain language, a monospace field check (delegate is null; delegate != crank; delegatedAmount < pull), and the refusal reason string it produces (delegate-revoked, delegate-revoked, insufficient-allowance). A final full-width success row: all checks pass, pull proceeds, allowance decrements. Reason strings styled as code.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:500px;top:-289px;right:-289px;border-radius:50% 43% 43% 60% / 55% 57% 60% 40%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:452px;height:371px;left:-245px;top:310px;border-radius:60% 63% 65% 41% / 63% 48% 59% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { width:100%; margin-top:10px; border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-2xl); overflow:hidden; background:var(--surface-card); }
+  .trow { display:flex; align-items:center; border-top:1.5px solid var(--border-subtle); }
+  .trow.head { background:var(--surface-inverse); border-top:none; }
+  .trow.head .c { font-family:var(--font-body); font-weight:800; font-size:13.5px;
+                  letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-dark); }
+  .c { padding:20px 28px; }
+  .c1 { flex:1 1 0; }
+  .c2 { flex:0 0 400px; }
+  .c3 { flex:0 0 360px; }
+  .qnum { display:inline-block; width:34px; height:34px; border-radius:50%;
+          background:var(--stbr-emerald); color:var(--stbr-cream); text-align:center;
+          line-height:34px; font-family:var(--font-display); font-weight:900;
+          font-size:18px; margin-right:14px; vertical-align:middle; }
+  .q { font-family:var(--font-body); font-weight:700; font-size:19px;
+       color:var(--text-primary); vertical-align:middle; }
+  .q small { display:block; margin-left:48px; font-size:14px; font-weight:600;
+             color:var(--text-muted); margin-top:3px; }
+  .chk { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:17px;
+         color:var(--text-primary); background:var(--surface-paper);
+         border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+         padding:9px 16px; }
+  .why { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:16px;
+         color:var(--stbr-dark); background:rgba(255,210,63,0.45);
+         border:1.5px solid var(--stbr-yellow-700); border-radius:var(--radius-md);
+         padding:9px 16px; }
+  .refuse { font-family:var(--font-body); font-weight:800; font-size:12px;
+            letter-spacing:.08em; text-transform:uppercase; color:var(--status-danger);
+            display:block; margin-bottom:5px; }
+  .trow.pass { background:var(--surface-brand); border-top:3px solid var(--stbr-dark); }
+  .trow.pass .c { padding:22px 28px; }
+  .pass-lead { font-family:var(--font-display); font-weight:900; font-size:22px;
+               color:var(--text-on-brand); }
+  .pass-sub { font-family:var(--font-body); font-weight:600; font-size:15.5px;
+              color:rgba(245,232,202,0.85); margin-top:4px; }
+  .pass-sub code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">the guard you are about to implement</div>
+  <h2 class="viz-title">three questions before every pull</h2>
+  <div class="tbl">
+    <div class="trow head">
+      <div class="c c1">question</div>
+      <div class="c c2">field check</div>
+      <div class="c c3">refusal reason</div>
+    </div>
+    <div class="trow">
+      <div class="c c1"><span class="qnum">1</span><span class="q">is a delegate set on the account at all?</span>
+        <small>no &mdash; the owner ran Revoke, or a pull emptied the allowance and cleared the slot</small></div>
+      <div class="c c2"><span class="chk">delegate is null</span></div>
+      <div class="c c3"><span class="refuse">refuse</span><span class="why">delegate-revoked</span></div>
+    </div>
+    <div class="trow">
+      <div class="c c1"><span class="qnum">2</span><span class="q">is the delegate OUR crank address?</span>
+        <small>no &mdash; a competing approval evicted us</small></div>
+      <div class="c c2"><span class="chk">delegate != crank</span></div>
+      <div class="c c3"><span class="refuse">refuse</span><span class="why">delegate-revoked</span></div>
+    </div>
+    <div class="trow">
+      <div class="c c1"><span class="qnum">3</span><span class="q">does delegatedAmount cover this cycle's pull?</span>
+        <small>no &mdash; something is left, just not enough: ask for re-approval</small></div>
+      <div class="c c2"><span class="chk">delegatedAmount &lt; pull</span></div>
+      <div class="c c3"><span class="refuse">refuse</span><span class="why">insufficient-allowance</span></div>
+    </div>
+    <div class="trow pass">
+      <div class="c" style="flex:1 1 0;">
+        <div class="pass-lead">all yes &rarr; pull proceeds</div>
+        <div class="pass-sub">and expect on-chain allowance to equal <code>delegatedAmount &minus; pull</code> afterwards</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>

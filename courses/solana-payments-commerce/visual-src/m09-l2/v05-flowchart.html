@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The read-time re-verification loop
+     purpose: give the reader the loop to run before trusting any moving pin from this course again
+     data: step 1: probe the surface (npm view / curl the redirect / check the draft status) step 2: compare against the course's dated versions table step 3: unchanged -> proceed, add today's date to your note step 3': changed -> read the changelog BEFORE running course code against it step 4: write the dated freshness note into your own table loop: repeat per moving pin; frozen-shelf pins get a yearly glance
+     prompt: Compact vertical flowchart of the four steps from the data field, with step 3 branching into "unchanged: proceed" and "changed: read changelog first" paths that both rejoin at "write dated note". A small side annotation noting frozen-shelf pins only need a yearly glance. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:566px;height:521px;bottom:-286px;right:-286px;border-radius:51% 42% 39% 58% / 63% 39% 37% 36%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .fl-wrap { background:var(--surface-card); border-radius:var(--radius-2xl);
+             padding:36px 56px 34px; }
+  .fl-wrap .viz-title { font-size:44px; margin-bottom:22px; }
+  .fl-cols { display:flex; gap:44px; align-items:flex-start; }
+  .flow { flex:1 1 auto; position:relative; display:flex; flex-direction:column;
+          margin-left:34px; }
+  .railv { position:absolute; left:-30px; top:33px; bottom:33px;
+           border-left:3px solid var(--stbr-emerald); }
+  .railtop { position:absolute; left:-30px; top:31px; width:20px;
+             border-top:3px solid var(--stbr-emerald); }
+  .railhead { position:absolute; left:-11px; top:26px; width:0; height:0;
+              border-top:6px solid transparent; border-bottom:6px solid transparent;
+              border-left:9px solid var(--stbr-emerald); }
+  .railbot { position:absolute; left:-30px; bottom:31px; width:30px;
+             border-top:3px solid var(--stbr-emerald); }
+  .step { border:2px solid var(--stbr-green); border-radius:var(--radius-lg);
+          background:var(--surface-card); padding:11px 20px; height:66px;
+          display:flex; flex-direction:column; justify-content:center; }
+  .st { font-family:var(--font-display); font-weight:900; font-size:18.5px;
+        color:var(--text-primary); line-height:1.1; }
+  .ss { font-family:var(--font-body); font-size:13px; color:var(--text-secondary);
+        margin-top:3px; }
+  .varr { height:20px; display:flex; flex-direction:column; align-items:center; }
+  .varr .vl { width:3px; flex:1 1 auto; background:var(--stbr-green); }
+  .varr .vh { width:0; height:0; border-left:6px solid transparent;
+              border-right:6px solid transparent;
+              border-top:8px solid var(--stbr-green); }
+  .q { align-self:center; background:var(--stbr-green); color:var(--stbr-cream);
+       font-family:var(--font-display); font-weight:900; font-size:17px;
+       border-radius:var(--radius-pill); padding:10px 26px; }
+  .tbar { position:relative; height:24px; }
+  .tbar .h { position:absolute; left:25%; right:25%; top:8px;
+             border-top:2.5px solid var(--stbr-green); }
+  .tbar .c { position:absolute; left:50%; top:0; height:8px;
+             border-left:2.5px solid var(--stbr-green); }
+  .tbar .l { position:absolute; left:25%; top:8px; height:16px;
+             border-left:2.5px solid var(--stbr-green); }
+  .tbar .r { position:absolute; right:25%; top:8px; height:16px;
+             border-right:2.5px solid var(--stbr-green); }
+  .branches { display:flex; gap:48px; }
+  .br { flex:1 1 0; box-sizing:border-box; border-radius:var(--radius-lg);
+        padding:13px 20px; height:104px; display:flex; flex-direction:column;
+        justify-content:center; }
+  .br.ok { background:rgba(0,139,76,0.10); border:2px solid var(--stbr-emerald); }
+  .br.warn { background:var(--stbr-yellow); border:2px solid var(--stbr-yellow); }
+  .bt { font-family:var(--font-display); font-weight:900; font-size:17.5px;
+        color:var(--text-primary); }
+  .bs { font-family:var(--font-body); font-size:13.5px; line-height:1.35;
+        color:var(--text-secondary); margin-top:4px; }
+  .br.warn .bs { color:var(--stbr-dark); }
+  .bbar { position:relative; height:24px; }
+  .bbar .h { position:absolute; left:25%; right:25%; bottom:8px;
+             border-top:2.5px solid var(--stbr-green); }
+  .bbar .l { position:absolute; left:25%; top:0; height:16px;
+             border-left:2.5px solid var(--stbr-green); }
+  .bbar .r { position:absolute; right:25%; top:0; height:16px;
+             border-right:2.5px solid var(--stbr-green); }
+  .bbar .c { position:absolute; left:50%; bottom:0; height:8px;
+             border-left:2.5px solid var(--stbr-green); }
+  .aside { flex:0 0 300px; display:flex; flex-direction:column; gap:16px;
+           margin-top:56px; }
+  .note { box-sizing:border-box; min-height:110px;
+          border:1.5px dashed var(--stbr-green); border-radius:var(--radius-lg);
+          padding:14px 18px 20px; font-family:var(--font-body); font-size:13.5px;
+          line-height:1.4; color:var(--text-secondary); }
+  .note .nh { font-family:var(--font-display); font-weight:900; font-size:15px;
+              color:var(--text-primary); margin-bottom:4px; }
+</style>
+  <div class="fl-wrap">
+    <div class="stbr-eyebrow">before trusting any moving pin again</div>
+    <h2 class="viz-title">the read-time re-verification loop</h2>
+    <div class="fl-cols">
+      <div class="flow">
+        <div class="railv"></div><div class="railtop"></div><div class="railhead"></div><div class="railbot"></div>
+        <div class="step"><div class="st">1 &middot; probe the surface</div><div class="ss">npm view &middot; curl the redirect &middot; check the draft status</div></div>
+        <div class="varr"><div class="vl"></div><div class="vh"></div></div>
+        <div class="step"><div class="st">2 &middot; compare against the course&rsquo;s dated versions table</div></div>
+        <div class="varr"><div class="vl"></div><div class="vh"></div></div>
+        <div class="q">3 &middot; did it change?</div>
+        <div class="tbar"><div class="c"></div><div class="h"></div><div class="l"></div><div class="r"></div></div>
+        <div class="branches">
+          <div class="br ok"><div class="bt">unchanged &rarr; proceed</div><div class="bs">add today&rsquo;s date to your note</div></div>
+          <div class="br warn"><div class="bt">changed &rarr; read the changelog first</div><div class="bs"><b>before</b> running course code against it</div></div>
+        </div>
+        <div class="bbar"><div class="l"></div><div class="r"></div><div class="h"></div><div class="c"></div></div>
+        <div class="step"><div class="st">4 &middot; write the dated freshness note into your own table</div></div>
+      </div>
+      <div class="aside">
+        <div class="note"><div class="nh">&#8635; the loop</div>the left rail runs step 4 back to step 1 &mdash; repeat once per <b>moving</b> pin</div>
+        <div class="note"><div class="nh">frozen-shelf pins</div>a yearly glance is enough &mdash; no per-use re-probe</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

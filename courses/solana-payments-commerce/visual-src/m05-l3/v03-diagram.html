@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The settle path is the module-4 reconciler wearing a new hat
+     purpose: show that invoice settlement reuses the existing reference-key reconciliation machinery end to end, feeding the state machine one event
+     data: open invoice (fresh reference key, amount, subscriber notified) -> subscriber tops up ATA -> pays invoice as a push payment carrying the reference -> getSignaturesForAddress(reference) -> verifier (module 4's harness) -> reconcileOrder returns paid -> settle event { invoiceId, signature } -> state machine: open-invoice -> active (resume) note: the settle payment is a push payment, not a delegate pull; the plan's billing window is untouched
+     prompt: Left-to-right pipeline of six nodes per the data flow, with the reconciler stage visually grouped and labeled as existing module-4 machinery reused unchanged. End node is the state transition open-invoice to active. Annotate the note beneath the final node. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:542px;height:512px;bottom:-300px;left:-300px;border-radius:58% 43% 40% 57% / 65% 60% 37% 39%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:38px 52px 32px; }
+  .pipe { width:1340px; margin:10px auto 0; }
+  .prow { display:flex; align-items:stretch; justify-content:center; }
+  .pnode { background:var(--surface-card); border:2px solid var(--border-strong); border-radius:var(--radius-lg);
+           padding:14px 18px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center; text-align:center; }
+  .pnode .t { font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--text-primary); line-height:1.2; }
+  .pnode .d { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:4px; line-height:1.3; }
+  .pnode code, .grp code { font-family:var(--font-mono); font-size:.92em; }
+  .harr { display:flex; align-items:center; padding:0 4px; }
+  .drop { display:flex; justify-content:center; align-items:center; gap:12px; height:52px; }
+  .drop .lb { font-family:var(--font-body); font-weight:700; font-size:12px; color:var(--stbr-green); }
+  .grp { position:relative; border:2.5px solid var(--stbr-emerald); border-radius:var(--radius-lg); padding:26px 16px 14px; box-sizing:border-box; display:flex; align-items:stretch; }
+  .grp .glab { position:absolute; top:-14px; left:18px; background:var(--stbr-yellow); color:var(--stbr-dark);
+               font-family:var(--font-body); font-weight:800; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
+               border-radius:var(--radius-pill); padding:5px 13px; }
+  .grp .pnode { border-color:var(--border-subtle); }
+  .endnode { background:var(--surface-brand); border:none; }
+  .endnode .t { color:var(--text-on-brand); } .endnode .d { color:rgba(245,232,202,.85); }
+  .note { margin:22px auto 0; width:1180px; background:var(--surface-paper); border-left:5px solid var(--stbr-emerald);
+          border-radius:var(--radius-md); padding:12px 20px; box-sizing:border-box;
+          font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+  .note b { color:var(--text-primary); font-weight:800; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">existing machinery, one new event</div>
+  <h2 class="viz-title" style="font-size:44px;">the settle path is the module-4 reconciler wearing a new hat</h2>
+  <div class="pipe">
+    <div class="prow">
+      <div class="pnode" style="width:330px;"><div class="t">open invoice</div><div class="d">fresh reference key &middot; amount &middot; subscriber notified</div></div>
+      <div class="harr"><svg width="52" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="52,7 40,2 40,12" fill="#1b231d"/></svg></div>
+      <div class="pnode" style="width:290px;"><div class="t">subscriber tops up ATA</div><div class="d">funds return to the wallet</div></div>
+      <div class="harr"><svg width="52" height="14"><line x1="0" y1="7" x2="40" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="52,7 40,2 40,12" fill="#1b231d"/></svg></div>
+      <div class="pnode" style="width:380px;"><div class="t">pays the invoice</div><div class="d">a <b>push payment</b> carrying the reference key</div></div>
+    </div>
+    <div class="drop">
+      <svg width="14" height="34"><line x1="7" y1="0" x2="7" y2="24" stroke="#008b4c" stroke-width="2.5"/><polygon points="7,34 2,23 12,23" fill="#008b4c"/></svg>
+      <span class="lb">the reference lands on-chain &mdash; exactly what module 4 already watches for</span>
+    </div>
+    <div class="prow">
+      <div class="grp" style="width:740px;">
+        <span class="glab">module-4 reconciler &mdash; reused unchanged</span>
+        <div class="pnode" style="width:236px;"><div class="t"><code>getSignaturesForAddress</code></div><div class="d">(reference)</div></div>
+        <div class="harr"><svg width="38" height="14"><line x1="0" y1="7" x2="26" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="38,7 26,2 26,12" fill="#306c40"/></svg></div>
+        <div class="pnode" style="width:180px;"><div class="t">verifier</div><div class="d">module 4&rsquo;s harness</div></div>
+        <div class="harr"><svg width="38" height="14"><line x1="0" y1="7" x2="26" y2="7" stroke="#306c40" stroke-width="2.5"/><polygon points="38,7 26,2 26,12" fill="#306c40"/></svg></div>
+        <div class="pnode" style="width:190px;"><div class="t"><code>reconcileOrder</code></div><div class="d">returns <b>paid</b></div></div>
+      </div>
+      <div class="harr"><svg width="46" height="14"><line x1="0" y1="7" x2="34" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="46,7 34,2 34,12" fill="#1b231d"/></svg></div>
+      <div class="pnode" style="width:238px;"><div class="t">settle event</div><div class="d"><code>{ invoiceId, signature }</code></div></div>
+      <div class="harr"><svg width="46" height="14"><line x1="0" y1="7" x2="34" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="46,7 34,2 34,12" fill="#1b231d"/></svg></div>
+      <div class="pnode endnode" style="width:250px;"><div class="t">open-invoice &rarr; active</div><div class="d">the state machine resumes the plan</div></div>
+    </div>
+    <div class="note"><b>note:</b> the settle payment is a push payment, not a delegate pull &mdash; the plan&rsquo;s billing window is untouched. one new event type in, the rest is the reconciler you already shipped.</div>
+  </div>
+</div>
+</div>
+</body></html>

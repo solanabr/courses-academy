@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Anatomy of the onramp URL your client is allowed to hold
+     purpose: separate the display presets from the one load-bearing param at the exact moment the reader has both the URL and the binding body in view
+     data: https://pay.coinbase.com/buy/select-asset ?sessionToken=<token>        <- load-bearing: opaque, single-use, expires in 5 min; internally references the bound address and assets &defaultNetwork=solana       <- display preset: which network screen opens &defaultAsset=USDC           <- display preset: which asset is selected &presetFiatAmount=12.5       <- display preset: pre-filled purchase amount, fed from RECORD.priceUsdc &fiatCurrency=USD            <- display preset: pricing currency absent by design: the wallet address, the app ID
+     prompt: The URL rendered as annotated code, one query param per line, each with a side annotation per the data. The sessionToken line is visually emphasized; a footer strip names what is absent by design. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:488px;right:-271px;top:292px;border-radius:46% 62% 50% 54% / 39% 52% 64% 39%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .v4-row{display:flex;align-items:center;gap:26px;padding:12px 0;border-bottom:1px solid var(--border-on-dark);}
+    .v4-code{flex:0 0 620px;font-family:var(--font-mono);font-size:19px;color:var(--stbr-cream);white-space:nowrap;}
+    .v4-ann{flex:1;font-family:var(--font-body);font-size:14px;color:rgba(245,232,202,0.78);line-height:1.35;display:flex;align-items:center;gap:12px;}
+    .v4-tag{flex:0 0 auto;font-family:var(--font-body);font-weight:700;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;border-radius:999px;padding:4px 12px;background:rgba(245,232,202,0.14);color:var(--stbr-cream);}
+  </style>
+  <div style="background:var(--surface-card);border-radius:var(--radius-2xl);padding:42px 52px;">
+    <div class="stbr-eyebrow">one load-bearing param</div>
+    <h2 class="viz-title">anatomy of the URL your client is allowed to hold</h2>
+    <div style="background:var(--surface-inverse);border-radius:20px;padding:22px 32px;margin-top:14px;">
+      <div class="v4-row">
+        <div class="v4-code">https://pay.coinbase.com/buy/select-asset</div>
+        <div class="v4-ann"><span style="color:rgba(245,232,202,0.55);">the hosted page the client opens</span></div>
+      </div>
+      <div class="v4-row" style="border-left:4px solid var(--stbr-yellow);padding-left:16px;margin-left:-20px;">
+        <div class="v4-code" style="color:var(--stbr-yellow);flex-basis:604px;">?sessionToken=&lt;token&gt;</div>
+        <div class="v4-ann"><span class="v4-tag" style="background:var(--stbr-yellow);color:var(--stbr-dark);">load-bearing</span><span>opaque, single-use, expires in 5&nbsp;min &mdash; internally references the bound address and assets</span></div>
+      </div>
+      <div class="v4-row">
+        <div class="v4-code">&amp;defaultNetwork=solana</div>
+        <div class="v4-ann"><span class="v4-tag">display preset</span><span>which network screen opens</span></div>
+      </div>
+      <div class="v4-row">
+        <div class="v4-code">&amp;defaultAsset=USDC</div>
+        <div class="v4-ann"><span class="v4-tag">display preset</span><span>which asset is selected</span></div>
+      </div>
+      <div class="v4-row">
+        <div class="v4-code">&amp;presetFiatAmount=12.5</div>
+        <div class="v4-ann"><span class="v4-tag">display preset</span><span>pre-filled purchase amount, fed from RECORD.priceUsdc</span></div>
+      </div>
+      <div class="v4-row" style="border-bottom:none;">
+        <div class="v4-code">&amp;fiatCurrency=USD</div>
+        <div class="v4-ann"><span class="v4-tag">display preset</span><span>pricing currency</span></div>
+      </div>
+    </div>
+    <div style="margin-top:18px;background:var(--surface-brand);color:var(--text-on-brand);border-radius:14px;padding:13px 24px;font-family:var(--font-body);font-size:15.5px;display:flex;align-items:center;gap:14px;">
+      <span style="font-family:var(--font-display);font-weight:800;font-size:14px;letter-spacing:0.08em;text-transform:uppercase;">absent by design</span>
+      <span>the wallet address &nbsp;&middot;&nbsp; the app ID &mdash; neither ever reaches the client</span>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: How the runtime detects a nonce transaction
+     purpose: show that the entire durable-nonce switch hangs on one positional check the builder must not violate
+     data: instruction 0: programAddress: 11111111111111111111111111111111   // System Program accounts: [0] nonce account        (writable)              // must be first, must be writable [1] SysvarRecentB1ockHashes11111111111111111111  (readonly) [2] nonce authority      (signer)                // merchant key in fair-queue data: [4, 0, 0, 0]                                 // AdvanceNonceAccount discriminator runtime rule: first instruction matches this shape -> validate recentBlockhash against the stored nonce; any other position or shape -> treat recentBlockhash as a normal blockhash
+     prompt: An annotated code card showing the AdvanceNonceAccount instruction as structured pseudo-JSON: programAddress line, three account rows (nonce account writable, recent-blockhashes sysvar readonly, nonce authority signer), and the data bytes [4,0,0,0]. Side annotations point at the nonce-account row ("must be first, must be writable") and the data row ("AdvanceNonceAccount discriminator"). Below the card, a two-branch rule: "first instruction matches this shape -> nonce validation" vs "any other position/shape -> recentBlockhash treated as a normal blockhash". Emphasize the position-zero requirement.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:529px;height:546px;bottom:-296px;right:-296px;border-radius:40% 46% 55% 63% / 64% 36% 48% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .codewrap { position:relative; margin-top:14px; }
+  .panel { width:860px; background:var(--surface-inverse); border-radius:var(--radius-xl);
+           padding:24px 30px; }
+  .cl { font-family:var(--font-mono); font-size:17px; line-height:40px; height:40px;
+        color:var(--stbr-cream); white-space:nowrap; }
+  .cm { color:rgba(245,232,202,0.55); }
+  .hl { display:inline-block; background:var(--stbr-yellow); color:var(--stbr-dark);
+        font-weight:800; border-radius:var(--radius-sm); padding:0 10px; line-height:30px; }
+  .rowa { background:rgba(255,255,255,0.09); border-radius:var(--radius-sm);
+          margin:0 -12px; padding:0 12px; }
+  .aline { position:absolute; height:3px; background:var(--stbr-emerald); }
+  .achip { position:absolute; left:952px; width:430px; background:var(--surface-card);
+           border:2.5px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+           padding:12px 18px; }
+  .achip .at { font-family:var(--font-body); font-weight:800; font-size:13px;
+               color:var(--stbr-green); text-transform:uppercase; letter-spacing:0.06em; }
+  .achip .ab { font-family:var(--font-body); font-weight:600; font-size:16px;
+               color:var(--text-primary); margin-top:4px; line-height:1.35; }
+  .poschip { position:absolute; left:952px; top:16px; width:430px;
+             background:var(--stbr-yellow); border-radius:var(--radius-lg); padding:12px 18px; }
+  .poschip .at { font-family:var(--font-body); font-weight:900; font-size:13px;
+                 color:var(--stbr-dark); text-transform:uppercase; letter-spacing:0.06em; }
+  .poschip .ab { font-family:var(--font-body); font-weight:700; font-size:16px;
+                 color:var(--stbr-dark); margin-top:4px; line-height:1.35; }
+  .rules { display:flex; gap:24px; margin-top:26px; }
+  .rule { flex:1 1 0; border-radius:var(--radius-lg); padding:16px 22px; }
+  .rule-yes { background:var(--stbr-emerald); }
+  .rule-yes .rt, .rule-yes .rb { color:#fff; }
+  .rule-no { background:var(--surface-card); border:2.5px dashed var(--border-strong); }
+  .rule-no .rt { color:var(--text-primary); } .rule-no .rb { color:var(--text-secondary); }
+  .rt { font-family:var(--font-display); font-weight:900; font-size:17px; }
+  .rb { font-family:var(--font-body); font-weight:600; font-size:15.5px; margin-top:5px; line-height:1.35; }
+</style>
+  <div class="stbr-eyebrow">one positional check carries the whole switch</div>
+  <h2 class="viz-title">how the runtime detects a nonce transaction</h2>
+  <div class="codewrap">
+    <div class="panel">
+      <div class="cl"><span class="hl">instruction 0</span>&nbsp;{ <span class="cm">// must be the FIRST instruction</span></div>
+      <div class="cl">&nbsp;&nbsp;programAddress: 1111&hellip;1111 <span class="cm">// System Program</span></div>
+      <div class="cl">&nbsp;&nbsp;accounts: [</div>
+      <div class="cl rowa">&nbsp;&nbsp;&nbsp;&nbsp;[0] nonce account <span class="cm">(writable)</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;[1] SysvarRecentB1ockHashes111&hellip; <span class="cm">(readonly)</span></div>
+      <div class="cl">&nbsp;&nbsp;&nbsp;&nbsp;[2] nonce authority <span class="cm">(signer) // merchant key</span></div>
+      <div class="cl">&nbsp;&nbsp;]</div>
+      <div class="cl rowa">&nbsp;&nbsp;data: [4, 0, 0, 0]</div>
+      <div class="cl">}</div>
+    </div>
+    <div class="poschip">
+      <div class="at">position zero</div>
+      <div class="ab">the runtime only checks index 0 &mdash; a nonce advance anywhere else is invisible to it</div>
+    </div>
+    <div class="aline" style="left:860px; top:162px; width:92px;"></div>
+    <div class="achip" style="top:130px;">
+      <div class="at">nonce account row</div>
+      <div class="ab">must be first in the account list, must be writable</div>
+    </div>
+    <div class="aline" style="left:860px; top:322px; width:92px;"></div>
+    <div class="achip" style="top:292px;">
+      <div class="at">data bytes</div>
+      <div class="ab"><span style="font-family:var(--font-mono);font-weight:700;">[4, 0, 0, 0]</span> &mdash; the AdvanceNonceAccount discriminator</div>
+    </div>
+  </div>
+  <div class="rules">
+    <div class="rule rule-yes">
+      <div class="rt">first instruction matches this shape</div>
+      <div class="rb">&rarr; validate recentBlockhash against the stored nonce value</div>
+    </div>
+    <div class="rule rule-no">
+      <div class="rt">any other position or shape</div>
+      <div class="rb">&rarr; recentBlockhash treated as a normal blockhash &mdash; and it expires in ~45s (150 blocks &times; 300ms target)</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Transfer request vs transaction request
+     purpose: fix the fork in the solana: scheme and what each side can and cannot express
+     data: scheme: solana:<recipient>?amount=... | solana:<https-link> who builds the transaction: the customer's wallet | your server what the URL carries: recipient, amount, spl-token, reference, label, memo | an opaque link (plus an order id you choose) what it can express: one fixed transfer | anything your code can assemble: carts, coupons, dynamic memos where pricing lives: in a customer-editable string | in your backend tamper surface: every query parameter | none of the pricing; the URL holds no prices to edit
+     prompt: Two-column comparison card, left column headed "Transfer request", right column headed "Transaction request", six labeled rows from the data (scheme, who builds, what the URL carries, what it can express, where pricing lives, tamper surface). Render the two scheme strings in monospace at the top of each column. No icons; the row labels do the work.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:473px;height:465px;bottom:-252px;left:-252px;border-radius:57% 51% 44% 53% / 51% 47% 57% 59%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <style>
+    .cmp-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+                padding: 36px 48px 40px; }
+    .cmp-grid { display: grid; grid-template-columns: 250px 1fr 1fr; }
+    .cmp-grid > div { padding: 13px 18px; border-bottom: 1px solid var(--border-subtle);
+                      font-family: var(--font-body); font-size: 17px; line-height: 1.35;
+                      color: var(--text-primary); }
+    .cmp-label { font-weight: 700; color: var(--text-secondary); font-size: 15px;
+                 text-transform: uppercase; letter-spacing: 0.06em; }
+    .cmp-head { border-bottom: 2px solid var(--border-strong) !important; padding-bottom: 16px !important; }
+    .cmp-colname { font-family: var(--font-display); font-weight: 900; font-size: 24px;
+                   color: var(--stbr-dark); margin-bottom: 8px; }
+    .cmp-scheme { display: inline-block; font-family: var(--font-mono); font-size: 15px;
+                  background: var(--surface-inverse); color: var(--stbr-cream);
+                  border-radius: var(--radius-md); padding: 6px 12px; }
+    .cmp-verdict { margin-top: 24px; background: var(--surface-brand); color: var(--stbr-cream);
+                   border-radius: var(--radius-lg); padding: 16px 24px;
+                   font-family: var(--font-display); font-weight: 800; font-size: 20px; }
+  </style>
+  <div class="cmp-card">
+    <div class="stbr-eyebrow">the fork in the solana: scheme</div>
+    <h2 class="viz-title" style="font-size:44px;">Transfer request vs transaction request</h2>
+    <div class="cmp-grid">
+      <div class="cmp-head"></div>
+      <div class="cmp-head">
+        <div class="cmp-colname">Transfer request</div>
+        <span class="cmp-scheme">solana:&lt;recipient&gt;?amount=...</span>
+      </div>
+      <div class="cmp-head" style="border-left:1px solid var(--border-subtle);">
+        <div class="cmp-colname" style="color:var(--stbr-emerald);">Transaction request</div>
+        <span class="cmp-scheme">solana:&lt;https-link&gt;</span>
+      </div>
+
+      <div class="cmp-label">who builds the transaction</div>
+      <div>the customer's wallet</div>
+      <div style="border-left:1px solid var(--border-subtle);">your server</div>
+
+      <div class="cmp-label">what the URL carries</div>
+      <div>recipient, amount, spl-token, reference, label, memo</div>
+      <div style="border-left:1px solid var(--border-subtle);">an opaque link (plus an order id you choose)</div>
+
+      <div class="cmp-label">what it can express</div>
+      <div>one fixed transfer</div>
+      <div style="border-left:1px solid var(--border-subtle);">anything your code can assemble: carts, coupons, dynamic memos</div>
+
+      <div class="cmp-label">where pricing lives</div>
+      <div>in a customer-editable string</div>
+      <div style="border-left:1px solid var(--border-subtle);">in your backend</div>
+
+      <div class="cmp-label" style="border-bottom:none;">tamper surface</div>
+      <div style="border-bottom:none;">every query parameter</div>
+      <div style="border-bottom:none; border-left:1px solid var(--border-subtle); background:#FFF3C4; font-weight:700;">none of the pricing: the URL holds no prices to edit</div>
+    </div>
+    <div class="cmp-verdict">transaction requests move pricing server-side: the customer scans a link, never a price they can edit</div>
+  </div>
+</div>
+</body></html>

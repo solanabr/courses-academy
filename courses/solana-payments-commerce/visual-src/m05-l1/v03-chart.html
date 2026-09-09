@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: A 60-USDC approval across five 15-USDC pull attempts
+     purpose: fix the decrement-not-reset mental model with the lesson's one worked number
+     data: Pull 1: allowance before 60, after 45, result OK Pull 2: allowance before 45, after 30, result OK Pull 3: allowance before 30, after 15, result OK Pull 4: allowance before 15, after 0, result OK and the Token program clears the delegate at zero Pull 5: allowance 0 and no delegate on the account, needs 15, result FAILS, delegate already revoked Refill: only a fresh ApproveChecked signed by the owner
+     prompt: A descending step chart of the remaining allowance across five pull attempts: 60, 45, 30, 15, 0. The first four steps marked with a check as successful 15-USDC pulls, the fourth also noting that zeroing the allowance clears the delegate; the fifth attempt marked failed at zero with the label "delegate already revoked". A dashed arrow from the failure back up to 60 labeled "new ApproveChecked, owner signs again". Axis labeled in USDC.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:490px;top:-273px;right:-273px;border-radius:58% 43% 61% 35% / 49% 41% 45% 41%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:534px;height:391px;left:-299px;top:301px;border-radius:40% 49% 36% 43% / 62% 41% 45% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .chart-card { background:var(--surface-card); border:3px solid var(--stbr-dark);
+                border-radius:var(--radius-2xl); padding:26px 36px 22px; margin-top:8px; }
+  .axis-note { font-family:var(--font-body); font-weight:700; font-size:13px;
+               letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted);
+               margin-bottom:10px; }
+  .plot { position:relative; width:1200px; height:330px; margin:0 auto; }
+  .bars { position:absolute; top:0; left:0; width:1200px; height:330px;
+          display:flex; align-items:flex-end; gap:25px;
+          border-bottom:3px solid var(--stbr-dark); }
+  .cell { flex:0 0 220px; display:flex; justify-content:center; align-items:flex-end; }
+  .bar { width:150px; background:var(--stbr-emerald); border-radius:10px 10px 0 0;
+         display:flex; justify-content:center; align-items:flex-start; padding-top:8px;
+         font-family:var(--font-mono); font-weight:700; font-size:20px;
+         color:var(--stbr-cream); }
+  .bar-need { width:150px; height:78px; border:3px dashed var(--stbr-yellow-700);
+              background:rgba(255,210,63,0.25); border-radius:10px 10px 0 0;
+              display:flex; flex-direction:column; justify-content:center; align-items:center;
+              font-family:var(--font-mono); font-weight:700; font-size:16px;
+              color:var(--stbr-dark); }
+  .bar-need b { font-family:var(--font-body); font-size:12px; letter-spacing:.08em;
+                text-transform:uppercase; }
+  .refill-chip { position:absolute; top:8px; left:400px; background:var(--surface-card);
+                 border:1.5px dashed var(--stbr-emerald); border-radius:var(--radius-pill);
+                 padding:6px 16px; font-family:var(--font-mono); font-weight:700;
+                 font-size:15px; color:var(--stbr-green); }
+  .labels { display:flex; gap:25px; width:1200px; margin:12px auto 0; }
+  .lab { flex:0 0 220px; text-align:center; font-family:var(--font-body); }
+  .lab .p { font-weight:800; font-size:16px; color:var(--text-primary); }
+  .lab .r { font-size:14px; font-weight:600; color:var(--stbr-green); margin-top:2px; }
+  .lab .r.ok::before { content:"\2713 "; font-weight:800; }
+  .lab .fail { display:inline-block; margin-top:2px; background:var(--stbr-yellow);
+               color:var(--stbr-dark); font-weight:800; font-size:13.5px;
+               border-radius:var(--radius-pill); padding:4px 12px; }
+  .cap { margin-top:14px; font-family:var(--font-body); font-size:15px; font-weight:600;
+         color:var(--text-secondary); text-align:center; }
+  .cap code { font-family:var(--font-mono); color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">decrement, never reset</div>
+  <h2 class="viz-title">a 60-USDC approval across five 15-USDC pulls</h2>
+  <div class="chart-card">
+    <div class="axis-note">remaining allowance before each pull (USDC)</div>
+    <div class="plot">
+      <div class="bars">
+        <div class="cell"><div class="bar" style="height:312px;">60</div></div>
+        <div class="cell"><div class="bar" style="height:234px;">45</div></div>
+        <div class="cell"><div class="bar" style="height:156px;">30</div></div>
+        <div class="cell"><div class="bar" style="height:78px;">15</div></div>
+        <div class="cell"><div class="bar-need"><span>0 left</span><b>no delegate</b></div></div>
+      </div>
+      <svg width="1200" height="330" viewBox="0 0 1200 330"
+           style="position:absolute; top:0; left:0;">
+        <path d="M 1090 240 C 950 40, 420 10, 172 16" fill="none"
+              stroke="#008b4c" stroke-width="3" stroke-dasharray="10 8"/>
+        <polygon points="152,18 180,6 178,32" fill="#008b4c"/>
+      </svg>
+      <div class="refill-chip">new ApproveChecked &mdash; owner signs again</div>
+    </div>
+    <div class="labels">
+      <div class="lab"><div class="p">pull 1 &middot; &minus;15</div><div class="r ok">OK &rarr; 45</div></div>
+      <div class="lab"><div class="p">pull 2 &middot; &minus;15</div><div class="r ok">OK &rarr; 30</div></div>
+      <div class="lab"><div class="p">pull 3 &middot; &minus;15</div><div class="r ok">OK &rarr; 15</div></div>
+      <div class="lab"><div class="p">pull 4 &middot; &minus;15</div><div class="r ok">OK &rarr; 0, delegate cleared</div></div>
+      <div class="lab"><div class="p">pull 5 &middot; needs 15</div><div class="fail">&#10007; delegate already revoked</div></div>
+    </div>
+    <div class="cap">every successful pull decrements the allowance, and the pull that lands on zero clears the delegate with it &mdash; the only refill is a fresh <code>ApproveChecked</code> signed by the owner</div>
+  </div>
+
+</div>
+</body></html>

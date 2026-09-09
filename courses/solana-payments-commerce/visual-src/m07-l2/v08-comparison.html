@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The metering trade, priced in three columns
+     purpose: hold the three costs of shipping x402 metering side by side so none of them gets discovered in production
+     data: trust column: the facilitator sees every transaction pre-submission, holds the fee-payer key, can refuse to settle; hosted options run KYT by design; the x402.org facilitator is devnet/testnet only and never a production dependency; production seats per the lesson-1 roster: Corbits, Dexter, PayAI, Solvador, CDP economics column: exact = real chain cost per call; right for a $0.05 quote, wrong for sub-cent high-frequency traffic; that traffic belongs to upto (authorize a ceiling) or batch settlement; the upside: the freeloading bot becomes a paying customer at a price no card network clears profitably churn column: pinned to @x402/* 2.23.0 (npm 2026-08-18, latest as of 2026-08-23); types verified against that exact version; re-verify at every touch
+     prompt: Three-column decision card labeled trust, economics, churn, each carrying the points from data as short rows. Tag the devnet-facilitator row with a never-production badge and the churn column with a re-verify-on-touch badge. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:474px;height:386px;right:-291px;top:268px;border-radius:57% 41% 42% 51% / 47% 60% 59% 54%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background: var(--surface-card); border-radius: var(--radius-2xl); padding: 34px 44px 30px; }
+  .viz-title { font-size: 44px; margin: 4px 0 18px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .col { border: 1.5px solid var(--border-subtle); border-radius: var(--radius-xl);
+         background: var(--surface-card); overflow: hidden; }
+  .colhead { background: var(--surface-brand-deep); color: var(--text-on-brand);
+             padding: 12px 18px; font: 800 20px var(--font-display); text-transform: lowercase; }
+  .col-trust .colhead { background: var(--surface-inverse); }
+  .colbody { padding: 6px 16px 12px; }
+  .row { padding: 9px 4px; border-bottom: 1px solid var(--border-subtle);
+         font: 400 14.5px/1.35 var(--font-body); color: var(--text-primary); }
+  .row:last-child { border-bottom: 0; }
+  .row strong { font-weight: 700; }
+  .row .mono { font-family: var(--font-mono); font-size: 13px; }
+  .row .sub { color: var(--text-secondary); }
+  .badge { display: inline-block; font: 700 10.5px var(--font-body); letter-spacing: .06em;
+           text-transform: uppercase; border-radius: var(--radius-pill); padding: 2px 9px;
+           margin-left: 6px; vertical-align: 1px; }
+  .badge-never { background: var(--stbr-yellow); color: var(--stbr-dark); }
+  .badge-verify { background: var(--stbr-emerald); color: var(--stbr-cream); }
+  .row-never { background: #FFF6D6; border-radius: var(--radius-md);
+               border-bottom: 0; margin: 2px -4px; padding: 9px 8px;
+               border: 1.5px solid var(--stbr-yellow); }
+  .verdict { margin-top: 16px; background: var(--surface-brand); color: var(--text-on-brand);
+             border-radius: var(--radius-lg); padding: 13px 20px;
+             font: 500 15.5px var(--font-body); }
+  .verdict strong { font-weight: 800; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">shipping x402 metering</div>
+  <h2 class="viz-title">the metering trade, priced in three columns</h2>
+  <div class="cols">
+
+    <div class="col col-trust">
+      <div class="colhead">trust</div>
+      <div class="colbody">
+        <div class="row">The facilitator <strong>sees every transaction pre-submission</strong>, holds the fee-payer key, and can refuse to settle.</div>
+        <div class="row">Hosted options run <strong>KYT by design</strong>.</div>
+        <div class="row row-never">The x402.org facilitator is <strong>devnet/testnet only</strong><span class="badge badge-never">never production</span><div class="sub">not a production dependency, ever</div></div>
+        <div class="row"><strong>Production seats</strong> (lesson-1 roster): Corbits &middot; Dexter &middot; PayAI &middot; Solvador &middot; CDP</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colhead">economics</div>
+      <div class="colbody">
+        <div class="row"><span class="mono">exact</span> = <strong>real chain cost per call</strong> &mdash; right for a $0.05 quote, wrong for sub-cent high-frequency traffic.</div>
+        <div class="row">That traffic belongs to <span class="mono">upto</span> (authorize a ceiling) or <strong>batch settlement</strong>.</div>
+        <div class="row">The upside: the freeloading bot becomes a <strong>paying customer</strong> at a price no card network clears profitably.</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="colhead">churn<span class="badge badge-verify">re-verify on touch</span></div>
+      <div class="colbody">
+        <div class="row">Pinned to <span class="mono">@x402/* 2.23.0</span><div class="sub">npm 2026-08-18 &middot; latest as of 2026-08-23</div></div>
+        <div class="row">Types verified against <strong>that exact version</strong>.</div>
+        <div class="row"><strong>Re-verify at every touch</strong> &mdash; the SDK moves faster than the spec prose.</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="verdict"><strong>Price all three at design time</strong> &mdash; trust, economics, and churn each bill you in production if the first time you meet them is after launch.</div>
+</div>
+</div>
+</body></html>

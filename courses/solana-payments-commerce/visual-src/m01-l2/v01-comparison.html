@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Card-stack stages mapped onto Solana commitment levels
+     purpose: give the reader a one-to-one translation table between the PSP vocabulary they know and the commitment ladder they are learning
+     data: Row 1: Authorization | funds earmarked, promise can still die | `processed` | in a block, but the block can be dropped in a fork; UI display only Row 2: Capture | you claimed the funds, reversal still possible | `confirmed` | supermajority of stake voted; the default for most payments Row 3: Settlement | money moved between banks, days later | `finalized` | block can never be dropped; high-value default, arrives in seconds not days Footnote row: the mapping breaks in one direction: card settlement can still be clawed back by a chargeback; `finalized` cannot be reversed by anyone
+     prompt: Three-row translation table with two column groups: "Card rails" (stage name + what it means) on the left, "Solana rails" (commitment level + what it means) on the right, connected row by row so each pair reads as a translation. Render commitment levels in code style. Add a full-width footnote strip under the table carrying the one-direction break in the analogy, visually set off from the rows.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:532px;height:492px;top:-261px;right:-261px;border-radius:36% 48% 62% 54% / 57% 47% 40% 36%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:36px 44px; margin-top:22px; }
+  .thead { display:grid; grid-template-columns:1fr 72px 1fr; gap:0 18px; margin-bottom:14px; }
+  .thead .th { border-radius:var(--radius-md); padding:12px 22px; font-family:var(--font-display);
+               font-weight:800; font-size:20px; letter-spacing:.08em; text-transform:uppercase; text-align:center; }
+  .th.cardrails { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .th.solrails  { background:var(--surface-brand); color:var(--text-on-brand); }
+  .trow { display:grid; grid-template-columns:1fr 72px 1fr; gap:0 18px; align-items:center;
+          border-top:1.5px solid var(--border-subtle); padding:18px 0; }
+  .trow:first-of-type { border-top:none; }
+  .stage { padding:0 22px; }
+  .stage .nm { font-family:var(--font-display); font-weight:800; font-size:24px; color:var(--text-primary); margin-bottom:5px; }
+  .stage .ds { font-family:var(--font-body); font-size:16.5px; line-height:1.35; color:var(--text-secondary); }
+  .eq { width:44px; height:44px; margin:0 auto; border:2.5px solid var(--stbr-emerald); border-radius:50%;
+        display:flex; align-items:center; justify-content:center; font-family:var(--font-display);
+        font-weight:900; font-size:22px; color:var(--stbr-emerald); }
+  .lvl { padding:0 22px; }
+  .lvl code { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:19px;
+              background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-sm);
+              padding:4px 14px; margin-bottom:7px; }
+  .lvl .ds { font-family:var(--font-body); font-size:16.5px; line-height:1.35; color:var(--text-primary); }
+  .foot { margin-top:20px; background:rgba(255,210,63,0.20); border-left:7px solid var(--stbr-yellow);
+          border-radius:var(--radius-md); padding:18px 26px; display:flex; align-items:center; gap:22px; }
+  .foot .fk { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.12em;
+              text-transform:uppercase; color:var(--stbr-dark); white-space:nowrap; }
+  .foot .ft { font-family:var(--font-body); font-size:18px; line-height:1.35; color:var(--text-primary); }
+  .foot .ft code { font-family:var(--font-mono); font-weight:700; font-size:16px; }
+</style>
+  <div class="stbr-eyebrow">psp vocabulary &rarr; commitment ladder</div>
+  <h2 class="viz-title" style="font-size:48px;">the words you already know, translated</h2>
+  <div class="card">
+    <div class="thead">
+      <div class="th cardrails">card rails</div>
+      <div></div>
+      <div class="th solrails">solana rails</div>
+    </div>
+    <div class="trow">
+      <div class="stage"><div class="nm">Authorization</div><div class="ds">funds earmarked, promise can still die</div></div>
+      <div class="eq">=</div>
+      <div class="lvl"><code>processed</code><div class="ds">in a block, but the block can be dropped in a fork; UI display only</div></div>
+    </div>
+    <div class="trow">
+      <div class="stage"><div class="nm">Capture</div><div class="ds">you claimed the funds, reversal still possible</div></div>
+      <div class="eq">=</div>
+      <div class="lvl"><code>confirmed</code><div class="ds">supermajority of stake voted; the default for most payments</div></div>
+    </div>
+    <div class="trow">
+      <div class="stage"><div class="nm">Settlement</div><div class="ds">money moved between banks, days later</div></div>
+      <div class="eq">=</div>
+      <div class="lvl"><code>finalized</code><div class="ds">block can never be dropped; high-value default, arrives in seconds not days</div></div>
+    </div>
+    <div class="foot">
+      <span class="fk">where the analogy breaks</span>
+      <span class="ft">card settlement can still be clawed back by a chargeback; <code>finalized</code> cannot be reversed &mdash; by anyone.</span>
+    </div>
+  </div>
+</div>
+</body></html>

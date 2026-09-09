@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "description": "carries the base64 transaction and the confirmation message",
+    "input": "'AQABtx==', 'Thanks for buying Midnight Sessions'",
+    "expectedOutput": "result.type === 'transaction' && result.transaction === 'AQABtx==' && result.message === 'Thanks for buying Midnight Sessions'"
+  },
+  {
+    "id": "t2",
+    "description": "chains a same-origin POST callback via links.next when nextActionHref is given",
+    "input": "'B64', null, 'https://wavelength.example/blink/thanks'",
+    "expectedOutput": "result.links !== undefined && result.links.next.type === 'post' && result.links.next.href === 'https://wavelength.example/blink/thanks'"
+  },
+  {
+    "id": "t3",
+    "description": "minimal response omits message and links entirely",
+    "input": "'ONLYTX'",
+    "expectedOutput": "result.type === 'transaction' && result.transaction === 'ONLYTX' && result.message === undefined && result.links === undefined"
+  },
+  {
+    "id": "t4",
+    "description": "includes both message and a chained action when both are provided",
+    "input": "'TX', 'ok', 'https://wavelength.example/blink/next'",
+    "expectedOutput": "result.message === 'ok' && result.links !== undefined && result.links.next.href === 'https://wavelength.example/blink/next'"
+  },
+  {
+    "id": "t5",
+    "description": "a minimal response carries no message and no links KEY at all: a wallet testing `'links' in response` must see absence, not an undefined value",
+    "input": "'ONLYTX'",
+    "expectedOutput": "result.type === 'transaction' && result.transaction === 'ONLYTX' && !('message' in result) && !('links' in result)"
+  },
+  {
+    "id": "t6",
+    "description": "an explicit null message means 'not provided': the key is omitted, while the chained action still ships",
+    "input": "'B64', null, 'https://wavelength.example/blink/thanks'",
+    "expectedOutput": "!('message' in result) && result.links.next.type === 'post' && result.links.next.href === 'https://wavelength.example/blink/thanks'"
+  }
+]

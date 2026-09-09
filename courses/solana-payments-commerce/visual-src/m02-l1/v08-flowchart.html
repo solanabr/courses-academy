@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The verify smoke check, from reference key to audited base units
+     purpose: show that reconciliation starts from the reference and ends at the chain's own balance delta, with the receipt only supplying expectations
+     data: receipt.json (reference, expected base units) -> getSignaturesForAddress(reference) -> exactly one signature -> getTransaction(signature) -> meta.err null? -> postTokenBalances minus preTokenBalances at the destination ATA -> delta as bigint -> compare with expected base units -> confirmed Failure exits: no signature found (RPC lag or payment never landed); meta.err non-null (transaction failed); delta mismatch (your bookkeeping vs the chain)
+     prompt: Left-to-right flowchart of seven nodes following the data path, with three red failure exits branching downward at the lookup, error-check, and comparison stages, each labeled with its cause. Emphasize the reference-key node as the entry point and the balance-delta node as the ground truth.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:542px;height:501px;top:-301px;right:-301px;border-radius:59% 64% 42% 46% / 55% 44% 65% 36%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .frow { display:flex; align-items:stretch; margin-top:10px; }
+  .fnode { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:14px 10px; min-height:150px;
+    display:flex; flex-direction:column; justify-content:center; text-align:center; }
+  .fnode .fn { font-family:var(--font-mono); font-weight:700; font-size:13px;
+    color:var(--text-primary); line-height:1.35; }
+  .fnode .d { font-family:var(--font-body); font-size:11.5px; color:var(--text-muted);
+    margin-top:5px; line-height:1.35; }
+  .fnode .tag { font-family:var(--font-display); font-weight:900; font-size:10px;
+    letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px; }
+  .fnode.entry { background:var(--surface-brand); border-color:var(--stbr-emerald-800); }
+  .fnode.entry .fn { color:var(--text-on-brand); }
+  .fnode.entry .d { color:var(--stbr-cream-300); }
+  .fnode.entry .tag { color:var(--stbr-yellow); }
+  .fnode.truth { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .fnode.truth .fn, .fnode.truth .d { color:var(--text-on-accent); }
+  .fnode.truth .tag { color:var(--stbr-dark); }
+  .fnode.done { border:2.5px solid var(--stbr-emerald); }
+  .fnode.done .fn { color:var(--stbr-emerald); font-size:15px; }
+  .harr { width:26px; display:flex; align-items:center; justify-content:center; }
+  .fails { position:relative; height:158px; }
+  .vdrop { position:absolute; top:2px; width:14px; margin-left:-7px; }
+  .fexit { position:absolute; top:46px; width:280px; margin-left:-140px;
+    background:#f4e0d2; border:2px solid #c0392b;
+    border-radius:var(--radius-md); padding:12px 14px; text-align:center; }
+  .fexit .t { font-family:var(--font-display); font-weight:900; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:#c0392b; margin-bottom:4px; }
+  .fexit .d { font-family:var(--font-body); font-size:12.5px; color:#a5281c; line-height:1.4; }
+</style>
+  <div class="stbr-eyebrow">reconciliation</div>
+  <h2 class="viz-title">the verify smoke check</h2>
+  <div class="frow">
+    <div class="fnode entry"><div class="tag">entry</div><div class="fn">receipt.json</div>
+      <div class="d">reference + expected base units &mdash; expectations only</div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="fnode"><div class="fn">getSignaturesFor<br>Address(reference)</div>
+      <div class="d">expect exactly one signature</div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="fnode"><div class="fn">getTransaction<br>(signature)</div>
+      <div class="d">fetch the full record</div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="fnode"><div class="fn">meta.err<br>=== null ?</div>
+      <div class="d">did the transaction succeed</div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="fnode truth"><div class="tag">ground truth</div>
+      <div class="fn">&Delta; = post &minus; pre<br>TokenBalances</div>
+      <div class="d">at the destination ATA, as bigint &mdash; the chain&rsquo;s own delta</div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="fnode"><div class="fn">&Delta; === expected<br>base units ?</div>
+      <div class="d">compare against the receipt</div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="fnode done"><div class="fn">confirmed &#10003;</div></div>
+  </div>
+  <div class="fails">
+    <div class="vdrop" style="left:20.93%;"><svg width="14" height="40"><line x1="7" y1="0" x2="7" y2="30" stroke="#c0392b" stroke-width="2.5"/><polygon points="7,40 2,30 12,30" fill="#c0392b"/></svg></div>
+    <div class="vdrop" style="left:50.0%;"><svg width="14" height="40"><line x1="7" y1="0" x2="7" y2="30" stroke="#c0392b" stroke-width="2.5"/><polygon points="7,40 2,30 12,30" fill="#c0392b"/></svg></div>
+    <div class="vdrop" style="left:79.07%;"><svg width="14" height="40"><line x1="7" y1="0" x2="7" y2="30" stroke="#c0392b" stroke-width="2.5"/><polygon points="7,40 2,30 12,30" fill="#c0392b"/></svg></div>
+    <div class="fexit" style="left:20.93%;"><div class="t">no signature found</div>
+      <div class="d">RPC lag &mdash; or the payment never landed</div></div>
+    <div class="fexit" style="left:50.0%;"><div class="t">meta.err non-null</div>
+      <div class="d">the transaction failed on-chain</div></div>
+    <div class="fexit" style="left:79.07%;"><div class="t">delta mismatch</div>
+      <div class="d">your bookkeeping vs the chain</div></div>
+  </div>
+</div>
+</body></html>

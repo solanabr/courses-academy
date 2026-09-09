@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Plan and SubscriptionDelegation, the two-account split
+     purpose: show why merchant terms and per-subscriber state living in separate PDAs lets one plan scale to any number of subscribers
+     data: Plan PDA (seeds: merchant address + plan id), one per plan, merchant-published terms: amount, periodHours, mint, destinations, pullers SubscriptionDelegation PDA (seeds: plan + subscriber), one per subscriber, individual state: currentPeriodStartTs, amountPulledInPeriod, expiresAtTs edges: many SubscriptionDelegation accounts reference one Plan; each also hangs under that subscriber's Subscription Authority PDA
+     prompt: Architecture diagram with one Plan PDA box on the left listing its published terms fields, and three stacked SubscriptionDelegation boxes on the right, each listing its per-subscriber state fields, all arrowed back to the single Plan. Label each box with its seed recipe, and note under the stack that more subscribers just add more boxes. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:499px;height:515px;bottom:-271px;left:-271px;border-radius:45% 44% 60% 50% / 55% 38% 53% 43%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .arch { display:flex; align-items:stretch; gap:0; margin-top:10px; }
+  .plan { flex:0 0 470px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-2xl); overflow:hidden; display:flex;
+          flex-direction:column; }
+  .plan-head { background:var(--stbr-emerald); padding:16px 26px; }
+  .plan-head .nm { font-family:var(--font-display); font-weight:900; font-size:28px;
+                   color:var(--text-on-brand); }
+  .plan-head .one { display:inline-block; margin-top:7px; font-family:var(--font-body);
+                    font-weight:900; font-size:12.5px; letter-spacing:.09em;
+                    text-transform:uppercase; background:var(--stbr-yellow);
+                    color:var(--stbr-dark); border-radius:var(--radius-pill);
+                    padding:4px 13px; }
+  .seed { font-family:var(--font-mono); font-weight:700; font-size:14px;
+          color:var(--stbr-green); background:rgba(0,139,76,0.08);
+          border-bottom:1.5px solid var(--border-subtle); padding:9px 26px; }
+  .fgroup { padding:14px 26px 18px; }
+  .fcap { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+          letter-spacing:.09em; text-transform:uppercase; color:var(--text-muted);
+          margin-bottom:8px; }
+  .fld { font-family:var(--font-mono); font-weight:700; font-size:17px;
+         color:var(--text-primary); padding:5px 0; border-top:1.5px solid var(--border-subtle); }
+  .mid { flex:0 0 130px; display:flex; flex-direction:column; gap:16px; }
+  .mslot { height:130px; display:flex; align-items:center; }
+  .harr { display:flex; align-items:center; width:100%; }
+  .harr .hd { width:0; height:0; border-top:8px solid transparent;
+              border-bottom:8px solid transparent; border-right:13px solid var(--stbr-dark); }
+  .harr .ln { flex:1 1 auto; border-top:3px solid var(--stbr-dark); }
+  .stack { flex:1 1 auto; display:flex; flex-direction:column; gap:16px; }
+  .sub { background:var(--surface-card); border:3px solid var(--stbr-dark);
+         border-radius:var(--radius-xl); overflow:hidden; }
+  .sub-head { display:flex; align-items:center; justify-content:space-between;
+              background:var(--surface-inverse); padding:8px 20px; }
+  .sub-head .nm { font-family:var(--font-display); font-weight:900; font-size:18px;
+                  color:var(--text-on-dark); }
+  .sub-head .who { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+                   color:var(--stbr-cream); opacity:.85; }
+  .sub-body { padding:8px 20px 10px; }
+  .sub-seed { font-family:var(--font-mono); font-weight:700; font-size:12.5px;
+              color:var(--stbr-green); margin-bottom:5px; }
+  .sub-flds { font-family:var(--font-mono); font-weight:700; font-size:14px;
+              color:var(--text-primary); line-height:1.5; }
+  .sub-note { font-family:var(--font-body); font-weight:600; font-size:12px;
+              color:var(--text-muted); margin-top:5px; }
+  .more { border:3px dashed var(--stbr-dark); border-radius:var(--radius-xl);
+          background:var(--stbr-yellow); padding:11px 20px;
+          font-family:var(--font-body); font-weight:800; font-size:16px;
+          color:var(--stbr-dark); text-align:center; }
+</style>
+  <div class="stbr-eyebrow">merchant terms and subscriber state live apart</div>
+  <h2 class="viz-title">Plan and SubscriptionDelegation &mdash; the two-account split</h2>
+  <div class="arch">
+    <div class="plan">
+      <div class="plan-head">
+        <div class="nm">Plan PDA</div>
+        <div class="one">one per plan &mdash; shared by every subscriber</div>
+      </div>
+      <div class="seed">seeds: merchant address + plan id</div>
+      <div class="fgroup">
+        <div class="fcap">merchant-published terms</div>
+        <div class="fld" style="border-top:none;">amount</div>
+        <div class="fld">periodHours</div>
+        <div class="fld">mint</div>
+        <div class="fld">destinations</div>
+        <div class="fld">pullers</div>
+      </div>
+    </div>
+    <div class="mid">
+      <div class="mslot"><div class="harr"><div class="hd"></div><div class="ln"></div></div></div>
+      <div class="mslot"><div class="harr"><div class="hd"></div><div class="ln"></div></div></div>
+      <div class="mslot"><div class="harr"><div class="hd"></div><div class="ln"></div></div></div>
+    </div>
+    <div class="stack">
+      <div class="sub">
+        <div class="sub-head"><span class="nm">SubscriptionDelegation</span><span class="who">subscriber A &middot; one per subscriber</span></div>
+        <div class="sub-body">
+          <div class="sub-seed">seeds: plan + subscriber</div>
+          <div class="sub-flds">currentPeriodStartTs &middot; amountPulledInPeriod &middot; expiresAtTs</div>
+          <div class="sub-note">also hangs under subscriber A's Subscription Authority PDA</div>
+        </div>
+      </div>
+      <div class="sub">
+        <div class="sub-head"><span class="nm">SubscriptionDelegation</span><span class="who">subscriber B &middot; one per subscriber</span></div>
+        <div class="sub-body">
+          <div class="sub-seed">seeds: plan + subscriber</div>
+          <div class="sub-flds">currentPeriodStartTs &middot; amountPulledInPeriod &middot; expiresAtTs</div>
+          <div class="sub-note">also hangs under subscriber B's Subscription Authority PDA</div>
+        </div>
+      </div>
+      <div class="sub">
+        <div class="sub-head"><span class="nm">SubscriptionDelegation</span><span class="who">subscriber C &middot; one per subscriber</span></div>
+        <div class="sub-body">
+          <div class="sub-seed">seeds: plan + subscriber</div>
+          <div class="sub-flds">currentPeriodStartTs &middot; amountPulledInPeriod &middot; expiresAtTs</div>
+          <div class="sub-note">also hangs under subscriber C's Subscription Authority PDA</div>
+        </div>
+      </div>
+      <div class="more">more subscribers? just more boxes &mdash; the Plan never changes</div>
+    </div>
+  </div>
+</div>
+</body></html>

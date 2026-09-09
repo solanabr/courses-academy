@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: When is a subscription abandoned enough to reclaim
+     purpose: place the rent-recovery decision on the lifecycle so eager reclaiming is visibly a re-acquisition cost, not a savings
+     data: day 0: pull fails -> open invoice, subscriber notified (grace; SA live; no reclaim possible or wise) day 3: reminder; settle path open the whole time day 30: stated policy horizon passes OR explicit cancel arrives -> mark cancelled after cancel/abandon: SA closed or stale -> RevokeAbandoned* eligible -> rent lamports return to the recorded payer wrong move marked: reclaiming during grace forces a returning subscriber to re-subscribe from scratch
+     prompt: Horizontal lifecycle timeline with four points per the data, the grace window shaded, and the RevokeAbandoned eligibility zone beginning only after the cancelled marker. A red annotation flags the wrong move of reclaiming inside the grace window. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:511px;height:349px;right:-323px;top:387px;border-radius:40% 64% 54% 37% / 43% 53% 43% 62%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 52px 34px; }
+  .track { position:relative; width:1340px; height:330px; margin:14px auto 0; }
+  .band { position:absolute; top:161px; height:26px; border-radius:6px; }
+  .lead { position:absolute; top:172px; left:40px; width:60px; height:4px; background:var(--border-strong); }
+  .grace { left:100px; width:780px; background:rgba(0,139,76,.14); border:1.5px solid rgba(0,139,76,.35); box-sizing:border-box; }
+  .reclaim { left:880px; width:420px; background:var(--surface-brand); }
+  .dot { position:absolute; top:166px; width:16px; height:16px; border-radius:50%; box-sizing:border-box; }
+  .dot.d0 { left:92px; background:var(--surface-card); border:4px solid var(--stbr-emerald); }
+  .dot.d3 { left:372px; background:var(--stbr-emerald); }
+  .dot.d30 { left:872px; background:var(--stbr-dark); }
+  .dot.dr { left:1092px; background:var(--stbr-cream); border:4px solid var(--stbr-dark); }
+  .ev { position:absolute; border-radius:var(--radius-md); padding:10px 16px; box-sizing:border-box; background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .ev .t { font-family:var(--font-display); font-weight:900; font-size:17px; color:var(--text-primary); }
+  .ev .d { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); line-height:1.35; margin-top:3px; }
+  .conn { position:absolute; width:2.5px; background:var(--border-strong); }
+  .zl { position:absolute; top:193px; font-family:var(--font-body); font-weight:700; font-size:11.5px; letter-spacing:.03em; }
+  .zl.g { left:104px; width:250px; color:var(--stbr-green); }
+  .zl.r { left:884px; width:196px; color:var(--stbr-emerald); }
+  .flag { position:absolute; top:240px; left:530px; width:420px; background:var(--stbr-yellow); border-radius:var(--radius-md);
+          padding:11px 16px; box-sizing:border-box; font-family:var(--font-body); font-weight:700; font-size:13px;
+          line-height:1.35; color:var(--stbr-dark); }
+  .flag b { font-weight:900; text-transform:uppercase; letter-spacing:.05em; font-size:11.5px; display:block; margin-bottom:2px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">rent recovery on the lifecycle</div>
+  <h2 class="viz-title" style="font-size:46px;">when is a subscription abandoned enough to reclaim?</h2>
+  <div class="track">
+    <div class="lead"></div>
+    <div class="band grace"></div>
+    <div class="band reclaim"></div>
+    <div class="ev" style="top:54px; left:20px; width:300px;">
+      <div class="t">day 0 &mdash; pull fails</div>
+      <div class="d">open invoice written &middot; subscriber notified &middot; SA live &mdash; no reclaim possible or wise</div>
+    </div>
+    <div class="conn" style="left:99px; top:132px; height:29px;"></div>
+    <div class="ev" style="top:64px; left:730px; width:300px;">
+      <div class="t">day 30 &mdash; cancelled</div>
+      <div class="d">stated policy horizon passes OR explicit cancel arrives &rarr; mark cancelled</div>
+    </div>
+    <div class="conn" style="left:879px; top:142px; height:19px;"></div>
+    <div class="ev" style="top:216px; left:280px; width:220px;">
+      <div class="t">day 3 &mdash; reminder</div>
+      <div class="d">settle path open the whole time</div>
+    </div>
+    <div class="conn" style="left:379px; top:187px; height:29px;"></div>
+    <div class="ev" style="top:216px; left:990px; width:310px; border-color:var(--stbr-emerald);">
+      <div class="t">after cancel / abandon</div>
+      <div class="d">SA closed or stale &rarr; <b>RevokeAbandoned</b> eligible &rarr; rent lamports return to the recorded payer</div>
+    </div>
+    <div class="conn" style="left:1099px; top:187px; height:29px; background:var(--stbr-emerald);"></div>
+    <div class="dot d0"></div>
+    <div class="dot d3"></div>
+    <div class="dot d30"></div>
+    <div class="dot dr"></div>
+    <div class="zl g">grace window &mdash; settle stays open</div>
+    <div class="zl r">reclaim eligible only from here</div>
+    <div class="conn" style="left:640px; top:190px; height:50px; background:var(--stbr-yellow); width:3px;"></div>
+    <div class="flag">
+      <b>wrong move</b>
+      reclaiming inside the grace window forces a returning subscriber to re-subscribe from scratch &mdash; a re-acquisition cost, not a savings
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

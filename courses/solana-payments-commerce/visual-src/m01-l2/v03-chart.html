@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: Percentage fees vs a flat base fee across ticket sizes
+     purpose: make the shape difference visible: card fees scale with the sale, the network base fee does not
+     data: Ticket sizes: $0.50, $12, $200, $2000 Card processor fee (2.9% + $0.30): $0.31, $0.65, $6.10, $58.30 Solana base network fee (flat 5000 lamports = 0.000005 SOL, one signature): a fraction of a cent at every ticket size, whatever SOL trades at Derivation note: card figures computed from the commonly quoted 2.9% + 30c processor rate used in this lesson; the network fee line is the frozen 5000-lamport base fee, 0.000005 SOL, which is $0.00075 at $150 per SOL and $0.0015 at $300
+     prompt: Grouped bar chart, log-scaled y-axis in dollars, four ticket-size groups on the x-axis. Two bars per group: card processor fee and Solana base fee. The Solana bars will be visually tiny even on a log scale; label each bar with its dollar value so the comparison stays readable, and annotate the y-axis as logarithmic. Title the takeaway: one line scales with the ticket, the other is flat.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:546px;height:506px;right:-334px;top:209px;border-radius:62% 42% 63% 36% / 54% 63% 36% 51%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:486px;height:529px;bottom:-273px;left:-273px;border-radius:44% 47% 65% 39% / 51% 49% 51% 63%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .chartcard { background:var(--surface-card); border-radius:var(--radius-2xl); padding:24px 32px 20px; margin-top:8px; }
+  .legend { display:flex; gap:28px; margin:0 0 12px; align-items:center; }
+  .legend .li { display:flex; align-items:center; gap:9px; font-family:var(--font-body); font-size:16px; color:var(--text-primary); white-space:nowrap; }
+  .legend .sw { width:20px; height:20px; border-radius:5px; }
+  .chart { display:flex; margin-top:4px; }
+  .yaxis { width:96px; position:relative; height:400px; flex:none; }
+  .yaxis .yl { position:absolute; right:12px; font-family:var(--font-body); font-size:14px; color:var(--text-muted); transform:translateY(50%); }
+  .plot { position:relative; flex:1; height:400px; border-left:2px solid var(--border-strong); border-bottom:2px solid var(--border-strong); }
+  .gl { position:absolute; left:0; right:0; border-top:1.5px solid var(--border-subtle); }
+  .groups { position:absolute; left:0; right:0; bottom:0; top:0; display:flex; justify-content:space-around; align-items:flex-end; }
+  .grp { display:flex; gap:12px; align-items:flex-end; }
+  .barcol { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+  .barcol .val { font-family:var(--font-body); font-weight:800; font-size:16px; color:var(--text-primary); margin-bottom:6px; white-space:nowrap; }
+  .bar { width:78px; border-radius:6px 6px 0 0; }
+  .bar.cardfee { background:var(--stbr-emerald); }
+  .bar.solfee  { background:var(--stbr-yellow); }
+  .xlabels { display:flex; justify-content:space-around; margin-left:96px; padding-top:10px; }
+  .xlabels .xl { font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-primary); width:180px; text-align:center; }
+  .cap { margin-top:16px; font-family:var(--font-body); font-size:14.5px; line-height:1.4; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">processor fee vs network base fee</div>
+  <h2 class="viz-title" style="font-size:46px;">one fee scales with the ticket &mdash; the other is flat</h2>
+  <div class="chartcard">
+  <div class="legend">
+    <div class="li"><span class="sw" style="background:var(--stbr-emerald);"></span>card processor fee (2.9% + $0.30)</div>
+    <div class="li"><span class="sw" style="background:var(--stbr-yellow);"></span>Solana base network fee (flat, one signature)</div>
+    <div class="li" style="color:var(--text-muted); margin-left:auto;">y-axis: USD, logarithmic</div>
+  </div>
+  <div class="chart">
+    <div class="yaxis">
+      <div class="yl" style="bottom:400px;">$100</div>
+      <div class="yl" style="bottom:320px;">$10</div>
+      <div class="yl" style="bottom:240px;">$1</div>
+      <div class="yl" style="bottom:160px;">$0.10</div>
+      <div class="yl" style="bottom:80px;">$0.01</div>
+      <div class="yl" style="bottom:0;">$0.001</div>
+    </div>
+    <div class="plot">
+      <div class="gl" style="bottom:80px;"></div>
+      <div class="gl" style="bottom:160px;"></div>
+      <div class="gl" style="bottom:240px;"></div>
+      <div class="gl" style="bottom:320px;"></div>
+      <div class="gl" style="bottom:400px;"></div>
+      <div class="groups">
+        <div class="grp">
+          <div class="barcol"><div class="val">$0.31</div><div class="bar cardfee" style="height:199px;"></div></div>
+          <div class="barcol"><div class="val">&asymp;$0.001</div><div class="bar solfee" style="height:10px;"></div></div>
+        </div>
+        <div class="grp">
+          <div class="barcol"><div class="val">$0.65</div><div class="bar cardfee" style="height:225px;"></div></div>
+          <div class="barcol"><div class="val">&asymp;$0.001</div><div class="bar solfee" style="height:10px;"></div></div>
+        </div>
+        <div class="grp">
+          <div class="barcol"><div class="val">$6.10</div><div class="bar cardfee" style="height:303px;"></div></div>
+          <div class="barcol"><div class="val">&asymp;$0.001</div><div class="bar solfee" style="height:10px;"></div></div>
+        </div>
+        <div class="grp">
+          <div class="barcol"><div class="val">$58.30</div><div class="bar cardfee" style="height:381px;"></div></div>
+          <div class="barcol"><div class="val">&asymp;$0.001</div><div class="bar solfee" style="height:10px;"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="xlabels">
+    <div class="xl">$0.50 ticket</div>
+    <div class="xl">$12 ticket</div>
+    <div class="xl">$200 ticket</div>
+    <div class="xl">$2,000 ticket</div>
+  </div>
+  <div class="cap">card bars: the commonly quoted 2.9% + 30&cent; processor rate &middot; yellow bars: the flat 5000-lamport base fee = 0.000005 SOL &mdash; $0.00075 at $150/SOL, $0.0015 at $300, a fraction of a cent at every ticket size.</div>
+  </div>
+</div>
+</body></html>

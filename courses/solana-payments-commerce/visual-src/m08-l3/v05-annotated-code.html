@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: Anatomy of the one-box priority-fee recipe
+     purpose: label the three deliberate constants and the market read so the reader can defend each dial in the gate row instead of cargo-culting the box
+     data: line "CU_LIMIT = 60_000": the reservation dial; priority fees are priced per CU, so a limit near real usage keeps the fee honest; the 1.4M CU transaction cap is the ceiling you are deliberately staying far below line "FLOOR_MICROLAMPORTS = 1_000": the never-naked floor; a bare base-fee (5000 lamports) tx can be dropped under congestion line "CAP_MICROLAMPORTS = 1_000_000": the margin guard; a market spike cannot silently eat the sale's margin line "getRecentPrioritizationFees(writableAccounts)": the market read; recent fees on the accounts this tx touches, taken at the 75th percentile output: exactly two compute-budget instructions prepended to every payment transaction
+     prompt: The fee-recipe code block reproduced with four callout annotations anchored to the lines named in data, each callout a short label plus one clause of rationale. A small output chip at the bottom notes "2 instructions per payment tx". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:462px;height:440px;top:-236px;right:-236px;border-radius:62% 65% 45% 36% / 56% 48% 60% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .anno { margin-top:10px; }
+  .arow { display:flex; align-items:stretch; }
+  .code { flex:0 0 auto; width:700px; background:var(--surface-inverse); display:flex; align-items:center;
+          padding:0 28px; font-family:var(--font-mono); font-size:17px; color:#F5E8CA; }
+  .code .kw { color:#8fcfae; }
+  .code .nm { color:#FFD23F; font-weight:700; }
+  .code .cm { color:#7d867f; }
+  .arow.first .code { border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding-top:16px; }
+  .arow.last  .code { border-radius:0 0 var(--radius-lg) var(--radius-lg); padding-bottom:16px; }
+  .arow.tall { height:84px; }
+  .arow.slim { height:46px; }
+  .conn { flex:0 0 auto; width:48px; display:flex; align-items:center; }
+  .note { flex:0 0 auto; width:640px; display:flex; align-items:center; }
+  .notecard { width:100%; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+              border-left:5px solid var(--stbr-emerald); border-radius:var(--radius-md);
+              padding:10px 18px; margin:5px 0; }
+  .notecard .k { font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.07em;
+                 color:var(--stbr-green); margin-bottom:3px; }
+  .notecard .v { font-family:var(--font-body); font-size:14px; line-height:1.35; color:var(--text-primary); }
+  .outrow { margin-top:16px; display:flex; align-items:center; gap:14px; }
+  .outchip { background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill);
+             font-family:var(--font-body); font-weight:800; font-size:15px; padding:9px 20px; }
+  .outnote { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">defend every dial, cargo-cult none</div>
+  <h2 class="viz-title">anatomy of the one-box priority-fee recipe</h2>
+  <div class="anno">
+    <div class="arow first slim">
+      <div class="code"><span class="cm">// the fee recipe: three constants + one market read</span></div>
+      <div class="conn"></div><div class="note"></div>
+    </div>
+    <div class="arow tall">
+      <div class="code"><span><span class="kw">const</span> <span class="nm">CU_LIMIT</span> = 60_000;</span></div>
+      <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14"><line x1="0" y1="7" x2="44" y2="7" stroke="#008B4C" stroke-width="2.5"/><circle cx="4" cy="7" r="4" fill="#008B4C"/></svg></div>
+      <div class="note"><div class="notecard"><div class="k">THE RESERVATION DIAL</div><div class="v">Priority fees are priced per CU &mdash; a limit near real usage keeps the fee honest, deliberately far below the 1.4M CU transaction cap.</div></div></div>
+    </div>
+    <div class="arow tall">
+      <div class="code"><span><span class="kw">const</span> <span class="nm">FLOOR_MICROLAMPORTS</span> = 1_000;</span></div>
+      <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14"><line x1="0" y1="7" x2="44" y2="7" stroke="#008B4C" stroke-width="2.5"/><circle cx="4" cy="7" r="4" fill="#008B4C"/></svg></div>
+      <div class="note"><div class="notecard"><div class="k">THE NEVER-NAKED FLOOR</div><div class="v">A bare base-fee tx (5,000 lamports) can be dropped under congestion &mdash; never send naked.</div></div></div>
+    </div>
+    <div class="arow tall">
+      <div class="code"><span><span class="kw">const</span> <span class="nm">CAP_MICROLAMPORTS</span> = 1_000_000;</span></div>
+      <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14"><line x1="0" y1="7" x2="44" y2="7" stroke="#008B4C" stroke-width="2.5"/><circle cx="4" cy="7" r="4" fill="#008B4C"/></svg></div>
+      <div class="note"><div class="notecard"><div class="k">THE MARGIN GUARD</div><div class="v">A market spike cannot silently eat the sale's margin &mdash; the bid is clamped.</div></div></div>
+    </div>
+    <div class="arow tall">
+      <div class="code" style="font-size:14.5px;"><span><span class="kw">const</span> fees = <span class="kw">await</span> rpc.<span class="nm">getRecentPrioritizationFees</span>(writableAccounts);</span></div>
+      <div class="conn"><svg width="48" height="14" viewBox="0 0 48 14"><line x1="0" y1="7" x2="44" y2="7" stroke="#008B4C" stroke-width="2.5"/><circle cx="4" cy="7" r="4" fill="#008B4C"/></svg></div>
+      <div class="note"><div class="notecard"><div class="k">THE MARKET READ</div><div class="v">Recent fees on the accounts <em>this tx touches</em>, taken at the 75th percentile.</div></div></div>
+    </div>
+    <div class="arow last slim">
+      <div class="code"><span class="cm">// clamp(p75(fees), FLOOR, CAP) &rarr; ComputeBudget ixs</span></div>
+      <div class="conn"></div><div class="note"></div>
+    </div>
+  </div>
+  <div class="outrow">
+    <div class="outchip">output: exactly 2 compute-budget instructions</div>
+    <div class="outnote">prepended to every payment transaction &mdash; setComputeUnitLimit + setComputeUnitPrice</div>
+  </div>
+</div>
+</body></html>

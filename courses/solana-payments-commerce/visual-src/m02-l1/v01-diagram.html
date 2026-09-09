@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One wallet, one mint, one associated token account
+     purpose: fix the three-account shape in the reader's head before any code touches it, so "the wallet does not hold the token" stops being surprising
+     data: Nodes: Alice's wallet (holds SOL, signs transactions) ; USDC mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (defines the token, 6 decimals) ; Alice's USDC ATA (holds the balance, derived from owner + mint) Edges: wallet -> ATA labeled "owns / signs for" ; mint -> ATA labeled "denominates" ; ATA annotation: "address computed from (owner, mint); one per pair" Contrast strip: card rails: one account number holds the money. These rails: the wallet, the token definition, and the balance are three separate accounts.
+     prompt: Three-node diagram: a wallet node on the left, a mint node on top right, and an ATA node at bottom center receiving one arrow from each, arrows labeled "owns / signs for" and "denominates". Annotate the ATA node with "derived from (owner, mint), one per pair". Below the diagram add a two-line contrast strip comparing card rails (one account holds the money) with this three-account shape. Render addresses truncated with ellipses.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:497px;height:448px;bottom:-261px;right:-261px;border-radius:59% 38% 57% 41% / 62% 48% 51% 46%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:504px;height:481px;left:-308px;top:207px;border-radius:36% 38% 54% 38% / 62% 38% 53% 51%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { position:relative; height:404px; margin-top:8px; }
+  .node { position:absolute; background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); padding:22px 26px; }
+  .node h3 { font-size:26px; font-weight:var(--weight-black); margin:0 0 6px; }
+  .node .sub { font-family:var(--font-body); font-size:15.5px; color:var(--text-secondary); line-height:1.4; }
+  .node .addr { font-family:var(--font-mono); font-size:14px; color:var(--stbr-emerald); margin-top:6px; }
+  .node.ata { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .node.ata h3, .node.ata .sub { color:var(--text-on-accent); }
+  .node.ata .note { display:inline-block; margin-top:10px; background:var(--surface-inverse);
+    color:var(--text-on-dark); font-family:var(--font-mono); font-size:13px;
+    padding:6px 12px; border-radius:var(--radius-pill); }
+  .edge-label { position:absolute; background:var(--surface-card); border:1.5px solid var(--stbr-emerald);
+    color:var(--stbr-emerald); font-family:var(--font-body); font-weight:700; font-size:14px;
+    padding:5px 12px; border-radius:var(--radius-pill); }
+  .strip { margin-top:14px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+    padding:20px 30px; color:var(--text-on-dark); font-size:17px; line-height:1.5; }
+  .strip .lbl { color:var(--stbr-yellow); font-family:var(--font-display); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">the three-account shape</div>
+  <h2 class="viz-title">one wallet, one mint, one token account</h2>
+  <div class="stage">
+    <svg width="1456" height="404" style="position:absolute;left:0;top:0;">
+      <line x1="268" y1="150" x2="612" y2="243" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="628,247 609.1,249.0 611.7,237.2" fill="#1b231d"/>
+      <line x1="1263" y1="130" x2="900" y2="242" stroke="#1b231d" stroke-width="2.5"/>
+      <polygon points="884,247 899.8,236.5 903.0,248.1" fill="#1b231d"/>
+    </svg>
+    <div class="node" style="left:20px; top:40px; width:390px;">
+      <h3>Alice&rsquo;s wallet</h3>
+      <div class="sub">holds SOL &middot; signs transactions &middot; does <b>not</b> hold the token</div>
+    </div>
+    <div class="node" style="left:1010px; top:14px; width:426px;">
+      <h3>USDC mint</h3>
+      <div class="sub">defines the token &middot; 6 decimals</div>
+      <div class="addr">EPjFWdd5AufqSSq&hellip;GkZwyTDt1v</div>
+    </div>
+    <div class="node ata" style="left:500px; top:250px; width:480px;">
+      <h3>Alice&rsquo;s USDC ATA</h3>
+      <div class="sub">holds the balance</div>
+      <div class="note">address = derive(owner, mint) &mdash; one per pair</div>
+    </div>
+    <div class="edge-label" style="left:392px; top:196px;">owns / signs for</div>
+    <div class="edge-label" style="left:988px; top:186px;">denominates</div>
+  </div>
+  <div class="strip">
+    <span class="lbl">card rails:</span> one account number holds the money.&ensp;
+    <span class="lbl">these rails:</span> the wallet, the token definition, and the balance are three separate accounts.
+  </div>
+</div>
+</body></html>

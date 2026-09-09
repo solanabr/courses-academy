@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The life of a blink, from paste to purchase
+     purpose: trace the full request cycle so each endpoint you build has an obvious place in the flow
+     data: user pastes link on a surface -> client checks actions.json at domain root -> client GETs action URL -> metadata (icon, title, label, links.actions) -> client renders button(s) -> user clicks + enters params -> client POSTs {account} -> server builds tx via buildOrderTransaction -> ActionPostResponse (base64 tx, message, links.next) -> wallet signs + sends -> on confirm, client POSTs links.next -> thanks step failure gates: no actions.json at root = never rendered; missing CORS = request blocked in-browser
+     prompt: Left-to-right flowchart of the full blink lifecycle, one node per step as listed in data, arrows in sequence. Mark the two failure gates as annotations on the actions.json-check and GET arrows. Highlight the "server builds tx via buildOrderTransaction" node as the reused code path. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:506px;height:502px;top:-253px;right:-253px;border-radius:62% 39% 51% 39% / 53% 36% 54% 56%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .viz-title { font-size:48px; }
+  .fc { display:grid; grid-template-columns:1fr 44px 1fr 44px 1fr 44px 1fr;
+        grid-auto-rows:min-content; column-gap:0; row-gap:0; margin-top:14px; }
+  .node { background:var(--surface-card); border:2px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:12px 14px; min-height:118px; }
+  .node .num { display:inline-block; background:var(--stbr-green); color:var(--stbr-cream);
+               font-family:var(--font-body); font-weight:800; font-size:11px;
+               padding:2px 9px; border-radius:var(--radius-pill); margin-bottom:6px; }
+  .node .t { font-family:var(--font-body); font-weight:800; font-size:16px;
+             line-height:1.2; color:var(--text-primary); margin-bottom:4px; }
+  .node .s { font-family:var(--font-body); font-size:12.5px; line-height:1.35; color:var(--text-secondary); }
+  .node .s code { font-family:var(--font-mono); font-size:11.5px; color:var(--text-primary); }
+  .node .gate { margin-top:7px; background:rgba(192,57,43,0.08); border:1.5px dashed rgba(192,57,43,0.5);
+                border-radius:var(--radius-sm); padding:5px 8px; font-family:var(--font-body);
+                font-weight:600; font-size:11.5px; line-height:1.3; color:#a5342a; }
+  .node.hot { background:var(--stbr-yellow); border:3px solid var(--stbr-yellow-700); }
+  .node.hot .num { background:var(--stbr-dark); }
+  .node.hot .t, .node.hot .s, .node.hot .s code { color:var(--stbr-dark); }
+  .node.hot .reuse { display:inline-block; margin-top:6px; background:var(--stbr-dark); color:var(--stbr-yellow);
+                     font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.07em;
+                     text-transform:uppercase; padding:3px 8px; border-radius:var(--radius-pill); }
+  .harr { display:flex; align-items:center; justify-content:center; }
+  .harr .line { display:flex; align-items:center; }
+  .harr .bar { width:22px; height:3px; background:var(--stbr-green); }
+  .harr .tri-r { width:0; height:0; border-top:7px solid transparent; border-bottom:7px solid transparent;
+                 border-left:10px solid var(--stbr-green); }
+  .harr .tri-l { width:0; height:0; border-top:7px solid transparent; border-bottom:7px solid transparent;
+                 border-right:10px solid var(--stbr-green); }
+  .vrow { height:44px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .vrow .stem { width:3px; height:22px; background:var(--stbr-green); }
+  .vrow .head { width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent;
+                border-top:10px solid var(--stbr-green); }
+  .cell-empty { min-height:0; }
+</style>
+  <div class="stbr-eyebrow">every endpoint has a place in the flow</div>
+  <h2 class="viz-title">the life of a blink, from paste to purchase</h2>
+  <div class="fc">
+    <!-- row 1: steps 1-4, left to right -->
+    <div class="node"><span class="num">1</span><div class="t">user pastes the link</div><div class="s">on a rendering surface</div></div>
+    <div class="harr"><div class="line"><div class="bar"></div><div class="tri-r"></div></div></div>
+    <div class="node"><span class="num">2</span><div class="t">actions.json check</div><div class="s">client fetches it at the domain root</div><div class="gate">missing at root &rarr; never rendered</div></div>
+    <div class="harr"><div class="line"><div class="bar"></div><div class="tri-r"></div></div></div>
+    <div class="node"><span class="num">3</span><div class="t">GET the action URL</div><div class="s">cross-origin, from the client</div><div class="gate">no CORS &rarr; blocked in-browser</div></div>
+    <div class="harr"><div class="line"><div class="bar"></div><div class="tri-r"></div></div></div>
+    <div class="node"><span class="num">4</span><div class="t">metadata returns</div><div class="s">icon, title, label, <code>links.actions</code></div></div>
+    <!-- down connector, right end -->
+    <div class="cell-empty"></div><div class="cell-empty"></div><div class="cell-empty"></div>
+    <div class="cell-empty"></div><div class="cell-empty"></div><div class="cell-empty"></div>
+    <div class="vrow"><div class="stem"></div><div class="head"></div></div>
+    <!-- row 2: steps 8-5, displayed right-to-left -->
+    <div class="node hot"><span class="num">8</span><div class="t">buildOrderTransaction</div><div class="s">server builds the tx</div><span class="reuse">reused code path</span></div>
+    <div class="harr"><div class="line"><div class="tri-l"></div><div class="bar"></div></div></div>
+    <div class="node"><span class="num">7</span><div class="t">client POSTs</div><div class="s"><code>{ "account": "&lt;pubkey&gt;" }</code></div></div>
+    <div class="harr"><div class="line"><div class="tri-l"></div><div class="bar"></div></div></div>
+    <div class="node"><span class="num">6</span><div class="t">click + params</div><div class="s">user picks a button, enters params</div></div>
+    <div class="harr"><div class="line"><div class="tri-l"></div><div class="bar"></div></div></div>
+    <div class="node"><span class="num">5</span><div class="t">buttons render</div><div class="s">client draws the action card</div></div>
+    <!-- down connector, left end -->
+    <div class="vrow"><div class="stem"></div><div class="head"></div></div>
+    <div class="cell-empty"></div><div class="cell-empty"></div><div class="cell-empty"></div>
+    <div class="cell-empty"></div><div class="cell-empty"></div><div class="cell-empty"></div>
+    <!-- row 3: steps 9-12, left to right -->
+    <div class="node"><span class="num">9</span><div class="t">ActionPostResponse</div><div class="s">base64 tx, message, <code>links.next</code></div></div>
+    <div class="harr"><div class="line"><div class="bar"></div><div class="tri-r"></div></div></div>
+    <div class="node"><span class="num">10</span><div class="t">wallet signs + sends</div><div class="s">the user approves on-chain</div></div>
+    <div class="harr"><div class="line"><div class="bar"></div><div class="tri-r"></div></div></div>
+    <div class="node"><span class="num">11</span><div class="t">POST <code>links.next</code></div><div class="s">client calls it on confirm</div></div>
+    <div class="harr"><div class="line"><div class="bar"></div><div class="tri-r"></div></div></div>
+    <div class="node"><span class="num">12</span><div class="t">thanks step</div><div class="s">the chained closing action</div></div>
+  </div>
+</div>
+</body></html>

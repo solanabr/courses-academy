@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One record sale, from page load to confirmed payment
+     purpose: place all five API calls on a single timeline so the reader sees which side owns each step
+     data: lane server: GET / -> newReference() mints 32-byte key -> encodeURL builds transfer request -> page served with URL -> watchReference armed (WebSocket, mentions=reference) lane browser: createQR renders the URL as pixels lane customer wallet: scans QR -> parses fields -> builds TransferChecked (applies decimals) -> customer approves -> submits to devnet lane devnet: transfer settles at confirmed lane server (again): watcher resolves with signature -> validateTransfer(recipient, amount, splToken, reference) -> receipt: SOLD LP-041 sig=... trust note: browser is never asked whether payment happened
+     prompt: Horizontal flowchart in four lanes labeled server, browser, customer wallet, and devnet. Steps as in data, arrows crossing lanes at handoffs: server to browser at page load, browser to wallet at scan, wallet to devnet at submit, devnet back to server at the watcher notification. Mark the final validateTransfer node with a check emphasis and annotate the browser lane "display only, never trusted for payment status".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:548px;height:516px;bottom:-285px;left:-285px;border-radius:61% 50% 42% 52% / 38% 36% 51% 65%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow">five api calls, four lanes</div>
+  <h2 class="viz-title">One record sale, from page load to confirmed payment</h2>
+
+  <div style="position:relative;width:1456px;height:490px;">
+    <!-- lane backgrounds -->
+    <div style="position:absolute;left:0;top:0;width:1456px;height:140px;background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:16px;"></div>
+    <div style="position:absolute;left:0;top:152px;width:1456px;height:84px;background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:16px;"></div>
+    <div style="position:absolute;left:0;top:248px;width:1456px;height:140px;background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:16px;"></div>
+    <div style="position:absolute;left:0;top:400px;width:1456px;height:84px;background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:16px;"></div>
+
+    <!-- lane labels -->
+    <div style="position:absolute;left:16px;top:58px;width:96px;font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--stbr-ink-700);">server</div>
+    <div style="position:absolute;left:16px;top:184px;width:96px;font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--stbr-ink-700);">browser</div>
+    <div style="position:absolute;left:16px;top:296px;width:96px;font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--stbr-ink-700);">customer wallet</div>
+    <div style="position:absolute;left:16px;top:432px;width:96px;font-family:var(--font-body);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--stbr-ink-700);">devnet</div>
+
+    <!-- cross-lane connectors -->
+    <svg width="1456" height="490" viewBox="0 0 1456 490" style="position:absolute;left:0;top:0;">
+      <path d="M656,128 L678,150 L678,154" stroke="#008b4c" stroke-width="2.5" fill="none"/>
+      <polygon points="672,154 684,154 678,164" fill="#008b4c"/>
+      <path d="M660,226 L204,246 L202,250" stroke="#008b4c" stroke-width="2.5" fill="none"/>
+      <polygon points="196,250 208,250 202,260" fill="#008b4c"/>
+      <path d="M860,376 L1040,400 L1040,402" stroke="#008b4c" stroke-width="2.5" fill="none"/>
+      <polygon points="1034,402 1046,402 1040,412" fill="#008b4c"/>
+      <path d="M1120,410 L1010,140" stroke="#008b4c" stroke-width="2.5" fill="none"/>
+      <polygon points="1004,140 1016,140 1010,126" fill="#008b4c"/>
+    </svg>
+
+    <!-- server lane nodes -->
+    <div style="position:absolute;left:124px;top:14px;width:96px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--text-primary);">GET /</div>
+    <div style="position:absolute;left:244px;top:14px;width:150px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;"><span><strong style="font-family:var(--font-mono);">newReference()</strong><br>mints 32-byte key</span></div>
+    <div style="position:absolute;left:418px;top:14px;width:150px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;"><span><strong style="font-family:var(--font-mono);">encodeURL</strong><br>builds transfer request</span></div>
+    <div style="position:absolute;left:592px;top:14px;width:128px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;">page served with URL</div>
+    <div style="position:absolute;left:744px;top:14px;width:168px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;"><span><strong style="font-family:var(--font-mono);">watchReference</strong> armed<br><span style="color:var(--text-muted);">WebSocket, mentions=reference</span></span></div>
+    <div style="position:absolute;left:936px;top:14px;width:140px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;">watcher resolves with signature</div>
+    <div style="position:absolute;left:1100px;top:14px;width:168px;height:112px;background:var(--surface-accent);border:1.5px solid var(--stbr-yellow-600);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-mono);font-size:12.5px;font-weight:700;color:var(--text-on-accent);line-height:1.4;"><span>&#10003; validateTransfer(<br>recipient, amount,<br>splToken, reference)</span></div>
+    <div style="position:absolute;left:1292px;top:14px;width:150px;height:112px;background:var(--surface-inverse);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--text-on-dark);line-height:1.5;"><span>receipt:<br>SOLD LP-041<br>sig=&hellip;</span></div>
+
+    <!-- server lane arrows -->
+    <div style="position:absolute;left:220px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:394px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:568px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:720px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:912px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:1076px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:1268px;top:56px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+
+    <!-- browser lane -->
+    <div style="position:absolute;left:124px;top:176px;width:380px;height:44px;border:1.5px dashed var(--stbr-ink-300);border-radius:999px;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 16px;font-family:var(--font-body);font-size:13px;font-style:italic;color:var(--text-muted);">display only &mdash; never trusted for payment status</div>
+    <div style="position:absolute;left:592px;top:166px;width:200px;height:58px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;"><span><strong style="font-family:var(--font-mono);">createQR</strong> renders the URL as pixels</span></div>
+
+    <!-- wallet lane nodes -->
+    <div style="position:absolute;left:124px;top:262px;width:110px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);">scans QR</div>
+    <div style="position:absolute;left:258px;top:262px;width:120px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);">parses fields</div>
+    <div style="position:absolute;left:402px;top:262px;width:190px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);line-height:1.35;"><span>builds <strong style="font-family:var(--font-mono);">TransferChecked</strong><br><span style="color:var(--text-muted);">(applies decimals)</span></span></div>
+    <div style="position:absolute;left:616px;top:262px;width:140px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);">customer approves</div>
+    <div style="position:absolute;left:780px;top:262px;width:150px;height:112px;background:var(--surface-card);border:1.5px solid var(--border-subtle);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--font-body);font-size:13px;color:var(--text-primary);">submits to devnet</div>
+
+    <!-- wallet lane arrows -->
+    <div style="position:absolute;left:234px;top:308px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:378px;top:308px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:592px;top:308px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+    <div style="position:absolute;left:756px;top:308px;width:24px;text-align:center;font-family:var(--font-body);font-size:15px;color:var(--stbr-ink-700);">&rarr;</div>
+
+    <!-- devnet lane -->
+    <div style="position:absolute;left:940px;top:414px;width:240px;height:58px;background:var(--surface-brand);border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--text-on-brand);">transfer settles at confirmed</div>
+  </div>
+</div>
+</body></html>

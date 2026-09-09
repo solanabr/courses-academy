@@ -55,9 +55,11 @@ Correctness is keyed to a stable option `id`, never to array position, so reorde
       prompt: Which accounts store state?
       multiSelect: true
       options:
-        - { id: a, label: Data accounts, correct: true }
+        - { id: a, label: Data accounts, correct: true, feedback: "State lives in the account, not the instruction that writes it." }
         - { id: b, label: Instructions, correct: false, feedback: "Inputs, not accounts." }
 ```
+
+Write `feedback` on every option, including the correct ones — otherwise the missing field is the answer key.
 
 With `multiSelect: false` exactly one option may be correct; with `true`, at least one.
 

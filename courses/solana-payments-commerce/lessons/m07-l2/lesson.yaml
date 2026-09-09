@@ -1,0 +1,118 @@
+id: lesson-spc-m07-l2
+slug: m07-l2
+title: "Paywall the pressing-price API, then build the bot that pays it"
+skills:
+  - x402-protocol
+  - api-monetization
+versionStamp:
+  checkedAt: "2026-09-05"
+  packages:
+    "@x402/express": "2.23.0"
+    "@x402/svm": "2.23.0"
+    "@x402/core": "2.23.0"
+    "express": "4.21.2"
+    "@solana/kit": "6.10.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: decide-payment
+    type: code
+    language: typescript
+    starter: decide-payment/starter.ts
+    solution: decide-payment/solution.ts
+    tests: decide-payment/tests.json
+    hints:
+      - "Check in a fixed order so the decline reason is deterministic: scheme, network, asset, memo size, fee payer, then the USD cap."
+      - "Known Solana CAIP-2 ids: mainnet solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp, devnet solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1."
+      - "The USD cap comparison must use the decimals recorded for THIS asset in the allowlist, not USDC's familiar 6 - a bridged dollar with a different decimal count changes what the same atomic-unit amount is worth."
+  - key: check-build
+    type: quiz
+    questions:
+      - id: q5-lighthouse
+        prompt: "Your server-side check rebuilds the expected payment transaction and compares it byte-for-byte to what the agent submitted from a mainstream wallet. Legitimate payments start failing the comparison. What is going on, and what does the SVM verifier do about it?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Phantom and Solflare inject Lighthouse guard instructions, so x402's SVM verifier allowlists that program and verifies what was actually signed."
+            correct: true
+            feedback: "Wallets legitimately add instructions, and byte-equality against your rebuild is the wrong invariant; what was actually signed is the thing to check, and an allowlist stays narrow by design."
+          - id: d
+            label: "Wallets add guard instructions, so the verifier stops reading the instruction list at all and checks only the transfer amount, the mint, and the memo."
+            correct: false
+            feedback: "Property-based verification is not the same as looking away. The verifier walks the instructions that were actually signed, checks the transfer, the memo and the fee-payer isolation, and tolerates additions from one allowlisted guard program while rejecting every other one. An allowlist of one is still an allowlist."
+          - id: a
+            label: "The agent is malicious: it appended its own instructions to the quote you issued, so treat any deviation from your server-side rebuild as tampering and reject the payment."
+            correct: false
+            feedback: "The mismatch is caused by the wallet, not the agent. Rejecting all of them blocks legitimate Phantom/Solflare users, which is why the verifier allowlists the guard program instead of banning it."
+          - id: c
+            label: "The blockhash expired mid-flight, so the wallet rebuilt the transaction on a fresh one; widen the settlement-cache eviction window past the package's quoted 60-to-90-second lifetime range."
+            correct: false
+            feedback: "Blockhash expiry makes a transaction fail to land; it does not add instructions to an otherwise-valid payment. The settlement cache is a replay guard, not a verification path. The cause here is wallet-injected guard instructions."
+        explanation: "Phantom and Solflare inject Lighthouse guard instructions into transactions to protect users, so a naive rebuild-and-compare check fails on legitimate payments. x402's SVM verifier hardcodes an allowlist for the Lighthouse guard program and verifies the transaction that was actually signed. The lesson: verify signed reality, not your idealized rebuild."
+      - id: q6-memo-reconcile
+        prompt: "Your paying agent settles three API calls, and all three land in the backoffice ledger under one order, so the fulfillment queue shows a single sale. The invoice string you stamped into every challenge was the same one. What repairs this?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "Mint a fresh random invoice id on the server for each 402 challenge, so uniqueness does not depend on the caller."
+            correct: false
+            feedback: "Unique, and unusable. The challenge and the paid retry are two requests, and on the retry the middleware rebuilds the terms and compares them; a server-minted random id differs the second time, the comparison misses, and the agent loops on 402s forever. The one thing both requests share byte for byte is the URL, which is why the caller mints the id and carries it there."
+          - id: b
+            label: "Give each call a unique extra.memo invoice id (at most 256 bytes) so each payment reconciles to its own order in the same ledger."
+            correct: true
+            feedback: "A reconciliation key must be one-to-one with orders, since reuse collapses rows; unique is not private, though, and the memo is world-readable."
+          - id: a
+            label: "Stop using memos for machine payments; reconcile x402 sales only by wallet address instead."
+            correct: false
+            feedback: "Wallet address is not an invoice id; two calls from the same agent share it. The memo IS the reconciliation key, exactly as Solana Pay reference keys are; it just has to be unique per call."
+          - id: c
+            label: "Widen the settlement-cache window so all three settlements are treated as one payment and dedup down to a single order id in the ledger."
+            correct: false
+            feedback: "The settlement-cache is a replay guard against duplicate SETTLEMENT of one payment, not a reconciliation key. Collapsing three distinct sales into one is the bug, not the fix."
+        explanation: "x402's extra.memo invoice id is the same reconciliation idea as a Solana Pay reference key: it must be unique per call so each payment maps to its own order in the shared backoffice ledger. Reusing one memo collapses distinct sales; the fix is a unique memo (within the 256-byte limit) per call."
+  - key: check-guard
+    type: quiz
+    questions:
+      - id: q7-spendcontrols
+        prompt: "You ship the paying agent with its client defaults untouched and point it at Wavelength's rush quote, which costs $1.50 in USDC. The agent silently pays nothing and your fulfillment queue stays empty. Why?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The agent's wallet holds no SOL for the network fee, so signing fails and the loop gives up quietly before it ever builds the payment header."
+            correct: false
+            feedback: "This agent is designed never to hold SOL: the facilitator named in extra.feePayer sponsors the fee, which is why the wallet carries devnet USDC and nothing else. A gasless buyer is the whole economic point of exact-SVM, so a missing SOL balance is not what stopped this call."
+          - id: a
+            label: "The default spendControls cap is $1 per payment, so the agent declines a $1.50 call; raise the cap or price the call lower."
+            correct: true
+            feedback: "A client-side pre-flight guard refuses before signing; nothing reaches the network and your server sees no error, and lifting the cap removes the protection an unlogged decline hid."
+          - id: c
+            label: "USDC is not a recognized pegged asset by default, so the agent refuses regardless of amount."
+            correct: false
+            feedback: "USDC is a recognized pegged asset; that is not the blocker. The blocker is the $1 per-payment cap the default spendControls enforce."
+          - id: b
+            label: "The x402.org devnet facilitator refuses to settle any payment above $1, so it rejects the call and the agent never receives a settlement receipt."
+            correct: false
+            feedback: "The cap lives on the CLIENT (the agent's spendControls), not the facilitator. The facilitator would happily settle a $1.50 call; the agent declines it before signing."
+        explanation: "The @x402/core client spendControls default to recognized pegged assets with a $1 USD cap per payment unless overridden. A $1.50 call exceeds that cap, so the pre-flight guard declines it before signing, which reads as a silent no-op unless you log the reason. Raise the cap deliberately or price the call under it."
+      - id: q8-facilitator-env
+        prompt: "Your x402 labs pass against the x402.org facilitator on devnet. A teammate wants to point the same config at it for the mainnet launch. What is the right call?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Ship it, but swap the CAIP-2 network id to mainnet and add the Lighthouse allowlist first; those two are the only things that change when you leave devnet."
+            correct: false
+            feedback: "Swapping the network id is real work, but the allowlist already ships inside the SVM verifier. Neither change matters here, because the x402.org facilitator does not serve mainnet at all."
+          - id: d
+            label: "No; on mainnet the resource server signs and submits for itself, so you drop the facilitator URL and keep the rest of the config as it is."
+            correct: false
+            feedback: "Right verdict on the URL, wrong replacement. Your merchant server never touches the chain and never holds a fee-payer key: it learns the sponsor address from a facilitator at boot, which is what initialize() is for. Removing the facilitator removes the account that pays the fee."
+          - id: a
+            label: "Ship it; the x402.org facilitator is the reference facilitator and works identically on mainnet."
+            correct: false
+            feedback: "The x402.org facilitator is explicitly devnet/testnet only. Pointing production at it will not settle real payments."
+          - id: c
+            label: "No; that facilitator is devnet/testnet only, so mainnet needs a production one such as Corbits, PayAI, or CDP."
+            correct: true
+            feedback: "A reference deployment is scoped to the networks it serves, which makes the URL part of the network binding. Swapping it is the easy half, with trust, KYT, and fee terms riding along."
+        explanation: "The x402.org facilitator is devnet/testnet only, a deliberate reference deployment. A mainnet launch must swap the facilitator URL to a production one (Corbits, Dexter, PayAI, Solvador, or Coinbase CDP), which is a config change plus the trust and KYT considerations that come with picking a facilitator."

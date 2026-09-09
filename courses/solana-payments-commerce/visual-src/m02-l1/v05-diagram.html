@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: How a reference key becomes a free tracking number
+     purpose: show the full mechanism, a fresh address riding the transfer as an inert extra account, the ledger indexing it, and one lookup returning exactly one payment
+     data: Send side: generate a fresh keypair -> keep only its address (the reference) -> append it to the transfer instruction's account list as readonly non-signer On-chain: the program ignores the account entirely; the transaction is recorded with the reference among its account keys, and the network indexes every account in a transaction Lookup side: getSignaturesForAddress(reference) -> exactly one signature -> your payment Rule strip: one payment, one reference, never reused; a reused reference turns the lookup into a list you must disambiguate
+     prompt: Three-panel left-to-right diagram. Panel one shows a send step with the reference address being appended to the transfer's account list, tagged "signs nothing, receives nothing". Panel two shows the ledger storing the transaction with that address indexed among its account keys. Panel three shows a single query on the reference returning exactly one signature. Add a one-line rule strip beneath all three panels reading "one payment, one reference, never reused".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:459px;height:428px;bottom:-225px;right:-225px;border-radius:45% 37% 40% 47% / 53% 64% 46% 45%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .panels { display:flex; align-items:stretch; gap:0; margin-top:8px; }
+  .panel { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); padding:18px 22px; }
+  .panel .ph { font-family:var(--font-display); font-weight:900; font-size:20px;
+    color:var(--stbr-emerald); margin-bottom:10px; }
+  .flowline { font-family:var(--font-body); font-size:14px; color:var(--text-secondary);
+    line-height:1.4; padding:8px 0; border-top:1.5px solid var(--border-subtle); }
+  .flowline:first-of-type { border-top:none; padding-top:0; }
+  .refchip { display:inline-block; background:var(--surface-accent); color:var(--text-on-accent);
+    font-family:var(--font-mono); font-weight:700; font-size:13px; padding:2px 10px;
+    border-radius:var(--radius-pill); }
+  .ptag { display:inline-block; margin-top:10px; background:var(--surface-paper);
+    border:1.5px solid var(--border-subtle); color:var(--text-muted); font-family:var(--font-body);
+    font-weight:700; font-size:12.5px; padding:5px 12px; border-radius:var(--radius-pill); }
+  .keys { background:var(--surface-inverse); border-radius:var(--radius-md); padding:12px 16px;
+    font-family:var(--font-mono); font-size:13.5px; line-height:1.75; color:var(--text-on-dark); }
+  .keys .k { color:var(--stbr-ink-300); }
+  .keys .ref { background:var(--stbr-yellow); color:var(--stbr-dark); font-weight:700;
+    padding:1px 8px; border-radius:var(--radius-xs); }
+  .parr { width:44px; display:flex; align-items:center; justify-content:center; }
+  .call { font-family:var(--font-mono); font-size:14.5px; color:var(--text-primary); font-weight:700; }
+  .one { display:inline-block; margin-top:2px; background:var(--surface-brand); color:var(--text-on-brand);
+    font-family:var(--font-body); font-weight:700; font-size:13.5px; padding:5px 12px;
+    border-radius:var(--radius-pill); }
+  .rule { margin-top:18px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+    padding:18px 30px; color:var(--text-on-dark); font-size:17px; line-height:1.45; }
+  .rule b { color:var(--stbr-yellow); font-family:var(--font-display); font-weight:800; }
+</style>
+  <div class="stbr-eyebrow">payment tracking</div>
+  <h2 class="viz-title">a reference key is a free tracking number</h2>
+  <div class="panels">
+    <div class="panel">
+      <div class="ph">1 &middot; send</div>
+      <div class="flowline">generate a fresh keypair</div>
+      <div class="flowline">keep only its address &mdash; the <span class="refchip">reference</span></div>
+      <div class="flowline">append it to the transfer instruction&rsquo;s account list as <b>readonly, non-signer</b></div>
+      <div class="ptag">signs nothing, receives nothing</div>
+    </div>
+    <div class="parr"><svg width="34" height="18"><line x1="0" y1="9" x2="24" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,9 22,3 22,15" fill="#1b231d"/></svg></div>
+    <div class="panel">
+      <div class="ph">2 &middot; on-chain</div>
+      <div class="flowline">the program <b>ignores the account entirely</b>; the transaction is recorded with the reference among its keys</div>
+      <div class="keys">accountKeys:<br>
+        <span class="k">&nbsp;&nbsp;fee payer</span><br>
+        <span class="k">&nbsp;&nbsp;source ATA &middot; destination ATA</span><br>
+        <span class="k">&nbsp;&nbsp;token program</span><br>
+        &nbsp;&nbsp;<span class="ref">reference</span></div>
+      <div class="ptag">the network indexes every account in a transaction</div>
+    </div>
+    <div class="parr"><svg width="34" height="18"><line x1="0" y1="9" x2="24" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,9 22,3 22,15" fill="#1b231d"/></svg></div>
+    <div class="panel">
+      <div class="ph">3 &middot; lookup</div>
+      <div class="flowline"><span class="call">getSignaturesForAddress(<span class="refchip">reference</span>)</span></div>
+      <div class="flowline"><span class="one">exactly one signature</span></div>
+      <div class="flowline"><b>your payment</b> &mdash; found without scanning anything else</div>
+    </div>
+  </div>
+  <div class="rule"><b>one payment, one reference, never reused</b> &mdash; a reused reference turns the lookup into a list you must disambiguate.</div>
+</div>
+</body></html>

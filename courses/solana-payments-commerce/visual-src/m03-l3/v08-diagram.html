@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The record-fair stall, every box on the table
+     purpose: map which process runs where so a "wallet can't reach it" failure is diagnosable in seconds
+     data: merchant laptop: next dev :3000 | local-ssl-proxy :3001 -> :3000 (POS UI) merchant laptop: checkout-txreq :3100 | local-ssl-proxy :3443 -> :3100 (the endpoint) browser wallet (dev loop): same laptop, connectWallet = true customer phone (solo rung): scans QR; must reach https://<laptop LAN address>:3443, not localhost devnet RPC: receives the signed transaction; findReference polls it edges: POS UI encodes QR -> wallet scans -> wallet GET+POST :3443 -> tx to devnet -> POS polls devnet
+     prompt: A boxes-and-arrows deployment diagram. One large container labeled "merchant laptop" holding four boxes (POS dev server, its SSL proxy, checkout-txreq, its SSL proxy), with the two proxies on the container's edge. Outside: a phone box and a devnet RPC box. Arrows per the edges. Annotate the phone-to-proxy arrow: "localhost does not resolve from the phone; use the laptop's LAN address, and expect self-signed-cert friction".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:424px;height:464px;bottom:-228px;left:513px;border-radius:36% 60% 50% 40% / 36% 39% 40% 53%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { display:flex; gap:0; align-items:flex-start; }
+  .laptop { flex:0 0 640px; border:3px solid var(--border-strong); border-radius:var(--radius-2xl);
+            background:var(--surface-card); padding:18px 0 18px 22px; min-height:470px; }
+  .laptop h4 { margin:0 0 14px; font-family:var(--font-display); font-weight:900; font-size:20px;
+               color:var(--text-primary); letter-spacing:0.06em; text-transform:uppercase; }
+  .svc-row { display:flex; align-items:center; margin-bottom:16px; }
+  .svc { flex:1; background:var(--surface-paper); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
+         padding:13px 16px; }
+  .svc .nm { font-family:var(--font-body); font-weight:800; font-size:16px; color:var(--text-primary); }
+  .svc .cmd { font-family:var(--font-mono); font-size:14px; color:var(--text-secondary); margin-top:3px; }
+  .pipe { flex:0 0 34px; text-align:center; color:var(--stbr-emerald); font-size:19px; }
+  .proxy { flex:0 0 190px; background:var(--surface-brand-deep); border-radius:var(--radius-lg) 0 0 var(--radius-lg);
+           padding:13px 14px; }
+  .proxy .nm { font-family:var(--font-body); font-weight:800; font-size:14px; color:var(--text-on-brand); }
+  .proxy .cmd { font-family:var(--font-mono); font-size:13px; color:var(--stbr-cream-300); margin-top:3px; }
+  .bwallet { margin:6px 22px 0 0; border:2px dashed var(--stbr-green); border-radius:var(--radius-lg);
+             padding:11px 16px; font-family:var(--font-body); font-size:14.5px; color:var(--text-secondary); }
+  .bwallet code { font-family:var(--font-mono); font-size:13.5px; color:var(--text-primary); }
+  .mid { flex:1; display:flex; flex-direction:column; padding:0 10px; }
+  .conn { position:relative; }
+  .conn .clabel { font-family:var(--font-body); font-size:13.5px; font-weight:700; color:var(--text-secondary);
+                  text-align:center; margin-bottom:4px; }
+  .conn .line { height:3px; background:var(--stbr-emerald); position:relative; }
+  .conn .line.r::after { content:""; position:absolute; right:-1px; top:-6px; border-left:12px solid var(--stbr-emerald);
+                         border-top:7px solid transparent; border-bottom:7px solid transparent; }
+  .conn .line.l::before { content:""; position:absolute; left:-1px; top:-6px; border-right:12px solid var(--stbr-emerald);
+                          border-top:7px solid transparent; border-bottom:7px solid transparent; }
+  .lan-note { margin-top:10px; background:var(--stbr-yellow); color:var(--text-on-accent); border-radius:var(--radius-lg);
+              padding:11px 14px; font-family:var(--font-body); font-size:13.5px; font-weight:700; line-height:1.35; }
+  .ext { flex:0 0 330px; display:flex; flex-direction:column; }
+  .ebox { border:2px solid var(--stbr-dark); border-radius:var(--radius-xl); background:var(--surface-card); padding:15px 18px; }
+  .ebox.phone { min-height:240px; }
+  .ebox.rpc { min-height:130px; }
+  .ebox .nm { font-family:var(--font-display); font-weight:900; font-size:18px; color:var(--text-primary); }
+  .ebox .ds { font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); margin-top:8px; line-height:1.45; }
+  .ebox .ds code { font-family:var(--font-mono); font-size:12px; color:var(--text-primary); }
+  .ebox .ds code.blk { display:block; margin:4px 0; }
+  .vlink { display:flex; align-items:center; gap:10px; padding:0 0 0 26px; }
+  .vcol { display:flex; flex-direction:column; align-items:center; }
+  .vlink .vl { width:3px; height:28px; background:var(--stbr-emerald); }
+  .vlink .vhead { color:var(--stbr-emerald); font-size:15px; line-height:1; margin-top:-4px; }
+  .vlink .vt { font-family:var(--font-body); font-size:13.5px; font-weight:700; color:var(--text-secondary); }
+</style>
+  <div class="stbr-eyebrow">WHICH PROCESS RUNS WHERE</div>
+  <h2 class="viz-title">the record-fair stall, every box on the table</h2>
+  <div class="stage">
+    <div class="laptop">
+      <h4>merchant laptop</h4>
+      <div class="svc-row">
+        <div class="svc"><div class="nm">POS UI</div><div class="cmd">next dev :3000</div></div>
+        <div class="pipe">&larr;</div>
+        <div class="proxy"><div class="nm">ssl proxy</div><div class="cmd">local-ssl-proxy :3001 &rarr; :3000</div></div>
+      </div>
+      <div class="svc-row">
+        <div class="svc"><div class="nm">checkout-txreq <span style="font-weight:600;color:var(--text-muted);">(the endpoint)</span></div><div class="cmd">:3100</div></div>
+        <div class="pipe">&larr;</div>
+        <div class="proxy"><div class="nm">ssl proxy</div><div class="cmd">local-ssl-proxy :3443 &rarr; :3100</div></div>
+      </div>
+      <div class="bwallet">browser wallet (dev loop) &mdash; same laptop, <code>connectWallet = true</code></div>
+    </div>
+    <div class="mid">
+      <div class="conn" style="margin-top:52px;"><div class="clabel">POS UI encodes QR &rarr; wallet scans</div><div class="line r"></div></div>
+      <div class="conn" style="margin-top:64px;"><div class="clabel">wallet GET + POST https://&lt;LAN&gt;:3443</div><div class="line l"></div></div>
+      <div class="lan-note">localhost does not resolve from the phone &mdash; use the laptop&rsquo;s LAN address, and expect self-signed-cert friction</div>
+      <div class="conn" style="margin-top:56px;"><div class="clabel">POS polls devnet: findReference</div><div class="line r"></div></div>
+    </div>
+    <div class="ext">
+      <div class="ebox phone"><div class="nm">customer phone</div><div class="ds">the solo rung &mdash; scans the QR; must reach <code class="blk">https://&lt;laptop LAN address&gt;:3443</code> &mdash; not localhost</div></div>
+      <div class="vlink"><span class="vcol"><span class="vl"></span><span class="vhead">&#9660;</span></span><span class="vt">signed transaction</span></div>
+      <div class="ebox rpc"><div class="nm">devnet RPC</div><div class="ds">receives the signed transaction; <code>findReference</code> polls it</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

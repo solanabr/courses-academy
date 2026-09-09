@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Ramp vs acceptance processor, who serves whom
+     purpose: separate the two product shapes the reader has now met, before the processor comparison, so the lesson-1 ramps and today's processors never blur
+     data: ramp (lesson 1, ramp-embed): buyer or merchant <-> ramp; job: swap fiat<->crypto for the asset owner; customer: whoever wants the swap acceptance processor (today): buyer -> processor -> merchant; job: take what the buyer has, deliver the merchant's chosen settlement asset; customer: the merchant the corridor lens: buyer geography + rail; the settlement-asset column decides whether the merchant holds a crypto treasury
+     prompt: Two side-by-side boxes. Left box labeled Ramp with a two-way arrow between a person and the ramp service, annotated swap fiat and crypto. Right box labeled Acceptance processor with a one-way flow: buyer into processor into merchant, annotated with settlement asset landing at the merchant. Beneath both, a strip labeled corridor: geography plus rail. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:526px;height:414px;right:-331px;top:291px;border-radius:57% 37% 64% 52% / 48% 59% 56% 38%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .v-row { display:flex; gap:26px; margin-top:8px; align-items:stretch; }
+  .pc { flex:1 1 0; background:var(--surface-card); border:3px solid var(--stbr-dark);
+        border-radius:var(--radius-2xl); overflow:hidden; display:flex; flex-direction:column; }
+  .pc-head { padding:14px 28px; display:flex; align-items:center; gap:16px; }
+  .pc-head .nm { font-family:var(--font-display); font-weight:900; font-size:26px; }
+  .pc-head .tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+                  letter-spacing:.12em; text-transform:uppercase; padding:5px 14px;
+                  border-radius:var(--radius-pill); }
+  .h-ramp { background:var(--surface-inverse); }
+  .h-ramp .nm { color:var(--text-on-dark); }
+  .h-ramp .tag { background:rgba(255,255,255,.16); color:var(--text-on-dark); }
+  .h-proc { background:var(--stbr-yellow); }
+  .h-proc .nm { color:var(--stbr-dark); }
+  .h-proc .tag { background:var(--stbr-dark); color:var(--stbr-yellow); }
+  .pc-body { padding:24px 26px 20px; display:flex; flex-direction:column; gap:14px; flex:1 1 auto; }
+  .flow { display:flex; align-items:center; justify-content:center; gap:12px; min-height:96px; }
+  .nd { font-family:var(--font-body); font-weight:800; font-size:17px; color:var(--text-primary);
+        background:rgba(0,139,76,.07); border:2px solid rgba(0,139,76,.4);
+        border-radius:var(--radius-lg); padding:15px 18px; text-align:center; }
+  .nd small { display:block; font-weight:600; font-size:12px; color:var(--text-secondary); margin-top:3px; }
+  .arrow-note { text-align:center; font-family:var(--font-body); font-weight:700; font-size:14.5px;
+                color:var(--stbr-green); margin-top:-4px; }
+  .kv-line { display:flex; gap:10px; align-items:baseline; font-family:var(--font-body);
+             font-size:14.5px; color:var(--text-primary); background:var(--surface-paper);
+             border-radius:var(--radius-md); padding:9px 16px; }
+  .kv-line b { font-weight:800; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase;
+               color:var(--stbr-green); flex:0 0 92px; }
+  .strip { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-xl);
+           padding:16px 30px; display:flex; align-items:center; gap:20px; }
+  .strip .s-lab { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+                  letter-spacing:.14em; text-transform:uppercase; color:var(--text-on-brand);
+                  background:rgba(255,255,255,.16); padding:6px 14px; border-radius:var(--radius-pill);
+                  flex:0 0 auto; }
+  .strip .s-txt { font-family:var(--font-body); font-weight:700; font-size:16.5px;
+                  color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">two product shapes, one market</div>
+  <h2 class="viz-title">ramp vs acceptance processor &mdash; who serves whom</h2>
+  <div class="v-row">
+    <div class="pc">
+      <div class="pc-head h-ramp"><span class="nm">ramp</span><span class="tag">lesson 1 &middot; ramp-embed</span></div>
+      <div class="pc-body">
+        <div class="flow">
+          <div class="nd">buyer or merchant<small>the asset owner</small></div>
+          <svg width="120" height="26" viewBox="0 0 120 26">
+            <polygon points="14,6 2,13 14,20" fill="#1B231D"/>
+            <line x1="14" y1="13" x2="106" y2="13" stroke="#1B231D" stroke-width="2.5"/>
+            <polygon points="106,6 118,13 106,20" fill="#1B231D"/>
+          </svg>
+          <div class="nd">ramp<small>the service</small></div>
+        </div>
+        <div class="arrow-note">swap fiat &harr; crypto</div>
+        <div class="kv-line"><b>job</b><span>swap fiat &harr; crypto for the asset owner</span></div>
+        <div class="kv-line"><b>customer</b><span>whoever wants the swap</span></div>
+      </div>
+    </div>
+    <div class="pc">
+      <div class="pc-head h-proc"><span class="nm">acceptance processor</span><span class="tag">today</span></div>
+      <div class="pc-body">
+        <div class="flow">
+          <div class="nd">buyer</div>
+          <svg width="52" height="26" viewBox="0 0 52 26"><line x1="0" y1="13" x2="40" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="40,6 52,13 40,20" fill="#1B231D"/></svg>
+          <div class="nd">processor</div>
+          <svg width="52" height="26" viewBox="0 0 52 26"><line x1="0" y1="13" x2="40" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="40,6 52,13 40,20" fill="#1B231D"/></svg>
+          <div class="nd">merchant<small>settlement asset lands here</small></div>
+        </div>
+        <div class="arrow-note">take what the buyer has &rarr; deliver the merchant's chosen settlement asset</div>
+        <div class="kv-line"><b>job</b><span>deliver the merchant's chosen settlement asset</span></div>
+        <div class="kv-line"><b>customer</b><span>the merchant</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="strip">
+    <span class="s-lab">the corridor lens</span>
+    <span class="s-txt">buyer geography + rail &mdash; and the settlement-asset column decides whether the merchant holds a crypto treasury</span>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One record-fair sale, keypad to confirmed screen
+     purpose: show every hop of a transaction-request sale through the POS so the reader can locate failures
+     data: merchant keys amount on POS -> POS mints fresh reference -> POS appends recipient+amount+reference+label to link URL -> QR encodes solana:<https-link> -> customer wallet scans -> wallet GET /txreq (label, icon) -> wallet POST /txreq {account} -> checkout-txreq builds tx (memo + reference stamped) -> returns base64 tx -> wallet signs + submits to devnet -> POS polls findReference(reference) -> signature found -> validate -> confirmed screen shows signature failure points: endpoint unreachable over https; amount/reference params dropped; reference never lands
+     prompt: A left-to-right flowchart in three swimlanes labeled POS (merchant device), Customer wallet, and checkout-txreq server. Twelve nodes as in the data, arrows crossing lanes at scan, GET, POST, and the findReference poll. Mark the three failure points as small warning annotations on their arrows. End node highlighted: "confirmed screen shows signature".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:571px;height:551px;bottom:-328px;left:-328px;border-radius:46% 56% 60% 35% / 61% 49% 59% 63%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .legend { display:flex; gap:14px; margin:0 0 18px; }
+  .lg { display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-size:15px; font-weight:600; color:var(--text-secondary); }
+  .lg i { width:14px; height:14px; border-radius:4px; display:block; }
+  .frow { display:flex; align-items:stretch; gap:0; }
+  .node { flex:1; background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
+          padding:12px 14px; display:flex; flex-direction:column; gap:6px; min-height:148px; }
+  .node .lane { align-self:flex-start; font-family:var(--font-body); font-size:11px; font-weight:800; letter-spacing:0.08em;
+                text-transform:uppercase; padding:3px 9px; border-radius:var(--radius-pill); color:var(--text-on-brand); }
+  .lane.pos { background:var(--stbr-emerald); }
+  .lane.wal { background:var(--stbr-green); }
+  .lane.srv { background:var(--stbr-dark); }
+  .node .num { font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-primary); line-height:1; }
+  .node .lbl { font-family:var(--font-body); font-size:14.5px; line-height:1.3; color:var(--text-primary); }
+  .node .lbl code { font-family:var(--font-mono); font-size:13.5px; }
+  .node .warn { margin-top:10px; font-family:var(--font-body); font-size:12px; font-weight:700; color:var(--stbr-yellow-700);
+                border-top:1px dashed var(--stbr-yellow-600); padding-top:6px; }
+  .node.end { background:var(--stbr-yellow); border-color:var(--stbr-yellow-600); }
+  .node.end .num, .node.end .lbl { color:var(--text-on-accent); }
+  .node.end .lane { background:var(--stbr-dark); }
+  .arr { flex:0 0 30px; display:flex; align-items:center; justify-content:center;
+         font-size:22px; color:var(--stbr-green); font-family:var(--font-body); }
+  .turn { display:flex; justify-content:flex-end; padding:6px 60px; }
+  .turn .drop { font-family:var(--font-body); font-size:22px; color:var(--stbr-green); }
+</style>
+  <div class="stbr-eyebrow">TRANSACTION-REQUEST SALE &middot; EVERY HOP</div>
+  <h2 class="viz-title">one record-fair sale, keypad to confirmed screen</h2>
+  <div class="legend">
+    <span class="lg"><i style="background:var(--stbr-emerald);"></i>POS (merchant device)</span>
+    <span class="lg"><i style="background:var(--stbr-green);"></i>customer wallet</span>
+    <span class="lg"><i style="background:var(--stbr-dark);"></i>checkout-txreq server</span>
+    <span class="lg" style="margin-left:auto;color:var(--stbr-yellow-700);">&#9888; = where this hop fails</span>
+  </div>
+  <div class="frow">
+    <div class="node"><span class="lane pos">POS</span><span class="num">1</span><span class="lbl">merchant keys the amount on the POS</span></div>
+    <div class="arr">&rarr;</div>
+    <div class="node"><span class="lane pos">POS</span><span class="num">2</span><span class="lbl">POS mints a fresh <code>reference</code> key</span></div>
+    <div class="arr">&rarr;</div>
+    <div class="node"><span class="lane pos">POS</span><span class="num">3</span><span class="lbl">appends recipient + amount + reference + label to the link URL</span></div>
+    <div class="arr">&rarr;</div>
+    <div class="node"><span class="lane pos">POS</span><span class="num">4</span><span class="lbl">QR encodes <code>solana:&lt;https-link&gt;</code></span><span class="warn">&#9888; amount / reference params dropped</span></div>
+    <div class="arr">&rarr;</div>
+    <div class="node"><span class="lane wal">wallet</span><span class="num">5</span><span class="lbl">customer wallet scans the QR</span></div>
+    <div class="arr">&rarr;</div>
+    <div class="node"><span class="lane wal">wallet</span><span class="num">6</span><span class="lbl">wallet <code>GET /txreq</code> &mdash; label, icon</span><span class="warn">&#9888; endpoint unreachable over https</span></div>
+  </div>
+  <div class="turn"><span class="drop">&darr;</span></div>
+  <div class="frow">
+    <div class="node end"><span class="lane">POS</span><span class="num">12</span><span class="lbl"><strong>confirmed screen shows the signature</strong></span></div>
+    <div class="arr">&larr;</div>
+    <div class="node"><span class="lane pos">POS</span><span class="num">11</span><span class="lbl">signature found &rarr; validate against the sale</span></div>
+    <div class="arr">&larr;</div>
+    <div class="node"><span class="lane pos">POS</span><span class="num">10</span><span class="lbl">POS polls <code>findReference(reference)</code></span><span class="warn">&#9888; reference never lands</span></div>
+    <div class="arr">&larr;</div>
+    <div class="node"><span class="lane wal">wallet</span><span class="num">9</span><span class="lbl">wallet signs + submits to devnet</span></div>
+    <div class="arr">&larr;</div>
+    <div class="node"><span class="lane srv">server</span><span class="num">8</span><span class="lbl">builds the tx (memo + reference stamped) &rarr; returns base64</span></div>
+    <div class="arr">&larr;</div>
+    <div class="node"><span class="lane wal">wallet</span><span class="num">7</span><span class="lbl">wallet <code>POST /txreq {account}</code></span></div>
+  </div>
+</div>
+</body></html>

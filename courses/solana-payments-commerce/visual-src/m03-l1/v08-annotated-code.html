@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: server.ts, the three moves inside one GET
+     purpose: isolate the mint-encode-arm sequence inside the request handler so the per-checkout lifecycle is visible at a glance
+     data: const reference = await newReference();      -> mint: a key nobody has seen, this sale's identity const url = buildPaymentURL(reference);      -> encode: price and mint stamped into the solana: URL awaitSale(reference).then(log).catch(log);   -> arm: WebSocket watcher live BEFORE the page is served res.end(html with data-url=url)              -> serve: browser gets the URL, renders pixels, is trusted with nothing else note: watcher outcome goes to the server log, never back to the browser
+     prompt: An annotated code card showing the four lines from data in monospace, each with a right-side callout labeled mint, encode, arm, serve. A bottom annotation bar: "the browser displays; the server knows". Keep code text verbatim.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:530px;height:402px;right:-289px;top:326px;border-radius:52% 54% 49% 38% / 61% 50% 49% 61%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:535px;height:571px;bottom:-325px;left:-325px;border-radius:56% 62% 47% 46% / 51% 65% 65% 62%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow">server.ts, inside one get</div>
+  <h2 class="viz-title">The three moves inside one GET</h2>
+
+  <div style="background:var(--surface-inverse);border-radius:24px;padding:34px 40px 28px;">
+    <div style="display:flex;align-items:center;gap:26px;padding:14px 0;border-bottom:1px solid var(--border-on-dark);">
+      <div style="flex:1.5;font-family:var(--font-mono);font-size:20px;color:var(--text-on-dark);white-space:nowrap;">const reference = await newReference();</div>
+      <div style="flex:1;display:flex;align-items:center;gap:14px;">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-on-brand);background:var(--surface-brand);border-radius:999px;padding:6px 18px;">mint</span>
+        <span style="font-family:var(--font-body);font-size:14px;color:var(--stbr-ink-300);line-height:1.4;">a key nobody has seen &mdash; this sale&rsquo;s identity</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:26px;padding:14px 0;border-bottom:1px solid var(--border-on-dark);">
+      <div style="flex:1.5;font-family:var(--font-mono);font-size:20px;color:var(--text-on-dark);white-space:nowrap;">const url = buildPaymentURL(reference);</div>
+      <div style="flex:1;display:flex;align-items:center;gap:14px;">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-on-brand);background:var(--surface-brand);border-radius:999px;padding:6px 18px;">encode</span>
+        <span style="font-family:var(--font-body);font-size:14px;color:var(--stbr-ink-300);line-height:1.4;">price and mint stamped into the solana: URL</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:26px;padding:14px 0;border-bottom:1px solid var(--border-on-dark);">
+      <div style="flex:1.5;font-family:var(--font-mono);font-size:20px;color:var(--text-on-dark);white-space:nowrap;">awaitSale(reference).then(log).catch(log);</div>
+      <div style="flex:1;display:flex;align-items:center;gap:14px;">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-on-accent);background:var(--surface-accent);border-radius:999px;padding:6px 18px;">arm</span>
+        <span style="font-family:var(--font-body);font-size:14px;color:var(--stbr-cream);line-height:1.4;">WebSocket watcher live <strong>BEFORE</strong> the page is served</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:26px;padding:14px 0;">
+      <div style="flex:1.5;font-family:var(--font-mono);font-size:20px;color:var(--text-on-dark);white-space:nowrap;">res.end(html with data-url=url)</div>
+      <div style="flex:1;display:flex;align-items:center;gap:14px;">
+        <span style="font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-on-brand);background:var(--surface-brand);border-radius:999px;padding:6px 18px;">serve</span>
+        <span style="font-family:var(--font-body);font-size:14px;color:var(--stbr-ink-300);line-height:1.4;">browser gets the URL, renders pixels, is trusted with nothing else</span>
+      </div>
+    </div>
+    <div style="background:var(--surface-brand);border-radius:14px;margin-top:22px;padding:16px 28px;text-align:center;font-family:var(--font-display);font-weight:800;font-size:20px;color:var(--text-on-brand);">the browser displays; the server knows.</div>
+  </div>
+
+  <div style="font-family:var(--font-body);font-size:15px;color:var(--text-muted);margin-top:16px;text-align:center;">watcher outcome goes to the server log &mdash; never back to the browser</div>
+</div>
+</body></html>

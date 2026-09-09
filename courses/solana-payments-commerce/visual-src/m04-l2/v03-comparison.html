@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Enhanced vs Raw webhooks for a merchant back office
+     purpose: justify the Enhanced default by comparing the two types on the axes a fulfillment system cares about
+     data: axis: payload shape | enhanced: parsed event, typed (TRANSFER etc.), structured tokenTransfers | raw: transaction near wire form, you parse axis: delivery latency | enhanced: parsing adds latency | raw: lower latency, closest to the chain axis: filter ergonomics | enhanced: transactionTypes filter server-side at Helius | raw: you filter after delivery axis: trust posture | enhanced: you consume Helius's interpretation; verify on-chain anyway | raw: you interpret; verify on-chain anyway axis: fit | enhanced: merchant ops, fulfillment within the minute | raw: latency-sensitive pipelines constant: both cost 1 credit per delivered event; both are subject to retry-on-failure and auto-disable
+     prompt: Two-column comparison card, Enhanced left, Raw right, five labeled axis rows from data. A full-width footer band states the constants shared by both types. Badge the Enhanced column as "this course's default". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:587px;height:548px;bottom:-327px;right:-327px;border-radius:56% 47% 54% 36% / 48% 41% 62% 48%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cmp { background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+         border-radius:var(--radius-xl); overflow:hidden; margin-top:10px; }
+  .cmp-head { display:flex; }
+  .cmp-head .axcol { flex:0 0 260px; background:var(--surface-paper, #FAF4E4); }
+  .cmp-head .col { flex:1; padding:14px 24px; display:flex; align-items:center; gap:14px; }
+  .cmp-head .col.enh { background:var(--stbr-emerald); }
+  .cmp-head .col.raw { background:var(--surface-inverse); }
+  .cmp-head .cname { font-family:var(--font-display); font-weight:900; font-size:24px;
+                     color:var(--stbr-cream); }
+  .cmp-head .badge { font-family:var(--font-body); font-weight:800; font-size:12px;
+                     letter-spacing:.08em; text-transform:uppercase;
+                     background:var(--stbr-yellow); color:var(--stbr-dark);
+                     padding:5px 14px; border-radius:var(--radius-pill); }
+  .cmp-row { display:flex; border-top:1.5px solid var(--border-subtle); }
+  .cmp-row .ax { flex:0 0 220px; padding:13px 20px; font-family:var(--font-body);
+                 font-weight:800; font-size:14px; letter-spacing:.05em; text-transform:uppercase;
+                 color:var(--stbr-green); background:rgba(0,139,76,0.06);
+                 display:flex; align-items:center; }
+  .cmp-row .cell { flex:1; padding:13px 24px; font-family:var(--font-body); font-size:16px;
+                   line-height:1.35; color:var(--text-primary); display:flex; align-items:center; }
+  .cmp-row .cell.enh { background:rgba(0,139,76,0.04); border-right:1.5px solid var(--border-subtle);
+                       border-left:1.5px solid var(--border-subtle); }
+  .cmp-foot { display:flex; align-items:center; gap:16px; background:var(--stbr-emerald);
+              padding:16px 26px; border-top:2.5px solid var(--stbr-dark); }
+  .cmp-foot .tag { font-family:var(--font-body); font-weight:800; font-size:12px;
+                   letter-spacing:.1em; text-transform:uppercase; color:var(--stbr-yellow); }
+  .cmp-foot .txt { font-family:var(--font-body); font-weight:700; font-size:17px;
+                   color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">the axes a fulfillment system cares about</div>
+  <h2 class="viz-title">enhanced vs raw webhooks for a merchant back office</h2>
+  <div class="cmp">
+    <div class="cmp-head">
+      <div class="axcol"></div>
+      <div class="col enh"><span class="cname">Enhanced</span><span class="badge">this course's default</span></div>
+      <div class="col raw"><span class="cname">Raw</span></div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">payload shape</div>
+      <div class="cell enh">parsed event, typed (TRANSFER etc.), structured tokenTransfers</div>
+      <div class="cell">transaction near wire form &mdash; you parse</div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">delivery latency</div>
+      <div class="cell enh">parsing adds latency</div>
+      <div class="cell">lower latency, closest to the chain</div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">filter ergonomics</div>
+      <div class="cell enh">transactionTypes filter server-side at Helius</div>
+      <div class="cell">you filter after delivery</div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">trust posture</div>
+      <div class="cell enh">you consume Helius's interpretation &mdash; verify on-chain anyway</div>
+      <div class="cell">you interpret &mdash; verify on-chain anyway</div>
+    </div>
+    <div class="cmp-row">
+      <div class="ax">fit</div>
+      <div class="cell enh">merchant ops &mdash; fulfillment within the minute</div>
+      <div class="cell">latency-sensitive pipelines</div>
+    </div>
+    <div class="cmp-foot">
+      <span class="tag">both types</span>
+      <span class="txt">1 credit per delivered event &middot; subject to retry-on-failure &middot; subject to auto-disable</span>
+    </div>
+  </div>
+</div>
+</body></html>

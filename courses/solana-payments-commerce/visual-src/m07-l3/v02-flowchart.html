@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: An MPP pull-mode call, end to end
+     purpose: make the challenge-credential-receipt cycle concrete before the lab produces it live
+     data: agent -> GET /price -> server server -> 402 + WWW-Authenticate: Payment (challenge: amount, asset, recipient) -> agent agent signs a Solana charge intent -> retries GET /price with Authorization: <signed charge intent> server (pull mode, the default): may co-sign as fee payer, broadcasts the transaction chain confirms -> server -> 200 + Payment-Receipt header + the quote body -> agent annotation: in push mode the client broadcasts instead and presents the result; pull is the draft's default
+     prompt: Vertical sequence diagram with two lanes (agent, server) plus a chain node at the bottom right. Five numbered exchanges as in data. Highlight the three header names (WWW-Authenticate: Payment, Authorization, Payment-Receipt) as monospace labels on their arrows. A side annotation notes the push-mode variant. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:515px;height:456px;right:-299px;top:268px;border-radius:65% 56% 47% 43% / 45% 65% 61% 58%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:413px;height:432px;bottom:-240px;left:737px;border-radius:65% 64% 56% 47% / 53% 40% 36% 63%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-2xl); padding:36px 48px 32px;">
+    <div class="stbr-eyebrow">mpp &middot; pull mode</div>
+    <h2 class="viz-title" style="font-size:42px; margin-bottom:10px;">an MPP pull-mode call, end to end</h2>
+
+    <div style="position:relative; height:512px;">
+      <!-- lifelines -->
+      <div style="position:absolute; left:179px; top:56px; width:2px; height:432px; background:var(--border-strong);"></div>
+      <div style="position:absolute; left:899px; top:56px; width:2px; height:432px; background:var(--border-strong);"></div>
+
+      <!-- lane headers -->
+      <div style="position:absolute; left:80px; top:0; width:200px; background:var(--stbr-emerald); color:var(--text-on-brand); border-radius:var(--radius-lg); padding:12px 0; text-align:center; font-family:var(--font-display); font-weight:800; font-size:20px;">agent</div>
+      <div style="position:absolute; left:800px; top:0; width:200px; background:var(--stbr-emerald); color:var(--text-on-brand); border-radius:var(--radius-lg); padding:12px 0; text-align:center; font-family:var(--font-display); font-weight:800; font-size:20px;">server</div>
+
+      <!-- msg 1: agent -> server : GET /price -->
+      <div style="position:absolute; left:150px; top:82px; width:26px; height:26px; border-radius:50%; background:var(--stbr-dark); color:var(--stbr-cream); text-align:center; font-family:var(--font-display); font-weight:800; font-size:15px; line-height:26px;">1</div>
+      <div style="position:absolute; left:210px; top:82px; width:660px; font-family:var(--font-mono); font-size:15px; color:var(--text-primary);">GET /price</div>
+      <div style="position:absolute; left:181px; top:107px; width:710px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:889px; top:101px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+
+      <!-- msg 2: server -> agent : 402 challenge -->
+      <div style="position:absolute; left:906px; top:140px; width:26px; height:26px; border-radius:50%; background:var(--stbr-dark); color:var(--stbr-cream); text-align:center; font-family:var(--font-display); font-weight:800; font-size:15px; line-height:26px;">2</div>
+      <div style="position:absolute; left:210px; top:138px; width:680px; text-align:right; font-family:var(--font-body); font-size:15px; font-weight:600; color:var(--text-primary);">402 + <span style="background:var(--stbr-yellow); color:var(--stbr-dark); font-family:var(--font-mono); font-size:14px; font-weight:600; border-radius:6px; padding:2px 8px;">WWW-Authenticate: Payment</span>&nbsp; challenge: amount &middot; asset &middot; recipient</div>
+      <div style="position:absolute; left:189px; top:167px; width:710px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:181px; top:161px; width:0; height:0; border-right:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+
+      <!-- self step: agent signs -->
+      <div style="position:absolute; left:60px; top:196px; width:300px; background:var(--surface-paper); border:1px solid var(--border-strong); border-radius:var(--radius-md); padding:8px 14px; font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--text-primary); text-align:center;">signs a Solana charge intent</div>
+
+      <!-- msg 3: agent -> server : retry with Authorization -->
+      <div style="position:absolute; left:150px; top:252px; width:26px; height:26px; border-radius:50%; background:var(--stbr-dark); color:var(--stbr-cream); text-align:center; font-family:var(--font-display); font-weight:800; font-size:15px; line-height:26px;">3</div>
+      <div style="position:absolute; left:210px; top:250px; width:660px; font-family:var(--font-body); font-size:15px; font-weight:600; color:var(--text-primary);">retries <span style="font-family:var(--font-mono); font-size:14px;">GET /price</span> with <span style="background:var(--stbr-yellow); color:var(--stbr-dark); font-family:var(--font-mono); font-size:14px; font-weight:600; border-radius:6px; padding:2px 8px;">Authorization: &lt;signed charge intent&gt;</span></div>
+      <div style="position:absolute; left:181px; top:279px; width:710px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:889px; top:273px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+
+      <!-- msg 4: server -> chain -->
+      <div style="position:absolute; left:906px; top:316px; width:26px; height:26px; border-radius:50%; background:var(--stbr-dark); color:var(--stbr-cream); text-align:center; font-family:var(--font-display); font-weight:800; font-size:15px; line-height:26px;">4</div>
+      <div style="position:absolute; left:940px; top:344px; width:190px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:1120px; top:338px; width:0; height:0; border-left:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+      <div style="position:absolute; left:940px; top:308px; width:200px; font-family:var(--font-body); font-size:13px; color:var(--text-secondary);">pull mode (default): may co-sign as fee payer, broadcasts</div>
+      <div style="position:absolute; left:1140px; top:312px; width:210px; background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-lg); padding:14px 16px; text-align:center;">
+        <div style="font-family:var(--font-display); font-weight:800; font-size:18px;">Solana</div>
+        <div style="font-family:var(--font-body); font-size:13px; margin-top:2px; color:var(--stbr-cream);">chain confirms</div>
+      </div>
+
+      <!-- msg 5: server -> agent : 200 + receipt -->
+      <div style="position:absolute; left:906px; top:406px; width:26px; height:26px; border-radius:50%; background:var(--stbr-dark); color:var(--stbr-cream); text-align:center; font-family:var(--font-display); font-weight:800; font-size:15px; line-height:26px;">5</div>
+      <div style="position:absolute; left:210px; top:404px; width:680px; text-align:right; font-family:var(--font-body); font-size:15px; font-weight:600; color:var(--text-primary);">200 + <span style="background:var(--stbr-yellow); color:var(--stbr-dark); font-family:var(--font-mono); font-size:14px; font-weight:600; border-radius:6px; padding:2px 8px;">Payment-Receipt</span> header + the quote body</div>
+      <div style="position:absolute; left:189px; top:433px; width:710px; height:2px; background:var(--stbr-dark);"></div>
+      <div style="position:absolute; left:181px; top:427px; width:0; height:0; border-right:11px solid var(--stbr-dark); border-top:7px solid transparent; border-bottom:7px solid transparent;"></div>
+
+      <!-- push-mode annotation -->
+      <div style="position:absolute; left:120px; top:468px; width:1120px; background:var(--surface-paper); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:10px 18px; font-family:var(--font-body); font-size:14px; color:var(--text-secondary);"><span style="font-weight:700; color:var(--text-primary);">push-mode variant:</span> the client broadcasts instead and presents the result &mdash; pull is the draft&rsquo;s default.</div>
+    </div>
+  </div>
+</div>
+</body></html>

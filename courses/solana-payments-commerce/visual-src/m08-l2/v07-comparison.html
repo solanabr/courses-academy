@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: submit / expired / unsafe: what each bucket means at the stall
+     purpose: pin the classifier's three verdicts to their operational meaning and their governing rule
+     data: bucket: submit | rule: fresh blockhash within windowSeconds, or durable-nonce with nonceAdvanced false | meaning at the stall: broadcast now, order proceeds bucket: expired | rule: blockhash entry older than windowSeconds | meaning: harmless dead bytes; re-sign against a fresh blockhash or a nonce bucket: unsafe | rule: durable-nonce entry whose nonce already advanced | meaning: authorization spent; the runtime rejects these bytes, so the live risk is re-SIGNING the same sale against a fresh nonce; human decision required invariant row: all three buckets preserve input order
+     prompt: A three-column comparison card, one column per verdict: submit, expired, unsafe. Each column has two stacked cells: "rule" (the classifier condition) and "meaning at the stall" (the operational action), filled from the data rows. Give unsafe visual weight as the dangerous verdict (its meaning cites re-signing as the live double-charge risk and "human decision required"). A full-width footer row spans all three columns: "all three buckets preserve input order".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:443px;height:496px;bottom:-295px;left:667px;border-radius:60% 48% 50% 52% / 64% 61% 59% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .grid { display:flex; gap:24px; margin-top:22px; }
+  .colcard { flex:1 1 0; border-radius:var(--radius-xl); overflow:hidden;
+             border:2.5px solid var(--border-strong); background:var(--surface-card); }
+  .colcard-uns { border:3.5px solid var(--stbr-dark); }
+  .chead { padding:16px 24px; font-family:var(--font-display); font-weight:900;
+           font-size:26px; }
+  .ch-sub { background:var(--stbr-emerald); color:#fff; }
+  .ch-exp { background:var(--stbr-green); color:var(--stbr-cream); }
+  .ch-uns { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .cell { padding:16px 24px 18px; }
+  .cell-rule { height:118px; border-bottom:2px solid var(--border-subtle); }
+  .cell-mean { height:168px; }
+  .cl { font-family:var(--font-body); font-weight:800; font-size:12.5px;
+        color:var(--text-muted); text-transform:uppercase; letter-spacing:0.07em; }
+  .cb { font-family:var(--font-body); font-weight:600; font-size:16.5px;
+        color:var(--text-primary); margin-top:7px; line-height:1.4; }
+  .cb .mono { font-family:var(--font-mono); font-weight:700; font-size:15px; }
+  .colcard-uns .cb strong { font-weight:900; }
+  .band { display:flex; align-items:center; gap:16px; background:var(--stbr-emerald);
+          border-radius:var(--radius-xl); padding:18px 28px; margin-top:24px; }
+  .band .bk { flex:0 0 auto; font-family:var(--font-body); font-weight:900; font-size:13px;
+              color:var(--stbr-dark); background:var(--stbr-cream);
+              border-radius:var(--radius-pill); padding:6px 16px;
+              text-transform:uppercase; letter-spacing:0.06em; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:22px;
+              color:var(--stbr-cream); }
+</style>
+  <div class="stbr-eyebrow">the classifier&rsquo;s three verdicts, pinned to the stall</div>
+  <h2 class="viz-title">submit / expired / unsafe: what each bucket means</h2>
+  <div class="grid">
+    <div class="colcard">
+      <div class="chead ch-sub">submit</div>
+      <div class="cell cell-rule">
+        <div class="cl">rule</div>
+        <div class="cb">fresh blockhash within <span class="mono">windowSeconds</span>, or durable-nonce with <span class="mono">nonceAdvanced: false</span></div>
+      </div>
+      <div class="cell cell-mean">
+        <div class="cl">meaning at the stall</div>
+        <div class="cb">broadcast now &mdash; the order proceeds</div>
+      </div>
+    </div>
+    <div class="colcard">
+      <div class="chead ch-exp">expired</div>
+      <div class="cell cell-rule">
+        <div class="cl">rule</div>
+        <div class="cb">blockhash entry older than <span class="mono">windowSeconds</span></div>
+      </div>
+      <div class="cell cell-mean">
+        <div class="cl">meaning at the stall</div>
+        <div class="cb">harmless dead bytes; re-sign against a fresh blockhash or a nonce</div>
+      </div>
+    </div>
+    <div class="colcard colcard-uns">
+      <div class="chead ch-uns">unsafe</div>
+      <div class="cell cell-rule">
+        <div class="cl">rule</div>
+        <div class="cb">durable-nonce entry whose nonce already advanced</div>
+      </div>
+      <div class="cell cell-mean">
+        <div class="cl">meaning at the stall</div>
+        <div class="cb">authorization spent; the runtime now rejects these bytes. The live double-charge is re-SIGNING this sale. <strong>Human decision required.</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="band">
+    <div class="bk">invariant</div>
+    <div class="bt">all three buckets preserve input order</div>
+  </div>
+</div>
+</body></html>

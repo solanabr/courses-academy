@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Pegged checkout vs floating checkout
+     purpose: contrast the 1:1 no-oracle path this course uses with the oracle-dependent path that is handed off, so the reader knows exactly which problem they do not have
+     data: axis: sticker vs charged | pegged (USD price, USDC charge): same number, a 30 USD record charges 30 USDC | floating (USD price, volatile-asset charge): needs a live quote at checkout time axis: FX machinery | pegged: none, the peg is the quote | floating: oracle feed + staleness rule + spread policy axis: failure modes | pegged: none at the pricing layer | floating: stale quote, thin liquidity, spread mispricing axis: where taught | pegged: this course, this lesson | floating: DeFi and RWA Engineering course, oracle-based pricing in depth
+     prompt: Two-column comparison, left column labeled pegged one-to-one, right column labeled floating asset. Four rows: sticker versus charged amount, FX machinery required, failure modes, where it is taught. The pegged column reads visibly lighter, with a none entry for machinery; the floating column carries an oracle icon and a course handoff note. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:449px;bottom:-239px;right:-239px;border-radius:52% 55% 60% 39% / 48% 42% 60% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .pf { margin-top:8px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+        border-radius:var(--radius-xl); overflow:hidden; }
+  .prow { display:flex; align-items:stretch; border-bottom:1.5px solid var(--border-subtle); }
+  .prow.last { border-bottom:none; }
+  .cell { padding:15px 22px; font-family:var(--font-body); font-size:15px; line-height:1.45;
+          border-left:1.5px solid var(--border-subtle); color:var(--text-primary); }
+  .w-axis { flex:0 0 230px; border-left:none; }
+  .w-col { flex:1 1 0; }
+  .colh { font-family:var(--font-display); font-weight:900; font-size:22px; display:flex;
+          align-items:center; gap:14px; }
+  .colh.blank { background:var(--surface-paper); }
+  .colh.peg { background:var(--surface-brand); color:var(--text-on-brand); }
+  .colh.flt { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .colh .sub { font-family:var(--font-body); font-weight:700; font-size:12px;
+               background:rgba(255,255,255,.16); padding:4px 12px; border-radius:var(--radius-pill); }
+  .axis2 { background:var(--surface-paper); font-weight:800; font-size:12.5px; letter-spacing:.07em;
+           text-transform:uppercase; color:var(--stbr-green); display:flex; align-items:center; }
+  .none-hot { background:rgba(255,210,63,.35); font-weight:800; }
+  .verdict { flex:1 1 0; background:var(--surface-brand); color:var(--text-on-brand);
+             padding:18px 26px; font-family:var(--font-body); font-weight:800; font-size:18px;
+             border-left:none; text-align:center; }
+</style>
+  <div class="stbr-eyebrow">the problem you do not have</div>
+  <h2 class="viz-title" style="font-size:46px;">pegged checkout vs floating checkout</h2>
+  <div class="pf">
+    <div class="prow">
+      <div class="cell colh blank w-axis"></div>
+      <div class="cell colh peg w-col">pegged 1&thinsp;:&thinsp;1<span class="sub">USD price &middot; USDC charge</span></div>
+      <div class="cell colh flt w-col">floating asset<span class="sub">USD price &middot; volatile-asset charge</span></div>
+    </div>
+    <div class="prow">
+      <div class="cell axis2 w-axis">sticker vs charged</div>
+      <div class="cell w-col">same number &mdash; a 30 USD record charges 30 USDC</div>
+      <div class="cell w-col">needs a live quote at checkout time</div>
+    </div>
+    <div class="prow">
+      <div class="cell axis2 w-axis">FX machinery</div>
+      <div class="cell none-hot w-col">none &mdash; the peg is the quote</div>
+      <div class="cell w-col">oracle feed + staleness rule + spread policy</div>
+    </div>
+    <div class="prow">
+      <div class="cell axis2 w-axis">failure modes</div>
+      <div class="cell w-col">none at the pricing layer</div>
+      <div class="cell w-col">stale quote &middot; thin liquidity &middot; spread mispricing</div>
+    </div>
+    <div class="prow">
+      <div class="cell axis2 w-axis">where taught</div>
+      <div class="cell w-col">this course, this lesson</div>
+      <div class="cell w-col">DeFi &amp; RWA Engineering course &mdash; oracle-based pricing in depth (handoff)</div>
+    </div>
+    <div class="prow last">
+      <div class="cell verdict">the peg is the quote &mdash; pegged checkout has no FX problem to engineer; the oracle path belongs to another course</div>
+    </div>
+  </div>
+</div>
+</body></html>

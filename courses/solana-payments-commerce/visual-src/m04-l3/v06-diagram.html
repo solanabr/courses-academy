@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The audit link: refund rows point at origin signatures
+     purpose: show the ledger linkage that lets an auditor walk from sale to refund and back without trusting the database
+     data: payment row: orderId ord-0231, signature 5Kd...w2 (primary key since the webhook lesson), paidBaseUnits 30000000, refundSignature -> set on refund refund row: originSignature 5Kd...w2, refundSignature 8Fq...r9, refundReference fresh 32-byte key, amountBaseUnits 30000000, reason warped-pressing on-chain mirror: the refund tx's memo carries refund:5Kd...w2:warped-pressing walk: order -> payment signature -> refund row -> refund signature -> on-chain memo -> back to origin
+     prompt: Entity diagram with two record cards, payment row and refund row, fields as listed. A labeled arrow from the refund row's originSignature field to the payment row's signature field, and a second arrow from the refund row to an on-chain memo node showing the refund memo string, closing a walkable loop. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:466px;height:437px;bottom:-250px;right:-250px;border-radius:59% 59% 65% 63% / 36% 51% 42% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:38px 52px 34px; }
+  .row1 { display:flex; align-items:stretch; margin-top:14px; }
+  .rec { flex:0 0 560px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-card); }
+  .rec .hd { background:var(--surface-inverse); padding:9px 18px; font-family:var(--font-mono); font-weight:800; font-size:15px; color:var(--text-on-dark); }
+  .rec .f { display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:7px 18px; border-top:1.5px solid var(--border-subtle); }
+  .rec .f .k { font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--stbr-green); }
+  .rec .f .v { font-family:var(--font-mono); font-size:13px; color:var(--text-primary); text-align:right; }
+  .rec .f .note { display:block; font-family:var(--font-body); font-size:10.5px; color:var(--text-muted); }
+  .rec .f.link { background:rgba(255,210,63,.28); }
+  .mid { flex:1 1 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:0 6px; }
+  .mid .lbl { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--stbr-green); text-align:center; line-height:1.3; }
+  .row2 { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:20px; }
+  .memoarr { display:flex; align-items:center; gap:8px; }
+  .memoarr .lbl { font-family:var(--font-body); font-weight:700; font-size:11.5px; color:var(--text-muted); max-width:190px; line-height:1.3; }
+  .memo { background:var(--surface-inverse); border-radius:var(--radius-lg); padding:13px 24px; text-align:center; }
+  .memo .tag { font-family:var(--font-body); font-weight:800; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(245,232,202,.6); }
+  .memo .m { font-family:var(--font-mono); font-weight:800; font-size:17px; color:var(--stbr-yellow); margin-top:3px; }
+  .walk { display:flex; align-items:center; justify-content:center; gap:7px; margin-top:20px; flex-wrap:nowrap; }
+  .walk .w { font-family:var(--font-body); font-weight:700; font-size:12.5px; color:var(--text-secondary); background:var(--surface-paper); border:1.5px solid var(--border-subtle); border-radius:var(--radius-pill); padding:5px 13px; white-space:nowrap; }
+  .walk .a { font-family:var(--font-body); font-weight:800; font-size:13px; color:var(--stbr-green); }
+  .walk .cap { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); margin-right:6px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">sale to refund and back, without trusting the database</div>
+  <h2 class="viz-title">refund rows point at origin signatures</h2>
+  <div class="row1">
+    <div class="rec">
+      <div class="hd">payment row</div>
+      <div class="f"><span class="k">orderId</span><span class="v">ord-0231</span></div>
+      <div class="f link"><span class="k">signature</span><span class="v">5Kd&hellip;w2<span class="note">primary key since the webhook lesson</span></span></div>
+      <div class="f"><span class="k">paidBaseUnits</span><span class="v">30000000</span></div>
+      <div class="f"><span class="k">refundSignature</span><span class="v">&rarr; set on refund</span></div>
+    </div>
+    <div class="mid">
+      <span class="lbl">originSignature<br>&rarr; signature</span>
+      <svg width="150" height="16"><line x1="150" y1="8" x2="12" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="0,8 14,2 14,14" fill="#008b4c"/></svg>
+      <span class="lbl" style="color:var(--text-muted); text-transform:none; font-weight:700;">the same 32-byte key</span>
+    </div>
+    <div class="rec">
+      <div class="hd">refund row</div>
+      <div class="f link"><span class="k">originSignature</span><span class="v">5Kd&hellip;w2</span></div>
+      <div class="f"><span class="k">refundSignature</span><span class="v">8Fq&hellip;r9</span></div>
+      <div class="f"><span class="k">refundReference</span><span class="v">fresh 32-byte key</span></div>
+      <div class="f"><span class="k">amountBaseUnits</span><span class="v">30000000</span></div>
+      <div class="f"><span class="k">reason</span><span class="v">warped-pressing</span></div>
+    </div>
+  </div>
+  <div class="row2">
+    <div class="memoarr">
+      <span class="lbl">the memo names the origin &mdash; closing the loop back to the payment</span>
+      <svg width="110" height="16"><line x1="110" y1="8" x2="12" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="0,8 14,2 14,14" fill="#1b231d"/></svg>
+    </div>
+    <div class="memo">
+      <div class="tag">on-chain mirror &mdash; the refund tx&rsquo;s memo</div>
+      <div class="m">refund:5Kd&hellip;w2:warped-pressing</div>
+    </div>
+    <div class="memoarr">
+      <svg width="110" height="16"><line x1="0" y1="8" x2="98" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="110,8 96,2 96,14" fill="#1b231d"/></svg>
+      <span class="lbl">carried by refund tx <span style="font-family:var(--font-mono);white-space:nowrap;">8Fq&hellip;r9</span></span>
+    </div>
+  </div>
+  <div class="walk">
+    <span class="cap">the walk</span>
+    <span class="w">order</span><span class="a">&rarr;</span>
+    <span class="w">payment signature</span><span class="a">&rarr;</span>
+    <span class="w">refund row</span><span class="a">&rarr;</span>
+    <span class="w">refund signature</span><span class="a">&rarr;</span>
+    <span class="w">on-chain memo</span><span class="a">&rarr;</span>
+    <span class="w">back to origin</span>
+  </div>
+</div>
+</div>
+</body></html>

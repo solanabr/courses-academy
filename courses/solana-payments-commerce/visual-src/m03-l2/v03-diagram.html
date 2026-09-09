@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of the transaction your server returns
+     purpose: map every component of the built transaction to the code that produces it, before the reader writes that code
+     data: envelope: version 0 transaction, base64-encoded wire bytes, signature slot empty (customer signs in-wallet) fee payer: the POSTed account (the customer) lifetime: latest devnet blockhash -> valid 150 blocks (~45s at the 300ms target slot time) instruction 1: SPL Memo -> no accounts, data = utf8 "wavelength:<orderId>:<cart description>" instruction 2: TransferChecked -> accounts: source ATA, USDC mint, destination ATA, authority (customer), PLUS the injected reference key (readonly, non-signer) produced by: buildOrderTransaction (pricing + instruction) and finalizeTransaction (injection + lifetime + serialize)
+     prompt: An exploded-view diagram of one transaction: an outer envelope box labeled with the version-0 and empty-signature-slot facts, containing fee payer, lifetime, and the two instruction boxes stacked inside in build order (memo, then transfer). Inside instruction 2, list its accounts as rows and highlight the injected reference row. Along the bottom, two brackets mapping the envelope pieces to buildOrderTransaction and finalizeTransaction as in the data.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:574px;height:525px;bottom:-332px;right:-332px;border-radius:43% 55% 44% 43% / 41% 58% 35% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <style>
+    .tx-card { background: var(--surface-card); border-radius: var(--radius-2xl);
+               padding: 26px 44px 30px; }
+    .tx-env { border: 3px solid var(--stbr-dark); border-radius: var(--radius-xl);
+              overflow: hidden; }
+    .tx-envhead { background: var(--surface-inverse); color: var(--stbr-cream);
+                  font-family: var(--font-mono); font-size: 14.5px; padding: 10px 20px;
+                  display: flex; gap: 26px; }
+    .tx-envbody { padding: 14px 18px 16px; }
+    .tx-chiprow { display: flex; gap: 12px; margin-bottom: 12px; }
+    .tx-chip { flex: 1; border: 2px solid var(--stbr-green); border-radius: var(--radius-md);
+               padding: 8px 14px; font-family: var(--font-body); font-size: 14.5px;
+               color: var(--text-primary); }
+    .tx-chip b { font-family: var(--font-display); font-weight: 800; color: var(--stbr-green);
+                 text-transform: uppercase; font-size: 12.5px; letter-spacing: 0.05em;
+                 display: block; margin-bottom: 2px; }
+    .tx-ixrow { display: flex; gap: 12px; }
+    .tx-ix { flex: 1; border: 2px solid var(--stbr-emerald); border-radius: var(--radius-lg);
+             overflow: hidden; }
+    .tx-ixhead { background: var(--surface-brand); color: #fff;
+                 font-family: var(--font-display); font-weight: 800; font-size: 16px;
+                 padding: 7px 16px; }
+    .tx-acct { display: flex; justify-content: space-between; padding: 6px 16px;
+               border-top: 1px solid var(--border-subtle);
+               font-family: var(--font-body); font-size: 13.5px; color: var(--text-primary); }
+    .tx-acct .role { color: var(--text-muted); font-size: 12px; }
+    .tx-brackets { display: flex; gap: 24px; margin-top: 16px; }
+    .tx-bracket { flex: 1; }
+    .tx-brk { height: 12px; border-left: 3px solid var(--stbr-green);
+              border-right: 3px solid var(--stbr-green);
+              border-bottom: 3px solid var(--stbr-green);
+              border-radius: 0 0 8px 8px; }
+    .tx-brklabel { text-align: center; margin-top: 6px; font-family: var(--font-body);
+                   font-size: 14.5px; color: var(--text-primary); }
+    .tx-brklabel code { font-family: var(--font-mono); font-weight: 700;
+                        color: var(--stbr-emerald); font-size: 14.5px; }
+  </style>
+  <div class="tx-card">
+    <div class="stbr-eyebrow">what POST /txreq returns</div>
+    <h2 class="viz-title" style="font-size:38px; margin-bottom:12px;">Anatomy of the transaction your server returns</h2>
+    <div class="tx-env">
+      <div class="tx-envhead">
+        <span>version 0 transaction</span>
+        <span>base64-encoded wire bytes</span>
+        <span>signature slot: EMPTY, the customer signs in-wallet</span>
+      </div>
+      <div class="tx-envbody">
+        <div class="tx-chiprow">
+          <div class="tx-chip"><b>fee payer</b>the POSTed account: the customer</div>
+          <div class="tx-chip"><b>lifetime</b>latest devnet blockhash → valid 150 blocks (150 × 300 ms target ≈ 45 s)</div>
+        </div>
+        <div class="tx-ixrow">
+          <div class="tx-ix">
+            <div class="tx-ixhead">instruction 1: SPL Memo</div>
+            <div class="tx-acct"><span>no accounts</span><span class="role">-</span></div>
+            <div class="tx-acct" style="display:block;">
+              <span style="color:var(--text-muted); font-size:12px;">data (utf-8)</span><br>
+              <span style="font-family:var(--font-mono); font-size:13px;">"wavelength:&lt;orderId&gt;:&lt;cart description&gt;"</span>
+            </div>
+          </div>
+          <div class="tx-ix">
+            <div class="tx-ixhead">instruction 2: TransferChecked</div>
+            <div class="tx-acct"><span>source ATA</span><span class="role">writable</span></div>
+            <div class="tx-acct"><span>USDC mint</span><span class="role">readonly</span></div>
+            <div class="tx-acct"><span>destination ATA</span><span class="role">writable</span></div>
+            <div class="tx-acct"><span>authority: the customer</span><span class="role">signer</span></div>
+            <div class="tx-acct" style="background:#FFF3C4; font-weight:700;"><span>+ injected reference key</span><span class="role" style="color:var(--stbr-dark);">readonly · non-signer</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tx-brackets">
+      <div class="tx-bracket">
+        <div class="tx-brk"></div>
+        <div class="tx-brklabel"><code>buildOrderTransaction</code>: pricing + the memo &amp; transfer instructions</div>
+      </div>
+      <div class="tx-bracket">
+        <div class="tx-brk"></div>
+        <div class="tx-brklabel"><code>finalizeTransaction</code>: reference injection + lifetime + serialize</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

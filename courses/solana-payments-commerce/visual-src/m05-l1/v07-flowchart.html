@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: One billing cycle through the crank
+     purpose: fix the read-guard-pull-reread loop as the shape of every cycle before the reader runs it
+     data: scheduler fires (off-chain, e.g. monthly cron) -> fetchToken(subscriber ATA): read delegate + delegatedAmount fresh -> checkPull guard: delegate missing or foreign -> log refused: delegate-revoked -> stop delegatedAmount < 15 USDC   -> log refused: insufficient-allowance -> stop else ok -> build TransferChecked (authority = crank) + reference key + memo -> sendIxs, crank pays 5000-lamport base fee -> fetchToken again: on-chain allowance decremented by 15 -> back office ingests by reference (module 4 pipeline, unchanged)
+     prompt: Vertical flowchart of one crank cycle, seven nodes from "scheduler fires" to "back office ingests by reference". The guard node branches right into two refusal exits labeled with the reason strings delegate-revoked and insufficient-allowance. The two fetchToken nodes visually matched to emphasize read-before and read-after. Reason strings and function names in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:429px;height:462px;bottom:-259px;left:418px;border-radius:55% 60% 60% 52% / 65% 57% 64% 61%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .lay { display:flex; gap:0; margin-top:8px; }
+  .flow { flex:0 0 790px; display:flex; flex-direction:column; }
+  .nd { background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+        border-radius:var(--radius-lg); padding:11px 20px; display:flex;
+        align-items:center; gap:14px; min-height:56px; }
+  .nd .t { font-family:var(--font-body); font-weight:700; font-size:16.5px;
+           color:var(--text-primary); }
+  .nd .t code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-green); }
+  .nd .s { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+           color:var(--text-muted); margin-left:auto; text-align:right; }
+  .nd.read { border-color:var(--stbr-emerald); background:rgba(0,139,76,0.06); }
+  .rchip { font-family:var(--font-body); font-weight:800; font-size:11px;
+           letter-spacing:.1em; text-transform:uppercase; color:#fff;
+           background:var(--stbr-emerald); border-radius:var(--radius-pill);
+           padding:4px 11px; }
+  .nd.guard { border-width:3.5px; }
+  .varr { display:flex; flex-direction:column; align-items:center; height:20px;
+          margin-left:64px; width:0; }
+  .varr .l { flex:1 1 auto; border-left:3px solid var(--stbr-dark); }
+  .varr .h { width:0; height:0; border-left:8px solid transparent;
+             border-right:8px solid transparent; border-top:11px solid var(--stbr-dark);
+             margin-left:-8px; }
+  .side { flex:1 1 auto; display:flex; align-items:flex-start; margin-top:152px; }
+  .harr { flex:0 0 56px; display:flex; align-items:center; margin-top:20px; }
+  .harr .l { flex:1 1 auto; border-top:3px solid var(--stbr-dark); }
+  .harr .h { width:0; height:0; border-top:8px solid transparent;
+             border-bottom:8px solid transparent;
+             border-left:12px solid var(--stbr-dark); }
+  .exits { flex:1 1 auto; display:flex; flex-direction:column; gap:14px; }
+  .exit { display:flex; align-items:center; }
+  .exit .box { flex:1 1 auto; background:var(--surface-card);
+               border:2px dashed var(--stbr-dark); border-radius:var(--radius-lg);
+               padding:10px 18px; display:flex; align-items:center; gap:14px; }
+  .exit .cond { font-family:var(--font-mono); font-weight:700; font-size:14.5px;
+                color:var(--text-secondary); }
+  .exit .why { font-family:var(--font-mono); font-weight:700; font-size:14.5px;
+               color:var(--stbr-dark); background:var(--stbr-yellow);
+               border-radius:var(--radius-pill); padding:5px 14px; white-space:nowrap; }
+  .exit .stop { margin-left:auto; font-family:var(--font-body); font-weight:800;
+                font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+                color:var(--text-on-dark); background:var(--surface-inverse);
+                border-radius:var(--radius-pill); padding:5px 13px; }
+  .side-note { font-family:var(--font-body); font-weight:600; font-size:13.5px;
+               color:var(--text-muted); margin-left:6px; }
+</style>
+  <div class="stbr-eyebrow">read &middot; guard &middot; pull &middot; re-read</div>
+  <h2 class="viz-title">one billing cycle through the crank</h2>
+  <div class="lay">
+    <div class="flow">
+      <div class="nd"><span class="t">scheduler fires</span><span class="s">off-chain &mdash; e.g. monthly cron</span></div>
+      <div class="varr"><div class="l"></div><div class="h"></div></div>
+      <div class="nd read"><span class="rchip">read</span><span class="t"><code>fetchToken(subscriber ATA)</code></span><span class="s">delegate + delegatedAmount, fresh</span></div>
+      <div class="varr"><div class="l"></div><div class="h"></div></div>
+      <div class="nd guard"><span class="t"><code>checkPull</code> guard</span><span class="s">refusals exit right &mdash; else ok &darr;</span></div>
+      <div class="varr"><div class="l"></div><div class="h"></div></div>
+      <div class="nd"><span class="t">build <code>TransferChecked</code> (authority = crank) + reference key + memo</span></div>
+      <div class="varr"><div class="l"></div><div class="h"></div></div>
+      <div class="nd"><span class="t"><code>sendIxs</code></span><span class="s">crank pays the 5000-lamport base fee</span></div>
+      <div class="varr"><div class="l"></div><div class="h"></div></div>
+      <div class="nd read"><span class="rchip">read</span><span class="t"><code>fetchToken</code> again</span><span class="s">on-chain allowance decremented by 15</span></div>
+      <div class="varr"><div class="l"></div><div class="h"></div></div>
+      <div class="nd"><span class="t">back office ingests by reference</span><span class="s">module 4 pipeline, unchanged</span></div>
+    </div>
+    <div class="side">
+      <div class="harr"><div class="l"></div><div class="h"></div></div>
+      <div class="exits">
+        <div class="exit">
+          <div class="box">
+            <span class="cond">delegate missing or foreign</span>
+            <span class="why">refused: delegate-revoked</span>
+            <span class="stop">stop</span>
+          </div>
+        </div>
+        <div class="exit">
+          <div class="box">
+            <span class="cond">delegatedAmount &lt; 15 USDC</span>
+            <span class="why">refused: insufficient-allowance</span>
+            <span class="stop">stop</span>
+          </div>
+        </div>
+        <div class="side-note">both exits log the reason string, then wait for the next cycle</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body></html>

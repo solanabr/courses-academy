@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: How a healthy store stops fulfilling without one error in sight
+     purpose: trace the silent-failure chain from a broken worker to auto-disable so the reader feels why the monitoring row exists before writing it
+     data: webhook worker starts failing (bad deploy, expired cert, full disk) -> Helius delivery failures accumulate -> sustained failure: Helius auto-disables the webhook -> deliveries stop entirely -> on-chain payments keep succeeding, orders ledger keeps recording money -> fulfillment silently stops -> first external signal: customer complaint the two cuts that break the chain: alert on delivery failure rate (fires at step 2); fallback polling via the m04 verifier (catches orders after step 4)
+     prompt: Left-to-right flowchart of seven nodes following the data sequence, drawn as a gray-out cascade (later nodes progressively dimmer to convey silence). Two labeled cut points drawn as colored interrupt arrows entering the chain: failure-rate alert at the accumulating-failures node, fallback polling after the deliveries-stop node. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:517px;height:544px;top:-292px;right:-292px;border-radius:58% 59% 60% 60% / 53% 39% 50% 47%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .chain { position:relative; padding-top:108px; margin-top:6px; }
+  .row { display:flex; align-items:center; }
+  .node { flex:0 0 auto; width:182px; height:132px; background:var(--surface-card);
+          border-radius:var(--radius-md); padding:12px 14px; }
+  .node .st { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em;
+              margin-bottom:6px; }
+  .node .tx { font-family:var(--font-body); font-size:14px; line-height:1.3; font-weight:600; }
+  .node .sx { font-family:var(--font-body); font-size:11.5px; line-height:1.3; margin-top:5px; }
+  .arr { flex:0 0 auto; width:22px; display:flex; align-items:center; justify-content:center; }
+  .d1 { border:1.5px solid var(--border-strong); }
+  .d1 .st { color:var(--stbr-emerald); } .d1 .tx { color:#1B231D; } .d1 .sx { color:#47504a; }
+  .d2 { border:1.5px solid #7d867f; }
+  .d2 .st { color:#306C40; } .d2 .tx { color:#2b342d; } .d2 .sx { color:#5d665f; }
+  .d3 { border:1.5px solid #949d96; }
+  .d3 .st { color:#5d665f; } .d3 .tx { color:#47504a; } .d3 .sx { color:#737c75; }
+  .d4 { border:1.5px solid #a6aea8; }
+  .d4 .st { color:#737c75; } .d4 .tx { color:#5d665f; } .d4 .sx { color:#8a938c; }
+  .d5 { border:1.5px solid #b4bbb5; }
+  .d5 .st { color:#8a938c; } .d5 .tx { color:#737c75; } .d5 .sx { color:#99a19a; }
+  .d6 { border:1.5px solid #c1c7c2; }
+  .d6 .st { color:#99a19a; } .d6 .tx { color:#8a938c; } .d6 .sx { color:#a8afa9; }
+  .d7 { border:1.5px dashed #c1c7c2; }
+  .d7 .st { color:#a8afa9; } .d7 .tx { color:#99a19a; font-style:italic; } .d7 .sx { color:#b4bbb5; }
+  .cut { position:absolute; top:0; display:flex; flex-direction:column; align-items:center; }
+  .cutchip { background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill);
+             font-family:var(--font-body); font-weight:800; font-size:13.5px; padding:9px 16px;
+             white-space:nowrap; }
+  .cap { margin-top:22px; font-family:var(--font-body); font-size:15px; color:var(--text-secondary);
+         max-width:1200px; }
+  .cap b { font-weight:800; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">why the monitoring row exists</div>
+  <h2 class="viz-title">how a healthy store stops fulfilling without one error in sight</h2>
+  <div class="chain">
+    <div class="cut" style="left:120px;">
+      <div class="cutchip">cut 1 &middot; alert on delivery failure rate</div>
+      <svg width="20" height="46" viewBox="0 0 20 46">
+        <line x1="10" y1="0" x2="10" y2="34" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="3,32 10,44 17,32" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="cut" style="left:640px;">
+      <div class="cutchip">cut 2 &middot; fallback polling via the m04 verifier</div>
+      <svg width="20" height="46" viewBox="0 0 20 46">
+        <line x1="10" y1="0" x2="10" y2="34" stroke="#1B231D" stroke-width="2.5"/>
+        <polygon points="3,32 10,44 17,32" fill="#1B231D"/>
+      </svg>
+    </div>
+    <div class="row">
+      <div class="node d1"><div class="st">STEP 1</div><div class="tx">webhook worker starts failing</div><div class="sx">bad deploy, expired cert, full disk</div></div>
+      <div class="arr"><svg width="20" height="14" viewBox="0 0 20 14"><line x1="0" y1="7" x2="12" y2="7" stroke="#5d665f" stroke-width="2"/><polygon points="10,1 19,7 10,13" fill="#5d665f"/></svg></div>
+      <div class="node d2"><div class="st">STEP 2</div><div class="tx">Helius delivery failures accumulate</div><div class="sx">the alert fires here &mdash; or never</div></div>
+      <div class="arr"><svg width="20" height="14" viewBox="0 0 20 14"><line x1="0" y1="7" x2="12" y2="7" stroke="#737c75" stroke-width="2"/><polygon points="10,1 19,7 10,13" fill="#737c75"/></svg></div>
+      <div class="node d3"><div class="st">STEP 3</div><div class="tx">sustained failure: Helius auto-disables the webhook</div></div>
+      <div class="arr"><svg width="20" height="14" viewBox="0 0 20 14"><line x1="0" y1="7" x2="12" y2="7" stroke="#8a938c" stroke-width="2"/><polygon points="10,1 19,7 10,13" fill="#8a938c"/></svg></div>
+      <div class="node d4"><div class="st">STEP 4</div><div class="tx">deliveries stop entirely</div><div class="sx">fallback polling catches orders after this point</div></div>
+      <div class="arr"><svg width="20" height="14" viewBox="0 0 20 14"><line x1="0" y1="7" x2="12" y2="7" stroke="#99a19a" stroke-width="2"/><polygon points="10,1 19,7 10,13" fill="#99a19a"/></svg></div>
+      <div class="node d5"><div class="st">STEP 5</div><div class="tx">on-chain payments keep succeeding</div><div class="sx">orders ledger keeps recording money</div></div>
+      <div class="arr"><svg width="20" height="14" viewBox="0 0 20 14"><line x1="0" y1="7" x2="12" y2="7" stroke="#a8afa9" stroke-width="2"/><polygon points="10,1 19,7 10,13" fill="#a8afa9"/></svg></div>
+      <div class="node d6"><div class="st">STEP 6</div><div class="tx">fulfillment silently stops</div></div>
+      <div class="arr"><svg width="20" height="14" viewBox="0 0 20 14"><line x1="0" y1="7" x2="12" y2="7" stroke="#b4bbb5" stroke-width="2"/><polygon points="10,1 19,7 10,13" fill="#b4bbb5"/></svg></div>
+      <div class="node d7"><div class="st">STEP 7</div><div class="tx">first external signal: a customer complaint</div></div>
+    </div>
+    <div class="cap"><b>Only two cuts break the chain:</b> the failure-rate alert fires at step 2; fallback polling via the m04 verifier catches orders once deliveries stop. Everything else stays silent.</div>
+  </div>
+</div>
+</body></html>

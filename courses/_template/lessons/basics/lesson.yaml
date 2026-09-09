@@ -14,8 +14,8 @@ blocks:
         prompt: Which accounts store state?
         multiSelect: true
         options:
-          - { id: a, label: Data accounts, correct: true }
-          - { id: b, label: Program accounts, correct: true }
+          - { id: a, label: Data accounts, correct: true, feedback: "A data account's bytes are the state itself, which is what persists between transactions. It is not the only holder here: program accounts store their executable in the same field." }
+          - { id: b, label: Program accounts, correct: true, feedback: "A program account stores its executable bytes in that same data field, so it holds state too. That state is the code, though: programs keep no per-user data of their own." }
           - { id: c, label: Instructions, correct: false, feedback: "Inputs, not accounts." }
         explanation: >-
           On Solana everything is an account, and both data accounts and program
@@ -25,7 +25,7 @@ blocks:
         prompt: Pick the base unit of SOL.
         multiSelect: false
         options:
-          - { id: a, label: Lamport, correct: true }
+          - { id: a, label: Lamport, correct: true, feedback: "Every on-chain amount is counted in the indivisible base unit, so nothing smaller exists to round. Convert at the display edge only; never store a balance as a decimal float." }
           - { id: b, label: Gwei, correct: false, feedback: "That is Ethereum's sub-unit, not Solana's." }
           - { id: c, label: SOL, correct: false, feedback: "SOL is the display unit; amounts on-chain are counted in its base unit." }
         explanation: >-

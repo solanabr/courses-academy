@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The lab's cast: who signs, who pays, who receives
+     purpose: fix the three identities and their exact signing and fee duties before the reader starts juggling keypairs
+     data: subscriber.json (owner): signs ApproveChecked once; pays the one approval fee; owns the USDC account being billed crank.json (delegate): signs TransferChecked every cycle; pays 5000 lamports base fee per pull; holds none of the money it moves module-2 merchant wallet (destination): signs nothing in this lab; receives 15 USDC per pull into its ATA money path: subscriber ATA to merchant ATA, moved by the crank's signature alone
+     prompt: Three labeled boxes left to right: subscriber (owner), crank (delegate), merchant (destination). A one-time arrow from subscriber to crank labeled "ApproveChecked: 60 USDC ceiling, signed once". A repeating arrow from the subscriber's ATA to the merchant's ATA labeled "TransferChecked x4: 15 USDC each, signed by the crank". Fee annotations under subscriber (one approval fee) and crank (5000 lamports per pull). Keypair filenames and instruction names in monospace.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:554px;height:441px;right:-329px;top:196px;border-radius:36% 38% 54% 60% / 46% 57% 46% 63%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stage { position:relative; margin-top:6px; }
+  .approve { position:relative; height:74px; }
+  .approve .line { position:absolute; left:212px; width:516px; top:44px;
+                   border-top:3px solid var(--stbr-dark); }
+  .approve .stub-l { position:absolute; left:212px; top:44px; height:28px;
+                     border-left:3px solid var(--stbr-dark); }
+  .approve .stub-r { position:absolute; left:725px; top:44px; height:16px;
+                     border-left:3px solid var(--stbr-dark); }
+  .approve .head { position:absolute; left:717px; top:60px; width:0; height:0;
+                   border-left:9px solid transparent; border-right:9px solid transparent;
+                   border-top:13px solid var(--stbr-dark); }
+  .approve .chip { position:absolute; left:262px; top:2px; font-family:var(--font-mono);
+                   font-weight:700; font-size:15.5px; color:var(--stbr-green);
+                   background:rgba(0,139,76,0.10); border:1.5px solid rgba(0,139,76,0.4);
+                   border-radius:var(--radius-pill); padding:6px 16px; }
+  .cards { display:flex; gap:92px; }
+  .card { flex:0 0 424px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-xl); overflow:hidden; }
+  .card-head { background:var(--surface-brand); padding:12px 22px; }
+  .card-head .who { font-family:var(--font-display); font-weight:900; font-size:22px;
+                    color:var(--text-on-brand); }
+  .card-head .role { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+                     letter-spacing:.1em; text-transform:uppercase;
+                     color:rgba(245,232,202,0.8); margin-top:2px; }
+  .card-body { padding:14px 22px 16px; }
+  .kp { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:15.5px;
+        color:var(--text-primary); background:var(--surface-paper);
+        border:1.5px solid var(--border-subtle); border-radius:var(--radius-md);
+        padding:5px 12px; margin-bottom:10px; }
+  .duty { font-family:var(--font-body); font-size:14.5px; font-weight:600; line-height:1.4;
+          color:var(--text-secondary); margin:0 0 7px; }
+  .duty code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-green); }
+  .fee { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:12.5px;
+         letter-spacing:.04em; color:var(--stbr-green); border:1.5px dashed var(--stbr-emerald);
+         border-radius:var(--radius-pill); padding:5px 13px; margin-top:4px; }
+  .money { margin-top:28px; background:var(--surface-inverse); border-radius:var(--radius-xl);
+           padding:20px 30px; display:flex; align-items:center; gap:20px; }
+  .ata { font-family:var(--font-mono); font-weight:700; font-size:18px;
+         color:var(--text-on-dark); border:1.5px solid var(--border-on-dark);
+         border-radius:var(--radius-lg); padding:10px 18px; white-space:nowrap; }
+  .m-arr { flex:1 1 auto; display:flex; flex-direction:column; align-items:center; }
+  .m-lab { font-family:var(--font-mono); font-weight:700; font-size:15px;
+           color:var(--text-on-dark); margin-bottom:6px; }
+  .m-line { display:flex; align-items:center; width:100%; }
+  .m-line .l { flex:1 1 auto; border-top:3px solid var(--stbr-cream); }
+  .m-line .h { width:0; height:0; border-top:8px solid transparent;
+               border-bottom:8px solid transparent; border-left:13px solid var(--stbr-cream); }
+  .m-sign { margin-top:8px; background:var(--stbr-yellow); color:var(--stbr-dark);
+            font-family:var(--font-body); font-weight:800; font-size:14px;
+            border-radius:var(--radius-pill); padding:5px 16px; }
+</style>
+  <div class="stbr-eyebrow">who signs, who pays, who receives</div>
+  <h2 class="viz-title">the lab's cast: three keypairs, one money path</h2>
+  <div class="stage">
+    <div class="approve">
+      <div class="chip">ApproveChecked &mdash; 60 USDC ceiling, signed once</div>
+      <div class="line"></div><div class="stub-l"></div><div class="stub-r"></div><div class="head"></div>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><div class="who">subscriber</div><div class="role">owner</div></div>
+        <div class="card-body">
+          <span class="kp">subscriber.json</span>
+          <p class="duty">signs <code>ApproveChecked</code> once</p>
+          <p class="duty">owns the USDC account being billed</p>
+          <span class="fee">pays the one approval fee</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="who">crank</div><div class="role">delegate</div></div>
+        <div class="card-body">
+          <span class="kp">crank.json</span>
+          <p class="duty">signs <code>TransferChecked</code> every cycle</p>
+          <p class="duty">holds none of the money it moves</p>
+          <span class="fee">pays 5000 lamports base fee per pull</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="who">merchant</div><div class="role">destination</div></div>
+        <div class="card-body">
+          <span class="kp">module-2 merchant wallet</span>
+          <p class="duty">signs nothing in this lab</p>
+          <p class="duty">receives 15 USDC per pull into its ATA</p>
+          <span class="fee">just receives</span>
+        </div>
+      </div>
+    </div>
+    <div class="money">
+      <span class="ata">subscriber ATA</span>
+      <div class="m-arr">
+        <div class="m-lab">TransferChecked &times;4 &mdash; 15 USDC each</div>
+        <div class="m-line"><div class="l"></div><div class="h"></div></div>
+        <div class="m-sign">moved by the crank's signature alone</div>
+      </div>
+      <span class="ata">merchant ATA</span>
+    </div>
+  </div>
+
+</div>
+</body></html>

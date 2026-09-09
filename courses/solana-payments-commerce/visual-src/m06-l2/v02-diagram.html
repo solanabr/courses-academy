@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Stripe pay-with-crypto, forward and reverse path
+     purpose: make the fiat-settlement flow and the stablecoin refund path concrete, and pin the refund arrow to the construction the reader built in module 4
+     data: forward: US buyer wallet -> USDC on Solana at checkout -> Stripe (acquirer) -> merchant Stripe balance in fiat guardrail: $10,000 per-transaction customer limit at the checkout step reverse: merchant-initiated refund -> stablecoins pushed to the originating wallet (the module-4 reverse push payment, no chargeback primitive anywhere) explicitly absent: merchant crypto treasury for this corridor
+     prompt: Left-to-right flow: buyer wallet node, USDC-on-Solana checkout node with a small limit badge reading 10,000 USD per transaction, Stripe acquirer node, merchant fiat balance node. A dashed return arrow runs from the merchant side back to the buyer wallet labeled refund as stablecoins to originating wallet. A crossed-out side node labels merchant crypto treasury. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:370px;right:-298px;top:261px;border-radius:40% 49% 58% 61% / 56% 36% 54% 35%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:581px;height:485px;bottom:-305px;left:-305px;border-radius:41% 58% 44% 42% / 62% 53% 41% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .frow { display:flex; align-items:stretch; gap:14px; margin-top:16px; }
+  .fn { background:var(--surface-card); border:2.5px solid var(--stbr-dark); border-radius:var(--radius-xl);
+        padding:18px 18px; text-align:center; flex:1 1 0; display:flex; flex-direction:column;
+        justify-content:center; }
+  .fn .t { font-family:var(--font-body); font-weight:800; font-size:18px; color:var(--text-primary); }
+  .fn .s { font-family:var(--font-body); font-weight:600; font-size:13px; color:var(--text-secondary); margin-top:4px; }
+  .limit { display:inline-block; margin:9px auto 0; background:var(--surface-inverse); color:var(--stbr-cream);
+           font-family:var(--font-body); font-weight:800; font-size:12px; padding:5px 12px;
+           border-radius:var(--radius-pill); align-self:center; }
+  .fa { flex:0 0 auto; align-self:center; }
+  .rwrap { padding:0 146px; }
+  .stubrow { display:flex; justify-content:space-between; height:26px; }
+  .stub { width:0; border-left:3px dashed var(--stbr-emerald); height:26px; }
+  .refund { display:flex; align-items:center; }
+  .r-head { flex:0 0 auto; }
+  .r-line { flex:1 1 0; border-top:3px dashed var(--stbr-emerald); }
+  .r-chip { flex:0 0 auto; margin:0 18px; background:var(--stbr-yellow); color:var(--stbr-dark);
+            font-family:var(--font-body); font-weight:800; font-size:15px; padding:12px 22px;
+            border-radius:var(--radius-lg); text-align:center; line-height:1.35; max-width:640px; }
+  .absent-row { display:flex; justify-content:center; margin-top:30px; }
+  .absent { position:relative; border:2.5px dashed var(--border-strong); border-radius:var(--radius-lg);
+            padding:15px 30px; color:var(--text-muted); font-family:var(--font-body); font-weight:700;
+            font-size:15.5px; text-align:center; overflow:hidden; }
+  .absent .strike { position:absolute; left:-3%; top:50%; width:106%; border-top:3px solid var(--stbr-dark);
+                    transform:rotate(-4deg); }
+</style>
+  <div class="stbr-eyebrow">stripe pay-with-crypto &middot; the us corridor</div>
+  <h2 class="viz-title" style="font-size:48px;">forward in usdc, settle in fiat, refund back on-chain</h2>
+  <div class="frow">
+    <div class="fn"><span class="t">US buyer wallet</span><span class="s">holds USDC</span></div>
+    <svg class="fa" width="48" height="26" viewBox="0 0 48 26"><line x1="0" y1="13" x2="36" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="36,6 48,13 36,20" fill="#1B231D"/></svg>
+    <div class="fn"><span class="t">USDC on Solana</span><span class="s">at checkout</span><span class="limit">$10,000 per-transaction customer limit</span></div>
+    <svg class="fa" width="48" height="26" viewBox="0 0 48 26"><line x1="0" y1="13" x2="36" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="36,6 48,13 36,20" fill="#1B231D"/></svg>
+    <div class="fn"><span class="t">Stripe</span><span class="s">the acquirer</span></div>
+    <svg class="fa" width="48" height="26" viewBox="0 0 48 26"><line x1="0" y1="13" x2="36" y2="13" stroke="#1B231D" stroke-width="2.5"/><polygon points="36,6 48,13 36,20" fill="#1B231D"/></svg>
+    <div class="fn"><span class="t">merchant Stripe balance</span><span class="s">settles in fiat</span></div>
+  </div>
+  <div class="rwrap">
+    <div class="stubrow"><div class="stub"></div><div class="stub"></div></div>
+    <div class="refund">
+      <svg class="r-head" width="20" height="24" viewBox="0 0 20 24"><polygon points="20,2 0,12 20,22" fill="#008B4C"/></svg>
+      <div class="r-line"></div>
+      <div class="r-chip">merchant-initiated refund: stablecoins pushed to the originating wallet<br>the module-4 reverse push payment &mdash; no chargeback primitive anywhere</div>
+      <div class="r-line"></div>
+    </div>
+  </div>
+  <div class="absent-row">
+    <div class="absent"><span class="strike"></span>merchant crypto treasury &mdash; explicitly absent for this corridor</div>
+  </div>
+</div>
+</body></html>

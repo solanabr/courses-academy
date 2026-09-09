@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Buyer-pays versus merchant-sponsors, side by side
+     purpose: give the reader the deployment decision as a scannable trade table rather than a vibe
+     data: axis: who needs SOL | buyer-pays: the buyer, always | sponsored: nobody but your sponsor float axis: signatures on the tx | buyer-pays: 1 (buyer) | sponsored: 2 (Kora signer + buyer) axis: base fee per checkout | buyer-pays: 5000 lamports, buyer's | sponsored: 10,000 lamports, yours axis: first-time-buyer ATA rent | buyer-pays: buyer funds it | sponsored: you fund the 165-byte rent-exempt minimum (~0.0015 SOL on devnet 2026-09-07, falling), buyer can reclaim it axis: conversion at the stall | buyer-pays: SOL-less buyers walk | sponsored: USDC-only buyers complete axis: new attack surface | buyer-pays: none | sponsored: your paymaster; validation rules mandatory axis: when it wins | buyer-pays: crypto-native buyers who hold SOL | sponsored: onboarding, fairs, first purchases
+     prompt: A two-column comparison table with the seven axes as rows, buyer-pays left and merchant-sponsors right, cell text per the data. Highlight the conversion row as the reason to sponsor and the attack-surface row as the price of it.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:492px;bottom:-284px;right:-284px;border-radius:65% 40% 57% 39% / 41% 43% 38% 47%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl);
+          padding:38px 52px 34px; }
+  table.cmp { width:100%; border-collapse:collapse; margin-top:20px; }
+  .cmp th { font-family:var(--font-display); font-weight:900; font-size:19px;
+            text-align:left; padding:11px 18px; }
+  .cmp th.bp { background:var(--surface-inverse); color:var(--text-on-dark);
+               border-radius:var(--radius-md) 0 0 0; }
+  .cmp th.sp { background:var(--surface-brand); color:var(--text-on-brand);
+               border-radius:0 var(--radius-md) 0 0; }
+  .cmp td { font-family:var(--font-body); font-size:15px; line-height:1.3;
+            padding:9px 18px; border-bottom:1.5px solid var(--border-subtle);
+            color:var(--text-primary); vertical-align:middle; }
+  .cmp td.ax { width:24%; font-weight:700; font-size:14px; color:var(--text-secondary);
+               text-transform:uppercase; letter-spacing:0.04em; padding-left:0; }
+  .cmp td.c { width:38%; }
+  .cmp tr.win td { background:var(--stbr-yellow); border-bottom:none; }
+  .cmp tr.win td.ax { background:transparent; color:var(--text-primary); }
+  .cmp tr.win td.c { font-weight:700; color:var(--stbr-dark); }
+  .cmp tr.risk td.c { background:var(--surface-paper);
+                      border-top:2px dashed var(--stbr-dark);
+                      border-bottom:2px dashed var(--stbr-dark); }
+  .pill { display:inline-block; font-family:var(--font-body); font-weight:700;
+          font-size:11px; letter-spacing:0.07em; text-transform:uppercase;
+          border-radius:var(--radius-pill); padding:2px 9px; margin-left:8px;
+          vertical-align:middle; }
+  .pill.y { background:var(--stbr-dark); color:var(--stbr-cream); }
+  .band { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:13px 24px; font-family:var(--font-display); font-weight:800;
+          font-size:20px; color:var(--text-on-brand); text-align:center; }
+  .band b { color:var(--stbr-yellow); }
+</style>
+  <div class="card">
+    <div class="stbr-eyebrow">deployment decision &middot; the trade table</div>
+    <h2 class="viz-title">buyer-pays versus merchant-sponsors, side by side</h2>
+    <table class="cmp">
+      <tr><th style="border:none;"></th><th class="bp">buyer pays</th><th class="sp">merchant sponsors</th></tr>
+      <tr><td class="ax">who needs SOL</td>
+          <td class="c">the buyer, always</td>
+          <td class="c">nobody but your sponsor float</td></tr>
+      <tr><td class="ax">signatures on the tx</td>
+          <td class="c">1 (buyer)</td>
+          <td class="c">2 (Kora signer + buyer)</td></tr>
+      <tr><td class="ax">base fee per checkout</td>
+          <td class="c">5,000 lamports, buyer&rsquo;s</td>
+          <td class="c">10,000 lamports, yours</td></tr>
+      <tr><td class="ax">first-time-buyer ATA rent</td>
+          <td class="c">buyer funds it</td>
+          <td class="c">you fund ~0.0015 SOL; buyer can reclaim it</td></tr>
+      <tr class="win"><td class="ax">conversion at the stall<span class="pill y">why you sponsor</span></td>
+          <td class="c">SOL-less buyers walk</td>
+          <td class="c">USDC-only buyers complete</td></tr>
+      <tr class="risk"><td class="ax">new attack surface<span class="pill y">the price of it</span></td>
+          <td class="c">none</td>
+          <td class="c">your paymaster; validation rules mandatory</td></tr>
+      <tr><td class="ax">when it wins</td>
+          <td class="c">crypto-native buyers who hold SOL</td>
+          <td class="c">onboarding, fairs, first purchases</td></tr>
+    </table>
+    <div class="band">sponsorship buys the <b>conversion</b> row &mdash; and its price is a paymaster you must defend.</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- chart: What one sponsored checkout costs the merchant
+     purpose: separate the small per-transaction fee the sponsor always pays from the larger conditional rent cost before the lesson budgets either
+     data: base fee: 5000 lamports per signature x 2 signatures (Kora fee payer + buyer transfer) = 10,000 lamports per checkout priority fee: whatever the sponsor attaches, added on top conditional: token-account creation rent, the 165-byte rent-exempt minimum (~0.0015 SOL on devnet 2026-09-07 and falling as SIMD-0437 steps the rate down), only when sponsorship creates the account note on rent: the buyer can later reclaim it by closing the account; budget it as spend, never as a loan
+     prompt: A horizontal stacked cost bar for one sponsored checkout with three labeled segments in increasing size: base fee (10,000 lamports, annotated "5000 x 2 signatures"), priority fee (variable, hatched), and conditional token-account rent (~0.0015 SOL, clearly marked "only if the account is created"). A callout under the rent segment: "reclaimable by the buyer closing the account; budget as spend, not a loan".
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:539px;height:546px;bottom:-304px;right:-304px;border-radius:50% 54% 64% 61% / 49% 39% 58% 50%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl);
+          padding:48px 60px 44px; }
+  .grp { display:flex; margin:34px 0 10px; }
+  .grp .g { font-family:var(--font-body); font-weight:700; font-size:13px;
+            letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted);
+            border-bottom:2px solid var(--border-strong); padding-bottom:6px;
+            text-align:center; }
+  .bar { display:flex; height:150px; border-radius:var(--radius-lg); overflow:hidden;
+         border:2px solid var(--stbr-dark); }
+  .seg { display:flex; flex-direction:column; justify-content:center; padding:0 26px; }
+  .seg .v { font-family:var(--font-display); font-weight:900; font-size:26px; line-height:1.1; }
+  .seg .n { font-family:var(--font-body); font-size:14px; line-height:1.35; margin-top:6px; }
+  .s1 { width:19%; background:var(--surface-brand); }
+  .s1 .v { color:var(--text-on-brand); } .s1 .n { color:rgba(245,232,202,0.85); }
+  .s2 { width:27%; background:rgba(48,108,64,0.12); border-left:3px dashed var(--stbr-green); }
+  .s2 .v { color:var(--text-primary); } .s2 .n { color:var(--text-secondary); }
+  .s3 { width:54%; background:var(--stbr-yellow); border-left:3px dashed var(--stbr-dark); }
+  .s3 .v { color:var(--stbr-dark); } .s3 .n { color:rgba(27,35,29,0.75); }
+  .chip { display:inline-block; font-family:var(--font-body); font-weight:700;
+          font-size:12.5px; border-radius:var(--radius-pill); padding:4px 14px;
+          margin-bottom:10px; }
+  .under { display:flex; margin-top:16px; }
+  .callout { border:2px solid var(--stbr-emerald); background:rgba(0,139,76,0.06);
+             border-radius:var(--radius-lg); padding:14px 20px;
+             font-family:var(--font-body); font-size:14.5px; line-height:1.4;
+             color:var(--text-primary); }
+  .callout b { color:var(--stbr-green); }
+  .tick { width:0; height:0; border-left:9px solid transparent;
+          border-right:9px solid transparent; border-bottom:11px solid var(--stbr-emerald);
+          margin:0 0 -2px 60px; }
+  .foot { margin-top:20px; font-family:var(--font-body); font-size:13.5px;
+          color:var(--text-muted); }
+</style>
+  <div class="card">
+    <div class="stbr-eyebrow">sponsor economics &middot; one checkout</div>
+    <h2 class="viz-title">what one sponsored checkout costs the merchant</h2>
+
+    <div class="grp">
+      <div class="g" style="width:46%; margin-right:2%;">paid every checkout</div>
+      <div class="g" style="width:52%;">conditional &mdash; only when sponsorship creates the account</div>
+    </div>
+
+    <div class="bar">
+      <div class="seg s1">
+        <div class="v">base fee &middot; 10,000 lamports</div>
+        <div class="n">5000 &times; 2 signatures (Kora + buyer)</div>
+      </div>
+      <div class="seg s2">
+        <div class="v">priority fee &middot; variable</div>
+        <div class="n">whatever the sponsor attaches, added on top</div>
+      </div>
+      <div class="seg s3">
+        <div><span class="chip" style="background:var(--stbr-dark);color:var(--stbr-cream);">only if the account is created</span></div>
+        <div class="v">token-account rent &middot; ~0.0015 SOL</div>
+        <div class="n">the big line: one-time rent for the buyer&rsquo;s new token account</div>
+      </div>
+    </div>
+
+    <div class="under">
+      <div style="width:46%; margin-right:2%;"></div>
+      <div style="width:52%;">
+        <div class="tick"></div>
+        <div class="callout"><b>reclaimable by the buyer</b> closing the account later &mdash; but budget it as <b>spend, never as a loan</b>.</div>
+      </div>
+    </div>
+
+    <div class="foot">segment widths are schematic (smallest &rarr; largest); the numbers are the real costs.</div>
+  </div>
+</div>
+</body></html>

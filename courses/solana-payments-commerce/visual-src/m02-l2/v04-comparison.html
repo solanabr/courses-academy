@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The three issuer powers a merchant accepts with PYUSD
+     purpose: put the three merchant-facing extensions side by side: what each can do, who controls it, and its state on PYUSD today
+     data: Row permanentDelegate: what it can do: move tokens out of any holder's account, no holder signature | who controls: the issuer | PYUSD today: configured and standing, an issuer policy, verified live 2026-08-21 Row transferFeeConfig: what it can do: withhold basis points from every transfer, rate changeable by the fee authority on an epoch boundary | who controls: the fee authority | PYUSD today: 0 bps, read live at runtime, never hardcoded Row transferHook: what it can do: attach a program to every transfer, adding required accounts | who controls: the issuer at configuration | PYUSD today: configured but dormant, hook program id null Footer rule: none of these are triggered or changed by your transfer code; they are properties of the asset you accept
+     prompt: Three-row, three-column comparison card: rows for permanentDelegate, transferFeeConfig, transferHook; columns for capability, controlling authority, and current PYUSD state. Keep the capability column the visually dominant one. Add a full-width footer strip carrying the rule that these are asset properties, not integration behaviors.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:501px;height:415px;bottom:-229px;left:-229px;border-radius:52% 47% 40% 60% / 35% 48% 46% 35%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 48px 36px; }
+  .grid { display:grid; grid-template-columns:270px 1fr 250px 330px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; margin-top:24px; }
+  .h { background:var(--surface-inverse); color:var(--text-on-dark); font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.08em; text-transform:uppercase; padding:12px 20px; }
+  .h.cap { background:var(--surface-brand); }
+  .c { padding:14px 20px; border-top:1.5px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:center; }
+  .rowname { font-family:var(--font-mono); font-weight:700; font-size:17px; color:var(--text-primary); }
+  .capc { background:rgba(255,210,63,.20); border-left:3px solid var(--stbr-yellow); }
+  .capc .big { font-family:var(--font-display); font-weight:800; font-size:19px; line-height:1.25; color:var(--text-primary); }
+  .capc .sub { font-family:var(--font-body); font-weight:600; font-size:13px; line-height:1.35; color:var(--text-secondary); margin-top:4px; }
+  .who { font-family:var(--font-body); font-weight:700; font-size:16px; color:var(--text-primary); }
+  .state { font-family:var(--font-body); font-weight:600; font-size:14px; line-height:1.35; color:var(--text-secondary); }
+  .state b { color:var(--stbr-emerald); }
+  .verdict { margin-top:26px; background:var(--surface-brand); color:var(--text-on-brand); border-radius:var(--radius-lg); padding:16px 26px; font-family:var(--font-body); font-weight:700; font-size:18px; line-height:1.35; text-align:center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">issuer powers on PYUSD</div>
+  <h2 class="viz-title">what you accept when you accept PYUSD</h2>
+  <div class="grid">
+    <div class="h">extension</div><div class="h cap">what it can do</div><div class="h">who controls it</div><div class="h">PYUSD today</div>
+    <div class="c"><span class="rowname">permanentDelegate</span></div>
+    <div class="c capc"><span class="big">move tokens out of any holder's account</span><span class="sub">no holder signature required</span></div>
+    <div class="c"><span class="who">the issuer</span></div>
+    <div class="c"><span class="state"><b>configured &amp; standing</b> &mdash; an issuer policy, verified live 2026-08-21</span></div>
+    <div class="c"><span class="rowname">transferFeeConfig</span></div>
+    <div class="c capc"><span class="big">withhold basis points from every transfer</span><span class="sub">rate changeable by the fee authority on an epoch boundary</span></div>
+    <div class="c"><span class="who">the fee authority</span></div>
+    <div class="c"><span class="state"><b>0 bps</b> &mdash; read live at runtime, never hardcoded</span></div>
+    <div class="c"><span class="rowname">transferHook</span></div>
+    <div class="c capc"><span class="big">attach a program to every transfer</span><span class="sub">adding required accounts to the instruction</span></div>
+    <div class="c"><span class="who">the issuer, at configuration</span></div>
+    <div class="c"><span class="state"><b>configured but dormant</b> &mdash; hook program id null</span></div>
+  </div>
+  <div class="verdict">none of these are triggered or changed by your transfer code &mdash; they are <b>properties of the asset you accept</b></div>
+</div>
+</div>
+</body></html>

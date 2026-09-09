@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: In-person Solana checkout in 2026, exists vs does not exist
+     purpose: give the reader the honest capability matrix before they promise a merchant anything
+     data: EXISTS: QR transfer requests (wallet builds) | status: standard, spec-backed EXISTS: QR transaction requests (your server builds) | status: standard, spec-backed, this course's rail EXISTS: first-party POS example (examples/point-of-sale, Next.js) | status: in the pay repo, first-party EXISTS: Seeker / Seed Vault / dApp Store | status: shipping, but figures are homepage claims, ambiguous referent BETA: Commerce Kit | status: "APIs may change", mention only, no load-bearing use DOES NOT EXIST: NFC / tap-to-pay primitive | status: no reader protocol in any spec or doc; the spec's "or NFC tags" line is URL transport only DOES NOT EXIST: first-party or vendor card-style terminal | status: Decaf exited; no catalog to buy from
+     prompt: A two-column comparison board. Left column titled "You can build on this", right column titled "Do not promise this". Seven rows from the data, each with a short status line. Put the beta Commerce Kit row visually between columns with an amber tint. Flat design, status text verbatim, no logos.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:372px;height:521px;bottom:-339px;left:821px;border-radius:43% 45% 65% 54% / 48% 36% 62% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .board { display:grid; grid-template-columns:1fr 1fr; gap:0 22px; }
+  .colhead { border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding:13px 22px;
+             font-family:var(--font-display); font-weight:900; font-size:21px; }
+  .colhead.yes { background:var(--surface-brand); color:var(--text-on-brand); }
+  .colhead.no  { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .col { display:flex; flex-direction:column; }
+  .rows { flex:1; display:flex; flex-direction:column; border:1px solid var(--border-subtle); border-top:0;
+          border-radius:0 0 var(--radius-lg) var(--radius-lg); overflow:hidden; background:var(--surface-card); }
+  .row { flex:1; padding:13px 22px; border-bottom:1px solid var(--border-subtle); }
+  .row:last-child { border-bottom:0; }
+  .row .what { font-family:var(--font-body); font-weight:800; font-size:16.5px; color:var(--text-primary); }
+  .row .what code { font-family:var(--font-mono); font-size:14.5px; font-weight:600; }
+  .row .st { font-family:var(--font-body); font-size:14px; color:var(--text-secondary); margin-top:3px; line-height:1.35; }
+  .row.rail { border-left:6px solid var(--stbr-emerald); background:var(--surface-paper); }
+  .row .tag { display:inline-block; font-size:11px; font-weight:800; letter-spacing:0.07em; text-transform:uppercase;
+              padding:2px 8px; border-radius:var(--radius-pill); background:var(--stbr-emerald); color:var(--text-on-brand);
+              margin-left:8px; vertical-align:2px; }
+  .beta { margin-top:18px; display:flex; align-items:center; gap:16px; background:#fff3c4;
+          border:2px dashed var(--stbr-yellow-600); border-radius:var(--radius-lg); padding:13px 22px; }
+  .beta .bt { flex:0 0 auto; background:var(--stbr-yellow); color:var(--text-on-accent); font-family:var(--font-body);
+              font-weight:800; font-size:13px; letter-spacing:0.08em; padding:5px 12px; border-radius:var(--radius-pill); }
+  .beta .bb { font-family:var(--font-body); font-size:15.5px; color:var(--text-primary); }
+  .verdict { margin-top:18px; background:var(--surface-brand); border-radius:var(--radius-lg); padding:15px 26px;
+             font-family:var(--font-display); font-weight:800; font-size:20px; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">THE HONEST CAPABILITY MATRIX &middot; 2026</div>
+  <h2 class="viz-title">in-person Solana checkout: exists vs does not exist</h2>
+  <div class="board">
+    <div class="col">
+      <div class="colhead yes">you can build on this</div>
+      <div class="rows">
+        <div class="row"><div class="what">QR transfer requests <code>(wallet builds)</code></div><div class="st">standard, spec-backed</div></div>
+        <div class="row rail"><div class="what">QR transaction requests <code>(your server builds)</code><span class="tag">this course&rsquo;s rail</span></div><div class="st">standard, spec-backed</div></div>
+        <div class="row"><div class="what">first-party POS example <code>(examples/point-of-sale, Next.js)</code></div><div class="st">in the pay repo, first-party</div></div>
+        <div class="row"><div class="what">Seeker / Seed Vault / dApp Store</div><div class="st">shipping, but figures are homepage claims, ambiguous referent</div></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="colhead no">do not promise this</div>
+      <div class="rows">
+        <div class="row"><div class="what">NFC / tap-to-pay primitive</div><div class="st">no reader protocol in any spec or doc; the spec&rsquo;s &ldquo;or NFC tags&rdquo; line is URL transport only</div></div>
+        <div class="row"><div class="what">first-party or vendor card-style terminal</div><div class="st">Decaf exited; no catalog to buy from</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="beta"><span class="bt">BETA &middot; IN BETWEEN</span><span class="bb"><strong>Commerce Kit</strong> &mdash; &ldquo;APIs may change&rdquo;; mention only, no load-bearing use</span></div>
+  <div class="verdict">promise merchants the QR rails &mdash; nothing that needs hardware you cannot buy.</div>
+</div>
+</body></html>

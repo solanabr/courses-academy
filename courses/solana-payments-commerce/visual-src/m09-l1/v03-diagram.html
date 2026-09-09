@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The assembled monorepo and its one kit-7 island
+     purpose: show the final workspace roster and that the version seam is a folder boundary, not a problem
+     data: root package.json workspaces: transfer-kit, wavelength-checkout, checkout-txreq, pos-stall, drop-blink, verifier, backoffice, backoffice-refunds, club-crank, subscriptions, dunning, x402, gasless-checkout, fair-queue, stack kit-6 line workspaces: everything above except subscriptions (anchors: @solana/pay 1.0.26 peers kit ^6.9; @solana-program/token 0.14.0 is the last v6-compatible minor) kit-7 island: subscriptions only (@solana/subscriptions 0.5.0 peers kit ^7.0.0, pinned kit 7.1.1) new tonight: the stack workspace (server + boot + journey), kit-6 line
+     prompt: One large container labeled with the root package.json, holding workspace boxes named from data. Group all kit-6 workspaces in one region, isolate subscriptions in a dashed region labeled "kit-7 island", and highlight the new stack workspace. Annotate the two peer-range anchors from data as small captions. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:539px;height:496px;bottom:-265px;right:-265px;border-radius:46% 43% 53% 46% / 35% 49% 57% 64%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .repo { background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-2xl); overflow:hidden; margin-top:4px; }
+  .repo-head { background:var(--surface-inverse); padding:12px 24px; display:flex; align-items:center; gap:16px; }
+  .repo-head .fn { font-family:var(--font-mono); font-weight:700; font-size:19px; color:var(--text-on-dark); }
+  .repo-head .ws { font-family:var(--font-mono); font-size:14px; color:rgba(245,232,202,0.7); }
+  .repo-body { padding:20px 22px; display:flex; gap:20px; align-items:stretch; }
+  .region { border-radius:var(--radius-xl); padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+  .k6 { flex:1 1 68%; border:2.5px solid var(--stbr-emerald); background:rgba(0,139,76,0.05); }
+  .k7 { flex:1 1 32%; border:3px dashed var(--stbr-yellow-700); background:rgba(255,210,63,0.10); }
+  .reg-lab { align-self:flex-start; font-family:var(--font-body); font-weight:800; font-size:12px;
+             letter-spacing:.1em; text-transform:uppercase; padding:5px 13px; border-radius:var(--radius-pill); }
+  .k6 .reg-lab { background:var(--stbr-emerald); color:#fff; }
+  .k7 .reg-lab { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .chips { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .chips.one { display:flex; }
+  .chip { display:block; background:var(--surface-card); border:1.5px solid var(--stbr-emerald);
+          border-radius:var(--radius-md); padding:9px 13px; font-family:var(--font-mono);
+          font-weight:700; font-size:15px; color:var(--text-primary); }
+  .chip span { font-family:var(--font-body); font-weight:500; font-size:12px; color:var(--text-secondary); }
+  .chip.new { background:var(--stbr-yellow); border:2px solid var(--stbr-yellow-700); color:var(--stbr-dark); }
+  .chip.new span { color:var(--stbr-dark); font-weight:600; }
+  .chip.sub { border:2px solid var(--stbr-dark); font-size:17px; padding:12px 16px; }
+  .anchors { margin-top:4px; border-top:1.5px solid rgba(0,139,76,0.25); padding-top:10px;
+             font-family:var(--font-body); font-size:12.5px; font-weight:500; color:var(--text-secondary); line-height:1.5; }
+  .anchors code, .k7cap code { font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--stbr-green); }
+  .k7cap { margin-top:4px; border-top:1.5px solid rgba(217,166,8,0.45); padding-top:10px;
+           font-family:var(--font-body); font-size:12.5px; font-weight:500; color:var(--text-secondary); line-height:1.5; }
+</style>
+  <div class="stbr-eyebrow">the version seam is a folder boundary, not a problem</div>
+  <h2 class="viz-title">the assembled monorepo and its one kit-7 island</h2>
+  <div class="repo">
+    <div class="repo-head"><span class="fn">root package.json</span><span class="ws">"workspaces": [ &hellip;15 folders&hellip; ]</span></div>
+    <div class="repo-body">
+      <div class="region k6">
+        <span class="reg-lab">kit-6 line &mdash; everything except subscriptions</span>
+        <div class="chips">
+          <span class="chip">transfer-kit</span>
+          <span class="chip">wavelength-checkout</span>
+          <span class="chip">checkout-txreq</span>
+          <span class="chip">pos-stall</span>
+          <span class="chip">drop-blink</span>
+          <span class="chip">verifier</span>
+          <span class="chip">backoffice</span>
+          <span class="chip">backoffice-refunds</span>
+          <span class="chip">club-crank</span>
+          <span class="chip">dunning</span>
+          <span class="chip">x402</span>
+          <span class="chip">gasless-checkout</span>
+          <span class="chip">fair-queue</span>
+          <span class="chip new">stack <span>new tonight &middot; server + boot + journey</span></span>
+        </div>
+        <div class="anchors">peer-range anchors: <code>@solana/pay 1.0.26</code> peers kit <code>^6.9</code> &nbsp;&middot;&nbsp;
+          <code>@solana-program/token 0.14.0</code> is the last v6-compatible minor</div>
+      </div>
+      <div class="region k7">
+        <span class="reg-lab">kit-7 island</span>
+        <div class="chips one"><span class="chip sub">subscriptions</span></div>
+        <div class="k7cap"><code>@solana/subscriptions 0.5.0</code> peers kit <code>^7.0.0</code> &mdash; pinned kit <code>7.1.1</code>, own process, own node_modules</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

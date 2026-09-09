@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The program-aware send path inside transfer-kit
+     purpose: show where detection, the mint report, and the refusal branches sit in the send flow the student is about to build
+     data: sendStablecoin(mint, amount, recipient) -> detectTokenProgram: read mint owner branch: owner = classic Token program -> classic client TransferChecked branch: owner = Token-2022 -> readMint report -> transferHookProgram null? -> yes: token-2022 client TransferChecked; no: throw (hook accounts not resolved, Digital Assets course owns the interface) branch: owner = anything else -> throw (not a mint this kit will sign against) shared tail for both success branches: derive source and destination ATA with the detected program as a seed -> idempotent ATA create -> memo + TransferChecked + reference key -> sign, send, confirm
+     prompt: Top-to-bottom flowchart starting from a sendStablecoin call node into a detection diamond with three branches: classic program, Token-2022, unknown owner. The Token-2022 branch passes through a mint-report node and a hook-check diamond whose failure edge terminates in a labeled refusal. Both success branches merge into a shared four-node tail ending at confirmation. Mark the two refusal terminals distinctly.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:409px;height:525px;bottom:-310px;left:806px;border-radius:58% 58% 51% 51% / 53% 61% 58% 58%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:30px 44px 26px; }
+  .viz-title { font-size:44px; margin:4px 0 14px; }
+  .cline { display:flex; justify-content:center; }
+  .startn { font-family:var(--font-mono); font-weight:800; font-size:18px; background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-pill); padding:10px 28px; }
+  .dec { font-family:var(--font-mono); font-weight:800; font-size:16px; background:var(--surface-card); color:var(--text-primary); border:2.5px solid var(--stbr-emerald); border-radius:var(--radius-pill); padding:8px 24px; }
+  .dec i { font-style:normal; font-family:var(--font-body); font-weight:700; font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--stbr-emerald); margin-right:10px; }
+  .varr { display:flex; justify-content:center; padding:1px 0; }
+  .branches { display:flex; gap:22px; margin-top:4px; }
+  .br { display:flex; flex-direction:column; align-items:stretch; }
+  .br.b1 { flex:0 0 26%; } .br.b2 { flex:1 1 auto; } .br.b3 { flex:0 0 24%; }
+  .edge { align-self:center; font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.04em; color:var(--text-secondary); border:1.5px solid var(--border-strong); border-radius:var(--radius-pill); padding:3px 14px; margin-bottom:8px; background:var(--surface-paper); }
+  .bx { border-radius:var(--radius-lg); padding:10px 14px; text-align:center; }
+  .bx .t, .bx .s { display:block; }
+  .bx .t { font-family:var(--font-display); font-weight:800; font-size:16px; line-height:1.2; color:var(--text-primary); }
+  .bx .s { font-family:var(--font-body); font-weight:600; font-size:12px; line-height:1.3; color:var(--text-secondary); margin-top:3px; }
+  .bx.ok { background:var(--surface-card); border:2px solid var(--stbr-emerald); }
+  .bx.mid { background:var(--surface-card); border:2px solid var(--border-subtle); }
+  .bx.throw { background:var(--stbr-yellow); border:2px solid var(--stbr-dark); }
+  .bx.throw .t { color:var(--stbr-dark); }
+  .bx.throw .s { color:var(--stbr-dark); opacity:.85; }
+  .subrow { display:flex; gap:14px; margin-top:6px; }
+  .subrow .bx { height:88px; box-sizing:border-box; }
+  .subrow .sb { flex:1 1 0; display:flex; flex-direction:column; }
+  .yn { align-self:center; font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+  .yn.y { color:var(--stbr-emerald); } .yn.n { color:var(--stbr-dark); }
+  .merge { display:flex; align-items:center; gap:16px; margin:16px 0 10px; }
+  .merge .ln { flex:1 1 auto; border-top:2px solid var(--stbr-emerald); }
+  .merge .ml { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--stbr-emerald); }
+  .tail { display:flex; align-items:stretch; gap:8px; }
+  .tail .tn { flex:1 1 0; display:flex; }
+  .tail .bx { width:100%; box-sizing:border-box; display:block; padding-top:14px; padding-bottom:14px; min-height:38px; }
+  .tail .bx.endn { background:var(--surface-brand); border:0; }
+  .tail .bx.endn .t { color:var(--text-on-brand); }
+  .harr { flex:0 0 24px; display:flex; align-items:center; justify-content:center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">inside transfer-kit</div>
+  <h2 class="viz-title">the program-aware send path</h2>
+  <div class="cline"><span class="startn">sendStablecoin(mint, amount, recipient)</span></div>
+  <div class="varr"><svg width="16" height="20"><line x1="8" y1="0" x2="8" y2="11" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,20 3,10 13,10" fill="#1b231d"/></svg></div>
+  <div class="cline"><span class="dec"><i>decide</i>detectTokenProgram &mdash; read the mint's owner</span></div>
+  <div class="varr"><svg width="16" height="18"><line x1="8" y1="0" x2="8" y2="9" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,18 3,8 13,8" fill="#008b4c"/></svg></div>
+  <div class="branches">
+    <div class="br b1">
+      <span class="edge">owner = classic Token</span>
+      <div class="bx ok"><span class="t">classic client TransferChecked</span><span class="s">straight to the shared tail</span></div>
+    </div>
+    <div class="br b2">
+      <span class="edge">owner = Token-2022</span>
+      <div class="bx mid"><span class="t">readMint report</span><span class="s">decode the mint's extension set before signing anything</span></div>
+      <div class="varr"><svg width="16" height="16"><line x1="8" y1="0" x2="8" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,16 3,6 13,6" fill="#008b4c"/></svg></div>
+      <div class="cline"><span class="dec"><i>decide</i>transferHookProgram null?</span></div>
+      <div class="subrow">
+        <div class="sb"><span class="yn y">yes &mdash; no hook</span><div class="bx ok"><span class="t">token-2022 client TransferChecked</span></div></div>
+        <div class="sb"><span class="yn n">no &mdash; hook set</span><div class="bx throw"><span class="t">throw</span><span class="s">hook accounts not resolved &mdash; Digital Assets course owns the interface</span></div></div>
+      </div>
+    </div>
+    <div class="br b3">
+      <span class="edge">owner = anything else</span>
+      <div class="bx throw"><span class="t">throw</span><span class="s">not a mint this kit will sign against</span></div>
+    </div>
+  </div>
+  <div class="merge"><span class="ln"></span><span class="ml">both success branches merge &darr;</span><span class="ln"></span></div>
+  <div class="tail">
+    <div class="tn"><div class="bx mid"><span class="t">derive source + destination ATA</span><span class="s">detected program as a seed</span></div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="tn"><div class="bx mid"><span class="t">idempotent ATA create</span></div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#1b231d" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#1b231d"/></svg></div>
+    <div class="tn"><div class="bx mid"><span class="t">memo + TransferChecked + reference key</span></div></div>
+    <div class="harr"><svg width="20" height="14"><line x1="0" y1="7" x2="12" y2="7" stroke="#008b4c" stroke-width="2.5"/><polygon points="20,7 10,2 10,12" fill="#008b4c"/></svg></div>
+    <div class="tn"><div class="bx endn"><span class="t">sign &middot; send &middot; confirm</span></div></div>
+  </div>
+</div>
+</div>
+</body></html>

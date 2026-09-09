@@ -1,0 +1,125 @@
+id: lesson-spc-m02-l1
+slug: m02-l1
+title: "Anatomy of a USDC payment: mints, ATAs, and the transfer-kit"
+skills:
+  - spl-tokens
+  - account-model
+  - pdas
+  - checked-arithmetic
+  - version-pinning
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "@solana/kit": "6.10.0"
+    "@solana-program/token": "0.14.0"
+    "@solana-program/memo": "0.11.2"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: decimals-safe-base-units
+    type: code
+    language: typescript
+    starter: decimals-safe-base-units/starter.ts
+    solution: decimals-safe-base-units/solution.ts
+    tests: decimals-safe-base-units/tests.json
+    hints:
+      - "Split the string on '.' and pad or read the fractional part to exactly `decimals` digits."
+      - "Scale the whole part into the same units as the padded fraction, then add them as two bigints; a single float step anywhere in that combination reintroduces the exact rounding bug this challenge kills."
+  - key: parse-checkout-amount
+    type: code
+    language: typescript
+    starter: parse-checkout-amount/starter.ts
+    solution: parse-checkout-amount/solution.ts
+    tests: parse-checkout-amount/tests.json
+    hints:
+      - "The five reasons are not independent: an amount can be both too-precise and too-large at once, and the contract's listed order (empty, malformed, negative, too-precise, too-large) decides which one is reported."
+      - "The u64 ceiling applies to the assembled integer, not to the string. A short string can still exceed 2**64 - 1 base units once the mint's decimals scale it."
+      - "The exact conversion is the rung you already cleared. The new work here is deciding which of the five reasons applies."
+  - key: check
+    type: quiz
+    questions:
+      - id: m02l1-q1
+        prompt: "You compute a 12,500-USDC transfer in the browser as `amount * 10 ** 6` using ordinary JavaScript numbers. Small test payments look perfect. What actually happens at scale?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "It throws a TypeError as soon as the product crosses Number.MAX_SAFE_INTEGER, so the failure surfaces loudly in staging."
+            correct: false
+            feedback: "`10 ** 6` evaluates fine with ordinary numbers and nothing throws at MAX_SAFE_INTEGER; the bug is silent precision loss, not a raised error."
+          - id: d
+            label: "Rounding with Math.round fixes it: the error is always sub-unit, so the integer is recoverable."
+            correct: false
+            feedback: "Math.round buys you a passing test suite and a time bomb. Past 2 to the 53rd a double cannot represent every integer, so the drift becomes whole base units and there is no nearest-integer to round back to."
+          - id: b
+            label: "It silently rounds past 2**53, so large transfers send the wrong number of cents and nothing throws."
+            correct: true
+            feedback: "Doubles are exact only to 2**53, and the product gets rounded rather than rejected. A rounding helper cannot repair what a bigint parse would have prevented."
+          - id: a
+            label: "It is fine because JavaScript numbers are 64-bit and cover every USDC amount exactly."
+            correct: false
+            feedback: "64-bit doubles are only exact for integers up to 2**53; base-unit values above that (about 9 billion USDC) start rounding."
+        explanation: "Money math must be exact. Base units are integers, and a mint balance can exceed JavaScript's 2**53 safe-integer ceiling, so any float step can round a transfer off by cents without any error. Parse the decimal string directly into a bigint, which is exactly what toBaseUnits does."
+      - id: m02l1-q2
+        prompt: "Bob has never held USDC. You want to send him some from transfer-kit. What must happen first, and who pays for it?"
+        multiSelect: false
+        options:
+          - id: c
+            label: "His associated token account for the USDC mint must be created and rent-funded, at whatever getMinimumBalanceForRentExemption(165) currently returns, by whoever includes the create instruction."
+            correct: true
+            feedback: "Once per buyer per mint, and it is usually you who funds the rent."
+          - id: b
+            label: "Bob must first call approve on the USDC mint to authorize your wallet as a delegate, and he signs and pays for that approval transaction before any transfer to him can succeed."
+            correct: false
+            feedback: "Approve delegates a balance the signer already holds; a first-time receiver has nothing to delegate, and receiving needs no authorization from Bob at all."
+          - id: d
+            label: "Bob has to open his own USDC account and fund the rent himself first, so your checkout has to send him through a wallet flow and wait for him to finish before it can charge him."
+            correct: false
+            feedback: "Anyone can open an ATA for anyone, and the idempotent create instruction rides in the same transaction as the transfer. Bob never has to do anything, which is the whole reason a first-time buyer can pay you in one scan."
+          - id: a
+            label: "Nothing extra: the token program credits his wallet address directly, so the balance simply appears there the moment your transfer lands, the same way a SOL transfer does."
+            correct: false
+            feedback: "A wallet cannot hold an SPL token directly; tokens live in a per-mint token account, which must exist first."
+        explanation: "An ATA is the deterministic per-(owner, mint) account that holds a token balance. A first-time holder has none, so the payment transaction (or a prior one) must create and rent-fund it at the rent-exempt minimum for 165 bytes. Ask the cluster for that number rather than memorizing one: SIMD-0437 is stepping the per-byte rate down, so it differs between mainnet and devnet today and falls again on each step. That is a real cost and an extra failure mode on every new customer."
+      - id: m02l1-q3
+        prompt: "Your kit sends with TransferChecked and attaches a reference key. What do those two choices buy you?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "TransferChecked encrypts the transfer amount on-chain, and the reference key is the payer's signature over the transfer."
+            correct: false
+            feedback: "TransferChecked does not encrypt anything (that is a confidential-transfer extension), and a reference key is an unrelated non-signer marker, not a signature."
+          - id: c
+            label: "TransferChecked is required only for Token-2022 mints, so a classic USDC send can skip it, and the reference key names the account that pays the transaction fee instead of the sender's wallet."
+            correct: false
+            feedback: "TransferChecked works for classic Token mints too, and the fee payer is whichever signer the transaction names as fee payer, never a reference key."
+          - id: a
+            label: "TransferChecked verifies the mint and decimals inside the instruction, and the reference key is a non-signer address you attach so reconciliation can find the payment later."
+            correct: true
+            feedback: "Account keys are indexed, which is why the marker is findable and also why it isn't secret; anyone can attach the same one, and the fields are what decide."
+          - id: d
+            label: "TransferChecked proves the sender actually owns the funds, and the reference key is a private marker your checkout alone knows, so a match proves the payment came from your form."
+            correct: false
+            feedback: "A reference key is an ordinary account address riding in a public transaction, so anyone reading the ledger can see it and reuse it. It tells you where to look for a payment; the amount, mint and destination are what tell you the payment is yours."
+        explanation: "TransferChecked pins the mint and decimals so a mismatched transfer is rejected rather than silently mis-sent. A reference key is an extra non-signer account you include purely so reconciliation can locate the payment later by searching signatures for that key, the pattern the whole back office will lean on."
+      - id: m02l1-q4
+        prompt: "Your send times out with no confirmation. You are not sure it landed. What is the safe move?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "Resubmit the exact same signed transaction; identical bytes produce the same signature, so it can land at most once within the ~150-block window."
+            correct: true
+            feedback: "Duplicate signatures are rejected by the network, which is what makes resending idempotent; the guarantee dies with the blockhash, and only after it expires is rebuilding safe."
+          - id: a
+            label: "Rebuild the payment with a fresh blockhash and send again; a new signature guarantees it cannot double-charge."
+            correct: false
+            feedback: "A fresh blockhash produces a NEW signature, so if the first one also lands you have paid twice; this is the double-pay trap."
+          - id: c
+            label: "Wait for the ~150-block window to fully expire and then send a brand-new transaction to be safe."
+            correct: false
+            feedback: "Rebuilding after verified expiry is the lesson's own fallback, but expiry alone is not the whole check: if the first send actually landed during the window, a fresh signature pays the customer's bill twice. Confirm the original never landed before rebuilding — and notice what this answer costs even then: you sit out the whole window when resending the identical bytes immediately is just as safe and far faster."
+          - id: d
+            label: "Call getSignatureStatuses once; a null there means the payment did not land, so rebuild against a fresh blockhash and send that instead."
+            correct: false
+            feedback: "A null is a snapshot, and while the blockhash is still alive your original bytes can land the second after you read it. Expiry has to be checked first, and the status lookup needs searchTransactionHistory before its null means anything."
+        explanation: "The same signed transaction always hashes to the same signature, and the network rejects a duplicate signature, so resubmitting identical bytes is idempotent and lands at most once while the blockhash is valid (~150 blocks). Send with maxRetries 0 and manage retries yourself with the same bytes; rebuild only after the blockhash truly expires and getSignatureStatuses (with searchTransactionHistory) confirms the original never landed."

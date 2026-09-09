@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The first-time buyer path, and why it is one transaction
+     purpose: show that derive, create-if-missing, and transfer are three steps inside one atomic unit, so the reader stops treating "does the account exist?" as a question to ask
+     data: Entry: you have the customer's WALLET address and a mint Step 1 derive: compute the destination associated token account from (owner, mint), offline, no RPC call Step 2 create-if-missing: prepend the idempotent create instruction, unconditionally. Account already exists: no-op, no cost. Account vacant: created and rent-funded by the fee payer at the rent-exempt minimum for 165 bytes, which the lesson reads from getMinimumBalanceForRentExemption rather than hardcoding Step 3 transfer: the checked transfer into that account Atomicity band across all three: one transaction, so either the account, the money, and the label all land, or nothing does. There is no state where you rent-funded an account for a payment that failed Contrast note: the branch you did NOT write is the query "does this account exist?" and the race that follows it
+     prompt: Left-to-right flowchart of three steps with a bracket or band drawn across all three labeled "one transaction, atomic". Give step 2 two small outcome labels beneath it (no-op versus created and rent-funded) rather than a branching fork. Off to the side, show a greyed-out, crossed-through node reading "check if the account exists first" to mark the path the idempotent instruction deletes.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:483px;height:464px;bottom:-253px;right:-253px;border-radius:37% 54% 54% 53% / 62% 56% 59% 57%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .entry { display:inline-block; background:var(--surface-inverse); color:var(--text-on-dark);
+    font-family:var(--font-mono); font-size:15px; padding:8px 18px; border-radius:var(--radius-pill);
+    margin:2px 0 26px; }
+  .row { display:flex; gap:24px; align-items:stretch; }
+  .band { flex:1; position:relative; border:3px solid var(--stbr-emerald); border-radius:var(--radius-xl);
+    padding:34px 22px 18px; background:rgba(255,255,255,0.55); }
+  .band-tag { position:absolute; top:-16px; left:26px; background:var(--surface-brand);
+    color:var(--text-on-brand); font-family:var(--font-display); font-weight:800; font-size:14px;
+    letter-spacing:0.1em; text-transform:uppercase; padding:6px 16px; border-radius:var(--radius-pill); }
+  .steps { display:flex; align-items:stretch; gap:0; }
+  .step { flex:1; background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-lg); padding:16px 18px; }
+  .step .num { display:inline-block; width:26px; height:26px; border-radius:50%;
+    background:var(--surface-brand); color:var(--text-on-brand); font-family:var(--font-display);
+    font-weight:800; font-size:14px; text-align:center; line-height:26px; margin-bottom:6px; }
+  .step h3 { font-size:21px; font-weight:var(--weight-black); margin:0 0 5px; }
+  .step .d { font-family:var(--font-body); font-size:13.5px; color:var(--text-secondary); line-height:1.4; }
+  .step.hi { background:var(--surface-accent); border-color:var(--stbr-yellow-700); }
+  .step.hi h3, .step.hi .d { color:var(--text-on-accent); }
+  .step.hi .num { background:var(--stbr-dark); }
+  .out { margin-top:8px; background:rgba(255,255,255,0.75); border-radius:var(--radius-sm);
+    padding:5px 9px; font-family:var(--font-body); font-size:12px; color:var(--stbr-dark); line-height:1.35; }
+  .arr { width:44px; display:flex; align-items:center; justify-content:center; }
+  .atom { margin-top:14px; font-family:var(--font-body); font-size:14.5px; color:var(--text-secondary);
+    line-height:1.4; padding:0 4px; }
+  .atom b { color:var(--stbr-emerald); }
+  .dead { width:330px; display:flex; flex-direction:column; justify-content:center; }
+  .dead-card { border:2.5px dashed var(--stbr-ink-300); border-radius:var(--radius-lg);
+    padding:22px 24px; color:var(--stbr-ink-500); background:rgba(255,255,255,0.4); }
+  .dead-card h3 { color:var(--stbr-ink-500); font-size:20px; text-decoration:line-through; margin:0 0 8px; }
+  .dead-card .d { font-size:13.5px; line-height:1.45; }
+  .dead-tag { display:inline-block; margin-bottom:10px; background:var(--stbr-ink-100);
+    color:var(--stbr-ink-700); font-family:var(--font-display); font-weight:800; font-size:11px;
+    letter-spacing:0.12em; text-transform:uppercase; padding:4px 10px; border-radius:var(--radius-pill); }
+</style>
+  <div class="stbr-eyebrow">the first-time buyer path</div>
+  <h2 class="viz-title">three steps, one atomic transaction</h2>
+  <div class="entry">entry: the customer&rsquo;s wallet address + a mint</div>
+  <div class="row">
+    <div class="band">
+      <div class="band-tag">one transaction &mdash; atomic</div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>derive</h3>
+          <div class="d">compute the destination associated token account from <b>(owner, mint)</b> &mdash; offline, no RPC call</div>
+        </div>
+        <div class="arr"><svg width="34" height="18"><line x1="0" y1="9" x2="24" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,9 22,3 22,15" fill="#1b231d"/></svg></div>
+        <div class="step hi">
+          <div class="num">2</div>
+          <h3>create-if-missing</h3>
+          <div class="d">prepend the <b>idempotent create</b> instruction, unconditionally</div>
+          <div class="out">already exists &rarr; no-op, no cost</div>
+          <div class="out">vacant &rarr; created + rent-funded by the fee payer (rent-exempt minimum for 165 bytes)</div>
+        </div>
+        <div class="arr"><svg width="34" height="18"><line x1="0" y1="9" x2="24" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,9 22,3 22,15" fill="#1b231d"/></svg></div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>transfer</h3>
+          <div class="d">the <b>checked transfer</b> into that account</div>
+        </div>
+      </div>
+      <div class="atom"><b>either the account, the money, and the label all land &mdash; or nothing does.</b> there is no state where you rent-funded an account for a payment that failed.</div>
+    </div>
+    <div class="dead">
+      <div class="dead-card">
+        <div class="dead-tag">the branch you did not write</div>
+        <h3>&ldquo;check if the account exists first&rdquo;</h3>
+        <div class="d">the query &mdash; and the race that follows it &mdash; is exactly what the idempotent instruction deletes.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

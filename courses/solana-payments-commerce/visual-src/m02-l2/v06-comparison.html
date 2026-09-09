@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: The 2026 acceptance roster, as your kit sees it
+     purpose: one table the reader can route from: each stablecoin's mint, program, and the integration note that matters
+     data: Row USDC: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v | classic Token | 6 decimals | the default dollar; classic branch Row PYUSD: 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo | Token-2022 | 6 decimals | eight extensions; issuer permanent delegate; fee currently 0 bps, read it live Row EURC: HzwqbKZw8HxMN6bF2yFZNrht3c2iXXzpKcFu7uBEDKtr | classic Token | 6 decimals | euro, not a dollar; FX is your books' problem, mint pinned 2026-08-22 Row USDG: 2u1tszSeqZ3qBWF3uNGPFc8TzMk2tdiwknnRMWGWjGWH | Token-2022 | 6 decimals | Paxos-issued; same eight-extension template as PYUSD, verified 2026-08-22 Row USDT: Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB | classic Token | 6 decimals | added last lesson; same classic branch as USDC Row yield-bearing (class): varies | varies | varies | out of scope here; DeFi and RWA Engineering course owns the mechanics
+     prompt: Six-row comparison table with columns: token, mint address (code style, truncated middle), owner program, decimals, integration note. Give the two Token-2022 rows a shared subtle accent so the program split is visible at a glance. The final row is a class of tokens, not one mint; style it as a hand-off row with a course pointer instead of an address.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:567px;height:527px;bottom:-325px;left:-325px;border-radius:57% 36% 52% 39% / 61% 53% 38% 50%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:38px 48px 34px; }
+  .viz-title { margin-bottom:16px; }
+  table.roster { width:100%; border-collapse:collapse; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; }
+  .roster th { background:var(--surface-inverse); color:var(--text-on-dark); font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.08em; text-transform:uppercase; text-align:left; padding:12px 18px; }
+  .roster td { border-top:1.5px solid var(--border-subtle); padding:11px 18px; vertical-align:middle; }
+  .tok { font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--text-primary); white-space:nowrap; }
+  .addr { font-family:var(--font-mono); font-weight:600; font-size:14px; color:var(--text-primary); white-space:nowrap; }
+  .progchip { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:13px; border-radius:var(--radius-pill); padding:5px 14px; white-space:nowrap; }
+  .progchip.classic { border:1.5px solid var(--border-strong); color:var(--text-secondary); }
+  .progchip.t22 { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  td.dec { font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-primary); }
+  td.note { font-family:var(--font-body); font-weight:600; font-size:14px; line-height:1.35; color:var(--text-secondary); }
+  td.note b { color:var(--stbr-emerald); }
+  tr.t22row td { background:rgba(255,210,63,.10); }
+  tr.handoff td { background:var(--surface-paper); border-top:2.5px dashed var(--border-strong); color:var(--text-muted); }
+  tr.handoff .tok { font-size:17px; color:var(--text-secondary); }
+  tr.handoff .varies { font-family:var(--font-body); font-weight:600; font-size:14px; font-style:italic; color:var(--text-muted); }
+  tr.handoff td.note { color:var(--text-secondary); }
+  .handofftag { display:inline-block; background:var(--surface-brand-deep); color:var(--text-on-brand); font-style:normal; font-family:var(--font-body); font-weight:800; font-size:12px; border-radius:var(--radius-pill); padding:4px 12px; margin-right:10px; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">the 2026 acceptance roster, as your kit sees it</div>
+  <h2 class="viz-title">five mints, two programs, one hand-off</h2>
+  <table class="roster">
+    <tr><th>token</th><th>mint address</th><th>owner program</th><th>decimals</th><th>integration note</th></tr>
+    <tr><td class="tok">USDC</td><td class="addr">EPjFWdd5Auf&hellip;GkZwyTDt1v</td><td><span class="progchip classic">classic Token</span></td><td class="dec">6</td><td class="note">the default dollar; classic branch</td></tr>
+    <tr class="t22row"><td class="tok">PYUSD</td><td class="addr">2b1kV6DkPAn&hellip;ZfHsFu24GXo</td><td><span class="progchip t22">Token-2022</span></td><td class="dec">6</td><td class="note">eight extensions; issuer permanent delegate; fee currently 0 bps &mdash; <b>read it live</b></td></tr>
+    <tr><td class="tok">EURC</td><td class="addr">HzwqbKZw8Hx&hellip;Fu7uBEDKtr</td><td><span class="progchip classic">classic Token</span></td><td class="dec">6</td><td class="note">euro, not a dollar; FX is your books' problem (mint pinned 2026-08-22)</td></tr>
+    <tr class="t22row"><td class="tok">USDG</td><td class="addr">2u1tszSeqZ3&hellip;RMWGWjGWH</td><td><span class="progchip t22">Token-2022</span></td><td class="dec">6</td><td class="note">Paxos-issued; same eight-extension template as PYUSD (verified 2026-08-22)</td></tr>
+    <tr><td class="tok">USDT</td><td class="addr">Es9vMFrzaCE&hellip;Ce8BenwNYB</td><td><span class="progchip classic">classic Token</span></td><td class="dec">6</td><td class="note">added last lesson; same classic branch as USDC</td></tr>
+    <tr class="handoff"><td class="tok">yield-bearing<br>(a class)</td><td class="varies">varies &mdash; not one mint</td><td class="varies">varies</td><td class="varies">varies</td><td class="note"><span class="handofftag">hand-off &rarr;</span>out of scope here; <b>DeFi &amp; RWA Engineering</b> owns the mechanics</td></tr>
+  </table>
+</div>
+</div>
+</body></html>

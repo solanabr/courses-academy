@@ -1,0 +1,86 @@
+[
+  {
+    "id": "t1",
+    "description": "A real, correct USDC payment for the order verifies.",
+    "input": "'{\"signature\":\"Sig1RealPaymentAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4271\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.ok === true && result.reason === 'verified'"
+  },
+  {
+    "id": "t2",
+    "description": "A signature already fulfilled (webhook retry / replay) is rejected as duplicate.",
+    "input": "'{\"signature\":\"Sig1RealPaymentAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4271\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[\"Sig1RealPaymentAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"]'",
+    "expectedOutput": "result.ok === false && result.reason === 'duplicate'"
+  },
+  {
+    "id": "t3",
+    "description": "Right mint and amount but moved by the wrong token program is rejected.",
+    "input": "'{\"signature\":\"Sig3WrongProgramBBBBBBBBBBBBBBBBBBBBBBBBBBBB\",\"tokenProgram\":\"TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4271\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.reason === 'wrong-token-program'"
+  },
+  {
+    "id": "t4",
+    "description": "A different token (USDT) landing in the ATA is not USDC and is rejected.",
+    "input": "'{\"signature\":\"Sig4WrongMintCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4271\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.reason === 'wrong-mint'"
+  },
+  {
+    "id": "t5",
+    "description": "The balance delta on our own account is short of the order amount.",
+    "input": "'{\"signature\":\"Sig5UnderpaidDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"500000\",\"postAmount\":\"1000000\"}],\"memo\":\"ORD-4271\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.reason === 'underpaid'"
+  },
+  {
+    "id": "t6",
+    "description": "Correct payment but the memo ties it to a different order.",
+    "input": "'{\"signature\":\"Sig6WrongRefEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-9999\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.reason === 'wrong-reference'"
+  },
+  {
+    "id": "t7",
+    "description": "A transaction whose transfers never touch the recipient ATA (attacker paid their own account) is rejected as no-payment.",
+    "input": "'{\"signature\":\"Sig7NoPaymentFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"AttackerOwnUsdcAta222222222222222222222222\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4271\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.ok === false && result.reason === 'no-payment'"
+  },
+  {
+    "id": "t8",
+    "description": "The fulfilled-signature set is non-empty but holds OTHER orders' signatures: this payment is new and must verify (a length check would reject every sale after the first).",
+    "input": "'{\"signature\":\"Sig8FreshSaleGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4272\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4272', '[\"Sig1RealPaymentAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"Sig6WrongRefEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\"]'",
+    "expectedOutput": "result.ok === true && result.reason === 'verified'"
+  },
+  {
+    "id": "t9",
+    "description": "A wholesale settlement one base unit short, above 2**53: exact with BigInt, invisible to Number() (both sides round to the same float).",
+    "input": "'{\"signature\":\"Sig9FloatShortHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"0\",\"postAmount\":\"9007199254740992\"}],\"memo\":\"ORD-4273\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 9007199254740993n, 'ORD-4273', '[]'",
+    "expectedOutput": "result.ok === false && result.reason === 'underpaid'"
+  },
+  {
+    "id": "t10",
+    "description": "A debit OUT of our ATA (a clawback, post < pre) is a negative delta, never a payment: taking its absolute value would score it as a full credit.",
+    "input": "'{\"signature\":\"Sig10ClawbackIIIIIIIIIIIIIIIIIIIIIIIIIIIIII\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"2500000\",\"postAmount\":\"1000000\"}],\"memo\":\"ORD-4274\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4274', '[]'",
+    "expectedOutput": "result.ok === false && result.reason === 'underpaid'"
+  },
+  {
+    "id": "t11",
+    "description": "A memo for order ORD-42710 must not fulfil ORD-4271: the reference check is equality, not containment.",
+    "input": "'{\"signature\":\"Sig11MemoSupersetJJJJJJJJJJJJJJJJJJJJJJJJJJ\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-42710\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.ok === false && result.reason === 'wrong-reference'"
+  },
+  {
+    "id": "t12",
+    "description": "The other containment direction: a memo of ORD-427 is a prefix of the order ref and must still be rejected.",
+    "input": "'{\"signature\":\"Sig12MemoPrefixKKKKKKKKKKKKKKKKKKKKKKKKKKKK\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-427\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4271', '[]'",
+    "expectedOutput": "result.ok === false && result.reason === 'wrong-reference'"
+  },
+  {
+    "id": "t13",
+    "description": "A look-alike mint sharing USDC's first forty characters is still the wrong mint: addresses compare whole, never by prefix.",
+    "input": "'{\"signature\":\"Sig13LookAlikeMintLLLLLLLLLLLLLLLLLLLLLLLLLL\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTFAKE\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"1000000\",\"postAmount\":\"2500000\"}],\"memo\":\"ORD-4275\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 1500000n, 'ORD-4275', '[]'",
+    "expectedOutput": "result.ok === false && result.reason === 'wrong-mint'"
+  },
+  {
+    "id": "t14",
+    "description": "A settlement exactly at expectedAmount, both above 2**53: converting to Number() first rounds the delta down and a mixed number/bigint compare wrongly reads it as underpaid, even though BigInt subtraction shows it is exact.",
+    "input": "'{\"signature\":\"Sig14ExactAboveFloatMMMMMMMMMMMMMMMMMMMMMMMM\",\"tokenProgram\":\"TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA\",\"transfers\":[{\"mint\":\"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v\",\"destination\":\"WavRecordsUsdcAta1111111111111111111111111\",\"preAmount\":\"0\",\"postAmount\":\"9007199254740993\"}],\"memo\":\"ORD-4276\"}', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', 'WavRecordsUsdcAta1111111111111111111111111', 9007199254740993n, 'ORD-4276', '[]'",
+    "expectedOutput": "result.ok === true && result.reason === 'verified'"
+  }
+]

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The dunning state machine
+     purpose: fix the three states and six transitions in one picture before the reader implements them
+     data: states: active, open-invoice (grace), cancelled active -> active: pull ok (record paid invoice) active -> open-invoice: pull insufficient-funds (write open invoice; NO retry scheduled) active -> cancelled: pull outcome cancelled OR explicit cancel (mark cancelled + enqueue RevokeAbandoned) open-invoice -> active: settle (invoice settled; resume) open-invoice -> cancelled: explicit cancel (invoice survives as receivable) open-invoice -> open-invoice: pull REFUSED (retry-never invariant, throws) cancelled: terminal; late settle of an outstanding invoice allowed, state stays cancelled
+     prompt: State diagram with three labeled state nodes and directed edges per the data lines. Mark the refused pull on open-invoice as a struck-through self-loop labeled retry-never. Mark the cancelled state's outgoing enqueue-RevokeAbandoned as a side effect annotation, not an edge. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:549px;height:527px;top:-332px;right:-332px;border-radius:38% 55% 39% 64% / 53% 43% 35% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:38px 52px 30px; }
+  .sm { width:1280px; margin:8px auto 0; }
+  .row { display:flex; width:1280px; }
+  .w-node { width:300px; } .w-nodeM { width:340px; } .w-edge { width:170px; }
+  .loops { align-items:flex-end; margin-bottom:0; }
+  .loopcell { display:flex; flex-direction:column; align-items:center; }
+  .loopchip { font-family:var(--font-body); font-weight:700; font-size:12px; line-height:1.25; text-align:center;
+              border:2px solid var(--stbr-green); color:var(--stbr-green); background:var(--surface-card);
+              border-radius:var(--radius-pill); padding:6px 14px; }
+  .loopchip.refuse { background:var(--stbr-yellow); border-color:var(--stbr-yellow); color:var(--stbr-dark); font-weight:800; }
+  .loopchip.refuse s { text-decoration:line-through; }
+  .loopchip .tag { display:block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; opacity:.75; }
+  .nodes { align-items:stretch; margin-top:0; }
+  .node { height:128px; border-radius:var(--radius-lg); display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:0 18px; box-sizing:border-box; }
+  .node .n { font-family:var(--font-display); font-weight:900; font-size:26px; }
+  .node .s { font-family:var(--font-body); font-size:13px; margin-top:5px; line-height:1.3; }
+  .node.active { background:var(--surface-brand); } .node.active .n { color:var(--text-on-brand); } .node.active .s { color:rgba(245,232,202,.85); }
+  .node.open { background:var(--surface-card); border:2.5px solid var(--stbr-green); } .node.open .n { color:var(--stbr-green); } .node.open .s { color:var(--text-secondary); }
+  .node.dead { background:var(--surface-inverse); } .node.dead .n { color:var(--text-on-dark); } .node.dead .s { color:rgba(245,232,202,.75); }
+  .edges { display:flex; flex-direction:column; justify-content:center; gap:14px; padding:0 6px; box-sizing:border-box; }
+  .edge { display:flex; flex-direction:column; align-items:center; }
+  .edge .lb { font-family:var(--font-body); font-weight:600; font-size:11px; line-height:1.25; color:var(--text-secondary); text-align:center; margin-bottom:2px; }
+  .under { position:relative; width:1280px; height:96px; }
+  .under svg { position:absolute; top:0; left:0; }
+  .under .elabel { position:absolute; top:48px; left:300px; width:520px; text-align:center;
+                   font-family:var(--font-body); font-weight:600; font-size:12px; color:var(--text-secondary); }
+  .under .fx { position:absolute; top:44px; left:990px; width:280px; text-align:center;
+               border:2px dashed var(--stbr-green); border-radius:var(--radius-md); padding:6px 10px; box-sizing:border-box;
+               font-family:var(--font-body); font-weight:700; font-size:11.5px; line-height:1.3; color:var(--stbr-green); background:var(--surface-card); }
+  .foot { margin-top:6px; text-align:center; font-family:var(--font-body); font-size:12.5px; color:var(--text-muted); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">three states, six transitions</div>
+  <h2 class="viz-title" style="font-size:46px;">the dunning state machine</h2>
+  <div class="sm">
+    <div class="row loops">
+      <div class="loopcell w-node">
+        <div class="loopchip">self-loop &middot; pull ok &rarr; record paid invoice</div>
+        <svg width="14" height="16"><line x1="7" y1="0" x2="7" y2="9" stroke="#306c40" stroke-width="2.5"/><polygon points="7,16 2,7 12,7" fill="#306c40"/></svg>
+      </div>
+      <div class="w-edge"></div>
+      <div class="loopcell w-nodeM">
+        <div class="loopchip refuse"><span class="tag">retry-never</span><s>retry</s> pull &rarr; REFUSED (throws)</div>
+        <svg width="14" height="16"><line x1="7" y1="0" x2="7" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="7,16 2,7 12,7" fill="#1b231d"/></svg>
+      </div>
+      <div class="w-edge"></div>
+      <div class="loopcell w-node">
+        <div class="loopchip" style="border-color:var(--stbr-dark);color:var(--stbr-dark);">terminal &middot; no way back</div>
+        <svg width="14" height="16"><line x1="7" y1="0" x2="7" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="7,16 2,7 12,7" fill="#1b231d"/></svg>
+      </div>
+    </div>
+    <div class="row nodes">
+      <div class="node active w-node"><div class="n">active</div><div class="s">pulls landing on schedule</div></div>
+      <div class="edges w-edge">
+        <div class="edge"><div class="lb">pull insufficient-funds &middot; write open invoice, NO retry scheduled</div>
+          <svg width="158" height="12"><line x1="0" y1="6" x2="148" y2="6" stroke="#1b231d" stroke-width="2.5"/><polygon points="158,6 147,1 147,11" fill="#1b231d"/></svg></div>
+        <div class="edge"><svg width="158" height="12"><line x1="10" y1="6" x2="158" y2="6" stroke="#008b4c" stroke-width="2.5"/><polygon points="0,6 11,1 11,11" fill="#008b4c"/></svg>
+          <div class="lb" style="margin:2px 0 0;color:var(--stbr-emerald);font-weight:700;">settle &middot; invoice settled &rarr; resume</div></div>
+      </div>
+      <div class="node open w-nodeM"><div class="n">open-invoice</div><div class="s">grace &mdash; the failed renewal sits on the books as a receivable</div></div>
+      <div class="edges w-edge">
+        <div class="edge"><div class="lb">explicit cancel &middot; invoice survives as receivable</div>
+          <svg width="158" height="12"><line x1="0" y1="6" x2="148" y2="6" stroke="#1b231d" stroke-width="2.5"/><polygon points="158,6 147,1 147,11" fill="#1b231d"/></svg></div>
+      </div>
+      <div class="node dead w-node"><div class="n">cancelled</div><div class="s">late settle of an outstanding invoice allowed &mdash; state stays cancelled</div></div>
+    </div>
+    <div class="under">
+      <svg width="1280" height="96">
+        <path d="M 150 0 L 150 34 L 1130 34 L 1130 12" fill="none" stroke="#1b231d" stroke-width="2.5"/>
+        <polygon points="1130,4 1125,14 1135,14" fill="#1b231d"/>
+      </svg>
+      <div class="elabel">pull outcome cancelled OR explicit cancel &rarr; mark cancelled</div>
+      <div class="fx">side effect on entering cancelled: enqueue RevokeAbandoned (not an edge)</div>
+    </div>
+    <div class="foot">every transition writes the ledger first; the state machine only reacts to pull outcomes, settles, and explicit cancels</div>
+  </div>
+</div>
+</div>
+</body></html>

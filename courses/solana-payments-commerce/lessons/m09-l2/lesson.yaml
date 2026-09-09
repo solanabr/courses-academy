@@ -1,0 +1,76 @@
+id: lesson-spc-m09-l2
+slug: m09-l2
+title: "Where the rails go from here"
+skills:
+  - version-pinning
+  - solana-kit
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: m09l2-q1-frozen-moving
+        prompt: "You are handing this stack to a colleague in three months. Which part of what you built is MOST likely to have changed its pins or behavior by then?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The Solana Pay v1 transfer-request URL format, whose spec page is visibly 2023-vintage and still names FTX and Slope in its wallet examples, so a rewrite must be overdue."
+            correct: false
+            feedback: "The v1 spec is frozen, and frozen means stable, not stale-and-changing; the URL format is one of the LEAST likely things to move."
+          - id: c
+            label: "The Subscriptions program client and MPP, since @solana/subscriptions was days old on mainnet and MPP's Solana method spec moves in a git repo with no standards-body clock on it."
+            correct: true
+            feedback: "Churn tracks age and governance, not how dated a page looks: an unmaintained dependency stops surprising you and still accrues unfixed bugs."
+          - id: d
+            label: "The @solana/kit pins, since npm's latest tag already sits two majors past the 6.10 line and one past the 7.1 line you hold, and a pinned major stops resolving once the registry moves on."
+            correct: false
+            feedback: "Published versions do not expire: 6.10.0 installs exactly as well the day kit 9 ships. Kit does move fast, which is why the repo pins per workspace and records why, and that is the piece you have already learned to hold still. What moves under you is the young end of the stack, where the client and the spec themselves change."
+          - id: b
+            label: "The blinks Actions spec fields, since the blinks tooling was described as frozen and effectively unpublished since 2025."
+            correct: false
+            feedback: "Frozen tooling is the opposite of fast-moving; the blinks lane is among the LEAST likely to shift pins in three months."
+        explanation: "The course drew the frozen/moving line on purpose. Frozen surfaces (the Solana Pay v1 spec, the blinks tooling) are safe precisely because they are stable. The young pieces, the Subscriptions program client and the MPP specs, are the ones to re-verify before you trust their pins."
+      - id: m09l2-q2-where-next
+        prompt: "Your colleague wants to squeeze more transactions to land under load during a hot drop by tuning priority fees and Jito bundles. Which course did this one explicitly defer that depth to?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The Master Solana Frontend and Client-Side Development course, which owns transaction-landing strategy."
+            correct: true
+            feedback: "The split is practice against internals, not depth against shallowness."
+          - id: b
+            label: "The Digital Assets, Tokenization and Token Extensions course, which owns the Token-2022 extensions PYUSD showed off."
+            correct: false
+            feedback: "Digital Assets owns token internals, not tx-landing; priority fees and Jito were handed to the client-side course."
+          - id: c
+            label: "The Low-Level Solana course, which covers the scheduler, QoS, and the leader pipeline that decide whether a transaction reaches a block at all."
+            correct: false
+            feedback: "Low-Level Solana explains WHY the runtime behaves as it does; the practical what-to-do for landing was deferred to the client-side course, not the internals course."
+          - id: d
+            label: "Master Anchor V2, since compute budgets and CU limits are decided in the program you deploy."
+            correct: false
+            feedback: "Compute-budget instructions ride on the transaction the client builds, which is why this course's one-box recipe lives in the checkout builder and never in a program. Anchor V2 is the program-authoring door, and Wavelength shipped without a line of Rust."
+        explanation: "This course states its boundary out loud: it gives the one-box priority-fee recipe and hands landing science, Jito, compute-budget tuning, and indexing at scale to the client-side course. The internals-why belongs to Low-Level Solana; the token internals belong to Digital Assets."
+      - id: m09l2-q3-frame
+        prompt: "The course opened by decoding a dollar on mainnet and closes on the repo that changed sides. What is the single structural difference from card rails that shaped every ops decision you made, from verification to refunds?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "There are no chargebacks, so the risk sits with the buyer and a merchant's checks can safely run after fulfillment."
+            correct: false
+            feedback: "The first clause is the fact and the second inverts what it implies. With no reversal to fall back on, every control moves earlier: the verifier reads the chain before an order is fulfilled, not after, and the whole back office exists because a check that runs after the record ships has nothing left to protect."
+          - id: a
+            label: "Fees are far lower on Solana, so you can afford to retry transactions much more aggressively than on card rails."
+            correct: false
+            feedback: "Low fees are real but they did not shape verification, reconciliation, or refunds; the asymmetry that did was the absence of chargebacks."
+          - id: c
+            label: "Settlement is fast enough to be effectively instant, so reconciliation and idempotency stop mattering to a merchant."
+            correct: false
+            feedback: "Settlement is fast but not free of the retry-and-duplicate problem; idempotency and reconciliation mattered throughout precisely because webhooks still lie and blockhashes still expire."
+          - id: b
+            label: "There are no chargebacks by construction, so refunds are push payments you originate and disputes have no bank-mediated reversal."
+            correct: true
+            feedback: "Take away the reversal primitive and every control moves earlier in the flow; the risk does not vanish, it relocates, and the loss an issuer used to absorb now lands on you."
+        explanation: "The no-chargeback asymmetry is the through-line: it is why refunds became original-construction push payments, why verification is server-side and final, and why the dispute posture differs from every card integration your colleague has done. Fast settlement and low fees are features; the missing chargeback is the structural fact."

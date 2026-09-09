@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Per-rung workspaces across the kit v6/v7 seam
+     purpose: show that the version seam is contained to one workspace and why the peer ranges never collide
+     data: monorepo root workspace checkout: @solana/pay 1.0.26 (peers kit ^6.9) + @solana-program/token 0.14.0 + kit ^6.10 workspace ops (backoffice, crank): @solana-program/token 0.14.0 (peers kit ^6.5) + kit ^6.10 — no vendor SDK is installed anywhere in this course; the webhook receiver is plain HTTP workspace subscriptions (THIS lesson): @solana/subscriptions 0.5.0 (peers kit ^7.0.0) + @solana-program/token 0.15.0 + kit ^7 (v7 line ends at 7.1.1) annotation: subscriptions is deliberately NOT in the root workspaces array; registered workspaces hoist into one shared root resolution, so only an unregistered folder with its own node_modules keeps ^6 and ^7 apart fallback note: if v7 friction appears, this one workspace drops to @solana/subscriptions 0.4.0 + kit ^6.4
+     prompt: Tree diagram of a monorepo root with three workspace boxes: checkout, ops, and subscriptions. Each box lists its pinned packages and kit major from data. Color the subscriptions box distinctly and draw a dashed boundary around it labeled "the only kit ^7 island". A small footnote box carries the 0.4.0 fallback. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:603px;height:566px;top:-326px;right:-326px;border-radius:36% 56% 53% 56% / 39% 62% 65% 51%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .tree { width:1320px; margin:6px auto 0; }
+  .root { width:420px; margin:0 auto; background:var(--surface-inverse);
+          border-radius:var(--radius-xl); padding:13px 26px; text-align:center; }
+  .root .nm { font-family:var(--font-display); font-weight:900; font-size:24px;
+              color:var(--text-on-dark); }
+  .root .sub { font-family:var(--font-mono); font-weight:700; font-size:13px;
+               color:var(--stbr-cream); opacity:.8; margin-top:2px; }
+  .wires { display:block; margin:0; }
+  .ws-row { display:flex; gap:30px; }
+  .ws { flex:1 1 0; display:flex; flex-direction:column; }
+  .wsbox { background:var(--surface-card); border:3px solid var(--stbr-dark);
+           border-radius:var(--radius-xl); overflow:hidden; flex:1 1 auto;
+           display:flex; flex-direction:column; }
+  .ws-head { background:var(--stbr-emerald); padding:9px 20px;
+             font-family:var(--font-display); font-weight:900; font-size:20px;
+             color:var(--text-on-brand); }
+  .ws-head .who { font-family:var(--font-body); font-weight:700; font-size:12.5px;
+                  color:var(--stbr-cream); opacity:.85; margin-left:6px; }
+  .pkg { font-family:var(--font-mono); font-weight:700; font-size:14.5px;
+         color:var(--text-primary); padding:8px 20px;
+         border-top:1.5px solid var(--border-subtle); line-height:1.4; }
+  .pkg .peer { color:var(--text-muted); font-size:12.5px; font-weight:600; }
+  .kit { font-family:var(--font-mono); font-weight:800; font-size:15px;
+         padding:9px 20px; border-top:1.5px solid var(--border-subtle);
+         color:var(--stbr-green); background:rgba(0,139,76,0.07); margin-top:auto; }
+  .island { border:3px dashed var(--stbr-dark); border-radius:var(--radius-2xl);
+            background:var(--stbr-yellow); padding:10px; position:relative;
+            flex:1 1 auto; display:flex; flex-direction:column; }
+  .island-tag { position:absolute; top:-15px; left:50%; width:230px; margin-left:-115px;
+                text-align:center; font-family:var(--font-body); font-weight:900;
+                font-size:12.5px; letter-spacing:.07em; text-transform:uppercase;
+                background:var(--stbr-dark); color:var(--stbr-yellow);
+                border-radius:var(--radius-pill); padding:5px 0; }
+  .island .ws-head { background:var(--surface-inverse); }
+  .island .ws-head .nm-hl { color:var(--stbr-yellow); }
+  .notes { display:flex; gap:30px; margin-top:20px; width:1320px; margin-left:auto;
+           margin-right:auto; }
+  .anno { flex:1.4 1 0; background:var(--stbr-emerald); border-radius:var(--radius-lg);
+          padding:12px 22px; font-family:var(--font-body); font-weight:700;
+          font-size:16px; color:var(--text-on-brand); line-height:1.45; }
+  .anno code { font-family:var(--font-mono); }
+  .fallback { flex:1 1 0; background:var(--surface-card); border:2px dashed var(--border-strong);
+              border-radius:var(--radius-lg); padding:12px 22px;
+              font-family:var(--font-body); font-weight:600; font-size:14px;
+              color:var(--text-secondary); line-height:1.45; }
+  .fallback code { font-family:var(--font-mono); font-weight:700; color:var(--text-primary); }
+</style>
+  <div class="stbr-eyebrow">the version seam is contained to one workspace</div>
+  <h2 class="viz-title">per-rung workspaces across the kit v6/v7 seam</h2>
+  <div class="tree">
+    <div class="root">
+      <div class="nm">monorepo root</div>
+      <div class="sub">npm workspaces &mdash; one repo, three dependency trees</div>
+    </div>
+    <svg class="wires" width="1320" height="52" viewBox="0 0 1320 52">
+      <path d="M660 0 L660 20 M210 20 L1110 20 M210 20 L210 52 M660 20 L660 52 M1110 20 L1110 52"
+            stroke="#1B231D" stroke-width="3" fill="none"/>
+    </svg>
+    <div class="ws-row">
+      <div class="ws">
+        <div class="wsbox">
+          <div class="ws-head">checkout</div>
+          <div class="pkg">@solana/pay 1.0.26 <span class="peer">(peers kit ^6.9)</span></div>
+          <div class="pkg">@solana-program/token 0.14.0</div>
+          <div class="kit">kit ^6.10</div>
+        </div>
+      </div>
+      <div class="ws">
+        <div class="wsbox">
+          <div class="ws-head">ops <span class="who">backoffice &middot; crank</span></div>
+          <div class="pkg">@solana-program/token 0.14.0 <span class="peer">(peers kit ^6.5)</span></div>
+          <div class="kit">kit ^6.10</div>
+        </div>
+      </div>
+      <div class="ws">
+        <div class="island">
+          <div class="island-tag">the only kit ^7 island</div>
+          <div class="wsbox" style="border-width:0; border-radius:var(--radius-lg);">
+            <div class="ws-head"><span class="nm-hl">subscriptions</span> <span class="who">this lesson</span></div>
+            <div class="pkg">@solana/subscriptions 0.5.0<br><span class="peer">(peers kit ^7.0.0)</span></div>
+            <div class="pkg">@solana-program/token 0.15.0</div>
+            <div class="kit">kit ^7 <span class="peer">(v7 line ends at 7.1.1)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="anno">subscriptions stays <b>out of the root workspaces array</b> &mdash; registered workspaces hoist into one shared resolution, so only an unregistered folder with its own <code>node_modules</code> keeps <code>^6</code> and <code>^7</code> apart.</div>
+      <div class="fallback"><b>fallback:</b> if v7 friction appears, this one workspace drops to <code>@solana/subscriptions 0.4.0</code> + <code>kit ^6.4</code>.</div>
+    </div>
+  </div>
+</div>
+</body></html>

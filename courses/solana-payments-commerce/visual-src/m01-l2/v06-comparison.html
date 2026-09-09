@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Where stablecoin rails fit, and where they do not
+     purpose: compress the lesson's trade-off into a fit matrix the reader can defend in a design review
+     data: Strong fit: micro and small-ticket sales (flat sub-cent base fee vs percentage interchange); escaping settlement float (settled means spendable in seconds, no D+30 schedule and no fee to anticipate it); cross-border payments, listed last (no correspondent-bank days, near-zero fees) Weak fit: high-fraud consumer verticals where buyers expect reversal on demand (finality deletes the dispute path); businesses whose product is effectively reversibility (bank-backed undo is the value proposition); flows where compliance requires an institutional reversal path
+     prompt: Two-column fit matrix, "Strong fit" and "Weak fit" as column headers, three labeled rows per column, each row a short scenario name with a one-line reason underneath. Style the two columns as equal weight: this is a judgment aid, not an advertisement, so give the weak-fit column the same visual dignity as the strong-fit column.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:608px;height:548px;bottom:-322px;left:-322px;border-radius:56% 54% 36% 49% / 64% 46% 38% 52%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:28px; margin-top:26px; align-items:stretch; }
+  .fitcol { flex:1; background:var(--surface-card); border-radius:var(--radius-2xl); overflow:hidden;
+            display:flex; flex-direction:column; }
+  .fh { padding:18px 30px; font-family:var(--font-display); font-weight:900; font-size:26px; text-align:center; }
+  .fh.strong { background:var(--surface-brand); color:var(--text-on-brand); }
+  .fh.weak   { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .frow { padding:22px 30px; border-top:1.5px solid var(--border-subtle); }
+  .frow:first-of-type { border-top:none; }
+  .frow .nm { font-family:var(--font-display); font-weight:800; font-size:22px; color:var(--text-primary); margin-bottom:6px; }
+  .frow .rs { font-family:var(--font-body); font-size:16.5px; line-height:1.4; color:var(--text-secondary); }
+  .frow .rs code { font-family:var(--font-mono); font-size:15px; font-weight:700; color:var(--text-primary); }
+  .band { margin-top:22px; background:var(--surface-brand-deep); color:var(--text-on-brand);
+          border-radius:var(--radius-lg); padding:18px 30px; display:flex; align-items:center; gap:22px; }
+  .band .bk { font-family:var(--font-body); font-weight:800; font-size:13px; letter-spacing:.12em;
+              text-transform:uppercase; opacity:.85; white-space:nowrap; }
+  .band .bt { font-family:var(--font-display); font-weight:900; font-size:24px; line-height:1.1; }
+</style>
+  <div class="stbr-eyebrow">a judgment aid, not an advertisement</div>
+  <h2 class="viz-title" style="font-size:48px;">where stablecoin rails fit &mdash; and where they don't</h2>
+  <div class="cols">
+    <div class="fitcol">
+      <div class="fh strong">strong fit</div>
+      <div class="frow"><div class="nm">micro &amp; small-ticket sales</div><div class="rs">flat sub-cent base fee vs percentage interchange</div></div>
+      <div class="frow"><div class="nm">escaping settlement float</div><div class="rs">settled means spendable in seconds &mdash; no D+30, no fee to anticipate it</div></div>
+      <div class="frow"><div class="nm">cross-border payments</div><div class="rs">no correspondent-bank days, near-zero fees</div></div>
+    </div>
+    <div class="fitcol">
+      <div class="fh weak">weak fit</div>
+      <div class="frow"><div class="nm">high-fraud consumer verticals</div><div class="rs">buyers expect reversal on demand; finality deletes the dispute path</div></div>
+      <div class="frow"><div class="nm">reversibility as the product</div><div class="rs">when the bank-backed undo is the value proposition itself</div></div>
+      <div class="frow"><div class="nm">compliance-mandated reversal</div><div class="rs">flows where regulation requires an institutional reversal path</div></div>
+    </div>
+  </div>
+  <div class="band">
+    <span class="bk">the takeaway</span>
+    <span class="bt">match the rail to the flow &mdash; both columns are correct answers to different questions</span>
+  </div>
+</div>
+</body></html>

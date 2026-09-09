@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Four standards, three axes that matter to an integrator
+     purpose: compress the standards war into the merchant-of-record, transport, and settlement comparison the challenge asks the reader to defend
+     data: x402 (v2): merchant-of-record = you, the API owner; transport = custom headers (PAYMENT-SIGNATURE / PAYMENT-RESPONSE) over HTTP 402; settlement = stablecoins on-chain via a facilitator that verifies and settles (trust boundary) MPP (solana/charge method spec draft-solana-charge-00, registered under the base IETF draft draft-httpauth-payment-00 which expires 2026-12-21): merchant-of-record framing = unchanged, buyer pays you directly; transport = standard HTTP auth (WWW-Authenticate: Payment / Authorization / Payment-Receipt); settlement = Solana, pull mode default with server as optional co-signing fee payer, splits capped at 8 additional transfers AP2 (v0.2, Google + FIDO Alliance): merchant-of-record = your existing processor arrangement, unchanged by the protocol; transport = verifiable digital credentials + Checkout / Payment Mandates; settlement = existing rails, cards-first ACP (Stripe + OpenAI, Apache-2.0): merchant-of-record = explicitly the merchant, by design; transport = platform checkout (ChatGPT first) + Shared Payment Token; settlement = processor rails, cards-first
+     prompt: Comparison matrix, four columns (x402, MPP, AP2, ACP) by three rows (merchant-of-record, transport, settlement). Cell text from data, tightened. Badge the MPP column header with "method spec, not on the IETF's clock" and the ACP row cell "merchant stays MoR" as the emphasized cell of the table. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:598px;height:531px;bottom:-316px;left:-316px;border-radius:54% 63% 45% 42% / 59% 43% 45% 60%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-2xl); padding:40px 48px;">
+    <div class="stbr-eyebrow">the integrator&rsquo;s view</div>
+    <h2 class="viz-title" style="font-size:42px; margin-bottom:22px;">four standards, three axes that matter</h2>
+
+    <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+      <tr>
+        <td style="width:170px; padding:14px 16px;"></td>
+        <td style="padding:14px 16px; background:var(--stbr-emerald); border-radius:12px 0 0 0; border-right:2px solid var(--surface-card); vertical-align:top;">
+          <div style="font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-on-brand);">x402</div>
+          <div style="font-family:var(--font-body); font-size:13px; color:var(--stbr-cream); margin-top:3px;">v2</div>
+        </td>
+        <td style="padding:14px 16px; background:var(--stbr-emerald); border-right:2px solid var(--surface-card); vertical-align:top;">
+          <div style="font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-on-brand);">MPP</div>
+          <div style="display:inline-block; background:var(--stbr-cream); color:var(--stbr-dark); border-radius:var(--radius-pill); padding:2px 10px; font-family:var(--font-body); font-size:12px; font-weight:700; margin-top:4px;">method spec &middot; not on the IETF&rsquo;s clock</div>
+          <div style="font-family:var(--font-body); font-size:12px; color:var(--stbr-cream); margin-top:4px;"><span style="font-family:var(--font-mono);">solana/charge</span> under draft-httpauth-payment-00</div>
+        </td>
+        <td style="padding:14px 16px; background:var(--stbr-emerald); border-right:2px solid var(--surface-card); vertical-align:top;">
+          <div style="font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-on-brand);">AP2</div>
+          <div style="font-family:var(--font-body); font-size:13px; color:var(--stbr-cream); margin-top:3px;">v0.2 &middot; Google + FIDO Alliance</div>
+        </td>
+        <td style="padding:14px 16px; background:var(--stbr-emerald); border-radius:0 12px 0 0; vertical-align:top;">
+          <div style="font-family:var(--font-display); font-weight:900; font-size:22px; color:var(--text-on-brand);">ACP</div>
+          <div style="font-family:var(--font-body); font-size:13px; color:var(--stbr-cream); margin-top:3px;">Stripe + OpenAI &middot; Apache-2.0</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:16px; font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top;">merchant-of-record</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top;">you, the API owner</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top;">framing unchanged &mdash; the buyer pays you directly</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top;">your existing processor arrangement, unchanged by the protocol</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--stbr-dark); border-bottom:1px solid var(--border-subtle); vertical-align:top; background:#FFF1BE;"><span style="font-weight:800;">merchant stays MoR</span> &mdash; explicitly the merchant, by design</td>
+      </tr>
+      <tr>
+        <td style="padding:16px; font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top;">transport</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top; background:var(--surface-paper);">custom headers over HTTP 402: <span style="font-family:var(--font-mono); font-size:12.5px;">PAYMENT-SIGNATURE / PAYMENT-RESPONSE</span></td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top; background:var(--surface-paper);">standard HTTP auth: <span style="font-family:var(--font-mono); font-size:12.5px;">WWW-Authenticate: Payment / Authorization / Payment-Receipt</span></td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top; background:var(--surface-paper);">verifiable digital credentials + Checkout / Payment Mandates</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); border-bottom:1px solid var(--border-subtle); vertical-align:top; background:var(--surface-paper);">platform checkout (ChatGPT first) + Shared Payment Token</td>
+      </tr>
+      <tr>
+        <td style="padding:16px; font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--text-primary); vertical-align:top;">settlement</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); vertical-align:top;">stablecoins on-chain via a facilitator that verifies and settles &mdash; a trust boundary</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); vertical-align:top;">Solana; pull mode default, server as optional co-signing fee payer; splits capped at 8 additional transfers</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); vertical-align:top;">existing rails, cards-first</td>
+        <td style="padding:16px; font-family:var(--font-body); font-size:14px; color:var(--text-primary); vertical-align:top;">processor rails, cards-first</td>
+      </tr>
+    </table>
+  </div>
+</div>
+</body></html>

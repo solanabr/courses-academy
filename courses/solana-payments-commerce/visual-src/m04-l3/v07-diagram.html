@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Reading the refund destination off the origin transaction
+     purpose: show how the debited token balance in the origin transaction names the originating wallet, so no human input ever sets the destination
+     data: origin transaction, fetched by signature -> meta.preTokenBalances + meta.postTokenBalances filter: keep entries whose mint matches the payment mint compare per accountIndex: post amount < pre amount -> that account is the payer's ATA the debited ATA's owner field -> the originating wallet -> refund destination explicitly absent: any address typed by support or supplied by the refund requester
+     prompt: Left-to-right dataflow. A transaction card on the left listing preTokenBalances and postTokenBalances, an arrow through a mint-filter node, then a comparison node where the post amount is less than the pre amount, ending at a wallet node labeled owner of the debited ATA and marked as the only source of the refund destination. A crossed-out side node labels the excluded alternative: an address from a support ticket. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:522px;height:477px;bottom:-292px;left:543px;border-radius:54% 40% 52% 35% / 59% 65% 65% 60%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 52px 36px; }
+  .flow { display:flex; align-items:stretch; margin-top:20px; }
+  .tx { flex:0 0 350px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; }
+  .tx .hd { background:var(--surface-inverse); padding:10px 18px; }
+  .tx .hd .t { font-family:var(--font-display); font-weight:800; font-size:16px; color:var(--text-on-dark); }
+  .tx .hd .s { font-family:var(--font-body); font-size:11px; color:rgba(245,232,202,.7); margin-top:2px; }
+  .tx .f { padding:10px 18px; border-top:1.5px solid var(--border-subtle); font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--stbr-green); }
+  .tx .f .note { display:block; font-family:var(--font-body); font-weight:400; font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .node { border:2px solid var(--border-subtle); border-radius:var(--radius-lg); padding:16px 18px; display:flex; flex-direction:column; justify-content:center; background:var(--surface-card); }
+  .node .t { font-family:var(--font-display); font-weight:800; font-size:16.5px; color:var(--text-primary); line-height:1.2; }
+  .node .d { font-family:var(--font-body); font-size:12.5px; color:var(--text-secondary); margin-top:6px; line-height:1.35; }
+  .node code { font-family:var(--font-mono); font-size:.92em; }
+  .filter { flex:0 0 268px; }
+  .cmpn { flex:0 0 286px; }
+  .wallet { flex:0 0 288px; box-sizing:border-box; background:var(--stbr-yellow); border:none; border-radius:var(--radius-lg); padding:34px 20px 16px; display:block; }
+  .wallet .t { font-family:var(--font-display); font-weight:900; font-size:17.5px; color:var(--stbr-dark); line-height:1.25; display:block; }
+  .wallet .d { font-family:var(--font-body); font-weight:700; font-size:12.5px; color:var(--stbr-dark); margin-top:10px; line-height:1.35; display:block; }
+  .arrcell { flex:0 0 42px; display:flex; align-items:center; justify-content:center; }
+  .absent { margin-top:34px; display:flex; align-items:center; justify-content:flex-end; gap:14px; }
+  .absent .no { flex:0 0 auto; width:34px; height:34px; border-radius:50%; border:2.5px solid #a5342a; display:flex; align-items:center; justify-content:center; font-family:var(--font-body); font-weight:900; font-size:17px; color:#a5342a; }
+  .absent .box { border:2px dashed var(--border-strong); border-radius:var(--radius-lg); padding:11px 18px; }
+  .absent .box .t { font-family:var(--font-body); font-weight:800; font-size:14.5px; color:var(--text-secondary); text-decoration:line-through; }
+  .absent .why { font-family:var(--font-body); font-size:13px; color:var(--text-muted); }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">no human ever types the destination</div>
+  <h2 class="viz-title">reading the refund destination off the origin tx</h2>
+  <div class="flow">
+    <div class="tx">
+      <div class="hd"><div class="t">origin transaction</div><div class="s">fetched by signature</div></div>
+      <div class="f">meta.preTokenBalances<span class="note">token balances before the transfer</span></div>
+      <div class="f">meta.postTokenBalances<span class="note">token balances after the transfer</span></div>
+    </div>
+    <div class="arrcell"><svg width="34" height="16"><line x1="0" y1="8" x2="24" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,8 22,3 22,13" fill="#1b231d"/></svg></div>
+    <div class="node filter">
+      <div class="t">filter by mint</div>
+      <div class="d">keep entries whose <code>mint</code> matches the payment mint</div>
+    </div>
+    <div class="arrcell"><svg width="34" height="16"><line x1="0" y1="8" x2="24" y2="8" stroke="#1b231d" stroke-width="2.5"/><polygon points="34,8 22,3 22,13" fill="#1b231d"/></svg></div>
+    <div class="node cmpn">
+      <div class="t">compare per <code>accountIndex</code></div>
+      <div class="d"><code>post&nbsp;&lt;&nbsp;pre</code> &rarr; that account is the payer&rsquo;s ATA &mdash; the debited one</div>
+    </div>
+    <div class="arrcell"><svg width="34" height="16"><line x1="0" y1="8" x2="24" y2="8" stroke="#008b4c" stroke-width="2.5"/><polygon points="34,8 22,3 22,13" fill="#008b4c"/></svg></div>
+    <div class="wallet">
+      <div class="t">the debited ATA&rsquo;s <code>owner</code> &rarr; the originating wallet</div>
+      <div class="d">the ONLY source of the refund destination</div>
+    </div>
+  </div>
+  <div class="absent">
+    <div class="no">&#10005;</div>
+    <div class="box"><span class="t">an address typed by support or supplied by the refund requester</span></div>
+    <div class="why">explicitly absent</div>
+  </div>
+</div>
+</div>
+</body></html>

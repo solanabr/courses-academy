@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- annotated-code: The four fields verify() reads from a jsonParsed getTransaction response
+     purpose: give the reader a map of the response anatomy before the code consumes it
+     data: meta.preTokenBalances / meta.postTokenBalances: entries of { accountIndex, mint, owner, programId, uiTokenAmount: { amount, decimals } } for every token account the tx touched, snapshotted before and after annotation 1: programId on each entry names the owning token program: classic Token or Token-2022; this is the check almost everyone skips annotation 2: uiTokenAmount.amount is an exact base-unit integer as a string; pair pre and post by accountIndex and subtract as bigints; never touch the float uiAmount transaction.message.instructions: with jsonParsed, an spl-memo instruction arrives as { program: "spl-memo", parsed: "<the memo text>" }; that parsed string is where your builder stamped the order id meta.err: non-null means the transaction landed but failed; a failed transfer moves nothing, so its deltas are zero
+     prompt: Annotated code panel showing an abridged jsonParsed getTransaction response as JSON, with the three regions the verifier reads (pre/postTokenBalances, the parsed spl-memo instruction, meta.err) highlighted and the annotations from data attached as callouts pointing at programId, uiTokenAmount.amount, and parsed. Elide everything else with ellipses so the three regions dominate. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:485px;bottom:-271px;right:-271px;border-radius:52% 52% 58% 45% / 55% 41% 43% 65%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .wrap { display:flex; gap:26px; margin-top:8px; align-items:stretch; }
+  .code { flex:0 0 790px; background:var(--surface-inverse); border-radius:var(--radius-2xl);
+          padding:26px 28px; font-family:var(--font-mono); font-size:16.5px; line-height:1.62;
+          color:var(--stbr-cream); }
+  .code .dim { color:rgba(245,232,202,0.45); }
+  .code .k { color:rgba(245,232,202,0.85); }
+  .ln { display:block; white-space:pre; }
+  .hl { display:inline-block; border-radius:6px; padding:0 6px; margin:0 -6px; }
+  .hl-y { background:rgba(255,210,63,0.22); outline:1.5px solid var(--stbr-yellow); color:var(--stbr-yellow); }
+  .hl-g { background:rgba(0,139,76,0.3); outline:1.5px solid var(--stbr-emerald); color:#fff; }
+  .mark { display:inline-block; width:26px; height:26px; border-radius:50%;
+          font-family:var(--font-body); font-weight:900; font-size:15px; line-height:26px;
+          text-align:center; vertical-align:middle; margin-left:10px; }
+  .mark-y { background:var(--stbr-yellow); color:var(--stbr-dark); }
+  .mark-g { background:var(--stbr-emerald); color:#fff; }
+  .notes { flex:1 1 auto; display:flex; flex-direction:column; gap:16px; }
+  .note { flex:1 1 auto; background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-left:6px solid var(--stbr-emerald); border-radius:var(--radius-lg);
+          padding:14px 18px; font-family:var(--font-body); font-size:14.5px; line-height:1.45;
+          color:var(--text-secondary); display:flex; gap:12px; align-items:flex-start; }
+  .note .mark { margin:2px 0 0; flex:0 0 26px; }
+  .note b { color:var(--text-primary); }
+  .note code { font-family:var(--font-mono); font-size:13.5px; color:var(--stbr-green); }
+  .note-y { border-left-color:var(--stbr-yellow); background:rgba(255,210,63,0.14); }
+  .note-y b { color:var(--stbr-dark); }
+</style>
+  <div class="stbr-eyebrow">response anatomy, before the code consumes it</div>
+  <h2 class="viz-title">the four fields verify() reads</h2>
+  <div class="wrap">
+    <div class="code">
+<span class="ln">{</span>
+<span class="ln">  <span class="k">"meta"</span>: {</span>
+<span class="ln">    <span class="hl hl-g">"err": null</span>,<span class="mark mark-g">4</span></span>
+<span class="ln">    <span class="k">"preTokenBalances"</span>: [ <span class="dim">&hellip; before &hellip;</span> ],</span>
+<span class="ln">    <span class="k">"postTokenBalances"</span>: [</span>
+<span class="ln">      { <span class="k">"accountIndex"</span>: 2,</span>
+<span class="ln">        <span class="k">"mint"</span>: "EPjF&hellip;Dt1v",</span>
+<span class="ln">        <span class="k">"owner"</span>: "MERCH&hellip;",</span>
+<span class="ln">        <span class="hl hl-y">"programId": "Tokenkeg&hellip;"</span>,<span class="mark mark-y">1</span></span>
+<span class="ln">        <span class="k">"uiTokenAmount"</span>: {</span>
+<span class="ln">          <span class="hl hl-g">"amount": "36115000"</span>, <span class="k">"decimals"</span>: 6<span class="mark mark-g">2</span></span>
+<span class="ln">        } }, <span class="dim">&hellip;</span></span>
+<span class="ln">    ] },</span>
+<span class="ln">  <span class="k">"transaction"</span>: { <span class="k">"message"</span>: { <span class="k">"instructions"</span>: [ <span class="dim">&hellip;</span>,</span>
+<span class="ln">      { <span class="k">"program"</span>: "spl-memo",</span>
+<span class="ln">        <span class="hl hl-g">"parsed": "ord-1024"</span> }<span class="mark mark-g">3</span></span>
+<span class="ln">  ] } }</span>
+<span class="ln">}</span>
+    </div>
+    <div class="notes">
+      <div class="note note-y"><span class="mark mark-y">1</span><span><b>programId names the owning token program</b> &mdash; classic Token or Token-2022. This is the check almost everyone skips.</span></div>
+      <div class="note"><span class="mark mark-g">2</span><span><b><code>uiTokenAmount.amount</code> is an exact base-unit integer as a string.</b> Pair pre and post by <code>accountIndex</code> and subtract as bigints &mdash; never touch the float <code>uiAmount</code>.</span></div>
+      <div class="note"><span class="mark mark-g">3</span><span><b>With jsonParsed, an spl-memo instruction arrives parsed.</b> That <code>parsed</code> string is where your builder stamped the order id.</span></div>
+      <div class="note"><span class="mark mark-g">4</span><span><b>Non-null <code>meta.err</code> means landed but failed.</b> A failed transfer moves nothing, so its deltas are zero.</span></div>
+    </div>
+  </div>
+</div>
+</body></html>

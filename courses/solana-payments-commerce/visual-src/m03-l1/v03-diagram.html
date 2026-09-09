@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: Anatomy of a transfer-request URL
+     purpose: decompose the URL into its parts so a malformed QR can be debugged by reading its pieces
+     data: solana:4vbaMR79...WgHM?amount=12.5&spl-token=4zMM...ncDU&reference=CD9G...rvDh&label=Wavelength+Records&message=Slow+Tides...&memo=LP-041 part: "solana:" scheme -> a payment URL, wallets claim this scheme part: recipient address -> your merchant wallet, where the money goes part: amount=12.5 -> DECIMAL token units, wallet applies mint decimals part: spl-token=<mint> -> which token; omitted means native SOL part: reference=<32-byte base58 key> -> your join key, minted fresh per checkout part: label, message -> shown to the customer at approval part: memo=LP-041 -> written on-chain via the memo program
+     prompt: A single long URL rendered in monospace, broken across lines, with each segment color-coded and a labeled callout line to each part as listed in data. Emphasize the reference segment with a stronger callout noting "chosen by YOU, before the payment exists". Keep the URL text verbatim.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:534px;height:514px;bottom:-321px;left:-321px;border-radius:40% 48% 50% 61% / 55% 39% 48% 36%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow">read a malformed qr by its pieces</div>
+  <h2 class="viz-title">Anatomy of a transfer-request URL</h2>
+
+  <div style="background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:24px;padding:28px 36px;margin-bottom:22px;font-family:var(--font-mono);font-size:25px;font-weight:600;line-height:1.75;color:var(--text-primary);word-break:break-all;">
+    <span style="color:var(--stbr-emerald);font-weight:700;">solana:</span><span style="color:var(--stbr-dark);">4vbaMR79...WgHM</span><span style="color:var(--stbr-ink-500);">?</span><span style="color:var(--stbr-green);">amount=12.5</span><span style="color:var(--stbr-ink-500);">&amp;</span><span style="color:var(--stbr-emerald-800);">spl-token=4zMM...ncDU</span><span style="color:var(--stbr-ink-500);">&amp;</span><span style="background:var(--surface-accent);color:var(--text-on-accent);font-weight:700;border-radius:8px;padding:2px 8px;">reference=CD9G...rvDh</span><span style="color:var(--stbr-ink-500);">&amp;</span><span style="color:var(--stbr-ink-700);">label=Wavelength+Records</span><span style="color:var(--stbr-ink-500);">&amp;</span><span style="color:var(--stbr-ink-700);">message=Slow+Tides...</span><span style="color:var(--stbr-ink-500);">&amp;</span><span style="color:var(--stbr-green-700);">memo=LP-041</span>
+  </div>
+
+  <div style="display:flex;gap:22px;">
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:12px;align-items:baseline;"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-emerald);white-space:nowrap;">solana:</span><span style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">a payment URL &mdash; wallets claim this scheme</span></div>
+      <div style="display:flex;gap:12px;align-items:baseline;"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-dark);white-space:nowrap;">4vbaMR79...WgHM</span><span style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">your merchant wallet, where the money goes</span></div>
+      <div style="display:flex;gap:12px;align-items:baseline;"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-green);white-space:nowrap;">amount=12.5</span><span style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);"><strong>DECIMAL</strong> token units &mdash; the wallet applies mint decimals</span></div>
+      <div style="display:flex;gap:12px;align-items:baseline;"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-emerald-800);white-space:nowrap;">spl-token=&lt;mint&gt;</span><span style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">which token; omitted means native SOL</span></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:12px;align-items:baseline;"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-ink-700);white-space:nowrap;">label, message</span><span style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">shown to the customer at approval</span></div>
+      <div style="display:flex;gap:12px;align-items:baseline;"><span style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--stbr-green-700);white-space:nowrap;">memo=LP-041</span><span style="font-family:var(--font-body);font-size:14px;color:var(--text-secondary);">written on-chain via the memo program</span></div>
+      <div style="background:var(--surface-accent);border-radius:14px;padding:14px 18px;margin-top:2px;">
+        <div style="font-family:var(--font-mono);font-size:15px;font-weight:700;color:var(--text-on-accent);margin-bottom:4px;">reference=&lt;32-byte base58 key&gt;</div>
+        <div style="font-family:var(--font-body);font-size:14px;color:var(--text-on-accent);">your join key, minted fresh per checkout &mdash; <strong>chosen by YOU, before the payment exists</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>

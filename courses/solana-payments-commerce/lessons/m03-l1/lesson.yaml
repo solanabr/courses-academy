@@ -1,0 +1,105 @@
+id: lesson-spc-m03-l1
+slug: m03-l1
+title: "Checkout with a QR: the Solana Pay spec, live"
+skills:
+  - solana-pay
+  - rpc-reads
+versionStamp:
+  checkedAt: "2026-08-22"
+  packages:
+    "@solana/pay": "1.0.26"
+    "@solana/kit": "6.10.0"
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check-overview
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "You build a Solana Pay transfer request to charge 12.50 USDC and, because USDC has 6 decimals, you write amount=12500000 in the URL. Your test wallet asks the customer to pay 12,500,000 USDC. What went wrong?"
+        multiSelect: false
+        options:
+          - id: b
+            label: "validateTransfer rejects base-unit amounts, so you have to call findReference first and let it normalize the URL's decimals."
+            correct: false
+            feedback: "validateTransfer runs later, server-side, against the settled transfer; it is not why the URL charged the wrong amount."
+          - id: c
+            label: "A Solana Pay amount is in decimal token units, not base units: write amount=12.5 and the wallet applies mint decimals."
+            correct: true
+            feedback: "The URL carries a human quantity because the wallet scales by the mint's decimals; one layer down, the instruction still wants base units."
+          - id: d
+            label: "Your test wallet is scaling by the mint's decimals a second time; a compliant wallet would charge the customer 12.5 USDC."
+            correct: false
+            feedback: "The wallet scaled exactly once, which is what the spec asks of it. The doubling happened in your URL, where you converted to base units before handing the number to a field that wants human units."
+          - id: a
+            label: "The spl-token parameter has to come before amount in the query string, otherwise the wallet falls back to native SOL and scales your number by nine decimals instead of six."
+            correct: false
+            feedback: "Query-parameter order is irrelevant to how the amount is interpreted; the mint is set by spl-token wherever it appears, and there is no silent SOL fallback."
+        explanation: "The Solana Pay spec defines amount as a UI (decimal) quantity of the token, and the wallet multiplies by the mint's decimals to get base units. Writing base units in the URL charges the customer that many whole tokens. This is the single most common Solana Pay checkout bug."
+      - id: q2
+        prompt: "A teammate puts the customer's email in the checkout URL's `memo` and the SKU in `message`, reasoning that both are just labels the wallet passes along. What is wrong with that?"
+        multiSelect: false
+        options:
+          - id: d
+            label: "The SKU is misplaced, but a memo is readable by the payer and the payee alone, so the customer's email stays between them."
+            correct: false
+            feedback: "Nothing on this ledger is scoped to the parties. The same unauthenticated RPC read you ran in module 1 returns a stranger's memo, which is why the rule is to put nothing in one you would not print on a public receipt."
+          - id: b
+            label: "The two are simply swapped: `message` is what settles on-chain, and `memo` is the one the customer sees and the wallet discards."
+            correct: false
+            feedback: "The direction is backwards. The wallet writes `memo` into the transaction through the memo program, while `message` is rendered for the human approving and then discarded."
+          - id: a
+            label: "`memo` settles on-chain in public, so the email is exposed forever, and `message` is gone once the customer approves."
+            correct: true
+            feedback: "Both halves cost you something: a public ledger entry you cannot retract, and a SKU that never leaves the approval screen, so the sale lands with nothing to reconcile against."
+          - id: c
+            label: "Nothing is wrong, because both are query parameters the wallet renders on its approval screen, and a transfer request writes neither of them into the transaction it builds."
+            correct: false
+            feedback: "A transfer request does write one of them: `memo` becomes a memo-program instruction riding beside the transfer, which is how a SKU can still be read off the chain months later."
+        explanation: "`message` and `memo` sound alike and run in opposite directions. `message` is display-only: the wallet shows it at approval time and it never touches the chain. `memo` is written into the transaction by the memo program, so it settles publicly and permanently beside the payment. Human-facing text goes in `message`, reconciliation keys go in `memo`, and personal data goes in neither."
+  - key: check-lab
+    type: quiz
+    questions:
+      - id: q3
+        prompt: "Your checkout page shows the QR. Server-side, how does your watcher learn the customer actually paid, and what does it match on?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "It trusts the wallet's success callback in the browser and records the sale as soon as the page reports done."
+            correct: false
+            feedback: "Frontend confirmations are spoofable; trusting the browser is the exact anti-pattern the back-office module (m04) exists to fix."
+          - id: b
+            label: "It subscribes with watchReference (a WebSocket subscription) on the reference key you embedded, then confirms the transfer with validateTransfer."
+            correct: true
+            feedback: "A subscription only proves that something carrying your key landed; amount, mint, and payee are still yours to check against the order."
+          - id: c
+            label: "It periodically re-reads the QR image and decodes the resulting signature once the wallet stamps it back onto the code."
+            correct: false
+            feedback: "The QR is a static payment request; the signature is never written back to the image. Detection happens on-chain by reference, not by re-reading the QR."
+          - id: d
+            label: "It arms a watchReference subscription on the reference key and books the sale the moment it resolves, since only a matching transfer can resolve it."
+            correct: false
+            feedback: "The subscription half is right and the booking is premature. Resolving proves a transaction mentioning your key landed, and a reference is a public account key anyone can attach, so validateTransfer is what turns a doorbell into a payment."
+        explanation: "You chose the reference key before the payment existed, so you can search for a transfer carrying it. watchReference opens a WebSocket subscription that fires when a matching transfer appears, and validateTransfer then confirms the amount, recipient, and mint are what you expected. The browser is never the source of truth."
+      - id: q4
+        prompt: "You mint a fresh random 32-byte key for every checkout, before anyone has paid a cent. Every settled payment already carries a globally unique id of its own. So why bother with the extra key?"
+        multiSelect: false
+        options:
+          - id: a
+            label: "The reference is derived from the customer's wallet address at scan time, so it doubles as a refund handle and lets you push money back later without ever asking them for an address."
+            correct: false
+            feedback: "You generate the reference yourself, before the customer has scanned anything; it is random bytes carrying no wallet identity, so it cannot serve as a refund handle."
+          - id: d
+            label: "The wallet hands the transfer's signature back to your page at approval, so you can join it to the order then and the reference is just insurance."
+            correct: false
+            feedback: "On a scanned QR the paying wallet is a different device from your checkout page, so there is no callback to hand anything back. Even where one exists the browser is not evidence, which is why the server needs a handle it chose itself."
+          - id: b
+            label: "The reference encrypts the amount and the recipient in the URL, so the wallet decrypts them at scan time and the customer cannot edit the price before paying."
+            correct: false
+            feedback: "References do not encrypt anything; the amount is plainly in the URL. Tamper-resistance is exactly why the next lesson moves pricing server-side."
+          - id: c
+            label: "You cannot know the signature in advance, but you did choose the reference, so it is the join key that ties one on-chain transfer to one order."
+            correct: true
+            feedback: "It joins, but it never authenticates: the reference is public."
+        explanation: "The signature only exists after the payment lands, so you cannot pre-register it against an order. The reference is a value you pick up front and embed, letting findReference/watchReference locate the exact transfer for a given order without unique deposit addresses. It is the join key between your ledger and the chain."

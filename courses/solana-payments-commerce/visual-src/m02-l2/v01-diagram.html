@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: One owner field, two token programs
+     purpose: make the routing fact physical: the mint's owner field names the program every transfer must target
+     data: Left mint card: USDC, EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v, decimals 6, owner -> TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA (classic Token program) Right mint card: PYUSD, 2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo, decimals 6, owner -> TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb (Token-2022 program) Bottom rule: a TransferChecked instruction must be addressed to the mint's owner program; an instruction aimed at the other program fails to execute
+     prompt: Two account cards side by side, each showing a mint with its address, decimals, and an owner field rendered as an arrow to one of two program boxes below (classic Token program, Token-2022 program). Highlight the owner field on both cards. Under the diagram, one full-width rule strip stating that transfers must target the mint's owner program. Addresses in code style, truncated middles acceptable.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:554px;height:391px;right:-337px;top:150px;border-radius:52% 54% 35% 49% / 53% 54% 54% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:527px;height:416px;bottom:-238px;left:738px;border-radius:59% 42% 38% 45% / 62% 50% 39% 51%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:44px 52px 40px; }
+  .cols { display:flex; gap:48px; margin-top:26px; }
+  .col { flex:1 1 0; display:flex; flex-direction:column; align-items:stretch; }
+  .mint { border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface-card); }
+  .mint .head { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:2px solid var(--border-subtle); }
+  .mint .tok { font-family:var(--font-display); font-weight:900; font-size:28px; color:var(--text-primary); }
+  .mint .tag { font-family:var(--font-body); font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); border:1.5px solid var(--border-subtle); border-radius:var(--radius-pill); padding:4px 12px; }
+  .frow { display:flex; align-items:baseline; gap:14px; padding:10px 20px; border-bottom:1.5px solid var(--border-subtle); }
+  .frow .k { flex:0 0 92px; font-family:var(--font-body); font-weight:700; font-size:13px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-muted); }
+  .frow .v { font-family:var(--font-mono); font-weight:700; font-size:16px; color:var(--text-primary); }
+  .frow.owner { background:rgba(255,210,63,.28); border-bottom:0; border-top:2px solid var(--stbr-yellow); }
+  .frow.owner .k { color:var(--text-primary); }
+  .arr { display:flex; justify-content:center; padding:2px 0; }
+  .prog { border-radius:var(--radius-lg); padding:16px 20px; text-align:center; }
+  .prog .pn { font-family:var(--font-display); font-weight:800; font-size:20px; }
+  .prog .pid { font-family:var(--font-mono); font-weight:600; font-size:14px; margin-top:4px; opacity:.85; }
+  .prog.classic { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .prog.t22 { background:var(--surface-brand); color:var(--text-on-brand); }
+  .rule { margin-top:30px; background:var(--surface-brand-deep); color:var(--text-on-brand); border-radius:var(--radius-lg); padding:16px 26px; font-family:var(--font-body); font-weight:700; font-size:18px; line-height:1.35; text-align:center; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">one owner field, two token programs</div>
+  <h2 class="viz-title">the mint's owner names the program</h2>
+  <div class="cols">
+    <div class="col">
+      <div class="mint">
+        <div class="head"><span class="tok">USDC</span><span class="tag">mint account</span></div>
+        <div class="frow"><span class="k">address</span><span class="v">EPjFWdd5Auf&hellip;GkZwyTDt1v</span></div>
+        <div class="frow"><span class="k">decimals</span><span class="v">6</span></div>
+        <div class="frow owner"><span class="k">owner</span><span class="v">TokenkegQfe&hellip;Ss623VQ5DA</span></div>
+      </div>
+      <div class="arr"><svg width="16" height="34"><line x1="8" y1="0" x2="8" y2="24" stroke="#1b231d" stroke-width="2.5"/><polygon points="8,34 3,24 13,24" fill="#1b231d"/></svg></div>
+      <div class="prog classic"><div class="pn">classic Token program</div><div class="pid">TokenkegQfe&hellip;Ss623VQ5DA</div></div>
+    </div>
+    <div class="col">
+      <div class="mint">
+        <div class="head"><span class="tok">PYUSD</span><span class="tag">mint account</span></div>
+        <div class="frow"><span class="k">address</span><span class="v">2b1kV6DkPAn&hellip;ZfHsFu24GXo</span></div>
+        <div class="frow"><span class="k">decimals</span><span class="v">6</span></div>
+        <div class="frow owner"><span class="k">owner</span><span class="v">TokenzQdBNb&hellip;qCXEpPxuEb</span></div>
+      </div>
+      <div class="arr"><svg width="16" height="34"><line x1="8" y1="0" x2="8" y2="24" stroke="#008b4c" stroke-width="2.5"/><polygon points="8,34 3,24 13,24" fill="#008b4c"/></svg></div>
+      <div class="prog t22"><div class="pn">Token-2022 program</div><div class="pid">TokenzQdBNb&hellip;qCXEpPxuEb</div></div>
+    </div>
+  </div>
+  <div class="rule">a <b>TransferChecked</b> instruction must be addressed to the mint's owner program &mdash; aimed at the other program, it fails to execute</div>
+</div>
+</div>
+</body></html>

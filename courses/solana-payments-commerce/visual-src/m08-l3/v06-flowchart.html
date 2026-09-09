@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The one-page incident playbook as a decision tree
+     purpose: give the reader the playbook's skeleton so the lab's playbook row has a concrete shape to check against
+     data: signal arrives -> classify: fulfillment lagging | paymaster draining | suspected key leak fulfillment lagging -> switch backoffice to polling fallback -> keep selling -> fix webhook -> re-enable, verify with a test event paymaster draining -> freeze Kora sponsorship only -> normal (buyer-pays-fee) checkout stays up -> review allowlist and validation rules suspected key leak -> freeze switch: stop accepting new payments -> rotate keys, sweep receiver wallet -> post the pre-written buyer notice -> reopen only after the gate's key row re-passes every branch ends -> write the postmortem row into the gate
+     prompt: Decision tree, one root node (signal arrives) branching to three classified incident lanes, each lane a short vertical sequence of action nodes per data. Escalating severity left to right, with the key-leak lane visually heaviest. A shared terminal node at the bottom: postmortem feeds back into the gate. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:498px;height:506px;bottom:-290px;right:-290px;border-radius:64% 47% 36% 49% / 48% 58% 51% 46%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .tree { margin-top:6px; }
+  .root { width:360px; margin:0 auto; background:var(--surface-card); border:2px solid var(--stbr-dark);
+          border-radius:var(--radius-pill); padding:10px 24px; text-align:center;
+          font-family:var(--font-body); font-weight:800; font-size:17px; color:var(--text-primary); }
+  .lanes { display:flex; gap:24px; align-items:stretch; }
+  .lane { flex:1 1 0; display:flex; flex-direction:column; gap:10px; }
+  .lhead { border-radius:var(--radius-lg); padding:10px 16px; text-align:center;
+           font-family:var(--font-display); font-weight:900; font-size:18px; }
+  .lhead.l1 { background:var(--surface-card); border:2px solid var(--stbr-emerald); color:var(--stbr-emerald); }
+  .lhead.l2 { background:var(--surface-brand-deep); color:var(--text-on-brand); }
+  .lhead.l3 { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .step { background:var(--surface-card); border:1.5px solid var(--border-subtle);
+          border-radius:var(--radius-md); padding:9px 14px; font-family:var(--font-body);
+          font-size:13.5px; line-height:1.3; color:var(--text-primary); text-align:center;
+          min-height:44px; display:flex; align-items:center; justify-content:center; }
+  .step b { font-weight:800; }
+  .lane.hard .step { border-color:var(--stbr-dark); }
+  .step.freeze { background:var(--stbr-yellow); border:2px solid var(--stbr-dark); color:var(--stbr-dark);
+                 font-weight:800; }
+  .darr { display:flex; justify-content:center; margin:-4px 0; }
+  .term { margin-top:14px; background:var(--surface-brand); border-radius:var(--radius-lg);
+          padding:14px 28px; text-align:center; font-family:var(--font-body); font-weight:800;
+          font-size:17px; color:var(--text-on-brand); }
+</style>
+  <div class="stbr-eyebrow">the playbook's skeleton</div>
+  <h2 class="viz-title">the one-page incident playbook as a decision tree</h2>
+  <div class="tree">
+    <div class="root">signal arrives &rarr; classify</div>
+    <svg width="1408" height="42" viewBox="0 0 1408 42" style="display:block;margin:0 auto;">
+      <line x1="704" y1="2" x2="228" y2="30" stroke="#1B231D" stroke-width="2"/>
+      <line x1="704" y1="2" x2="704" y2="30" stroke="#1B231D" stroke-width="2"/>
+      <line x1="704" y1="2" x2="1180" y2="30" stroke="#1B231D" stroke-width="2"/>
+      <polygon points="221,26 228,40 235,26" fill="#1B231D"/>
+      <polygon points="697,28 704,42 711,28" fill="#1B231D"/>
+      <polygon points="1173,26 1180,40 1187,26" fill="#1B231D"/>
+    </svg>
+    <div class="lanes">
+      <div class="lane">
+        <div class="lhead l1">fulfillment lagging</div>
+        <div class="step"><span>switch backoffice to <b>polling fallback</b></span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#7d867f"/></svg></div>
+        <div class="step"><span><b>keep selling</b></span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#7d867f"/></svg></div>
+        <div class="step"><span>fix the webhook</span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#7d867f"/></svg></div>
+        <div class="step"><span>re-enable &mdash; verify with a test event</span></div>
+      </div>
+      <div class="lane">
+        <div class="lhead l2">paymaster draining</div>
+        <div class="step"><span>freeze <b>Kora sponsorship only</b></span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#7d867f"/></svg></div>
+        <div class="step"><span>normal buyer-pays-fee checkout <b>stays up</b></span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#7d867f"/></svg></div>
+        <div class="step"><span>review allowlist + validation rules</span></div>
+      </div>
+      <div class="lane hard">
+        <div class="lhead l3">suspected key leak</div>
+        <div class="step freeze"><span>FREEZE SWITCH: stop accepting new payments</span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#1B231D"/></svg></div>
+        <div class="step"><span>rotate keys &mdash; sweep the receiver wallet</span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#1B231D"/></svg></div>
+        <div class="step"><span>post the pre-written buyer notice</span></div>
+        <div class="darr"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="1,2 6,11 11,2" fill="#1B231D"/></svg></div>
+        <div class="step"><span>reopen only after the gate's <b>key row re-passes</b></span></div>
+      </div>
+    </div>
+    <div class="term">every branch ends the same way: write the postmortem row back into the gate</div>
+  </div>
+</div>
+</body></html>

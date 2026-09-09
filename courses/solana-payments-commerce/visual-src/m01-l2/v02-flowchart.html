@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The life of one payment through the commitment ladder
+     purpose: show where a payment can still vanish and where it becomes permanent, so the reader anchors the policy rule to the mechanism
+     data: submitted -> in a block (`processed`, ~1 slot, 300ms target) -> voted by stake supermajority (`confirmed`, roughly 1-2s, ecosystem estimate) -> rooted, cannot be dropped (`finalized`, ~9s derived from the ~30-slot gap at the 300ms target, a floor) risk annotations: at `processed`: block can be dropped in a fork, UI display only; at `confirmed`: default for most payments; at `finalized`: high-value / compliance default, no reversal path exists beyond this point for anyone
+     prompt: Left-to-right flowchart with four nodes: submitted, processed, confirmed, finalized. Under each of the three commitment nodes place its approximate timing label, marking the confirmed timing explicitly as "ecosystem estimate" and the finalized timing as "derived at the 300ms target slot time, a floor". Annotate the processed node with a "can be dropped in a fork" warning tag and the finalized node with a "no reversal path, for anyone" tag. One arrow per hop, no decorative icons.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:390px;right:-311px;top:114px;border-radius:49% 40% 55% 58% / 42% 61% 49% 61%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:530px;height:538px;bottom:-277px;left:-277px;border-radius:45% 56% 57% 45% / 53% 41% 39% 49%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .flow { display:flex; align-items:flex-start; justify-content:center; gap:0; margin-top:40px; }
+  .step { width:310px; flex:none; display:flex; flex-direction:column; align-items:center; }
+  .node { width:310px; height:118px; background:var(--surface-card); border:2.5px solid var(--border-strong);
+          border-radius:var(--radius-lg); display:flex; flex-direction:column; align-items:center;
+          justify-content:center; padding:0 16px; text-align:center; }
+  .node .nm { font-family:var(--font-display); font-weight:900; font-size:26px; color:var(--text-primary); }
+  .node .nm code { font-family:var(--font-mono); font-size:24px; font-weight:700; }
+  .node.drop { background:var(--stbr-yellow); border-color:var(--stbr-yellow); }
+  .node.drop .nm { color:var(--stbr-dark); }
+  .node.final { background:var(--surface-brand); border-color:var(--surface-brand); }
+  .node.final .nm { color:var(--text-on-brand); }
+  .timing { margin-top:14px; font-family:var(--font-body); font-weight:700; font-size:16px;
+            color:var(--text-primary); text-align:center; line-height:1.3; }
+  .timing .est { display:block; font-weight:400; font-size:13.5px; color:var(--text-muted); margin-top:3px; }
+  .tag { margin-top:12px; border-radius:var(--radius-pill); padding:7px 16px; font-family:var(--font-body);
+         font-weight:700; font-size:14px; line-height:1.25; text-align:center; }
+  .tag.warn { background:rgba(255,210,63,0.25); border:2px solid var(--stbr-yellow); color:var(--stbr-dark); }
+  .tag.ok   { border:2px solid var(--border-subtle); color:var(--text-secondary); }
+  .tag.hard { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .hop { width:64px; margin-top:47px; display:flex; justify-content:center; flex:none; }
+</style>
+  <div class="stbr-eyebrow">the life of one payment</div>
+  <h2 class="viz-title" style="font-size:48px;">where it can vanish, and where it becomes permanent</h2>
+  <div class="flow">
+    <div class="step">
+      <div class="node"><div class="nm">submitted</div></div>
+      <div class="timing">&nbsp;</div>
+    </div>
+    <div class="hop"><svg width="56" height="24"><line x1="2" y1="12" x2="42" y2="12" stroke="#1B231D" stroke-width="3"/><polygon points="42,4 56,12 42,20" fill="#1B231D"/></svg></div>
+    <div class="step">
+      <div class="node drop"><div class="nm"><code>processed</code></div></div>
+      <div class="timing">in a block &middot; ~1 slot<span class="est">300ms target</span></div>
+      <div class="tag warn">can be dropped in a fork &mdash; UI display only</div>
+    </div>
+    <div class="hop"><svg width="56" height="24"><line x1="2" y1="12" x2="42" y2="12" stroke="#1B231D" stroke-width="3"/><polygon points="42,4 56,12 42,20" fill="#1B231D"/></svg></div>
+    <div class="step">
+      <div class="node"><div class="nm"><code>confirmed</code></div></div>
+      <div class="timing">stake supermajority voted &middot; ~1&ndash;2s<span class="est">ecosystem estimate</span></div>
+      <div class="tag ok">default for most payments</div>
+    </div>
+    <div class="hop"><svg width="56" height="24"><line x1="2" y1="12" x2="42" y2="12" stroke="#1B231D" stroke-width="3"/><polygon points="42,4 56,12 42,20" fill="#1B231D"/></svg></div>
+    <div class="step">
+      <div class="node final"><div class="nm"><code>finalized</code></div></div>
+      <div class="timing">rooted, cannot be dropped &middot; ~9s<span class="est">derived at the 300ms target slot time &mdash; a floor</span></div>
+      <div class="tag hard">no reversal path, for anyone</div>
+      <div class="tag ok" style="margin-top:8px;">high-value / compliance default</div>
+    </div>
+  </div>
+</div>
+</body></html>

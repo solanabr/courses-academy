@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Card-rail refund vs push-payment refund
+     purpose: contrast who holds the reversal lever on each rail so the reader sees why the refund must be built, and what protects whom
+     data: axis: reversal primitive | card rail: chargeback + refunds API, issuer can claw back | push rail: none; refund is a new payment you construct axis: who can reverse | card rail: buyer via issuer, merchant via API | push rail: only the current holder of the funds, by pushing axis: docs coverage | card rail: full dispute machinery documented | push rail: no refunds page exists in Solana's payments docs axis: fraud exposure | card rail: merchant eats chargebacks | push rail: merchant eats mistaken refunds; nothing claws back an error axis: precedent followed | card rail: n/a | push rail: Stripe returns crypto refunds as stablecoins to the originating wallet
+     prompt: Two-column comparison, columns labeled card rail and push rail, five rows from the data axes. Emphasize the docs-coverage row (full machinery vs nothing) and the fraud-exposure row (chargebacks vs unrecoverable mistakes). Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:444px;height:507px;right:-221px;top:335px;border-radius:47% 62% 59% 61% / 45% 58% 39% 59%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .card { background:var(--surface-card); border-radius:var(--radius-2xl); padding:40px 52px 36px; }
+  .cmp { display:grid; grid-template-columns:270px 1fr 1fr; margin-top:18px; border:2px solid var(--border-strong); border-radius:var(--radius-lg); overflow:hidden; }
+  .hc { background:var(--surface-inverse); padding:13px 20px; font-family:var(--font-display); font-weight:900; font-size:20px; color:var(--text-on-dark); }
+  .hc.axis { font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:rgba(245,232,202,.7); display:flex; align-items:center; }
+  .cell { padding:12px 20px; border-top:1.5px solid var(--border-subtle); font-family:var(--font-body); font-size:14.5px; line-height:1.35; color:var(--text-secondary); background:var(--surface-card); }
+  .cell.axis { font-family:var(--font-display); font-weight:800; font-size:15px; color:var(--text-primary); }
+  .cell.mid { border-left:1.5px solid var(--border-subtle); border-right:1.5px solid var(--border-subtle); }
+  .hc.mid { border-left:1.5px solid rgba(245,232,202,.25); border-right:1.5px solid rgba(245,232,202,.25); }
+  .cell.hot { background:rgba(255,210,63,.22); color:var(--text-primary); font-weight:600; }
+  .cell b { font-weight:800; color:var(--text-primary); }
+  .verdict { margin-top:22px; background:var(--surface-brand); border-radius:var(--radius-lg); padding:16px 26px; display:flex; align-items:center; gap:16px; }
+  .verdict .lab { flex:0 0 auto; font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--stbr-dark); background:var(--stbr-yellow); border-radius:var(--radius-pill); padding:5px 13px; }
+  .verdict .txt { font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-on-brand); line-height:1.25; }
+</style>
+<div class="card">
+  <div class="stbr-eyebrow">who holds the reversal lever</div>
+  <h2 class="viz-title">card-rail refund vs push-payment refund</h2>
+  <div class="cmp">
+    <div class="hc axis">axis</div><div class="hc mid">card rail</div><div class="hc">push rail</div>
+    <div class="cell axis">reversal primitive</div><div class="cell mid">chargeback + refunds API &mdash; issuer can claw back</div><div class="cell"><b>none</b> &mdash; a refund is a new payment you construct</div>
+    <div class="cell axis">who can reverse</div><div class="cell mid">buyer via issuer, merchant via API</div><div class="cell">only the current holder of the funds, by pushing</div>
+    <div class="cell axis">docs coverage</div><div class="cell mid">full dispute machinery documented</div><div class="cell hot"><b>no refunds page exists</b> in Solana&rsquo;s payments docs</div>
+    <div class="cell axis">fraud exposure</div><div class="cell mid">merchant eats chargebacks</div><div class="cell hot">merchant eats mistaken refunds &mdash; <b>nothing claws back an error</b></div>
+    <div class="cell axis">precedent followed</div><div class="cell mid">n/a</div><div class="cell">Stripe returns crypto refunds as stablecoins to the originating wallet</div>
+  </div>
+  <div class="verdict">
+    <span class="lab">verdict</span>
+    <span class="txt">the push rail ships no reversal lever &mdash; the refund is a payment you must build, and only the guards you add protect the merchant</span>
+  </div>
+</div>
+</div>
+</body></html>

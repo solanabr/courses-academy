@@ -1,0 +1,56 @@
+[
+  {
+    "id": "t1",
+    "description": "the session request binds the destination on Solana, not Ethereum",
+    "input": "'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r', 'tok_abc123', 25",
+    "expectedOutput": "result.requestBody.addresses[0].blockchains[0] === 'solana'"
+  },
+  {
+    "id": "t2",
+    "description": "the client URL carries the session token",
+    "input": "'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r', 'tok_abc123', 25",
+    "expectedOutput": "result.onrampUrl.includes('sessionToken=tok_abc123')"
+  },
+  {
+    "id": "t3",
+    "description": "the client URL defaults the network to Solana",
+    "input": "'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r', 'tok_abc123', 25",
+    "expectedOutput": "result.onrampUrl.includes('defaultNetwork=solana')"
+  },
+  {
+    "id": "t4",
+    "description": "the raw wallet address must never appear in the client URL",
+    "input": "'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r', 'tok_abc123', 25",
+    "expectedOutput": "!result.onrampUrl.includes('GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r')"
+  },
+  {
+    "id": "t5",
+    "description": "the destination address is bound in the server-side session request",
+    "input": "'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r', 'tok_abc123', 25",
+    "expectedOutput": "result.requestBody.addresses[0].address === 'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r'"
+  },
+  {
+    "id": "t6",
+    "description": "the preset fiat amount is carried into the onramp URL",
+    "input": "'GjWvVdN8pXqR3fY7kZ2mLbT4hQ9sA6cE1uP5wX8nD2r', 'tok_abc123', 25",
+    "expectedOutput": "result.onrampUrl.includes('presetFiatAmount=25')"
+  },
+  {
+    "id": "t7",
+    "description": "a second customer's session request binds THEIR address on Solana (nothing about the first buyer may be baked in)",
+    "input": "'7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', 'tok_def456', 75",
+    "expectedOutput": "result.requestBody.addresses[0].address === '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU' && result.requestBody.addresses[0].blockchains[0] === 'solana'"
+  },
+  {
+    "id": "t8",
+    "description": "the second customer's URL carries their own session token and preset amount",
+    "input": "'7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', 'tok_def456', 75",
+    "expectedOutput": "result.onrampUrl.includes('sessionToken=tok_def456') && result.onrampUrl.includes('presetFiatAmount=75')"
+  },
+  {
+    "id": "t9",
+    "description": "the client URL leaks the address in no form: not verbatim, not reversed, and no query parameter beyond the five the flow defines",
+    "input": "'7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', 'tok_def456', 75",
+    "expectedOutput": "result.onrampUrl.indexOf('7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU') === -1 && result.onrampUrl.indexOf('7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU'.split('').reverse().join('')) === -1 && result.onrampUrl.split('?')[1].split('&').every((p) => ['sessionToken', 'defaultNetwork', 'defaultAsset', 'fiatCurrency', 'presetFiatAmount'].includes(p.split('=')[0]))"
+  }
+]

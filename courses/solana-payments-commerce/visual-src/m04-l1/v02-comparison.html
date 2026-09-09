@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Confirmation policy by payment value
+     purpose: turn the qualitative docs table into the per-value policy the verifier will enforce
+     data: payment: $6 single record at the counter | commitment: confirmed | wait: roughly 1-2s (ecosystem estimate) | why: fork-drop risk at this value rounds to zero; latency is the customer experience payment: $200 bundle, online checkout | commitment: confirmed | wait: roughly 1-2s (ecosystem estimate) | why: still low stakes; the buyer is not standing in a queue but the risk math barely moves payment: $6,000 wholesale invoice | commitment: finalized | wait: roughly 10s, 31+ confirmations (ecosystem estimate) | why: a dropped payment is a real loss with no reversal path; nobody is watching a spinner payment: any payment, any value | commitment: processed | wait: sub-second | why: NEVER for fulfillment; a processed block can be dropped in a fork; UI display only
+     prompt: Four-row comparison table with columns Payment, Commitment, Wait, Why. Rows as listed in data. Render commitment values in code style; visually flag the processed row as never-for-fulfillment (distinct treatment from the three valid rows). Mark every latency cell with a small "ecosystem estimate" tag. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:430px;top:-238px;right:-238px;border-radius:45% 41% 36% 48% / 60% 61% 41% 56%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .ptable { width:100%; border-collapse:separate; border-spacing:0; margin-top:10px;
+            background:var(--surface-card); border-radius:var(--radius-2xl);
+            overflow:hidden; border:2px solid var(--stbr-dark); }
+  .ptable th { background:var(--surface-inverse); color:var(--text-on-dark);
+               font-family:var(--font-body); font-weight:800; font-size:14px;
+               letter-spacing:.11em; text-transform:uppercase; text-align:left;
+               padding:16px 24px; }
+  .ptable tr:first-child th:first-child { border-top-left-radius:38px; }
+  .ptable tr:first-child th:last-child { border-top-right-radius:38px; }
+  .ptable td { padding:17px 24px; border-top:1.5px solid var(--border-subtle);
+               font-family:var(--font-body); font-size:16.5px; color:var(--text-primary);
+               vertical-align:middle; line-height:1.35; }
+  .pay { font-weight:800; font-size:18px; }
+  .pay small { display:block; font-weight:500; font-size:13.5px; color:var(--text-muted); margin-top:2px; }
+  .cmt { display:inline-block; font-family:var(--font-mono); font-weight:700; font-size:16px;
+         padding:6px 14px; border-radius:var(--radius-pill); background:rgba(0,139,76,0.1);
+         border:1.5px solid rgba(0,139,76,0.45); color:var(--stbr-green); }
+  .wait { font-family:var(--font-mono); font-size:15.5px; white-space:nowrap; }
+  .est { display:inline-block; margin-left:8px; font-family:var(--font-body); font-weight:700;
+         font-size:10.5px; letter-spacing:.07em; text-transform:uppercase;
+         color:var(--text-muted); border:1px solid var(--border-strong);
+         border-radius:var(--radius-pill); padding:2px 8px; vertical-align:middle; }
+  .why { font-size:15px; color:var(--text-secondary); max-width:520px; }
+  tr.never td { background:var(--stbr-yellow); border-top:2px solid var(--stbr-dark); }
+  tr.never td:first-child { border-bottom-left-radius: var(--radius-2xl); }
+  tr.never td:last-child { border-bottom-right-radius: var(--radius-2xl); }
+  tr.never .why, tr.never td { color:var(--stbr-dark); }
+  tr.never .pay small { color:rgba(27,35,29,0.65); }
+  tr.never .cmt { background:var(--stbr-dark); border-color:var(--stbr-dark);
+                  color:var(--stbr-yellow); }
+  tr.never .est { color:rgba(27,35,29,0.75); border-color:rgba(27,35,29,0.5); }
+  .never-flag { display:inline-block; font-family:var(--font-body); font-weight:900;
+                font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+                background:var(--stbr-dark); color:var(--stbr-yellow);
+                padding:5px 12px; border-radius:var(--radius-md); margin-top:6px; }
+</style>
+  <div class="stbr-eyebrow">the per-value policy the verifier enforces</div>
+  <h2 class="viz-title">confirmation policy by payment value</h2>
+  <table class="ptable">
+    <tr><th>Payment</th><th>Commitment</th><th>Wait</th><th>Why</th></tr>
+    <tr>
+      <td class="pay">$6<small>single record at the counter</small></td>
+      <td><span class="cmt">confirmed</span></td>
+      <td class="wait">~1&ndash;2s<span class="est">ecosystem estimate</span></td>
+      <td class="why">fork-drop risk at this value rounds to zero; latency is the customer experience</td>
+    </tr>
+    <tr>
+      <td class="pay">$200<small>bundle, online checkout</small></td>
+      <td><span class="cmt">confirmed</span></td>
+      <td class="wait">~1&ndash;2s<span class="est">ecosystem estimate</span></td>
+      <td class="why">still low stakes; the buyer is not standing in a queue but the risk math barely moves</td>
+    </tr>
+    <tr>
+      <td class="pay">$6,000<small>wholesale invoice</small></td>
+      <td><span class="cmt">finalized</span></td>
+      <td class="wait">~10s, 31+ conf. &times; 300ms<span class="est">ecosystem estimate</span></td>
+      <td class="why">a dropped payment is a real loss with no reversal path; nobody is watching a spinner</td>
+    </tr>
+    <tr class="never">
+      <td class="pay">any payment, any value<span class="never-flag">never for fulfillment</span></td>
+      <td><span class="cmt">processed</span></td>
+      <td class="wait">sub-second</td>
+      <td class="why">a processed block can be dropped in a fork &mdash; UI display only</td>
+    </tr>
+  </table>
+</div>
+</body></html>

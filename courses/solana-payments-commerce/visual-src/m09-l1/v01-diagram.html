@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- diagram: The wavelength-stack process tree
+     purpose: show the three long-lived processes, which rungs live inside each, and where the kit-6/kit-7 boundary sits
+     data: process 1 "server" (kit-6 line): mounts checkout static pages, /txreq GET+POST, drop-blink (actions.json + action routes), x402 price API + MPP challenge; gasless-checkout app mounted alongside (Kora node on :8080 co-signs) process 2 "worker" (kit-6 line): backoffice webhook receiver + refunds reconciler, writes orders ledger process 3 "crank" (kit-7 island): subscriptions workspace, club-billing pulls + dunning transitions, writes invoices into the SAME orders ledger shared core: transfer-kit imported by server and worker; verifier imported by worker and by the journey script offline: fair-queue (pos-stall) drains INTO the chain before the journey starts
+     prompt: Three process boxes side by side labeled server, worker, and crank, each listing its mounted rungs from data. Draw transfer-kit and verifier as a shared base bar beneath server and worker. Mark the crank box with a dashed boundary labeled "kit-7 island, own process, own node_modules". One arrow from a small fair-queue box into the chain icon labeled "drained before doors open". Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:526px;height:390px;right:-326px;top:129px;border-radius:35% 39% 39% 48% / 61% 59% 39% 49%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .p-row { display:flex; gap:22px; align-items:stretch; margin-top:4px; }
+  .p-left { flex:1 1 63%; display:flex; flex-direction:column; gap:14px; }
+  .p-pair { display:flex; gap:16px; align-items:stretch; }
+  .proc { flex:1; background:var(--surface-card); border:3px solid var(--stbr-dark);
+          border-radius:var(--radius-2xl); overflow:hidden; }
+  .proc-head { background:var(--surface-inverse); padding:11px 18px; display:flex; align-items:center; gap:12px; }
+  .proc-name { font-family:var(--font-mono); font-weight:700; font-size:21px; color:var(--text-on-dark); }
+  .proc-kit { margin-left:auto; font-family:var(--font-body); font-weight:800; font-size:11px;
+              letter-spacing:.1em; text-transform:uppercase; color:var(--text-on-dark);
+              background:rgba(245,232,202,0.16); padding:4px 11px; border-radius:var(--radius-pill); }
+  .rungs { padding:12px 14px; display:flex; flex-direction:column; gap:7px; }
+  .rung { font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--text-primary);
+          background:rgba(0,139,76,0.06); border:1.5px solid rgba(0,139,76,0.30);
+          border-radius:var(--radius-md); padding:6px 11px; }
+  .rung code { font-family:var(--font-mono); font-weight:700; color:var(--stbr-green); font-size:13.5px; }
+  .base { background:var(--surface-brand); border-radius:var(--radius-xl); padding:12px 20px;
+          display:flex; align-items:center; gap:24px; }
+  .base .tag { font-family:var(--font-body); font-weight:800; font-size:11px; letter-spacing:.12em;
+               text-transform:uppercase; color:rgba(245,232,202,0.75); flex:0 0 auto; }
+  .base .lib { flex:1; }
+  .base .lib b { font-family:var(--font-mono); font-weight:700; font-size:16px; color:var(--text-on-brand); display:block; }
+  .base .lib span { font-family:var(--font-body); font-size:12.5px; font-weight:500; color:rgba(245,232,202,0.85); }
+  .island { flex:1 1 34%; border:3px dashed var(--stbr-yellow-700); background:rgba(255,210,63,0.10);
+            border-radius:var(--radius-2xl); padding:14px; display:flex; flex-direction:column; gap:12px; }
+  .island-lab { align-self:flex-start; background:var(--stbr-yellow); color:var(--stbr-dark);
+                font-family:var(--font-body); font-weight:800; font-size:12.5px; letter-spacing:.06em;
+                text-transform:uppercase; padding:6px 14px; border-radius:var(--radius-pill); }
+  .offline { margin-top:16px; display:flex; align-items:center; gap:0; }
+  .fq { background:var(--surface-card); border:2px solid var(--stbr-dark); border-radius:var(--radius-lg);
+        padding:9px 16px; font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-primary); }
+  .fq span { font-family:var(--font-body); font-weight:500; font-size:12.5px; color:var(--text-secondary); }
+  .arr-line { width:190px; height:0; border-top:3px solid var(--stbr-dark); position:relative; }
+  .arr-line i { position:absolute; right:-2px; top:-7px; width:0; height:0; display:block;
+                border-top:6px solid transparent; border-bottom:6px solid transparent;
+                border-left:11px solid var(--stbr-dark); }
+  .arr-lab { position:absolute; left:14px; top:-30px; white-space:nowrap; font-family:var(--font-body);
+             font-weight:700; font-size:13px; color:var(--stbr-green); }
+  .chain { background:var(--surface-inverse); color:var(--text-on-dark); border-radius:var(--radius-pill);
+           padding:10px 22px; font-family:var(--font-body); font-weight:800; font-size:15px; }
+</style>
+  <div class="stbr-eyebrow">three long-lived processes, one seam</div>
+  <h2 class="viz-title">the wavelength-stack process tree</h2>
+  <div class="p-row">
+    <div class="p-left">
+      <div class="p-pair">
+        <div class="proc">
+          <div class="proc-head"><span class="proc-name">server</span><span class="proc-kit">kit-6 line</span></div>
+          <div class="rungs">
+            <div class="rung">checkout static pages</div>
+            <div class="rung"><code>/txreq</code> GET + POST</div>
+            <div class="rung"><code>/gasless</code> GET + POST &mdash; own app, Kora co-signs</div>
+            <div class="rung">drop-blink &mdash; <code>actions.json</code> + action routes</div>
+            <div class="rung">x402 price API + MPP challenge</div>
+          </div>
+        </div>
+        <div class="proc">
+          <div class="proc-head"><span class="proc-name">worker</span><span class="proc-kit">kit-6 line</span></div>
+          <div class="rungs">
+            <div class="rung">backoffice webhook receiver</div>
+            <div class="rung">refunds reconciler</div>
+            <div class="rung">writes the <b>orders ledger</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="base">
+        <span class="tag">shared core</span>
+        <span class="lib"><b>transfer-kit</b><span>imported by server + worker</span></span>
+        <span class="lib"><b>verifier</b><span>imported by worker + the journey script</span></span>
+      </div>
+    </div>
+    <div class="island">
+      <span class="island-lab">kit-7 island &middot; own process &middot; own node_modules</span>
+      <div class="proc">
+        <div class="proc-head"><span class="proc-name">crank</span><span class="proc-kit">kit-7</span></div>
+        <div class="rungs">
+          <div class="rung">subscriptions workspace</div>
+          <div class="rung">club-billing pulls + dunning transitions</div>
+          <div class="rung">writes invoices into the <b>same orders ledger</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="offline">
+    <div class="fq">fair-queue <span>(pos-stall, offline)</span></div>
+    <div class="arr-line"><span class="arr-lab">drained before doors open</span><i></i></div>
+    <div class="chain">the chain</div>
+  </div>
+</div>
+</body></html>

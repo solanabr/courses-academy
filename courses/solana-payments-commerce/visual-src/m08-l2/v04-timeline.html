@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- timeline: 2022-06-01: the halt that every nonce queue is built around
+     purpose: ground the drain step's spent-nonce rule in the real incident that defines the failure class
+     data: 2022-06-01: durable-nonce double-processing bug causes validators to diverge -> mainnet halts ~4.5 hours: cluster restart coordinated and block production resumes aftermath: durable nonces temporarily disabled network-wide while the runtime fix lands lesson for fair-queue: a spent (already-advanced) nonce must never be resubmitted by the drain
+     prompt: A left-to-right incident timeline with four labeled milestones: the 2022-06-01 divergence caused by the durable-nonce double-processing bug, the mainnet halt, the coordinated restart after ~4.5 hours, and the temporary network-wide disabling of durable nonces. A distinct takeaway banner at the end: "fair-queue rule: a spent (already-advanced) nonce must never be resubmitted by the drain". Emphasize the ~4.5-hour halt span as a shaded region on the axis.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:504px;height:432px;right:-266px;top:99px;border-radius:49% 55% 63% 52% / 63% 59% 43% 48%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:607px;height:561px;bottom:-320px;left:-320px;border-radius:40% 50% 50% 35% / 62% 47% 49% 57%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .tl { position:relative; height:420px; margin-top:6px; }
+  .axis { position:absolute; left:3%; right:3%; top:208px; height:4px;
+          background:var(--stbr-dark); border-radius:2px; }
+  .halt { position:absolute; left:32%; width:30%; top:200px; height:20px;
+          background:var(--stbr-yellow); border:2.5px solid var(--stbr-dark);
+          border-radius:var(--radius-pill); }
+  .haltlab { position:absolute; left:36.5%; top:166px; background:var(--stbr-yellow);
+             color:var(--stbr-dark); font-family:var(--font-body); font-weight:900;
+             font-size:15px; padding:5px 16px; border-radius:var(--radius-pill); }
+  .dot { position:absolute; top:200px; width:20px; height:20px; margin-left:-10px;
+         border-radius:50%; background:#fff; border:5px solid var(--stbr-green); }
+  .vline { position:absolute; width:3px; background:var(--border-strong); margin-left:-1.5px; }
+  .ms { position:absolute; width:300px; margin-left:-150px; background:var(--surface-card);
+        border:2px solid var(--border-subtle); border-radius:var(--radius-lg);
+        padding:14px 18px; }
+  .ms .md { font-family:var(--font-mono); font-weight:800; font-size:13.5px;
+            color:var(--stbr-green); }
+  .ms .mt { font-family:var(--font-display); font-weight:900; font-size:19px;
+            color:var(--text-primary); margin-top:3px; line-height:1.15; }
+  .ms .mb { font-family:var(--font-body); font-weight:600; font-size:14.5px;
+            color:var(--text-secondary); margin-top:5px; line-height:1.35; }
+  .above { top:52px; } .below { top:262px; }
+  .banner { display:flex; align-items:center; gap:16px; background:var(--stbr-emerald);
+            border-radius:var(--radius-xl); padding:20px 30px; margin-top:8px; }
+  .banner .bk { flex:0 0 auto; font-family:var(--font-body); font-weight:900; font-size:13px;
+                color:var(--stbr-dark); background:var(--stbr-cream);
+                border-radius:var(--radius-pill); padding:6px 16px;
+                text-transform:uppercase; letter-spacing:0.06em; }
+  .banner .bt { font-family:var(--font-display); font-weight:900; font-size:23px;
+                color:var(--stbr-cream); line-height:1.2; }
+</style>
+  <div class="stbr-eyebrow">the incident every nonce queue is built around</div>
+  <h2 class="viz-title">2022-06-01: the durable-nonce halt</h2>
+  <div class="tl">
+    <div class="axis"></div>
+    <div class="halt"></div>
+    <div class="haltlab">mainnet halted ~4.5 hours</div>
+    <div class="ms above" style="left:12%;">
+      <div class="md">2022-06-01</div>
+      <div class="mt">validators diverge</div>
+      <div class="mb">durable-nonce double-processing bug: the same nonce transaction is processed twice</div>
+    </div>
+    <div class="vline" style="left:12%; top:180px; height:20px;"></div>
+    <div class="dot" style="left:12%;"></div>
+    <div class="ms below" style="left:32%;">
+      <div class="md">minutes later</div>
+      <div class="mt">mainnet halts</div>
+      <div class="mb">consensus cannot proceed; block production stops cluster-wide</div>
+    </div>
+    <div class="vline" style="left:32%; top:224px; height:38px;"></div>
+    <div class="dot" style="left:32%;"></div>
+    <div class="ms above" style="left:62%;">
+      <div class="md">+ ~4.5 hours</div>
+      <div class="mt">coordinated restart</div>
+      <div class="mb">validators restart the cluster together; block production resumes</div>
+    </div>
+    <div class="vline" style="left:62%; top:180px; height:20px;"></div>
+    <div class="dot" style="left:62%;"></div>
+    <div class="ms below" style="left:85%;">
+      <div class="md">aftermath</div>
+      <div class="mt">durable nonces disabled</div>
+      <div class="mb">temporarily, network-wide, until the runtime fix lands</div>
+    </div>
+    <div class="vline" style="left:85%; top:224px; height:38px;"></div>
+    <div class="dot" style="left:85%;"></div>
+  </div>
+  <div class="banner">
+    <div class="bk">fair-queue rule</div>
+    <div class="bt">a spent (already-advanced) nonce must never be resubmitted by the drain</div>
+  </div>
+</div>
+</body></html>

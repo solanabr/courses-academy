@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: Kit's build-sign-send pipeline, and the one-way door in the middle
+     purpose: give the reader a reusable map of the pipeline every later lesson repeats, with signing marked as the point where bytes freeze
+     data: build phase (mutable message): createTransactionMessage -> setTransactionMessageFeePayerSigner -> setTransactionMessageLifetimeUsingBlockhash -> appendTransactionMessageInstructions (create ATA idempotent, memo, TransferChecked + reference) one-way door: signTransactionMessageWithSigners (bytes freeze; signature is computed over exactly these bytes) send phase (immutable transaction): sendAndConfirmTransactionFactory(rpc + rpcSubscriptions) -> wait for commitment "confirmed" -> signature returned annotation: after the door, retry means resubmitting these bytes; editing anything means a new signature
+     prompt: Left-to-right flowchart in three phases separated by two vertical dividers labeled "mutable message", "signing", and "immutable transaction". Show the four build steps as a chain, the signing step as a highlighted gate node, and the send phase ending in a returned signature. Add the retry annotation under the third phase.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:461px;height:340px;right:-257px;top:162px;border-radius:45% 58% 60% 55% / 47% 49% 48% 46%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .pipe { display:grid; grid-template-columns:1fr 48px 320px 48px 1fr; margin-top:8px; align-items:stretch; }
+  .phase { display:flex; flex-direction:column; }
+  .phead { text-align:center; font-family:var(--font-display); font-weight:800; font-size:14px;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--stbr-emerald);
+    border-bottom:2px dashed var(--stbr-ink-300); padding-bottom:8px; margin-bottom:16px; }
+  .stepbox { background:var(--surface-card); border:2px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:12px 18px; text-align:center; }
+  .stepbox .fn { font-family:var(--font-mono); font-weight:700; font-size:15px; color:var(--text-primary); }
+  .stepbox .d { font-family:var(--font-body); font-size:12.5px; color:var(--text-muted); margin-top:3px; line-height:1.35; }
+  .varr { display:flex; justify-content:center; padding:2px 0; }
+  .gatecol { display:flex; flex-direction:column; }
+  .gate { flex:1; background:var(--surface-accent); border:3px solid var(--stbr-dark);
+    border-radius:var(--radius-lg); padding:24px 20px; display:flex; flex-direction:column;
+    justify-content:center; text-align:center; }
+  .gate .fn { font-family:var(--font-mono); font-weight:700; font-size:15.5px; color:var(--text-on-accent);
+    line-height:1.35; }
+  .gate .d { font-family:var(--font-body); font-weight:700; font-size:13px; color:var(--text-on-accent);
+    margin-top:12px; line-height:1.4; }
+  .gate .tag { font-family:var(--font-display); font-weight:900; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--stbr-dark); margin-bottom:10px; }
+  .harr { display:flex; align-items:center; justify-content:center; padding-top:110px; }
+  .stepbox.final { background:var(--surface-brand); border-color:var(--stbr-emerald-800); }
+  .stepbox.final .fn { color:var(--text-on-brand); }
+  .stepbox.final .d { color:var(--stbr-cream-300); }
+  .anno { margin-top:16px; background:var(--surface-paper); border:1.5px solid var(--border-subtle);
+    border-radius:var(--radius-md); padding:12px 16px; font-family:var(--font-body); font-size:13px;
+    color:var(--text-secondary); line-height:1.45; }
+  .anno b { color:var(--stbr-emerald); }
+</style>
+  <div class="stbr-eyebrow">the kit pipeline every lesson repeats</div>
+  <h2 class="viz-title">build &rarr; sign &rarr; send, with a one-way door</h2>
+  <div class="pipe">
+    <div class="phase">
+      <div class="phead">mutable message</div>
+      <div class="stepbox"><div class="fn">createTransactionMessage</div></div>
+      <div class="varr"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,20 3,10 15,10" fill="#1b231d"/></svg></div>
+      <div class="stepbox"><div class="fn">setTransactionMessageFeePayerSigner</div></div>
+      <div class="varr"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,20 3,10 15,10" fill="#1b231d"/></svg></div>
+      <div class="stepbox"><div class="fn">setTransactionMessageLifetimeUsingBlockhash</div></div>
+      <div class="varr"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,20 3,10 15,10" fill="#1b231d"/></svg></div>
+      <div class="stepbox"><div class="fn">appendTransactionMessageInstructions</div>
+        <div class="d">create ATA (idempotent) &middot; memo &middot; TransferChecked + reference</div></div>
+    </div>
+    <div class="harr"><svg width="36" height="18"><line x1="0" y1="9" x2="26" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="36,9 24,3 24,15" fill="#1b231d"/></svg></div>
+    <div class="gatecol">
+      <div class="phead">signing</div>
+      <div class="gate">
+        <div class="tag">the one-way door</div>
+        <div class="fn">signTransactionMessage<br>WithSigners</div>
+        <div class="d">bytes freeze &mdash; the signature is computed over exactly these bytes</div>
+      </div>
+    </div>
+    <div class="harr"><svg width="36" height="18"><line x1="0" y1="9" x2="26" y2="9" stroke="#1b231d" stroke-width="2.5"/><polygon points="36,9 24,3 24,15" fill="#1b231d"/></svg></div>
+    <div class="phase">
+      <div class="phead">immutable transaction</div>
+      <div class="stepbox"><div class="fn">sendAndConfirmTransactionFactory</div>
+        <div class="d">rpc + rpcSubscriptions</div></div>
+      <div class="varr"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,20 3,10 15,10" fill="#1b231d"/></svg></div>
+      <div class="stepbox"><div class="fn">wait for commitment "confirmed"</div></div>
+      <div class="varr"><svg width="18" height="20"><line x1="9" y1="0" x2="9" y2="12" stroke="#1b231d" stroke-width="2.5"/><polygon points="9,20 3,10 15,10" fill="#1b231d"/></svg></div>
+      <div class="stepbox final"><div class="fn">signature returned</div></div>
+      <div class="anno">after the door: <b>retry = resubmit these bytes</b> &middot; editing anything = a new signature</div>
+    </div>
+  </div>
+</div>
+</body></html>

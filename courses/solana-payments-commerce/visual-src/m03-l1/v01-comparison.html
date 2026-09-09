@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: 12.5 USDC in a URL vs 12.5 USDC on-chain
+     purpose: make the decimal-units vs base-units collision impossible to forget before the reader writes their first amount parameter
+     data: Column A, Solana Pay URL (what you write today): amount=12.5 wallet applies the mint's 6 decimals itself customer approves: 12.5 USDC Column B, transfer instruction (what transfer-kit wrote in m02): amount: 12500000n base units toBaseUnits('12.5', 6) = 12500000 correct at the instruction layer only The bug: writing amount=12500000 in the URL wallet reads it as decimal units customer is asked to approve 12,500,000 USDC
+     prompt: Two-column comparison card. Left column labeled "Solana Pay URL" showing amount=12.5 with a note "wallet applies decimals". Right column labeled "Transfer instruction" showing 12500000 base units with a note "your code applies decimals". Below both, a full-width warning row showing amount=12500000 in a URL producing a wallet prompt for 12,500,000 USDC. Monospace for all values.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:601px;height:502px;top:-313px;right:-313px;border-radius:50% 51% 55% 36% / 54% 65% 37% 43%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:381px;height:446px;bottom:-258px;left:819px;border-radius:53% 65% 40% 38% / 35% 57% 35% 38%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+  <div class="stbr-eyebrow">decimal units vs base units</div>
+  <h2 class="viz-title">12.5 USDC in a URL vs 12.5 USDC on-chain</h2>
+
+  <div style="display:flex;gap:28px;margin-bottom:22px;">
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:24px;padding:30px 34px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:26px;color:var(--text-primary);">Solana Pay URL</div>
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-muted);margin:4px 0 18px;">what you write today</div>
+      <div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--stbr-emerald);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:12px;padding:14px 20px;display:inline-block;">amount=12.5</div>
+      <div style="font-family:var(--font-body);font-size:16px;color:var(--text-secondary);margin-top:16px;">the wallet applies the mint&rsquo;s 6 decimals itself</div>
+      <div style="margin-top:14px;display:inline-block;background:var(--surface-brand);color:var(--text-on-brand);font-family:var(--font-body);font-weight:600;font-size:15px;border-radius:999px;padding:8px 18px;">customer approves: 12.5 USDC &#10003;</div>
+    </div>
+    <div style="flex:1;background:var(--surface-card);border:2px solid var(--border-subtle);border-radius:24px;padding:30px 34px;">
+      <div style="font-family:var(--font-display);font-weight:800;font-size:26px;color:var(--text-primary);">Transfer instruction</div>
+      <div style="font-family:var(--font-body);font-size:15px;color:var(--text-muted);margin:4px 0 18px;">what transfer-kit wrote in m02</div>
+      <div style="font-family:var(--font-mono);font-size:30px;font-weight:700;color:var(--stbr-green);background:var(--surface-paper);border:1px solid var(--border-subtle);border-radius:12px;padding:14px 20px;display:inline-block;">amount: 12500000n</div>
+      <div style="font-family:var(--font-mono);font-size:15px;color:var(--text-secondary);margin-top:16px;">toBaseUnits('12.5', 6) = 12500000</div>
+      <div style="margin-top:14px;display:inline-block;background:var(--surface-brand-deep);color:var(--text-on-brand);font-family:var(--font-body);font-weight:600;font-size:15px;border-radius:999px;padding:8px 18px;">correct at the instruction layer only</div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface-accent);border-radius:20px;padding:22px 34px;display:flex;align-items:center;gap:20px;">
+    <div style="font-family:var(--font-display);font-weight:900;font-size:20px;letter-spacing:0.08em;color:var(--text-on-accent);white-space:nowrap;">THE BUG</div>
+    <div style="font-family:var(--font-mono);font-size:19px;font-weight:700;color:var(--stbr-cream);background:var(--stbr-dark);border-radius:10px;padding:8px 14px;white-space:nowrap;">amount=12500000</div>
+    <div style="font-family:var(--font-body);font-size:17px;color:var(--text-on-accent);">in the URL &rarr; the wallet reads it as <strong>decimal</strong> units &rarr; the customer is asked to approve <strong style="white-space:nowrap;">12,500,000 USDC</strong></div>
+  </div>
+</div>
+</body></html>

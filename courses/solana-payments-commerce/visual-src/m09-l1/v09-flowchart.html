@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- flowchart: The agent pays the pressing-price API three times
+     purpose: show the 402 handshake loop the agent leg drives and where each invoice id lands
+     data: agent GET price route -> 402 + payment requirements -> agent signs payment, retries with PAYMENT-SIGNATURE header -> 200 + PAYMENT-RESPONSE, extra.memo carries invoice id (max 256 bytes) -> invoice id reconciled in backoffice ledger loop: x3, three distinct invoice ids in the ledger guard: agent spendControls cap declines an over-budget call with a logged reason
+     prompt: Circular flow of the 402 handshake using the five stages from data, an x3 loop badge, and an arrow from the memo stage into a ledger box holding three invoice rows. Add the spendControls guard as a side gate on the signing stage. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:556px;height:400px;right:-330px;top:234px;border-radius:55% 48% 37% 58% / 50% 35% 40% 37%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:373px;height:460px;bottom:-238px;left:742px;border-radius:39% 54% 47% 65% / 38% 62% 45% 55%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .stages { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-top:6px; }
+  .stg { position:relative; background:var(--surface-card); border:2.5px solid var(--stbr-dark);
+         border-radius:var(--radius-xl); padding:12px 15px; }
+  .stg .sn { display:inline-block; font-family:var(--font-body); font-weight:800; font-size:11px;
+             letter-spacing:.08em; text-transform:uppercase; color:#fff; background:var(--stbr-emerald);
+             padding:3px 10px; border-radius:var(--radius-pill); margin-bottom:8px; }
+  .stg p { margin:0; font-family:var(--font-body); font-weight:700; font-size:15px; line-height:1.35;
+           color:var(--text-primary); }
+  .stg p span { display:block; font-weight:500; font-size:12.5px; color:var(--text-secondary); margin-top:3px; }
+  .stg code { font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--stbr-green); }
+  .stg.link::before { content:""; position:absolute; left:-16px; top:50%; margin-top:-7px;
+                      width:0; height:0; border-top:7px solid transparent;
+                      border-bottom:7px solid transparent; border-left:12px solid var(--stbr-emerald); }
+  .guard { margin-top:9px; border:2px solid var(--stbr-dark); border-radius:var(--radius-md);
+           background:var(--surface-paper); padding:6px 10px; font-family:var(--font-body);
+           font-weight:600; font-size:12px; line-height:1.35; color:var(--text-primary); }
+  .guard b { font-family:var(--font-mono); font-weight:700; font-size:11.5px; }
+  .loop { position:relative; height:52px; margin:0 12.5% 6px; border-left:3px solid var(--stbr-emerald);
+          border-right:3px solid var(--stbr-emerald); border-bottom:3px solid var(--stbr-emerald);
+          border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+  .loop .up { position:absolute; left:-9px; top:-4px; width:0; height:0;
+              border-left:8px solid transparent; border-right:8px solid transparent;
+              border-bottom:13px solid var(--stbr-emerald); }
+  .loop .x3 { position:absolute; left:50%; bottom:-19px; margin-left:-160px; width:320px; text-align:center;
+              background:var(--stbr-yellow); color:var(--stbr-dark); border-radius:var(--radius-pill);
+              padding:7px 0; font-family:var(--font-body); font-weight:800; font-size:15px; }
+  .bottom { display:flex; align-items:flex-start; gap:24px; margin-top:30px; }
+  .memo-arr { flex:1; display:flex; align-items:center; justify-content:flex-end; gap:14px; padding-top:34px; }
+  .memo-arr .lab { font-family:var(--font-body); font-weight:700; font-size:14px; color:var(--stbr-green); }
+  .memo-arr .ln { display:block; width:110px; height:0; border-top:3px solid var(--stbr-dark); position:relative; }
+  .memo-arr .ln i { position:absolute; right:-1px; top:-7px; width:0; height:0; display:block;
+                    border-top:6px solid transparent; border-bottom:6px solid transparent;
+                    border-left:10px solid var(--stbr-dark); }
+  .ledger { flex:0 0 460px; background:var(--surface-card); border:3px solid var(--stbr-dark);
+            border-radius:var(--radius-xl); overflow:hidden; }
+  .ledger .lh { background:var(--surface-inverse); color:var(--text-on-dark); padding:9px 18px;
+                font-family:var(--font-body); font-weight:800; font-size:14px; letter-spacing:.08em;
+                text-transform:uppercase; }
+  .ledger .li { display:flex; align-items:center; gap:12px; padding:8px 18px;
+                font-family:var(--font-mono); font-weight:700; font-size:14px; color:var(--text-primary); }
+  .ledger .li + .li { border-top:1.5px solid var(--border-subtle); }
+  .ledger .li em { font-style:normal; font-family:var(--font-body); font-weight:600; font-size:12px;
+                   color:var(--stbr-green); margin-left:auto; }
+</style>
+  <div class="stbr-eyebrow">the 402 handshake the agent leg drives</div>
+  <h2 class="viz-title">the agent pays the pressing-price API three times</h2>
+  <div class="stages">
+    <div class="stg"><span class="sn">1</span><p>agent GETs the price route</p></div>
+    <div class="stg link"><span class="sn">2</span><p>402 + payment requirements</p></div>
+    <div class="stg link"><span class="sn">3</span><p>agent signs payment<span>retries with <code>PAYMENT-SIGNATURE</code> header</span></p>
+      <div class="guard">side gate: <b>spendControls</b> cap declines an over-budget call with a logged reason</div></div>
+    <div class="stg link"><span class="sn">4</span><p>200 + <code>PAYMENT-RESPONSE</code><span><code>extra.memo</code> carries the invoice id (max 256 bytes)</span></p></div>
+  </div>
+  <div class="loop"><span class="up"></span><span class="x3">loop &times;3 &mdash; three distinct invoice ids</span></div>
+  <div class="bottom">
+    <div class="memo-arr"><span class="lab">invoice id from <b>extra.memo</b>, reconciled</span><span class="ln"><i></i></span></div>
+    <div class="ledger">
+      <div class="lh">5 &middot; backoffice ledger</div>
+      <div class="li">invoice id #1 <em>reconciled</em></div>
+      <div class="li">invoice id #2 <em>reconciled</em></div>
+      <div class="li">invoice id #3 <em>reconciled</em></div>
+    </div>
+  </div>
+</div>
+</body></html>

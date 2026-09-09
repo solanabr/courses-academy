@@ -1,0 +1,38 @@
+[
+  {
+    "id": "t1",
+    "description": "A fresh blockhash tx submits; a durable-nonce tx submits even though it is old.",
+    "input": "100, 45, '[\"a\",80,\"blockhash\",0,\"b\",20,\"blockhash\",0,\"c\",10,\"nonce\",0,\"d\",5,\"nonce\",1]'",
+    "expectedOutput": "result.submit.join(',') === 'a,c'"
+  },
+  {
+    "id": "t2",
+    "description": "A stale blockhash tx (past the ~45s window) is expired, not submitted.",
+    "input": "100, 45, '[\"a\",80,\"blockhash\",0,\"b\",20,\"blockhash\",0,\"c\",10,\"nonce\",0,\"d\",5,\"nonce\",1]'",
+    "expectedOutput": "result.expired.join(',') === 'b'"
+  },
+  {
+    "id": "t3",
+    "description": "A spent (already advanced) nonce tx is unsafe and must not be resubmitted.",
+    "input": "100, 45, '[\"a\",80,\"blockhash\",0,\"b\",20,\"blockhash\",0,\"c\",10,\"nonce\",0,\"d\",5,\"nonce\",1]'",
+    "expectedOutput": "result.unsafe.join(',') === 'd'"
+  },
+  {
+    "id": "t4",
+    "description": "Durable-nonce txs never expire by wall clock: all unspent nonces submit even when very old.",
+    "input": "1000, 45, '[\"x\",10,\"nonce\",0,\"y\",20,\"nonce\",0]'",
+    "expectedOutput": "result.submit.join(',') === 'x,y' && result.expired.length === 0"
+  },
+  {
+    "id": "t5",
+    "description": "Mixed queue, input order preserved across all three buckets.",
+    "input": "200, 45, '[\"p\",190,\"blockhash\",0,\"q\",100,\"nonce\",1,\"r\",50,\"nonce\",0,\"s\",100,\"blockhash\",0]'",
+    "expectedOutput": "result.submit.join(',') === 'p,r' && result.unsafe.join(',') === 'q' && result.expired.join(',') === 's'"
+  },
+  {
+    "id": "t6",
+    "description": "The window boundary: at exactly windowSeconds the blockhash is still inside its 150-block life and submits; one second past it expires.",
+    "input": "100, 45, '[\"y\",56,\"blockhash\",0,\"z\",55,\"blockhash\",0,\"w\",54,\"blockhash\",0]'",
+    "expectedOutput": "result.submit.join(',') === 'y,z' && result.expired.join(',') === 'w'"
+  }
+]

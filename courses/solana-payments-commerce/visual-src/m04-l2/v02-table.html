@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- table: The Stripe-to-Solana webhook translation table
+     purpose: make the map-from-known explicit so a PSP integrator can port their instincts field by field
+     data: PSP habit: idempotency key on the event | Solana form: the transaction signature | changes: the key is now globally unique and on-chain, not vendor-issued PSP habit: verify the event against the API | Solana form: verify the signature on-chain with the lesson-1 verifier | changes: the source of truth is a public ledger, not a vendor endpoint PSP habit: retries until 2xx | Solana form: Helius may retry deliveries that do not get a successful response | changes: same behavior, same fix PSP habit: webhook signing secret | Solana form: authHeader set at webhook creation, echoed on each delivery | changes: a shared secret, weaker than a signature scheme; treat as a bouncer only PSP habit: endpoint auto-disabled after sustained failures | Solana form: auto-disable at 95%+ failure over 7 days (paid) or a 24h window (free) | changes: same guardrail, published thresholds
+     prompt: Designed comparison table, three columns: PSP habit, Solana form, what changes. Five rows from data. Highlight the first row (idempotency key -> signature) as the lesson's central substitution. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:494px;height:462px;bottom:-265px;left:-265px;border-radius:65% 51% 62% 52% / 40% 42% 39% 39%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<style>
+  .tbl { width:100%; border-collapse:collapse; margin-top:12px; background:var(--surface-card);
+         border:2.5px solid var(--stbr-dark); border-radius:var(--radius-xl); overflow:hidden; }
+  .tbl th { background:var(--surface-inverse); color:var(--stbr-cream);
+            font-family:var(--font-body); font-weight:800; font-size:14px;
+            letter-spacing:.1em; text-transform:uppercase; text-align:left;
+            padding:16px 24px; }
+  .tbl td { font-family:var(--font-body); font-size:16px; line-height:1.35;
+            color:var(--text-primary); padding:15px 24px; vertical-align:top;
+            border-top:1.5px solid var(--border-subtle); }
+  .tbl td.habit { font-weight:800; width:24%; }
+  .tbl td.sol { width:40%; }
+  .tbl td.chg { width:36%; color:var(--text-secondary); }
+  .tbl tr.hot td { background:rgba(255,210,63,0.28); border-top:2px solid var(--stbr-dark);
+                   border-bottom:2px solid var(--stbr-dark); }
+  .tbl tr.hot td.habit .star { display:inline-block; margin-top:6px;
+        font-size:11px; font-weight:800; letter-spacing:.09em; text-transform:uppercase;
+        background:var(--stbr-dark); color:var(--stbr-yellow);
+        padding:3px 10px; border-radius:var(--radius-pill); }
+  .tbl b.k { color:var(--stbr-green); font-weight:800; }
+  .tbl code { font-family:var(--font-mono); font-size:14.5px; background:rgba(0,139,76,0.08);
+              padding:1px 6px; border-radius:var(--radius-xs); }
+</style>
+  <div class="stbr-eyebrow">port your PSP instincts, field by field</div>
+  <h2 class="viz-title">the Stripe-to-Solana webhook translation table</h2>
+  <table class="tbl">
+    <tr>
+      <th>PSP habit</th><th>Solana form</th><th>what changes</th>
+    </tr>
+    <tr class="hot">
+      <td class="habit">idempotency key on the event<br><span class="star">the central substitution</span></td>
+      <td class="sol"><b class="k">the transaction signature</b></td>
+      <td class="chg">the key is now globally unique and on-chain, not vendor-issued</td>
+    </tr>
+    <tr>
+      <td class="habit">verify the event against the API</td>
+      <td class="sol">verify the signature on-chain with the lesson-1 verifier</td>
+      <td class="chg">the source of truth is a public ledger, not a vendor endpoint</td>
+    </tr>
+    <tr>
+      <td class="habit">retries until 2xx</td>
+      <td class="sol">Helius may retry deliveries that do not get a successful response</td>
+      <td class="chg">same behavior, same fix</td>
+    </tr>
+    <tr>
+      <td class="habit">webhook signing secret</td>
+      <td class="sol"><code>authHeader</code> set at webhook creation, echoed on each delivery</td>
+      <td class="chg">a shared secret, weaker than a signature scheme &mdash; treat as a bouncer only</td>
+    </tr>
+    <tr>
+      <td class="habit">endpoint auto-disabled after sustained failures</td>
+      <td class="sol">auto-disable at 95%+ failure over 7 days (paid) or a 24h window (free)</td>
+      <td class="chg">same guardrail, published thresholds</td>
+    </tr>
+  </table>
+</div>
+</body></html>

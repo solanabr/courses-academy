@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style></head>
+<body>
+<!-- comparison: Rebroadcast vs re-sign: the distinction every retry defense hangs on
+     purpose: pin down why resending the same bytes is safe while signing a new transaction for the same sale is the dangerous case the defenses exist for
+     data: case: rebroadcast same signed tx | what the chain sees: identical bytes, signature is the dedup key | risk: none while the blockhash lives; network will not process it twice | defense needed: none case: build + sign a NEW tx for the same purchase | what the chain sees: a fresh authorization, unrelated to the first | risk: double-fulfillment / double-charge | defenses: ledger keyed on signature; reference key matched by the verifier; drain routes spent nonces to unsafe worst costume: durable-nonce tx whose nonce already advanced -> not a rebroadcast, a double-spend attempt with your signature on it
+     prompt: Two side-by-side case cards. Left card "rebroadcast the same signed tx": rows for what the chain sees, risk (none while blockhash lives), and defense needed (none), read visually calm. Right card "build and sign a new tx for the same purchase": same rows, risk highlighted, and a three-item defense list (signature-keyed ledger, reference match, drain -> unsafe). A footer banner spanning both: the spent-nonce case labeled as a double-spend attempt. Structure only; house brand styles apply.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:577px;height:551px;bottom:-316px;left:-316px;border-radius:43% 41% 52% 60% / 40% 64% 62% 44%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<style>
+  .cols { display:flex; gap:20px; margin-top:10px; }
+  .case { flex:1 1 0; background:var(--surface-card); border-radius:var(--radius-xl); overflow:hidden; }
+  .case.calm { border:1.5px solid var(--border-subtle); }
+  .case.hot  { border:2px solid var(--stbr-dark); }
+  .chead { padding:16px 24px; font-family:var(--font-display); font-weight:900; font-size:22px;
+           line-height:1.15; }
+  .calm .chead { background:var(--surface-brand); color:var(--text-on-brand); }
+  .hot  .chead { background:var(--surface-inverse); color:var(--text-on-dark); }
+  .crow { padding:13px 24px; border-top:1px solid var(--border-subtle); }
+  .crow .k { font-family:var(--font-body); font-weight:800; font-size:12px; letter-spacing:.08em;
+             text-transform:uppercase; color:var(--stbr-green); margin-bottom:4px; }
+  .crow .v { font-family:var(--font-body); font-size:15.5px; line-height:1.4; color:var(--text-primary); }
+  .crow .v b { font-weight:800; }
+  .crow.risk-hot { background:rgba(255,210,63,0.28); border-top:1.5px solid var(--stbr-yellow); }
+  .dlist { margin:6px 0 0; padding:0; list-style:none; }
+  .dlist li { font-family:var(--font-body); font-size:14.5px; line-height:1.35; color:var(--text-primary);
+              padding-left:20px; position:relative; margin-top:5px; }
+  .dlist li::before { content:""; position:absolute; left:0; top:6px; width:10px; height:10px;
+                      border-radius:50%; background:var(--stbr-emerald); }
+  .okchip { display:inline-block; background:rgba(0,139,76,0.12); border:1.5px solid var(--stbr-emerald);
+            color:var(--stbr-green); border-radius:var(--radius-pill); font-family:var(--font-body);
+            font-weight:800; font-size:13px; padding:4px 12px; }
+  .footer { margin-top:18px; background:var(--surface-inverse); border-radius:var(--radius-lg);
+            padding:16px 28px; font-family:var(--font-body); font-size:16px; line-height:1.4;
+            color:var(--text-on-dark); }
+  .footer b { font-weight:800; }
+  .footer .tag { display:inline-block; background:var(--stbr-yellow); color:var(--stbr-dark);
+                 border-radius:var(--radius-pill); font-weight:800; font-size:12px; letter-spacing:.05em;
+                 padding:3px 10px; margin-right:12px; vertical-align:2px; }
+</style>
+  <div class="stbr-eyebrow">the distinction every retry defense hangs on</div>
+  <h2 class="viz-title">rebroadcast vs re-sign</h2>
+  <div class="cols">
+    <div class="case calm">
+      <div class="chead">rebroadcast the same signed tx</div>
+      <div class="crow">
+        <div class="k">What the chain sees</div>
+        <div class="v">Identical bytes &mdash; the <b>signature is the dedup key</b></div>
+      </div>
+      <div class="crow">
+        <div class="k">Risk</div>
+        <div class="v">None while the blockhash lives &mdash; the network will not process it twice</div>
+      </div>
+      <div class="crow">
+        <div class="k">Defense needed</div>
+        <div class="v"><span class="okchip">none</span></div>
+      </div>
+    </div>
+    <div class="case hot">
+      <div class="chead">build + sign a NEW tx for the same purchase</div>
+      <div class="crow">
+        <div class="k">What the chain sees</div>
+        <div class="v">A <b>fresh authorization</b>, unrelated to the first</div>
+      </div>
+      <div class="crow risk-hot">
+        <div class="k">Risk</div>
+        <div class="v"><b>Double-fulfillment / double-charge</b></div>
+      </div>
+      <div class="crow">
+        <div class="k">Defenses</div>
+        <ul class="dlist">
+          <li>Ledger keyed on <b>signature</b></li>
+          <li><b>Reference key</b> matched by the verifier</li>
+          <li>Drain routes spent nonces to <b>unsafe</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span class="tag">WORST COSTUME</span>A durable-nonce tx whose nonce already advanced is <b>not a rebroadcast</b> &mdash; it is a double-spend attempt with your signature on it.</div>
+</div>
+</body></html>
