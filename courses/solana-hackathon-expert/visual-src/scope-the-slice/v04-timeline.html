@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style>
+<style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:30px 48px 24px;overflow:hidden}
+.viz-title{font-size:34px;margin:4px 0 8px}
+.stage{position:relative;width:1360px;height:380px}
+.axis{position:absolute;left:60px;top:144px;width:1240px;height:3px;background:var(--stbr-dark)}
+.span{position:absolute;left:60px;top:141px;width:172px;height:9px;background:var(--stbr-emerald);border-radius:5px}
+.dot{position:absolute;top:135px;width:21px;height:21px;border-radius:50%;background:var(--stbr-emerald);border:3px solid var(--surface-card);margin-left:-10px}
+.dot.hot{background:var(--surface-accent);border-color:var(--stbr-dark);width:26px;height:26px;top:132px;margin-left:-13px}
+.stop{position:absolute;left:1298px;top:114px;width:5px;height:62px;background:var(--stbr-dark);border-radius:2px}
+.ab{position:absolute;top:0;height:130px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding-bottom:14px}
+.ab.l{align-items:flex-start;text-align:left}
+.ab.r{align-items:flex-end;text-align:right}
+.tm{font-family:var(--font-display);font-weight:var(--weight-black);font-size:24px;line-height:1;color:var(--text-primary)}
+.st{display:inline-block;margin-top:8px;font-size:12px;font-weight:var(--weight-bold);letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:var(--radius-pill);background:var(--surface-brand);color:var(--text-on-brand)}
+.bl{position:absolute;top:170px;font-size:14px;line-height:1.3;color:var(--text-secondary);text-align:center}
+.bl.l{text-align:left}
+.bl.hot{border:2px dashed var(--stbr-dark);border-radius:var(--radius-md);padding:10px 12px;color:var(--text-primary)}
+.bl.hot b{display:block;font-family:var(--font-display);font-weight:var(--weight-black);font-size:15px;line-height:1.15;margin-bottom:6px;color:var(--text-primary)}
+.lim{position:absolute;top:80px;left:1250px;width:110px;text-align:right}
+.lim .tm{font-size:22px}
+.lim span{display:block;font-size:11px;font-weight:var(--weight-bold);letter-spacing:.08em;text-transform:uppercase;color:var(--text-primary);margin-top:4px}
+.band{margin-top:2px;background:var(--surface-inverse);color:var(--text-on-dark);border-radius:var(--radius-lg);padding:12px 20px;font-size:15px;line-height:1.3}
+.band b{font-family:var(--font-display);font-weight:var(--weight-black);margin-right:10px}
+.band span{font-family:var(--font-mono)}
+</style></head>
+<body>
+<!-- timeline: Fiado's demo script v0, with the seven steps placed on the three minutes
+     purpose: let the reader see how far apart the marks sit and that the transaction lands at the middle, not the end
+     data: 0:00 to 0:25: steps 1 and 2, the owner opens the tab and adds the 40 0:30: step 3, the regular sees the same 40 on his phone 1:30: steps 4 and 5, the USDC transfer on devnet and its confirmation, both phones read 25 (the mark the reader writes) 2:15: steps 6 and 7, the due date and the reminder on the regular's phone 2:45: the tab list, 15 paid with the signature link, 25 due; cut at 3:00 or before Limit: product-demo video of no more than three minutes (colosseum.com/hackathon, 2026-09-06)
+     prompt: One horizontal axis from 0:00 to 3:00 with five milestones at the times in the data, each labelled with its step numbers above the axis and its on-screen content below. The 1:30 milestone is drawn with a dashed outline and the label "the transaction; you write this mark". A hard stop marker at 3:00 labelled with the limit and its source. Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:556px;height:509px;bottom:-327px;right:-327px;border-radius:47% 54% 47% 39% / 39% 60% 58% 60%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:474px;height:486px;left:-283px;top:336px;border-radius:58% 37% 51% 65% / 51% 45% 61% 56%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">The transaction lands in the middle, not at the end</div>
+  <h2 class="viz-title">Fiado's demo script v0, with the seven steps placed on the three minutes</h2>
+  <div class="stage">
+    <div class="axis"></div>
+    <div class="span"></div>
+    <div class="dot" style="left:60px"></div><div class="dot" style="left:232px"></div>
+    <div class="dot" style="left:267px"></div>
+    <div class="dot hot" style="left:680px"></div>
+    <div class="dot" style="left:990px"></div>
+    <div class="dot" style="left:1197px"></div>
+    <div class="stop"></div>
+    <div class="ab l" style="left:60px;width:200px"><div class="tm">0:00 to 0:25</div><span class="st">steps 1 and 2</span></div>
+    <div class="ab l" style="left:290px;width:200px"><div class="tm">0:30</div><span class="st">step 3</span></div>
+    <div class="ab" style="left:570px;width:220px"><div class="tm">1:30</div><span class="st">steps 4 and 5</span></div>
+    <div class="ab" style="left:880px;width:220px"><div class="tm">2:15</div><span class="st">steps 6 and 7</span></div>
+    <div class="ab" style="left:1112px;width:170px"><div class="tm">2:45</div><span class="st">the tab list</span></div>
+    <div class="lim"><div class="tm">3:00</div><span>hard stop</span></div>
+    <div class="bl l" style="left:60px;width:190px">the owner opens the tab and adds the 40</div>
+    <div class="bl l" style="left:290px;width:220px">the regular sees the same 40 on his phone</div>
+    <div class="bl hot" style="left:555px;width:250px"><b>the transaction; you write this mark</b>the USDC transfer on devnet and its confirmation, both phones read 25</div>
+    <div class="bl" style="left:885px;width:200px">the due date and the reminder on the regular's phone</div>
+    <div class="bl" style="left:1112px;width:180px">15 paid with the signature link, 25 due; cut at 3:00 or before</div>
+  </div>
+  <div class="band"><b>Limit</b>product-demo video of no more than three minutes. Source: <span>colosseum.com/hackathon</span>, 2026-09-06</div>
+</div>
+</div>
+</body></html>

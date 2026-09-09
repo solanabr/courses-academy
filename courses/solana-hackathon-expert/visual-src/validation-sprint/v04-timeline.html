@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style><style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px 34px;overflow:hidden}
+.viz-title{font-size:38px;margin:4px 0 28px}
+.tl{display:flex;gap:10px}
+.seg{display:flex;flex-direction:column}
+.seg.s1{flex:1}.seg.s3{flex:2.6}
+.bar{height:64px;border-radius:var(--radius-md);background:var(--surface-brand);color:var(--text-on-brand);display:flex;align-items:center;padding:0 18px}
+.seg.mid .bar{background:var(--surface-brand-deep)}
+.bar .d{font-family:var(--font-display);font-weight:var(--weight-black);font-size:24px;white-space:nowrap}
+.tag{background:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-body);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-radius:var(--radius-pill);padding:5px 10px;white-space:nowrap;align-self:flex-start}
+.dotwrap{position:relative;height:40px}
+.dotwrap:before{content:"";position:absolute;left:-5px;right:-5px;top:19px;height:3px;background:var(--stbr-dark)}
+.seg:first-child .dotwrap:before{left:0}
+.seg:last-child .dotwrap:before{right:0}
+.dot{position:absolute;left:50%;top:12px;margin-left:-8px;width:16px;height:16px;border-radius:50%;background:var(--stbr-dark);border:3px solid var(--surface-card)}
+.items{border:1.5px solid var(--border-subtle);border-radius:var(--radius-md);padding:14px 16px;height:212px;display:flex;flex-direction:column;gap:9px}
+.it{font-family:var(--font-body);font-size:15px;line-height:1.3;color:var(--text-primary);display:flex;gap:9px}
+.it:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--stbr-emerald);flex:none;margin-top:7px}
+.it .s{color:var(--text-secondary);font-size:14px}
+.seg.mid .it{font-family:var(--font-display);font-weight:var(--weight-black);font-size:20px;line-height:1.15}
+.seg.mid .it:before{margin-top:8px}
+</style></head>
+<body>
+<!-- timeline: The seven days of the validation week and what each one produces
+     purpose: fix the order of the week so the test block and the scoring rule are written before any result exists
+     data: day 1: test block written (assumption, kill line, instrument, cost), scoring rule written days 2 to 4: five conversations with the people in the pitch sentence day 5: fake door goes up if pull is still in question; two hours reading one competitor's users day 6: results scored against the day 1 rule day 7: decision memo, pitch v1, feedback round 1 with three people
+     prompt: One horizontal timeline with five segments labelled day 1, days 2 to 4, day 5, day 6, day 7, the middle segment visibly wider than the others. Under each segment the items produced there, as given in the data. The day 1 segment carries a small tag reading "written before any result". Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:432px;top:-227px;right:-227px;border-radius:45% 61% 43% 55% / 57% 60% 52% 56%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:418px;height:463px;bottom:-229px;left:369px;border-radius:61% 48% 51% 54% / 61% 61% 49% 37%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">The validation week</div>
+  <h2 class="viz-title">The seven days of the validation week and what each one produces</h2>
+  <div class="tl">
+    <div class="seg s1">
+      <div class="bar"><div class="d">day 1</div></div>
+      <div class="dotwrap"><div class="dot"></div></div>
+      <div class="items">
+        <div class="tag">written before any result</div>
+        <div class="it"><div>test block written<div class="s">assumption, kill line, instrument, cost</div></div></div>
+        <div class="it"><div>scoring rule written</div></div>
+      </div>
+    </div>
+    <div class="seg s3 mid">
+      <div class="bar"><div class="d">days 2 to 4</div></div>
+      <div class="dotwrap"><div class="dot"></div></div>
+      <div class="items">
+        <div class="it"><div>five conversations with the people in the pitch sentence</div></div>
+      </div>
+    </div>
+    <div class="seg s1">
+      <div class="bar"><div class="d">day 5</div></div>
+      <div class="dotwrap"><div class="dot"></div></div>
+      <div class="items">
+        <div class="it"><div>fake door goes up if pull is still in question</div></div>
+        <div class="it"><div>two hours reading one competitor's users</div></div>
+      </div>
+    </div>
+    <div class="seg s1">
+      <div class="bar"><div class="d">day 6</div></div>
+      <div class="dotwrap"><div class="dot"></div></div>
+      <div class="items">
+        <div class="it"><div>results scored against the day 1 rule</div></div>
+      </div>
+    </div>
+    <div class="seg s1">
+      <div class="bar"><div class="d">day 7</div></div>
+      <div class="dotwrap"><div class="dot"></div></div>
+      <div class="items">
+        <div class="it"><div>decision memo</div></div>
+        <div class="it"><div>pitch v1</div></div>
+        <div class="it"><div>feedback round 1 with three people</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body></html>

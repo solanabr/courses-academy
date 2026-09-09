@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style><style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:34px 52px 30px;overflow:hidden}
+.viz-title{font-size:34px;margin:4px 0 26px}
+.row{display:flex;align-items:center;margin-bottom:44px}
+.fll{width:172px;display:flex;align-items:center}
+.fll span{height:36px;border-radius:var(--radius-pill);display:inline-flex;align-items:center;padding:0 14px;font-family:var(--font-display);font-weight:var(--weight-black);font-size:14px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.fll.a span{background:var(--surface-inverse);color:var(--text-on-dark)}
+.fll.b span{background:var(--surface-brand);color:var(--text-on-brand)}
+.nd{width:262px;height:96px;border:2px solid var(--stbr-dark);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 16px;font-family:var(--font-body);font-size:16px;line-height:1.3;color:var(--text-primary)}
+.nd span{display:block}
+.nd b{font-weight:700}
+.nd.ghost{border:2px dashed var(--stbr-ink-300);color:var(--text-muted)}
+.nd.fi{width:150px;height:70px;background:var(--surface-accent);border-color:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-display);font-weight:var(--weight-black);font-size:15px;line-height:1.2}
+.ar{width:40px;display:flex;align-items:center;justify-content:center}
+.ar .l{width:26px;height:2px;background:var(--stbr-dark)}
+.ar .t{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--stbr-dark)}
+.later{margin-left:172px;width:1168px;border:2px dashed var(--stbr-emerald);border-radius:var(--radius-lg);padding:14px 22px;display:flex;align-items:center;gap:22px}
+.later .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--stbr-emerald);white-space:nowrap;border:2px solid var(--stbr-emerald);border-radius:var(--radius-pill);padding:5px 12px}
+.later .v{font-family:var(--font-body);font-size:17px;line-height:1.3;color:var(--text-primary)}
+</style></head>
+<body>
+<!-- flowchart: Fiado's money flow today and with the tab, and where a price could sit later
+     purpose: let the reader follow the money with a finger so the "none yet" line reads as a decision instead of a gap
+     data: Today: regular buys -> pays later, in cash -> shop carries the debt in a notebook by the till -> nobody else in the flow With the tab: regular settles in a stablecoin -> shop's wallet, the shop owner verifies it on her own phone -> reminder fires before settlement -> Fiado between the two, takes nothing Later, marked as a hypothesis: the shop pays, not the regular, and not before ten shops have run a tab for a month
+     prompt: Two horizontal flows stacked, labelled "today" and "with the tab", with the nodes given in the data left to right. On the lower flow, a small node labelled "Fiado, takes nothing" sitting between the regular and the shop. Below both, a dashed box labelled "later, hypothesis" holding the pricing line from the data. Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:557px;height:552px;bottom:-335px;right:-335px;border-radius:48% 57% 46% 42% / 47% 46% 63% 57%;background:#008b4c;opacity:0.5;"></div>
+  <div style="position:absolute;width:482px;height:371px;left:-251px;top:154px;border-radius:56% 64% 63% 57% / 49% 51% 45% 50%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">Follow the money</div>
+  <h2 class="viz-title">Fiado's money flow today and with the tab, and where a price could sit later</h2>
+  <div class="row">
+    <div class="fll a"><span>today</span></div>
+    <div class="nd"><span>regular buys</span></div>
+    <div class="ar"><div class="l"></div><div class="t"></div></div>
+    <div class="nd"><span>pays later, <b>in cash</b></span></div>
+    <div class="ar"><div class="l"></div><div class="t"></div></div>
+    <div class="nd"><span>shop carries the debt in a <b>notebook by the till</b></span></div>
+    <div class="ar"><div class="l"></div><div class="t"></div></div>
+    <div class="nd ghost"><span>nobody else in the flow</span></div>
+  </div>
+  <div class="row">
+    <div class="fll b"><span>with the tab</span></div>
+    <div class="nd"><span>regular settles in a <b>stablecoin</b></span></div>
+    <div class="ar"><div class="l"></div><div class="t"></div></div>
+    <div class="nd fi"><span>Fiado, takes nothing</span></div>
+    <div class="ar"><div class="l"></div><div class="t"></div></div>
+    <div class="nd"><span><b>shop's wallet</b>, the shop owner verifies it on her own phone</span></div>
+    <div class="ar"><div class="l"></div><div class="t"></div></div>
+    <div class="nd"><span>reminder fires <b>before settlement</b></span></div>
+  </div>
+  <div class="later">
+    <span class="k">later, hypothesis</span>
+    <span class="v">the shop pays, not the regular, and not before ten shops have run a tab for a month</span>
+  </div>
+</div>
+</div>
+</body></html>

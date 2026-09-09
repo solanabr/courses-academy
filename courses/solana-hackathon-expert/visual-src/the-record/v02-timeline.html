@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style>
+<style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 36px;overflow:hidden}
+.viz-title{font-size:44px;margin:4px 0 30px}
+.tl{position:relative;padding:0 20px}
+.row{display:grid;grid-template-columns:repeat(4,1fr)}
+.above{text-align:center;height:92px}
+.above .n{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.above .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:30px;line-height:1.1;color:var(--text-primary);margin-top:4px}
+.axis{position:relative;height:56px}
+.axis .line{position:absolute;left:12.5%;right:12.5%;top:24px;height:6px;background:var(--stbr-emerald);border-radius:3px}
+.axis .line.thick{left:62.5%;right:12.5%;top:20px;height:14px;background:var(--stbr-green);border-radius:7px}
+.axis .dots{position:relative;display:grid;grid-template-columns:repeat(4,1fr)}
+.dot{width:30px;height:30px;border-radius:50%;background:var(--surface-card);border:6px solid var(--stbr-emerald);margin:13px auto 0}
+.dot.dest{width:44px;height:44px;border:8px solid var(--stbr-dark);background:var(--surface-card);margin-top:6px}
+.below{text-align:center;padding:14px 12px 0;height:128px}
+.res{display:inline-block;border:2px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 18px;font-family:var(--font-body);font-size:19px;font-weight:600;color:var(--text-secondary);background:var(--surface-paper)}
+.res.dest{background:var(--surface-accent);border-color:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-display);font-weight:var(--weight-black);font-size:24px;padding:14px 22px}
+.brk{margin:6px 12.5% 0;border:3px solid var(--stbr-ink-300);border-top:0;height:22px;border-radius:0 0 12px 12px}
+.brkl{text-align:center;margin-top:12px;font-family:var(--font-body);font-size:18px;color:var(--text-secondary)}
+.brkl b{font-family:var(--font-display);font-weight:var(--weight-black);color:var(--text-primary)}
+.src{margin-top:26px;font-family:var(--font-mono);font-size:14px;color:var(--text-muted)}
+</style>
+<style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 36px;overflow:hidden}
+.viz-title{font-size:44px;margin:4px 0 30px}
+.tl{position:relative;padding:0 20px}
+.row{display:grid;grid-template-columns:repeat(4,1fr)}
+.above{text-align:center;height:92px}
+.above .n{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+.above .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:30px;line-height:1.1;color:var(--text-primary);margin-top:4px}
+.axis{position:relative;height:56px}
+.axis .line{position:absolute;left:12.5%;right:12.5%;top:24px;height:6px;background:var(--stbr-emerald);border-radius:3px}
+.axis .line.thick{left:62.5%;right:12.5%;top:20px;height:14px;background:var(--stbr-green);border-radius:7px}
+.axis .dots{position:relative;display:flex}
+.dc{flex:1;text-align:center}
+.dot{display:inline-block;width:30px;height:30px;border-radius:50%;background:var(--surface-card);border:6px solid var(--stbr-emerald);margin-top:13px}
+.dot.dest{width:44px;height:44px;border:8px solid var(--stbr-dark);background:var(--surface-card);margin-top:6px}
+.below{text-align:center;padding:14px 12px 0;height:128px}
+.res{display:inline-block;border:2px solid var(--border-subtle);border-radius:var(--radius-md);padding:12px 18px;font-family:var(--font-body);font-size:19px;font-weight:600;color:var(--text-secondary);background:var(--surface-paper)}
+.res.dest{background:var(--surface-accent);border-color:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-display);font-weight:var(--weight-black);font-size:24px;padding:14px 22px}
+.brk{margin:6px 12.5% 0;border:3px solid var(--stbr-ink-300);border-top:0;height:22px;border-radius:0 0 12px 12px}
+.brkl{text-align:center;margin-top:12px;font-family:var(--font-body);font-size:18px;color:var(--text-secondary)}
+.brkl b{font-family:var(--font-display);font-weight:var(--weight-black);color:var(--text-primary)}
+.src{margin-top:26px;font-family:var(--font-mono);font-size:14px;color:var(--text-muted)}
+</style></head>
+<body>
+<!-- timeline: Unruggable's four Colosseum seasons before the grand prize
+     purpose: make the iteration visible as a sequence, so the reader stops treating one season as a verdict
+     data: 1. Renaissance: honorable mention 2. Radar: honorable mention 3. Breakout: first place, track 4. Cypherpunk: grand prize Cadence: two global hackathons a year, April to May and September to October, per colosseum.com/hackathon Source: colosseum.com/hackathon, read 2026-09-08
+     prompt: Four evenly spaced milestones on a single horizontal line, left to right, each labelled with the season name above the line and the result below it. The fourth milestone is emphasised as the destination. A small bracket under the line spanning all four reads "two seasons a year". A source line under the timeline reading "colosseum.com/hackathon, 2026-09-08". Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:514px;height:551px;top:-289px;right:-289px;border-radius:39% 47% 60% 36% / 35% 50% 43% 38%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:550px;height:470px;left:-309px;top:177px;border-radius:35% 48% 44% 50% / 54% 48% 47% 55%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">Iteration, not a verdict</div>
+  <h2 class="viz-title">Unruggable's four Colosseum seasons before the grand prize</h2>
+  <div class="tl">
+    <div class="row">
+      <div class="above"><div class="n">Season 1</div><div class="k">Renaissance</div></div>
+      <div class="above"><div class="n">Season 2</div><div class="k">Radar</div></div>
+      <div class="above"><div class="n">Season 3</div><div class="k">Breakout</div></div>
+      <div class="above"><div class="n">Season 4</div><div class="k">Cypherpunk</div></div>
+    </div>
+    <div class="axis">
+      <div class="line"></div>
+      <div class="line thick"></div>
+      <div class="dots"><div class="dc"><span class="dot"></span></div><div class="dc"><span class="dot"></span></div><div class="dc"><span class="dot"></span></div><div class="dc"><span class="dot dest"></span></div></div>
+    </div>
+    <div class="row">
+      <div class="below"><span class="res">honorable mention</span></div>
+      <div class="below"><span class="res">honorable mention</span></div>
+      <div class="below"><span class="res">first place, track</span></div>
+      <div class="below"><span class="res dest">grand prize</span></div>
+    </div>
+    <div class="brk"></div>
+    <div class="brkl"><b>two seasons a year</b> &nbsp;&middot;&nbsp; April to May and September to October, per colosseum.com/hackathon</div>
+  </div>
+  <div class="src">Source: colosseum.com/hackathon, 2026-09-08</div>
+</div>
+</div>
+</body></html>

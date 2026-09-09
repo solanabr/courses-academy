@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style><style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px 34px;overflow:hidden}
+.viz-title{font-size:38px;margin:4px 0 24px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead tr{background:var(--surface-inverse)}
+th{color:var(--text-on-dark);font-family:var(--font-display);font-weight:var(--weight-bold);font-size:14px;letter-spacing:.1em;text-transform:uppercase;text-align:left;padding:0 18px;height:50px;border:0}
+th:first-child{border-radius:var(--radius-md) 0 0 0}
+th:last-child{border-radius:0 var(--radius-md) 0 0}
+td{padding:14px 18px;border-bottom:1.5px solid var(--border-subtle);vertical-align:middle;font-family:var(--font-body);font-size:16px;line-height:1.35;color:var(--text-secondary);height:96px}
+td.a{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:18px;line-height:1.15;color:var(--text-primary)}
+td.s{font-size:17px;color:var(--text-primary)}
+td.g{font-family:var(--font-display);font-weight:var(--weight-black);font-size:18px;color:var(--text-muted);text-align:center}
+tr.focal td{background:var(--surface-paper)}
+tr.focal td.a{font-weight:var(--weight-black);font-size:20px}
+tr.focal td.s{font-family:var(--font-display);font-weight:var(--weight-black);font-size:24px}
+tr.focal td.g{padding:10px}
+.first{display:inline-block;background:var(--surface-accent);color:var(--text-on-accent);font-family:var(--font-display);font-weight:var(--weight-black);font-size:18px;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--radius-pill);padding:12px 22px}
+</style></head>
+<body>
+<!-- table: Fiado's four assumptions ranked by what survives if each one is false
+     purpose: show the reader the ranking rule applied, so they can rank their own sentence the same way
+     data: Columns: assumption | if false, what survives | tested already | goes first Owners extend credit from a notebook | everything, this is the problem itself | yes, idea memo | no Customers can settle in a stablecoin | the tab, settling another way; the Solana line is rewritten | partly, dated figure in the sizing | no A reminder reduces late payment | the tab without a reminder | cannot be tested before a tab exists | no Owners will let a customer's tab live on a phone | nothing | no | yes
+     prompt: A designed table with four columns and four rows using the data exactly. The last row is the focal one and should read as the heaviest row, with its "goes first" cell marked. The second column should be the widest. Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:582px;height:516px;right:-339px;top:197px;border-radius:64% 62% 48% 49% / 42% 44% 55% 52%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:496px;height:411px;bottom:-221px;left:-221px;border-radius:49% 65% 47% 44% / 57% 37% 58% 41%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">Ranked by what survives</div>
+  <h2 class="viz-title">Fiado's four assumptions ranked by what survives if each one is false</h2>
+  <table>
+    <colgroup><col style="width:27%"><col style="width:35%"><col style="width:24%"><col style="width:14%"></colgroup>
+    <thead><tr><th>assumption</th><th>if false, what survives</th><th>tested already</th><th style="text-align:center">goes first</th></tr></thead>
+    <tbody>
+      <tr><td class="a">Owners extend credit from a notebook</td><td class="s">everything, this is the problem itself</td><td>yes, idea memo</td><td class="g">no</td></tr>
+      <tr><td class="a">Customers can settle in a stablecoin</td><td class="s">the tab, settling another way; the Solana line is rewritten</td><td>partly, dated figure in the sizing</td><td class="g">no</td></tr>
+      <tr><td class="a">A reminder reduces late payment</td><td class="s">the tab without a reminder</td><td>cannot be tested before a tab exists</td><td class="g">no</td></tr>
+      <tr class="focal"><td class="a">Owners will let a customer's tab live on a phone</td><td class="s">nothing</td><td>no</td><td class="g"><span class="first">yes</span></td></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+</body></html>

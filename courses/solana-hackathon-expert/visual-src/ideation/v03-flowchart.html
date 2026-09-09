@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style><style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:38px 52px 34px;overflow:hidden}
+.viz-title{font-size:38px;margin:4px 0 26px}
+.flow{display:flex;align-items:center}
+.dia{position:relative;width:160px;height:160px;flex:none}
+.dia svg{position:absolute;left:0;top:0}
+.dia .txt{position:absolute;left:0;top:0;width:160px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--text-on-brand)}
+.dia .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:24px;line-height:1}
+.dia .s{font-family:var(--font-mono);font-size:10px;margin-top:6px;opacity:.9;width:120px}
+.split,.merge{width:76px;height:380px;flex:none;position:relative}
+.split svg{position:absolute;left:0;top:0}
+.chip{position:absolute;left:2px;font-family:var(--font-body);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;line-height:1}
+.chip.yes{top:98px;color:var(--stbr-emerald)}
+.chip.no{top:270px;color:var(--text-primary)}
+.branches{display:flex;flex-direction:column;gap:44px;width:836px;flex:none}
+.br{display:flex;align-items:center;height:168px}
+.node{border:2px solid var(--stbr-dark);border-radius:var(--radius-lg);padding:14px 18px;height:168px;display:flex;flex-direction:column;justify-content:center;flex:none}
+.node.w1{width:252px}
+.node.w2{width:544px}
+.node .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:19px;line-height:1.12;color:var(--text-primary)}
+.node .s{font-family:var(--font-body);font-size:14px;line-height:1.35;color:var(--text-secondary);margin-top:8px}
+.node .m{font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);margin-top:8px}
+.node.tight .k{font-size:15px;line-height:1.15}
+.node.tight .m{font-size:11px;margin-top:6px}
+.node.em{border-color:var(--stbr-emerald)}
+.node.em .k{color:var(--stbr-emerald)}
+.arr{width:40px;height:24px;flex:none;display:flex;align-items:center}
+.final{width:200px;height:200px;flex:none;background:var(--surface-accent);border-radius:var(--radius-lg);padding:18px 20px;display:flex;flex-direction:column;justify-content:center;color:var(--text-on-accent)}
+.final .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:22px;line-height:1.1}
+.final .s{font-family:var(--font-body);font-size:14px;line-height:1.35;margin-top:10px}
+</style></head>
+<body>
+<!-- flowchart: Two ways to search the record for each candidate, with and without a Copilot PAT
+     purpose: show the degrade path as a real path rather than a consolation, so a reader without a token still writes the gap note today
+     data: Have a PAT from colosseum.com/arena/copilot? -> yes -> Colosseum Copilot in Claude Code, Codex or OpenClaw (5,400+ hackathon projects, 6,300+ products via The Grid; skill v1.2.1, proprietary license, read 2026-09-06) -> nearest projects per candidate -> no -> the season winners posts on blog.colosseum.com (Cypherpunk, Frontier) -> search each for the candidate's words -> follow the names into colosseum.com/companies/* (example: colosseum.com/companies/unruggable) -> read three profiles per candidate; arena.colosseum.org project pages need a Colosseum login (read 2026-09-07) Both paths end at: gap note per candidate, nearest project named, what it did not do, dated
+     prompt: A decision diamond at the left asking "PAT?" with two branches. The upper branch runs through a Copilot node carrying the index figures and the version; the lower branch runs through the blog winners posts and then the companies pages, with a small side note that the arena project pages need a login. Both branches join at a single final box labelled "gap note per candidate, dated". Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:476px;height:509px;top:-262px;right:-262px;border-radius:48% 39% 60% 41% / 56% 62% 65% 44%;background:#ffd23f;opacity:0.8;"></div>
+  <div style="position:absolute;width:604px;height:530px;bottom:-315px;left:-315px;border-radius:60% 49% 42% 36% / 36% 49% 43% 53%;background:#306c40;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">Search the record, two ways</div>
+  <h2 class="viz-title">Two ways to search the record for each candidate, with and without a Copilot PAT</h2>
+  <div class="flow">
+    <div class="dia">
+      <svg width="160" height="160"><polygon points="80,2 158,80 80,158 2,80" fill="#008b4c"/></svg>
+      <div class="txt"><div class="k">PAT?</div><div class="s">colosseum.com/arena/copilot</div></div>
+    </div>
+    <div class="split"><svg width="76" height="380">
+      <line x1="0" y1="190" x2="62" y2="84" stroke="#1b231d" stroke-width="3"/><polygon points="56,76 74,78 64,94" fill="#1b231d"/>
+      <line x1="0" y1="190" x2="62" y2="296" stroke="#1b231d" stroke-width="3"/><polygon points="64,286 74,302 56,304" fill="#1b231d"/>
+    </svg><div class="chip yes">yes</div><div class="chip no">no</div></div>
+    <div class="branches">
+      <div class="br">
+        <div class="node em w2"><div class="k">Colosseum Copilot in Claude Code, Codex or OpenClaw</div><div class="s">5,400+ hackathon projects, 6,300+ products via The Grid</div><div class="m">skill v1.2.1, proprietary license, read 2026-09-06</div></div>
+        <div class="arr"><svg width="40" height="24"><line x1="0" y1="12" x2="28" y2="12" stroke="#1b231d" stroke-width="3"/><polygon points="26,4 40,12 26,20" fill="#1b231d"/></svg></div>
+        <div class="node w1"><div class="k">nearest projects per candidate</div></div>
+      </div>
+      <div class="br">
+        <div class="node w1 tight"><div class="k">season winners posts on blog.colosseum.com, then colosseum.com/companies/*</div><div class="m">example profile: colosseum.com/companies/unruggable</div></div>
+        <div class="arr"><svg width="40" height="24"><line x1="0" y1="12" x2="28" y2="12" stroke="#1b231d" stroke-width="3"/><polygon points="26,4 40,12 26,20" fill="#1b231d"/></svg></div>
+        <div class="node w1"><div class="k">search the last two seasons for the candidate's words</div></div>
+        <div class="arr"><svg width="40" height="24"><line x1="0" y1="12" x2="28" y2="12" stroke="#1b231d" stroke-width="3"/><polygon points="26,4 40,12 26,20" fill="#1b231d"/></svg></div>
+        <div class="node w1"><div class="k">read three profiles per candidate</div><div class="m">arena.colosseum.org project pages need a Colosseum login, read 2026-09-07</div></div>
+      </div>
+    </div>
+    <div class="merge"><svg width="76" height="380">
+      <line x1="0" y1="84" x2="64" y2="182" stroke="#1b231d" stroke-width="3"/>
+      <line x1="0" y1="296" x2="64" y2="198" stroke="#1b231d" stroke-width="3"/>
+      <line x1="62" y1="182" x2="62" y2="198" stroke="#1b231d" stroke-width="3"/>
+      <polygon points="62,180 76,190 62,200" fill="#1b231d"/>
+    </svg></div>
+    <div class="final"><div class="k">gap note per candidate, dated</div><div class="s">nearest project named, what it did not do, dated</div></div>
+  </div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style><style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:40px 52px 34px;overflow:hidden}
+.viz-title{font-size:40px;margin:4px 0 26px}
+.flow{display:flex;align-items:center}
+.node{border:2px solid var(--stbr-dark);border-radius:var(--radius-lg);padding:16px 18px;width:206px;height:150px;display:flex;flex-direction:column;justify-content:center}
+.node .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:20px;line-height:1.12;color:var(--text-primary)}
+.node .s{font-family:var(--font-body);font-size:14px;line-height:1.35;color:var(--text-secondary);margin-top:8px}
+.node.em{border-color:var(--stbr-emerald)}
+.node.em .k{color:var(--stbr-emerald)}
+.arr{width:48px;height:24px;display:flex;align-items:center;justify-content:center;flex:none}
+.fan{width:76px;height:232px;flex:none}
+.outs{display:flex;flex-direction:column;gap:12px;width:290px;flex:none}
+.out{border:2px solid var(--stbr-emerald);border-radius:var(--radius-md);height:69px;padding:8px 16px;display:flex;flex-direction:column;justify-content:center}
+.out .k{font-family:var(--font-display);font-weight:var(--weight-black);font-size:20px;line-height:1.1;color:var(--stbr-emerald)}
+.out .s{font-family:var(--font-body);font-size:14px;color:var(--text-secondary);margin-top:3px}
+.out.drop{background:var(--surface-accent);border-color:var(--surface-accent)}
+.out.drop .k,.out.drop .s{color:var(--text-on-accent)}
+.file{display:flex;align-items:center;gap:12px;margin-top:22px;padding:12px 18px;border-radius:var(--radius-md);background:var(--surface-paper);width:fit-content}
+.file .t{font-family:var(--font-display);font-weight:var(--weight-bold);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--stbr-emerald)}
+.file .m{font-family:var(--font-mono);font-size:16px;color:var(--text-primary)}
+.src{margin-top:16px;font-family:var(--font-mono);font-size:13px;color:var(--text-muted)}
+</style>
+</head>
+<body>
+<!-- flowchart: The four moves of the idea-sprint skill and where the three lines fall
+     purpose: give the reader the shape of the sprint they just ran so every later section can point at one move
+     data: blunt interview (the person with the problem answers what breaks today) -> crypto-necessity gate (does this need a chain at all?) -> exactly 3 candidates -> score out of 15 -> go at 8 or more / conditional at 6 to 7 / no-go below 6, with a pivot Output: .claude/context/idea.md Source: github.com/solanabr/solana-ai-kit, 2026-09-06; adapted from sendaifun/solana-new find-next-crypto-idea and validate-idea
+     prompt: Horizontal left-to-right flow with four main nodes labelled interview, gate, three candidates, score. The score node fans out into three outcome boxes stacked vertically: "go, 8 or more", "conditional, 6 to 7", "no-go, below 6, with a pivot". A small file icon after the outcomes labelled ".claude/context/idea.md". A source line under the flow. Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:511px;height:443px;top:-250px;right:-250px;border-radius:48% 45% 44% 44% / 43% 39% 52% 53%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:492px;height:507px;bottom:-276px;left:-276px;border-radius:44% 52% 63% 43% / 56% 55% 61% 57%;background:#ffd23f;opacity:0.8;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">The idea sprint, four moves</div>
+  <h2 class="viz-title">The four moves of the idea-sprint skill and where the three lines fall</h2>
+  <div class="flow">
+    <div class="node"><div class="k">blunt interview</div><div class="s">the person with the problem answers what breaks today</div></div>
+    <div class="arr"><svg width="48" height="24"><line x1="0" y1="12" x2="36" y2="12" stroke="#1b231d" stroke-width="3"/><polygon points="34,4 48,12 34,20" fill="#1b231d"/></svg></div>
+    <div class="node"><div class="k">crypto-necessity gate</div><div class="s">does this need a chain at all?</div></div>
+    <div class="arr"><svg width="48" height="24"><line x1="0" y1="12" x2="36" y2="12" stroke="#1b231d" stroke-width="3"/><polygon points="34,4 48,12 34,20" fill="#1b231d"/></svg></div>
+    <div class="node"><div class="k">exactly 3 candidates</div><div class="s">no more, no fewer</div></div>
+    <div class="arr"><svg width="48" height="24"><line x1="0" y1="12" x2="36" y2="12" stroke="#1b231d" stroke-width="3"/><polygon points="34,4 48,12 34,20" fill="#1b231d"/></svg></div>
+    <div class="node em"><div class="k">score out of 15</div><div class="s">one number per candidate</div></div>
+    <div class="fan"><svg width="76" height="232">
+      <line x1="0" y1="116" x2="64" y2="35" stroke="#008b4c" stroke-width="3"/><polygon points="58,26 74,34 62,44" fill="#008b4c"/>
+      <line x1="0" y1="116" x2="64" y2="116" stroke="#008b4c" stroke-width="3"/><polygon points="62,108 76,116 62,124" fill="#008b4c"/>
+      <line x1="0" y1="116" x2="64" y2="197" stroke="#008b4c" stroke-width="3"/><polygon points="62,188 74,198 58,206" fill="#008b4c"/>
+    </svg></div>
+    <div class="outs">
+      <div class="out"><div class="k">go</div><div class="s">8 or more</div></div>
+      <div class="out"><div class="k">conditional</div><div class="s">6 to 7</div></div>
+      <div class="out drop"><div class="k">no-go</div><div class="s">below 6, with a pivot</div></div>
+    </div>
+  </div>
+  <div class="file">
+    <svg width="22" height="28" viewBox="0 0 22 28"><path d="M2 2 H14 L20 8 V26 H2 Z" fill="none" stroke="#1b231d" stroke-width="2"/><path d="M14 2 V8 H20" fill="none" stroke="#1b231d" stroke-width="2"/></svg>
+    <div class="t">Output</div><div class="m">.claude/context/idea.md</div>
+  </div>
+  <div class="src">Source: github.com/solanabr/solana-ai-kit, 2026-09-06; adapted from sendaifun/solana-new find-next-crypto-idea and validate-idea</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,62 @@
+id: lesson-she-scope-the-slice
+slug: scope-the-slice
+title: "Scope to the three-minute demo"
+skills:
+  - solana-fundamentals
+  - transactions
+  - rpc-reads
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Your first-pass happy path came out at eleven steps, with install, account, shop profile and wallet connection at the top. A teammate proposes folding those four into one onboarding step to reach seven. Predict what the scope card does with them."
+        multiSelect: false
+        options:
+          - id: a
+            label: "Folds them, since the seven-step rule is about the count on the card and one onboarding step still reads as a single screen a judge can follow."
+            correct: false
+            feedback: "The count is only the symptom, and folding three steps into one so the count comes out right is the thing the rule forbids."
+          - id: b
+            label: "Moves all four to the non-goal list as whole steps, and in the demo the owner's phone already has Fiado open with her wallet attached."
+            correct: true
+          - id: c
+            label: "Keeps them in place and cuts the reminder instead, since a judge needs to watch the owner set up before trusting a tab that appears from nowhere."
+            correct: false
+            feedback: "The reminder is the instrument for the untested claim, and setup screens are the ones a judge has seen a thousand times and scores at zero."
+        explanation: "The cut is made on scope and never on the count. Install, account, profile and wallet connection are not the job, and a happy path with a login, a signup and a settings screen in it is the footgun the lesson names. They go to the non-goal list as whole steps, with a destination, and the demo opens on a phone that already has Fiado the way a shop that has used it for a week would."
+      - id: q2
+        prompt: "Your slice's demo shows the balance on the regular's phone changing because a row in the app's database changed, and nothing anywhere leaves a signature. Predict how a judge scores that demo and what the fix is."
+        multiSelect: false
+        options:
+          - id: a
+            label: "As a video of a website, since nothing left a signature, so the one transaction becomes a real devnet transfer with its confirmation on screen."
+            correct: true
+          - id: b
+            label: "As a working product, since the balance moved on both screens and the repo review will find the database write behind it when it reads the code."
+            correct: false
+            feedback: "A judge cannot verify a mock, and a balance that moves because a database row moved leaves nothing a judge can open on an explorer."
+          - id: c
+            label: "As a partial demo, so the fix is a next-steps slide explaining the on-chain tab record the team will build after the season ends."
+            correct: false
+            feedback: "The next-steps slide is for architecture you chose not to build, not a stand-in for the one transaction the demo has to show confirming."
+        explanation: "A balance that changes because a number in a database changed proves only that the screen works, and a judge cannot verify a mock. The transfer is different because it leaves a public signature that a judge can open on an explorer after the video ends. If nothing in the demo leaves a signature, the demo is a video of a website and gets scored as one."
+      - id: q3
+        prompt: "Fiado's card keeps the tab and the reminder on a plain backend and puts only the USDC transfer on-chain, while pitch v1 says the chain is there for a record both sides can read and neither can edit. Predict where a judge reads that gap as a choice and where as something hidden."
+        multiSelect: false
+        options:
+          - id: a
+            label: "Nowhere, since a judge scoring Product + Execution reads the slice on its own terms and never compares it with the pitch sentence."
+            correct: false
+            feedback: "The interview is exactly where the pitch and the slice get compared, and a gap found there reads as a team that hid it."
+          - id: b
+            label: "On the demo slide it reads as a choice, and on the next-steps slide it reads as a feature the team is holding back from the judge."
+            correct: false
+            feedback: "The demo slide is where an unbuilt feature reads as a lie, and the next-steps slide is the honest place for it."
+          - id: c
+            label: "On the next-steps slide it reads as a team that chose, and in the interview it reads as a team that hid it."
+            correct: true
+        explanation: "The slice that demos well in three minutes is often not the architecture you would ship, and a hackathon month is not long enough to build both. So you build the demo and say the real architecture out loud on the next-steps slide, with the reasons it is not there yet. A judge scoring Product + Execution reads that slide as features prioritized strategically, and a judge who finds the gap in the interview instead reads it as a team that hid it."

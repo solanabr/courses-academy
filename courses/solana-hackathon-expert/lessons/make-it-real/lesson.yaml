@@ -1,0 +1,62 @@
+id: lesson-she-make-it-real
+slug: make-it-real
+title: "Make it real, then say what changed"
+skills:
+  - solana-fundamentals
+  - transactions
+  - rpc-reads
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Your day-15 tab screen says Dashboard and Welcome back, shows three stat tiles at zero, and lists Customer 1 to Customer 4 with round amounts. Predict what a judge reads from it and what the pass costs to fix."
+        multiSelect: false
+        options:
+          - id: a
+            label: "A team with no designer, so the fix is a week-3 redesign with a colour system and new navigation before any screenshot goes in the log."
+            correct: false
+            feedback: "A redesign has no fixed cost and is still open on day 21 when the update video should be recorded, which is the polish trap."
+          - id: b
+            label: "A normal early build that a judge overlooks, so nothing changes until week 4 when the deck needs a screenshot that looks finished."
+            correct: false
+            feedback: "From the moment placeholder rows appear the rest of the demo is scored as a mock, and week 4 is for cutting the log, not fixing screens."
+          - id: c
+            label: "A template and a mock, so the fix is naming and removal, minutes for the copy and the empty state and about 30 minutes for the look."
+            correct: true
+        explanation: "Dashboard reads as the template it came from and Customer 1 to 4 reads as a mock, and a judge who has watched a hundred demos knows both by sight. The pass is four items with a fixed cost: the owner's name in the header and first names on rows, a real notebook page with permission, the tiles and the card grid removed with one number large, and an empty state in the user's words. It is a checklist and not a redesign, and that difference is the whole tradeoff of the lesson."
+      - id: q2
+        prompt: "Fiado's slice has no program of its own, so a teammate skips the security pass. Predict what the lesson does instead and what Fiado's check actually found."
+        multiSelect: false
+        options:
+          - id: a
+            label: "The five-question hand check runs anyway, and it found the devnet keypair briefly committed in a .env file on day 13, since removed, rotated and logged."
+            correct: true
+          - id: b
+            label: "The pass is skipped correctly, since /audit-solana only reads programs and a slice whose one transaction is a transfer has nothing to audit."
+            correct: false
+            feedback: "No program is not no keys, since the demo signs something and somebody holds the key that signs it."
+          - id: c
+            label: "The five-question hand check runs anyway, and it found a mainnet key on the demo laptop, which is why the demo now signs with the owner's own wallet instead of a team key."
+            correct: false
+            feedback: "Fiado's finding was a devnet keypair in a committed .env file, and the demo signs with a devnet key in an environment variable."
+        explanation: "Where there is no program the pass is a signing and key-handling check done by hand: where the signing key lives, whether any key is in the git history, whether the bundle ships a secret, whose wallet signs the demo, and whether the devnet key is kept apart from mainnet value. Fiado's answers found a devnet keypair briefly in a committed .env file on day 13. It was removed, the key rotated, and the log says so with the date, because a judge who finds it in the history with no note is worse than one who finds the note."
+      - id: q3
+        prompt: "Your pitch v2 draft reads: Fiado moves the tab to the owner's phone, settles it in a stablecoin, and cuts late payment by half. You read each verb against the seven steps. Predict what stays in the sentence."
+        multiSelect: false
+        options:
+          - id: a
+            label: "All three stay, since the slice opens a tab, takes USDC on devnet, and fires the reminder whose whole purpose is to reduce late payment."
+            correct: false
+            feedback: "The reminder being sent is what the demo shows, and whether it reduces late payment is still the untested assumption from the decision memo."
+          - id: b
+            label: "The first two are rewritten to what the screen shows, and the late-payment claim comes out until the slice keeps it."
+            correct: true
+          - id: c
+            label: "Only the settlement stays, since a tab kept on a plain backend is not something the demo can show happening on-chain."
+            correct: false
+            feedback: "The rule is that each verb points at a step of the demo, and opening a tab is step 1 on screen whether or not it is on-chain."
+        explanation: "The rule for v2 is that every verb in the product half names a thing the demo shows on screen. Moves the tab becomes opens the tab and settles it becomes takes part of it in USDC, because those are what steps 1 and 4 show. The reminder is back in the sentence only as sent, since the slice fires one, and a claim that it reduces late payment points at nothing in the demo, so it is a promise and comes out until the slice keeps it."

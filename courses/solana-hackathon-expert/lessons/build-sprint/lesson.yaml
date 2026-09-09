@@ -1,0 +1,62 @@
+id: lesson-she-build-sprint
+slug: build-sprint
+title: "Build it with an agent team"
+skills:
+  - solana-fundamentals
+  - transactions
+  - rpc-reads
+blocks:
+  - key: intro
+    type: prose
+    src: intro.md
+  - key: check
+    type: quiz
+    questions:
+      - id: q1
+        prompt: "Your plan-mode output for the seven steps proposes a login screen and says simulate the USDC transfer next to step 4. Predict what you do before approving the plan."
+        multiSelect: false
+        options:
+          - id: a
+            label: "Approve it and let the frontend subagent remove the login later, since the mock at step 4 is a placeholder the tests subagent will replace with a real transfer."
+            correct: false
+            feedback: "Subagents do not share memory and read only the repo, so a plan approved with a login and a mock in it is what gets built."
+          - id: b
+            label: "Cut the login against the non-goal line and rewrite step 4 as a real transfer on devnet, then approve and save the plan in the repo with its date."
+            correct: true
+          - id: c
+            label: "Reject the whole plan and open a fresh session with a shorter prompt, since a plan that proposes a login has read past the scope card entirely."
+            correct: false
+            feedback: "Most templates propose a login, and the non-goal line exists so you cut it in the plan now and not in week 3."
+        explanation: "The plan is read against three things before approval: the non-goals, the order, and the shape of the transaction. A login is the most common thing a template adds and the non-goal line is there to cut it. Mock, stub or simulate anywhere near step 4 is the plan telling you it intends to build a demo a judge cannot verify, so that line changes before anything is written, and the approved plan goes into the repo dated as the first entry in the build's record."
+      - id: q2
+        prompt: "After step 4 the app shows a signature, but pasting it into an explorer set to devnet returns not found. Predict what happened and what goes into narrative-log.md."
+        multiSelect: false
+        options:
+          - id: a
+            label: "The explorer is lagging behind the network, so the entry goes in now with the signature and the explorer link gets added once the page catches up."
+            correct: false
+            feedback: "A not-found result on a devnet explorer is not lag, it is the transaction never having reached devnet."
+          - id: b
+            label: "The transaction was sent and failed on devnet, so the entry records the failed status and the fee the signing wallet paid for it."
+            correct: false
+            feedback: "A failed transaction still shows up on the explorer with a status line, and not found means it was never there."
+          - id: c
+            label: "The transaction never left localhost, so nothing goes in until the route is fixed and a resent transaction reads on the explorer."
+            correct: true
+        explanation: "An agent that hits a devnet error will sometimes route around it by pointing the app at a local validator or a mock, and the app keeps showing a signature that opens nothing. If the explorer says not found, the demo transaction never left localhost and the demo is not a demo yet. Fix the route, send it again, read status, slot, fee and the USDC balance change on the explorer, and only then write the log entry."
+      - id: q3
+        prompt: "The agent-built step 5 screen shows the right balance and its test passes. You check where the number comes from and it is the step 3 form input subtracted from the opening amount. Predict what a judge who pays a different amount in the interview sees, and what the fix costs against the build."
+        multiSelect: false
+        options:
+          - id: a
+            label: "A screen that lies, since the confirmed transaction is never read, and the fix is small while finding it took longer than the build."
+            correct: true
+          - id: b
+            label: "The same correct balance, since the form input is what the regular typed and a passing test means the number on the screen is right every time."
+            correct: false
+            feedback: "The screen would show the same number if the transaction had failed, and the test was written from the same wrong assumption."
+          - id: c
+            label: "A screen that lies, and the fix is a second subagent pass over step 5 with new instructions, costing about what the original build did."
+            correct: false
+            feedback: "The fix is one change, reading the amount from the confirmed transaction, and the expensive part was the by-hand read that found it."
+        explanation: "Nothing in the diff looks wrong and the test passes, because the test was written from the same assumption as the screen. The by-hand read of the demo path with the explorer open is what finds it, and the fix is small: the app reads the amount from the confirmed transaction and shows that. AI-written code needs a different and longer review than code a person wrote, and the review block belongs on the calendar at the same size as the build block."

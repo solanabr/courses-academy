@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../_brand.css">
+<link rel="stylesheet" href="../_render.css">
+<style>
+  @page { size: 1600px 900px; margin: 0; }
+  html, body { margin: 0; }
+  body { width: 1600px; height: 900px; display: flex; align-items: center;
+         justify-content: center; background: var(--surface-page); padding: 72px; }
+  .viz { position: relative; width: 100%; }
+</style>
+<style data-authored>
+.card{background:var(--surface-card);border-radius:var(--radius-2xl);padding:32px 48px 24px;overflow:hidden}
+.viz-title{font-size:34px;margin:4px 0 6px}
+.stage{position:relative;width:1360px;height:400px}
+.axis{position:absolute;left:0;top:0}
+.dot{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--surface-brand);border:4px solid var(--surface-card);top:187px}
+.dot.dash{background:var(--surface-card);border:3px dashed var(--stbr-dark);width:30px;height:30px;top:185px}
+.lab{position:absolute;width:300px}
+.lab .d{font-family:var(--font-display);font-weight:var(--weight-black);font-size:20px;line-height:1.1;color:var(--text-primary)}
+.lab .d span{font-family:var(--font-mono);font-weight:var(--weight-bold);font-size:18px}
+.lab .t{font-size:14px;line-height:1.35;color:var(--text-secondary);margin-top:6px}
+.lab .tag{display:inline-block;margin-top:8px;background:var(--surface-accent);color:var(--text-on-accent);font-weight:var(--weight-semibold);font-size:13px;padding:5px 12px;border-radius:var(--radius-pill)}
+.span{position:absolute;left:103px;width:764px;top:194px;height:12px;background:var(--surface-brand);border-radius:6px}
+.spanlab{position:absolute;left:120px;width:730px;top:222px;text-align:center;font-family:var(--font-display);font-weight:var(--weight-bold);font-size:16px;color:var(--stbr-emerald)}
+.src{margin-top:6px;font-size:14px;color:var(--text-muted)}
+.src span{font-family:var(--font-mono)}
+</style></head>
+<body>
+<!-- timeline: The World's Fair season as the page printed it on 2026-09-06, and what the brief still has to fetch
+     purpose: separate the dates that are fixed on the page today from the one that must be re-read and converted before it matters
+     data: 2026-09-14T11:00Z: the season opens (countdownTarget in the page data) September 14 to October 12, 2026: the hackathon window October 12, 2026: the end date and the submission deadline; hour to be re-read on the live page in the final week and converted to local time with the offset written down roughly one month after the deadline: winners announced Sources: colosseum.com/hackathon and colosseum.com/worldsfair, read 2026-09-06
+     prompt: One horizontal timeline with four milestones left to right as given in the data. The opening milestone carries its full timestamp. The end-date milestone is drawn with a dashed outline and the label "hour not printed, re-read and convert". The winners milestone sits further right with a broken axis between it and the deadline to show the gap. A source line under the axis. Structural layout only; leave styling to the brand system.
+     BUILD .viz as on-brand HTML per skills/content-gen/references/visual-rendering.md.
+     Header: <div class="stbr-eyebrow">..</div> + <h2 class="viz-title">..</h2>.
+     Leave the .stbr-decor block untouched (per-asset brand decoration).
+     WeasyPrint-safe CSS only: flexbox/grid/borders/gradients; NO box-shadow, NO
+     background-image url(), NO JS. Use brand tokens (--surface-*, --text-*, --stbr-*). -->
+<div class="stbr-decor" aria-hidden="true">
+  <div style="position:absolute;width:495px;height:481px;top:-222px;right:-222px;border-radius:63% 35% 59% 65% / 55% 59% 49% 49%;background:#306c40;opacity:0.5;"></div>
+  <div style="position:absolute;width:586px;height:561px;bottom:-300px;left:-300px;border-radius:43% 63% 64% 36% / 40% 45% 59% 58%;background:#008b4c;opacity:0.5;"></div>
+</div>
+<div class="viz">
+<div class="card">
+  <div class="stbr-eyebrow">Fixed on the page today, versus still to fetch</div>
+  <h2 class="viz-title">The World's Fair season as the page printed it on 2026-09-06, and what the brief still has to fetch</h2>
+  <div class="stage">
+    <svg class="axis" width="1360" height="400" viewBox="0 0 1360 400">
+      <line x1="40" y1="200" x2="960" y2="200" stroke="#1B231D" stroke-width="3"/>
+      <polyline points="960,200 972,186 984,214 996,186 1008,214 1020,200" fill="none" stroke="#1B231D" stroke-width="3"/>
+      <line x1="1020" y1="200" x2="1310" y2="200" stroke="#1B231D" stroke-width="3"/>
+      <polygon points="1310,193 1322,200 1310,207" fill="#1B231D"/>
+      <line x1="90" y1="140" x2="90" y2="186" stroke="#1B231D" stroke-width="2"/>
+      <line x1="880" y1="216" x2="880" y2="260" stroke="#1B231D" stroke-width="2" stroke-dasharray="5 4"/>
+      <line x1="1250" y1="140" x2="1250" y2="186" stroke="#1B231D" stroke-width="2"/>
+      <text x="990" y="238" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" fill="#5c6660">gap not to scale</text>
+    </svg>
+    <div class="span"></div>
+    <div class="spanlab">September 14 to October 12, 2026: the hackathon window</div>
+    <div class="dot" style="left:77px"></div>
+    <div class="dot dash" style="left:865px"></div>
+    <div class="dot" style="left:1237px"></div>
+    <div class="lab" style="left:70px;top:50px"><div class="d"><span>2026-09-14T11:00Z</span></div><div class="t">the season opens; countdownTarget in the page data</div></div>
+    <div class="lab" style="left:730px;top:268px"><div class="d">October 12, 2026</div><div class="t">the end date and the submission deadline: hour to be re-read on the live page in the final week and converted to local time with the offset written down</div><div class="tag">hour not printed, re-read and convert</div></div>
+    <div class="lab" style="left:1050px;top:50px;width:280px;text-align:right"><div class="d">winners announced</div><div class="t">roughly one month after the deadline</div></div>
+  </div>
+  <div class="src">Sources: <span>colosseum.com/hackathon</span> and <span>colosseum.com/worldsfair</span>, read 2026-09-06</div>
+</div>
+</div>
+</body></html>
